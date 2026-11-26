@@ -13,6 +13,21 @@
       "A city can be protected by only two kinds of units: one that stays in that city, and one that moves left from the next city. So once the next city's unit has decided, whether this city is protected is fixed.",
       "Run a DP from left to right whose only state is whether the previous city has a unit staying there. For the current city, try its unit staying or moving left; at that point the previous city's protection is settled, so add its population once if it has a staying unit or receives one from the right.",
       "Start with the state \"previous city has no staying unit, value 0\"; for each city, if it has a unit and is not the first city, it may stay or move left, otherwise it does not move; the new state is whether this city keeps a unit, and the score adds the previous city's population when it is covered; after the last city, add the last city's population to the state where it keeps a unit, and print the maximum."
+    ],
+    "ja": [
+      "都市を保護できるのは 2 種類のユニットだけです。その都市に留まるユニットと、右隣の都市から左へ移動してくるユニットです。したがって、右隣の都市のユニットの行動が決まれば、この都市が保護されるかどうかは確定します。",
+      "左から右へ DP を行い、状態は直前の都市にユニットが留まっているかどうかだけにします。現在の都市については、そのユニットが留まる場合と左へ移動する場合を試します。この時点で直前の都市の保護は確定するので、留まるユニットがあるか右から移動してくる場合に、その人口を 1 回だけ加えます。",
+      "「直前の都市に留まるユニットはなく、値は 0」の状態から始めます。各都市について、ユニットがあり最初の都市でなければ留まるか左へ動くかを選べ、そうでなければ動きません。新しい状態は「この都市にユニットが残るか」で、スコアには直前の都市がカバーされていればその人口を加えます。最後の都市の後に、ユニットが残る状態に最後の都市の人口を加え、最大値を出力します。"
+    ],
+    "ko": [
+      "한 도시를 보호할 수 있는 유닛은 두 종류뿐입니다. 그 도시에 남아 있는 유닛과, 다음 도시에서 왼쪽으로 이동해 온 유닛입니다. 따라서 다음 도시의 유닛이 결정되면 이 도시의 보호 여부가 확정됩니다.",
+      "유일한 상태가 이전 도시에 제자리에 남은 유닛이 있는지 여부인 DP를 왼쪽에서 오른쪽으로 수행합니다. 현재 도시에서는 그 유닛이 남는 경우와 왼쪽으로 이동하는 경우를 시도하며, 이때 이전 도시의 보호 여부가 확정되므로 제자리에 남은 유닛이 있거나 오른쪽에서 유닛이 오면 그 인구를 한 번 더합니다.",
+      "\"이전 도시에 남은 유닛 없음, 값 0\" 상태에서 시작합니다. 각 도시에서 유닛이 있고 첫 번째 도시가 아니면 남거나 왼쪽으로 이동할 수 있고, 그렇지 않으면 이동하지 않습니다. 새 상태는 이 도시가 유닛을 유지하는지 여부이고, 점수에는 이전 도시가 보호될 때 그 인구를 더합니다. 마지막 도시 이후에는 유닛을 유지하는 상태에 마지막 도시의 인구를 더하고 최댓값을 출력합니다."
+    ],
+    "vi": [
+      "Một thành phố chỉ có thể được bảo vệ bởi hai loại đơn vị: đơn vị ở yên trong thành phố đó, và đơn vị dịch sang trái từ thành phố kế tiếp. Vì vậy một khi đơn vị của thành phố kế tiếp đã được quyết định, việc thành phố này có được bảo vệ hay không là cố định.",
+      "Chạy DP từ trái sang phải với trạng thái duy nhất là thành phố trước có đơn vị ở yên hay không. Với thành phố hiện tại, thử cho đơn vị của nó ở yên hoặc dịch sang trái; lúc đó sự bảo vệ của thành phố trước được chốt, nên cộng dân số của nó một lần nếu nó có đơn vị ở yên hoặc nhận được một đơn vị từ bên phải.",
+      "Bắt đầu với trạng thái \"thành phố trước không có đơn vị ở yên, giá trị 0\"; với mỗi thành phố, nếu nó có đơn vị và không phải thành phố đầu tiên, nó có thể ở yên hoặc dịch sang trái, ngược lại nó không dịch; trạng thái mới là thành phố này có giữ đơn vị hay không, và điểm cộng thêm dân số của thành phố trước khi nó được bao phủ; sau thành phố cuối, cộng dân số của thành phố cuối vào trạng thái nó giữ đơn vị, và in giá trị lớn nhất."
     ]
   },
   "explanationEn": "## Approach\n\nRun a DP from left to right that keeps two states: whether the previous city has a unit staying there. Once you decide whether the current unit stays or moves left, the final coverage of the previous city is fixed, so settle its population; finally settle the last city.\n\n## Proof of correctness\n\nA city can only be protected by a unit staying in it and by a unit moving left from the city to its right. When the city to the right is processed, both decisions are known and never change afterwards, so the population can be counted once immediately as a logical OR. The state stores the staying information of the only city still waiting to be settled, and every legal decision of the current unit is enumerated, so the optimum is found without omissions or double counting.\n\n## Complexity\n\nTime O(n), auxiliary space O(1) excluding the input."

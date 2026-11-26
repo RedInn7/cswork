@@ -13,6 +13,21 @@
       "In an alternating substring, the character at each position is determined by the index parity, so the substring agrees completely with one of the global templates 0101... or 1010... on that range.",
       "With a template fixed, the number of flips needed to make a range alternating is the number of positions in it that differ from the template; the task becomes the longest window with at most k mismatches.",
       "Run a sliding window once per template: when the right end enters, bad += 1 if s[r] differs from (r + start) % 2; while bad > k, remove the left end (bad -= 1 if it was a mismatch) and advance left; update the answer with r - left + 1 at every step."
+    ],
+    "ja": [
+      "交互になっている部分文字列では、各位置の文字がインデックスの偶奇で決まるため、その範囲では大域的なテンプレート 0101... か 1010... のどちらかと完全に一致します。",
+      "テンプレートを固定すると、ある範囲を交互にするのに必要な反転回数は、その範囲内でテンプレートと異なる位置の数に等しくなります。したがって、不一致が高々 k 個のウィンドウのうち最長のものを求める問題になります。",
+      "テンプレートごとに 1 回ずつスライディングウィンドウを実行します。右端が入るとき、s[r] が (r + start) % 2 と異なれば bad += 1 とします。bad > k の間は左端を取り除き（それが不一致だったなら bad -= 1）、left を進めます。毎ステップ r - left + 1 で答えを更新します。"
+    ],
+    "ko": [
+      "교대 부분 문자열에서는 각 위치의 문자가 인덱스의 홀짝으로 결정되므로, 해당 구간에서 전역 템플릿 0101... 또는 1010... 중 하나와 완전히 일치합니다.",
+      "템플릿을 고정하면 구간을 교대 문자열로 만드는 데 필요한 뒤집기 횟수는 템플릿과 다른 위치의 수이므로, 문제는 불일치가 최대 k개인 가장 긴 윈도우를 찾는 것이 됩니다.",
+      "템플릿마다 슬라이딩 윈도우를 한 번씩 실행합니다. 오른쪽 끝이 들어올 때 s[r]이 (r + start) % 2와 다르면 bad += 1을 하고, bad > k인 동안 왼쪽 끝을 제거(불일치였다면 bad -= 1)하며 left를 전진시킵니다. 매 단계마다 r - left + 1로 정답을 갱신합니다."
+    ],
+    "vi": [
+      "Trong một xâu con xen kẽ, ký tự ở mỗi vị trí được xác định bởi tính chẵn lẻ của chỉ số, nên xâu con hoàn toàn khớp với một trong hai mẫu toàn cục 0101... hoặc 1010... trên đoạn đó.",
+      "Khi đã cố định mẫu, số lần lật cần để biến một đoạn thành xen kẽ là số vị trí trong đoạn khác với mẫu; bài toán trở thành tìm cửa sổ dài nhất có tối đa k vị trí sai khác.",
+      "Chạy cửa sổ trượt một lần cho mỗi mẫu: khi đầu phải được thêm vào, bad += 1 nếu s[r] khác (r + start) % 2; khi bad > k, bỏ đầu trái (bad -= 1 nếu nó là vị trí sai khác) và dịch left; ở mỗi bước cập nhật đáp án bằng r - left + 1."
     ]
   },
   "explanationEn": "## Approach\n\nMatch against the global templates 0101... and 1010... separately, and use a sliding window that keeps the number of mismatched positions in the window at most k.\n\n## Proof of correctness\n\nEvery alternating substring agrees with one of these two global templates, and the cost of creating it is exactly the number of mismatches. For a fixed template, enlarging the window never decreases the cost, and when the budget is exceeded the left end shrinks; the two pointers find the longest feasible window for every right end, and the larger result of the two templates is the answer.\n\n## Complexity\n\nTime O(n), auxiliary space O(1)."

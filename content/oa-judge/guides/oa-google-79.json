@@ -13,6 +13,21 @@
       "To expand a key's value you only need the keys it references to be expanded first, then substitute them. The reference graph has no cycles, so recursion in dependency order works.",
       "The same key may be referenced many times, and its expansion does not depend on where it is used, so expand every key once and cache the result.",
       "Scan the text; at each % find the next %, take the key between them, and replace the placeholder with that key's (cached) recursive expansion, copying all other characters. Do the same for the template. The input is one JSON line from which you parse substitutions and template (mind escapes such as \\\"); print the result as a JSON string with quotes and backslashes escaped."
+    ],
+    "ja": [
+      "キーの値を展開するには、その値が参照するキーを先に展開してから置換するだけです。参照グラフに閉路はないので、依存関係の順に再帰すれば解決できます。",
+      "同じキーは何度も参照されることがあり、その展開結果は使われる場所に依存しません。そこで各キーを 1 回だけ展開して、結果をキャッシュしてください。",
+      "テキストを走査し、% を見つけるたびに次の % を探して、その間のキーを取り出します。プレースホルダを、そのキーの（キャッシュされた）再帰的な展開結果で置き換え、それ以外の文字はそのままコピーします。テンプレートも同様に処理します。入力は JSON の 1 行なので、そこから substitutions と template を解析し（\\\" のようなエスケープに注意）、結果は引用符とバックスラッシュをエスケープした JSON 文字列として出力します。"
+    ],
+    "ko": [
+      "키의 값을 확장하려면 그 값이 참조하는 키들을 먼저 확장한 뒤 치환하면 됩니다. 참조 그래프에는 사이클이 없으므로 의존 순서대로 재귀하면 됩니다.",
+      "같은 키가 여러 번 참조될 수 있고 확장 결과는 사용되는 위치와 무관하므로, 모든 키를 한 번만 확장하여 결과를 캐시합니다.",
+      "텍스트를 스캔하다가 %를 만나면 다음 %를 찾아 그 사이의 키를 취하고, placeholder를 그 키의 (캐시된) 재귀 확장 결과로 바꾸며 나머지 문자는 그대로 복사합니다. 템플릿에도 똑같이 적용합니다. 입력은 JSON 한 줄이므로 substitutions와 template을 파싱하고(\\\" 같은 이스케이프에 주의), 결과는 따옴표와 역슬래시를 이스케이프한 JSON 문자열로 출력합니다."
+    ],
+    "vi": [
+      "Để mở rộng giá trị của một khóa, bạn chỉ cần mở rộng trước các khóa mà nó tham chiếu, rồi thay thế chúng. Đồ thị tham chiếu không có chu trình, nên đệ quy theo thứ tự phụ thuộc là được.",
+      "Cùng một khóa có thể được tham chiếu nhiều lần, và phần mở rộng của nó không phụ thuộc vào nơi nó được dùng, nên hãy mở rộng mỗi khóa một lần và lưu đệm (cache) kết quả.",
+      "Quét văn bản; tại mỗi % tìm % tiếp theo, lấy khóa nằm giữa, và thay placeholder bằng phần mở rộng đệ quy (đã cache) của khóa đó, sao chép mọi ký tự khác. Làm tương tự với template. Đầu vào là một dòng JSON mà từ đó bạn phân tích substitutions và template (chú ý các escape như \\\"); in kết quả dưới dạng xâu JSON với dấu ngoặc kép và dấu gạch chéo ngược được escape."
     ]
   },
   "explanationEn": "## Idea\n\nScan the template for `%KEY%`, recursively resolve the value of that key and concatenate it in. A DFS records the keys being visited to detect cycles, and finished keys can be cached.\n\n## Correctness\n\nBy induction over the acyclic reference graph in dependency order: a value with no references stays as it is; if every key a value references has already been expanded correctly, replacing each `%KEY%` with the corresponding expansion yields exactly the recursive expansion of that value. Applying the same process to the main template gives the final string the problem asks for.\n\n## Complexity\n\nLet S be the input length and L the total length of the expanded text that is resolved. O(S+L) time and O(L) space; each mapped value's expansion and the final output are limited to 1,048,576 characters by this site.\n\n## Source and site conventions\n\nThe fixed OAMaster snapshot clearly expands replacement values recursively and includes two original examples; the Python, Java and C++ implementations agree. The original problem does not constrain cycles, missing keys, literal percent signs or input size, so this site only accepts well-formed inputs where every reference exists, the reference graph is acyclic, and each mapped value and the final expansion stay within the limit; these validity constraints are additions by this site. The standard input/output protocol is likewise an addition by this site."

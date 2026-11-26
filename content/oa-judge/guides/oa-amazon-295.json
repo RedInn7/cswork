@@ -13,6 +13,21 @@
       "Goods can only flow in one direction around the ring. Let P[i] be the cumulative surplus, relative to the average, from the start through warehouse i; going clockwise, the flow on each edge can be written as P[i]+c with one shared constant c, and the total cost is the sum of all edge flows.",
       "One-way transport requires every flow to be non-negative, so c ≥ −min(P); a smaller c costs less, so take c = −min(P), giving a forward cost of sum(P) − n·min(P). In the reverse direction the flows are c−P[i] with c ≥ max(P), costing n·max(P) − sum(P). Take the cheaper direction. The median formula, which allows flow in both directions, does not apply here.",
       "Compute the average; accumulate P from left to right, including the final 0, while tracking the sum of P, its minimum (starting at 0) and its maximum (starting at 0); print min(sum − n×minimum, n×maximum − sum). Intermediate values can exceed the signed 64-bit range, so use a wider integer type."
+    ],
+    "ja": [
+      "環の周りで品物が流れられるのは一方向だけです。P[i] を、開始位置から倉庫 i までの平均に対する累積の過不足とします。時計回りでは、各辺の流量は共通の定数 c を使って P[i]+c と書け、総コストはすべての辺の流量の和です。",
+      "一方向の輸送では流量がすべて非負でなければならないので c ≥ −min(P) で、c が小さいほどコストは小さくなります。したがって c = −min(P) とし、順方向のコストは sum(P) − n·min(P) になります。逆方向の流量は c−P[i] で c ≥ max(P)、コストは n·max(P) − sum(P) です。安いほうの方向を取ります。両方向の流れを許す中央値の公式は、ここでは使えません。",
+      "平均を計算し、P を左から右へ累積します(最後の 0 を含む)。その間に P の合計、最小値(初期値 0)、最大値(初期値 0)を追跡し、min(sum − n×最小値, n×最大値 − sum) を出力します。途中の値は符号付き 64 ビットの範囲を超えうるので、より広い整数型を使います。"
+    ],
+    "ko": [
+      "물품은 고리를 따라 한 방향으로만 흐를 수 있습니다. P[i]를 시작점부터 창고 i까지의 평균 대비 누적 과잉량이라고 하면, 시계 방향에서 각 간선의 흐름은 공통 상수 c를 써서 P[i]+c로 쓸 수 있고 총 비용은 모든 간선 흐름의 합입니다.",
+      "단방향 운송이려면 모든 흐름이 0 이상이어야 하므로 c ≥ −min(P)이고, c가 작을수록 비용이 낮으므로 c = −min(P)를 택하면 정방향 비용은 sum(P) − n·min(P)입니다. 역방향에서는 흐름이 c−P[i]이고 c ≥ max(P)이며 비용은 n·max(P) − sum(P)입니다. 더 싼 방향을 취합니다. 양방향 흐름을 허용하는 중앙값 공식은 여기에 적용되지 않습니다.",
+      "평균을 계산하고, 왼쪽에서 오른쪽으로 P를 누적하며(마지막 0 포함) P의 합, 최솟값(0에서 시작), 최댓값(0에서 시작)을 추적합니다. min(sum − n×최솟값, n×최댓값 − sum)을 출력합니다. 중간값이 부호 있는 64비트 범위를 넘을 수 있으므로 더 넓은 정수형을 사용하세요."
+    ],
+    "vi": [
+      "Hàng chỉ có thể chảy theo một chiều quanh vòng. Gọi P[i] là phần dư tích lũy, so với giá trị trung bình, từ điểm bắt đầu đến kho i; đi theo chiều kim đồng hồ, luồng trên mỗi cạnh có thể viết là P[i]+c với một hằng số c chung, và tổng chi phí là tổng mọi luồng trên các cạnh.",
+      "Vận chuyển một chiều đòi hỏi mọi luồng không âm, nên c ≥ −min(P); c nhỏ hơn thì chi phí thấp hơn, nên lấy c = −min(P), cho chi phí chiều thuận là sum(P) − n·min(P). Theo chiều ngược, các luồng là c−P[i] với c ≥ max(P), chi phí n·max(P) − sum(P). Lấy chiều rẻ hơn. Công thức trung vị, vốn cho phép luồng hai chiều, không áp dụng ở đây.",
+      "Tính giá trị trung bình; tích lũy P từ trái sang phải, bao gồm số 0 cuối cùng, đồng thời theo dõi tổng của P, giá trị nhỏ nhất (bắt đầu từ 0) và giá trị lớn nhất (bắt đầu từ 0); in ra min(sum − n×minimum, n×maximum − sum). Các giá trị trung gian có thể vượt quá khoảng số nguyên có dấu 64 bit, nên hãy dùng kiểu số nguyên rộng hơn."
     ]
   },
   "explanationEn": "## Approach\n\nCompute the prefix surplus P of each warehouse relative to the average, including the final 0. The minimum cost in the forward direction is sum(P)−n·min(P), and in the reverse direction n·max(P)−sum(P); take the smaller one.\n\n## Proof of correctness\n\nFlow conservation in the forward direction fixes every edge's flow as P[i]+c. Forbidding reverse transport requires every flow to be non-negative, so c≥−min(P), and taking the smallest such c minimizes the cost. Then at least one edge has flow 0, and passing goods forward starting right after that edge actually completes the plan, reaching the lower bound. The reverse direction is the same with flow c−P[i] and c≥max(P). Minimize each direction separately and then choose between them; the median formula, which allows flow in both directions, must not be used.\n\n## Complexity\n\nTime O(n), auxiliary space O(1) excluding the input; the cost uses 64 bits."

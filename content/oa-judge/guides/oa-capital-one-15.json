@@ -13,6 +13,21 @@
       "Building on the same position twice changes nothing, so every position is just \"wall\" or \"no wall\"; a query only asks whether the number of walls in the range is positive.",
       "Keep a Fenwick tree over the positions: add 1 at a position the first time a wall is built there, and get the number of walls in a range as a difference of two prefix sums.",
       "Keep a Fenwick tree of size n+1 and a \"built\" flag per position; for build i, if the flag is not set, set it and add 1 at i, otherwise do nothing; for query l r compute prefix(r+1) - prefix(l) and output 1 if it is positive, else 0; print all answers in order separated by spaces."
+    ],
+    "ja": [
+      "同じ位置に2回建てても何も変わらないので、各位置は「壁あり」か「壁なし」のどちらかです。クエリは、範囲内の壁の数が正かどうかを尋ねるだけです。",
+      "位置に対するフェンウィック木を持ちます。ある位置に初めて壁を建てるときに、その位置に 1 を加え、範囲内の壁の数を2つの累積和の差として求めます。",
+      "サイズ n+1 のフェンウィック木と、位置ごとの「建設済み」フラグを持ちます。build i では、フラグが立っていなければ立てて i に 1 を加え、そうでなければ何もしません。query l r では prefix(r+1) - prefix(l) を計算し、正なら 1、そうでなければ 0 を出力します。すべての答えを順に空白区切りで出力します。"
+    ],
+    "ko": [
+      "같은 위치에 두 번 건설해도 아무것도 변하지 않으므로 각 위치는 \"벽 있음\" 또는 \"벽 없음\"뿐입니다. 질의는 구간 안의 벽 개수가 양수인지만 묻습니다.",
+      "위치에 대한 Fenwick 트리를 유지합니다. 어떤 위치에 처음 벽을 세울 때 그 위치에 1을 더하고, 구간의 벽 개수는 두 접두사 합의 차로 구합니다.",
+      "크기 n+1의 Fenwick 트리와 위치별 \"건설됨\" 플래그를 유지합니다. build i에서 플래그가 설정되어 있지 않으면 설정하고 i에 1을 더하며, 아니면 아무것도 하지 않습니다. query l r에서는 prefix(r+1) - prefix(l)을 계산하여 양수이면 1, 아니면 0을 출력합니다. 모든 답을 순서대로 공백으로 구분하여 출력합니다."
+    ],
+    "vi": [
+      "Xây hai lần ở cùng một vị trí không thay đổi gì, nên mỗi vị trí chỉ là \"có tường\" hoặc \"không có tường\"; một truy vấn chỉ hỏi số tường trong đoạn có dương hay không.",
+      "Giữ một cây Fenwick trên các vị trí: cộng 1 tại vị trí lần đầu có tường được xây ở đó, và lấy số tường trong một đoạn bằng hiệu của hai tổng tiền tố.",
+      "Giữ một cây Fenwick kích thước n+1 và một cờ \"built\" cho mỗi vị trí; với build i, nếu cờ chưa đặt thì đặt nó và cộng 1 tại i, ngược lại không làm gì; với query l r tính prefix(r+1) - prefix(l) và in 1 nếu dương, ngược lại 0; in mọi đáp án theo thứ tự, cách nhau bởi dấu cách."
     ]
   },
   "explanationEn": "## Approach\n\nUse a Fenwick tree to record whether a wall has been built at each position. The first build at a position adds one there; a repeated build does not update anything. To query the closed interval [l,r], count its walls with the prefix sums prefix(r+1) - prefix(l).\n\n## Correctness\n\nEvery built position contributes exactly one unit to the tree and every unbuilt position contributes zero; the idempotent update guarantees that repeated operations do not change any contribution. A Fenwick prefix sum returns the total contribution of the half-open range [0,x), so the difference of the two prefixes is exactly the number of walls in the closed interval [l,r]. That number is positive if and only if the interval contains a wall.\n\n## Complexity\n\nO(log n) time per operation, O(n) space."

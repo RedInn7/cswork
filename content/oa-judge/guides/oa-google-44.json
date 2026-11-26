@@ -13,6 +13,21 @@
       "Comparing two hh:mm times is the same as comparing their digits from the most significant one, so go from the highest digit and take the largest digit that still allows a valid completion of the remaining positions.",
       "The two hour digits constrain each other: the tens digit can be 2 only if the units digit is ? or at most 3, otherwise it must be 1; the units digit's maximum depends on the tens digit (3 when the tens digit is 2, else 9). The minute digits are independent and take 5 and 9.",
       "If s[0] is ?: fill '2' when s[1] is ? or s[1] <= '3', otherwise '1'; if s[1] is ?: fill '3' when s[0] is '2', otherwise '9'; if s[3] is ? fill '5'; if s[4] is ? fill '9'; keep existing digits unchanged and print the result."
+    ],
+    "ja": [
+      "2 つの hh:mm の時刻の比較は、上位の桁から順に数字を比べることと同じです。したがって最上位の桁から順に、残りの位置が有効に補完できる範囲で最大の数字を取ります。",
+      "時の 2 つの桁は互いに制約し合います。十の位が 2 になれるのは、一の位が ? または 3 以下のときだけで、それ以外は 1 です。一の位の最大値は十の位に依存します（十の位が 2 なら 3、そうでなければ 9）。分の桁は独立で、それぞれ 5 と 9 を取ります。",
+      "s[0] が ? の場合: s[1] が ? または s[1] <= '3' なら '2'、そうでなければ '1' を入れます。s[1] が ? の場合: s[0] が '2' なら '3'、そうでなければ '9' を入れます。s[3] が ? なら '5'、s[4] が ? なら '9' を入れます。既存の数字は変更せず、結果を出力します。"
+    ],
+    "ko": [
+      "두 hh:mm 시각을 비교하는 것은 가장 높은 자리부터 숫자를 비교하는 것과 같습니다. 따라서 가장 높은 자리부터 시작해, 나머지 자리를 유효하게 완성할 수 있는 범위에서 가장 큰 숫자를 택합니다.",
+      "시의 두 자리는 서로 제약을 줍니다. 십의 자리는 일의 자리가 ?이거나 3 이하일 때만 2가 될 수 있고, 그렇지 않으면 1이어야 합니다. 일의 자리의 최댓값은 십의 자리에 따라 정해집니다(십의 자리가 2이면 3, 아니면 9). 분의 두 자리는 서로 독립이며 각각 5와 9를 넣습니다.",
+      "s[0]이 ?이면: s[1]이 ?이거나 s[1] <= '3'일 때 '2'를, 아니면 '1'을 채웁니다. s[1]이 ?이면: s[0]이 '2'일 때 '3'을, 아니면 '9'를 채웁니다. s[3]이 ?이면 '5'를, s[4]가 ?이면 '9'를 채웁니다. 이미 있는 숫자는 그대로 두고 결과를 출력합니다."
+    ],
+    "vi": [
+      "So sánh hai thời gian hh:mm cũng giống như so sánh các chữ số của chúng từ chữ số cao nhất, nên hãy đi từ chữ số cao nhất và lấy chữ số lớn nhất mà vẫn cho phép điền hợp lệ các vị trí còn lại.",
+      "Hai chữ số của giờ ràng buộc lẫn nhau: chữ số hàng chục chỉ có thể là 2 nếu chữ số hàng đơn vị là ? hoặc không quá 3, nếu không thì phải là 1; giá trị lớn nhất của chữ số hàng đơn vị phụ thuộc vào chữ số hàng chục (3 khi chữ số hàng chục là 2, ngược lại là 9). Các chữ số của phút độc lập và lần lượt lấy 5 và 9.",
+      "Nếu s[0] là ?: điền '2' khi s[1] là ? hoặc s[1] <= '3', ngược lại điền '1'; nếu s[1] là ?: điền '3' khi s[0] là '2', ngược lại điền '9'; nếu s[3] là ? thì điền '5'; nếu s[4] là ? thì điền '9'; giữ nguyên các chữ số đã có và in kết quả."
     ]
   },
   "explanationEn": "## Approach\n\nChoose the largest feasible digit from the most significant position down. Take 2 for the hour tens digit when possible, otherwise 1; the hour tens digit then determines the upper limit of the units digit. The minute tens digit takes 5 and the units digit takes 9.\n\n## Correctness\n\nComparing times is equivalent to comparing digit strings lexicographically. Each step keeps the fixed digits and takes the largest digit for which a valid suffix still exists, making the first differing position as large as possible. The hour constraint involves only two digits and the minute limits are independent, so these choices give the largest valid time.\n\n## Complexity\n\nTime and space O(1)."

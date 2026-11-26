@@ -13,6 +13,21 @@
       "No matter how you split, the first and the last elements are each counted exactly once; every other part of the cost comes from the cuts.",
       "A cut between i and i+1 makes a[i] the end of one segment and a[i+1] the start of the next, adding exactly a[i]+a[i+1]; the cuts are independent, so you are choosing k-1 of the n-1 cut weights.",
       "Compute every adjacent sum a[i]+a[i+1] and sort them; the base cost is a[0]+a[n-1]; the minimum is the base plus the k-1 smallest weights and the maximum is the base plus the k-1 largest; when k=1 both equal the base. Use 64-bit integers."
+    ],
+    "ja": [
+      "どのように分割しても、先頭要素と末尾要素はそれぞれちょうど 1 回数えられます。コストのそれ以外の部分はすべて切れ目から生じます。",
+      "i と i+1 の間で切ると、a[i] が一方の区間の末尾に、a[i+1] が次の区間の先頭になり、ちょうど a[i]+a[i+1] が加わります。切れ目は互いに独立なので、n-1 個の切れ目の重みから k-1 個を選ぶ問題になります。",
+      "すべての隣接和 a[i]+a[i+1] を計算してソートします。基準コストは a[0]+a[n-1] で、最小値は基準に小さい方から k-1 個の重みを加えたもの、最大値は基準に大きい方から k-1 個を加えたものです。k=1 のときは両方とも基準コストに等しくなります。64 ビット整数を使います。"
+    ],
+    "ko": [
+      "어떻게 나누든 첫 원소와 마지막 원소는 각각 정확히 한 번씩 계산됩니다. 비용의 나머지는 모두 분할 지점에서 생깁니다.",
+      "i와 i+1 사이를 자르면 a[i]는 한 구간의 끝이 되고 a[i+1]은 다음 구간의 시작이 되어 정확히 a[i]+a[i+1]만큼 더해집니다. 분할 지점들은 서로 독립이므로 n-1개의 분할 가중치 중 k-1개를 고르는 문제입니다.",
+      "모든 인접한 합 a[i]+a[i+1]을 계산해 정렬합니다. 기본 비용은 a[0]+a[n-1]이며, 최솟값은 기본 비용에 가장 작은 k-1개의 가중치를 더한 값, 최댓값은 기본 비용에 가장 큰 k-1개를 더한 값입니다. k=1이면 둘 다 기본 비용입니다. 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Dù chia thế nào, phần tử đầu và phần tử cuối mỗi phần tử được tính đúng một lần; mọi phần còn lại của chi phí đến từ các điểm cắt.",
+      "Một điểm cắt giữa i và i+1 làm a[i] trở thành phần tử cuối của một đoạn và a[i+1] trở thành phần tử đầu của đoạn kế tiếp, cộng thêm đúng a[i]+a[i+1]; các điểm cắt độc lập với nhau, nên bạn đang chọn k-1 trong n-1 trọng số điểm cắt.",
+      "Tính mọi tổng kề nhau a[i]+a[i+1] và sắp xếp chúng; chi phí cơ sở là a[0]+a[n-1]; giá trị nhỏ nhất là chi phí cơ sở cộng k-1 trọng số nhỏ nhất, còn giá trị lớn nhất là chi phí cơ sở cộng k-1 trọng số lớn nhất; khi k=1 cả hai đều bằng chi phí cơ sở. Dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nThe first and last elements always contribute; every other contribution comes from the sum of the two elements adjacent to a cut. Choose the k-1 smallest or largest adjacent sums.\n\n## Proof of correctness\n\nWith no cut, the cost is a[0]+a[n-1]. Adding a cut between i and i+1 adds exactly the new endpoints a[i]+a[i+1]. The cuts are independent of each other, so taking a fixed number of the smallest/largest weights is optimal.\n\n## Complexity\n\nO(n log n) time and O(n) space."

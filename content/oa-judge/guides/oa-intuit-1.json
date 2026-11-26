@@ -13,6 +13,21 @@
       "The limit of at most two turns makes a plain BFS over cells insufficient: arriving at the same cell with a different last direction or a different number of turns already used leads to different possible continuations.",
       "Extend the state to (row, column, last direction, turns used); turns can only be 0, 1 or 2 and there are 4 directions, so there are at most about 12 * b * p states, and a BFS on this state graph decides whether W is reachable.",
       "At Q there is no direction yet, so the first step in any direction is not a turn; afterwards, each step whose direction differs from the previous one adds a turn, and expansions with more than 2 turns are dropped; moves out of the grid or onto an obstacle x are dropped too; use visited flags to avoid queueing a state twice, print DRIVE! as soon as an expansion reaches W, and DON'T DRIVE! if the queue empties first."
+    ],
+    "ja": [
+      "曲がりが高々 2 回という制限があるため、マスだけを対象にした単純な BFS では足りません。同じマスに別の最後の方向や別の曲がり回数で着いた場合、その先の進み方が変わるからです。",
+      "状態を (行, 列, 最後の方向, 使った曲がり回数) に拡張します。曲がり回数は 0、1、2 のみ、方向は 4 種類なので、状態は高々 12 * b * p 個程度です。この状態グラフ上の BFS で W に到達できるかを判定します。",
+      "Q ではまだ方向がないので、最初の 1 歩はどの方向でも曲がりに数えません。以降は、直前と方向が異なる歩ごとに曲がりを 1 回加え、曲がりが 2 回を超える展開は捨てます。グリッドの外や障害物 x へ進む移動も捨てます。同じ状態を二重にキューへ入れないよう訪問済みフラグを使い、展開で W に着いた時点で DRIVE! を出力し、キューが空になれば DON'T DRIVE! を出力します。"
+    ],
+    "ko": [
+      "회전을 최대 두 번으로 제한하므로 칸 단위의 단순 BFS로는 부족합니다. 같은 칸에 다른 마지막 방향이나 다른 회전 사용 횟수로 도착하면 이후 가능한 이동이 달라지기 때문입니다.",
+      "상태를 (행, 열, 마지막 방향, 사용한 회전 수)로 확장합니다. 회전 수는 0, 1, 2뿐이고 방향은 4가지이므로 상태는 최대 약 12 * b * p개이며, 이 상태 그래프에 대한 BFS로 W에 도달할 수 있는지 판정합니다.",
+      "Q에서는 아직 방향이 없으므로 어느 방향으로든 첫 이동은 회전이 아닙니다. 그 이후에는 직전과 방향이 다른 이동마다 회전이 1 늘어나고, 회전이 2를 넘는 확장은 버립니다. 격자 밖으로 나가거나 장애물 x로 가는 이동도 버립니다. 같은 상태를 두 번 큐에 넣지 않도록 방문 표시를 사용하고, 확장 중 W에 도달하면 즉시 DRIVE!를 출력하며, 큐가 먼저 비면 DON'T DRIVE!를 출력합니다."
+    ],
+    "vi": [
+      "Giới hạn tối đa hai lần rẽ khiến BFS thông thường trên các ô là không đủ: đến cùng một ô với hướng cuối khác nhau hoặc số lần rẽ đã dùng khác nhau sẽ dẫn đến các khả năng đi tiếp khác nhau.",
+      "Mở rộng trạng thái thành (row, column, hướng cuối, số lần rẽ đã dùng); số lần rẽ chỉ có thể là 0, 1 hoặc 2 và có 4 hướng, nên có tối đa khoảng 12 * b * p trạng thái, và một BFS trên đồ thị trạng thái này quyết định W có đến được hay không.",
+      "Tại Q chưa có hướng, nên bước đầu tiên theo bất kỳ hướng nào không tính là rẽ; sau đó, mỗi bước có hướng khác hướng trước đó cộng thêm một lần rẽ, và các mở rộng có hơn 2 lần rẽ bị loại; các bước đi ra ngoài lưới hoặc vào chướng ngại vật x cũng bị loại; dùng cờ visited để không đưa cùng một trạng thái vào hàng đợi hai lần, in DRIVE! ngay khi một mở rộng đến được W, và in DON'T DRIVE! nếu hàng đợi cạn trước đó."
     ]
   },
   "explanationEn": "## Approach\n\nIf a solution exists, there is a simple path that does not repeat cells; BFS visits at most 12bp states on the (row, column, direction, turns) state graph.\n\n## Proof of correctness\n\nBFS exhaustively explores the state graph by path length. A state keeps the current position, the last direction and the number of turns made, so two paths with different feasible continuations are never wrongly merged. Only states with at most two turns are enqueued; reaching W means a valid path exists, and if the traversal ends without reaching it, none exists.\n\n## Complexity\n\nTime O(bp), space O(bp)."

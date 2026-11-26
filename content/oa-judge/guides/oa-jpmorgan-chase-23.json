@@ -13,6 +13,21 @@
       "Think backward from the target to 0: an odd number can only subtract 1, while an even number may be halved; this mirrors the target's binary representation.",
       "Build the number from its most significant bit: the leading 1 takes one +1, every further bit takes one doubling, and every lower bit that is 1 takes one more +1.",
       "For each k, print 0 if k = 0; otherwise print (number of binary digits − 1) + (number of 1 bits). k can be up to 10^16, so use 64-bit integers."
+    ],
+    "ja": [
+      "目標から 0 へ逆向きに考えます。奇数は 1 を引くことしかできず、偶数は半分にできます。これは目標値の2進表記に対応します。",
+      "最上位ビットから数を組み立てます。先頭の 1 は +1 が1回、続く各ビットは2倍が1回、下位の 1 のビットごとにさらに +1 が1回かかります。",
+      "各 k について、k = 0 なら 0 を出力し、そうでなければ (2進の桁数 − 1) + (1 のビットの個数) を出力します。k は最大 10^16 なので、64 ビット整数を使います。"
+    ],
+    "ko": [
+      "목표에서 0으로 거꾸로 생각합니다. 홀수는 1을 빼는 것만 가능하고, 짝수는 반으로 나눌 수 있습니다. 이는 목표의 이진 표현을 그대로 반영합니다.",
+      "최상위 비트부터 수를 만듭니다. 맨 앞의 1은 +1 한 번이 들고, 이후 각 비트마다 2배 한 번이 들며, 그 아래 비트가 1이면 +1이 한 번 더 듭니다.",
+      "각 k에 대해 k = 0이면 0을 출력하고, 아니면 (이진 자릿수 − 1) + (1인 비트의 수)를 출력합니다. k는 10^16까지 가능하므로 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Hãy nghĩ ngược từ đích về 0: số lẻ chỉ có thể trừ 1, còn số chẵn có thể chia đôi; điều này phản chiếu biểu diễn nhị phân của đích.",
+      "Xây số từ bit có nghĩa nhất: chữ số 1 dẫn đầu tốn một +1, mỗi bit tiếp theo tốn một lần nhân đôi, và mỗi bit thấp hơn bằng 1 tốn thêm một +1.",
+      "Với mỗi k, in 0 nếu k = 0; ngược lại in (số chữ số nhị phân − 1) + (số bit 1). k có thể lên tới 10^16, nên hãy dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nFor a positive number, the answer is its number of binary digits minus one, plus its number of 1 bits; for 0 the answer is simply 0.\n\n## Proof of correctness\n\nWorking backward, an odd number can only subtract one, while an even number may be halved. If an even number subtracts one first, it still has to reach the next even number by subtracting again or by longer steps; moving paired additions before the doubling does not increase the number of operations. Therefore there is an optimal path that builds the number from the most significant binary digit, with one doubling for each subsequent bit and one addition for each 1 bit, achieving the stated count.\n\n## Complexity\n\nO(n log K) time and O(n) output space."

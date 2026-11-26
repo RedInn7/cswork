@@ -13,6 +13,21 @@
       "Requiring adjacent skills to differ by at most 1 after sorting means the team's skills cover a stretch with no gap larger than 1, which may span several different skill values.",
       "Sort all skills: if two neighbors differ by more than 1, no team can cross that gap, while everyone inside one gap-free stretch can be chosen together.",
       "After sorting, scan the array: when the adjacent difference is at most 1, extend the current run by 1, otherwise reset it to 1, and keep the longest run as the answer. Differences can reach 2×10^9, so mind the integer range."
+    ],
+    "ja": [
+      "ソート後に隣り合うスキルの差が高々 1 であることを要求すると、チームのスキルは 1 を超えるギャップのない範囲を覆うことになり、複数の異なるスキル値にまたがりえます。",
+      "すべてのスキルをソートします。隣り合う 2 つの差が 1 を超えるなら、そのギャップを越えるチームは作れません。一方、ギャップのない 1 つの範囲内の全員は、まとめて選べます。",
+      "ソート後に配列を走査します。隣り合う差が 1 以下なら現在の連続区間を 1 伸ばし、そうでなければ 1 にリセットして、最長の連続区間を答えとして保持します。差は 2×10^9 に達しうるので、整数の範囲に注意してください。"
+    ],
+    "ko": [
+      "정렬 후 인접한 기술 수준의 차이가 최대 1이어야 한다는 것은, 팀의 기술 수준이 1보다 큰 간격 없이 이어지는 구간을 덮는다는 뜻이며 여러 서로 다른 값에 걸칠 수 있습니다.",
+      "모든 기술 수준을 정렬합니다. 이웃한 두 값의 차이가 1보다 크면 어떤 팀도 그 간격을 넘을 수 없고, 간격이 없는 한 구간 안의 학생은 모두 함께 선택할 수 있습니다.",
+      "정렬한 뒤 배열을 훑습니다. 인접한 차이가 1 이하이면 현재 구간의 길이를 1 늘리고, 아니면 1로 초기화하며, 가장 긴 구간을 답으로 유지합니다. 차이는 2×10^9까지 될 수 있으므로 정수 범위에 주의하세요."
+    ],
+    "vi": [
+      "Yêu cầu các kỹ năng liền kề chênh nhau tối đa 1 sau khi sắp xếp có nghĩa là kỹ năng của đội phủ một đoạn không có khoảng trống nào lớn hơn 1, và có thể trải dài trên nhiều giá trị kỹ năng khác nhau.",
+      "Sắp xếp mọi kỹ năng: nếu hai phần tử liền kề chênh nhau hơn 1 thì không đội nào có thể vượt qua khoảng trống đó, còn mọi người trong cùng một đoạn không có khoảng trống đều có thể được chọn cùng nhau.",
+      "Sau khi sắp xếp, duyệt mảng: khi hiệu liền kề tối đa 1, kéo dài đoạn hiện tại thêm 1, ngược lại đặt lại về 1, và giữ đoạn dài nhất làm đáp án. Các hiệu có thể đạt 2×10^9, nên chú ý phạm vi số nguyên."
     ]
   },
   "explanationEn": "## Approach\n\nAfter sorting, accumulate the length of each run whose adjacent differences are ≤1, and start over whenever a larger gap appears.\n\n## Proof of correctness\n\nNo valid team can cross a gap of missing skills larger than 1; choosing everyone in the same gap-free run at once is still valid, and removing anyone cannot increase the count. So the longest run is optimal.\n\n## Complexity\n\nTime O(n log n), space O(n)."

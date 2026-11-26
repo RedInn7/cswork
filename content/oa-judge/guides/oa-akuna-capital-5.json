@@ -13,6 +13,21 @@
       "Every 1 must eventually pass every 0 to its right, so the total distance moved is fixed (the number of inversions); to maximize the cost you must maximize the number of operations.",
       "An operation must cross a whole run of adjacent zeros. For a run of z zeros, each of the a ones to its left crosses it at most once, so the run allows at most a operations, contributing a * z of distance and a of base fees, a * (z + 1) in total, and the bound can be reached.",
       "Scan from left to right counting the ones seen so far as a; at each run of zeros find its length z and add a * (z + 1) to the answer; a string already of the form 0...01...1 gives 0. The result can reach about 2.5 * 10^9, so use a 64-bit integer."
+    ],
+    "ja": [
+      "すべての 1 は最終的に、右にあるすべての 0 を通り過ぎなければならないので、移動する総距離は一定です (転倒数に等しい)。コストを最大化するには、操作の回数を最大化する必要があります。",
+      "1 回の操作は、隣り合う 0 のランを丸ごと越えなければなりません。z 個の 0 のランについて、左にある a 個の 1 はそれぞれ高々 1 回しかそれを越えないので、そのランでの操作は高々 a 回です。距離 a * z と基本料金 a を合わせて、寄与は合計 a * (z + 1) になり、この上限は達成できます。",
+      "左から右へ走査し、これまでに見た 1 の個数を a として数えます。0 のランごとにその長さ z を求め、a * (z + 1) を答えに加えます。すでに 0...01...1 の形の文字列では 0 になります。結果は約 2.5 * 10^9 に達しうるため、64 ビット整数を使ってください。"
+    ],
+    "ko": [
+      "모든 1은 결국 자기 오른쪽의 모든 0을 지나가야 하므로 총 이동 거리는 고정되어 있습니다 (역전 쌍의 수). 비용을 최대화하려면 연산 횟수를 최대화해야 합니다.",
+      "한 번의 연산은 인접한 0의 연속 구간 전체를 건너야 합니다. 길이 z인 0 구간의 왼쪽에 1이 a개 있으면 각 1은 이 구간을 최대 한 번 건너므로, 이 구간에서 가능한 연산은 최대 a번이고 이동 거리 a * z와 기본 비용 a를 합쳐 총 a * (z + 1)을 기여하며, 이 상한은 달성할 수 있습니다.",
+      "왼쪽에서 오른쪽으로 스캔하며 지금까지 본 1의 개수를 a로 셉니다. 0 구간을 만날 때마다 길이 z를 구해 답에 a * (z + 1)을 더합니다. 이미 0...01...1 형태인 문자열은 0이 됩니다. 결과는 약 2.5 * 10^9까지 갈 수 있으므로 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Mọi chữ số 1 cuối cùng đều phải vượt qua mọi chữ số 0 ở bên phải nó, nên tổng quãng đường dịch chuyển là cố định (số nghịch thế); để cực đại hóa chi phí, bạn phải cực đại hóa số thao tác.",
+      "Một thao tác phải vượt qua cả một đoạn các chữ số 0 liền kề. Với một đoạn z chữ số 0, mỗi trong a chữ số 1 bên trái nó vượt qua nhiều nhất một lần, nên đoạn này cho phép tối đa a thao tác, đóng góp a * z quãng đường và a phí cơ bản, tổng cộng a * (z + 1), và cận này đạt được.",
+      "Quét từ trái sang phải, đếm số chữ số 1 đã gặp là a; tại mỗi đoạn chữ số 0 tìm độ dài z của nó và cộng a * (z + 1) vào đáp án; một xâu đã có dạng 0...01...1 cho kết quả 0. Kết quả có thể đạt khoảng 2.5 * 10^9 nên hãy dùng số nguyên 64-bit."
     ]
   },
   "explanationEn": "## Approach\n\nSplit the string into runs of zeros. For each run, let a be the number of ones before it and z its length; the run contributes a * z cells of movement and allows a separate moves of the ones before it, adding a in base fees, for a total contribution of a * (z + 1).\n\n## Correctness\n\nEach 1 forms an inversion with every 0 to its right that must be removed, so the total movement distance is fixed at the total number of inversions. An operation must cross a complete run of adjacent zeros; for a given run, each of the a ones before it can cross it at most once, so the run produces at most a operations. Scheduling, run by run from right to left, every preceding 1 to cross the run reaches this bound, and moves for different runs can be arranged one after another. So the maximum number of operations is the sum of a over the runs, and the maximum total cost is the fixed distance plus the maximum number of operations, that is Σa(z + 1).\n\n## Complexity\n\nTime O(n), space O(1)."

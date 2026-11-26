@@ -13,6 +13,21 @@
       "As long as every target letter appears in the remaining password at least as often as target needs it, some rearrangement contains target. So the goal is to make at least one target letter run short.",
       "Making a single letter run short is enough. For each target letter c, deleting it down to one fewer than needed takes max(0, count in pwd − count in target + 1) deletions, costing that number times cost[c]; choose the cheapest letter.",
       "Count the letters of pwd and target; read the 26 costs; for each letter that appears in target, multiply the required deletions by its cost, and print the minimum as a 64-bit integer."
+    ],
+    "ja": [
+      "残ったパスワードの中で、target の各文字が target で必要な個数以上あれば、並べ替えて target を含められます。したがって、target の文字のうち少なくとも 1 種類を不足させることが目標です。",
+      "1 種類の文字を不足させれば十分です。target の各文字 c について、必要数より 1 つ少なくなるまで削除する回数は max(0, pwd での出現数 − target での出現数 + 1) 回で、コストはその回数に cost[c] を掛けた値です。最も安い文字を選びます。",
+      "pwd と target の文字数を数え、26 個のコストを読み込みます。target に現れる各文字について、必要な削除回数にコストを掛け、その最小値を 64 ビット整数として出力します。"
+    ],
+    "ko": [
+      "남은 비밀번호에 target의 모든 문자가 target이 필요로 하는 횟수 이상 들어 있으면, 어떤 재배열은 반드시 target을 포함합니다. 따라서 target 문자 중 하나라도 부족하게 만드는 것이 목표입니다.",
+      "문자 하나만 부족하게 만들면 충분합니다. target의 각 문자 c에 대해, 필요한 개수보다 하나 모자랄 때까지 삭제하려면 max(0, pwd의 개수 − target의 개수 + 1)번 삭제해야 하며 비용은 그 횟수에 cost[c]를 곱한 값입니다. 가장 싼 문자를 고릅니다.",
+      "pwd와 target의 문자 수를 세고 26개의 비용을 읽습니다. target에 나타나는 각 문자에 대해 필요한 삭제 횟수에 비용을 곱한 뒤, 그 최솟값을 64비트 정수로 출력합니다."
+    ],
+    "vi": [
+      "Chừng nào mỗi chữ cái của target xuất hiện trong mật khẩu còn lại ít nhất bằng số lần target cần, thì luôn có một hoán vị chứa target. Vì vậy mục tiêu là làm cho ít nhất một chữ cái của target bị thiếu.",
+      "Chỉ cần làm một chữ cái bị thiếu là đủ. Với mỗi chữ cái c của target, xóa cho đến khi còn thiếu một bản sao so với nhu cầu cần max(0, số lần trong pwd − số lần trong target + 1) lần xóa, chi phí bằng số lần đó nhân cost[c]; chọn chữ cái rẻ nhất.",
+      "Đếm các chữ cái của pwd và target; đọc 26 chi phí; với mỗi chữ cái xuất hiện trong target, nhân số lần xóa cần thiết với chi phí của nó, rồi in giá trị nhỏ nhất dưới dạng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nCount both strings. For each target letter c, deleting max(0,countPwd[c]−countTarget[c]+1) copies leaves too few of it; take the minimum required cost over all letters.\n\n## Proof of correctness\n\nSome rearrangement contains the target if and only if every target letter has enough copies. To break this condition, at least one letter must fall short of its demand, and for that letter the stated number of deletions is required; so every valid plan costs at least one of the candidates. Deleting only the letter with the cheapest candidate is enough to make the target impossible forever, reaching the lower bound.\n\n## Complexity\n\nTime O(|pwd|+|target|+26), auxiliary space O(26); the cost uses 64 bits."

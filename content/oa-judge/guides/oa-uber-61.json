@@ -13,6 +13,21 @@
       "Look at \"choose a prime for each position and add up the products of all arrays\" the other way around: if you multiply the per-position sums of allowed primes and expand, each term corresponds exactly to the score of one array.",
       "By the distributive law, the answer is the product of the prime sums of each position's interval. The task becomes finding the sum of primes in any interval [low, high] quickly, which a sieve plus prefix sums handles.",
       "Let M be the largest high. Sieve the primes up to M and compute prefix[v], the sum of primes not exceeding v (it exceeds 32 bits, so use 64-bit integers). For each position take prefix[high] - prefix[low - 1], reduce it modulo 10^9 + 7, multiply it into the result, and keep the result reduced."
+    ],
+    "ja": [
+      "「各位置で素数を選び、すべての配列の積を足し合わせる」を逆から見てください。各位置で許される素数の和を掛け合わせて展開すると、各項はちょうど 1 つの配列のスコアに対応します。",
+      "分配法則により、答えは各位置の区間の素数の和の積です。したがって課題は、任意の区間 [low, high] の素数の和を高速に求めることに帰着し、篩と累積和で処理できます。",
+      "M を最大の high とします。M までの素数を篩で求め、prefix[v]（v 以下の素数の和。32 ビットを超えるので 64 ビット整数を使います）を計算します。各位置で prefix[high] - prefix[low - 1] を取り、10^9 + 7 で割った余りにして結果に掛け、結果も常に剰余を取ってください。"
+    ],
+    "ko": [
+      "\"각 위치에서 소수를 골라 모든 배열의 곱을 더한다\"를 거꾸로 생각해 보세요. 각 위치에서 허용되는 소수의 합을 곱하여 전개하면, 각 항이 정확히 하나의 배열의 점수에 대응합니다.",
+      "분배 법칙에 의해 답은 각 위치 구간의 소수 합의 곱입니다. 문제는 임의의 구간 [low, high]의 소수 합을 빠르게 구하는 것이 되며, 체와 누적 합으로 해결됩니다.",
+      "M을 가장 큰 high라 합시다. M까지의 소수를 체로 구하고, v 이하 소수의 합인 prefix[v]를 계산합니다(32비트를 넘으므로 64비트 정수를 사용). 각 위치에서 prefix[high] - prefix[low - 1]을 구해 10^9 + 7로 나눈 나머지를 취하고 결과에 곱한 뒤, 결과도 계속 나머지로 유지합니다."
+    ],
+    "vi": [
+      "Hãy nhìn \"chọn một số nguyên tố cho mỗi vị trí và cộng tích của mọi mảng\" theo chiều ngược lại: nếu nhân các tổng của những số nguyên tố được phép ở từng vị trí rồi khai triển, mỗi số hạng tương ứng đúng với điểm của một mảng.",
+      "Theo tính phân phối, đáp án là tích các tổng số nguyên tố của đoạn ở từng vị trí. Bài toán trở thành tính nhanh tổng các số nguyên tố trong đoạn [low, high] bất kỳ, việc mà sàng kèm tổng tiền tố giải quyết được.",
+      "Gọi M là high lớn nhất. Sàng các số nguyên tố đến M và tính prefix[v], tổng các số nguyên tố không vượt quá v (vượt quá 32 bit nên dùng số nguyên 64 bit). Với mỗi vị trí lấy prefix[high] - prefix[low - 1], rút gọn theo modulo 10^9 + 7, nhân vào kết quả, và luôn giữ kết quả đã rút gọn."
     ]
   },
   "explanationEn": "## Approach\n\nSieve all primes and compute prefix sums of the primes. The sum of the primes in each interval is a difference of prefix sums; multiply these sums together modulo the given number.\n\n## Correctness\n\nExpanding the product of the per-position prime sums, each term picks exactly one prime from every position, and the term's value is that array's score; the arrays correspond one-to-one with the terms of the expansion. So the distributive law turns the enumeration of combinations into a product of interval sums.\n\n## Complexity\n\nTime O(M log log M + n), space O(M), where M is the largest right endpoint."

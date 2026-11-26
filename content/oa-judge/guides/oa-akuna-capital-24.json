@@ -13,6 +13,21 @@
       "The grid has no obstacles, so vertical and horizontal moves do not affect each other and their costs can be computed separately.",
       "Going from initR to finalR crosses every row edge in between at least once, and extra crossings only add non-negative cost; columns work the same way. So the answer is the sum of the two parts.",
       "Read the row-edge costs and the column-edge costs; add the row costs with indices in [min(initR, finalR), max(initR, finalR)) and the column costs with indices in [min(initC, finalC), max(initC, finalC)); their sum is the answer, kept in a 64-bit integer."
+    ],
+    "ja": [
+      "グリッドに障害物はないので、縦の移動と横の移動は互いに影響せず、そのコストは別々に計算できます。",
+      "initR から finalR へ行くには、その間のすべての行の辺を少なくとも 1 回は渡り、余分に渡ると非負のコストが増えるだけです。列も同じです。したがって、答えは 2 つの部分の和です。",
+      "行の辺のコストと列の辺のコストを読み込みます。インデックスが [min(initR, finalR), max(initR, finalR)) にある行のコストと、[min(initC, finalC), max(initC, finalC)) にある列のコストを足します。その和が答えで、64 ビット整数で保持します。"
+    ],
+    "ko": [
+      "그리드에는 장애물이 없으므로 수직 이동과 수평 이동은 서로 영향을 주지 않으며 그 비용을 따로 계산할 수 있습니다.",
+      "initR에서 finalR로 가려면 그 사이의 모든 행 간선을 최소 한 번 건너야 하고, 추가로 건너는 것은 음이 아닌 비용만 더합니다. 열도 마찬가지입니다. 따라서 답은 두 부분의 합입니다.",
+      "행 간선 비용과 열 간선 비용을 읽습니다. 인덱스가 [min(initR, finalR), max(initR, finalR)) 범위에 있는 행 비용과 [min(initC, finalC), max(initC, finalC)) 범위에 있는 열 비용을 더합니다. 그 합이 답이며 64비트 정수로 유지하세요."
+    ],
+    "vi": [
+      "Lưới không có chướng ngại, nên các bước di chuyển dọc và ngang không ảnh hưởng nhau và chi phí của chúng có thể tính riêng.",
+      "Đi từ initR đến finalR băng qua mọi cạnh hàng ở giữa ít nhất một lần, và các lần băng qua thừa chỉ cộng thêm chi phí không âm; cột cũng tương tự. Vậy đáp án là tổng của hai phần.",
+      "Đọc các chi phí cạnh hàng và chi phí cạnh cột; cộng các chi phí hàng có chỉ số trong [min(initR, finalR), max(initR, finalR)) và các chi phí cột có chỉ số trong [min(initC, finalC), max(initC, finalC)); tổng của chúng là đáp án, giữ trong số nguyên 64-bit."
     ]
   },
   "explanationEn": "## Approach\n\nA change of row coordinate must cross all row edges between initR and finalR, and likewise for columns; compute the cost of each of the two ranges and add them.\n\n## Correctness\n\nEach vertical move changes the row coordinate by one, so any legal path from initR to finalR must cross every intermediate row edge at least once; it crosses each an odd number of times, and extra round trips have non-negative cost. Moving directly between adjacent coordinates crosses each edge exactly once, reaching the lower bound for row edges. Columns work the same way, and the two directions can be done one after the other independently, so the sum of the two costs is the global minimum.\n\n## Complexity\n\nTime O(|finalR - initR| + |finalC - initC|), extra space O(1) (not counting the input)."

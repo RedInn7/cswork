@@ -13,6 +13,21 @@
       "There are only two kinds of valid plans: change nothing, or negate exactly one element; with at most 100000 elements, all of them can be enumerated.",
       "Let S be the original sum. After negating an element x, the new sum is S - 2x, with no need to sum again.",
       "Compute S and start the answer at |S|; for every element x update the minimum with |S - 2x|; print the minimum."
+    ],
+    "ja": [
+      "有効な方法は 2 種類だけです。何も変えないか、ちょうど 1 つの要素を反転するかです。要素数は高々 100000 なので、すべて列挙できます。",
+      "元の総和を S とします。要素 x を反転した後の新しい総和は S - 2x で、合計を再計算する必要はありません。",
+      "S を計算し、答えを |S| で初期化します。各要素 x について |S - 2x| で最小値を更新し、最小値を出力します。"
+    ],
+    "ko": [
+      "유효한 방법은 두 종류뿐입니다. 아무것도 바꾸지 않거나, 정확히 한 원소의 부호를 바꾸는 것입니다. 원소가 최대 100000개이므로 모두 열거할 수 있습니다.",
+      "원래 합을 S라 합시다. 원소 x의 부호를 바꾸면 새 합은 S - 2x이며, 합을 다시 계산할 필요가 없습니다.",
+      "S를 구하고 답을 |S|로 초기화합니다. 각 원소 x마다 |S - 2x|로 최솟값을 갱신한 뒤, 최솟값을 출력합니다."
+    ],
+    "vi": [
+      "Chỉ có hai loại phương án hợp lệ: không đổi gì, hoặc đổi dấu đúng một phần tử; với tối đa 100000 phần tử, có thể liệt kê tất cả.",
+      "Gọi S là tổng ban đầu. Sau khi đổi dấu một phần tử x, tổng mới là S - 2x, không cần cộng lại từ đầu.",
+      "Tính S và khởi tạo đáp án bằng |S|; với mỗi phần tử x, cập nhật giá trị nhỏ nhất bằng |S - 2x|; in giá trị nhỏ nhất."
     ]
   },
   "explanationEn": "## Approach\n\nFirst compute the total S; the candidate for changing nothing is |S|. Negating an element x makes the total S - 2x; scan all elements and take the smallest absolute value.\n\n## Correctness\n\nThe only valid plans are to change nothing or to negate one chosen index, and the scan enumerates all of them; S - 2x is exactly the total after removing the original x and adding -x. Taking the minimum is optimal.\n\n## Complexity\n\nTime O(n), space O(1) apart from the input."

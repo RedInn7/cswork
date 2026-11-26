@@ -13,6 +13,21 @@
       "Drop the question marks and look at the sequence of fixed characters: how a run of ? between two neighboring fixed characters is filled only affects that run.",
       "If two neighboring fixed characters are equal, fill the run with the same value for zero changes; if they differ, at least one change is needed and exactly one is achievable. Leading and trailing ? copy the nearest fixed value.",
       "Scan the string, skip ?, remember the previous fixed character, and add one whenever the current fixed character differs from it; print the count."
+    ],
+    "ja": [
+      "疑問符を取り除いて、固定文字の列を見てください。隣り合う2つの固定文字の間にある ? の連続をどう埋めるかは、その連続部分にしか影響しません。",
+      "隣り合う固定文字が等しければ、連続部分を同じ値で埋めれば変化は 0 です。異なれば、少なくとも1回の変化が必要で、ちょうど1回で達成できます。先頭と末尾の ? は、最も近い固定値をコピーします。",
+      "文字列を走査して ? を飛ばし、直前の固定文字を覚えておき、現在の固定文字がそれと異なるたびに1を加えます。数えた値を出力します。"
+    ],
+    "ko": [
+      "물음표를 제거하고 고정 문자의 수열을 보십시오. 이웃한 두 고정 문자 사이의 ? 구간을 어떻게 채우는지는 그 구간에만 영향을 줍니다.",
+      "이웃한 두 고정 문자가 같으면 구간을 같은 값으로 채워 변화를 0으로 만들 수 있고, 다르면 최소 한 번의 변화가 필요하며 정확히 한 번으로 달성할 수 있습니다. 앞쪽과 뒤쪽의 ?는 가장 가까운 고정 값을 복사합니다.",
+      "문자열을 훑으면서 ?는 건너뛰고 이전 고정 문자를 기억해 두며, 현재 고정 문자가 이전 것과 다를 때마다 1을 더합니다. 센 값을 출력합니다."
+    ],
+    "vi": [
+      "Bỏ các dấu hỏi chấm và nhìn dãy các ký tự cố định: cách điền một đoạn ? nằm giữa hai ký tự cố định liền kề chỉ ảnh hưởng đến đoạn đó.",
+      "Nếu hai ký tự cố định liền kề bằng nhau, điền đoạn đó bằng cùng giá trị để có không lần đổi nào; nếu khác nhau, cần ít nhất một lần đổi và đạt được đúng một lần. Các ? ở đầu và cuối sao chép giá trị cố định gần nhất.",
+      "Duyệt xâu, bỏ qua ?, nhớ ký tự cố định trước đó, và cộng một mỗi khi ký tự cố định hiện tại khác nó; in số đếm."
     ]
   },
   "explanationEn": "## Approach\n\nIgnore the ? characters and count only the changes between consecutive characters of the remaining fixed sequence.\n\n## Proof of correctness\n\nIf two consecutive fixed characters differ, at least one change appears between them however the gap is filled; if they are equal, filling the gap with that value gives 0 changes. Between different endpoints, a single switch somewhere is enough; leading and trailing unknown segments take the nearest fixed value, and an all-unknown string can use any single value, so all the independent interval lower bounds are reached at the same time.\n\n## Complexity\n\nO(n) time and O(1) extra space."

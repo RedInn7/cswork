@@ -13,6 +13,21 @@
       "Each dimension limits independently, but whether a request is allowed depends on all dimensions together; and only allowed requests use quota, so a rejected request must not enter any dimension's history.",
       "For each dimension, keep a separate queue of allowed-request timestamps per field value. Timestamps are non-decreasing, so expired entries are always at the front and can be popped like a sliding window.",
       "For a request, first pop from each dimension's matching queue every timestamp <= now - window (the window is [now - window, now), so one equal to now - window has expired); then check that every dimension's queue length is below that dimension's limit. Only if all pass, output ALLOW and append now to the matching queue of every dimension; otherwise output REJECT and record nothing. Each timestamp is enqueued and dequeued at most once, so the total time is O(qd)."
+    ],
+    "ja": [
+      "各次元は独立に制限をかけますが、リクエストが許可されるかどうかはすべての次元を合わせて決まります。さらに、許可されたリクエストだけがクォータを使うので、拒否されたリクエストはどの次元の履歴にも入れてはいけません。",
+      "各次元について、フィールドの値ごとに、許可されたリクエストのタイムスタンプを別々のキューに保持します。タイムスタンプは非減少なので、期限切れのエントリは常に先頭にあり、スライディングウィンドウのように取り出せます。",
+      "リクエストについて、まず各次元の該当するキューから、タイムスタンプが now - window 以下のものをすべて取り出します（ウィンドウは [now - window, now) なので、now - window と等しいものは期限切れです）。次に、すべての次元のキューの長さがその次元の limit 未満であることを確認します。すべて通ったときだけ ALLOW を出力し、now をすべての次元の該当キューに追加します。そうでなければ REJECT を出力し、何も記録しません。各タイムスタンプは高々 1 回ずつ追加と取り出しが行われるので、全体の時間は O(qd) です。"
+    ],
+    "ko": [
+      "각 차원은 독립적으로 제한하지만, 요청이 허용되는지는 모든 차원을 함께 보고 결정됩니다. 또한 허용된 요청만 할당량을 쓰므로, 거부된 요청은 어느 차원의 기록에도 들어가면 안 됩니다.",
+      "각 차원마다 필드 값별로 허용된 요청의 타임스탬프를 담는 별도의 큐를 유지하세요. 타임스탬프가 감소하지 않으므로 만료된 항목은 항상 앞쪽에 있어 슬라이딩 윈도우처럼 꺼낼 수 있습니다.",
+      "요청이 오면 먼저 각 차원의 해당 큐에서 타임스탬프 <= now - window인 항목을 모두 꺼내세요(윈도우가 [now - window, now)이므로 now - window와 같은 항목은 이미 만료입니다). 그런 다음 모든 차원의 큐 길이가 그 차원의 limit보다 작은지 확인합니다. 모두 통과해야만 ALLOW를 출력하고 모든 차원의 해당 큐에 now를 추가하며, 그렇지 않으면 REJECT를 출력하고 아무것도 기록하지 않습니다. 각 타임스탬프는 최대 한 번 넣고 한 번 꺼내므로 전체 시간은 O(qd)입니다."
+    ],
+    "vi": [
+      "Mỗi chiều giới hạn độc lập, nhưng việc một yêu cầu có được cho phép hay không phụ thuộc vào tất cả các chiều cùng nhau; và chỉ các yêu cầu được cho phép mới dùng hạn mức, nên một yêu cầu bị từ chối không được đưa vào lịch sử của chiều nào.",
+      "Với mỗi chiều, giữ một hàng đợi riêng các timestamp của yêu cầu được cho phép theo từng giá trị trường. Timestamp không giảm, nên các mục hết hạn luôn ở đầu hàng đợi và có thể lấy ra như một cửa sổ trượt.",
+      "Với một yêu cầu, trước tiên lấy ra từ hàng đợi tương ứng của mỗi chiều mọi timestamp <= now - window (cửa sổ là [now - window, now), nên giá trị bằng now - window đã hết hạn); rồi kiểm tra độ dài hàng đợi của mọi chiều đều nhỏ hơn limit của chiều đó. Chỉ khi tất cả đều qua thì in ALLOW và thêm now vào hàng đợi tương ứng của mọi chiều; nếu không thì in REJECT và không ghi gì. Mỗi timestamp được đưa vào và lấy ra tối đa một lần, nên tổng thời gian là O(qd)."
     ]
   },
   "explanationEn": "## Approach\n\nFor each dimension, maintain a deque of allowed request times keyed by the field value. When handling a request, first remove expired times that are <= now-window, then check whether every dimension's current count is below its limit. Only if all dimensions pass is the time recorded in every dimension.\n\n## Correctness\n\nThe sliding window is defined as [now-window, now), so an old request exactly at the boundary now-window must expire. Checking dimension by dimension guarantees that any single dimension over its limit causes a rejection; appending records only for requests allowed overall implements exactly the quota semantics this site specifies.\n\n## Complexity\n\nEach request checks at most d dimensions; each timestamp is enqueued and dequeued at most once in a deque. Total time O(qd), space O(qd)."

@@ -13,6 +13,21 @@
       "The required path goes 1, 2, …, N with direct edges, so every edge it uses must be exactly (i,i+1); all other edges are irrelevant.",
       "Just check whether the N−1 edges (1,2), (2,3), …, (N−1,N) are all present: if they are, walk in numeric order; if one is missing, it is impossible.",
       "Use a boolean array. For each edge whose endpoints differ by exactly 1, mark the smaller endpoint (duplicate edges count once) and count the distinct marks; print 1 if the count equals N−1 and 0 otherwise. With N=1 no edges are needed, so the answer is 1."
+    ],
+    "ja": [
+      "必要な経路は直接の辺で 1, 2, …, N と進むので、使う辺はちょうど (i,i+1) でなければなりません。他の辺はすべて無関係です。",
+      "N−1 本の辺 (1,2), (2,3), …, (N−1,N) がすべて存在するかを確認するだけです。存在すれば番号順にたどれ、1本でも欠けていれば不可能です。",
+      "ブール配列を使います。端点の差がちょうど 1 である辺について、小さいほうの端点に印を付け（重複する辺は1回として扱います）、異なる印の個数を数えます。個数が N−1 に等しければ 1、そうでなければ 0 を出力します。N=1 のときは辺が不要なので、答えは 1 です。"
+    ],
+    "ko": [
+      "요구되는 경로는 직접 간선으로 1, 2, …, N을 따라가므로, 사용되는 모든 간선은 정확히 (i,i+1)이어야 하며 다른 간선은 모두 관계가 없습니다.",
+      "N−1개의 간선 (1,2), (2,3), …, (N−1,N)이 모두 있는지만 확인하면 됩니다. 모두 있으면 번호 순서대로 걸을 수 있고, 하나라도 없으면 불가능합니다.",
+      "불리언 배열을 사용합니다. 양 끝점의 차이가 정확히 1인 각 간선에 대해 더 작은 끝점을 표시하고(중복 간선은 한 번으로 셈), 서로 다른 표시의 수를 센 뒤 그 수가 N−1이면 1, 아니면 0을 출력합니다. N=1이면 간선이 필요 없으므로 답은 1입니다."
+    ],
+    "vi": [
+      "Đường đi yêu cầu là 1, 2, …, N bằng các cạnh trực tiếp, nên mọi cạnh nó dùng phải đúng là (i,i+1); các cạnh khác đều không liên quan.",
+      "Chỉ cần kiểm tra xem N−1 cạnh (1,2), (2,3), …, (N−1,N) có đều tồn tại hay không: nếu có thì đi theo thứ tự số; nếu thiếu một cạnh thì không thể.",
+      "Dùng một mảng boolean. Với mỗi cạnh có hai đầu mút hơn kém nhau đúng 1, đánh dấu đầu mút nhỏ hơn (cạnh trùng chỉ tính một lần) và đếm số dấu phân biệt; in 1 nếu số đếm bằng N−1, ngược lại in 0. Với N=1 không cần cạnh nào, nên đáp án là 1."
     ]
   },
   "explanationEn": "## Approach\n\nCollect the edges whose endpoints differ by 1 and check whether they cover all N−1 pairs of consecutive numbers.\n\n## Proof of correctness\n\nEvery edge of the required path must be (i,i+1), so having all of them is necessary; when all of them exist, walking in numeric order is a valid path, so it is also sufficient.\n\n## Complexity\n\nTime O(N+M), space O(N+M)."

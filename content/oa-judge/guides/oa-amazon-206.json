@@ -13,6 +13,21 @@
       "The final run of equal speeds always consists of consecutive occurrences of one speed; every racer with another speed between them must be deleted.",
       "If p holds the positions of one speed, keeping its l-th through r-th occurrences requires deleting p[r] - p[l] - (r - l) racers; this grows with r and shrinks with l, which suits two pointers.",
       "Group indices by speed (a hash map, or sort (speed, index) pairs); in each group move the right pointer forward and advance the left pointer while p[r] - p[l] - (r - l) > k; update the answer with r - l + 1."
+    ],
+    "ja": [
+      "最終的な同一速度の連続区間は、必ず 1 つの速度の連続する出現から成ります。それらの間にある別の速度のレーサーはすべて削除する必要があります。",
+      "p をある速度の出現位置とすると、その l 番目から r 番目の出現を残すために削除するレーサーは p[r] - p[l] - (r - l) 人です。これは r とともに増え、l とともに減るので、二重ポインタに向いています。",
+      "添字を速度ごとにグループ化します（ハッシュマップ、または (speed, index) のペアのソート）。各グループで右ポインタを進め、p[r] - p[l] - (r - l) > k の間は左ポインタを進めます。r - l + 1 で答えを更新します。"
+    ],
+    "ko": [
+      "최종적으로 같은 속도가 연속된 구간은 항상 한 속도의 연속된 등장들로 이루어지며, 그 사이에 있는 다른 속도의 주자는 모두 삭제해야 합니다.",
+      "p가 한 속도의 위치들을 담고 있다면, 그 속도의 l번째부터 r번째 등장까지 남기려면 p[r] - p[l] - (r - l)명을 삭제해야 합니다. 이 값은 r이 커지면 늘고 l이 커지면 줄어드므로 투 포인터에 적합합니다.",
+      "인덱스를 속도별로 묶습니다(해시 맵 또는 (speed, index) 쌍 정렬). 각 그룹에서 오른쪽 포인터를 전진시키고, p[r] - p[l] - (r - l) > k인 동안 왼쪽 포인터를 전진시킵니다. r - l + 1로 정답을 갱신합니다."
+    ],
+    "vi": [
+      "Dãy tốc độ bằng nhau cuối cùng luôn gồm các lần xuất hiện liên tiếp của một tốc độ; mọi vận động viên có tốc độ khác nằm giữa chúng đều phải bị loại.",
+      "Nếu p chứa các vị trí của một tốc độ, giữ lại các lần xuất hiện thứ l đến thứ r của nó cần loại p[r] - p[l] - (r - l) vận động viên; giá trị này tăng theo r và giảm theo l, rất hợp với hai con trỏ.",
+      "Nhóm các chỉ số theo tốc độ (hash map, hoặc sắp xếp các cặp (speed, index)); trong mỗi nhóm, di chuyển con trỏ phải về phía trước và dịch con trỏ trái trong khi p[r] - p[l] - (r - l) > k; cập nhật đáp án bằng r - l + 1."
     ]
   },
   "explanationEn": "## Approach\n\nStore the positions of each speed. Slide a window over each group's positions; the number of deletions needed inside it is positions[r]-positions[l]-(r-l), kept at most k.\n\n## Proof of correctness\n\nTo keep the l-th through r-th occurrences of a speed, every racer with another speed between the two ends must be deleted, which costs exactly the total span minus the number of same-speed racers; deleting them makes those racers contiguous. An optimal run never needs to delete same-speed racers inside it, so only consecutive occurrences within each group need to be considered, and the two pointers exhaust the longest valid windows.\n\n## Complexity\n\nTime O(n), space O(n)."

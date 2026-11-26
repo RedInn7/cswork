@@ -13,6 +13,21 @@
       "Whether index i is valid depends only on the two values at i−1, the two values at i, and whether each of those two pairs was swapped. Earlier choices do not matter directly.",
       "Keep two states per index: the fewest swaps so far if the current pair is not swapped, and the fewest if it is. Two neighbouring pairs either increase in the same orientation (A after A, B after B) or crosswise (A after B, B after A), and that decides the transitions between the two states.",
       "Start with keep=0, swap=1. For each i: if A[i]>A[i−1] and B[i]>B[i−1], the pair may keep the previous pair's choice (keep→keep, swap→swap+1); if A[i]>B[i−1] and B[i]>A[i−1], it may take the opposite choice (swap→keep, keep→swap+1). A state reachable by neither rule is infinite. Answer the smaller state, or −1 if both are infinite."
+    ],
+    "ja": [
+      "インデックス i が有効かどうかは、i−1 の 2 つの値、i の 2 つの値、そしてそれぞれのペアが交換されたかどうかだけで決まります。それ以前の選択は直接は関係しません。",
+      "インデックスごとに 2 つの状態を保持します。現在のペアを交換しない場合の最小交換回数と、交換する場合の最小交換回数です。隣り合う 2 つのペアは、同じ向きに増加するか（A の次が A、B の次が B）、交差して増加するか（A の次が B、B の次が A）のどちらかで、それが 2 つの状態間の遷移を決めます。",
+      "keep=0、swap=1 で始めます。各 i について、A[i]>A[i−1] かつ B[i]>B[i−1] なら、前のペアの選択を引き継げます（keep→keep、swap→swap+1）。A[i]>B[i−1] かつ B[i]>A[i−1] なら、反対の選択を取れます（swap→keep、keep→swap+1）。どちらの規則でも到達できない状態は無限大とします。小さいほうの状態を答えとし、両方が無限大なら −1 とします。"
+    ],
+    "ko": [
+      "인덱스 i가 유효한지는 i−1의 두 값, i의 두 값, 그리고 그 두 쌍이 각각 교환되었는지에만 달라집니다. 더 앞의 선택은 직접적인 영향을 주지 않습니다.",
+      "인덱스마다 두 상태를 유지합니다. 현재 쌍을 교환하지 않았을 때 지금까지의 최소 교환 수와, 교환했을 때의 최소 교환 수입니다. 이웃한 두 쌍은 같은 방향으로 증가하거나(A 다음 A, B 다음 B) 엇갈려 증가하며(A 다음 B, B 다음 A), 이것이 두 상태 사이의 전이를 결정합니다.",
+      "keep=0, swap=1로 시작합니다. 각 i에 대해: A[i]>A[i−1]이고 B[i]>B[i−1]이면 이전 쌍의 선택을 그대로 따를 수 있습니다(keep→keep, swap→swap+1). A[i]>B[i−1]이고 B[i]>A[i−1]이면 반대 선택을 취할 수 있습니다(swap→keep, keep→swap+1). 두 규칙 모두로 도달할 수 없는 상태는 무한대입니다. 두 상태 중 작은 값을 답으로 하고, 둘 다 무한대이면 −1입니다."
+    ],
+    "vi": [
+      "Chỉ số i có hợp lệ hay không chỉ phụ thuộc vào hai giá trị tại i−1, hai giá trị tại i, và việc mỗi cặp trong hai cặp đó có được hoán đổi hay không. Các lựa chọn trước đó không trực tiếp ảnh hưởng.",
+      "Giữ hai trạng thái cho mỗi chỉ số: số lần hoán đổi ít nhất cho đến hiện tại nếu cặp hiện tại không hoán đổi, và ít nhất nếu có hoán đổi. Hai cặp lân cận hoặc tăng cùng hướng (A sau A, B sau B) hoặc tăng chéo (A sau B, B sau A), và điều đó quyết định các chuyển trạng thái giữa hai trạng thái.",
+      "Bắt đầu với keep=0, swap=1. Với mỗi i: nếu A[i]>A[i−1] và B[i]>B[i−1], cặp có thể giữ lựa chọn của cặp trước (keep→keep, swap→swap+1); nếu A[i]>B[i−1] và B[i]>A[i−1], nó có thể lấy lựa chọn ngược lại (swap→keep, keep→swap+1). Trạng thái không đạt được bằng quy tắc nào là vô cùng. Trả lời trạng thái nhỏ hơn, hoặc −1 nếu cả hai đều vô cùng."
     ]
   },
   "explanationEn": "## Idea\n\nTrack, up to the current index, the minimum cost when the current pair is not swapped and when it is swapped. Transition from the previous states depending on whether two neighbouring pairs increase in the same orientation or crosswise.\n\n## Correctness\n\nWhether the current position is valid depends only on the last two values of the previous pair and on whether the current pair is swapped. The two states record the minimum cost over all valid earlier plans, and the straight and crossed conditions cover exactly the four swap combinations of two neighbouring pairs, so by induction every valid plan is covered.\n\n## Complexity\n\nO(n) time and O(1) space apart from the input."

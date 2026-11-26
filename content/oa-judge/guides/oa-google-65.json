@@ -13,6 +13,21 @@
       "The score splits into two independent parts: points[i] for every T position, and a bonus of 1 for every pair of adjacent T positions.",
       "Check each adjacent pair only at its right end, so every pair is counted exactly once.",
       "Walk over tokens: on a T add points[i]; if i>0 and the previous token is also T, add 1 more. Loop over the actual length of tokens and print the total."
+    ],
+    "ja": [
+      "スコアは 2 つの独立した部分に分けられます。すべての T の位置の points[i] と、隣り合う T の位置のペアごとのボーナス 1 です。",
+      "隣り合う各ペアを右端でだけ確認すれば、すべてのペアがちょうど 1 回ずつ数えられます。",
+      "tokens を走査します。T なら points[i] を加えます。i>0 で直前のトークンも T なら、さらに 1 を加えます。tokens の実際の長さでループし、合計を出力します。"
+    ],
+    "ko": [
+      "점수는 서로 독립적인 두 부분으로 나뉩니다. 모든 T 위치의 points[i]와, 인접한 T 쌍마다 1점의 보너스입니다.",
+      "인접한 각 쌍은 오른쪽 끝에서만 확인하여 모든 쌍이 정확히 한 번씩 세어지도록 합니다.",
+      "tokens를 순회하며 T이면 points[i]를 더하고, i>0이고 바로 앞 토큰도 T이면 1을 더합니다. tokens의 실제 길이만큼 반복하고 총합을 출력합니다."
+    ],
+    "vi": [
+      "Điểm chia thành hai phần độc lập: points[i] cho mỗi vị trí T, và phần thưởng 1 cho mỗi cặp vị trí T liền kề.",
+      "Chỉ kiểm tra mỗi cặp liền kề tại đầu bên phải của nó, để mỗi cặp được đếm đúng một lần.",
+      "Duyệt qua tokens: với mỗi T cộng points[i]; nếu i>0 và token trước cũng là T, cộng thêm 1. Lặp theo độ dài thực của tokens và in tổng."
     ]
   },
   "explanationEn": "## Idea\n\nWalk over tokens; on a T add the matching points[i], and if the previous position is also T add 1 more.\n\n## Correctness\n\nThe rules split the score into two parts: each T position counts its points[i] once, and each adjacent TT pair counts 1. During the scan every T is counted exactly once in the first part; except at the first position, when both the current and previous tokens are T, the pair ending at the current position is counted exactly once. Every adjacent pair is checked only at its right end, so nothing is missed or counted twice.\n\n## Complexity\n\nO(N) time, O(1) extra space.\n\n## Source and sample handling\n\nhttps://oamaster.com/docs/companies/google#65-game-points-calculation. The Python, Java and C++ implementations in the fixed snapshot all use the rule above. Original sample 1 violates the lower bound on points, and its index and scoring explanation do not match; the output of sample 2 also disagrees with its stated rule and with the three implementations. The displayed samples are replaced by inputs whose answers follow uniquely from the rule. This site adds the stdin/stdout protocol."

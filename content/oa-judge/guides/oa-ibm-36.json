@@ -13,6 +13,21 @@
       "Replacements never change a string's length, so when the two lengths differ it is impossible and the answer is -1.",
       "With equal lengths, compare the letter counts of the two strings: the characters the first string has in excess of the second must be replaced, and each replacement removes at most one excess character, so the total excess is a lower bound.",
       "For each pair: print -1 if the lengths differ; otherwise compute the count difference of every letter between the two strings and print the sum of the positive differences (the total excess equals the total shortage, so changing each excess character into a missing one reaches the bound). Empty strings are given as empty lines, so read line by line."
+    ],
+    "ja": [
+      "置換では文字列の長さが変わらないので、2 つの長さが異なれば不可能で、答えは -1 です。",
+      "長さが等しい場合は、2 つの文字列の英字の出現数を比べます。1 つ目が 2 つ目より多く持っている文字は置換が必要で、1 回の置換で取り除ける余剰は高々 1 文字なので、余剰の合計が下界になります。",
+      "各ペアについて、長さが異なれば -1 を出力します。そうでなければ、2 つの文字列の各英字の出現数の差を計算し、正の差の合計を出力します (余剰の合計と不足の合計は等しいので、余剰の文字を不足している文字に変えれば下界に達します)。空文字列は空行で与えられるため、行単位で読み込みます。"
+    ],
+    "ko": [
+      "교체는 문자열의 길이를 바꾸지 않으므로, 두 길이가 다르면 불가능하며 답은 -1입니다.",
+      "길이가 같을 때는 두 문자열의 알파벳별 개수를 비교합니다. 첫 번째 문자열이 두 번째보다 더 많이 가진 문자는 교체해야 하고, 한 번의 교체로 초과 문자 하나만 해소되므로 초과분의 합이 하한입니다.",
+      "각 쌍에 대해 길이가 다르면 -1을 출력합니다. 같다면 두 문자열 사이의 알파벳별 개수 차이를 구해 양수인 차이의 합을 출력합니다(초과분의 합과 부족분의 합이 같으므로, 초과 문자를 부족한 문자로 바꾸면 하한에 도달합니다). 빈 문자열은 빈 줄로 주어지므로 줄 단위로 읽어야 합니다."
+    ],
+    "vi": [
+      "Thay thế không làm đổi độ dài xâu, nên khi hai độ dài khác nhau là không thể và đáp án là -1.",
+      "Với độ dài bằng nhau, so sánh số lần xuất hiện của từng chữ cái: những ký tự xâu thứ nhất có dư so với xâu thứ hai phải được thay, và mỗi lần thay loại bỏ nhiều nhất một ký tự dư, nên tổng số ký tự dư là cận dưới.",
+      "Với mỗi cặp: in -1 nếu độ dài khác nhau; ngược lại tính hiệu số lần xuất hiện của mỗi chữ cái giữa hai xâu và in tổng các hiệu số dương (tổng phần dư bằng tổng phần thiếu, nên đổi mỗi ký tự dư thành một ký tự còn thiếu là đạt cận). Xâu rỗng được cho bằng dòng trống, nên hãy đọc theo từng dòng."
     ]
   },
   "explanationEn": "## Approach\n\nWhen the lengths are equal, count how many of each character the first string has in excess of the second, and sum them.\n\n## Proof of correctness\n\nEach replacement reduces the excess characters by at most one, so the number of excess characters is a lower bound. Equal lengths mean the total excess equals the total shortage, and changing each excess character into a missing one reaches the lower bound. Even allowing either string to be modified cannot go below this bound.\n\n## Complexity\n\nTime O(total number of characters), extra space O(26) per pair."

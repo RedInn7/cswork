@@ -13,6 +13,21 @@
       "After removing the outlier, what remains is the normal numbers plus their sum, so the total of the remaining elements is exactly twice the sum element.",
       "Try every element as the outlier o: the remaining total total - o must be even, and its half s must appear at another index. When both hold, the rest of the numbers automatically form a valid set of normal numbers.",
       "Compute the total and count the occurrences of each value in a hash map. For each o, let s = (total - o) / 2; o is valid if s occurs more often than the one occurrence that must be excluded when s equals o. Output the largest valid o, using 64-bit integers for the total."
+    ],
+    "ja": [
+      "外れ値を取り除くと、残りは通常の数とその和なので、残りの要素の合計はちょうど和の要素の 2 倍です。",
+      "すべての要素を外れ値 o として試します。残りの合計 total - o は偶数で、その半分 s が別のインデックスに現れる必要があります。両方が成り立てば、残りの数は自動的に有効な通常の数の集合になります。",
+      "合計を計算し、ハッシュマップで各値の出現回数を数えます。各 o について s = (total - o) / 2 とし、s が o と等しいときは除外すべき 1 回分を引いたうえで、s が出現していれば o は有効です。有効な o の最大値を出力します。合計には 64 ビット整数を使います。"
+    ],
+    "ko": [
+      "이상치를 제거하면 남는 것은 일반 수들과 그 합이므로, 남은 원소들의 총합은 정확히 합 원소의 두 배입니다.",
+      "모든 원소를 이상치 o로 시도해 보세요. 남은 합 total - o는 짝수여야 하고 그 절반 s가 다른 인덱스에 존재해야 합니다. 두 조건이 모두 성립하면 나머지 수들은 자동으로 유효한 일반 수 집합이 됩니다.",
+      "총합을 계산하고 해시 맵으로 각 값의 등장 횟수를 셉니다. 각 o에 대해 s = (total - o) / 2로 두고, s가 o와 같을 때는 제외해야 하는 한 번의 등장을 빼고도 s가 더 남아 있으면 o는 유효합니다. 유효한 o 중 가장 큰 값을 출력하며 총합은 64비트 정수를 사용합니다."
+    ],
+    "vi": [
+      "Sau khi loại giá trị ngoại lai, phần còn lại là các số bình thường cộng với tổng của chúng, nên tổng các phần tử còn lại đúng bằng hai lần phần tử tổng.",
+      "Thử mọi phần tử làm giá trị ngoại lai o: tổng còn lại total - o phải chẵn, và một nửa của nó s phải xuất hiện ở một chỉ số khác. Khi cả hai điều kiện thỏa, các số còn lại tự động tạo thành một tập số bình thường hợp lệ.",
+      "Tính tổng và đếm số lần xuất hiện của mỗi giá trị trong một bảng băm. Với mỗi o, đặt s = (total - o) / 2; o hợp lệ nếu s xuất hiện nhiều hơn một lần khi s bằng o (một lần phải được loại trừ). Xuất ra o hợp lệ lớn nhất, dùng số nguyên 64 bit cho tổng."
     ]
   },
   "explanationEn": "## Approach\n\nEnumerate the outlier element o; the remaining total must then be even, and its half s must appear as an element at another index. Check this with a frequency array or a hash table.\n\n## Proof of Correctness\n\nAfter removing the outlier, what remains is the normal numbers and their sum, so the remaining total = 2s. Conversely, as long as s exists at another index, removing these two indices leaves numbers whose sum equals s, which forms a valid choice. Enumerate every o and take the maximum.\n\n## Complexity\n\nExpected time O(n), space O(n)."

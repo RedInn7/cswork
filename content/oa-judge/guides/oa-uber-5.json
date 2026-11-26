@@ -13,6 +13,21 @@
       "By the rules a conversion always happens first when possible, and P only decreases during a conversion; no action ever creates a P. So the total number of conversions depends only on the initial count of P.",
       "The number of conversions is floor(P / rate). Each conversion is one cycle and produces a new A; every A, initial or produced, is eventually consumed once, and each consumption is also one cycle.",
       "Count the A's (cntA) and the P's (cntP) in the string; the answer is cntA + 2 * floor(cntP / rate). No simulation is needed."
+    ],
+    "ja": [
+      "規則により、変換は可能なときには必ず最初に行われ、P が減るのは変換のときだけです。どの行動も P を生みません。したがって、変換の総回数は最初の P の個数だけで決まります。",
+      "変換の回数は floor(P / rate) です。各変換は 1 サイクルで、新しい A を 1 個生みます。最初の A も生まれた A も、最終的にそれぞれ 1 回ずつ消費され、各消費も 1 サイクルです。",
+      "文字列中の A の個数 (cntA) と P の個数 (cntP) を数えます。答えは cntA + 2 * floor(cntP / rate) です。シミュレーションは不要です。"
+    ],
+    "ko": [
+      "규칙상 변환이 가능하면 항상 먼저 일어나고, P는 변환할 때만 줄어들며 어떤 동작도 P를 만들지 않습니다. 따라서 전체 변환 횟수는 처음 P의 개수에만 달려 있습니다.",
+      "변환 횟수는 floor(P / rate)입니다. 변환은 각각 한 사이클이고 새로운 A를 하나 만들며, 처음 있던 것이든 새로 생긴 것이든 모든 A는 결국 한 번씩 소비되고 그 소비도 한 사이클입니다.",
+      "문자열에서 A의 개수(cntA)와 P의 개수(cntP)를 세세요. 답은 cntA + 2 * floor(cntP / rate)입니다. 시뮬레이션은 필요 없습니다."
+    ],
+    "vi": [
+      "Theo quy tắc, việc chuyển đổi luôn xảy ra trước khi có thể, và P chỉ giảm trong lúc chuyển đổi; không hành động nào tạo ra P. Vì vậy tổng số lần chuyển đổi chỉ phụ thuộc vào số P ban đầu.",
+      "Số lần chuyển đổi là floor(P / rate). Mỗi lần chuyển đổi là một chu kỳ và tạo ra một chữ A mới; mọi chữ A, ban đầu hay mới tạo, cuối cùng đều được tiêu thụ đúng một lần, và mỗi lần tiêu thụ cũng là một chu kỳ.",
+      "Đếm số chữ A (cntA) và số chữ P (cntP) trong xâu; đáp án là cntA + 2 * floor(cntP / rate). Không cần mô phỏng."
     ]
   },
   "explanationEn": "## Approach\n\nEach conversion consumes a fixed number of P's, so floor(P/rate) conversions can be made. Every conversion also produces an A that must be consumed later, so the total number of cycles is the initial number of A's plus twice the number of conversions.\n\n## Correctness\n\nP only decreases, and only during a conversion; no other action produces a P, so the total number of conversions is fixed. Every A, initial or newly produced, is eventually consumed exactly once, so adding the two kinds of actions gives the number of cycles.\n\n## Complexity\n\nTime O(n), extra space O(1)."

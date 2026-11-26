@@ -13,6 +13,21 @@
       "The grayness of cell (i,j) splits into a row part and a column part: the 1s minus 0s of row i plus the 1s minus 0s of column j, and the two parts do not interact.",
       "The row part is 2 times the 1s in the row minus m, and the column part is 2 times the 1s in the column minus n; every row meets every column, so take the best row and the best column independently.",
       "Read row by row, counting the 1s in each row to update the maximum while adding up the 1s of every column; the answer is 2*(max row ones + max column ones) - n - m."
+    ],
+    "ja": [
+      "セル (i,j) のグレー度は、行の部分と列の部分に分かれます。行 i の 1 の数から 0 の数を引いた値と、列 j の 1 の数から 0 の数を引いた値の和で、2 つは互いに影響しません。",
+      "行の部分は「行の 1 の数の 2 倍 − m」、列の部分は「列の 1 の数の 2 倍 − n」です。どの行もどの列とも交わるので、最良の行と最良の列を独立に選べます。",
+      "行ごとに読み込み、各行の 1 の数を数えて最大値を更新しつつ、各列の 1 の数も加算していきます。答えは 2*(行の 1 の最大数 + 列の 1 の最大数) - n - m です。"
+    ],
+    "ko": [
+      "셀 (i,j)의 회색도는 행 부분과 열 부분으로 나뉩니다. 행 i의 (1의 개수 − 0의 개수)와 열 j의 (1의 개수 − 0의 개수)의 합이며, 두 부분은 서로 영향을 주지 않습니다.",
+      "행 부분은 행의 1의 개수의 2배에서 m을 뺀 값이고, 열 부분은 열의 1의 개수의 2배에서 n을 뺀 값입니다. 모든 행은 모든 열과 만나므로 가장 좋은 행과 가장 좋은 열을 독립적으로 고르면 됩니다.",
+      "행 단위로 읽으면서 각 행의 1의 개수를 세어 최댓값을 갱신하고, 동시에 각 열의 1의 개수를 누적합니다. 답은 2*(행의 1 최대 개수 + 열의 1 최대 개수) - n - m입니다."
+    ],
+    "vi": [
+      "Độ xám của ô (i,j) tách thành phần hàng và phần cột: số 1 trừ số 0 của hàng i cộng số 1 trừ số 0 của cột j, và hai phần này không ảnh hưởng nhau.",
+      "Phần hàng bằng 2 lần số 1 trong hàng trừ m, và phần cột bằng 2 lần số 1 trong cột trừ n; mọi hàng đều cắt mọi cột, nên chọn hàng tốt nhất và cột tốt nhất một cách độc lập.",
+      "Đọc từng hàng, đếm số 1 trong mỗi hàng để cập nhật giá trị lớn nhất đồng thời cộng dồn số 1 của từng cột; đáp án là 2*(max row ones + max column ones) - n - m."
     ]
   },
   "explanationEn": "## Approach\n\nCount the 1s in each row and in each column; the maximum grayness is 2×(max 1s in a row+max 1s in a column)−n−m.\n\n## Proof of correctness\n\nThe row contribution is 2rowOnes−m and the column contribution is 2colOnes−n. The best row and the best column can be chosen independently, and their intersection cell gets both maxima at once.\n\n## Complexity\n\nTime O(nm), space O(m)."

@@ -13,6 +13,21 @@
       "Whether two prices sum to a multiple of x depends only on their remainders mod x: r1+r2 ≡ 0 (mod x).",
       "Scan left to right and pair j only with earlier items; every pair is then counted exactly once and no item is paired with itself.",
       "Keep a hash map of the remainder counts seen so far: for each price, with r = p mod x, first add the count of (x−r) mod x to the answer, then increment the count of r. x can reach 2×10^9, so no array of length x; use a 64-bit answer."
+    ],
+    "ja": [
+      "2つの価格の和が x の倍数になるかどうかは、x を法とした剰余だけで決まります。r1+r2 ≡ 0 (mod x) です。",
+      "左から右へ走査し、j は前にある商品とだけペアにします。こうすれば、すべてのペアがちょうど1回数えられ、どの商品も自分自身とはペアになりません。",
+      "これまでに見た剰余の個数をハッシュマップで保持します。各価格 p について、r = p mod x とし、まず (x−r) mod x の個数を答えに加え、その後 r の個数を増やします。x は 2×10^9 に達するので、長さ x の配列は使えません。答えには64ビット整数を使います。"
+    ],
+    "ko": [
+      "두 가격의 합이 x의 배수인지는 x로 나눈 나머지에만 달려 있습니다. 즉 r1+r2 ≡ 0 (mod x)입니다.",
+      "왼쪽에서 오른쪽으로 훑으며 j를 앞선 상품과만 짝지으면 모든 쌍이 정확히 한 번씩 세어지고 어떤 상품도 자기 자신과 짝이 되지 않습니다.",
+      "지금까지 본 나머지 개수를 해시 맵에 유지합니다. 각 가격 p에 대해 r = p mod x로 두고, 먼저 (x−r) mod x의 개수를 답에 더한 뒤 r의 개수를 증가시킵니다. x가 2×10^9까지 가능하므로 길이 x의 배열은 쓰지 말고, 답은 64비트로 둡니다."
+    ],
+    "vi": [
+      "Hai giá có tổng là bội của x hay không chỉ phụ thuộc vào số dư của chúng theo mod x: r1+r2 ≡ 0 (mod x).",
+      "Duyệt từ trái sang phải và chỉ ghép j với các mặt hàng đứng trước; khi đó mỗi cặp được đếm đúng một lần và không mặt hàng nào ghép với chính nó.",
+      "Giữ một bảng băm đếm các số dư đã thấy: với mỗi giá, đặt r = p mod x, trước tiên cộng số đếm của (x−r) mod x vào đáp án, rồi tăng số đếm của r. x có thể đạt 2×10^9, nên không dùng mảng độ dài x; dùng đáp án 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nWhile scanning, first add the frequency of the complementary remainder among earlier items, then increment the count of the current remainder.\n\n## Proof of correctness\n\nThe sum is divisible by x exactly when the two remainders are complementary. When j is scanned, the table contains only items with i<j, so adding the frequency of the complement counts exactly all valid pairs whose right end is j; different j never repeat a pair, so the answer is exact and no item is paired with itself.\n\n## Complexity\n\nExpected O(n) time and O(min(n,x)) space, using a sparse dictionary instead of an array of length x."

@@ -13,6 +13,21 @@
       "Dolls of the same size cannot nest, so each size appears at most once in any nesting chain; the number of dolls left at the end is the number of chains.",
       "If the most frequent size occurs f times, those dolls must belong to f different chains, so at least f dolls remain; conversely, sorting the sizes and dealing them round-robin into f chains makes every chain strictly increasing, so f chains are enough.",
       "Count how many times each size occurs (with a hash map or by counting over the value range); the answer is the largest count, printed directly."
+    ],
+    "ja": [
+      "同じ大きさの人形は入れ子にできないので、どの入れ子の鎖にも各大きさは高々 1 回しか現れません。最後に残る人形の数は、鎖の数です。",
+      "最も頻出する大きさが f 回現れるなら、それらの人形は f 個の異なる鎖に属さなければならないので、少なくとも f 個の人形が残ります。逆に、大きさをソートして f 個の鎖にラウンドロビンで配ると、どの鎖も厳密に増加するので、f 個の鎖で足ります。",
+      "各大きさが何回現れるかを（ハッシュマップ、または値の範囲上のカウントで）数えます。答えは最大のカウントで、そのまま出力します。"
+    ],
+    "ko": [
+      "같은 크기의 인형은 중첩할 수 없으므로 어떤 중첩 사슬에도 각 크기는 최대 한 번만 나타나며, 마지막에 남는 인형의 수는 사슬의 수입니다.",
+      "가장 빈번한 크기가 f번 나타나면 그 인형들은 서로 다른 f개의 사슬에 속해야 하므로 최소 f개의 인형이 남습니다. 반대로 크기를 정렬해 f개의 사슬에 라운드 로빈으로 나눠 담으면 모든 사슬이 엄격히 증가하므로 f개의 사슬이면 충분합니다.",
+      "각 크기가 몇 번 나오는지 센 뒤(해시 맵 또는 값의 범위에 대한 카운팅 사용), 가장 큰 횟수가 곧 답이므로 그대로 출력합니다."
+    ],
+    "vi": [
+      "Các búp bê cùng kích thước không thể lồng vào nhau, nên mỗi kích thước xuất hiện tối đa một lần trong một chuỗi lồng nhau bất kỳ; số búp bê còn lại cuối cùng chính là số chuỗi.",
+      "Nếu kích thước xuất hiện nhiều nhất có f lần, các búp bê đó phải thuộc f chuỗi khác nhau, nên còn lại ít nhất f búp bê; ngược lại, sắp xếp các kích thước rồi chia luân phiên vào f chuỗi làm mọi chuỗi tăng ngặt, nên f chuỗi là đủ.",
+      "Đếm mỗi kích thước xuất hiện bao nhiêu lần (bằng hash map hoặc đếm trên miền giá trị); đáp án là số đếm lớn nhất, in trực tiếp."
     ]
   },
   "explanationEn": "## Approach\n\nCount the occurrences of each size; the answer is the maximum frequency.\n\n## Proof of correctness\n\nEach size appears at most once in each nesting chain, so the size with the most occurrences needs at least that many chains. Conversely, sort the sizes and assign them in turn by position to that many chains; sizes within the same chain strictly increase, and every doll can be placed into a chain.\n\n## Complexity\n\nTime O(N), space O(N)."

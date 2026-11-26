@@ -13,6 +13,21 @@
       "The pattern has only 3 characters, so you can classify the counts by how many leading pattern characters have been matched: just the four states 0, 1, 2, 3.",
       "Let dp[j] be the number of ways to choose positions in the scanned text prefix that spell the first j pattern characters, with dp[0]=1 initially. When a text character equals the j-th pattern character, it can extend every dp[j-1] way; update j from large to small so that the same text position is never used twice.",
       "For each text character c, for j=3,2,1: if c equals pattern[j-1], do dp[j]+=dp[j-1]. After the scan, print dp[3]. The result can reach about 2*10^16, so use a 64-bit integer."
+    ],
+    "ja": [
+      "パターンは 3 文字しかないので、先頭から何文字マッチしたかで数を分類できます。0、1、2、3 の 4 つの状態だけです。",
+      "dp[j] を、走査済みのテキストの接頭辞の中で、パターンの最初の j 文字を綴る位置の選び方の数とし、初期値は dp[0]=1 です。テキストの文字がパターンの j 番目の文字と等しいとき、すべての dp[j-1] の方法を延長できます。同じテキスト位置を 2 回使わないよう、j は大きい方から小さい方へ更新します。",
+      "テキストの各文字 c について、j=3,2,1 の順に、c が pattern[j-1] に等しいなら dp[j]+=dp[j-1] とします。走査後に dp[3] を出力します。結果は約 2*10^16 に達し得るので、64 ビット整数を使ってください。"
+    ],
+    "ko": [
+      "패턴은 3글자뿐이므로 앞쪽 패턴 글자를 몇 개 매칭했는지에 따라 개수를 분류할 수 있고, 상태는 0, 1, 2, 3의 네 가지뿐입니다.",
+      "dp[j]를 지금까지 스캔한 텍스트 접두부에서 패턴의 앞 j글자를 이루는 위치를 고르는 방법의 수로 정의하고, 초기값은 dp[0]=1입니다. 텍스트 글자가 패턴의 j번째 글자와 같으면 모든 dp[j-1]가지 방법을 확장할 수 있습니다. 같은 텍스트 위치를 두 번 쓰지 않도록 j를 큰 값에서 작은 값으로 갱신합니다.",
+      "각 텍스트 글자 c에 대해 j=3,2,1 순으로: c가 pattern[j-1]과 같으면 dp[j]+=dp[j-1]을 합니다. 스캔이 끝나면 dp[3]을 출력합니다. 결과는 약 2*10^16까지 커질 수 있으므로 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Xâu mẫu chỉ có 3 ký tự, nên có thể phân loại các số đếm theo số ký tự đầu của mẫu đã khớp: chỉ có bốn trạng thái 0, 1, 2, 3.",
+      "Gọi dp[j] là số cách chọn vị trí trong tiền tố văn bản đã quét sao cho tạo thành j ký tự đầu của mẫu, với dp[0]=1 ban đầu. Khi một ký tự văn bản bằng ký tự thứ j của mẫu, nó có thể mở rộng mọi cách dp[j-1]; cập nhật j từ lớn đến nhỏ để cùng một vị trí văn bản không bao giờ bị dùng hai lần.",
+      "Với mỗi ký tự văn bản c, với j=3,2,1: nếu c bằng pattern[j-1] thì làm dp[j]+=dp[j-1]. Sau khi quét, in dp[3]. Kết quả có thể đạt khoảng 2*10^16, nên dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nMaintain, updating in reverse order, the number of ways to match the first 0, 1, 2, 3 characters of the pattern; initially dp[0]=1.\n\n## Correctness\n\nAfter a prefix of the text has been processed, dp[j] counts the ways to choose positions from that prefix that form the first j characters of the pattern. When a new character matches the j-th character of the pattern, it can be appended to every way counted in the old dp[j-1]; updating in reverse order ensures the same text position is not used twice. Adding the old ways that do not choose the current character keeps the invariant.\n\n## Complexity\n\nTime O(text length), extra space O(1)."

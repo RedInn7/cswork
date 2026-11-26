@@ -13,6 +13,21 @@
       "A pair sum is at most twice the largest price, so there are only about twenty possible targets 3^e (including 3^0 = 1).",
       "For each target power P, this is a count of pairs summing to P; scanning in order, the current price v pairs with every earlier item whose price is P - v.",
       "List all powers of 3 up to 2 * max price; keep a hash map (or a compressed array) of how many times each price has appeared; for each v, first add the count of P - v for every power P, then increment the count of v (so an item never pairs with itself). Use a 64-bit answer."
+    ],
+    "ja": [
+      "ペアの和は最大価格の 2 倍以下なので、目標となる 3^e（3^0 = 1 を含む）は 20 個程度しかありません。",
+      "各目標の累乗 P について、和が P になるペアを数えます。順に走査すると、現在の価格 v は、価格が P - v である以前のすべての商品とペアになります。",
+      "2 * max price 以下の 3 の累乗をすべて列挙します。各価格の出現回数をハッシュマップ（または座標圧縮した配列）で保持します。各 v について、まずすべての累乗 P に対する P - v の出現回数を加算し、そのあと v の出現回数を 1 増やします（商品が自分自身とペアにならないようにするため）。答えは 64 ビットで持ちます。"
+    ],
+    "ko": [
+      "쌍의 합은 최대 가격의 두 배 이하이므로 가능한 목표값 3^e(3^0 = 1 포함)는 대략 스무 개뿐입니다.",
+      "각 목표 거듭제곱 P에 대해 합이 P인 쌍을 세는 문제입니다. 순서대로 훑을 때 현재 가격 v는 가격이 P - v인 앞선 모든 항목과 쌍을 이룹니다.",
+      "2 * max price 이하의 3의 거듭제곱을 모두 나열합니다. 각 가격이 나온 횟수를 해시 맵(또는 압축 배열)에 저장하고, 각 v에 대해 먼저 모든 거듭제곱 P에 대해 P - v의 횟수를 더한 뒤 v의 횟수를 증가시킵니다(항목이 자기 자신과 쌍이 되지 않도록). 답은 64비트로 저장하세요."
+    ],
+    "vi": [
+      "Tổng của một cặp tối đa bằng hai lần giá lớn nhất, nên chỉ có khoảng hai mươi giá trị đích 3^e có thể (kể cả 3^0 = 1).",
+      "Với mỗi lũy thừa đích P, đây là bài đếm các cặp có tổng bằng P; duyệt theo thứ tự, giá hiện tại v ghép với mọi phần tử trước đó có giá P - v.",
+      "Liệt kê mọi lũy thừa của 3 đến 2 * max price; giữ một hash map (hoặc mảng nén) đếm số lần mỗi giá đã xuất hiện; với mỗi v, trước hết cộng số lần của P - v cho mọi lũy thừa P, rồi mới tăng số đếm của v (để một phần tử không ghép với chính nó). Dùng đáp án 64-bit."
     ]
   },
   "explanationEn": "## Approach\n\nEnumerate the powers of 3 not exceeding the largest possible sum. Scan the prices in order: for each one, query how many times each complement appeared before, then add the current price.\n\n## Proof of correctness\n\nA valid pair has a unique larger index j and a unique target power; when j is processed, the other price must be that power minus the current price, and the frequency query counts every earlier item with that price. Inserting after the query prevents an item from pairing with itself, so every valid pair is counted exactly once.\n\n## Complexity\n\nTime O(n log_3 V), space O(n), where V is the largest price."

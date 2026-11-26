@@ -13,6 +13,21 @@
       "A query covers the integer points x - size through x - 1, and it can be placed exactly when no obstacle currently lies in that range. So each query asks how many inserted obstacles fall inside an interval.",
       "Coordinates are huge but there are only 60000 operations, so read all insertion coordinates first, sort and compress them, and use a Fenwick tree to mark which coordinates have been inserted. An interval count is the difference of two prefix sums.",
       "Read all operations offline, collect and sort the insertion coordinates. An insertion binary searches its compressed index and adds one in the Fenwick tree. A query uses lower bound to find the positions of x - size and x in the coordinate list; if the two prefix sums are equal (no obstacle inside), append 1, otherwise 0. Print all results as one 0/1 string; queries never modify the tree."
+    ],
+    "ja": [
+      "クエリが対象とするのは整数点 x - size から x - 1 までで、この範囲に現在障害物が 1 つもないときに限って配置できます。つまり各クエリは、挿入済みの障害物のうち区間内にいくつあるかを尋ねています。",
+      "座標は非常に大きいものの、操作は 60000 回しかないので、挿入座標を先にすべて読み込み、ソートして座標圧縮し、Fenwick tree で挿入済みかどうかを記録します。区間内の個数は 2 つの累積和の差で求まります。",
+      "全操作をオフラインで読み込み、挿入座標を集めてソートします。挿入では圧縮後の添字を二分探索し、Fenwick tree に 1 を加えます。クエリでは lower bound で座標リスト中の x - size と x の位置を求め、2 つの累積和が等しければ(区間内に障害物がなければ)1 を、そうでなければ 0 を追加します。結果は 0/1 の 1 つの文字列として出力します。クエリは木を変更しません。"
+    ],
+    "ko": [
+      "질의는 정수 점 x - size부터 x - 1까지를 대상으로 하며, 그 범위에 현재 장애물이 하나도 없을 때에만 놓을 수 있습니다. 따라서 각 질의는 삽입된 장애물 중 구간 안에 있는 것의 개수를 묻는 문제입니다.",
+      "좌표 범위는 매우 크지만 연산은 60000개뿐이므로, 삽입 좌표를 먼저 모두 읽어 정렬하고 압축한 뒤 Fenwick tree로 어떤 좌표가 삽입되었는지 표시합니다. 구간 안의 개수는 두 누적 합의 차로 구합니다.",
+      "모든 연산을 오프라인으로 읽고 삽입 좌표를 모아 정렬합니다. 삽입 연산은 압축된 인덱스를 이분 탐색으로 찾아 Fenwick tree에 1을 더합니다. 질의는 lower bound로 좌표 목록에서 x - size와 x의 위치를 찾고, 두 누적 합이 같으면(구간 안에 장애물이 없으면) 1을, 아니면 0을 추가합니다. 결과 전체를 하나의 0/1 문자열로 출력하며, 질의는 트리를 수정하지 않습니다."
+    ],
+    "vi": [
+      "Một truy vấn phủ các điểm nguyên từ x - size đến x - 1, và đặt được đúng khi hiện không có chướng ngại vật nào nằm trong khoảng đó. Vậy mỗi truy vấn hỏi có bao nhiêu chướng ngại vật đã chèn rơi vào một đoạn.",
+      "Tọa độ rất lớn nhưng chỉ có 60000 thao tác, nên hãy đọc trước mọi tọa độ chèn, sắp xếp và nén chúng, rồi dùng cây Fenwick đánh dấu những tọa độ đã được chèn. Số đếm trong một đoạn là hiệu của hai tổng tiền tố.",
+      "Đọc offline tất cả thao tác, thu thập và sắp xếp các tọa độ chèn. Mỗi lần chèn tìm nhị phân chỉ số đã nén của nó và cộng thêm một trong cây Fenwick. Mỗi truy vấn dùng lower bound để tìm vị trí của x - size và x trong danh sách tọa độ; nếu hai tổng tiền tố bằng nhau (không có chướng ngại vật bên trong) thì thêm 1, ngược lại thêm 0. In toàn bộ kết quả thành một xâu 0/1; truy vấn không bao giờ thay đổi cây."
     ]
   },
   "explanationEn": "## Approach\n\nRead all insertion coordinates in advance and compress them, maintaining the inserted points with a Fenwick tree. For a query interval [x-size,x), use binary search and prefix sums to count the obstacles; the interval can be placed when the count is zero.\n\n## Proof of correctness\n\nCoordinate compression preserves the order of the insertion coordinates. Taking lower_bound of both the left and right boundaries of [x-size,x) gives the range of Fenwick indices of the obstacles inside it; the difference of the prefix sums is exactly the number of currently inserted obstacles in [x-size,x-1]. The interval is usable only when the count is zero, and the query itself does not modify the Fenwick tree.\n\n## Complexity\n\nO(q log q) time and O(q) space."

@@ -13,6 +13,21 @@
       "Rectangles may be rotated, so write both rectangles and boxes as (short side, long side) and compare short with short and long with long: a rectangle fits exactly when its short side <= the box's short side and its long side <= the box's long side.",
       "A query asks whether every stored rectangle fits on its own, which is the same as: the largest stored short side <= the box's short side and the largest stored long side <= the box's long side. The two conditions can be checked separately.",
       "Keep just two numbers, the maximum short side and the maximum long side of the stored rectangles (both start at 0). A store updates them; a query normalizes a and b into short and long sides and prints 1 if both comparisons hold, otherwise 0, one line per query. Before anything is stored both maxima are 0, so a query prints 1."
+    ],
+    "ja": [
+      "長方形は回転できるので、長方形も箱も (短辺, 長辺) で表し、短辺どうし、長辺どうしを比較します。長方形が収まるのは、その短辺が箱の短辺以下で、かつ長辺が箱の長辺以下であるとき、かつそのときに限ります。",
+      "クエリは、保存されたすべての長方形が個別に収まるかを尋ねます。これは、保存された最大の短辺が箱の短辺以下で、保存された最大の長辺が箱の長辺以下であることと同値です。2つの条件は別々に確認できます。",
+      "保存された長方形の最大の短辺と最大の長辺の2つの数だけを保持します(どちらも 0 から始める)。保存でそれらを更新します。クエリでは a と b を短辺と長辺に正規化し、2つの比較がどちらも成り立てば 1、そうでなければ 0 を、クエリごとに1行で出力します。何も保存されていなければ、2つの最大値はどちらも 0 なので、クエリは 1 を出力します。"
+    ],
+    "ko": [
+      "직사각형은 회전할 수 있으므로 직사각형과 상자를 모두 (짧은 변, 긴 변)으로 쓰고 짧은 변은 짧은 변끼리, 긴 변은 긴 변끼리 비교합니다. 직사각형의 짧은 변 <= 상자의 짧은 변이고 긴 변 <= 상자의 긴 변일 때 정확히 들어갑니다.",
+      "질의는 저장된 모든 직사각형이 각각 들어가는지 묻습니다. 이는 저장된 짧은 변의 최댓값 <= 상자의 짧은 변이고 저장된 긴 변의 최댓값 <= 상자의 긴 변인 것과 같습니다. 두 조건은 따로 확인할 수 있습니다.",
+      "저장된 직사각형의 짧은 변 최댓값과 긴 변 최댓값, 두 숫자만 유지합니다(둘 다 0으로 시작). 저장 연산은 이를 갱신하고, 질의는 a와 b를 짧은 변과 긴 변으로 정규화하여 두 비교가 모두 성립하면 1, 아니면 0을 질의마다 한 줄씩 출력합니다. 아무것도 저장되기 전에는 두 최댓값이 모두 0이므로 질의는 1을 출력합니다."
+    ],
+    "vi": [
+      "Các hình chữ nhật có thể xoay, nên hãy viết cả hình chữ nhật lẫn hộp dưới dạng (cạnh ngắn, cạnh dài) và so sánh ngắn với ngắn, dài với dài: một hình chữ nhật nằm vừa đúng khi cạnh ngắn của nó <= cạnh ngắn của hộp và cạnh dài của nó <= cạnh dài của hộp.",
+      "Một truy vấn hỏi liệu mọi hình chữ nhật đã lưu có vừa riêng lẻ hay không, tương đương với: cạnh ngắn lớn nhất đã lưu <= cạnh ngắn của hộp và cạnh dài lớn nhất đã lưu <= cạnh dài của hộp. Hai điều kiện có thể kiểm tra riêng.",
+      "Chỉ giữ hai số, cạnh ngắn lớn nhất và cạnh dài lớn nhất của các hình chữ nhật đã lưu (cả hai bắt đầu từ 0). Một thao tác lưu cập nhật chúng; một truy vấn chuẩn hóa a và b thành cạnh ngắn và cạnh dài rồi in 1 nếu cả hai phép so sánh đúng, ngược lại 0, mỗi truy vấn một dòng. Trước khi lưu bất cứ thứ gì, cả hai giá trị lớn nhất đều là 0, nên truy vấn in 1."
     ]
   },
   "explanationEn": "## Approach\n\nNormalize the sides of both the rectangles and the query boxes into a short side and a long side. Maintain the maximum short side and the maximum long side over all stored rectangles; a query box can hold every rectangle if and only if these two maxima do not exceed the corresponding sides of the box.\n\n## Proof of correctness\n\nRotation allows any rectangle to be compared short side to short side and long side to long side. A stored rectangle fits into the query box if and only if its short side <= the query's short side and its long side <= the query's long side. Requiring every stored rectangle to satisfy both conditions is equivalent to requiring the stored maximum short side and maximum long side to be no larger than the query's sides; the maxima maintained by the store operations are exactly the maxima over all past rectangles.\n\n## Complexity\n\nO(q) time and O(1) extra space."

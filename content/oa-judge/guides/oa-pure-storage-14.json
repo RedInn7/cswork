@@ -13,6 +13,21 @@
       "Racer IDs are the consecutive values 1001..1000+R, so they map straight to array indices; each record affects only one racer's total, and the race number itself is not needed.",
       "Accumulate scores in an array of length R: positions 1..6 add 10, 6, 4, 3, 2, 1 points, and any other position adds nothing. Racers that never appear keep 0 points and still take part in the ranking.",
       "Pick the winner by (highest total, smallest ID): scan from index 0 and replace the current best only when a score is strictly larger, so ties keep the smaller ID automatically. Print 1001 + index and that total. Time O(R + M)."
+    ],
+    "ja": [
+      "レーサー ID は連続する値 1001..1000+R なので、そのまま配列の添字に対応させられます。各記録が影響するのは 1 人のレーサーの合計だけで、レース番号そのものは不要です。",
+      "長さ R の配列でスコアを累積します。順位 1..6 は 10、6、4、3、2、1 点を加算し、それ以外の順位は何も加算しません。一度も現れないレーサーは 0 点のままで、順位付けには含まれます。",
+      "（最高合計点、最小 ID）で優勝者を選びます。添字 0 から走査し、スコアが厳密に大きいときだけ現在の最良を置き換えれば、同点では自動的に小さい ID が残ります。1001 + 添字とその合計点を出力します。時間は O(R + M) です。"
+    ],
+    "ko": [
+      "선수 ID는 연속된 값 1001..1000+R이므로 배열 인덱스에 바로 대응합니다. 각 기록은 한 선수의 총점에만 영향을 주며 경주 번호 자체는 필요하지 않습니다.",
+      "길이 R의 배열에 점수를 누적하세요. 순위 1..6은 10, 6, 4, 3, 2, 1점을 더하고, 그 밖의 순위는 아무것도 더하지 않습니다. 한 번도 나타나지 않는 선수는 0점을 유지하며 여전히 순위 결정에 참여합니다.",
+      "(총점 최대, ID 최소)로 우승자를 고르세요. 인덱스 0부터 스캔하면서 점수가 엄격히 더 클 때만 현재 최선을 교체하면 동점일 때 ID가 작은 쪽이 자동으로 유지됩니다. 1001 + 인덱스와 그 총점을 출력합니다. 시간은 O(R + M)입니다."
+    ],
+    "vi": [
+      "ID tay đua là các giá trị liên tiếp 1001..1000+R, nên ánh xạ thẳng sang chỉ số mảng; mỗi bản ghi chỉ ảnh hưởng đến tổng điểm của một tay đua, và bản thân số chặng đua không cần dùng.",
+      "Cộng dồn điểm trong một mảng độ dài R: các vị trí 1..6 cộng 10, 6, 4, 3, 2, 1 điểm, và mọi vị trí khác không cộng gì. Tay đua không bao giờ xuất hiện giữ 0 điểm và vẫn tham gia xếp hạng.",
+      "Chọn người thắng theo (tổng cao nhất, ID nhỏ nhất): quét từ chỉ số 0 và chỉ thay giá trị tốt nhất hiện tại khi điểm lớn hơn hẳn, nhờ đó khi hòa tự động giữ ID nhỏ hơn. In 1001 + chỉ số và tổng đó. Thời gian O(R + M)."
     ]
   },
   "explanationEn": "## Approach\n\nAccumulate each racer's score in an array of length R. Only positions 1..6 add their points; other positions add nothing. Finally choose the racer with the smallest key under (total score descending, racer index ascending).\n\n## Correctness\n\nEach result record corresponds to exactly one racer's position in one race, so adding points by the given mapping yields each racer's total. The sort key first maximizes the total score and then minimizes the consecutive racer ID; including all R racers also ensures that racers who never appear take part in ties with zero points.\n\n## Complexity\n\nTime O(R+M), space O(R)."

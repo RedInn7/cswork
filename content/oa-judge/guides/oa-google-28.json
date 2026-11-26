@@ -13,6 +13,21 @@
       "The farthest distance from any vertex is at least the larger of its distances to the two ends of a diameter, so the answer cannot be smaller than half the diameter length D, rounded up.",
       "The middle vertex of a diameter reaches this lower bound, so the answer is ceil(D/2). Find the diameter with two BFS runs: from any vertex find the farthest vertex, then from that vertex find the farthest distance.",
       "Build adjacency lists; BFS from vertex 1 to get the farthest vertex u; BFS from u to get the largest distance D; print (D + 1) / 2 with integer division. A single-vertex tree has D = 0 and prints 0."
+    ],
+    "ja": [
+      "どの頂点についても、最遠距離は直径の両端までの距離のうち大きい方以上です。したがって答えは、直径の長さ D の半分を切り上げた値より小さくなりません。",
+      "直径の中央の頂点がこの下界を達成するので、答えは ceil(D/2) です。直径は BFS を 2 回行って求めます。任意の頂点から最も遠い頂点を見つけ、次にその頂点からの最大距離を求めます。",
+      "隣接リストを作り、頂点 1 から BFS して最も遠い頂点 u を求めます。u から BFS して最大距離 D を求め、整数除算で (D + 1) / 2 を出力します。頂点 1 つの木では D = 0 で、0 を出力します。"
+    ],
+    "ko": [
+      "어떤 정점에서든 가장 먼 거리는 지름의 두 끝점까지의 거리 중 큰 쪽 이상이므로, 답은 지름 길이 D의 절반을 올림한 값보다 작을 수 없습니다.",
+      "지름의 중간 정점이 이 하한을 달성하므로 답은 ceil(D/2)입니다. 지름은 BFS 두 번으로 구합니다. 임의의 정점에서 가장 먼 정점을 찾고, 그 정점에서 다시 가장 먼 거리를 구합니다.",
+      "인접 리스트를 만들고, 정점 1에서 BFS하여 가장 먼 정점 u를 구합니다. u에서 BFS하여 가장 큰 거리 D를 구하고, 정수 나눗셈으로 (D + 1) / 2를 출력합니다. 정점이 하나뿐인 트리는 D = 0이므로 0을 출력합니다."
+    ],
+    "vi": [
+      "Khoảng cách xa nhất từ một đỉnh bất kỳ ít nhất bằng khoảng cách lớn hơn trong hai khoảng cách đến hai đầu mút của một đường kính, nên đáp án không thể nhỏ hơn một nửa độ dài đường kính D làm tròn lên.",
+      "Đỉnh ở giữa của một đường kính đạt được cận dưới này, nên đáp án là ceil(D/2). Tìm đường kính bằng hai lần BFS: từ một đỉnh bất kỳ tìm đỉnh xa nhất, rồi từ đỉnh đó tìm khoảng cách xa nhất.",
+      "Xây danh sách kề; BFS từ đỉnh 1 để lấy đỉnh xa nhất u; BFS từ u để lấy khoảng cách lớn nhất D; in (D + 1) / 2 với phép chia nguyên. Cây một đỉnh có D = 0 và in 0."
     ]
   },
   "explanationEn": "## Approach\n\nTwo breadth-first searches give the tree diameter D, and the answer is ceil(D/2).\n\n## Correctness\n\nThe two ends of a diameter are D apart, so every vertex is at distance at least ceil(D/2) from at least one of them. The middle vertex of the diameter is within that distance of every vertex; otherwise a path longer than D could be formed. Therefore the middle vertex attains this lower bound. In a tree, the farthest vertex from any vertex is an end of a diameter, and a second search from it gives the diameter.\n\n## Complexity\n\nTime O(n), space O(n)."

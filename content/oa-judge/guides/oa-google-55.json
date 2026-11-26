@@ -13,6 +13,21 @@
       "Work from right to left: the rightmost element never needs splitting, and when an element is processed, the leftmost value of the already processed part to its right is the upper bound limit for all its pieces.",
       "The current value v needs at least ceil(v/limit) pieces so that every piece is at most limit; splitting v as evenly as possible into that many pieces reaches the minimum count and makes the leftmost piece floor(v/pieces) as large as possible, leaving the loosest bound for the elements further left.",
       "Set limit = a[n-1] and answer = 0; for i from n-2 down to 0: parts = max(1, ceil(a[i]/limit)), answer += parts - 1, limit = floor(a[i]/parts); print answer (it can be large, so use 64-bit integers)."
+    ],
+    "ja": [
+      "右から左へ処理します。最も右の要素は分割する必要がなく、ある要素を処理するとき、その右側のすでに処理した部分の最左の値が、その要素のすべての部分に対する上限 limit になります。",
+      "現在の値 v は、すべての部分が limit 以下になるよう、少なくとも ceil(v/limit) 個の部分に分ける必要があります。v をその個数にできるだけ均等に分割すると、最小の回数が達成され、最左の部分 floor(v/pieces) が最大になるので、さらに左の要素にとって最も緩い上限が残ります。",
+      "limit = a[n-1]、answer = 0 とします。i を n-2 から 0 まで下げながら、parts = max(1, ceil(a[i]/limit))、answer += parts - 1、limit = floor(a[i]/parts) とします。answer を出力します（大きくなりうるので 64 ビット整数を使ってください）。"
+    ],
+    "ko": [
+      "오른쪽에서 왼쪽으로 작업합니다. 가장 오른쪽 원소는 나눌 필요가 없으며, 원소를 처리할 때 그 오른쪽에 이미 처리된 부분의 가장 왼쪽 값이 그 원소의 모든 조각에 대한 상한 limit입니다.",
+      "현재 값 v는 모든 조각이 limit 이하가 되도록 최소 ceil(v/limit)개의 조각이 필요합니다. v를 그 개수의 조각으로 가능한 한 고르게 나누면 최소 횟수에 도달하고, 가장 왼쪽 조각 floor(v/pieces)가 최대한 커져서 더 왼쪽 원소들에게 가장 느슨한 상한이 남습니다.",
+      "limit = a[n-1], answer = 0으로 두고, i를 n-2부터 0까지 줄이며: parts = max(1, ceil(a[i]/limit)), answer += parts - 1, limit = floor(a[i]/parts)로 갱신합니다. answer를 출력합니다(값이 클 수 있으므로 64비트 정수를 사용하세요)."
+    ],
+    "vi": [
+      "Làm từ phải sang trái: phần tử ngoài cùng bên phải không bao giờ cần tách, và khi xử lý một phần tử, giá trị trái nhất của phần đã xử lý bên phải nó là cận trên limit cho mọi phần của nó.",
+      "Giá trị hiện tại v cần ít nhất ceil(v/limit) phần để mỗi phần không vượt quá limit; tách v đều nhất có thể thành chừng đó phần đạt số lượng tối thiểu và làm cho phần trái nhất floor(v/pieces) lớn nhất có thể, để lại cận lỏng nhất cho các phần tử xa hơn về bên trái.",
+      "Đặt limit = a[n-1] và answer = 0; với i từ n-2 xuống 0: parts = max(1, ceil(a[i]/limit)), answer += parts - 1, limit = floor(a[i]/parts); in answer (có thể lớn, nên dùng số nguyên 64 bit)."
     ]
   },
   "explanationEn": "## Approach\n\nProcess from right to left. With the upper bound limit allowed by the right side, the current value v needs at least ceil(v/limit) parts; split it into these parts as evenly as possible, and the new leftmost value floor(v/parts) becomes the upper bound for the next step.\n\n## Correctness\n\nKeeping every part <= limit guarantees that it connects to the processed suffix, so ceil(v/limit) is a lower bound on the number of parts. Splitting v evenly into non-decreasing parts that differ by at most 1 reaches this lower bound and maximises the leftmost part, leaving the widest constraint for the earlier elements. Keeping the optimal and loosest suffix at every step gives the globally minimal number of splits; k parts take k-1 splits.\n\n## Complexity\n\nTime O(n), space O(1) apart from the input."

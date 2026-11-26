@@ -13,6 +13,21 @@
       "The range holds at most 900 three-digit numbers, so checking each one is fast enough.",
       "Split each number into its hundreds, tens and units digits, and count it only when all three differ.",
       "Loop v from left to right; take a = v/100, b = v/10 % 10, c = v % 10; add one when a != b, b != c and a != c; print the count."
+    ],
+    "ja": [
+      "区間にある 3 桁の数は高々 900 個なので、1 つずつ調べれば十分に速いです。",
+      "各数を百の位、十の位、一の位に分け、3 つがすべて異なるときだけ数えます。",
+      "v を left から right まで回します。a = v/100、b = v/10 % 10、c = v % 10 を取り、a != b、b != c、a != c のときに 1 を加えます。最後に個数を出力します。"
+    ],
+    "ko": [
+      "구간에는 세 자리 수가 최대 900개이므로 하나씩 검사해도 충분히 빠릅니다.",
+      "각 수를 백의 자리, 십의 자리, 일의 자리 숫자로 나누고, 세 숫자가 모두 다를 때만 셉니다.",
+      "v를 left부터 right까지 돌면서 a = v/100, b = v/10 % 10, c = v % 10을 구하고, a != b, b != c, a != c이면 하나를 더합니다. 마지막에 개수를 출력합니다."
+    ],
+    "vi": [
+      "Đoạn chứa tối đa 900 số có ba chữ số, nên kiểm tra từng số là đủ nhanh.",
+      "Tách mỗi số thành các chữ số hàng trăm, hàng chục và hàng đơn vị, và chỉ đếm khi cả ba khác nhau.",
+      "Lặp v từ left đến right; lấy a = v/100, b = v/10 % 10, c = v % 10; cộng một khi a != b, b != c và a != c; in số đếm."
     ]
   },
   "explanationEn": "## Approach\n\nWalk through the range and count the numbers whose three digits are pairwise different, for example by turning each number into its three characters and checking that the set of them has size 3.\n\n## Why it works\n\nA set keeps exactly the distinct digit characters, so its size is 3 if and only if the three digits differ pairwise, and the closed range visits every integer once.\n\n## Complexity\n\nTime O(right - left + 1), extra space O(1)."

@@ -13,6 +13,21 @@
       "You can buy volume v only after owning every smaller volume, so the owned volumes always form a prefix 1..next-1, where next is the smallest volume not bought yet.",
       "After each day's arrival you only need to check whether next has arrived: if so, buy it and look at next + 1, until the first volume that has not arrived; if not, no larger volume can be bought.",
       "Keep a boolean array of arrivals and next starting at 1; each day mark that day's volume as arrived, remember start = next, then increase next while next <= n and it has arrived; if start < next print start..next-1, otherwise print -1. The pointer passes each volume at most once."
+    ],
+    "ja": [
+      "巻 v を買えるのは、それより小さい巻をすべて所有した後だけなので、所有している巻は常に接頭辞 1..next-1 になります。next はまだ買っていない最小の巻です。",
+      "毎日の入荷後は、next が入荷済みかだけを確認すれば十分です。入荷済みなら買って next + 1 を調べ、最初の未入荷の巻まで進めます。未入荷なら、それより大きい巻は買えません。",
+      "入荷の真偽値配列と、1 から始まる next を持ちます。毎日、その日の巻に入荷済みの印を付け、start = next を記録し、next <= n かつ入荷済みの間 next を増やします。start < next なら start..next-1 を出力し、そうでなければ -1 を出力します。ポインタは各巻を高々 1 回しか通りません。"
+    ],
+    "ko": [
+      "어떤 권 v는 그보다 작은 권을 모두 가진 뒤에만 살 수 있으므로, 가진 권은 항상 접두사 1..next-1을 이루며 next는 아직 사지 않은 가장 작은 권 번호입니다.",
+      "매일 입고 후에는 next가 입고되었는지만 확인하면 됩니다. 입고되었다면 구매하고 next + 1을 살펴보며, 입고되지 않은 첫 권에서 멈춥니다. 입고되지 않았다면 그보다 큰 권은 살 수 없습니다.",
+      "입고 여부의 불리언 배열과 1로 시작하는 next를 유지합니다. 매일 그날의 권을 입고로 표시하고 start = next를 기억한 뒤, next <= n이고 입고된 동안 next를 증가시킵니다. start < next이면 start..next-1을 출력하고, 그렇지 않으면 -1을 출력합니다. 포인터는 각 권을 최대 한 번만 지나갑니다."
+    ],
+    "vi": [
+      "Bạn chỉ có thể mua tập v sau khi đã sở hữu mọi tập nhỏ hơn, nên các tập đã sở hữu luôn tạo thành một tiền tố 1..next-1, trong đó next là tập nhỏ nhất chưa mua.",
+      "Sau khi tập của mỗi ngày về, chỉ cần kiểm tra next đã về chưa: nếu rồi thì mua nó và xét next + 1, cho đến tập đầu tiên chưa về; nếu chưa thì không thể mua tập nào lớn hơn.",
+      "Giữ một mảng boolean các tập đã về và next bắt đầu từ 1; mỗi ngày đánh dấu tập của ngày đó là đã về, ghi nhớ start = next, rồi tăng next khi next <= n và tập đó đã về; nếu start < next thì in start..next-1, ngược lại in -1. Con trỏ đi qua mỗi tập nhiều nhất một lần."
     ]
   },
   "explanationEn": "## Approach\n\nA boolean array records which volumes have arrived, and next keeps the smallest volume not yet bought. Each day, after marking the new volume, buy consecutively from next all volumes that have arrived.\n\n## Proof of correctness\n\nThe volumes owned are always 1..next-1. If next has not arrived, every larger volume lacks a prerequisite and cannot be bought; if next has arrived it should be bought and the scan continues until the first missing volume. The pointer passes each volume once.\n\n## Complexity\n\nTime O(n), space O(n) (including the output)."

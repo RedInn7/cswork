@@ -13,6 +13,21 @@
       "A forward operation only ever makes one coordinate larger (by adding the other one), and both coordinates are positive, so coordinates never decrease.",
       "Work backwards from the target (c, d): if c > d it can only come from (c - d, d); if d > c it can only come from (c, d - c). Every predecessor is forced, so just follow that unique path back.",
       "If c < a or d < b, print No; loop until (c, d) equals (a, b): if along the way a coordinate drops below the starting one, or c = d (while not equal to the start), print No; otherwise subtract the smaller coordinate from the larger. Reaching the start means Yes."
+    ],
+    "ja": [
+      "順方向の操作は、片方の座標にもう片方を足して大きくするだけで、両方の座標は正なので、座標は減りません。",
+      "目標 (c, d) から逆向きにたどります。c > d なら (c - d, d) からしか来られず、d > c なら (c, d - c) からしか来られません。直前の状態はすべて一意に決まるので、その唯一の道を逆にたどるだけです。",
+      "c < a または d < b なら No を出力します。(c, d) が (a, b) に等しくなるまでループします。途中で座標が開始値を下回るか、c = d（開始値と等しくない）になったら No を出力し、そうでなければ大きいほうの座標から小さいほうを引きます。開始値に到達すれば Yes です。"
+    ],
+    "ko": [
+      "순방향 연산은 항상 한 좌표만 (다른 좌표를 더해서) 커지게 하고 두 좌표는 모두 양수이므로, 좌표는 절대 감소하지 않습니다.",
+      "목표 (c, d)에서 거꾸로 진행합니다. c > d이면 (c - d, d)에서만, d > c이면 (c, d - c)에서만 올 수 있습니다. 모든 선행 상태가 정해져 있으므로 그 유일한 경로를 따라 거슬러 올라가면 됩니다.",
+      "c < a 또는 d < b이면 No를 출력합니다. (c, d)가 (a, b)와 같아질 때까지 반복하며, 도중에 좌표가 시작값보다 작아지거나 c = d이면(시작점과 같지 않은 경우) No를 출력하고, 그렇지 않으면 큰 좌표에서 작은 좌표를 뺍니다. 시작점에 도달하면 Yes입니다."
+    ],
+    "vi": [
+      "Một thao tác thuận chỉ khiến một tọa độ lớn lên (bằng cách cộng tọa độ kia), và cả hai tọa độ đều dương, nên các tọa độ không bao giờ giảm.",
+      "Làm ngược từ đích (c, d): nếu c > d thì nó chỉ có thể đến từ (c - d, d); nếu d > c thì nó chỉ đến từ (c, d - c). Mọi tiền thân đều bị ép buộc, nên chỉ cần đi theo con đường duy nhất đó ngược về.",
+      "Nếu c < a hoặc d < b thì in No; lặp đến khi (c, d) bằng (a, b): nếu giữa chừng một tọa độ giảm xuống dưới giá trị bắt đầu, hoặc c = d (trong khi chưa bằng trạng thái bắt đầu), thì in No; ngược lại trừ tọa độ nhỏ hơn khỏi tọa độ lớn hơn. Đến được trạng thái bắt đầu nghĩa là Yes."
     ]
   },
   "explanationEn": "# Is Possible\n\n## Approach\n\nRestore backwards from (c,d). If c>d, the only possible predecessor is (c−d,d); if d>c, the only possible predecessor is (c,d−c). Each time subtract the smaller coordinate; if a coordinate drops below the start, or the pair reaches an equal state other than the start, the target is unreachable.\n\n## Proof of correctness\n\nEach forward operation increases only one coordinate. For any positive target pair with c>d, it cannot be produced by the second operation (which would make the second coordinate larger), so its only predecessor is (c−d,d). The case d>c is symmetric. Repeatedly applying the unique predecessor misses no path; once (a,b) is reached, a corresponding forward path exists. If any coordinate drops below the start, it cannot be reached from the start because forward operations never decrease coordinates; if c=d, that state cannot be produced by a forward operation unless it is already the start.\n\n## Complexity\n\nEach step decreases at least one coordinate, and coordinates do not exceed 1000; O(c+d) time, O(1) space.\n\n## Reference implementation\n\n```python\nimport sys\ndef solve(raw):\n    a,b,c,d=map(int,raw.split())\n    if c<a or d<b:return 'No'\n    # Each reverse step is forced: if c>d, only (c-d,d) can precede\n    # (c,d); if d>c, only (c,d-c) can precede it. Coordinates stay positive.\n    while (c,d)!=(a,b):\n        if c<a or d<b:return 'No'\n        if c==d:return 'No'\n        if c>d:c-=d\n        else:d-=c\n    return 'Yes'\nif __name__=='__main__':print(solve(sys.stdin.read()))\n```"

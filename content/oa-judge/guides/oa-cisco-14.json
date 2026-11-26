@@ -13,6 +13,21 @@
       "X can be as large as 10^18, so enumerating is impossible; but a digit sum only depends on the digit chosen at each position, which suits deciding digits from the most significant end.",
       "Use a digit DP whose state is the digit sum so far and whether the prefix still equals the prefix of X (tight); while tight the current digit is at most the matching digit of X, otherwise it can be 0..9.",
       "Start with count 1 for (sum 0, tight); for each digit of X, for each state and each allowed digit d with sum + d <= Y, move to (sum + d, tight and d equals that digit of X); after the last digit add the counts of both states whose sum is exactly Y; print -1 when the total is 0, as the statement requires. 64-bit counts are enough."
+    ],
+    "ja": [
+      "X は 10^18 に達し得るので列挙は不可能です。ただし桁和は各位置で選んだ桁だけで決まるので、最上位桁から桁を決めていく方法が向いています。",
+      "状態を、ここまでの桁和と、接頭辞がまだ X の接頭辞と等しいか（tight）として桁 DP を行います。tight の間、現在の桁は X の対応する桁以下で、そうでなければ 0..9 を取れます。",
+      "(桁和 0, tight) の個数を 1 として始めます。X の各桁について、各状態と、sum + d <= Y を満たす許される各桁 d に対し、(sum + d, tight かつ d が X のその桁に等しい) へ遷移します。最後の桁の後、桁和がちょうど Y である 2 つの状態の個数を足します。合計が 0 なら、問題文のとおり -1 を出力します。個数は 64 ビットで十分です。"
+    ],
+    "ko": [
+      "X는 10^18까지 커질 수 있어 전부 나열하는 것은 불가능합니다. 하지만 자릿수 합은 각 위치에서 고른 숫자에만 의존하므로, 최상위 자리부터 숫자를 정하는 방식이 잘 맞습니다.",
+      "상태가 (지금까지의 자릿수 합, 접두사가 아직 X의 접두사와 같은지 여부(tight))인 자릿수 DP를 사용합니다. tight인 동안 현재 숫자는 X의 해당 자리 이하여야 하고, 아니면 0..9가 가능합니다.",
+      "(합 0, tight)의 개수 1로 시작합니다. X의 각 자리마다, 각 상태와 sum + d <= Y를 만족하는 각 허용 숫자 d에 대해 (sum + d, tight이면서 d가 X의 해당 자리와 같은지)로 이동합니다. 마지막 자리 이후 합이 정확히 Y인 두 상태의 개수를 더합니다. 총합이 0이면 문제의 요구대로 -1을 출력합니다. 개수는 64비트로 충분합니다."
+    ],
+    "vi": [
+      "X có thể lớn tới 10^18 nên không thể liệt kê; nhưng tổng chữ số chỉ phụ thuộc vào chữ số được chọn ở mỗi vị trí, rất hợp để quyết định chữ số từ đầu có nghĩa lớn nhất.",
+      "Dùng DP chữ số với trạng thái là tổng chữ số hiện tại và việc tiền tố còn bằng tiền tố của X hay không (tight); khi còn tight thì chữ số hiện tại không vượt quá chữ số tương ứng của X, ngược lại có thể là 0..9.",
+      "Bắt đầu với số đếm 1 cho (tổng 0, tight); với mỗi chữ số của X, với mỗi trạng thái và mỗi chữ số d được phép thỏa sum + d <= Y, chuyển sang (sum + d, tight và d bằng chữ số đó của X); sau chữ số cuối, cộng số đếm của cả hai trạng thái có tổng đúng bằng Y; in -1 khi tổng số đếm là 0, như đề bài yêu cầu. Số đếm 64 bit là đủ."
     ]
   },
   "explanationEn": "## Approach\n\nRun a digit DP from the most significant digit to the least significant one; the state records the current digit sum and whether the number still hugs the prefix of X.\n\n## Proof of correctness\n\nEvery integer not exceeding X has a unique representation padded with leading zeros. The tight flag limits the current digit to the corresponding digit of the bound; after choosing a smaller digit, the remaining suffix is free. Each transition enumerates exactly one legal next digit, so by induction on the prefix length nothing is counted twice and nothing is missed. The states whose final sum is Y are exactly what is asked for; Y>=1 excludes the all-zero representation.\n\n## Complexity\n\nO(digits * Y * 10) time and O(Y) space; the integer counts need no modulus."

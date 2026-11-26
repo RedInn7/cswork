@@ -13,6 +13,21 @@
       "Passing any subject is worth the same (one subject); subjects differ only in how many questions are still missing.",
       "Subject i needs max(0, needed[i] - answered[i]) more questions. To maximize the number of passes, pass the cheapest subjects first; an exchange argument shows this is never worse.",
       "Sort the gaps and subtract them from the budget in ascending order, stopping at the first gap that does not fit; the number of subjects paid for is the answer, and subjects with a gap of 0 count for free."
+    ],
+    "ja": [
+      "どの科目に合格しても価値は同じ（1 科目）で、科目ごとの違いは、あと何問足りないかだけです。",
+      "科目 i に必要な追加問題数は max(0, needed[i] - answered[i]) です。合格数を最大化するには、コストの小さい科目から合格させます。交換論法により、これが最悪になることはないと示せます。",
+      "不足分をソートし、昇順に予算から引いていきます。最初に収まらない不足分が現れたら止めます。支払えた科目数が答えです。不足分が 0 の科目は無料で数えます。"
+    ],
+    "ko": [
+      "어떤 과목을 통과하든 가치는 같고(한 과목), 과목마다 다른 것은 아직 부족한 문제 수뿐입니다.",
+      "과목 i는 max(0, needed[i] - answered[i])개의 문제가 더 필요합니다. 통과 과목 수를 최대화하려면 비용이 가장 작은 과목부터 통과시키면 되며, 교환 논증으로 이것이 절대 손해가 아님을 보일 수 있습니다.",
+      "부족한 문제 수들을 정렬한 뒤 오름차순으로 예산에서 빼 나가다가, 처음으로 예산에 들어가지 않는 값에서 멈춥니다. 비용을 치른 과목의 수가 답이며, 부족분이 0인 과목은 공짜로 셉니다."
+    ],
+    "vi": [
+      "Đỗ bất kỳ môn nào đều có giá trị như nhau (một môn); các môn chỉ khác nhau ở số câu hỏi còn thiếu.",
+      "Môn i cần thêm max(0, needed[i] - answered[i]) câu. Để tối đa số môn đỗ, hãy đỗ các môn rẻ nhất trước; lập luận hoán đổi cho thấy cách này không bao giờ tệ hơn.",
+      "Sắp xếp các khoảng thiếu rồi trừ dần chúng khỏi ngân sách theo thứ tự tăng dần, dừng ở khoảng thiếu đầu tiên không đủ; số môn đã trả giá là đáp án, và các môn có khoảng thiếu bằng 0 được tính miễn phí."
     ]
   },
   "explanationEn": "## Approach\n\nThe remaining cost of each subject is max(0, needed−answered); choose subjects in ascending order of cost until the budget is insufficient.\n\n## Proof of Correctness\n\nEvery subject is worth exactly one pass. If a plan picks a higher cost while leaving out a lower cost, swapping them does not increase the budget used and does not decrease the gain. Therefore picking from low to high achieves the maximum count, and subjects already passed cost 0.\n\n## Complexity\n\nTime O(n log n), space O(n)."

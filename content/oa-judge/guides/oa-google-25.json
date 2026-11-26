@@ -15,9 +15,19 @@
       "Build a map from value to count; for each element increment counts[v] and keep the running maximum; print that maximum."
     ],
     "ja": [
-      "必要なのは各値が何回現れるかだけです。最も多く現れる値の出現回数が答えになります。",
-      "ハッシュマップで頻度を数えます。要素を 1 つ読むたびに、その値のカウンタを 1 増やします。",
-      "値から回数へのマップを作り、配列を走査しながら counts[v] を 1 増やして最大値を更新し続け、最後にその最大値を出力します。"
+      "必要なのは各値が何回現れるかだけで、最も多く現れる値の回数が答えです。",
+      "ハッシュマップで頻度を数えます。各要素は自分自身のカウンタに 1 を加えます。",
+      "値から回数へのマップを作り、各要素について counts[v] を増やしながら現在の最大値を保持して、その最大値を出力します。"
+    ],
+    "ko": [
+      "필요한 것은 각 값이 몇 번 나오는지뿐이며, 가장 많이 나온 값의 횟수가 답입니다.",
+      "해시 맵으로 빈도를 셉니다. 모든 원소는 자기 자신의 카운터에 1을 더합니다.",
+      "값에서 횟수로 가는 맵을 만들고, 각 원소마다 counts[v]를 증가시키며 현재 최댓값을 유지한 뒤 그 최댓값을 출력합니다."
+    ],
+    "vi": [
+      "Chỉ cần biết mỗi giá trị xuất hiện bao nhiêu lần; số lần của giá trị xuất hiện nhiều nhất chính là đáp án.",
+      "Đếm tần suất bằng hash map: mỗi phần tử cộng thêm một vào bộ đếm của chính nó.",
+      "Xây một map từ giá trị sang số đếm; với mỗi phần tử tăng counts[v] và giữ giá trị lớn nhất đang có; in giá trị lớn nhất đó."
     ]
   },
   "explanationEn": "## Approach\n\nAccumulate the number of occurrences of each value in a hash map and take the largest count.\n\n## Correctness\n\nEach element adds exactly one to its own counter, so in the end every counter equals the true frequency of its value, and the largest counter is the required result.\n\n## Complexity\n\nExpected time O(n), space O(n)."

@@ -13,6 +13,21 @@
       "Moving a non-empty proper suffix to the front is a cyclic shift by a nonzero offset, so the string is always some rotation of src; each step has exactly n - 1 cut points, each giving a different nonzero shift.",
       "Let c of the n rotations of src equal target. Only whether the current rotation equals target matters: from a matching state, c - 1 shifts stay matching and n - c lead to mismatching; from a mismatching state, c shifts lead to matching and n - c - 1 stay mismatching.",
       "Count c in O(n^2) (print 0 if the lengths differ), start from the vector (src == target, src != target), raise the 2x2 matrix [[c-1, c], [n-c, n-c-1]] to the k-th power by fast exponentiation modulo 10^9+7 (normalizing negative entries first), and print the number of ways in the matching state."
+    ],
+    "ja": [
+      "空でない真の接尾辞を先頭に移す操作は、0 でないオフセットによる巡回シフトです。したがって文字列は常に src のいずれかの回転で、各ステップにはちょうど n - 1 通りの切り位置があり、それぞれが異なる 0 でないシフトを与えます。",
+      "src の n 個の回転のうち c 個が target に等しいとします。重要なのは、現在の回転が target に等しいかどうかだけです。一致している状態からは、c - 1 通りのシフトで一致のままで、n - c 通りで不一致になります。不一致の状態からは、c 通りで一致になり、n - c - 1 通りで不一致のままです。",
+      "c を O(n^2) で数えます（長さが異なれば 0 を出力します）。ベクトル (src == target, src != target) から始め、2x2 行列 [[c-1, c], [n-c, n-c-1]] を高速べき乗で k 乗します（先に負の成分を正規化します）。法は 10^9+7 です。一致状態での場合の数を出力します。"
+    ],
+    "ko": [
+      "비어 있지 않은 진부분 접미사를 앞으로 옮기는 것은 0이 아닌 오프셋만큼의 순환 시프트이므로, 문자열은 항상 src의 어떤 회전입니다. 각 단계에는 정확히 n - 1개의 자르는 위치가 있고 각각 서로 다른 0이 아닌 시프트를 만듭니다.",
+      "src의 n개 회전 중 c개가 target과 같다고 합시다. 현재 회전이 target과 같은지만 중요합니다. 일치 상태에서는 c - 1개의 시프트가 일치를 유지하고 n - c개가 불일치로 갑니다. 불일치 상태에서는 c개의 시프트가 일치로 가고 n - c - 1개가 불일치를 유지합니다.",
+      "c를 O(n^2)로 셉니다(길이가 다르면 0을 출력). (src == target, src != target) 벡터에서 시작하여, 2x2 행렬 [[c-1, c], [n-c, n-c-1]]을 빠른 거듭제곱으로 k제곱하고(먼저 음수 항을 정규화), 10^9+7로 나눈 나머지를 취하여 일치 상태의 방법 수를 출력합니다."
+    ],
+    "vi": [
+      "Chuyển một hậu tố thực sự không rỗng lên đầu là một phép dịch vòng với độ lệch khác 0, nên xâu luôn là một phép xoay nào đó của src; mỗi bước có đúng n - 1 điểm cắt, mỗi điểm cho một độ dịch khác 0 khác nhau.",
+      "Gọi c là số phép xoay trong n phép xoay của src bằng target. Chỉ cần quan tâm phép xoay hiện tại có bằng target hay không: từ trạng thái khớp, c - 1 phép dịch vẫn khớp và n - c dẫn tới không khớp; từ trạng thái không khớp, c phép dịch dẫn tới khớp và n - c - 1 vẫn không khớp.",
+      "Đếm c trong O(n^2) (in 0 nếu độ dài khác nhau), bắt đầu từ vector (src == target, src != target), nâng ma trận 2x2 [[c-1, c], [n-c, n-c-1]] lên lũy thừa k bằng lũy thừa nhanh theo modulo 10^9+7 (chuẩn hóa các phần tử âm trước), và in số cách ở trạng thái khớp."
     ]
   },
   "explanationEn": "## Approach\n\nCount the c positions among all n rotation positions that match the target, then use fast exponentiation of a two-state (match/mismatch) matrix.\n\n## Correctness\n\nA matching position has c-1 nonzero shifts leading to matching positions and n-c leading to mismatching ones; a mismatching position has c shifts leading to matching and n-c-1 leading to mismatching. Each cut point corresponds to a unique shift, so aggregating states preserves the number of paths, and fast exponentiation gives exactly k steps.\n\n## Complexity\n\nTime O(n^2+log k), space O(n)."

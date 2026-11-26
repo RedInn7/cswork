@@ -13,6 +13,21 @@
       "Once the cut is fixed, the left part and the right part each take their own maximum subarray sum and do not interact, so you only need, for every cut, the best subarray inside the prefix and the best subarray inside the suffix.",
       "Use Kadane's algorithm from the left to get the best non-empty subarray sum of every prefix, and from the right for every suffix; then try every cut and take the largest sum.",
       "Let left[i] be the best subarray sum within a[0..i] and right[i] the best within a[i..n-1], each computed with two running values (best sum ending here, best so far); take the maximum of left[i] + right[i+1] over i = 0..n-2. Values can reach 2 * 10^14, so use 64-bit integers, and remember all elements may be negative."
+    ],
+    "ja": [
+      "切る位置を決めると、左の部分と右の部分はそれぞれ独立に自分の最大部分配列和を取り、互いに影響しません。したがって、各切り方について、接頭辞内の最良の部分配列と接尾辞内の最良の部分配列だけを知っていれば十分です。",
+      "左からの Kadane のアルゴリズムですべての接頭辞における空でない部分配列の最大和を求め、右からも同様にすべての接尾辞について求めます。その後、すべての切り方を試して最大の和を取ります。",
+      "left[i] を a[0..i] 内の最良の部分配列和、right[i] を a[i..n-1] 内の最良の部分配列和とし、それぞれ 2 つの変数 (ここで終わる最良の和、これまでの最良) で計算します。i = 0..n-2 について left[i] + right[i+1] の最大値を取ります。値は 2 * 10^14 に達しうるため 64 ビット整数を使い、すべての要素が負になる場合にも注意してください。"
+    ],
+    "ko": [
+      "자르는 위치가 정해지면 왼쪽 부분과 오른쪽 부분은 각자 최대 부분 배열 합을 취하며 서로 영향을 주지 않습니다. 따라서 모든 자르는 위치마다 접두사 안의 최선의 부분 배열과 접미사 안의 최선의 부분 배열만 알면 됩니다.",
+      "왼쪽부터 Kadane 알고리즘으로 모든 접두사의 비어 있지 않은 최대 부분 배열 합을 구하고, 오른쪽부터 같은 방식으로 모든 접미사의 값을 구합니다. 그런 다음 모든 자르는 위치를 시도해 가장 큰 합을 취합니다.",
+      "left[i]를 a[0..i] 안의 최선의 부분 배열 합, right[i]를 a[i..n-1] 안의 최선의 값이라 하고, 각각 두 개의 누적 값(여기서 끝나는 최선의 합, 지금까지의 최선)으로 계산합니다. i = 0..n-2에 대해 left[i] + right[i+1]의 최댓값을 취합니다. 값이 2 * 10^14까지 갈 수 있으므로 64비트 정수를 사용하고, 모든 원소가 음수일 수도 있다는 점을 기억하세요."
+    ],
+    "vi": [
+      "Khi vị trí cắt đã cố định, phần trái và phần phải mỗi bên lấy tổng mảng con lớn nhất của riêng mình và không ảnh hưởng nhau, nên với mỗi vị trí cắt bạn chỉ cần mảng con tốt nhất trong tiền tố và mảng con tốt nhất trong hậu tố.",
+      "Dùng thuật toán Kadane từ trái để có tổng mảng con không rỗng tốt nhất của mọi tiền tố, và từ phải cho mọi hậu tố; sau đó thử mọi vị trí cắt và lấy tổng lớn nhất.",
+      "Gọi left[i] là tổng mảng con tốt nhất trong a[0..i] và right[i] là tốt nhất trong a[i..n-1], mỗi mảng tính bằng hai giá trị chạy (tổng tốt nhất kết thúc tại đây, tốt nhất cho đến nay); lấy giá trị lớn nhất của left[i] + right[i+1] với i = 0..n-2. Giá trị có thể đạt 2 * 10^14 nên hãy dùng số nguyên 64-bit, và nhớ rằng mọi phần tử đều có thể âm."
     ]
   },
   "explanationEn": "## Approach\n\nPrecompute the best subarray sum within every prefix, and also the best subarray sum within every suffix. Try every cut point i and maximize prefixBest[i] + suffixBest[i+1].\n\n## Correctness\n\nFor a fixed cut, no valid choice in the left part can exceed that prefix's best subarray sum, and likewise for the right part; the two best subarrays can be chosen independently, so their sum is the optimum for that cut. Trying every cut 1..n-1 gives the global optimum.\n\n## Complexity\n\nTime O(n), space O(n)."

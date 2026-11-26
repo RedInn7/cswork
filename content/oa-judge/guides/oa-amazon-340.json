@@ -13,6 +13,21 @@
       "Each request looks in the prefix range [0, requests[i]] for the server with \"the fewest assignments, then the smallest number\", and then adds 1 to its count. A brute-force scan costs O(servers·n) in the worst case.",
       "Encode (assignment count, number) as a single integer, for example count·2^20+number, so comparing integers is the same as comparing counts first and numbers second. What you need is \"range minimum query + point update\", which a segment tree provides.",
       "Build a bottom-up segment tree whose size is a power of two; leaves start at their number (count 0), and unused leaves are infinity. For each request, query the minimum over [0, requests[i]], take the low 20 bits as the number, add 2^20 to that leaf, update the minimums along its ancestors, and output the number."
+    ],
+    "ja": [
+      "各リクエストは、接頭辞の範囲 [0, requests[i]] の中から「割り当て回数が最も少なく、同数なら番号が最小」のサーバーを探し、その回数に 1 を加えます。全探索は最悪で O(servers·n) かかります。",
+      "(割り当て回数, 番号) を1つの整数に符号化します。たとえば count·2^20+number とすれば、整数の比較は、まず回数、次に番号を比較することと同じになります。必要なのは「区間最小値クエリ+一点更新」で、セグメント木で実現できます。",
+      "サイズが 2 のべき乗のボトムアップのセグメント木を作ります。葉は最初は番号そのもの(回数 0)にし、使わない葉は無限大にします。各リクエストで、[0, requests[i]] の最小値を問い合わせ、下位 20 ビットを番号として取り出し、その葉に 2^20 を加え、祖先の最小値を更新して、その番号を出力します。"
+    ],
+    "ko": [
+      "각 요청은 접두 구간 [0, requests[i]]에서 \"배정 횟수가 가장 적고, 같으면 번호가 가장 작은\" 서버를 찾은 뒤 그 횟수에 1을 더합니다. 단순하게 훑으면 최악의 경우 O(servers·n)이 듭니다.",
+      "(배정 횟수, 번호)를 하나의 정수, 예를 들어 count·2^20+number로 인코딩하면 정수 비교가 곧 횟수 우선, 번호 차선의 비교가 됩니다. 필요한 것은 \"구간 최솟값 질의 + 점 갱신\"이며 세그먼트 트리가 이를 제공합니다.",
+      "크기가 2의 거듭제곱인 상향식 세그먼트 트리를 만들고, 리프는 처음에 자기 번호(횟수 0)로, 사용하지 않는 리프는 무한대로 둡니다. 각 요청마다 [0, requests[i]]의 최솟값을 질의하고, 하위 20비트를 번호로 취하여 그 리프에 2^20을 더한 뒤 조상들의 최솟값을 갱신하고 번호를 출력합니다."
+    ],
+    "vi": [
+      "Mỗi yêu cầu tìm trong đoạn tiền tố [0, requests[i]] máy chủ có \"số lần gán ít nhất, rồi số máy nhỏ nhất\", sau đó cộng 1 vào số đếm của nó. Quét vét cạn tốn O(servers·n) trong trường hợp xấu nhất.",
+      "Mã hóa (số lần gán, số máy) thành một số nguyên duy nhất, chẳng hạn count·2^20+number, để so sánh số nguyên chính là so sánh số lần gán trước rồi số máy sau. Thứ bạn cần là \"truy vấn nhỏ nhất trên đoạn + cập nhật điểm\", mà cây phân đoạn cung cấp.",
+      "Dựng cây phân đoạn từ dưới lên có kích thước là lũy thừa của hai; các lá ban đầu bằng số máy của chúng (count 0), các lá thừa là vô cùng. Với mỗi yêu cầu, truy vấn giá trị nhỏ nhất trên [0, requests[i]], lấy 20 bit thấp làm số máy, cộng 2^20 vào lá đó, cập nhật các giá trị nhỏ nhất dọc các tổ tiên của nó, và in số máy."
     ]
   },
   "explanationEn": "## Problem\n\nThere are servers servers (numbered 0..servers−1). Process the requests in order: request i can only go to a server numbered 0..requests[i], and it picks the currently least busy one; ties go to the smallest number. A server's busyness is the number of requests already assigned to it (requests are never completed or released). Output the server number each request is assigned to.\n\n## Approach\n\nWe need to support \"take the minimum of (assignment count, number) over a prefix range\" and \"add one at a single point\". Encode (assignment count, number) as the single integer cnt·2^20+idx and keep range minimums in a segment tree: querying the minimum over [0,requests[i]] gives the server number, then add 2^20 to that leaf and update upward.\n\n## Correctness\n\nThe order of the encoded integers matches the lexicographic order \"compare the assignment count first, then the number\" (numbers are <2^20). Each time, the segment tree gives the smallest code in the prefix, which is the server the rule picks; after the update the tree still stores the true assignment counts.\n\n## Complexity\n\nBuilding is O(servers), and each request is O(log servers).\n\n## Independent verification\n\nFor each request, the oracle scans a count array linearly over 0..requests[i] and takes the minimum by (count, number), without a segment tree. Expected values for large cases come from another Python bottom-up segment tree (comparing tuples). All request sequences with servers=1..3 and 1..4 requests are enumerated exhaustively and the reference program is actually run on each. The wrong solutions cover breaking ties with the largest number, ignoring the allowed range, excluding the right end of the range, and not accumulating busyness."

@@ -13,6 +13,21 @@
       "Each child takes 1 or 2 games and k children take all n, so exactly n-k children take two and the rest take one; the capacity is at least the size of the largest game.",
       "Let the 2k-n largest games go alone and pair up the 2(n-k) smallest ones; pairing the smallest with the largest, the second smallest with the second largest, and so on keeps the largest pair sum as small as possible.",
       "Sort ascending, let pairs = n - k and start the answer at the maximum a[n-1]; for i from 0 to pairs-1 raise it to a[i] + a[2*pairs - 1 - i] when larger, then print it. Sums can exceed 32 bits, so use 64-bit integers."
+    ],
+    "ja": [
+      "各子どもは 1 個または 2 個を受け取り、k 人で n 個すべてを受け取るので、ちょうど n-k 人が 2 個、残りが 1 個を受け取ります。容量は少なくとも最大のゲームのサイズ以上です。",
+      "大きい方から 2k-n 個のゲームは単独にし、小さい方から 2(n-k) 個をペアにします。最小と最大、2 番目に小さいものと 2 番目に大きいもの、と順にペアにしていくと、最大のペアの和を最小に保てます。",
+      "昇順にソートし、pairs = n - k として、答えを最大値 a[n-1] で初期化します。i を 0 から pairs-1 まで動かし、a[i] + a[2*pairs - 1 - i] の方が大きければ答えを更新して、最後に出力します。和は 32 ビットを超えることがあるので、64 ビット整数を使います。"
+    ],
+    "ko": [
+      "각 아이는 게임을 1개 또는 2개 받고 k명이 n개를 모두 받으므로, 정확히 n-k명이 두 개를 받고 나머지는 하나를 받습니다. 용량은 가장 큰 게임의 크기 이상이어야 합니다.",
+      "가장 큰 2k-n개의 게임은 혼자 받게 하고, 가장 작은 2(n-k)개를 짝지으세요. 가장 작은 것과 가장 큰 것, 두 번째로 작은 것과 두 번째로 큰 것 하는 식으로 짝지으면 가장 큰 쌍의 합이 최소가 됩니다.",
+      "오름차순으로 정렬하고 pairs = n - k로 두며 답을 최댓값 a[n-1]로 시작합니다. i를 0부터 pairs-1까지 돌면서 a[i] + a[2*pairs - 1 - i]가 더 크면 답을 갱신하고 출력합니다. 합은 32비트를 넘을 수 있으므로 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Mỗi đứa trẻ nhận 1 hoặc 2 trò chơi và k đứa trẻ nhận hết n trò chơi, nên đúng n-k đứa nhận hai và số còn lại nhận một; dung lượng ít nhất bằng kích thước của trò chơi lớn nhất.",
+      "Cho 2k-n trò chơi lớn nhất đứng một mình và ghép cặp 2(n-k) trò chơi nhỏ nhất; ghép nhỏ nhất với lớn nhất, nhỏ thứ hai với lớn thứ hai, và cứ thế giữ cho tổng cặp lớn nhất nhỏ nhất có thể.",
+      "Sắp xếp tăng dần, đặt pairs = n - k và bắt đầu đáp án bằng giá trị lớn nhất a[n-1]; với i từ 0 đến pairs-1, nâng nó lên a[i] + a[2*pairs - 1 - i] nếu lớn hơn, rồi in ra. Các tổng có thể vượt 32 bit, nên dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nExactly n-k pairs must be formed. Let the largest games go alone, and pair the smallest 2(n-k) numbers from both ends inward. The capacity is the maximum of all pair sums and the largest single game.\n\n## Proof of correctness\n\nIf a game assigned alone is smaller than a game in some pair, the two can be swapped: the pair sum does not increase, and the largest single game does not exceed the original largest game. So the largest games can be the ones assigned alone. For the remaining pairs, pairing the smallest with the largest can be reached by exchanges that do not increase the largest pair sum, and the argument continues by induction.\n\n## Complexity\n\nTime O(n log n), space O(n)."

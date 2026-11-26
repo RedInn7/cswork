@@ -13,6 +13,21 @@
       "The pivot belongs to neither side, so at index i the left sum is the prefix sum before i and the right sum is the total minus that prefix sum minus a[i].",
       "Compute the total once, then walk from the left keeping the prefix sum before the current index and check whether both sides are equal; no reordering is involved.",
       "Start with left = 0; for each i check whether left equals total − left − a[i] and print i if so; otherwise add a[i] to left and continue. All elements are positive, so there is at most one pivot, and one is guaranteed to exist."
+    ],
+    "ja": [
+      "ピボットはどちらの側にも属さないので、インデックス i では、左の合計は i より前の接頭辞和、右の合計は全体の合計からその接頭辞和と a[i] を引いたものです。",
+      "全体の合計を 1 回だけ計算し、左から走査しながら現在のインデックスより前の接頭辞和を保持して、両側が等しいかを調べます。並べ替えは行いません。",
+      "left = 0 から始め、各 i について left が total − left − a[i] に等しいかを調べ、等しければ i を出力します。そうでなければ left に a[i] を足して続けます。すべての要素が正なのでピボットは高々 1 つで、存在することは保証されています。"
+    ],
+    "ko": [
+      "피벗은 어느 쪽에도 속하지 않으므로, 인덱스 i에서 왼쪽 합은 i 이전의 접두사 합이고 오른쪽 합은 전체 합에서 그 접두사 합과 a[i]를 뺀 값입니다.",
+      "전체 합을 한 번 계산한 뒤 왼쪽에서부터 걸으면서 현재 인덱스 이전의 접두사 합을 유지하고 양쪽이 같은지 확인합니다. 재배열은 필요 없습니다.",
+      "left = 0에서 시작하여 각 i에 대해 left가 total − left − a[i]와 같은지 확인하고 같으면 i를 출력하며, 아니면 left에 a[i]를 더하고 계속합니다. 모든 원소가 양수이므로 피벗은 최대 하나이며 존재함이 보장됩니다."
+    ],
+    "vi": [
+      "Trục không thuộc phía nào, nên tại chỉ số i tổng bên trái là tổng tiền tố trước i và tổng bên phải là tổng toàn bộ trừ tổng tiền tố đó trừ a[i].",
+      "Tính tổng toàn bộ một lần, rồi duyệt từ trái, giữ tổng tiền tố trước chỉ số hiện tại và kiểm tra hai phía có bằng nhau không; không cần sắp xếp lại.",
+      "Bắt đầu với left = 0; với mỗi i, kiểm tra left có bằng total − left − a[i] không và in i nếu đúng; ngược lại cộng a[i] vào left và tiếp tục. Mọi phần tử đều dương, nên có nhiều nhất một trục, và luôn đảm bảo có một trục."
     ]
   },
   "explanationEn": "## Approach\n\nMaintain the total sum and the prefix sum before the current index, and check left=total−left−a[i].\n\n## Proof of correctness\n\nWhen the scan reaches i, left is exactly the sum on the left side, and the total minus left and the current item is exactly the sum on the right side, so the check is necessary and sufficient. Because all elements are positive, left minus right strictly increases with the index, so there is at most one pivot; since a solution is guaranteed, it can be returned.\n\n## Complexity\n\nO(n) time and O(1) space apart from the input."

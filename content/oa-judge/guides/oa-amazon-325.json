@@ -13,6 +13,21 @@
       "The strictly cheaper day nearest to day i is either the nearest strictly lower day on its left or the nearest strictly lower day on its right; only these two candidates need comparing.",
       "\"The nearest strictly smaller element to the left of each position\" is a classic monotonic stack problem: scan left to right, keep prices strictly increasing on the stack, and pop anything ≥ the current price. Do the same from right to left for the right side. After this preprocessing, each query is O(1).",
       "Precompute left[i] and right[i] (−1 when missing). For query day i (converted to 0-based): if there is no left candidate, take the right one; if there is no right candidate or i−left ≤ right−i, take the left one (a tie goes to the smaller day); otherwise take the right one. Output the 1-based day, or −1 if neither exists."
+    ],
+    "ja": [
+      "日 i に最も近い厳密に安い日は、左側で最も近い厳密に低い日か、右側で最も近い厳密に低い日のどちらかです。この2つの候補だけを比べれば十分です。",
+      "「各位置の左側で最も近い厳密に小さい要素」は典型的な単調スタックの問題です。左から右へ走査し、スタックに価格が厳密に増加するよう保持し、現在の価格以上のものを取り除きます。右側も右から左へ同様に行います。この前処理の後は、各クエリは O(1) です。",
+      "left[i] と right[i] を事前に計算します(存在しない場合は −1)。クエリ日 i(0 始まりに変換)について、左の候補がなければ右を取ります。右の候補がないか i−left ≤ right−i なら左を取ります(同じ距離なら日付が小さい方)。そうでなければ右を取ります。1 始まりの日付を出力し、どちらもなければ −1 を出力します。"
+    ],
+    "ko": [
+      "i일에서 가장 가까운 엄격히 더 싼 날은 왼쪽의 가장 가까운 엄격히 낮은 날이거나 오른쪽의 가장 가까운 엄격히 낮은 날 중 하나이므로, 이 두 후보만 비교하면 됩니다.",
+      "'각 위치의 왼쪽에서 가장 가까운 엄격히 더 작은 원소'는 고전적인 단조 스택 문제입니다. 왼쪽에서 오른쪽으로 훑으며 스택의 가격을 엄격히 증가하게 유지하고, 현재 가격 이상인 것은 팝합니다. 오른쪽 쪽도 오른쪽에서 왼쪽으로 똑같이 합니다. 이 전처리 후에는 각 조회가 O(1)입니다.",
+      "left[i]와 right[i]를 미리 계산합니다(없으면 −1). 조회 날짜 i(0-indexed로 변환)에 대해, 왼쪽 후보가 없으면 오른쪽 후보를 택하고, 오른쪽 후보가 없거나 i−left ≤ right−i이면 왼쪽을 택하며(동률이면 날짜가 작은 쪽), 그렇지 않으면 오른쪽을 택합니다. 1-indexed 날짜를 출력하고, 둘 다 없으면 −1을 출력합니다."
+    ],
+    "vi": [
+      "Ngày rẻ hơn hoàn toàn gần ngày i nhất là ngày thấp hơn hoàn toàn gần nhất bên trái của nó hoặc ngày thấp hơn hoàn toàn gần nhất bên phải của nó; chỉ cần so sánh hai ứng viên này.",
+      "\"Phần tử nhỏ hơn hoàn toàn gần nhất bên trái của mỗi vị trí\" là bài toán ngăn xếp đơn điệu kinh điển: quét từ trái sang phải, giữ các giá tăng chặt trong ngăn xếp, và lấy ra mọi giá ≥ giá hiện tại. Làm tương tự từ phải sang trái cho phía bên phải. Sau bước tiền xử lý này, mỗi truy vấn tốn O(1).",
+      "Tính trước left[i] và right[i] (−1 khi không có). Với ngày truy vấn i (đã chuyển sang chỉ số từ 0): nếu không có ứng viên bên trái, lấy bên phải; nếu không có ứng viên bên phải hoặc i−left ≤ right−i, lấy bên trái (khi hòa chọn ngày nhỏ hơn); ngược lại lấy bên phải. In ngày theo chỉ số từ 1, hoặc −1 nếu cả hai đều không có."
     ]
   },
   "explanationEn": "## Approach\n\nScan with a monotonically increasing stack from the left and from the right separately, popping prices ≥ the current one, to get the nearest strictly lower position on each side; each query compares the two distances and takes the left one on a tie.\n\n## Proof of correctness\n\nA popped position with a higher or equal price can never do better for later queries than the current position, which is nearer and not higher, so discarding it is safe; the remaining stack top is exactly the nearest strictly lower price on that side. The globally nearest day must be one of the two nearest candidates on the left and the right, and comparing by distance and then by day number implements the problem's rule.\n\n## Complexity\n\nTime O(n+q), space O(n+q)."

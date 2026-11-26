@@ -13,6 +13,21 @@
       "Every operation deletes two of the first three items and keeps one, so after the first operation the queue can always be described as one kept value plus an unprocessed suffix of the original array.",
       "Keep a map dp from the value kept at the front to the least cost of reaching that state. Each round, put the kept value together with the next two items, enumerate which of the three stays, and pay the larger of the other two; for the same kept value keep only the smaller cost.",
       "If n < 3 the answer is the maximum. Otherwise process a[0..2] for the initial dp. Then repeatedly take p = a[i], q = a[i+1] and, for each (carry, cost), produce (carry, cost + max(p, q)), (p, cost + max(carry, q)) and (q, cost + max(carry, p)); advance i by 2. At the end, if one item a[i] remains, the answer is min(cost + max(carry, a[i])), otherwise min(cost + carry)."
+    ],
+    "ja": [
+      "各操作は先頭 3 個のうち 2 個を削除して 1 個を残します。したがって最初の操作の後は、キューは常に「残した値 1 個 + 元の配列の未処理の接尾辞」として表せます。",
+      "先頭に残っている値から、そこに至る最小コストへの対応を表す map dp を持ちます。各ラウンドで、残した値と次の 2 個を合わせ、3 個のうちどれを残すかを列挙し、残りの 2 個のうち大きい方を支払います。同じ残し値に対しては小さいコストだけを保持します。",
+      "n < 3 なら答えは最大値です。そうでなければ a[0..2] を処理して dp を初期化します。その後、p = a[i]、q = a[i+1] を取り、各 (carry, cost) について (carry, cost + max(p, q))、(p, cost + max(carry, q))、(q, cost + max(carry, p)) を作り、i を 2 進めます。最後に 1 個 a[i] が残っていれば答えは min(cost + max(carry, a[i]))、そうでなければ min(cost + carry) です。"
+    ],
+    "ko": [
+      "모든 연산은 앞쪽 세 항목 중 두 개를 삭제하고 하나를 남기므로, 첫 연산 이후의 큐는 항상 남겨 둔 값 하나와 원래 배열의 처리되지 않은 접미사로 표현할 수 있습니다.",
+      "맨 앞에 남은 값에서 그 상태에 도달하는 최소 비용으로 가는 맵 dp를 유지합니다. 매 라운드마다 남겨 둔 값과 다음 두 항목을 함께 놓고, 셋 중 무엇을 남길지 열거하여 나머지 둘 중 큰 값을 비용으로 냅니다. 남겨 둔 값이 같으면 더 작은 비용만 유지합니다.",
+      "n < 3이면 답은 최댓값입니다. 그렇지 않으면 a[0..2]를 처리하여 dp를 초기화합니다. 이후 p = a[i], q = a[i+1]을 잡고 각 (carry, cost)에 대해 (carry, cost + max(p, q)), (p, cost + max(carry, q)), (q, cost + max(carry, p))를 만들며 i를 2씩 증가시킵니다. 마지막에 항목 a[i]가 하나 남아 있으면 답은 min(cost + max(carry, a[i]))이고, 그렇지 않으면 min(cost + carry)입니다."
+    ],
+    "vi": [
+      "Mỗi thao tác xóa hai trong ba phần tử đầu và giữ lại một, nên sau thao tác đầu tiên, hàng đợi luôn có thể mô tả bằng một giá trị được giữ lại cộng với một hậu tố chưa xử lý của mảng gốc.",
+      "Dùng một map dp từ giá trị được giữ ở đầu đến chi phí nhỏ nhất để đạt trạng thái đó. Mỗi vòng, ghép giá trị được giữ với hai phần tử kế tiếp, duyệt xem trong ba phần tử giữ lại cái nào, và trả chi phí là số lớn hơn của hai cái còn lại; với cùng một giá trị được giữ, chỉ giữ chi phí nhỏ hơn.",
+      "Nếu n < 3 thì đáp án là giá trị lớn nhất. Ngược lại, xử lý a[0..2] để khởi tạo dp. Sau đó lặp lại: lấy p = a[i], q = a[i+1] và với mỗi (carry, cost), tạo ra (carry, cost + max(p, q)), (p, cost + max(carry, q)) và (q, cost + max(carry, p)); tăng i thêm 2. Cuối cùng, nếu còn lại một phần tử a[i] thì đáp án là min(cost + max(carry, a[i])), nếu không thì là min(cost + carry)."
     ]
   },
   "explanationEn": "## Approach\n\nAfter the first three items are processed, exactly one item remains. Use dynamic programming that records \"value kept at the front of the queue -> least cost paid to reach that state\". Each round, consider that value together with the next two items and enumerate which one stays; at the end, when fewer than three items are left, settle them all at once as the statement says.\n\n## Proof of correctness\n\nEvery operation deletes two items from the first three, so after an operation the queue is uniquely represented by one kept value and an unprocessed suffix. The transition enumerates the single element left among the first three and pays the maximum of the other two, as the statement requires, so it covers every possible operation without omission. Keeping only the lower cost for the same kept value does not affect future choices, so this state compression preserves optimality. Finally settling according to the fewer-than-three rule and taking the minimum gives the global optimum.\n\n## Complexity\n\nLet n be the array length: at most n states and at most n/2 rounds, so O(n^2) time and O(n) space."

@@ -13,6 +13,21 @@
       "Treat the i-th character and the i-th character from the end as a pair. A palindrome only needs every pair to match, so all that matters is how many pairs differ; call it m.",
       "One swap moves only two positions, so it fixes at most two pairs, and at least ⌈m/2⌉ swaps are needed; two mismatched pairs can be fixed together by one swap. When m is odd, the last remaining pair needs help from the middle character.",
       "Count m. If m is even, output m/2; if m is odd and the length is odd, output (m+1)/2; if m is odd and the length is even, the number of 1s is odd, which no even-length palindrome allows, so output −1."
+    ],
+    "ja": [
+      "i 番目の文字と後ろから i 番目の文字をペアと見なします。回文になるにはすべてのペアが一致すればよいので、重要なのは異なるペアの個数だけです。これを m とします。",
+      "1回のスワップが動かす位置は2つだけなので、直せるペアは最大2つで、少なくとも ⌈m/2⌉ 回のスワップが必要です。不一致のペア2つは1回のスワップでまとめて直せます。m が奇数のときは、最後に残る1ペアを中央の文字の助けで直します。",
+      "m を数えます。m が偶数なら m/2 を出力します。m が奇数で長さも奇数なら (m+1)/2 を出力します。m が奇数で長さが偶数なら、1 の個数が奇数となり偶数長の回文では成り立たないので −1 を出力します。"
+    ],
+    "ko": [
+      "i번째 문자와 뒤에서 i번째 문자를 한 쌍으로 봅니다. 팰린드롬이 되려면 모든 쌍이 일치하기만 하면 되므로, 서로 다른 쌍의 개수가 중요하며 이를 m이라 합니다.",
+      "한 번의 교환은 두 위치만 움직이므로 최대 두 쌍을 고치고, 최소 ⌈m/2⌉번의 교환이 필요합니다. 어긋난 두 쌍은 한 번의 교환으로 함께 고칠 수 있습니다. m이 홀수이면 마지막에 남은 쌍은 가운데 문자의 도움이 필요합니다.",
+      "m을 셉니다. m이 짝수이면 m/2를 출력하고, m이 홀수이고 길이가 홀수이면 (m+1)/2를 출력합니다. m이 홀수이고 길이가 짝수이면 1의 개수가 홀수인데 짝수 길이 팰린드롬은 이를 허용하지 않으므로 −1을 출력합니다."
+    ],
+    "vi": [
+      "Coi ký tự thứ i và ký tự thứ i tính từ cuối là một cặp. Xâu đối xứng chỉ cần mọi cặp giống nhau, nên điều duy nhất quan trọng là có bao nhiêu cặp khác nhau; gọi số đó là m.",
+      "Một lần hoán đổi chỉ di chuyển hai vị trí, nên sửa được tối đa hai cặp, và cần ít nhất ⌈m/2⌉ lần hoán đổi; hai cặp lệch có thể được sửa cùng lúc bằng một lần hoán đổi. Khi m lẻ, cặp cuối cùng còn lại cần ký tự ở giữa hỗ trợ.",
+      "Đếm m. Nếu m chẵn, in m/2; nếu m lẻ và độ dài lẻ, in (m+1)/2; nếu m lẻ và độ dài chẵn thì số chữ số 1 là số lẻ, điều mà không xâu đối xứng độ dài chẵn nào cho phép, nên in −1."
     ]
   },
   "explanationEn": "## Problem\n\nOne operation swaps the characters at any two positions (they do not need to be adjacent). Find the minimum number of swaps that turns a 01 string into a palindrome, or output −1 if it cannot be done.\n\n## Approach\n\nPair position i with n−1−i, and let m be the number of pairs whose characters differ.\n\n- One swap changes at most two positions, so it fixes at most two pairs. When m is even, swap the 0 of one \"01\" pair with the 1 of another \"10\" pair (or pair them up in a similar way), fixing two pairs per swap, so the answer is m/2.\n- When m is odd and the length is odd, the last remaining pair can be fixed by swapping with the middle character (whatever the middle character is), so the answer is (m+1)/2.\n- When m is odd and the length is even, the number of 1s has the same parity as m, so it is odd; an even-length palindrome must contain an even number of 1s, and swaps do not change the number of 1s, so there is no solution.\n\n## Correctness\n\nLower bound: each swap touches only two positions, so at most two pairs go from unequal to equal, and at least ⌈m/2⌉ swaps are needed; the construction above reaches the lower bound exactly. The no-solution condition comes from the parity of the number of 1s.\n\n## Complexity\n\nO(n).\n\n## Independent verification\n\nThe oracle derives feasibility from the number of 1s, the number of 0s and the parity of the length, and re-derives the answer by counting the mismatched 01 pairs and 10 pairs separately; on small data, a BFS over the swap graph also finds the shortest number of steps. All 01 strings of length 1..9 are enumerated exhaustively, the BFS results are compared with the formula one by one, and the reference program is actually run on each. Under the rules the original example gives 2 (first swap (4,5), then swap (1,2) to get 1001001). The wrong solutions cover one swap per pair, declaring every odd m unsolvable, and ignoring the no-solution case together with rounding down."

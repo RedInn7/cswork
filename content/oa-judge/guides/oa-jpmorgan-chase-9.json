@@ -13,6 +13,21 @@
       "A signal passes every filter exactly when it is at least every lower bound and at most every upper bound.",
       "The intersection of closed intervals is again a closed interval, from the largest lower bound to the smallest upper bound; just count the signals inside it.",
       "After reading the frequencies, scan the m filters for left = max lower bound and right = min upper bound; then count the frequencies with left ≤ f ≤ right (repeated frequencies count separately) and print the count."
+    ],
+    "ja": [
+      "信号がすべてのフィルターを通過するのは、すべての下限以上で、かつすべての上限以下であるときに限ります。",
+      "閉区間の共通部分はやはり閉区間で、最大の下限から最小の上限までです。その内側にある信号を数えるだけです。",
+      "周波数を読み込んだ後、m 個のフィルターを走査して left = 下限の最大値、right = 上限の最小値を求めます。その後、left ≤ f ≤ right を満たす周波数を数え(重複する周波数は別々に数えます)、その個数を出力します。"
+    ],
+    "ko": [
+      "신호는 모든 하한 이상이고 모든 상한 이하일 때, 그리고 그 때에만 모든 필터를 통과합니다.",
+      "닫힌 구간들의 교집합은 다시 닫힌 구간이며 가장 큰 하한부터 가장 작은 상한까지입니다. 그 안의 신호를 세기만 하면 됩니다.",
+      "주파수를 읽은 뒤 m개의 필터를 훑어 left = 하한의 최댓값, right = 상한의 최솟값을 구합니다. 그런 다음 left ≤ f ≤ right인 주파수의 수를 세어(반복된 주파수는 따로 센다) 출력합니다."
+    ],
+    "vi": [
+      "Một tín hiệu qua được mọi bộ lọc đúng khi nó không nhỏ hơn mọi cận dưới và không lớn hơn mọi cận trên.",
+      "Giao của các khoảng đóng lại là một khoảng đóng, từ cận dưới lớn nhất đến cận trên nhỏ nhất; chỉ cần đếm các tín hiệu nằm trong đó.",
+      "Sau khi đọc các tần số, quét m bộ lọc để lấy left = cận dưới lớn nhất và right = cận trên nhỏ nhất; rồi đếm các tần số có left ≤ f ≤ right (tần số lặp lại được đếm riêng) và in số đếm."
     ]
   },
   "explanationEn": "## Approach\n\nThe intersection's lower bound is the maximum of all lower bounds and its upper bound is the minimum of all upper bounds; count the signals that fall inside it.\n\n## Proof of correctness\n\nA signal passes every filter if and only if it is no less than every lower bound and no greater than every upper bound, which is equivalent to lying in the closed range from the largest lower bound to the smallest upper bound; counting item by item keeps repeated signals.\n\n## Complexity\n\nO(n+m) time and O(n+m) space for parsing."

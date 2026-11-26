@@ -13,6 +13,21 @@
       "Transfers never change the total S of inv1, and any non-negative array with the same total can be reached step by step. So the only real constraint is that the target values of the matched positions sum to at most S, with the remainder placed on unmatched positions.",
       "If S equals the total of inv2, every position can be matched. Otherwise at least one position must absorb the difference, so at most n−1 can match; within that cap, to match as many as possible, prefer positions with small target values.",
       "Compute both sums and print n if they are equal; otherwise build count buckets of inv2 over 1..10000, go through the values v from small to large, and each time take min(count of v, remaining budget divided by v and rounded down, n−1 minus the matches so far), subtract their cost from the budget and add them to the count; print the count."
+    ],
+    "ja": [
+      "移し替えで inv1 の合計 S は変わらず、合計が同じ非負の配列は、どれも 1 ステップずつで到達できます。したがって実質的な制約は、一致させる位置の目標値の合計が S 以下であることだけで、残りは一致させない位置に置きます。",
+      "S が inv2 の合計に等しければ、すべての位置を一致させられます。そうでなければ、少なくとも 1 つの位置が差分を吸収しなければならないので、一致できるのは高々 n−1 個です。その上限の範囲で、できるだけ多く一致させるには、目標値の小さい位置を優先します。",
+      "両方の合計を計算し、等しければ n を出力します。そうでなければ、inv2 の 1..10000 に対する個数のバケットを作り、値 v を小さい方から大きい方へ見て、毎回 min(v の個数, 残りの予算を v で割った商（切り捨て）, n−1 から現在までの一致数を引いた値) 個を取ります。そのコストを予算から引き、一致数に加えます。一致数を出力します。"
+    ],
+    "ko": [
+      "이전은 inv1의 총합 S를 바꾸지 않으며, 같은 합을 가진 음이 아닌 배열은 단계적으로 모두 도달할 수 있습니다. 따라서 실제 제약은 맞춘 위치들의 목표 값의 합이 S 이하이고, 나머지는 맞추지 않은 위치에 놓이는 것뿐입니다.",
+      "S가 inv2의 합과 같으면 모든 위치를 맞출 수 있습니다. 그렇지 않으면 적어도 한 위치가 차이를 흡수해야 하므로 최대 n−1개까지만 맞출 수 있고, 그 한도 안에서 최대한 많이 맞추려면 목표 값이 작은 위치를 우선합니다.",
+      "두 합을 계산해 같으면 n을 출력합니다. 그렇지 않으면 inv2의 개수 버킷을 1..10000 범위로 만들고, 값 v를 작은 것부터 큰 것까지 훑으며 매번 min(v의 개수, 남은 예산을 v로 나눈 몫, n−1에서 지금까지 맞춘 수를 뺀 값)만큼 취해 비용을 예산에서 빼고 개수에 더합니다. 개수를 출력합니다."
+    ],
+    "vi": [
+      "Các lần chuyển không bao giờ làm thay đổi tổng S của inv1, và mọi mảng không âm có cùng tổng đều đạt được từng bước. Vì vậy ràng buộc thực sự duy nhất là tổng các giá trị đích của các vị trí khớp phải không quá S, phần còn lại đặt vào các vị trí không khớp.",
+      "Nếu S bằng tổng của inv2, mọi vị trí đều khớp được. Ngược lại ít nhất một vị trí phải hấp thụ phần chênh lệch, nên tối đa n−1 vị trí khớp; trong giới hạn đó, để khớp được nhiều nhất, ưu tiên các vị trí có giá trị đích nhỏ.",
+      "Tính cả hai tổng và in n nếu chúng bằng nhau; ngược lại xây các bucket đếm của inv2 trên 1..10000, duyệt các giá trị v từ nhỏ đến lớn, và mỗi lần lấy min(số lượng của v, ngân sách còn lại chia v làm tròn xuống, n−1 trừ số khớp đã có), trừ chi phí của chúng khỏi ngân sách và cộng vào biến đếm; in ra biến đếm."
     ]
   },
   "explanationEn": "## Approach\n\nThe total inventory S never changes. If it equals the target sum, every position can be matched; otherwise go through target values from smallest to largest and use the budget S to match as many positions as possible, but at most n−1. Implement it with counting buckets over the value range 10000.\n\n## Proof of correctness\n\nAny non-negative array with the same sum as the original inventory can be obtained by transferring from surplus positions to deficit positions, with each supplying position keeping a valid positive balance at every step. Matching a set of targets needs at least the sum of their values in inventory, so choosing the smallest values gives the largest count. If the totals differ, not every position can match, and at least one position must be left to absorb the remainder; if that position were also equal, either the match count could be increased or all the totals would be equal, contradicting the premise. So the budget bound is achievable.\n\n## Complexity\n\nTime O(n+10000), space O(10000) excluding the input."

@@ -13,6 +13,21 @@
       "A code of length L has L - 1 ways to split: the index part takes the first 1, 2, ..., L - 1 digits and the rest is the pattern, both non-empty.",
       "For each split, read the index as a decimal integer (leading zeros do not matter) and check whether the slice of panel starting at that position with the pattern's length equals the pattern; running past the end counts as no match.",
       "Go through the codes in input order and, within a code, by increasing index length, printing one line per split: the pattern on a match, otherwise not found. An index can have 99 digits, so cap the parsed value once it exceeds the panel length to avoid overflow. The output is compared exactly, one result per line."
+    ],
+    "ja": [
+      "長さ L のコードには L - 1 通りの分割があります。index 部分が先頭の 1、2、...、L - 1 桁を取り、残りが pattern となり、どちらも空ではありません。",
+      "各分割で、index を 10 進整数として読み(先頭のゼロは関係ありません)、panel のその位置から pattern と同じ長さだけ切り出したものが pattern と等しいかを調べます。末尾を超える場合は不一致として扱います。",
+      "コードは入力順に、各コードの中では index の長さが小さい順に処理し、分割ごとに 1 行を出力します。一致すれば pattern、そうでなければ not found です。index は 99 桁になりえるので、解析した値が panel の長さを超えた時点で上限を打ち切り、オーバーフローを避けてください。出力は厳密に比較され、結果は 1 行に 1 つです。"
+    ],
+    "ko": [
+      "길이가 L인 code는 L - 1가지 방법으로 나눌 수 있습니다. index 부분이 앞의 1, 2, ..., L - 1자리를 차지하고 나머지가 pattern이며, 두 부분 모두 비어 있지 않습니다.",
+      "분할마다 index를 십진 정수로 읽고(앞의 0은 무관), panel에서 그 위치부터 pattern의 길이만큼의 조각이 pattern과 같은지 확인합니다. 끝을 넘어가면 일치하지 않는 것으로 봅니다.",
+      "code를 입력 순서대로, 각 code 안에서는 index 길이가 늘어나는 순서로 살펴보며 분할마다 한 줄을 출력합니다. 일치하면 pattern, 아니면 not found입니다. index는 99자리일 수 있으므로 파싱한 값이 panel 길이를 넘으면 상한으로 잘라 오버플로를 피합니다. 출력은 정확히 비교되며, 한 줄에 결과 하나입니다."
+    ],
+    "vi": [
+      "Một code có độ dài L có L - 1 cách tách: phần index lấy 1, 2, ..., L - 1 chữ số đầu và phần còn lại là pattern, cả hai đều không rỗng.",
+      "Với mỗi cách tách, đọc index như một số nguyên thập phân (số 0 đứng đầu không quan trọng) và kiểm tra xem lát cắt của panel bắt đầu tại vị trí đó với độ dài của pattern có bằng pattern hay không; vượt quá cuối xâu được coi là không khớp.",
+      "Duyệt các code theo thứ tự nhập và, trong mỗi code, theo độ dài index tăng dần, in một dòng cho mỗi cách tách: in pattern nếu khớp, ngược lại in not found. Một index có thể dài tới 99 chữ số, nên hãy chặn giá trị phân tích khi nó vượt quá độ dài panel để tránh tràn số. Đầu ra được so sánh chính xác, mỗi dòng một kết quả."
     ]
   },
   "explanationEn": "## Approach\n\nFor each code, enumerate every split position where both index and pattern are non-empty, convert the left part to an integer, and compare it against the slice of panel of the same length.\n\n## Proof of correctness\n\nThe number of index digits of every legal split must be between 1 and len(code)-1, and the loop covers exactly these splits in increasing order. For each split, the pattern is output only when the index is valid and the slice is exactly equal, so each result agrees with the definition.\n\n## Complexity\n\nO(sum of L^2) time and O(sum of L) space, where L is the length of a code."

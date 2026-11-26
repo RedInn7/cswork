@@ -13,6 +13,21 @@
       "A leaf without a coin never has to be entered, and a leaf with a coin can be collected from distance 2, so the only part you must walk is the subtree connecting all coins after shrinking it by two layers.",
       "First repeatedly delete coin-free leaves, as in a topological peel; then delete two layers of leaves from what remains, layer by layer; every remaining edge must be walked twice on a closed route.",
       "Track each node current degree and an alive flag, with the edge count starting at n - 1; queue every node with degree <= 1 and no coin, and on deleting it decrement the edge count per removed edge and queue a neighbour whose degree drops to <= 1 and has no coin; then take all alive nodes of degree <= 1 as a layer and delete two layers (a neighbour whose degree becomes exactly 1 joins the next layer); the answer is 2 * max(0, remaining edges)."
+    ],
+    "ja": [
+      "コインのない葉には入る必要がなく、コインのある葉も距離 2 から集められます。したがって実際に歩く必要があるのは、すべてのコインをつなぐ部分木を 2 層分縮めたものだけです。",
+      "まずトポロジカル順のようにコインのない葉を繰り返し削除し、残った部分から葉を 1 層ずつ 2 層分削除します。閉路で歩くには、残った各辺を 2 回ずつ通る必要があります。",
+      "各ノードの現在の次数と生存フラグを持ち、辺数は n - 1 から始めます。次数が 1 以下でコインのないノードをすべてキューに入れ、削除するたびに取り除いた辺ごとに辺数を減らし、次数が 1 以下になりコインのない隣接ノードをキューに入れます。次に、生存している次数 1 以下のノードを 1 つの層として 2 層分削除します（次数がちょうど 1 になった隣接ノードは次の層に入ります）。答えは 2 * max(0, 残りの辺数) です。"
+    ],
+    "ko": [
+      "동전이 없는 리프는 들어갈 필요가 없고, 동전이 있는 리프는 거리 2에서 수집할 수 있습니다. 따라서 실제로 걸어야 하는 부분은 모든 동전을 잇는 서브트리를 두 겹 줄인 것뿐입니다.",
+      "먼저 위상 정렬 방식으로 동전이 없는 리프를 반복해서 삭제합니다. 그다음 남은 것에서 리프 두 겹을 층별로 삭제합니다. 순환 경로에서는 남은 모든 간선을 두 번씩 지나야 합니다.",
+      "각 노드의 현재 차수와 alive 플래그를 관리하고, 간선 수는 n - 1로 시작합니다. 차수가 <= 1이면서 동전이 없는 노드를 모두 큐에 넣고, 삭제할 때 제거되는 간선마다 간선 수를 줄이며, 차수가 <= 1이 되고 동전이 없는 이웃을 큐에 넣습니다. 그다음 차수가 <= 1인 살아 있는 노드를 한 층으로 보고 두 층을 삭제합니다(차수가 정확히 1이 된 이웃은 다음 층에 합류). 정답은 2 * max(0, 남은 간선 수)입니다."
+    ],
+    "vi": [
+      "Lá không có xu thì không cần vào, còn lá có xu có thể được thu từ khoảng cách 2, nên phần duy nhất bạn phải đi qua là cây con nối mọi đồng xu sau khi đã thu nhỏ đi hai lớp.",
+      "Trước hết lặp lại việc xóa các lá không có xu, như kiểu bóc theo thứ tự tô pô; sau đó xóa hai lớp lá của phần còn lại, từng lớp một; mỗi cạnh còn lại phải được đi qua hai lần trong một lộ trình khép kín.",
+      "Theo dõi bậc hiện tại của mỗi nút và cờ alive, với số cạnh ban đầu là n - 1; đưa vào hàng đợi mọi nút có bậc <= 1 và không có xu, khi xóa một nút thì giảm số cạnh theo mỗi cạnh bị bỏ và đưa vào hàng đợi láng giềng có bậc giảm xuống <= 1 và không có xu; sau đó lấy mọi nút còn sống có bậc <= 1 làm một lớp và xóa hai lớp (láng giềng có bậc thành đúng 1 sẽ thuộc lớp kế tiếp); đáp án là 2 * max(0, số cạnh còn lại)."
     ]
   },
   "explanationEn": "## Approach\n\nFirst repeatedly delete leaves without coins, then delete two layers of leaves simultaneously, and multiply the number of remaining edges by 2.\n\n## Proof of correctness\n\nA coin-free leaf is not part of the minimal subtree connecting all coins and never needs to be entered. Every leaf of that subtree carries a coin, and collecting at distance 2 allows the outer two layers to be skipped; for every edge from the third layer inward, both sides contain a coin at least two layers away from the edge, so any route that collects everything must cross that edge. Walking each edge of the remaining connected tree there and back covers all coins, and a closed route must traverse every necessary edge at least twice, so the lower and upper bounds coincide; if nothing remains, staying at a suitable center is enough.\n\n## Complexity\n\nO(n) time, O(n) space."

@@ -13,6 +13,21 @@
       "If a reversed range starts and ends with the same character, shrinking both ends inward by one gives the same result; so every result that differs from the original corresponds to a range whose two end characters differ.",
       "Ranges with different end characters all produce different results (their endpoints are the first and last positions where the result differs from the original), so the answer is the number of such ranges plus 1 for the original string.",
       "Scan from left to right keeping how many times each letter has appeared; at index i with character c, every earlier character not equal to c forms such a range with it, so add i - count[c] to the answer and then increment count[c]; start the answer at 1. The result can exceed 32 bits, so use 64-bit integers."
+    ],
+    "ja": [
+      "反転する区間の両端が同じ文字なら、両端を 1 つずつ内側に縮めても同じ結果になります。したがって、元と異なる結果はすべて、両端の文字が異なる区間に対応します。",
+      "両端の文字が異なる区間はすべて異なる結果を生みます（その端点は、結果が元の文字列と異なる最初と最後の位置だからです）。したがって、答えはそのような区間の個数に、元の文字列の 1 を加えた値です。",
+      "左から右へ走査しながら、各文字がこれまでに現れた回数を保持します。インデックス i の文字 c について、それより前にある c と異なる文字はそれぞれ 1 つの区間を作るので、i - count[c] を答えに加算し、その後 count[c] を 1 増やします。答えは 1 から始めます。結果は 32 ビットを超えうるので、64 ビット整数を使ってください。"
+    ],
+    "ko": [
+      "뒤집는 구간의 양 끝 문자가 같으면, 양 끝을 안쪽으로 한 칸씩 줄여도 같은 결과가 나옵니다. 따라서 원래 문자열과 다른 모든 결과는 양 끝 문자가 다른 구간에 대응합니다.",
+      "양 끝 문자가 다른 구간은 모두 서로 다른 결과를 만듭니다(끝점이 결과가 원래 문자열과 처음으로, 그리고 마지막으로 달라지는 위치이기 때문입니다). 따라서 답은 이런 구간의 수에 원래 문자열 1을 더한 값입니다.",
+      "왼쪽에서 오른쪽으로 훑으면서 각 알파벳이 등장한 횟수를 유지합니다. 인덱스 i의 문자 c에 대해, c와 같지 않은 앞쪽 문자는 모두 이런 구간을 이루므로 answer에 i - count[c]를 더한 뒤 count[c]를 증가시킵니다. 답의 초깃값은 1입니다. 결과가 32비트를 넘을 수 있으므로 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Nếu một đoạn được đảo có ký tự đầu và cuối giống nhau, thu hẹp cả hai đầu vào trong một đơn vị cho cùng kết quả; vì vậy mọi kết quả khác xâu ban đầu đều tương ứng với một đoạn có hai ký tự đầu mút khác nhau.",
+      "Các đoạn có ký tự đầu mút khác nhau đều cho kết quả khác nhau (đầu mút của chúng là vị trí đầu tiên và cuối cùng mà kết quả khác xâu ban đầu), nên đáp án là số đoạn như vậy cộng 1 cho xâu ban đầu.",
+      "Quét từ trái sang phải và giữ số lần mỗi chữ cái đã xuất hiện; tại chỉ số i với ký tự c, mỗi ký tự đứng trước khác c tạo một đoạn như vậy với nó, nên cộng i - count[c] vào đáp án rồi tăng count[c]; khởi đầu đáp án là 1. Kết quả có thể vượt quá 32 bit nên hãy dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nFrom the total number of endpoint pairs, remove the pairs whose two ends are equal, then add the original string; while scanning, each character contributes the number of earlier characters different from it.\n\n## Correctness\n\nFor any reversed range, equal first and last characters can be removed inward at the same time without changing the result. So every result other than the original string corresponds uniquely to a range whose two ends differ, and its endpoints are exactly the first and last positions where the result differs from the original; ranges with different endpoints cannot produce the same result. Counting the original string as well gives all possible results.\n\n## Complexity\n\nTime O(n), auxiliary space O(26)."

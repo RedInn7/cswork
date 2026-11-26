@@ -13,6 +13,21 @@
       "Use an exchange argument: if capacities c1 < c2 receive loads l1 < l2, swapping them changes the cost by (c1-c2)(l2-l1) < 0, so in an optimal arrangement a smaller capacity must get a larger load; swapping loads between positions of equal capacity does not change the cost.",
       "So the multiset of loads each capacity group receives is fixed: pair capacities in ascending order with loads in descending order. The only freedom left is inside a group of equal capacities, and for the lexicographically smallest result the smaller index in a group should take the smaller load.",
       "Sort the loads in descending order; sort the indices by (capacity ascending, index descending) and give the j-th largest load to the j-th index, so within a group the larger indices take the larger loads first and the smaller indices get the smaller loads; print the result in original index order. You never need the total cost, which can exceed 64 bits."
+    ],
+    "ja": [
+      "交換論法を使います。capacity が c1 < c2 の位置に load が l1 < l2 が割り当てられているとき、入れ替えるとコストの変化は (c1-c2)(l2-l1) < 0 になります。したがって最適な配置では、小さい capacity に大きい load を割り当てる必要があります。capacity が等しい位置の間で load を入れ替えてもコストは変わりません。",
+      "したがって、各 capacity グループが受け取る load の多重集合は決まります。capacity を昇順、load を降順で対応させるのです。残る自由度は capacity が等しいグループの内部だけで、辞書順最小にするには、グループ内の小さいインデックスに小さい load を割り当てます。",
+      "load を降順にソートします。インデックスを (capacity の昇順, インデックスの降順) でソートし、j 番目に大きい load を j 番目のインデックスに割り当てます。これでグループ内では大きいインデックスが先に大きい load を取り、小さいインデックスが小さい load を取ります。結果は元のインデックス順に出力します。総コストは 64ビットを超えることがあるので、計算する必要はありません。"
+    ],
+    "ko": [
+      "교환 논증을 사용합니다. capacity c1 < c2가 load l1 < l2를 받았다면 서로 바꿨을 때 비용이 (c1-c2)(l2-l1) < 0만큼 변하므로, 최적 배치에서는 작은 capacity가 큰 load를 받아야 합니다. capacity가 같은 위치끼리 load를 바꾸는 것은 비용을 바꾸지 않습니다.",
+      "따라서 각 capacity 그룹이 받는 load의 다중 집합은 고정되어 있습니다. capacity는 오름차순으로, load는 내림차순으로 짝짓습니다. 남은 자유는 capacity가 같은 그룹 내부뿐이며, 사전순으로 가장 작은 결과를 위해서는 그룹 안에서 작은 인덱스가 작은 load를 가져야 합니다.",
+      "load를 내림차순으로 정렬합니다. 인덱스는 (capacity 오름차순, 인덱스 내림차순)으로 정렬하여 j번째로 큰 load를 j번째 인덱스에 줍니다. 그러면 그룹 안에서 큰 인덱스가 큰 load를 먼저 가져가고 작은 인덱스가 작은 load를 얻습니다. 결과는 원래 인덱스 순서로 출력합니다. 총 비용은 64비트를 넘을 수 있으므로 계산할 필요가 없습니다."
+    ],
+    "vi": [
+      "Dùng lập luận hoán đổi: nếu capacity c1 < c2 nhận load l1 < l2, hoán đổi chúng làm chi phí thay đổi (c1-c2)(l2-l1) < 0, nên trong cách sắp xếp tối ưu capacity nhỏ hơn phải nhận load lớn hơn; hoán đổi load giữa các vị trí có cùng capacity không làm đổi chi phí.",
+      "Vì vậy đa tập load mà mỗi nhóm capacity nhận được là cố định: ghép capacity tăng dần với load giảm dần. Tự do duy nhất còn lại nằm trong nhóm các capacity bằng nhau, và để kết quả nhỏ nhất theo thứ tự từ điển thì chỉ số nhỏ hơn trong nhóm nên nhận load nhỏ hơn.",
+      "Sắp xếp load giảm dần; sắp xếp các chỉ số theo (capacity tăng dần, chỉ số giảm dần) và gán load lớn thứ j cho chỉ số thứ j, để trong một nhóm các chỉ số lớn hơn nhận load lớn hơn trước còn chỉ số nhỏ hơn nhận load nhỏ hơn; in kết quả theo thứ tự chỉ số gốc. Bạn không bao giờ cần tính tổng chi phí, vì nó có thể vượt quá 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nPair capacities from small to large with loads from large to small; within positions of the same capacity, sort by original index in reverse before assigning, so that the smaller index receives the smaller load of that group.\n\n## Proof of correctness\n\nIf c1<c2 but they receive l1<l2, swapping changes the cost by (c1−c2)(l2−l1)<0, so an optimal solution cannot contain such a reversed pairing. Sorting gives the multiset of loads each capacity group should receive, and swapping within the same capacity does not change the cost. Placing each group's loads in non-decreasing order of original index makes every earliest differing position as small as possible, which gives the lexicographically smallest of all minimum-cost solutions. Swapping equal loads across groups does not change the output.\n\n## Complexity\n\nO(n log n) time, O(n) space. The reference does not need to compute the total cost, which may exceed 64 bits; the argument and the oracle use arbitrary-precision integers."

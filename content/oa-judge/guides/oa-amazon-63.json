@@ -13,6 +13,21 @@
       "Each shipment carries at most 2 items, so at least ceil(n/2) shipments are needed; items from the same warehouse cannot be paired, so if the busiest warehouse has f items, at least f shipments are needed.",
       "The larger of these lower bounds is always achievable: if one warehouse is a majority, pair its items one by one with items from other warehouses and ship the rest alone; otherwise the items can be paired across different warehouses with at most one left over.",
       "Count the occurrences of each warehouse number (sort and count runs, or use a hash map), take the largest frequency f, and print max(f, (n+1)/2)."
+    ],
+    "ja": [
+      "1 回の出荷で運べるのは最大 2 個なので、少なくとも ceil(n/2) 回の出荷が必要です。また、同じ倉庫の商品同士はペアにできないので、最も商品の多い倉庫の個数を f とすると、少なくとも f 回必要です。",
+      "この 2 つの下界のうち大きいほうは必ず達成できます。ある倉庫が過半数を占める場合は、その倉庫の商品を他の倉庫の商品と 1 つずつペアにし、残りを単独で出荷します。そうでなければ、異なる倉庫の商品同士でペアを作れ、余りは最大 1 個です。",
+      "各倉庫番号の出現回数を数え（ソートして連続区間を数えるか、ハッシュマップを使います）、最大頻度 f を求めて max(f, (n+1)/2) を出力します。"
+    ],
+    "ko": [
+      "한 번의 배송에는 물품이 최대 2개이므로 최소 ceil(n/2)번의 배송이 필요합니다. 같은 창고의 물품은 짝지을 수 없으므로, 가장 물품이 많은 창고에 f개가 있다면 최소 f번이 필요합니다.",
+      "두 하한 중 큰 값은 항상 달성할 수 있습니다. 한 창고가 과반이면 그 창고의 물품을 다른 창고의 물품과 하나씩 짝지고 나머지는 단독으로 보내면 되고, 그렇지 않으면 서로 다른 창고끼리 짝지어 많아야 하나만 남길 수 있습니다.",
+      "창고 번호별 등장 횟수를 셉니다(정렬 후 연속 구간을 세거나 해시 맵 사용). 가장 큰 빈도 f를 구하고 max(f, (n+1)/2)를 출력합니다."
+    ],
+    "vi": [
+      "Mỗi chuyến chở nhiều nhất 2 món, nên cần ít nhất ceil(n/2) chuyến; các món cùng kho không thể ghép với nhau, nên nếu kho đông nhất có f món thì cần ít nhất f chuyến.",
+      "Cận dưới lớn hơn trong hai cận trên luôn đạt được: nếu một kho chiếm đa số, hãy ghép từng món của nó với món từ các kho khác và chở phần còn lại riêng; ngược lại có thể ghép các món giữa các kho khác nhau, chỉ còn dư tối đa một món.",
+      "Đếm số lần xuất hiện của mỗi số hiệu kho (sắp xếp rồi đếm các đoạn bằng nhau, hoặc dùng bảng băm), lấy tần suất lớn nhất f và in max(f, (n+1)/2)."
     ]
   },
   "explanationEn": "## Approach\n\nLet f be the largest warehouse frequency; the answer is max(f, ceil(n/2)).\n\n## Proof of correctness\n\nAt most 2 items per shipment gives the lower bound ceil(n/2), and the busiest warehouse can send only 1 item per shipment, giving the lower bound f. If one warehouse is a majority, pair it with the other warehouses and then ship the rest alone; otherwise items from different warehouses can be paired until at most 1 item remains, reaching the larger lower bound.\n\n## Complexity\n\nO(n) time and O(n) space."

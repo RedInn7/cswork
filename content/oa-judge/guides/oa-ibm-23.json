@@ -13,6 +13,21 @@
       "The parity of a subset sum depends only on how many odd numbers are chosen; the empty set gives the even sum 0, so the answer is at least 0.",
       "Process the items one by one and keep only two states: the largest even sum and the largest odd sum achievable over the processed prefix (the odd sum is unreachable at first). Each item is either skipped or taken.",
       "For each value v: if v is even, the new even sum is max(even, even+v), and the odd sum, if reachable, becomes max(odd, odd+v); if v is odd, the new even sum is max(even, odd+v) (it stays unchanged while no odd sum is reachable), and the new odd sum is max(odd, even+v) (simply even+v while none is reachable). Take care with the parity of negative numbers, and print the even state at the end."
+    ],
+    "ja": [
+      "部分集合の和の偶奇は、選んだ奇数の個数だけで決まります。空集合は偶数の和 0 を与えるので、答えは少なくとも 0 です。",
+      "要素を 1 つずつ処理し、状態は 2 つだけ保持します。処理済みの接頭辞で達成できる、偶数和の最大値と奇数和の最大値です(奇数和は最初は到達不能です)。各要素は、飛ばすか取るかのどちらかです。",
+      "各値 v について:v が偶数なら、新しい偶数和は max(even, even+v)、奇数和が到達可能なら max(odd, odd+v) になります。v が奇数なら、新しい偶数和は max(even, odd+v)(奇数和が到達不能の間は変わりません)、新しい奇数和は max(odd, even+v)(到達不能の間は単に even+v)です。負の数の偶奇に注意し、最後に偶数の状態を出力します。"
+    ],
+    "ko": [
+      "부분집합 합의 홀짝은 고른 홀수의 개수에만 달려 있습니다. 공집합은 짝수 합 0을 주므로 답은 최소 0입니다.",
+      "원소를 하나씩 처리하며 두 상태만 유지합니다. 처리한 접두 구간에서 만들 수 있는 최대 짝수 합과 최대 홀수 합입니다(홀수 합은 처음에는 만들 수 없음). 각 원소는 건너뛰거나 고릅니다.",
+      "각 값 v에 대해, v가 짝수이면 새 짝수 합은 max(even, even+v)이고, 홀수 합이 만들 수 있는 상태라면 max(odd, odd+v)가 됩니다. v가 홀수이면 새 짝수 합은 max(even, odd+v)(홀수 합을 만들 수 없는 동안은 그대로)이고, 새 홀수 합은 max(odd, even+v)(아직 없을 때는 even+v)입니다. 음수의 홀짝에 주의하고, 마지막에 짝수 상태를 출력합니다."
+    ],
+    "vi": [
+      "Tính chẵn lẻ của tổng một tập con chỉ phụ thuộc vào số lượng số lẻ được chọn; tập rỗng cho tổng chẵn 0, nên đáp án ít nhất là 0.",
+      "Xử lý từng phần tử và chỉ giữ hai trạng thái: tổng chẵn lớn nhất và tổng lẻ lớn nhất đạt được trên tiền tố đã xử lý (ban đầu tổng lẻ chưa đạt được). Mỗi phần tử hoặc bị bỏ qua hoặc được lấy.",
+      "Với mỗi giá trị v: nếu v chẵn, tổng chẵn mới là max(even, even+v), và tổng lẻ, nếu đã đạt được, trở thành max(odd, odd+v); nếu v lẻ, tổng chẵn mới là max(even, odd+v) (giữ nguyên khi chưa có tổng lẻ nào đạt được), và tổng lẻ mới là max(odd, even+v) (đơn giản là even+v khi chưa có). Cẩn thận với tính chẵn lẻ của số âm, và cuối cùng in trạng thái chẵn."
     ]
   },
   "explanationEn": "## Approach\n\nMaintain the maximum even sum and the maximum odd sum achievable over the processed prefix, and for each item choose whether to skip or take it.\n\n## Proof of correctness\n\nInitially the empty set gives the even sum 0, and the odd state is unreachable. When an item is processed, every subset falls uniquely into one of two classes: those without the item and those with it; the latter come from the corresponding old parity state plus the value. So the item-by-item transitions cover all subsets, and keeping only the maximum for each parity is enough.\n\n## Complexity\n\nTime O(n), space O(1)."

@@ -13,6 +13,21 @@
       "The total count divided by C rounded up and the largest category divided by L rounded up are both obvious lower bounds on the number of trucks.",
       "Packages are assigned one by one and a category may be spread over many trucks; whenever the number of trucks meets both bounds, a loading with at most C per truck and at most L per category per truck always exists, so the answer is the larger bound.",
       "While reading, sum the counts and track the largest category; compute ceil(total/C) and ceil(max/L) and output the larger; when everything is 0 both terms are 0. The total can reach 2*10^14, so use 64-bit integers."
+    ],
+    "ja": [
+      "総数を C で割って切り上げた値と、最大のカテゴリを L で割って切り上げた値は、どちらもトラック数の明らかな下限です。",
+      "荷物は 1 つずつ割り当てられ、カテゴリは多くのトラックに分けてよいので、トラック数が両方の下限を満たせば、トラックごとに C 個以下、トラックごと・カテゴリごとに L 個以下の積み方が必ず存在します。したがって答えは大きい方の下限です。",
+      "読み込みながら個数を合計し、最大のカテゴリを記録します。ceil(total/C) と ceil(max/L) を計算して大きい方を出力します。すべてが 0 なら両方の項が 0 です。合計は 2*10^14 に達しうるので、64 ビット整数を使います。"
+    ],
+    "ko": [
+      "전체 개수를 C로 나눈 올림값과 가장 큰 카테고리를 L로 나눈 올림값은 둘 다 트럭 수의 자명한 하한입니다.",
+      "패키지는 하나씩 배정할 수 있고 한 카테고리를 여러 트럭에 나눌 수 있으므로, 트럭 수가 두 하한을 모두 만족하면 트럭당 최대 C개, 카테고리당 최대 L개를 지키는 적재가 항상 존재합니다. 따라서 답은 두 하한 중 큰 값입니다.",
+      "입력을 읽으면서 개수의 합과 가장 큰 카테고리를 구합니다. ceil(total/C)와 ceil(max/L)을 계산해 큰 쪽을 출력합니다. 모두 0이면 두 항 모두 0입니다. 합은 2*10^14까지 커질 수 있으므로 64비트 정수를 사용합니다."
+    ],
+    "vi": [
+      "Tổng số lượng chia C làm tròn lên và danh mục lớn nhất chia L làm tròn lên đều là các cận dưới hiển nhiên cho số xe tải.",
+      "Các gói hàng được gán từng cái một và một danh mục có thể rải ra nhiều xe; bất cứ khi nào số xe đạt cả hai cận, luôn tồn tại một cách chất hàng với tối đa C mỗi xe và tối đa L mỗi danh mục trên mỗi xe, nên đáp án là cận lớn hơn.",
+      "Trong khi đọc, cộng các số lượng và theo dõi danh mục lớn nhất; tính ceil(total/C) và ceil(max/L) rồi in giá trị lớn hơn; khi mọi thứ bằng 0 thì cả hai số hạng đều là 0. Tổng có thể đạt 2*10^14, nên hãy dùng số nguyên 64-bit."
     ]
   },
   "explanationEn": "## Approach\n\nThe answer is the larger of the total count divided by C rounded up and the largest category count divided by L rounded up.\n\n## Proof of correctness\n\nBoth terms are obviously lower bounds. Let the number of trucks m satisfy both. In the network where each category sends to every truck with capacity L and each truck sends to the sink with capacity C, everything can be loaded: for any subset S of categories, the required amount sum(S) <= min(total, |S|*m*L) <= m*min(C, |S|*L), which satisfies the cut condition of the complete bipartite capacity network. An integral flow gives a valid item-by-item loading, so the lower bound suffices.\n\n## Complexity\n\nTime O(n), space O(n) including the input; the answer uses 64-bit integers."

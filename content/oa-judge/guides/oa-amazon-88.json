@@ -13,6 +13,21 @@
       "The capacity is halved after every delivery, so it only shrinks. The key question is which package to take at each step.",
       "Among the packages that fit now, taking the heaviest is never worse: lighter packages are more likely to fit the smaller capacities later, and a package that does not fit now will never fit again.",
       "Sort the weights in descending order and check them one by one: if a weight is at most the current capacity, count it and halve the capacity (rounding down); otherwise skip it. The count at the end is the answer."
+    ],
+    "ja": [
+      "配送のたびに容量は半分になるので、容量は小さくなる一方です。各ステップでどの荷物を選ぶかが鍵になります。",
+      "今入る荷物のうち最も重いものを選んでも損はありません。軽い荷物のほうが後の小さい容量にも入りやすく、今入らない荷物は今後も入らないからです。",
+      "重さを降順に並べ替えて順に確認します。重さが現在の容量以下なら数えて容量を半分（切り捨て）にし、そうでなければ飛ばします。最後の個数が答えです。"
+    ],
+    "ko": [
+      "배송할 때마다 용량이 절반이 되므로 용량은 줄어들기만 합니다. 핵심은 매 단계에서 어떤 패키지를 고르느냐입니다.",
+      "지금 들어가는 패키지 중에서는 가장 무거운 것을 고르는 편이 절대 손해가 아닙니다. 가벼운 패키지는 이후 더 작아진 용량에도 들어갈 가능성이 높고, 지금 들어가지 않는 패키지는 앞으로도 영원히 들어가지 않기 때문입니다.",
+      "무게를 내림차순으로 정렬하고 하나씩 확인합니다. 무게가 현재 용량 이하이면 세고 용량을 절반(내림)으로 줄이며, 아니면 건너뜁니다. 마지막에 센 개수가 답입니다."
+    ],
+    "vi": [
+      "Tải trọng bị chia đôi sau mỗi lần giao nên chỉ có thể giảm. Câu hỏi then chốt là ở mỗi bước nên lấy kiện nào.",
+      "Trong các kiện đang vừa tải trọng, lấy kiện nặng nhất không bao giờ tệ hơn: kiện nhẹ hơn dễ vừa với các tải trọng nhỏ hơn về sau, còn kiện hiện không vừa thì sẽ không bao giờ vừa nữa.",
+      "Sắp xếp khối lượng giảm dần rồi xét từng kiện: nếu khối lượng không vượt quá tải trọng hiện tại thì đếm nó và chia đôi tải trọng (làm tròn xuống); ngược lại bỏ qua. Số đếm cuối cùng là đáp án."
     ]
   },
   "explanationEn": "## Approach\n\nScan the weights from largest to smallest; deliver a package if it fits and halve the capacity, and skip it if it does not.\n\n## Proof of Correctness\n\nAmong the packages that currently fit, choosing the largest one first does not lose any later capacity slot: if an optimal plan chooses a smaller package, swap it with the current one and keep the smaller package for a later capacity that is not larger; the total number of deliveries does not decrease. A package that is too heavy will never fit later either, since the capacity only decreases.\n\n## Complexity\n\nTime O(n log n), space O(n)."

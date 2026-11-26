@@ -13,6 +13,21 @@
       "In a self-contained substring, the character at the left end cannot occur again before the left end, or that occurrence would fall outside. So a valid left end must be the first occurrence of some character, which leaves at most 26 candidates.",
       "Fix a left end and scan right, keeping the rightmost occurrence of every character seen so far. If you meet a character whose first occurrence is before the left end, no further extension can fix it, so stop; whenever the scan position equals that rightmost occurrence, the range contains every occurrence of its characters and is self-contained.",
       "Compute the first and last occurrence of each character; for each character that occurs, use its first occurrence as the left end and scan right, keeping end as the largest last occurrence seen, and break on a character whose first occurrence is before the left end; whenever the scan position equals end and the length is less than the whole string, update the answer; print 0 if nothing qualifies."
+    ],
+    "ja": [
+      "自己完結する部分文字列では、左端の文字が左端より前に再び現れてはいけません。現れると、その出現が外側に出てしまうからです。したがって有効な左端は、ある文字の最初の出現でなければならず、候補は高々 26 個です。",
+      "左端を固定して右へ走査し、これまでに見た各文字の最も右の出現位置を保持します。最初の出現が左端より前にある文字に出会ったら、以降どう伸ばしても直せないので打ち切ります。走査位置がその最も右の出現位置に等しくなったとき、その範囲は含まれる文字のすべての出現を含み、自己完結しています。",
+      "各文字の最初と最後の出現位置を計算します。出現する文字ごとに、最初の出現位置を左端として右へ走査し、end を見た中で最大の最後の出現位置として保持します。最初の出現位置が左端より前にある文字に出会ったら break します。走査位置が end に等しく、長さが文字列全体より短いなら答えを更新します。条件を満たすものがなければ 0 を出力します。"
+    ],
+    "ko": [
+      "자기완결 부분 문자열에서 왼쪽 끝 문자가 왼쪽 끝 앞에 다시 등장하면 그 등장 위치가 범위 밖에 놓이게 됩니다. 따라서 유효한 왼쪽 끝은 어떤 문자의 첫 등장 위치여야 하고, 후보는 최대 26개입니다.",
+      "왼쪽 끝을 고정하고 오른쪽으로 훑으면서 지금까지 본 각 문자의 가장 오른쪽 등장 위치를 유지합니다. 첫 등장 위치가 왼쪽 끝보다 앞서는 문자를 만나면 더 확장해도 해결되지 않으므로 멈춥니다. 훑는 위치가 그 가장 오른쪽 등장 위치와 같아지면 그 범위는 포함된 문자들의 모든 등장을 담고 있어 자기완결입니다.",
+      "각 문자의 첫 등장과 마지막 등장을 계산합니다. 등장하는 각 문자에 대해 그 첫 등장 위치를 왼쪽 끝으로 삼아 오른쪽으로 훑으면서 end를 지금까지 본 마지막 등장 위치의 최댓값으로 유지하고, 첫 등장 위치가 왼쪽 끝보다 앞서는 문자에서 break합니다. 훑는 위치가 end와 같고 길이가 전체 문자열보다 짧을 때마다 답을 갱신하며, 조건을 만족하는 것이 없으면 0을 출력합니다."
+    ],
+    "vi": [
+      "Trong một xâu con khép kín, ký tự ở đầu trái không thể xuất hiện lại trước đầu trái, nếu không lần xuất hiện đó sẽ nằm ngoài. Vì vậy đầu trái hợp lệ phải là lần xuất hiện đầu tiên của một ký tự nào đó, chỉ còn tối đa 26 ứng viên.",
+      "Cố định một đầu trái và duyệt sang phải, giữ vị trí xuất hiện ngoài cùng bên phải của mọi ký tự đã gặp. Nếu gặp ký tự có lần xuất hiện đầu tiên nằm trước đầu trái thì không mở rộng nào có thể sửa được, hãy dừng; mỗi khi vị trí duyệt bằng vị trí xuất hiện ngoài cùng bên phải đó, đoạn này chứa mọi lần xuất hiện của các ký tự của nó và là khép kín.",
+      "Tính lần xuất hiện đầu tiên và cuối cùng của mỗi ký tự; với mỗi ký tự có mặt, dùng lần xuất hiện đầu tiên của nó làm đầu trái và duyệt sang phải, giữ end là lần xuất hiện cuối cùng lớn nhất đã thấy, và break khi gặp ký tự có lần xuất hiện đầu tiên nằm trước đầu trái; mỗi khi vị trí duyệt bằng end và độ dài nhỏ hơn cả xâu thì cập nhật đáp án; in 0 nếu không có đoạn nào thỏa mãn."
     ]
   },
   "explanationEn": "## Approach\n\nA valid left end must be the first occurrence of some character, so there are at most 26 of them. Scan right from each one, maintaining the rightmost occurrence of the characters seen so far; stop as soon as you meet a character whose first occurrence is before the left end.\n\n## Proof of correctness\n\nIf the left-end character also appears further left, the range cannot be self-contained. If the scan finds a character that appears before the left end, no further extension can fix it; otherwise, once the scan reaches the last occurrence of every current character, the range contains exactly all of their occurrences. Every possible left end and right end is enumerated, and the whole string is excluded, so no solution is missed.\n\n## Complexity\n\nTime O(26n), space O(26)."

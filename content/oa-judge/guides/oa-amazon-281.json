@@ -13,6 +13,21 @@
       "Days only range over 0..100000, so you can compute the online count for every day directly and then count how many days reach the maximum.",
       "Each user is online on every day of [login, logout]. With a difference array, add 1 at login and subtract 1 at logout+1; the prefix sums are the daily online counts, inclusive at both ends.",
       "Build a difference array of length 100002 and fill it; sweep days 0 through 100000 accumulating the prefix sum; when the current count exceeds the best so far, update the best and reset the day count to 1, and when it equals the best, increase the day count; print the day count."
+    ],
+    "ja": [
+      "日は 0..100000 の範囲しかないので、各日のオンライン人数を直接計算し、最大に達する日数を数えられます。",
+      "各ユーザーは [login, logout] のすべての日にオンラインです。差分配列で、login に 1 を加え、logout+1 から 1 を引きます。累積和が各日のオンライン人数で、両端を含みます。",
+      "長さ 100002 の差分配列を作って埋めます。0 日目から 100000 日目まで累積和を取りながら走査します。現在の人数がこれまでの最良値を超えたら、最良値を更新して日数を 1 にリセットし、等しければ日数を増やします。日数を出力します。"
+    ],
+    "ko": [
+      "날짜는 0..100000 범위뿐이므로 매일의 접속자 수를 직접 계산한 뒤 최댓값에 도달하는 날의 수를 세면 됩니다.",
+      "각 사용자는 [login, logout]의 모든 날에 접속해 있습니다. 차분 배열로 login에 1을 더하고 logout+1에서 1을 빼면 누적 합이 날마다의 접속자 수가 되며 양 끝을 포함합니다.",
+      "길이 100002의 차분 배열을 만들어 채웁니다. 0일부터 100000일까지 훑으며 누적 합을 구하고, 현재 값이 지금까지의 최댓값을 넘으면 최댓값을 갱신하고 날 수를 1로 되돌리며, 같으면 날 수를 늘립니다. 날 수를 출력합니다."
+    ],
+    "vi": [
+      "Các ngày chỉ nằm trong 0..100000, nên có thể tính trực tiếp số người trực tuyến của mỗi ngày rồi đếm xem có bao nhiêu ngày đạt giá trị lớn nhất.",
+      "Mỗi người dùng trực tuyến mọi ngày trong [login, logout]. Với mảng hiệu, cộng 1 tại login và trừ 1 tại logout+1; các tổng tiền tố là số người trực tuyến mỗi ngày, bao gồm cả hai đầu mút.",
+      "Xây một mảng hiệu độ dài 100002 và điền vào; quét các ngày từ 0 đến 100000, tích lũy tổng tiền tố; khi số lượng hiện tại vượt quá giá trị tốt nhất đến lúc đó, cập nhật giá trị tốt nhất và đặt số ngày về 1, còn khi bằng giá trị tốt nhất thì tăng số ngày; in ra số ngày."
     ]
   },
   "explanationEn": "## Approach\n\nUse a difference array: add 1 at login and subtract 1 at logout+1, scan 0..100000, and update the maximum count and the number of days that reach it.\n\n## Proof of correctness\n\nThe prefix sum of the difference array counts exactly the users who have started and have not yet passed the day after their logout, which is the coverage count of intervals inclusive at both ends. On a higher count, reset the number of days to 1; on an equal peak, add 1; ignore lower counts. In the end every peak day is counted exactly once.\n\n## Complexity\n\nTime O(n+100001), space O(100002)."

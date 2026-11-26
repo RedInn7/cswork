@@ -13,6 +13,21 @@
       "Deleting some nodes of a linked list does not change the relative order of the others, so the result is exactly the nodes whose value is at most x, in the original order.",
       "Scan the values in order, keeping those <= x and skipping those > x; this is the same as linking each deleted node's predecessor straight to its successor.",
       "Read n, x and the n values; test each value in turn and append it to the output when it is <= x (values equal to x stay), skipping it otherwise; print the kept values separated by spaces, an empty line if everything was deleted, and never the node count."
+    ],
+    "ja": [
+      "連結リストの一部のノードを削除しても、残りのノードの相対的な順序は変わりません。したがって結果は、値が x 以下のノードを元の順序で並べたものにちょうど一致します。",
+      "値を順に走査し、<= x のものを残し、> x のものを飛ばします。これは、削除するノードの前のノードを、その次のノードに直接つなぐことと同じです。",
+      "n、x、n 個の値を読み、各値を順に調べて <= x なら出力に追加し（x に等しい値は残ります）、そうでなければ飛ばします。残った値を空白区切りで出力し、すべて削除された場合は空行を、ノード数は決して出力しません。"
+    ],
+    "ko": [
+      "연결 리스트에서 일부 노드를 삭제해도 나머지의 상대적 순서는 변하지 않으므로, 결과는 정확히 값이 x 이하인 노드들을 원래 순서대로 모은 것입니다.",
+      "값을 순서대로 스캔하며 <= x인 것은 유지하고 > x인 것은 건너뜁니다. 이는 삭제된 노드의 이전 노드를 바로 그 다음 노드에 연결하는 것과 같습니다.",
+      "n, x와 n개의 값을 읽습니다. 각 값을 차례로 검사하여 <= x이면 출력에 추가하고(x와 같은 값은 유지), 아니면 건너뜁니다. 유지된 값을 공백으로 구분하여 출력하고, 전부 삭제되었으면 빈 줄을, 노드 개수는 절대 출력하지 않습니다."
+    ],
+    "vi": [
+      "Xóa một số nút của danh sách liên kết không làm đổi thứ tự tương đối của các nút còn lại, nên kết quả chính xác là các nút có giá trị không quá x, theo thứ tự ban đầu.",
+      "Duyệt các giá trị theo thứ tự, giữ những giá trị <= x và bỏ qua những giá trị > x; điều này giống với việc nối thẳng nút đứng trước của mỗi nút bị xóa tới nút đứng sau của nó.",
+      "Đọc n, x và n giá trị; kiểm tra từng giá trị theo thứ tự và thêm vào đầu ra khi nó <= x (các giá trị bằng x được giữ lại), nếu không thì bỏ qua; in các giá trị được giữ lại cách nhau bởi dấu cách, một dòng trống nếu mọi nút đều bị xóa, và không bao giờ in số lượng nút."
     ]
   },
   "explanationEn": "## Approach\n\nRead the nodes in order and output only those whose value does not exceed x; in a linked-list implementation this is equivalent to pointing each deleted node's predecessor at its successor.\n\n## Proof of correctness\n\nEvery node with a value greater than x is skipped exactly once, and every other node is output exactly once; the order from head to tail is unchanged, so the result is exactly the list after deleting the target nodes.\n\n## Complexity\n\nO(n) time, O(n) output buffer."

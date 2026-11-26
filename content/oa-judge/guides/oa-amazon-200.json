@@ -13,6 +13,21 @@
       "To turn a whole window into 1s, every run of 0s inside it must be flipped an odd number of times and every run of 1s an even number; think about how many runs of 0s one range flip can fix.",
       "Look at the parity string of flip counts: r runs of 0s give 2r change boundaries, and one range flip creates only 2, so at least r flips are needed; flipping each 0-run separately uses exactly r. So a window is feasible if and only if it contains at most k runs of 0s.",
       "Sliding window: when the right end starts a run of 0s (s[r] = 0 and r = 0 or s[r-1] = 1), runs += 1; while runs > k, if the left end is the last 0 of a run inside the window (s[left] = 0 and left = r or s[left+1] = 1), runs -= 1, then advance left; update the answer with the window length at every step."
+    ],
+    "ja": [
+      "ウィンドウ全体を 1 にするには、中にある 0 の連続部分をそれぞれ奇数回、1 の連続部分をそれぞれ偶数回反転する必要があります。1 回の範囲反転で何個の 0 の連続部分を直せるかを考えてください。",
+      "反転回数の偶奇の文字列を見ると、0 の連続部分が r 個なら変化の境界は 2r 個あり、1 回の範囲反転で作れる境界は 2 個だけなので、少なくとも r 回の反転が必要です。0 の連続部分を個別に反転すればちょうど r 回で済みます。したがって、ウィンドウが実行可能であることは、含まれる 0 の連続部分が高々 k 個であることと同値です。",
+      "スライディングウィンドウでは、右端が 0 の連続部分の先頭になるとき（s[r] = 0 かつ r = 0 または s[r-1] = 1）、runs += 1 とします。runs > k の間、左端がウィンドウ内の連続部分の最後の 0 であれば（s[left] = 0 かつ left = r または s[left+1] = 1）runs -= 1 とし、left を進めます。毎ステップ、ウィンドウの長さで答えを更新します。"
+    ],
+    "ko": [
+      "윈도우 전체를 1로 만들려면 윈도우 안의 모든 0 구간은 홀수 번, 모든 1 구간은 짝수 번 뒤집혀야 합니다. 구간 뒤집기 한 번으로 몇 개의 0 구간을 해결할 수 있는지 생각해 보세요.",
+      "뒤집기 횟수의 홀짝 문자열을 보면, 0 구간이 r개이면 값이 바뀌는 경계가 2r개이고 구간 뒤집기 한 번은 경계를 2개만 만들 수 있으므로 최소 r번이 필요합니다. 각 0 구간을 따로 뒤집으면 정확히 r번이 듭니다. 따라서 윈도우가 실현 가능할 필요충분조건은 0 구간이 최대 k개인 것입니다.",
+      "슬라이딩 윈도우: 오른쪽 끝이 0 구간의 시작이면(s[r] = 0이고 r = 0 또는 s[r-1] = 1) runs += 1을 합니다. runs > k인 동안, 왼쪽 끝이 윈도우 안에 있는 어떤 구간의 마지막 0이면(s[left] = 0이고 left = r 또는 s[left+1] = 1) runs -= 1을 한 뒤 left를 전진시킵니다. 매 단계마다 윈도우 길이로 정답을 갱신합니다."
+    ],
+    "vi": [
+      "Để biến cả cửa sổ thành toàn số 1, mỗi dãy số 0 trong đó phải được lật một số lẻ lần và mỗi dãy số 1 một số chẵn lần; hãy nghĩ xem một lần lật đoạn có thể sửa được bao nhiêu dãy số 0.",
+      "Xét xâu tính chẵn lẻ của số lần lật: r dãy số 0 cho 2r điểm đổi, mà một lần lật đoạn chỉ tạo ra 2 điểm, nên cần ít nhất r lần lật; lật riêng từng dãy số 0 dùng đúng r lần. Vậy một cửa sổ khả thi khi và chỉ khi nó chứa tối đa k dãy số 0.",
+      "Cửa sổ trượt: khi đầu phải bắt đầu một dãy số 0 (s[r] = 0 và r = 0 hoặc s[r-1] = 1), runs += 1; trong khi runs > k, nếu đầu trái là số 0 cuối cùng của một dãy trong cửa sổ (s[left] = 0 và left = r hoặc s[left+1] = 1), runs -= 1, rồi dịch left; ở mỗi bước cập nhật đáp án bằng độ dài cửa sổ."
     ]
   },
   "explanationEn": "## Approach\n\nUse a sliding window that counts the runs of 0s inside it, keep that count at most k and maximize the length. Flipping each run of 0s once on its own turns it entirely into 1s.\n\n## Proof of correctness\n\nIntersect every flip interval with the target window and pad with 0 outside the window; the required flip-parity string is then 1 exactly on the original runs of 0s. If there are r runs of 0s, this parity string has 2r change boundaries; one interval XOR can contribute only 2 boundaries, so at least r operations are needed, and overlapping operations cannot beat this lower bound. Flipping each run of 0s separately attains it exactly. The number of 0 runs never decreases as the right end extends, so the sliding window keeps it at most k and finds the longest valid window for every right end.\n\n## Complexity\n\nTime O(n), auxiliary space O(1)."

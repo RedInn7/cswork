@@ -13,6 +13,21 @@
       "The relative order of requests in the queue never changes; requests are only removed, either by being served at the head or by expiring. So you only need to know who is still in the queue, not a queue that supports deletion in the middle.",
       "Put indices into buckets by deadline; keep an alive flag per request and a forward-only pointer to find the head. Each second, record the current count, remove the head, then remove the still-alive requests whose deadline is the next moment.",
       "count = n, t = 0; while count > 0: output count; advance the pointer past removed indices, mark the head removed and decrement count; t += 1; for every index in bucket t that is still alive, mark it removed and decrement count. After the loop output a final 0. Each request is removed once, so the total is O(n + max deadline)."
+    ],
+    "ja": [
+      "キュー内のリクエストの相対的な順序は変わりません。リクエストは先頭で処理されるか、期限切れになるかのどちらかで取り除かれるだけです。したがって、必要なのは誰がまだキューにいるかであり、途中の削除に対応するキューは必要ありません。",
+      "インデックスを期限ごとのバケットに入れ、リクエストごとに生存フラグを持ち、先頭を見つけるために前にしか進まないポインタを使います。毎秒、現在の個数を記録し、先頭を取り除き、次の時刻が期限であるまだ生きているリクエストを取り除きます。",
+      "count = n、t = 0 とし、count > 0 の間: count を出力し、ポインタを取り除かれたインデックスの先まで進め、先頭を取り除いて count を 1 減らします。t += 1 とし、バケット t のインデックスのうちまだ生きているものすべてを取り除いて count を減らします。ループのあと、最後に 0 を出力します。各リクエストは 1 回しか取り除かれないので、全体で O(n + 期限の最大値) です。"
+    ],
+    "ko": [
+      "큐 안에서 요청의 상대적인 순서는 변하지 않으며, 요청은 맨 앞에서 처리되거나 만료되어 제거될 뿐입니다. 따라서 중간 삭제를 지원하는 큐가 아니라 누가 아직 큐에 남아 있는지만 알면 됩니다.",
+      "인덱스를 마감 시각별 버킷에 넣고, 요청마다 alive 플래그를 두며, 맨 앞을 찾기 위한 앞으로만 움직이는 포인터를 둡니다. 매초 현재 개수를 기록하고, 맨 앞을 제거한 뒤, 다음 시각이 마감인 요청 중 아직 살아 있는 것을 제거합니다.",
+      "count = n, t = 0; count > 0인 동안: count를 출력하고, 포인터를 제거된 인덱스 너머로 전진시키며, 맨 앞을 제거 표시하고 count를 줄입니다. t += 1; 버킷 t의 인덱스 중 아직 살아 있는 것은 제거 표시하고 count를 줄입니다. 루프가 끝나면 마지막으로 0을 출력합니다. 각 요청은 한 번만 제거되므로 전체는 O(n + 최대 마감 시각)입니다."
+    ],
+    "vi": [
+      "Thứ tự tương đối của các yêu cầu trong hàng đợi không bao giờ thay đổi; yêu cầu chỉ bị loại, hoặc do được phục vụ ở đầu hàng, hoặc do hết hạn. Vì vậy chỉ cần biết ai còn trong hàng đợi, không cần một hàng đợi hỗ trợ xóa ở giữa.",
+      "Đưa các chỉ số vào thùng theo thời hạn; giữ một cờ còn sống cho mỗi yêu cầu và một con trỏ chỉ tiến về phía trước để tìm đầu hàng. Mỗi giây, ghi lại số lượng hiện tại, loại yêu cầu ở đầu, rồi loại các yêu cầu còn sống có thời hạn là thời điểm kế tiếp.",
+      "count = n, t = 0; khi count > 0: xuất count; đẩy con trỏ qua các chỉ số đã bị loại, đánh dấu yêu cầu ở đầu là đã loại và giảm count; t += 1; với mọi chỉ số trong thùng t còn sống, đánh dấu là đã loại và giảm count. Sau vòng lặp xuất một số 0 cuối cùng. Mỗi yêu cầu bị loại một lần, nên tổng là O(n + thời hạn lớn nhất)."
     ]
   },
   "explanationEn": "## Approach\n\nBucket the indices by deadline and maintain the queue head with alive flags and a forward pointer. Each second, remove the request that was served, then remove the still-alive requests in the bucket that expires at that moment.\n\n## Proof of correctness\n\nThe flags always match the current queue members. Served requests and requests whose deadline has just been reached are removed as the rules say, and the flags prevent counting a removal twice when an index is hit again; after the forward pointer skips removed items it points to the first alive request in the original order, so the FIFO order and the count at every moment are correct. Each request is removed at most once.\n\n## Complexity\n\nTime O(n + maximum deadline), space O(n + maximum deadline)."

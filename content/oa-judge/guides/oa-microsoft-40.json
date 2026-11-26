@@ -13,6 +13,21 @@
       "The deleted part is a block of exactly R consecutive shelves, and what remains is a prefix plus a suffix; all that matters is how many of each type remain outside the block.",
       "Slide the window over all N−R+1 deletion positions while maintaining the count of each type outside the window and the number of types whose count is positive.",
       "First count frequencies and distinct types from index R to the end; that is the result of the first window. When the window moves right by one, add back the shelf leaving it on the left (a count going from 0 to 1 adds a type) and remove the shelf entering it on the right (a count dropping to 0 loses a type), updating the maximum at every step."
+    ],
+    "ja": [
+      "削除されるのはちょうど R 段の連続した棚で、残るのは接頭辞と接尾辞です。重要なのは、ブロックの外に各種類がいくつ残るかだけです。",
+      "N−R+1 通りの削除位置すべてにわたってウィンドウをスライドさせながら、ウィンドウの外にある各種類の個数と、個数が正である種類の数を維持します。",
+      "まず添字 R から末尾までの出現回数と異なる種類の数を数えます。これが最初のウィンドウの結果です。ウィンドウが右に 1 つ動くとき、左から出る棚を戻し（個数が 0 から 1 になれば種類が 1 増えます）、右から入る棚を取り除きます（個数が 0 になれば種類が 1 減ります）。各ステップで最大値を更新します。"
+    ],
+    "ko": [
+      "삭제되는 부분은 연속된 R개의 선반 블록이고 남는 것은 접두사와 접미사입니다. 중요한 것은 블록 바깥에 각 종류가 몇 개 남는지뿐입니다.",
+      "N−R+1개의 삭제 위치 전부에 대해 구간을 밀면서, 구간 바깥에 있는 각 종류의 개수와 개수가 양수인 종류의 수를 유지합니다.",
+      "먼저 인덱스 R부터 끝까지의 빈도와 서로 다른 종류의 수를 셉니다. 이것이 첫 번째 구간의 결과입니다. 구간이 오른쪽으로 한 칸 이동할 때 왼쪽에서 빠져나오는 선반을 다시 더하고(개수가 0에서 1이 되면 종류가 하나 늘어납니다), 오른쪽으로 들어오는 선반을 제거합니다(개수가 0이 되면 종류가 하나 줄어듭니다). 매 단계 최댓값을 갱신합니다."
+    ],
+    "vi": [
+      "Phần bị xóa là một khối đúng R kệ liên tiếp, và phần còn lại là một tiền tố cộng một hậu tố; điều duy nhất quan trọng là còn bao nhiêu mỗi loại bên ngoài khối.",
+      "Trượt cửa sổ qua tất cả N−R+1 vị trí xóa trong khi duy trì số đếm của từng loại bên ngoài cửa sổ và số loại có số đếm dương.",
+      "Trước tiên đếm tần suất và số loại phân biệt từ chỉ số R đến hết; đó là kết quả của cửa sổ đầu tiên. Khi cửa sổ dịch sang phải một bước, thêm lại kệ rời cửa sổ ở bên trái (số đếm từ 0 lên 1 thêm một loại) và bỏ kệ vào cửa sổ ở bên phải (số đếm giảm về 0 mất một loại), cập nhật giá trị lớn nhất ở mỗi bước."
     ]
   },
   "explanationEn": "## Approach\n\nFirst subtract the first deletion window from the global frequencies, then slide the window: restore the old left end, delete the new right end, and maintain the number of types whose remaining frequency is positive.\n\n## Proof of correctness\n\nThe maintained frequencies are always exactly the counts of each type outside the window, so when an element enters or leaves the window you only need to check whether its frequency crosses 0 to update the number of types. Enumerating every consecutive deletion window and taking the maximum covers all valid choices.\n\n## Complexity\n\nTime O(N), space O(N)."

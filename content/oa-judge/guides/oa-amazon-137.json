@@ -13,6 +13,21 @@
       "Requests must be visited in order, so every leg has a fixed start and end; the total time is the sum of the shortest time of each leg, and legs do not interact.",
       "Between two stations on a ring there are only two non-looping paths, clockwise and counterclockwise, whose lengths add up to the perimeter; prefix sums of the edge lengths give the forward distance d, the other direction is the perimeter minus d, and you take the smaller.",
       "Build prefix and the perimeter total, start with at = 0; for each requested station s (converted to 0-based) compute d = |prefix[s] - prefix[at]|, add min(d, total - d) to the answer, and set at = s. Use a 64-bit answer."
+    ],
+    "ja": [
+      "要求は順番に訪れる必要があるので、各区間の始点と終点は固定されています。合計時間は各区間の最短時間の和であり、区間同士は影響し合いません。",
+      "リング上の 2 つのステーション間には、ループしない経路が時計回りと反時計回りの 2 つしかなく、その長さの和は周長です。辺の長さの累積和から順方向の距離 d が求まり、逆方向は周長から d を引いた値なので、小さいほうを取ります。",
+      "prefix と周長の合計を作り、at = 0 から始めます。要求された各ステーション s（0 始まりに変換）について、d = |prefix[s] - prefix[at]| を計算し、min(d, total - d) を答えに加えて at = s とします。答えは 64 ビット整数にします。"
+    ],
+    "ko": [
+      "요청은 순서대로 방문해야 하므로 각 구간의 출발점과 도착점이 고정됩니다. 총 시간은 각 구간의 최단 시간의 합이며, 구간끼리는 서로 영향을 주지 않습니다.",
+      "원형 노선에서 두 역 사이에는 시계 방향과 반시계 방향의 두 가지 순환하지 않는 경로가 있고, 두 길이의 합은 둘레와 같습니다. 간선 길이의 누적 합으로 정방향 거리 d를 구하고 반대 방향은 둘레에서 d를 뺀 값이므로, 둘 중 작은 쪽을 택합니다.",
+      "prefix와 둘레 total을 만들고 at = 0으로 시작합니다. 요청된 각 역 s(0-기반으로 변환)에 대해 d = |prefix[s] - prefix[at]|를 계산하고 답에 min(d, total - d)를 더한 뒤 at = s로 갱신합니다. 답은 64비트 정수로 사용하세요."
+    ],
+    "vi": [
+      "Các yêu cầu phải được ghé theo thứ tự, nên mỗi chặng có điểm đầu và điểm cuối cố định; tổng thời gian là tổng thời gian ngắn nhất của từng chặng, và các chặng không ảnh hưởng nhau.",
+      "Giữa hai trạm trên vòng chỉ có hai đường đi không lặp, thuận chiều và ngược chiều kim đồng hồ, độ dài của chúng cộng lại bằng chu vi; tổng tiền tố của độ dài các cạnh cho khoảng cách xuôi d, chiều còn lại là chu vi trừ d, và bạn lấy giá trị nhỏ hơn.",
+      "Xây prefix và tổng chu vi total, bắt đầu với at = 0; với mỗi trạm yêu cầu s (đổi sang chỉ số từ 0) tính d = |prefix[s] - prefix[at]|, cộng min(d, total - d) vào đáp án, rồi đặt at = s. Dùng đáp án 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nPrefix sums give the distance d along the forward unrolling; choose min(d, (total perimeter) - d) for each leg and update the current station.\n\n## Correctness\n\nBetween consecutive requests the drone must go from a fixed start to a fixed end, and on a ring with positive edge weights the shortest path is one of the two simple arcs. Every leg's endpoint is fixed, so there is no trade-off across legs; choosing the shortest for each and adding them up is globally optimal.\n\n## Complexity\n\nTime O(m+q), space O(m+q)."

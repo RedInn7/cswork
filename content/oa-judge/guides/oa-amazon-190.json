@@ -13,6 +13,21 @@
       "For a fixed right end, moving the left end right makes the window shorter, so the distinct count can only stay or drop; but moving it too far loses a target. So for each right end, the best left end is the rightmost one that still contains both targets.",
       "Use a two-pointer sliding window that keeps the count of each value and the number of distinct values. After adding each right end, as long as the window contains both u and v, record the distinct count and shrink from the left.",
       "Compress values if needed; if u or v does not occur in the array, print 0. For each right end: add a[r] (distinct += 1 when its count goes from 0 to 1); while both u and v have positive counts, update the answer with the distinct count, then remove a[left] and advance left (distinct -= 1 when a count reaches 0). If the answer was never updated, print 0; the case u = v works the same way and gives 1."
+    ],
+    "ja": [
+      "右端を固定すると、左端を右へ動かすほど窓は短くなり、異なる値の個数は変わらないか減るだけです。ただし動かしすぎるとターゲットを失います。したがって各右端について、最良の左端は、両方のターゲットをまだ含む最も右のものです。",
+      "各値の個数と、異なる値の数を保持する、2 つのポインタのスライディングウィンドウを使います。各右端を追加したあと、窓が u と v の両方を含む間は、異なる値の個数を記録して左から縮めます。",
+      "必要なら値を圧縮します。u か v が配列に現れなければ 0 を出力します。各右端について、a[r] を追加し（個数が 0 から 1 になったら distinct += 1）、u と v の両方の個数が正の間は、異なる値の個数で答えを更新し、そのあと a[left] を取り除いて left を進めます（個数が 0 になったら distinct -= 1）。答えが一度も更新されなければ 0 を出力します。u = v の場合も同じように動作し、1 になります。"
+    ],
+    "ko": [
+      "오른쪽 끝을 고정하면 왼쪽 끝을 오른쪽으로 옮길수록 윈도우가 짧아져 서로 다른 값의 개수는 유지되거나 줄어듭니다. 그러나 너무 멀리 옮기면 목표값을 잃습니다. 따라서 각 오른쪽 끝에 대해 최선의 왼쪽 끝은 두 목표값을 아직 포함하는 가장 오른쪽 끝입니다.",
+      "각 값의 개수와 서로 다른 값의 수를 유지하는 투 포인터 슬라이딩 윈도우를 사용합니다. 오른쪽 끝을 추가할 때마다, 윈도우가 u와 v를 모두 포함하는 동안 서로 다른 값의 개수를 기록하고 왼쪽에서 줄입니다.",
+      "필요하면 값을 압축하세요. u 또는 v가 배열에 없으면 0을 출력합니다. 각 오른쪽 끝에 대해: a[r]을 추가하고(개수가 0에서 1이 되면 distinct += 1), u와 v의 개수가 모두 양수인 동안 서로 다른 값의 개수로 답을 갱신한 뒤 a[left]를 제거하고 left를 전진시킵니다(개수가 0이 되면 distinct -= 1). 답이 한 번도 갱신되지 않았다면 0을 출력합니다. u = v인 경우도 같은 방식으로 처리되며 답은 1입니다."
+    ],
+    "vi": [
+      "Với đầu phải cố định, dịch đầu trái sang phải làm cửa sổ ngắn đi, nên số giá trị phân biệt chỉ có thể giữ nguyên hoặc giảm; nhưng dịch quá xa sẽ mất một mục tiêu. Vậy với mỗi đầu phải, đầu trái tốt nhất là đầu ngoài cùng bên phải mà vẫn chứa cả hai mục tiêu.",
+      "Dùng cửa sổ trượt hai con trỏ giữ số đếm của từng giá trị và số giá trị phân biệt. Sau khi thêm mỗi đầu phải, chừng nào cửa sổ còn chứa cả u và v thì ghi nhận số giá trị phân biệt và thu hẹp từ bên trái.",
+      "Nén giá trị nếu cần; nếu u hoặc v không xuất hiện trong mảng thì in 0. Với mỗi đầu phải: thêm a[r] (distinct += 1 khi số đếm của nó chuyển từ 0 sang 1); khi cả u và v đều có số đếm dương, cập nhật đáp án bằng số giá trị phân biệt, rồi loại a[left] và tăng left (distinct -= 1 khi một số đếm về 0). Nếu đáp án chưa bao giờ được cập nhật, in 0; trường hợp u = v hoạt động tương tự và cho 1."
     ]
   },
   "explanationEn": "## Approach\n\nTwo pointers with window frequencies: whenever the window contains both targets, record its number of distinct values and keep shrinking the left end until it no longer contains both.\n\n## Proof of correctness\n\nAfter adding a right end, every left end that has not been checked yet and is feasible gets checked one by one. A shorter window with the same right end never has more distinct values; once the window becomes infeasible, left ends further right are infeasible too. A left end that was removed earlier can only keep or increase its distinct count as the right end extends, so it cannot beat the value already recorded; therefore the smallest recorded value is the global optimum.\n\n## Complexity\n\nTime O(n), space O(n)."

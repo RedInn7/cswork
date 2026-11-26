@@ -13,6 +13,21 @@
       "Every prefix sum being positive means that, within each prefix, the numbers given a minus sign must sum to strictly less than half of that prefix's original total.",
       "Greedy: assume each new number gets a minus sign; as soon as the prefix sum is no longer positive, one minus sign must be undone, and undoing the largest negated number is best, since it costs only one sign and restores the most balance.",
       "Keep the signed sum balance and a max-heap of negated numbers: for each v, do balance−=v and push v; if balance≤0, pop the top t and add 2t to balance. The heap size at the end is the answer; use a 64-bit balance."
+    ],
+    "ja": [
+      "すべての接頭辞和が正であるとは、各接頭辞の中でマイナスを付けた数の和が、その接頭辞の元の総和の半分より厳密に小さいということです。",
+      "貪欲法：新しい数にはまずマイナスを付けます。接頭辞和が正でなくなったらマイナスを 1 つ取り消す必要があり、負にしている最大の数を戻すのが最良です。符号 1 つの犠牲で、最も多くのバランスを回復できるからです。",
+      "符号付き和 balance と、負にした数の最大ヒープを持ちます。各 v について balance−=v とし、v を push します。balance≤0 なら先頭 t を pop して balance に 2t を足します。最後のヒープのサイズが答えです。balance は 64 ビットで持ちます。"
+    ],
+    "ko": [
+      "모든 접두사 합이 양수라는 것은, 각 접두사에서 마이너스 부호를 받은 수들의 합이 그 접두사 원래 총합의 절반보다 엄격히 작아야 한다는 뜻입니다.",
+      "탐욕: 새 수마다 일단 마이너스를 붙이고, 접두사 합이 더 이상 양수가 아니게 되는 즉시 마이너스 하나를 되돌려야 합니다. 이때 음수로 바꾼 수 중 가장 큰 것을 되돌리는 것이 최선인데, 부호 하나만 쓰면서 균형을 가장 많이 회복하기 때문입니다.",
+      "부호 있는 합 balance와 음수로 바꾼 수들의 최대 힙을 유지합니다. 각 v에 대해 balance−=v를 하고 v를 넣습니다. balance≤0이면 top t를 꺼내 balance에 2t를 더합니다. 마지막 힙의 크기가 답입니다. balance는 64비트를 씁니다."
+    ],
+    "vi": [
+      "Mọi tổng tiền tố đều dương nghĩa là trong mỗi tiền tố, các số mang dấu trừ phải có tổng nhỏ hơn chặt một nửa tổng ban đầu của tiền tố đó.",
+      "Tham lam: giả sử mỗi số mới đều mang dấu trừ; ngay khi tổng tiền tố không còn dương, phải hoàn tác một dấu trừ, và hoàn tác số âm lớn nhất là tốt nhất, vì nó chỉ tốn một dấu và khôi phục được nhiều cân bằng nhất.",
+      "Giữ tổng có dấu balance và một max-heap các số bị đổi dấu âm: với mỗi v, làm balance−=v và đẩy v vào; nếu balance≤0, lấy phần tử đỉnh t ra và cộng 2t vào balance. Kích thước heap cuối cùng là đáp án; dùng balance 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nTentatively make each new item negative and push it into a max-heap; if the prefix is no longer positive, undo the negative item with the largest absolute value among all current negative items.\n\n## Proof of correctness\n\nMaintain the maximum number of chosen negative items and, for that count, the smallest total of negative items (that is, the largest balance). If adding a new negative item exceeds the budget allowed by this prefix, no plan with the same count is feasible either, so one item must be removed; removing the largest one leaves the smallest sum. With the growing original positive total of the prefix as the budget, swapping out the largest item only reduces the negative burden of every affected prefix and does not break past constraints. The balance was positive before, and the largest value is at least the new value, so a single undo restores a positive balance. Induction gives the maximum count.\n\n## Complexity\n\nO(n log n) time and O(n) space; the balance can reach 10^14."

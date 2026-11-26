@@ -13,6 +13,21 @@
       "When an item is bought as the i-th purchase (0-based), every earlier purchase has already reduced it by 1, so it earns max(0, initial−i), which depends only on its initial value and its position.",
       "Earlier purchases lose less, so buy larger values first: swapping a smaller-earlier, larger-later pair never decreases the total.",
       "Sort the points in descending order and add max(0, a[i]−i) for each i; gains are never negative, so buying everything is fine. Use a 64-bit total."
+    ],
+    "ja": [
+      "商品を i 番目(0 始まり)の購入として買うとき、それ以前のすべての購入によってすでに 1 ずつ下がっているので、得られるのは max(0, initial−i) で、これは初期値と位置だけに依存します。",
+      "先の購入ほど減少が少ないので、大きい値から買います。小さい値が先、大きい値が後のペアを入れ替えても、合計は減りません。",
+      "ポイントを降順にソートし、各 i について max(0, a[i]−i) を加えます。利得が負になることはないので、すべて買って構いません。合計には64ビット整数を使います。"
+    ],
+    "ko": [
+      "상품을 (0부터 센) i번째 구매로 사면 앞선 구매가 이미 1씩 줄였으므로 max(0, 초기값−i)를 얻으며, 이는 초기값과 순서에만 달려 있습니다.",
+      "앞선 구매일수록 손실이 적으므로 큰 값부터 구매합니다. 작은 값이 앞, 큰 값이 뒤인 쌍을 교환해도 합은 줄지 않습니다.",
+      "점수를 내림차순으로 정렬하고 각 i에 대해 max(0, a[i]−i)를 더합니다. 이득은 음수가 되지 않으므로 전부 구매해도 괜찮습니다. 총합은 64비트로 둡니다."
+    ],
+    "vi": [
+      "Khi một mặt hàng được mua ở lần thứ i (đếm từ 0), mọi lần mua trước đó đã giảm nó đi 1, nên nó nhận max(0, initial−i), chỉ phụ thuộc vào giá trị ban đầu và vị trí của nó.",
+      "Các lần mua đầu mất ít hơn, nên hãy mua các giá trị lớn hơn trước: hoán đổi một cặp có giá trị nhỏ hơn đứng trước, lớn hơn đứng sau không bao giờ làm giảm tổng.",
+      "Sắp xếp các điểm giảm dần và cộng max(0, a[i]−i) cho mỗi i; lợi ích không bao giờ âm, nên mua tất cả là ổn. Dùng tổng 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nSort the initial points in descending order; the i-th purchase (0-based) earns max(0, a[i]−i); sum these gains.\n\n## Proof of correctness\n\nThe gain from buying an item with initial value v at step i depends only on v and i. For an earlier step i and a later step j with initial values x≥y, max(0,x−i)+max(0,y−j)≥max(0,y−i)+max(0,x−j), because the same time loss leaves the larger initial value with no smaller gain. Swapping inversions never lowers the total, so descending order is optimal; gains are non-negative, so putting the unbought items at the end does not reduce the total.\n\n## Complexity\n\nO(n log n) time and O(n) space; the total points need 64 bits."

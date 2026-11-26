@@ -13,6 +13,21 @@
       "Removing elements only shortens the remaining sequence, so its longest increasing subsequence never grows. Whether t removals still meet the requirement is therefore monotone: once some t fails, every larger t fails too.",
       "Monotonicity lets you binary search the largest feasible number of removals. To test a given t, skip every position whose removal time is at most t, compute the length of the longest strictly increasing subsequence of what remains, and compare it with minOrder.",
       "Record for each original index the step at which it is removed; the test computes the LIS with patience sorting, keeping the smallest tail of an increasing subsequence of each length and replacing by binary search; if even t=0 fails, print −1; otherwise binary search the largest feasible t between 0 and n and print it."
+    ],
+    "ja": [
+      "要素を取り除くと残りの列は短くなるだけなので、最長増加部分列は長くなりません。したがって t 回の除去が要件を満たすかどうかは単調で、ある t が失敗すれば、それより大きいすべての t も失敗します。",
+      "単調性により、実行可能な最大の除去数を二分探索できます。ある t を調べるには、除去時刻が t 以下のすべての位置を飛ばし、残りの最長狭義増加部分列の長さを計算して minOrder と比べます。",
+      "各元のインデックスについて、それが除去されるステップを記録します。判定では patience sorting で LIS を計算します。各長さの増加部分列の最小の末尾値を保持し、二分探索で置き換えます。t=0 でも失敗するなら −1 を出力し、そうでなければ 0 から n の間で実行可能な最大の t を二分探索して出力します。"
+    ],
+    "ko": [
+      "원소를 제거하면 남는 수열이 짧아질 뿐이므로 최장 증가 부분 수열은 길어지지 않습니다. 따라서 t번 제거해도 조건을 만족하는지는 단조적입니다. 어떤 t가 실패하면 그보다 큰 모든 t도 실패합니다.",
+      "단조성 덕분에 가능한 가장 큰 제거 횟수를 이분 탐색할 수 있습니다. 주어진 t를 검사하려면 제거 시점이 t 이하인 모든 위치를 건너뛰고, 남은 것의 엄격한 최장 증가 부분 수열의 길이를 계산해 minOrder와 비교합니다.",
+      "각 원래 인덱스가 제거되는 단계를 기록합니다. 검사에서는 patience sorting으로 LIS를 계산하며, 길이별 증가 부분 수열의 가장 작은 꼬리를 유지하고 이분 탐색으로 교체합니다. t=0에서도 실패하면 −1을 출력하고, 그렇지 않으면 0과 n 사이에서 가능한 가장 큰 t를 이분 탐색해 출력합니다."
+    ],
+    "vi": [
+      "Việc xóa phần tử chỉ làm dãy còn lại ngắn đi, nên dãy con tăng dài nhất của nó không bao giờ dài thêm. Do đó việc t lần xóa có còn đáp ứng yêu cầu hay không là đơn điệu: một khi có t nào đó thất bại thì mọi t lớn hơn cũng thất bại.",
+      "Tính đơn điệu cho phép tìm kiếm nhị phân số lần xóa lớn nhất khả thi. Để kiểm tra một t, bỏ qua mọi vị trí có thời điểm xóa không quá t, tính độ dài dãy con tăng ngặt dài nhất của phần còn lại, rồi so với minOrder.",
+      "Ghi lại với mỗi chỉ số gốc bước mà nó bị xóa; phép kiểm tra tính LIS bằng patience sorting, giữ đuôi nhỏ nhất của dãy con tăng ứng với mỗi độ dài và thay thế bằng tìm kiếm nhị phân; nếu ngay cả t=0 cũng thất bại, in −1; ngược lại tìm kiếm nhị phân t lớn nhất khả thi trong khoảng từ 0 đến n rồi in ra."
     ]
   },
   "explanationEn": "## Approach\n\nRecord the removal time of each original index. For a given number of removals t, filter out the removed positions and compute the LIS length with patience sorting; feasibility is monotonically non-increasing in t, so check t=0 first, then binary search for the largest feasible t.\n\n## Proof of correctness\n\nRemoving elements only shrinks the set of subsequences, so if some t is infeasible, every later t is infeasible as well. In patience sorting, tails[l] is the smallest last value of an increasing subsequence of length l+1 in the scanned prefix; replacing by binary search preserves this invariant, so the length of tails is exactly the LIS. An exact test plus binary search over a monotone boundary gives the maximum number of removals; an infeasible start returns −1 separately, as this site's protocol specifies.\n\n## Complexity\n\nTime O(n log²n), space O(n)."

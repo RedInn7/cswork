@@ -13,6 +13,21 @@
       "c is determined by b: c[i] = arr[i] - b[i]. So only the valid b need counting, and the conditions b non-decreasing and c non-increasing merge into one lower bound on the adjacent difference of b.",
       "From c[i] <= c[i-1] we get b[i] - b[i-1] >= arr[i] - arr[i-1]; together with b[i] >= b[i-1] this is b[i] - b[i-1] >= max(0, arr[i] - arr[i-1]), and also 0 <= b[i] <= arr[i]. Let dp[x] count the ways with b equal to x at the current position; the transition only needs prefix sums.",
       "Start with dp[x] = 1 for 0 <= x <= arr[0]. At step i let need = max(0, arr[i] - arr[i-1]) and take prefix sums pref of dp; the new dp[x] = pref[min(x - need, old length - 1)] when x - need >= 0, otherwise 0, for x = 0..arr[i]. Do all additions modulo 10^9 + 7 and output the sum of dp; the total time is O(n * max(arr))."
+    ],
+    "ja": [
+      "c は b によって決まります。c[i] = arr[i] - b[i] です。したがって数えるべきは有効な b だけで、b が非減少、c が非増加という条件は、b の隣接差に対する 1 つの下限にまとまります。",
+      "c[i] <= c[i-1] から b[i] - b[i-1] >= arr[i] - arr[i-1] が得られます。b[i] >= b[i-1] と合わせると b[i] - b[i-1] >= max(0, arr[i] - arr[i-1]) となり、さらに 0 <= b[i] <= arr[i] です。dp[x] を、現在の位置で b が x に等しい場合の数とします。遷移には累積和だけで足ります。",
+      "0 <= x <= arr[0] について dp[x] = 1 で始めます。ステップ i では need = max(0, arr[i] - arr[i-1]) とし、dp の累積和 pref を取ります。新しい dp[x] は、x = 0..arr[i] について、x - need >= 0 のとき pref[min(x - need, 古い長さ - 1)]、そうでなければ 0 です。加算はすべて 10^9 + 7 を法として行い、dp の総和を出力します。全体の時間は O(n * max(arr)) です。"
+    ],
+    "ko": [
+      "c는 b로 결정됩니다. c[i] = arr[i] - b[i]이므로 유효한 b만 세면 됩니다. b가 비감소이고 c가 비증가라는 조건은 b의 인접 차이에 대한 하나의 하한으로 합쳐집니다.",
+      "c[i] <= c[i-1]에서 b[i] - b[i-1] >= arr[i] - arr[i-1]을 얻고, b[i] >= b[i-1]과 함께 b[i] - b[i-1] >= max(0, arr[i] - arr[i-1])이 되며, 0 <= b[i] <= arr[i]도 성립합니다. dp[x]를 현재 위치에서 b가 x인 경우의 수라 하면, 전이에는 접두합만 있으면 됩니다.",
+      "모든 0 <= x <= arr[0]에 대해 dp[x] = 1로 시작합니다. 단계 i에서 need = max(0, arr[i] - arr[i-1])로 두고 dp의 접두합 pref를 구하면, x = 0..arr[i]에 대해 새 dp[x]는 x - need >= 0일 때 pref[min(x - need, 이전 길이 - 1)]이고 그렇지 않으면 0입니다. 모든 덧셈은 10^9 + 7로 나눈 나머지로 하고 dp의 합을 출력합니다. 전체 시간은 O(n * max(arr))입니다."
+    ],
+    "vi": [
+      "c được xác định bởi b: c[i] = arr[i] - b[i]. Vì vậy chỉ cần đếm các b hợp lệ, và hai điều kiện b không giảm và c không tăng gộp lại thành một cận dưới duy nhất cho hiệu liên tiếp của b.",
+      "Từ c[i] <= c[i-1] ta có b[i] - b[i-1] >= arr[i] - arr[i-1]; cùng với b[i] >= b[i-1], điều này thành b[i] - b[i-1] >= max(0, arr[i] - arr[i-1]), và còn có 0 <= b[i] <= arr[i]. Gọi dp[x] là số cách khi b bằng x tại vị trí hiện tại; phép chuyển chỉ cần dùng tổng tiền tố.",
+      "Khởi tạo dp[x] = 1 với 0 <= x <= arr[0]. Ở bước i, đặt need = max(0, arr[i] - arr[i-1]) và lấy tổng tiền tố pref của dp; dp[x] mới = pref[min(x - need, old length - 1)] khi x - need >= 0, ngược lại bằng 0, với x = 0..arr[i]. Thực hiện mọi phép cộng theo modulo 10^9 + 7 và in tổng của dp; tổng thời gian là O(n * max(arr))."
     ]
   },
   "explanationEn": "## Approach\n\nGiven the previous value b[i-1], the next value x = b[i] must be at least b[i-1] + max(0, arr[i] - arr[i-1]), and also x <= arr[i]. Maintain the number of ways for each last value together with its prefix sums, which gives O(n * max(arr)) transitions.\n\n## Proof of correctness\n\nSince c[i] = arr[i] - b[i], the conditions b[i] >= b[i-1] and c[i] <= c[i-1] combine into b[i] - b[i-1] >= max(0, arr[i] - arr[i-1]). So for the current last value x, the valid previous states are exactly the last values not exceeding x - need. The prefix sum aggregates these mutually exclusive previous states exactly, and the transition yields all ways ending at x; summing covers every possible b, and c is uniquely determined by b.\n\n## Complexity\n\nO(n * M) time and O(M) space, where M = max(arr[i]) <= 3000."

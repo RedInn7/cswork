@@ -13,6 +13,21 @@
       "Only adjacent digits of different parity can be swapped, so two digits of the same parity can never pass each other: the internal order of the odd subsequence and of the even subsequence is fixed.",
       "Conversely, every interleaving that keeps both subsequences' internal order is reachable by such swaps. So the task becomes merging two fixed-order sequences into the lexicographically smallest string.",
       "Split the digit string into its even subsequence and odd subsequence and merge with two pointers: at each step compare the two front digits and take the smaller (they have different parity, so they are never equal); when one runs out, append the rest of the other. Leading zeros are allowed. Print one line per test case; total time O(total length)."
+    ],
+    "ja": [
+      "交換できるのは偶奇の異なる隣り合う数字だけなので、偶奇が同じ 2 つの数字は互いを追い越せません。奇数の部分列と偶数の部分列のそれぞれの内部の順序は固定されます。",
+      "逆に、両方の部分列の内部の順序を保つ任意のインターリーブは、そのような交換で到達できます。したがって、問題は固定された順序の 2 つの列を、辞書順で最小の文字列にマージすることになります。",
+      "数字列を偶数の部分列と奇数の部分列に分け、2 ポインタでマージします。各ステップで 2 つの先頭の数字を比較して小さい方を取ります(偶奇が異なるので等しくなることはありません)。片方がなくなったら、もう片方の残りを付け加えます。先頭の 0 は許されます。テストケースごとに 1 行を出力します。全体の長さに対して時間 O(合計の長さ) です。"
+    ],
+    "ko": [
+      "홀짝이 다른 인접한 숫자만 교환할 수 있으므로, 홀짝이 같은 두 숫자는 서로를 절대 추월할 수 없습니다. 홀수 부분 수열과 짝수 부분 수열 내부의 순서는 고정됩니다.",
+      "반대로 두 부분 수열 내부의 순서를 유지하는 모든 섞는 방법은 이런 교환으로 도달할 수 있습니다. 따라서 문제는 순서가 고정된 두 수열을 병합하여 사전식으로 가장 작은 문자열을 만드는 것이 됩니다.",
+      "숫자 문자열을 짝수 부분 수열과 홀수 부분 수열로 나누고 두 포인터로 병합합니다. 매 단계에서 두 앞쪽 숫자를 비교해 더 작은 것을 취합니다(홀짝이 다르므로 같을 수 없습니다). 한쪽이 바닥나면 다른 쪽의 나머지를 붙입니다. 앞자리 0은 허용되며, 테스트 케이스마다 한 줄씩 출력합니다. 전체 시간은 O(total length)입니다."
+    ],
+    "vi": [
+      "Chỉ các chữ số kề nhau có tính chẵn lẻ khác nhau mới hoán đổi được, nên hai chữ số cùng tính chẵn lẻ không bao giờ vượt qua nhau: thứ tự bên trong của dãy con lẻ và dãy con chẵn là cố định.",
+      "Ngược lại, mọi cách xen kẽ giữ nguyên thứ tự bên trong của cả hai dãy con đều đạt được bằng các phép hoán đổi như vậy. Do đó bài toán trở thành trộn hai dãy có thứ tự cố định thành xâu nhỏ nhất theo thứ tự từ điển.",
+      "Tách xâu chữ số thành dãy con chẵn và dãy con lẻ rồi trộn bằng hai con trỏ: ở mỗi bước so sánh hai chữ số đứng đầu và lấy chữ số nhỏ hơn (chúng khác tính chẵn lẻ nên không bao giờ bằng nhau); khi một dãy hết, nối phần còn lại của dãy kia. Cho phép số 0 ở đầu. In một dòng cho mỗi test; tổng thời gian O(tổng độ dài)."
     ]
   },
   "explanationEn": "## Approach\n\nDigits of different parity can be swapped, but digits of the same parity cannot pass each other, so the internal order of the odd subsequence and of the even subsequence is fixed. Merge the two subsequences by taking whichever front digit is smaller.\n\n## Proof of correctness\n\nThe allowed swaps produce exactly all interleavings that keep the relative order of the two subsequences. If at some step the larger front were chosen instead of the smaller one, the current first differing position would be larger; choosing the smaller front is lexicographically optimal.\n\n## Complexity\n\nTime O(n), space O(n).\n\n## Source notes\n\nThe original problem explicitly allows any number of swaps of adjacent digits with different parity; this site adds the standard input/output format and the total length bound."

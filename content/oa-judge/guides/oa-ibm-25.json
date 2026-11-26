@@ -13,6 +13,21 @@
       "Duplicates do not change which numbers are missing, so deduplicate first; after sorting, every integer strictly between two consecutive present values is missing.",
       "Start with previous=0 and look at each present value v in increasing order; the gap before it has length v−previous−1. If k falls inside a gap the answer follows directly; otherwise subtract the gap length from k and continue.",
       "Walk through the deduplicated sorted array: if k is at most the gap length, print previous+k; otherwise subtract the gap length from k and set previous to v. If nothing is found, the answer lies after the maximum and equals previous+k. k can be up to 10^12, so use 64-bit integers."
+    ],
+    "ja": [
+      "重複は、どの数が存在しないかに影響しないので、先に重複を除きます。ソート後、隣り合う存在する値の間にある整数は、すべて存在しません。",
+      "previous=0 から始め、存在する値 v を昇順に見ていきます。その直前の隙間の長さは v−previous−1 です。k がこの隙間に収まるなら答えはすぐに求まります。そうでなければ k から隙間の長さを引いて続けます。",
+      "重複を除いたソート済み配列を順にたどります。k が隙間の長さ以下なら previous+k を出力し、そうでなければ k から隙間の長さを引いて previous を v にします。最後まで見つからなければ、答えは最大値より後にあり、previous+k に等しくなります。k は最大 10^12 なので、64 ビット整数を使ってください。"
+    ],
+    "ko": [
+      "중복은 어떤 수가 빠졌는지를 바꾸지 않으므로 먼저 중복을 제거합니다. 정렬한 뒤에는 존재하는 연속한 두 값 사이의 모든 정수가 빠진 수입니다.",
+      "previous=0으로 시작하여 존재하는 값 v를 오름차순으로 살펴봅니다. v 앞의 간격의 길이는 v−previous−1입니다. k가 간격 안에 들어가면 답이 바로 나오고, 아니면 k에서 간격의 길이를 빼고 계속합니다.",
+      "중복을 제거하고 정렬한 배열을 따라가며 k가 간격의 길이 이하이면 previous+k를 출력하고, 아니면 k에서 간격의 길이를 빼고 previous를 v로 갱신합니다. 끝까지 찾지 못하면 답은 최댓값 뒤에 있으며 previous+k입니다. k는 최대 10^12이므로 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Các số trùng lặp không làm thay đổi những số nào bị thiếu, nên hãy loại trùng trước; sau khi sắp xếp, mọi số nguyên nằm chặt giữa hai giá trị có mặt liên tiếp đều bị thiếu.",
+      "Bắt đầu với previous=0 và xét từng giá trị có mặt v theo thứ tự tăng dần; khoảng trống trước nó có độ dài v−previous−1. Nếu k rơi vào một khoảng trống thì đáp án có ngay; ngược lại trừ độ dài khoảng trống khỏi k và tiếp tục.",
+      "Duyệt mảng đã loại trùng và sắp xếp: nếu k không quá độ dài khoảng trống thì in previous+k; ngược lại trừ độ dài khoảng trống khỏi k và đặt previous thành v. Nếu không tìm thấy, đáp án nằm sau giá trị lớn nhất và bằng previous+k. k có thể lên đến 10^12, nên hãy dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nDeduplicate and sort the array, then starting from 1 compute, segment by segment, the gaps between consecutive present values to locate the gap containing k, or the range after the maximum value.\n\n## Proof of correctness\n\nThe numbers between two consecutive distinct present values are exactly all missing numbers, and these gaps do not overlap and are ordered by value. Subtracting each gap's length keeps the current rank, and the first gap that can hold that rank gives the unique answer.\n\n## Complexity\n\nTime O(n log n), space O(n)."

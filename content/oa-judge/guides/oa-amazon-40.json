@@ -13,6 +13,21 @@
       "The total number of boxes is fixed, so the smallest possible range is 0 or 1: every final pile is either the average rounded down or rounded up, and the number of piles that get the rounded-up value equals the remainder of the total divided by n.",
       "Each move takes one surplus box to a pile that is short, so the minimum number of moves is the total surplus above the targets. How the targets are assigned changes that sum: give the larger targets to the originally larger piles.",
       "Compute the sum S, low = S / n and extra = S mod n; sort ascending; the last extra positions get target low+1 and the rest get low; add up max(0, value - target) over all piles and print it as a 64-bit integer."
+    ],
+    "ja": [
+      "箱の総数は固定なので、取り得る最小の差は 0 か 1 です。最終的な各山は平均の切り捨てか切り上げのどちらかで、切り上げた値になる山の数は、合計を n で割った余りに等しくなります。",
+      "1 回の移動は、余っている箱を 1 つ、足りない山に運ぶので、最小の移動回数は目標を超える余りの総和です。目標の割り当て方でこの和は変わり、大きいほうの目標は元々大きい山に与えます。",
+      "合計 S を求め、low = S / n、extra = S mod n とします。昇順にソートし、最後の extra 個の位置の目標を low+1、残りを low とします。すべての山について max(0, value - target) を足し、64 ビット整数として出力します。"
+    ],
+    "ko": [
+      "상자의 총개수는 고정되어 있으므로 가능한 가장 작은 범위는 0 또는 1입니다. 모든 최종 더미는 평균의 내림 또는 올림이고, 올림 값을 받는 더미의 수는 총합을 n으로 나눈 나머지와 같습니다.",
+      "이동할 때마다 남는 상자 하나를 부족한 더미로 옮기므로, 최소 이동 횟수는 목표를 초과한 양의 합입니다. 목표를 어떻게 배정하느냐에 따라 이 합이 달라지므로, 더 큰 목표는 원래 더 큰 더미에 주세요.",
+      "합 S, low = S / n, extra = S mod n을 계산하고 오름차순으로 정렬합니다. 마지막 extra개의 위치는 목표 low+1을, 나머지는 low를 받습니다. 모든 더미에 대해 max(0, value - target)의 합을 구하여 64비트 정수로 출력하세요."
+    ],
+    "vi": [
+      "Tổng số hộp là cố định, nên chênh lệch nhỏ nhất có thể là 0 hoặc 1: mỗi cọc cuối cùng là trung bình làm tròn xuống hoặc làm tròn lên, và số cọc nhận giá trị làm tròn lên bằng số dư của tổng chia cho n.",
+      "Mỗi lần chuyển đưa một hộp thừa tới một cọc đang thiếu, nên số lần chuyển tối thiểu là tổng lượng thừa trên các mục tiêu. Cách gán mục tiêu làm thay đổi tổng này: trao các mục tiêu lớn hơn cho các cọc ban đầu lớn hơn.",
+      "Tính tổng S, low = S / n và extra = S mod n; sắp xếp tăng dần; extra vị trí cuối nhận mục tiêu low+1 và phần còn lại nhận low; cộng max(0, value - target) trên mọi cọc và in ra dưới dạng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nEvery final pile can only be the average rounded down or rounded up, and the larger targets go to the originally larger piles. Sort, then compute the total number of boxes above the targets.\n\n## Proof of correctness\n\nWith a fixed total, the smallest possible range is 0 or 1, so the final targets are determined by the quotient and the remainder. Giving the larger targets to the larger original values never increases the total absolute deviation (exchange inequality), so matching in sorted order is optimal. The total surplus equals the total shortage, and each move removes exactly one unit of surplus, so the lower bound is reached.\n\n## Complexity\n\nO(n log n) time and O(n) space."

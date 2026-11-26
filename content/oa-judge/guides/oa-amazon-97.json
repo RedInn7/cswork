@@ -13,6 +13,21 @@
       "Processing requests in arrival order needs two answers at all times: the smallest idle ID, and the earliest moment a busy server frees up. Each of these is a heap.",
       "Keep a current time now that is never earlier than the request arrival time i or than the time the previous request started. If no server is idle, advance now to the earliest end time in the busy heap, then move every server whose end time is at most now back to the idle heap.",
       "The idle heap holds IDs and the busy heap holds (end time, ID). For each request: now = max(now, i); if the idle heap is empty, now = max(now, end time at the top of the busy heap); pop every server with end time <= now into the idle heap; assign the smallest idle ID and push (now + duration, ID) into the busy heap. A 0-second request frees its server at the same moment; keep end times in 64-bit integers."
+    ],
+    "ja": [
+      "リクエストを到着順に処理するには、常に 2 つの答えが必要です。最小の空き ID と、使用中のサーバーが空く最も早い時刻です。どちらもヒープで管理できます。",
+      "現在時刻 now を、リクエストの到着時刻 i よりも、直前のリクエストの開始時刻よりも早くならないように保ちます。空きサーバーがなければ、now を使用中ヒープの最も早い終了時刻まで進め、終了時刻が now 以下のサーバーをすべて空きヒープに戻します。",
+      "空きヒープには ID を、使用中ヒープには (終了時刻, ID) を入れます。各リクエストで、now = max(now, i) とし、空きヒープが空なら now = max(now, 使用中ヒープの先頭の終了時刻) とし、終了時刻 <= now のサーバーをすべて空きヒープへ移し、最小の空き ID を割り当てて (now + 所要時間, ID) を使用中ヒープに入れます。0 秒のリクエストは同じ時刻にサーバーを解放します。終了時刻は 64 ビット整数で持ってください。"
+    ],
+    "ko": [
+      "요청을 도착 순서대로 처리하려면 항상 두 가지가 필요합니다. 가장 작은 유휴 ID와, 사용 중인 서버가 비는 가장 이른 시각입니다. 각각 힙 하나로 관리합니다.",
+      "현재 시각 now는 요청의 도착 시각 i와 이전 요청이 시작된 시각보다 항상 이르지 않게 유지합니다. 유휴 서버가 없으면 now를 사용 중 힙에서 가장 이른 종료 시각으로 진행한 뒤, 종료 시각이 now 이하인 서버를 모두 유휴 힙으로 옮깁니다.",
+      "유휴 힙에는 ID를, 사용 중 힙에는 (종료 시각, ID)를 넣습니다. 각 요청에 대해 now = max(now, i)로 두고, 유휴 힙이 비어 있으면 now = max(now, 사용 중 힙 맨 위의 종료 시각)로 둡니다. 종료 시각이 <= now인 서버를 모두 유휴 힙으로 꺼내고, 가장 작은 유휴 ID를 배정한 뒤 (now + 지속 시간, ID)를 사용 중 힙에 넣습니다. 0초짜리 요청은 같은 순간에 서버를 해제하며, 종료 시각은 64비트 정수로 유지하세요."
+    ],
+    "vi": [
+      "Xử lý các yêu cầu theo thứ tự đến luôn cần hai câu trả lời: ID rảnh nhỏ nhất, và thời điểm sớm nhất một máy chủ bận được rảnh. Mỗi câu trả lời ứng với một heap.",
+      "Giữ thời gian hiện tại now không bao giờ sớm hơn thời điểm yêu cầu đến i hoặc thời điểm yêu cầu trước bắt đầu. Nếu không có máy chủ rảnh, tua now đến thời điểm kết thúc sớm nhất trong heap bận, rồi chuyển mọi máy chủ có thời điểm kết thúc không vượt quá now về heap rảnh.",
+      "Heap rảnh chứa các ID còn heap bận chứa (thời điểm kết thúc, ID). Với mỗi yêu cầu: now = max(now, i); nếu heap rảnh rỗng, now = max(now, thời điểm kết thúc ở đỉnh heap bận); lấy mọi máy chủ có thời điểm kết thúc <= now chuyển vào heap rảnh; gán ID rảnh nhỏ nhất và đẩy (now + thời lượng, ID) vào heap bận. Một yêu cầu 0 giây giải phóng máy chủ của nó ngay tại thời điểm đó; giữ các thời điểm kết thúc trong số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nUse a min-heap of idle IDs plus a min-heap of busy (end time, ID) pairs. For each request, advance to its arrival time; if no server is idle, advance to the earliest end time, then release every server whose time has come, and take the smallest ID.\n\n## Proof of Correctness\n\nThe two heaps represent the current idle and busy states exactly. The waiting moment is uniquely determined by the earliest end time; after releasing all servers that end at the same time, the ID heap breaks ties correctly. Requests are processed in input order, so requests that are already queued are handled first.\n\n## Complexity\n\nTime O((servers+n)log servers), space O(servers+n)."

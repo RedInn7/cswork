@@ -13,6 +13,21 @@
       "With the number of packs p fixed, card types are independent: a type with count v only needs topping up to the smallest multiple of p that is at least v, i.e. (p − v mod p) mod p cards.",
       "With 2 packs each type needs at most 1 card, so the cost is at most n; with more packs than the largest count every type needs at least 1 card, so the cost is at least n. So only pack counts from 2 to max(2, largest count) need checking.",
       "Counts are at most 500: tally how often each count occurs, then for each p compute Σ frequency × ((p − v mod p) mod p) and output the minimum. That is O(n + 500²) overall; keep the cost in 64 bits."
+    ],
+    "ja": [
+      "パック数 p を固定すると、カードの種類どうしは独立です。枚数 v の種類は、v 以上で最小の p の倍数まで補充すればよく、必要な枚数は (p − v mod p) mod p です。",
+      "パックが 2 つなら各種類で追加は高々 1 枚なので、コストは n 以下です。一方、パック数が最大の枚数より多いと、どの種類も最低 1 枚は必要なので、コストは n 以上になります。したがって、調べるパック数は 2 から max(2, 最大の枚数) までで十分です。",
+      "枚数は 500 以下なので、各枚数の出現回数を数え、各 p について Σ 頻度 × ((p − v mod p) mod p) を計算して最小値を出力します。全体で O(n + 500²) です。コストは 64 ビット整数で保持してください。"
+    ],
+    "ko": [
+      "팩의 수 p를 고정하면 카드 종류는 서로 독립입니다. 장수가 v인 종류는 v 이상인 p의 가장 작은 배수까지만 채우면 되므로, 필요한 카드는 (p − v mod p) mod p장입니다.",
+      "팩이 2개이면 종류마다 최대 1장이면 충분하므로 비용은 n 이하입니다. 팩의 수가 최대 장수보다 크면 모든 종류에 최소 1장씩 필요하므로 비용은 n 이상입니다. 따라서 팩의 수는 2부터 max(2, 최대 장수)까지만 확인하면 됩니다.",
+      "장수는 500 이하이므로 각 장수의 등장 횟수를 센 다음, 각 p에 대해 Σ 빈도 × ((p − v mod p) mod p)를 계산하여 최솟값을 출력합니다. 전체 시간 복잡도는 O(n + 500²)이며, 비용은 64비트 정수로 보관하세요."
+    ],
+    "vi": [
+      "Khi cố định số gói p, các loại thẻ độc lập với nhau: loại có v thẻ chỉ cần bổ sung đến bội số nhỏ nhất của p mà không nhỏ hơn v, tức là (p − v mod p) mod p thẻ.",
+      "Với 2 gói, mỗi loại cần thêm tối đa 1 thẻ nên chi phí không quá n; với số gói lớn hơn count lớn nhất, mỗi loại cần thêm ít nhất 1 thẻ nên chi phí không nhỏ hơn n. Vì vậy chỉ cần kiểm tra số gói từ 2 đến max(2, count lớn nhất).",
+      "Các count không quá 500: đếm số lần xuất hiện của mỗi count, rồi với mỗi p tính Σ tần suất × ((p − v mod p) mod p) và in ra giá trị nhỏ nhất. Tổng độ phức tạp là O(n + 500²); hãy giữ chi phí trong 64 bit."
     ]
   },
   "explanationEn": "## Idea\n\nTally the counts by frequency and enumerate the number of packs from 2 to max(2, largest count); the cost is Σ frequency×((packs−count%packs)%packs).\n\n## Proof of correctness\n\nWith the number of packs fixed, each type needs at least enough cards to reach the next multiple, and types are independent. With more packs than the largest count the cost is at least n; with 2 packs each type needs at most 1 card, so the total cost is at most n, and larger pack counts need not be enumerated. Taking the minimum is optimal.\n\n## Complexity\n\nO(n+500²) time, O(500) space."

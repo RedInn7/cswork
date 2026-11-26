@@ -13,6 +13,21 @@
       "Moving the last element to the front is a cyclic right shift. A cyclic shift keeps every adjacency of the circular order and only changes where the circle is cut.",
       "View the array as a circle and count the descents, places where a[i] is greater than the next element around the circle. Distinct elements in strictly increasing order have exactly one descent on the circle, from the maximum to the minimum.",
       "If the array is already strictly increasing, the answer is 0. Otherwise collect every i with a[i] > a[(i+1) mod n]. If there is exactly one, cut right after it, which takes moving the n - i - 1 elements after it to the front, so the answer is n - i - 1; with more than one descent, output -1."
+    ],
+    "ja": [
+      "最後の要素を先頭に移す操作は巡回右シフトです。巡回シフトは円環状の順序での隣接関係をすべて保ち、円をどこで切るかだけを変えます。",
+      "配列を円と見なし、下降の数を数えます。下降とは、円に沿って a[i] が次の要素より大きい位置のことです。相異なる要素が狭義昇順に並んでいる場合、円上の下降は最大値から最小値への 1 回だけです。",
+      "配列がすでに狭義昇順なら答えは 0 です。そうでなければ、a[i] > a[(i+1) mod n] となるすべての i を集めます。ちょうど 1 つなら、その直後で切ります。これは直後の n - i - 1 個の要素を先頭に移すことに当たるので、答えは n - i - 1 です。下降が 2 つ以上なら -1 を出力します。"
+    ],
+    "ko": [
+      "마지막 원소를 맨 앞으로 옮기는 것은 순환 오른쪽 시프트입니다. 순환 시프트는 원형 순서의 모든 인접 관계를 유지하고 원을 어디서 자르는지만 바꿉니다.",
+      "배열을 원으로 보고 a[i]가 원을 따라 다음 원소보다 큰 곳, 즉 내림 구간의 수를 세세요. 서로 다른 원소가 순증가 순서로 놓였다면 원 위에서 내림 구간은 최댓값에서 최솟값으로 가는 곳 하나뿐입니다.",
+      "배열이 이미 순증가이면 답은 0입니다. 그렇지 않으면 a[i] > a[(i+1) mod n]인 모든 i를 모읍니다. 정확히 하나이면 바로 뒤에서 자르며, 그 뒤의 n - i - 1개 원소를 앞으로 옮기는 것이므로 답은 n - i - 1입니다. 내림 구간이 둘 이상이면 -1을 출력합니다."
+    ],
+    "vi": [
+      "Chuyển phần tử cuối lên đầu là một phép dịch vòng sang phải. Phép dịch vòng giữ nguyên mọi quan hệ liền kề của thứ tự vòng và chỉ đổi chỗ cắt vòng.",
+      "Hãy xem mảng như một vòng tròn và đếm các chỗ giảm, tức những nơi a[i] lớn hơn phần tử kế tiếp quanh vòng. Các phần tử phân biệt theo thứ tự tăng ngặt có đúng một chỗ giảm trên vòng, từ giá trị lớn nhất sang giá trị nhỏ nhất.",
+      "Nếu mảng đã tăng ngặt thì đáp án là 0. Ngược lại, thu thập mọi i có a[i] > a[(i+1) mod n]. Nếu có đúng một, cắt ngay sau nó, tức phải chuyển n - i - 1 phần tử đứng sau lên đầu, nên đáp án là n - i - 1; nếu có nhiều hơn một chỗ giảm, in ra -1."
     ]
   },
   "explanationEn": "## Approach\n\nIf the array is already increasing, the answer is 0. Otherwise look for descents among the cyclic adjacencies. When there is exactly one descent, cutting right after it gives an increasing array, which takes n minus the cut point right shifts.\n\n## Correctness\n\nA cyclic right shift preserves all cyclic adjacencies and only changes which edge becomes the end-to-start link. A strictly increasing cycle of distinct elements has exactly one descent, so having exactly one descent is necessary and sufficient for feasibility, and the cut point is unique.\n\n## Complexity\n\nTime O(n), and O(n) space to store the input."

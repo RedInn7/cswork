@@ -13,6 +13,21 @@
       "A larger capacity never causes trouble, and the only rule is that the two capacities differ, so the best choice is the two largest capacities, 10^9 and 10^9 - 1.",
       "The 10^9 drone can carry every package; the 10^9 - 1 drone fails only on packages weighing exactly 10^9. Since they alternate, the smaller drone takes either the odd or the even positions; give it the side with fewer packages of weight 10^9.",
       "Go through the packages and count those of weight exactly 10^9 separately for even and odd indices; print the smaller count. Each package that must change can be given any small weight."
+    ],
+    "ja": [
+      "容量が大きくて困ることはなく、唯一の規則は 2 つの容量が異なることなので、最良の選択は最大の 2 つの容量 10^9 と 10^9 - 1 です。",
+      "10^9 のドローンはどの荷物も運べます。10^9 - 1 のドローンが失敗するのは、重さがちょうど 10^9 の荷物だけです。両者は交互に運ぶので、小さい方のドローンは奇数番目か偶数番目の位置を担当します。重さ 10^9 の荷物が少ない方を割り当てます。",
+      "荷物を順に見て、重さがちょうど 10^9 のものを、偶数インデックスと奇数インデックスで別々に数え、小さい方の個数を出力します。変更が必要な荷物は、どれも小さな任意の重さにできます。"
+    ],
+    "ko": [
+      "용량이 클수록 문제가 되지 않고 유일한 규칙은 두 용량이 달라야 한다는 것뿐이므로, 최선의 선택은 가장 큰 두 용량 10^9와 10^9 - 1입니다.",
+      "10^9 드론은 모든 택배를 운반할 수 있고, 10^9 - 1 드론은 무게가 정확히 10^9인 택배에서만 실패합니다. 두 드론은 번갈아 배송하므로 작은 드론은 홀수 위치 또는 짝수 위치를 맡으며, 무게 10^9인 택배가 더 적은 쪽을 맡기세요.",
+      "택배를 훑으며 무게가 정확히 10^9인 것의 개수를 짝수 인덱스와 홀수 인덱스에 따로 세고, 더 작은 개수를 출력합니다. 바꿔야 하는 택배는 어떤 작은 무게로 바꿔도 됩니다."
+    ],
+    "vi": [
+      "Sức chứa lớn hơn không bao giờ gây rắc rối, và quy tắc duy nhất là hai sức chứa khác nhau, nên lựa chọn tốt nhất là hai sức chứa lớn nhất, 10^9 và 10^9 - 1.",
+      "Drone 10^9 chở được mọi gói; drone 10^9 - 1 chỉ thất bại với các gói nặng đúng 10^9. Vì chúng xen kẽ, drone nhỏ hơn nhận hoặc các vị trí lẻ hoặc các vị trí chẵn; hãy giao cho nó phía có ít gói khối lượng 10^9 hơn.",
+      "Duyệt các gói và đếm riêng những gói có khối lượng đúng 10^9 ở chỉ số chẵn và chỉ số lẻ; in ra số đếm nhỏ hơn. Mỗi gói phải đổi có thể được gán một khối lượng nhỏ bất kỳ."
     ]
   },
   "explanationEn": "## Approach\n\nTaking the two capacities as the largest, 10^9, and the second largest, 10^9-1, is never worse than any other choice. Only packages weighing exactly 10^9 exceed the smaller capacity; give the smaller drone the parity of positions that has fewer such packages.\n\n## Proof of correctness\n\nRaising any usable pair of capacities, in order of size, to the two largest capacities never makes a previously deliverable package undeliverable, so there is an optimal plan that uses this pair. The large capacity can deliver every package, and the small one fails only on weight 10^9; take the smaller violation count of the two alternating orientations, and replacing those weights with 1 achieves this lower bound.\n\n## Complexity\n\nTime O(n), space O(n) including the input, auxiliary O(1)."

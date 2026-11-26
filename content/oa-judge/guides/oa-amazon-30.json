@@ -13,6 +13,21 @@
       "There are only n−1 split points and only 26 letters. If you can quickly know how often each letter appears on each side of a split point, you can count the letters the two sides share.",
       "Move the split point from left to right; each step moves just one character from the right side to the left, changing one entry in each count array; a letter is in the intersection exactly when its counts on both sides are positive.",
       "Put the whole string into the right-side counts; for each of the first n−1 characters, add 1 to its letter on the left and subtract 1 on the right, then scan the 26 letters to count those positive on both sides, and add 1 to the answer if that count is strictly greater than m; print the answer, which is 0 when the length is 1."
+    ],
+    "ja": [
+      "分割位置は n−1 か所しかなく、文字も 26 種類しかありません。分割位置の両側で各文字が何回現れるかをすぐに求められれば、両側に共通する文字を数えられます。",
+      "分割位置を左から右へ動かします。各ステップで右側の 1 文字が左側に移るだけなので、2 つのカウント配列のそれぞれで 1 つの要素だけが変わります。文字が共通部分に入るのは、両側の出現回数がともに正のときです。",
+      "文字列全体を右側のカウントに入れます。先頭の n−1 文字それぞれについて、左側のその文字に 1 を足し、右側から 1 を引いてから、26 文字を走査して両側で正の文字数を数えます。それが m より厳密に大きければ答えに 1 を加えます。長さが 1 のときは 0 を出力します。"
+    ],
+    "ko": [
+      "분할 지점은 n−1개뿐이고 문자도 26종뿐입니다. 분할 지점의 양쪽에서 각 문자가 몇 번 나타나는지 빠르게 알 수 있다면, 두 쪽이 공유하는 문자의 수를 셀 수 있습니다.",
+      "분할 지점을 왼쪽에서 오른쪽으로 옮기면 한 단계마다 오른쪽의 문자 하나가 왼쪽으로 이동하므로 두 카운트 배열에서 각각 한 칸만 바뀝니다. 어떤 문자가 교집합에 속하는 것은 양쪽의 개수가 모두 양수일 때와 정확히 같습니다.",
+      "문자열 전체를 오른쪽 카운트에 넣어 둡니다. 앞의 n−1개의 문자 각각에 대해 왼쪽의 해당 문자에 1을 더하고 오른쪽에서 1을 뺀 뒤, 26개 문자를 훑어 양쪽 모두 양수인 문자의 수를 세고 그 수가 m보다 엄격하게 크면 답에 1을 더합니다. 길이가 1이면 답은 0입니다."
+    ],
+    "vi": [
+      "Chỉ có n−1 điểm tách và chỉ có 26 chữ cái. Nếu có thể nhanh chóng biết mỗi chữ cái xuất hiện bao nhiêu lần ở mỗi bên của điểm tách, ta đếm được các chữ cái mà hai bên có chung.",
+      "Di chuyển điểm tách từ trái sang phải; mỗi bước chỉ chuyển một ký tự từ bên phải sang bên trái, làm thay đổi một phần tử trong mỗi mảng đếm; một chữ cái thuộc giao đúng khi số đếm của nó ở cả hai bên đều dương.",
+      "Đưa cả xâu vào số đếm bên phải; với mỗi ký tự trong n−1 ký tự đầu, cộng 1 cho chữ cái của nó ở bên trái và trừ 1 ở bên phải, rồi duyệt 26 chữ cái để đếm số chữ cái dương ở cả hai bên, và cộng 1 vào đáp án nếu số đó lớn hơn m một cách chặt chẽ; in đáp án, là 0 khi độ dài bằng 1."
     ]
   },
   "explanationEn": "## Approach\n\nUpdate the left and right frequencies as the split point moves, and each time count the letters whose left and right frequencies are both non-zero.\n\n## Proof of correctness\n\nAfter moving one character, the frequency arrays correspond exactly to the current left and right substrings. A letter belongs to the intersection if and only if its frequencies on both sides are positive. Every non-empty split is enumerated one by one and counted against the strict threshold.\n\n## Complexity\n\nTime O(26n), space O(26)."

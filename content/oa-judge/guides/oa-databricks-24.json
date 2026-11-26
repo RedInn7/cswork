@@ -13,6 +13,21 @@
       "A contiguous segment of length m + 1 has a change sequence of m adjacent comparisons. Convert all of numbers into its sequence of comparison signs (1, 0, -1) first; the task becomes counting how often pattern occurs in that sequence.",
       "That is standard string-matching counting over the alphabet {-1, 0, 1}. Matches may overlap, and KMP counts all occurrences in linear time.",
       "Compute the prefix (failure) function of pattern, then scan the sign sequence: on a mismatch fall back along the prefix function, and when the match length reaches m add one and fall back to pi[m-1] to keep finding overlapping matches. The sign sequence has length n - 1, so if m > n - 1 the answer is simply 0."
+    ],
+    "ja": [
+      "長さ m + 1 の連続区間の変化の列は、m 個の隣接比較からなります。まず numbers 全体を比較の符号(1、0、-1)の列に変換します。すると問題は、その列の中に pattern が何回現れるかを数えることになります。",
+      "これは、アルファベット {-1, 0, 1} 上の標準的な文字列照合の個数数えです。一致は重なりうるので、KMP なら線形時間ですべての出現を数えられます。",
+      "pattern の接頭辞関数(失敗関数)を計算し、符号列を走査します。不一致のときは接頭辞関数をたどって戻り、一致長が m に達したら 1 を加え、重なる一致を見つけ続けるために pi[m-1] に戻ります。符号列の長さは n - 1 なので、m > n - 1 なら答えは単に 0 です。"
+    ],
+    "ko": [
+      "길이 m + 1인 연속 구간의 변화 수열은 m개의 인접 비교로 이루어집니다. numbers 전체를 먼저 비교 부호(1, 0, -1)의 수열로 바꾸면, 문제는 그 수열에서 pattern이 몇 번 나타나는지 세는 것이 됩니다.",
+      "이는 알파벳 {-1, 0, 1} 위에서의 표준 문자열 매칭 횟수 세기입니다. 일치는 겹칠 수 있으며, KMP는 모든 출현을 선형 시간에 셉니다.",
+      "pattern의 접두사(실패) 함수를 계산한 뒤 부호 수열을 훑습니다. 불일치하면 접두사 함수를 따라 되돌아가고, 일치 길이가 m에 도달하면 1을 더한 뒤 pi[m-1]로 되돌아가 겹치는 일치를 계속 찾습니다. 부호 수열의 길이는 n - 1이므로 m > n - 1이면 답은 그냥 0입니다."
+    ],
+    "vi": [
+      "Một đoạn liên tiếp có độ dài m + 1 có dãy biến thiên gồm m phép so sánh kề nhau. Hãy chuyển toàn bộ numbers thành dãy dấu so sánh (1, 0, -1) trước; bài toán trở thành đếm số lần pattern xuất hiện trong dãy đó.",
+      "Đây là bài đếm khớp xâu chuẩn trên bảng chữ cái {-1, 0, 1}. Các lần khớp có thể chồng lấn, và KMP đếm tất cả các lần xuất hiện trong thời gian tuyến tính.",
+      "Tính hàm tiền tố (hàm thất bại) của pattern, rồi quét dãy dấu: khi không khớp thì lùi theo hàm tiền tố, và khi độ dài khớp đạt m thì cộng một và lùi về pi[m-1] để tiếp tục tìm các lần khớp chồng lấn. Dãy dấu có độ dài n - 1, nên nếu m > n - 1 thì đáp án đơn giản là 0."
     ]
   },
   "explanationEn": "## Approach\n\nFirst convert numbers into the sequence of adjacent comparison signs, then use KMP to count the occurrences of pattern in that sign sequence, including overlapping matches.\n\n## Proof of correctness\n\nEach contiguous segment of numbers of length m+1 corresponds to exactly one length-m segment of the sign sequence, and the definition requires them to be equal position by position. KMP counts exactly all starting points of pattern in the sign sequence, including overlapping ones, so the count agrees with the problem.\n\n## Complexity\n\nO(n+m) time and O(n+m) extra space."

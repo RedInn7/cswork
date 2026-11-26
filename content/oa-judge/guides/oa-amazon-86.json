@@ -13,6 +13,21 @@
       "One operation costs only x regardless of the range length, so extending an increment all the way to the end of the array is never more expensive. Think about which adjacent differences such a suffix increment changes.",
       "Adding x to a whole suffix changes only the difference between the start of the suffix and the element before it; all other adjacent differences stay the same. Every drop with power[i-1] > power[i] must be covered by increments that start at i.",
       "Walk over every adjacent pair, add max(0, power[i-1] - power[i]) to the total, and print the sum as a 64-bit integer."
+    ],
+    "ja": [
+      "1 回の操作のコストは、区間の長さに関係なく x だけなので、増加を配列の末尾まで延ばしても、より高くなることはありません。そのようなサフィックスへのインクリメントが、隣り合う要素の差のうちどれを変えるかを考えてみてください。",
+      "サフィックス全体に x を加えると、変わるのはサフィックスの先頭とその直前の要素との差だけで、他の隣り合う差は変わりません。power[i-1] > power[i] となるすべての下がり幅は、i から始まるインクリメントでカバーされなければなりません。",
+      "隣り合うすべての組を走査し、max(0, power[i-1] - power[i]) を合計に加えて、その和を 64 ビット整数として出力します。"
+    ],
+    "ko": [
+      "한 번의 연산은 구간 길이와 상관없이 비용이 x뿐이므로, 증가를 배열 끝까지 확장하는 것이 더 비싸지는 일은 없습니다. 이런 접미사 증가가 인접한 차이 중 어느 것을 바꾸는지 생각해 보세요.",
+      "접미사 전체에 x를 더하면 접미사의 시작과 그 앞 원소 사이의 차이만 바뀌고, 다른 모든 인접 차이는 그대로입니다. power[i-1] > power[i]인 모든 하락은 i에서 시작하는 증가들로 해소되어야 합니다.",
+      "모든 인접한 쌍을 훑으며 max(0, power[i-1] - power[i])를 총합에 더하고, 합을 64비트 정수로 출력합니다."
+    ],
+    "vi": [
+      "Một thao tác chỉ tốn x bất kể độ dài đoạn, nên kéo dài một lần tăng đến tận cuối mảng không bao giờ đắt hơn. Hãy nghĩ xem một lần tăng hậu tố như vậy làm thay đổi những hiệu liền kề nào.",
+      "Cộng x vào cả một hậu tố chỉ thay đổi hiệu giữa điểm bắt đầu của hậu tố và phần tử đứng trước nó; mọi hiệu liền kề khác giữ nguyên. Mỗi mức giảm với power[i-1] > power[i] phải được bù bằng các lần tăng bắt đầu tại i.",
+      "Duyệt mọi cặp liền kề, cộng max(0, power[i-1] - power[i]) vào tổng, và in tổng dưới dạng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nAdd up every adjacent drop max(0, power[i−1]−power[i]).\n\n## Proof of Correctness\n\nEach drop boundary must be made up by increments of ranges that start on its right side, and one range can produce a positive improvement on at most one starting boundary, so the sum of the drops is a lower bound. At each drop position, increasing the whole suffix by that drop fixes the boundary without changing any later adjacent difference, which achieves exactly the lower bound.\n\n## Complexity\n\nTime O(n), space O(n) (to store the input)."

@@ -13,6 +13,21 @@
       "There are n(n+1)/2 subarrays, too many to list, but the number of subarrays with at most k distinct values never decreases as k grows, so the answer can be binary searched.",
       "The required median is the rank-th smallest distinct count with rank = (n(n+1)/2+1)/2, which is the smallest k for which at least rank subarrays have at most k distinct values. For a fixed k that number comes from a linear sliding window.",
       "Binary search k between 1 and the number of distinct values in the array. To test k, move the right end one step at a time while tracking each value's count and the number of distinct values, advancing the left end while there are more than k; each right end contributes the window length. If the total is at least rank, lower the upper bound, otherwise raise the lower bound. Compress values first and use 64-bit counts."
+    ],
+    "ja": [
+      "部分配列は n(n+1)/2 個あり、列挙するには多すぎますが、異なる値が高々 k 個である部分配列の数は k が大きくなっても減らないので、答えは二分探索できます。",
+      "求める中央値は、異なる値の個数を小さい順に並べたときの rank 番目の値で、rank = (n(n+1)/2+1)/2 です。これは、異なる値が高々 k 個の部分配列が少なくとも rank 個ある最小の k です。k を固定したときのその個数は、線形時間のスライディングウィンドウで求められます。",
+      "k を 1 から配列に含まれる異なる値の数までの範囲で二分探索します。k を判定するには、右端を1歩ずつ動かしながら各値の個数と異なる値の数を追跡し、k を超えている間は左端を進めます。各右端について、ウィンドウの長さを加算します。合計が rank 以上なら上限を下げ、そうでなければ下限を上げます。先に値を圧縮し、個数には64ビットを使います。"
+    ],
+    "ko": [
+      "부분 배열은 n(n+1)/2개로 나열하기에는 너무 많지만, 서로 다른 값이 최대 k개인 부분 배열의 수는 k가 커져도 줄어들지 않으므로 답을 이분 탐색할 수 있습니다.",
+      "필요한 중앙값은 rank = (n(n+1)/2+1)/2일 때 서로 다른 값 개수 중 rank번째로 작은 값이며, 서로 다른 값이 최대 k개인 부분 배열이 최소 rank개 되는 가장 작은 k입니다. 고정된 k에 대한 그 개수는 선형 슬라이딩 윈도우로 구할 수 있습니다.",
+      "k를 1부터 배열의 서로 다른 값의 수 사이에서 이분 탐색합니다. k를 검사하려면 오른쪽 끝을 한 칸씩 옮기며 각 값의 개수와 서로 다른 값의 수를 추적하고, k개를 넘는 동안 왼쪽 끝을 전진시킵니다. 각 오른쪽 끝은 윈도우 길이를 기여합니다. 합이 rank 이상이면 상한을 낮추고, 아니면 하한을 올립니다. 값을 먼저 압축하고 64비트 카운트를 사용합니다."
+    ],
+    "vi": [
+      "Có n(n+1)/2 mảng con, quá nhiều để liệt kê, nhưng số mảng con có nhiều nhất k giá trị phân biệt không bao giờ giảm khi k tăng, nên có thể tìm kiếm nhị phân đáp án.",
+      "Trung vị cần tìm là số đếm phân biệt nhỏ thứ rank với rank = (n(n+1)/2+1)/2, đó là k nhỏ nhất sao cho có ít nhất rank mảng con có nhiều nhất k giá trị phân biệt. Với k cố định, số đó tính được bằng một cửa sổ trượt tuyến tính.",
+      "Tìm kiếm nhị phân k trong khoảng từ 1 đến số giá trị phân biệt của mảng. Để kiểm tra k, di chuyển đầu mút phải từng bước một và theo dõi số lượng của từng giá trị cùng số giá trị phân biệt, đẩy đầu mút trái lên khi có nhiều hơn k giá trị; mỗi đầu mút phải đóng góp độ dài cửa sổ. Nếu tổng ít nhất là rank thì hạ cận trên, ngược lại nâng cận dưới. Nén giá trị trước và dùng số đếm 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nBinary search on the answer k, use a sliding window to count the subarrays with at most k distinct values, and check whether the count reaches the rank of the lower median.\n\n## Proof of correctness\n\nWindows with at most k distinct values can be maintained with a monotone left end, and each right end contributes the window length. The count never decreases as k grows; the first k whose count reaches the target rank is exactly the required order statistic.\n\n## Complexity\n\nTime O(n log n), space O(n)."

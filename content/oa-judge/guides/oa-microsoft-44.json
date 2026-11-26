@@ -13,6 +13,21 @@
       "Each original element is either kept alone or joined with one neighbor, which is the same as cutting the array into pieces of length 1 or 2.",
       "Let f[i] be the best total for the first i elements. The last piece is either element i alone or elements i−1 and i concatenated, so f[i] depends only on f[i−1] and f[i−2].",
       "Concatenating x and y gives x times 10 to the power of the digit count of y, plus y, where 0 counts as one digit. Take the larger of f[i−1]+a[i] and f[i−2]+the concatenated value, keep only the last two states and the previous element, and print f[N]; the total can exceed 32-bit range."
+    ],
+    "ja": [
+      "元の各要素は、単独で残すか、隣の 1 つと結合するかのどちらかで、これは配列を長さ 1 または 2 の断片に区切ることと同じです。",
+      "f[i] を最初の i 個の要素での最良の合計とします。最後の断片は、要素 i 単独か、要素 i−1 と i の連結のどちらかなので、f[i] は f[i−1] と f[i−2] にしか依存しません。",
+      "x と y の連結は、x に 10 の（y の桁数）乗を掛けて y を足したもので、0 は 1 桁と数えます。f[i−1]+a[i] と、f[i−2]+連結した値の大きい方を取り、直近 2 つの状態と直前の要素だけを保持し、f[N] を出力します。合計は 32 ビットの範囲を超え得ます。"
+    ],
+    "ko": [
+      "각 원래 원소는 혼자 두거나 이웃 하나와 합쳐지므로, 배열을 길이 1 또는 2인 조각으로 자르는 것과 같습니다.",
+      "f[i]를 처음 i개 원소에 대한 최선의 합이라 합시다. 마지막 조각은 원소 i 하나이거나 원소 i−1과 i를 이어 붙인 것이므로 f[i]는 f[i−1]과 f[i−2]에만 의존합니다.",
+      "x와 y를 이어 붙인 값은 x에 10을 y의 자릿수만큼 거듭제곱한 값을 곱하고 y를 더한 것이며, 0은 한 자리로 셉니다. f[i−1]+a[i]와 f[i−2]+이어 붙인 값 중 큰 것을 취하고, 마지막 두 상태와 이전 원소만 유지한 채 f[N]을 출력합니다. 합은 32비트 범위를 넘을 수 있습니다."
+    ],
+    "vi": [
+      "Mỗi phần tử gốc hoặc được giữ riêng hoặc được ghép với một phần tử kề, tương đương với việc cắt mảng thành các đoạn có độ dài 1 hoặc 2.",
+      "Gọi f[i] là tổng tốt nhất cho i phần tử đầu. Đoạn cuối hoặc là phần tử i đứng riêng, hoặc là các phần tử i−1 và i được ghép, nên f[i] chỉ phụ thuộc f[i−1] và f[i−2].",
+      "Ghép x và y cho x nhân 10 mũ số chữ số của y, cộng y, trong đó 0 tính là một chữ số. Lấy giá trị lớn hơn giữa f[i−1]+a[i] và f[i−2]+giá trị ghép, chỉ giữ hai trạng thái cuối và phần tử trước đó, rồi in f[N]; tổng có thể vượt quá phạm vi 32 bit."
     ]
   },
   "explanationEn": "## Approach\n\nPrefix DP: either keep the last element on its own, or concatenate the last two original elements into one item; take the larger of the two sums.\n\n## Correctness\n\nIn any valid partition, the last group can contain only 1 or 2 original elements. Removing it leaves a valid optimal subproblem on a shorter prefix; the two recurrences exhaust all possibilities and guarantee no overlap.\n\n## Complexity\n\nTime O(N), space O(1) apart from the input."

@@ -13,6 +13,21 @@
       "Stamina only changes when you pick a gem, and it must stay non-negative at every moment. To pick as many as possible, whenever you are forced to give something up you should give up the gem that hurts the most.",
       "Scan from left to right, tentatively picking every gem. As soon as stamina becomes negative, undo the picked gem with the smallest (most negative) value: that costs only one gem in the count but raises stamina the most.",
       "Keep the stamina sum and a min-heap of the picked values. For each a[i], push it and add it to stamina; if stamina is below 0, pop the heap top and subtract it from stamina. After the scan, the heap size is the answer. Use a 64-bit integer for stamina."
+    ],
+    "ja": [
+      "スタミナが変わるのは宝石を拾ったときだけで、常に非負でなければなりません。できるだけ多く拾うには、何かを諦めざるを得ないとき、最も害になる宝石を諦めるべきです。",
+      "左から右へ走査し、すべての宝石を仮に拾います。スタミナが負になったらすぐに、拾った中で最小(最も負に大きい)の値の宝石を取り消します: 個数は 1 つ減るだけで、スタミナは最も大きく回復します。",
+      "スタミナの合計と、拾った値の最小ヒープを保持します。各 a[i] を push してスタミナに加え、スタミナが 0 未満なら、ヒープの先頭を pop してスタミナから引きます。走査が終わったら、ヒープのサイズが答えです。スタミナには 64 ビット整数を使います。"
+    ],
+    "ko": [
+      "체력은 보석을 주울 때만 바뀌고 모든 순간에 음이 아니어야 합니다. 가능한 한 많이 주우려면 무언가를 포기해야 할 때 가장 해로운 보석을 포기해야 합니다.",
+      "왼쪽에서 오른쪽으로 스캔하며 일단 모든 보석을 줍습니다. 체력이 음수가 되는 즉시 주운 보석 중 가장 작은(가장 음수인) 값을 취소합니다. 개수로는 보석 하나만 잃지만 체력은 가장 많이 회복됩니다.",
+      "체력 합과 주운 값의 최소 힙을 유지합니다. 각 a[i]에 대해 힙에 push하고 체력에 더하며, 체력이 0보다 작으면 힙의 top을 pop하여 체력에서 뺍니다. 스캔이 끝난 뒤 힙의 크기가 답입니다. 체력에는 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Thể lực chỉ thay đổi khi bạn nhặt một viên ngọc, và nó phải không âm ở mọi thời điểm. Để nhặt được nhiều nhất, mỗi khi buộc phải từ bỏ thứ gì đó, bạn nên từ bỏ viên ngọc gây hại nhiều nhất.",
+      "Duyệt từ trái sang phải, tạm thời nhặt mọi viên ngọc. Ngay khi thể lực trở nên âm, hoàn tác viên ngọc đã nhặt có giá trị nhỏ nhất (âm nhất): việc đó chỉ tốn một viên trong số đếm nhưng làm thể lực tăng lên nhiều nhất.",
+      "Giữ tổng thể lực và một min-heap các giá trị đã nhặt. Với mỗi a[i], push nó và cộng vào thể lực; nếu thể lực dưới 0, pop đỉnh heap và trừ nó khỏi thể lực. Sau khi duyệt, kích thước heap là đáp án. Dùng số nguyên 64 bit cho thể lực."
     ]
   },
   "explanationEn": "## Approach\n\nScan from left to right, tentatively picking up every gem while maintaining the stamina sum and a min-heap of the chosen values; if the sum becomes negative, destroy the chosen gem with the smallest (most negative) value (pop the heap top) until stamina is non-negative.\n\n## Correctness\n\nAt any prefix of the scan, the algorithm maintains a feasible chosen set of maximum size. After a new gem is added, if stamina is still non-negative, the size increases by one. If it becomes negative, no set containing all chosen gems of this prefix is feasible; to restore feasibility while keeping as many gems as possible, deleting the chosen gem with the smallest value increases stamina the most while losing only one in the count. Repeat until feasible. Induction over every prefix gives the maximum feasible size; at the end, that is the maximum number of gems picked over the whole process.\n\n## Complexity\n\nTime O(n log n), space O(n)."

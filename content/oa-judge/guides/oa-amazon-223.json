@@ -13,6 +13,21 @@
       "This is the classic task scheduler: each request takes 1 unit and two requests of the same region need at least minGap idle units between them. The tightest constraint comes from the most frequent region.",
       "Let f be the highest frequency and c the number of regions reaching it. The first f-1 occurrences of a most frequent region each open a round of length minGap+1, and the last round must still hold those c regions, giving the lower bound (f-1)(minGap+1)+c; the other lower bound is the total n.",
       "Count the 26 letters, find f and c, and print max(n, (f-1)*(minGap+1)+c); the larger of the two lower bounds can always be achieved."
+    ],
+    "ja": [
+      "これは古典的なタスクスケジューラです。各リクエストは 1 単位かかり、同じリージョンの 2 つのリクエストの間には少なくとも minGap 単位の待機が必要です。最も厳しい制約は、最頻出のリージョンから生じます。",
+      "f を最大頻度、c をその頻度に達するリージョン数とします。最頻出リージョンの最初の f-1 回の出現は、それぞれ長さ minGap+1 のラウンドを開き、最後のラウンドにはその c 個のリージョンが入る必要があるので、下限は (f-1)(minGap+1)+c となります。もう 1 つの下限は総数 n です。",
+      "26 文字を数えて f と c を求め、max(n, (f-1)*(minGap+1)+c) を出力します。2 つの下限のうち大きい方は常に達成できます。"
+    ],
+    "ko": [
+      "고전적인 작업 스케줄러 문제입니다. 각 요청은 1 단위가 걸리고 같은 지역의 두 요청 사이에는 최소 minGap 단위의 유휴 시간이 필요합니다. 가장 엄격한 제약은 가장 빈도가 높은 지역에서 나옵니다.",
+      "f를 최대 빈도, c를 그 빈도에 도달한 지역 수라고 합시다. 가장 빈번한 지역의 앞 f-1번의 등장은 각각 길이 minGap+1의 라운드를 열고, 마지막 라운드에는 그 c개 지역이 들어가야 하므로 하한은 (f-1)(minGap+1)+c입니다. 다른 하한은 전체 수 n입니다.",
+      "26개 문자를 세어 f와 c를 구하고 max(n, (f-1)*(minGap+1)+c)를 출력합니다. 두 하한 중 큰 쪽은 항상 달성할 수 있습니다."
+    ],
+    "vi": [
+      "Đây là bài lập lịch tác vụ kinh điển: mỗi yêu cầu mất 1 đơn vị và hai yêu cầu cùng vùng cần ít nhất minGap đơn vị rỗi giữa chúng. Ràng buộc chặt nhất đến từ vùng xuất hiện nhiều nhất.",
+      "Gọi f là tần suất cao nhất và c là số vùng đạt tần suất đó. f-1 lần xuất hiện đầu của một vùng nhiều nhất mở ra mỗi vòng độ dài minGap+1, và vòng cuối vẫn phải chứa c vùng đó, cho cận dưới (f-1)(minGap+1)+c; cận dưới còn lại là tổng n.",
+      "Đếm 26 chữ cái, tìm f và c, rồi in max(n, (f-1)*(minGap+1)+c); cận dưới lớn hơn trong hai cận luôn đạt được."
     ]
   },
   "explanationEn": "## Approach\n\nLet f be the highest occurrence count and c the number of regions reaching it; the answer is max(total number of requests, (f-1)(minGap+1)+c).\n\n## Proof of correctness\n\nThe total number of requests is a necessary lower bound on the time. The first f-1 rounds of a most frequent region must each be at least minGap+1 apart, and the last round contains c regions, which gives the second lower bound. Fill the requests by frequency into the f-1 spaced rounds, with the other requests taking empty slots first; if there are not enough, pad with idle time, and if they exceed the capacity, widen the rounds. This attains exactly the larger of the two lower bounds.\n\n## Complexity\n\nTime O(n), auxiliary space O(26)."

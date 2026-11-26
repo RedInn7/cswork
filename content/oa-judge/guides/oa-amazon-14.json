@@ -13,6 +13,21 @@
       "The choice for each character of the new password is independent: it either stays or becomes its cyclic successor, so it can match a target character c exactly when it equals c or its successor equals c.",
       "Check the subsequence greedily: scan the new password from left to right and match immediately whenever the current character can match the next unmatched character of the old password; matching early never leaves fewer usable characters later.",
       "Keep a pointer j into the old password; for each character c of the new password compute its successor (the successor of z is a), and if c or the successor equals old[j], increment j; print YES as soon as j reaches the old password's length, and NO if the scan ends first."
+    ],
+    "ja": [
+      "新しいパスワードの各文字の選択は独立です。そのままか、循環的な次の文字になるかのどちらかなので、目標の文字 c に一致できるのは、その文字が c に等しいか、その次の文字が c に等しいときです。",
+      "部分列は貪欲に判定します。新しいパスワードを左から右へ走査し、現在の文字が古いパスワードの次の未マッチの文字に一致できるなら、すぐにマッチさせます。早くマッチさせても、後で使える文字が減ることはありません。",
+      "古いパスワードへのポインタ j を持ちます。新しいパスワードの各文字 c について、その次の文字（z の次は a）を計算し、c またはその次の文字が old[j] に等しければ j を増やします。j が古いパスワードの長さに達したらすぐに YES を出力し、その前に走査が終わったら NO を出力します。"
+    ],
+    "ko": [
+      "새 비밀번호의 각 문자에 대한 선택은 독립적입니다. 그대로 두거나 순환 다음 문자가 되므로, 목표 문자 c와 일치할 수 있는 것은 그 문자가 c와 같거나 그 다음 문자가 c와 같을 때입니다.",
+      "부분 수열은 그리디로 확인합니다. 새 비밀번호를 왼쪽에서 오른쪽으로 훑으면서 현재 문자가 이전 비밀번호의 아직 매칭되지 않은 다음 문자와 일치할 수 있으면 즉시 매칭합니다. 일찍 매칭한다고 해서 이후에 쓸 수 있는 문자가 줄어들지 않습니다.",
+      "이전 비밀번호를 가리키는 포인터 j를 유지합니다. 새 비밀번호의 각 문자 c에 대해 그 다음 문자(z의 다음은 a)를 구하고, c 또는 다음 문자가 old[j]와 같으면 j를 증가시킵니다. j가 이전 비밀번호의 길이에 도달하면 즉시 YES를 출력하고, 그 전에 훑기가 끝나면 NO를 출력합니다."
+    ],
+    "vi": [
+      "Lựa chọn cho mỗi ký tự của mật khẩu mới là độc lập: nó hoặc giữ nguyên hoặc trở thành ký tự kế tiếp theo vòng, nên nó có thể khớp với ký tự đích c đúng khi nó bằng c hoặc ký tự kế tiếp của nó bằng c.",
+      "Kiểm tra dãy con theo cách tham lam: quét mật khẩu mới từ trái sang phải và khớp ngay mỗi khi ký tự hiện tại có thể khớp với ký tự chưa được khớp kế tiếp của mật khẩu cũ; khớp sớm không bao giờ để lại ít ký tự dùng được hơn về sau.",
+      "Giữ một con trỏ j vào mật khẩu cũ; với mỗi ký tự c của mật khẩu mới, tính ký tự kế tiếp của nó (kế tiếp của z là a), và nếu c hoặc ký tự kế tiếp bằng old[j] thì tăng j; in YES ngay khi j đạt độ dài của mật khẩu cũ, và NO nếu việc quét kết thúc trước."
     ]
   },
   "explanationEn": "## Approach\n\nScan the new password from left to right, and match immediately whenever the current character or its successor matches the current character of the old password.\n\n## Correctness\n\nThe choices for different characters are independent. The first position of any feasible matching is never earlier than the position the greedy picks, and replacing it with an earlier position never reduces the characters left for the rest. Repeating this exchange yields the full greedy matching; if the greedy cannot match the whole old password, no feasible solution exists.\n\n## Complexity\n\nTime O(n+m), extra space O(1)."

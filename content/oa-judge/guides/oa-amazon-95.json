@@ -13,6 +13,21 @@
       "A subsequence can become greater than system in only three ways: it is already greater and gets any character appended; it equals a prefix of system and the next character is larger; or it equals the whole of system and gets any character appended.",
       "Let dp[j] be the number of subsequences equal to the first j characters of system (dp[0] = 1 for the empty sequence), and let greater be the number of subsequences that are already greater. Process the characters of customer in order; every existing subsequence may either take or skip the current character.",
       "For a character ch: first set greater = 2*greater + dp[m], where m is the length of system; then for j from m-1 down to 0, add dp[j] to greater if ch > system[j], or add dp[j] to dp[j+1] if they are equal. The descending order keeps the character from being used twice. Do every operation modulo 10^9+7 and print greater at the end."
+    ],
+    "ja": [
+      "部分列が system より大きくなる方法は 3 通りだけです。すでに大きい部分列に任意の文字を追加する場合、system の接頭辞と等しく次の文字がそれより大きい場合、system 全体と等しい部分列に任意の文字を追加する場合です。",
+      "dp[j] を system の先頭 j 文字に等しい部分列の個数（空の列について dp[0] = 1）、greater をすでに大きくなっている部分列の個数とします。customer の文字を順に処理し、既存の各部分列は現在の文字を取るか飛ばすかを選べます。",
+      "文字 ch については、まず greater = 2*greater + dp[m] とします（m は system の長さ）。次に j を m-1 から 0 まで降順に動かし、ch > system[j] なら dp[j] を greater に加え、等しければ dp[j] を dp[j+1] に加えます。降順にすることで、文字が 2 回使われるのを防ぎます。すべての演算を 10^9+7 で割った余りで行い、最後に greater を出力します。"
+    ],
+    "ko": [
+      "부분 수열이 system보다 커지는 경우는 세 가지뿐입니다. 이미 더 커진 상태에서 아무 문자나 덧붙이는 경우, system의 접두사와 같은데 다음 문자가 더 큰 경우, system 전체와 같은데 아무 문자나 덧붙이는 경우입니다.",
+      "dp[j]를 system의 앞 j글자와 같은 부분 수열의 수(빈 수열에 대해 dp[0] = 1)로, greater를 이미 더 커진 부분 수열의 수로 둡니다. customer의 문자를 순서대로 처리하며, 기존 부분 수열은 현재 문자를 취하거나 건너뛸 수 있습니다.",
+      "문자 ch에 대해 먼저 greater = 2*greater + dp[m]으로 설정합니다(m은 system의 길이). 그런 다음 j를 m-1부터 0까지 내려가며 ch > system[j]이면 dp[j]를 greater에 더하고, 같으면 dp[j]를 dp[j+1]에 더합니다. 역순으로 처리하면 문자를 두 번 쓰는 일이 없습니다. 모든 연산은 10^9+7로 나눈 나머지로 하고, 마지막에 greater를 출력합니다."
+    ],
+    "vi": [
+      "Một dãy con chỉ có thể trở nên lớn hơn system theo ba cách: nó đã lớn hơn và được thêm một ký tự bất kỳ; nó bằng một tiền tố của system và ký tự kế tiếp lớn hơn; hoặc nó bằng toàn bộ system và được thêm một ký tự bất kỳ.",
+      "Gọi dp[j] là số dãy con bằng j ký tự đầu của system (dp[0] = 1 cho dãy rỗng), và greater là số dãy con đã lớn hơn. Xử lý các ký tự của customer theo thứ tự; mỗi dãy con hiện có có thể lấy hoặc bỏ qua ký tự hiện tại.",
+      "Với một ký tự ch: trước tiên đặt greater = 2*greater + dp[m], trong đó m là độ dài của system; sau đó với j từ m-1 xuống 0, cộng dp[j] vào greater nếu ch > system[j], hoặc cộng dp[j] vào dp[j+1] nếu hai ký tự bằng nhau. Thứ tự giảm dần giữ cho ký tự không bị dùng hai lần. Thực hiện mọi phép toán modulo 10^9+7 và in greater ở cuối."
     ]
   },
   "explanationEn": "## Approach\n\ndp[j] records the number of subsequences exactly equal to the first j characters of system, and greater records the number of subsequences that are already greater. Each new character doubles greater; an equal prefix followed by a larger character, or the complete system followed by any character, also becomes greater; the equal-prefix DP is updated in reverse order.\n\n## Proof of Correctness\n\nEvery subsequence is uniquely classified by whether it uses the current character. Anything already greater stays greater after any append; the first difference must come from an equal prefix followed by a larger character, and appending to the complete system also makes it greater. The reverse order guarantees that the current character is used only once; the cases are mutually exclusive and cover every qualifying subsequence.\n\n## Complexity\n\nTime O(|customer|·|system|), space O(|system|)."

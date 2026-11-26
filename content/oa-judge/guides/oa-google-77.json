@@ -13,6 +13,21 @@
       "While there is no winner yet, any new line of three must contain the stone just placed, so each move only needs to check the lines through that cell.",
       "There are four directions through the new stone (horizontal, vertical and two diagonals). The winning length is always 3, so in each direction look at most 2 cells to each side and count the same player's consecutive stones.",
       "Store the board in a flat array. For each move check in order: if a winner exists print Game Over; if the cell is taken print Invalid Move; otherwise place the stone, increase the occupied count, and if some direction has at least 3 in a row (both sides plus the stone) print Player x won, else Draw when the board is full, else In Progress."
+    ],
+    "ja": [
+      "まだ勝者がいない間、新しくできる 3 連はすべて、今置いた駒を含むはずです。したがって、各手ではそのマスを通る線だけを調べれば十分です。",
+      "新しい駒を通る方向は 4 つ（横・縦・斜め 2 本）です。勝利の長さは常に 3 なので、各方向で各側に最大 2 マスまで調べ、同じプレイヤーの駒の連続数を数えます。",
+      "盤面を 1 次元配列に保持します。各手について、順に確認します。勝者がいれば Game Over を出力。マスが埋まっていれば Invalid Move を出力。そうでなければ駒を置いて埋まったマスの数を増やし、いずれかの方向で 3 連以上（両側と駒自身）なら Player x won、そうでなく盤面が埋まっていれば Draw、それ以外は In Progress を出力します。"
+    ],
+    "ko": [
+      "아직 승자가 없는 동안 새로 생기는 3개 연속은 반드시 방금 놓은 돌을 포함하므로, 수마다 그 칸을 지나는 줄만 확인하면 됩니다.",
+      "새 돌을 지나는 방향은 네 가지(가로, 세로, 두 대각선)입니다. 승리 길이는 항상 3이므로 각 방향에서 양쪽으로 최대 2칸까지 보면서 같은 플레이어의 연속한 돌을 셉니다.",
+      "판을 1차원 배열에 저장합니다. 수마다 순서대로 확인합니다. 승자가 있으면 Game Over를 출력하고, 칸이 차 있으면 Invalid Move를 출력하며, 그렇지 않으면 돌을 놓고 점유 수를 늘린 뒤, 어떤 방향에서 (양쪽과 돌 자신을 합쳐) 3개 이상 연속하면 Player x won을, 아니고 판이 가득 찼으면 Draw를, 그것도 아니면 In Progress를 출력합니다."
+    ],
+    "vi": [
+      "Khi chưa có người thắng, mọi đường ba quân mới đều phải chứa quân vừa đặt, nên mỗi nước đi chỉ cần kiểm tra các đường đi qua ô đó.",
+      "Có bốn hướng đi qua quân mới (ngang, dọc và hai đường chéo). Độ dài thắng luôn là 3, nên theo mỗi hướng chỉ xem tối đa 2 ô về mỗi phía và đếm các quân liên tiếp của cùng người chơi.",
+      "Lưu bàn cờ trong một mảng phẳng. Với mỗi nước đi kiểm tra theo thứ tự: nếu đã có người thắng thì in Game Over; nếu ô đã có quân thì in Invalid Move; ngược lại đặt quân, tăng số ô đã có quân, và nếu có hướng nào có ít nhất 3 quân liên tiếp (cả hai phía cộng với quân vừa đặt) thì in Player x won, nếu không thì Draw khi bàn cờ đầy, còn lại là In Progress."
     ]
   },
   "explanationEn": "## Idea\n\nStore the board in an array. After a stone is placed, check only the four directions through it, looking at most 2 cells to each side. Check for an existing winner and for an occupied cell first.\n\n## Correctness\n\nSince there was no winner before, any new line of three must include the newly placed cell. The four directions enumerate every line, and at most 2 cells on each side are enough to decide whether a line of length 3 is formed. The order of the status checks matches the rules.\n\n## Complexity\n\nO(n²+m) time and O(n²) space; each win check is O(1)."

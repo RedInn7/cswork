@@ -13,6 +13,21 @@
       "Scanning left to right, a ')' with no unmatched '(' before it forces any valid result to insert a '(' somewhere before it.",
       "Track a balance of unmatched '(': an opening bracket adds one, a closing bracket subtracts one if it can be matched and otherwise counts one required insertion. After the scan, every remaining unmatched '(' still needs a ')' inserted.",
       "Start with balance and missing at 0 and scan the characters: '(' increments the balance; ')' decrements the balance when it is positive, otherwise increments missing. Print missing plus balance."
+    ],
+    "ja": [
+      "左から右へ走査すると、手前に対応のない '(' がない ')' が現れた時点で、正しい結果にはその前のどこかに '(' を挿入せざるを得ません。",
+      "対応のない '(' の残高を追跡します。開き括弧は1を足し、閉じ括弧は対応できれば1を引き、できなければ挿入が1回必要と数えます。走査後、残っている対応のない '(' のそれぞれにも ')' の挿入が必要です。",
+      "残高 balance と不足 missing を 0 で始め、文字を走査します。'(' は balance を増やし、')' は balance が正なら減らし、そうでなければ missing を増やします。missing + balance を出力します。"
+    ],
+    "ko": [
+      "왼쪽에서 오른쪽으로 훑을 때, 앞에 짝이 없는 '('가 없는 ')'가 나오면 어떤 유효한 결과든 그 앞 어딘가에 '('를 삽입해야 합니다.",
+      "짝이 없는 '('의 균형값을 추적합니다. 여는 괄호는 1을 더하고, 닫는 괄호는 짝지을 수 있으면 1을 빼며 그렇지 않으면 필요한 삽입 한 번으로 셉니다. 훑은 뒤에 남은 짝 없는 '('마다 ')'를 삽입해야 합니다.",
+      "balance와 missing을 0으로 시작해 문자를 훑습니다. '('는 balance를 증가시키고, ')'는 balance가 양수이면 감소시키며 아니면 missing을 증가시킵니다. missing과 balance의 합을 출력합니다."
+    ],
+    "vi": [
+      "Quét từ trái sang phải, một ')' không có '(' chưa khớp đứng trước buộc mọi kết quả hợp lệ phải chèn một '(' ở đâu đó phía trước nó.",
+      "Theo dõi một biến cân bằng các '(' chưa khớp: ngoặc mở cộng một, ngoặc đóng trừ một nếu khớp được, nếu không thì tính là một lần chèn bắt buộc. Sau khi quét xong, mỗi '(' chưa khớp còn lại vẫn cần chèn một ')'.",
+      "Bắt đầu với balance và missing bằng 0 rồi quét các ký tự: '(' tăng balance; ')' giảm balance khi nó dương, nếu không thì tăng missing. In missing cộng balance."
     ]
   },
   "explanationEn": "## Approach\n\nWhile scanning, keep a balance of left parentheses that are not yet matched. When a right parenthesis appears with balance 0, a left parenthesis must be inserted; at the end, insert a right parenthesis for each remaining left one.\n\n## Proof of correctness\n\nWhen a right parenthesis has no available left parenthesis before it, any valid result must add a new left parenthesis. Every other right parenthesis can directly match an existing left one without any extra operation. At the end, each unmatched left parenthesis needs at least one right parenthesis, and the construction uses exactly these necessary insertions, so it is optimal.\n\n## Complexity\n\nO(n) time, O(1) space."

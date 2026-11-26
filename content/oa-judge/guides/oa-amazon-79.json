@@ -13,6 +13,21 @@
       "In round t every item costs t*cost[i], so a full round costs t*sum(cost), the first k full rounds cost sum(cost)*k*(k+1)/2 in total, and that grows monotonically with k.",
       "Binary search (after doubling to find an upper bound) for the largest number k of complete rounds you can afford; the remaining money only covers part of round k+1, so check the items in order and, by this problem's rule, stop at the first item you cannot afford instead of skipping it.",
       "Let T = sum(cost) and spent(k) = T * (k(k+1)/2); double high from 1 until spent(high) > m, then binary search the largest k in [0, high); the remainder is m - spent(k) and k*n items are already bought; then check (k+1)*cost[i] in order, paying and counting while affordable and stopping at the first unaffordable item; print the count. Use 64-bit integers and compute k(k+1)/2 before multiplying by T to avoid overflow."
+    ],
+    "ja": [
+      "ラウンド t では各アイテムのコストが t*cost[i] なので、1 ラウンド分のコストは t*sum(cost) です。最初の k ラウンドの総コストは sum(cost)*k*(k+1)/2 で、これは k に対して単調に増加します。",
+      "（上界を倍々に探してから）二分探索で、購入できる完全なラウンド数 k の最大値を求めます。残りのお金では、ラウンド k+1 の途中までしか買えません。アイテムを順にチェックし、この問題の規則に従って、買えない最初のアイテムでスキップせずに停止します。",
+      "T = sum(cost)、spent(k) = T * (k(k+1)/2) とします。spent(high) > m となるまで high を 1 から倍にし、[0, high) の中で最大の k を二分探索します。残りは m - spent(k) で、k*n 個のアイテムはすでに購入済みです。続いて (k+1)*cost[i] を順にチェックし、買えるうちは支払って数え、最初に買えないアイテムで停止します。数えた個数を出力します。64 ビット整数を使い、オーバーフローを避けるために、T を掛ける前に k(k+1)/2 を計算します。"
+    ],
+    "ko": [
+      "t번째 라운드에서는 모든 물품의 비용이 t*cost[i]이므로 한 라운드 전체의 비용은 t*sum(cost)이고, 처음 k라운드의 총비용은 sum(cost)*k*(k+1)/2이며 k에 대해 단조 증가합니다.",
+      "(상한을 배로 늘려 찾은 뒤) 감당할 수 있는 완전한 라운드 수 k의 최댓값을 이분 탐색합니다. 남은 돈으로는 k+1번째 라운드의 일부만 살 수 있으므로 물품을 순서대로 확인하며, 이 문제의 규칙에 따라 살 수 없는 첫 물품에서 건너뛰지 않고 멈춥니다.",
+      "T = sum(cost), spent(k) = T * (k(k+1)/2)로 둡니다. spent(high) > m이 될 때까지 high를 1부터 두 배로 늘린 뒤 [0, high)에서 가장 큰 k를 이분 탐색합니다. 남은 돈은 m - spent(k)이고 k*n개는 이미 구매한 것입니다. 이후 (k+1)*cost[i]를 순서대로 확인하며 살 수 있는 동안 지불하고 개수를 세고, 처음으로 살 수 없는 물품에서 멈춥니다. 개수를 출력합니다. 64비트 정수를 사용하고, 오버플로를 피하기 위해 T를 곱하기 전에 k(k+1)/2를 먼저 계산하세요."
+    ],
+    "vi": [
+      "Ở vòng t mỗi món có giá t*cost[i], nên một vòng đầy đủ tốn t*sum(cost), k vòng đầy đủ đầu tiên tốn tổng cộng sum(cost)*k*(k+1)/2, và giá trị này tăng đơn điệu theo k.",
+      "Tìm kiếm nhị phân (sau khi nhân đôi để tìm cận trên) số vòng đầy đủ k lớn nhất mà bạn có thể chi trả; số tiền còn lại chỉ đủ cho một phần của vòng k+1, nên hãy kiểm tra các món theo thứ tự và, theo quy tắc của bài, dừng ở món đầu tiên không đủ tiền thay vì bỏ qua.",
+      "Gọi T = sum(cost) và spent(k) = T * (k(k+1)/2); nhân đôi high từ 1 cho đến khi spent(high) > m, rồi tìm kiếm nhị phân k lớn nhất trong [0, high); số tiền còn lại là m - spent(k) và đã mua k*n món; sau đó kiểm tra (k+1)*cost[i] theo thứ tự, trả tiền và đếm khi còn đủ, dừng ở món đầu tiên không đủ tiền; in số đếm. Dùng số nguyên 64 bit và tính k(k+1)/2 trước khi nhân với T để tránh tràn số."
     ]
   },
   "explanationEn": "## Approach\n\nFirst binary search the number k of complete rounds that can be afforded. In each round every item is bought once, and the price of item i goes cost[i], 2cost[i], ... from round to round, so the total cost of k rounds is sum(cost) x k x (k+1)/2. After deducting it, check items in order starting from the first at the round-(k+1) prices, and stop at the first item that cannot be afforded.\n\n## Correctness\n\nThe cost of complete rounds is monotonically increasing, so the k found by binary search is exactly the largest number of rounds that can be completed. After that, the purchase order and the next price of each item are determined by the statement, and scanning until the first unaffordable item gives the stopping point; the stop rule is made explicit following the same-origin solutions in OAMaster's three languages, so the resulting count is maximal and unique.\n\n## Complexity\n\nO(n log m) time and O(n) space (for storing the input).\n\n## Source of the rule\n\nThe Python, Java, and C++ solutions of the fixed OAMaster version e66f809 all break at the first unaffordable item. The statement gives no input/output examples; this site's own examples clearly distinguish stopping from skipping."

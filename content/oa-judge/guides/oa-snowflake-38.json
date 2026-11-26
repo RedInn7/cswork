@@ -13,6 +13,21 @@
       "First sort and merge the given intervals (touching endpoints count as connected) into strictly separated blocks. If the new segment connects block l and block r, every block in between is connected too.",
       "The shortest segment connecting blocks l through r has length (start of block r) - (end of block l), so it is possible exactly when that gap is <= k; connecting w blocks lowers the block count by w - 1.",
       "After merging use two pointers: advance r, move l right while start[r] - end[l] > k, and keep the largest window size best (at least 1); the answer is the number of blocks - best + 1."
+    ],
+    "ja": [
+      "まず、与えられた区間をソートして併合し(端点が接していれば連結とみなす)、互いに完全に離れたブロックにします。新しい線分がブロック l とブロック r を連結するなら、その間のブロックもすべて連結されます。",
+      "ブロック l から r を連結する最短の線分の長さは (ブロック r の始点) - (ブロック l の終点) なので、このギャップが <= k のときに限り可能です。w 個のブロックを連結すると、ブロック数は w - 1 減ります。",
+      "併合した後、2 ポインタを使います。r を進め、start[r] - end[l] > k の間 l を右に動かし、窓の最大サイズ best(少なくとも 1)を保持します。答えは ブロック数 - best + 1 です。"
+    ],
+    "ko": [
+      "먼저 주어진 구간들을 정렬하고 병합하여(끝점이 맞닿으면 연결로 봄) 서로 완전히 분리된 블록들로 만듭니다. 새 선분이 블록 l과 블록 r을 연결한다면 그 사이의 모든 블록도 함께 연결됩니다.",
+      "블록 l부터 r까지를 연결하는 가장 짧은 선분의 길이는 (블록 r의 시작) - (블록 l의 끝)이므로, 이 간격이 <= k일 때에만 가능합니다. w개의 블록을 연결하면 블록 수가 w - 1만큼 줄어듭니다.",
+      "병합한 뒤 투 포인터를 사용합니다. r을 증가시키면서 start[r] - end[l] > k인 동안 l을 오른쪽으로 옮기고, 가장 큰 윈도우 크기 best를 유지합니다(최소 1). 답은 블록 수 - best + 1입니다."
+    ],
+    "vi": [
+      "Trước hết sắp xếp và hợp nhất các đoạn đã cho (chạm đầu mút được tính là liên thông) thành các khối tách rời hoàn toàn. Nếu đoạn mới nối khối l và khối r thì mọi khối ở giữa cũng được nối.",
+      "Đoạn ngắn nhất nối các khối từ l đến r có độ dài (đầu của khối r) - (cuối của khối l), nên làm được khi và chỉ khi khoảng hở đó <= k; nối w khối làm giảm số khối đi w - 1.",
+      "Sau khi hợp nhất, dùng hai con trỏ: tăng r, dịch l sang phải khi start[r] - end[l] > k, và giữ kích thước cửa sổ lớn nhất best (ít nhất là 1); đáp án là số khối - best + 1."
     ]
   },
   "explanationEn": "## Approach\n\nFirst sort and merge the existing intersecting intervals, then use two pointers to find the largest run of consecutive blocks that one segment can connect: the start of block r minus the end of block l is <=k. Connecting w blocks reduces the total number of blocks by w-1.\n\n## Correctness\n\nAfter merging, the blocks are strictly separated. A new segment that spans the first and last blocks of a run must cover at least the gap between them, whose shortest length is the left endpoint of the right block minus the right endpoint of the left block; when that fits, taking these two endpoints connects all the blocks in between at once. The blocks that intersect an optimal new segment are consecutive, so enumerating all windows and taking the maximum misses nothing.\n\n## Complexity\n\nTime O(n log n), space O(n)."

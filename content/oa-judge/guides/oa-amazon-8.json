@@ -13,6 +13,21 @@
       "n can be as large as 10^10, so you cannot try every k; but floor(n/k) takes only about 2*sqrt(n) distinct values, and each quotient occupies a contiguous range of k.",
       "With quotient q = floor(n/k), the values k' with floor(n/k') = q are exactly the interval [k, floor(n/q)]; so add q once per interval and jump straight to floor(n/q) + 1. The quotients strictly decrease, so each is counted only once.",
       "Start with k = 1 and answer = 0; while k <= n: q = n / k, add q to the answer, and set k = n / q + 1; print the answer at the end (the quotient 0 does not affect the sum). Use 64-bit integers throughout; the complexity is O(sqrt n)."
+    ],
+    "ja": [
+      "n は 10^10 にもなるので、すべての k を試すことはできません。しかし floor(n/k) の異なる値は約 2*sqrt(n) 個しかなく、各商は k の連続した範囲を占めます。",
+      "商 q = floor(n/k) に対して、floor(n/k') = q となる k' はちょうど区間 [k, floor(n/q)] です。したがって区間ごとに q を 1 回加算し、floor(n/q) + 1 に直接ジャンプします。商は厳密に減少するので、各商は 1 回だけ数えられます。",
+      "k = 1、answer = 0 から始めます。k <= n の間、q = n / k として q を answer に加算し、k = n / q + 1 とします。最後に answer を出力します（商 0 は総和に影響しません）。すべて 64 ビット整数を使います。計算量は O(sqrt n) です。"
+    ],
+    "ko": [
+      "n은 10^10까지 커질 수 있어 모든 k를 시도할 수 없습니다. 하지만 floor(n/k)는 서로 다른 값이 약 2*sqrt(n)개뿐이고, 각 몫은 연속한 k의 구간을 차지합니다.",
+      "몫 q = floor(n/k)일 때 floor(n/k') = q인 k'는 정확히 구간 [k, floor(n/q)]입니다. 따라서 구간마다 q를 한 번만 더하고 바로 floor(n/q) + 1로 건너뜁니다. 몫은 엄격하게 감소하므로 각각 한 번만 세어집니다.",
+      "k = 1, answer = 0으로 시작합니다. k <= n인 동안 q = n / k를 구해 answer에 더하고 k = n / q + 1로 설정합니다. 마지막에 answer를 출력합니다(몫 0은 합에 영향을 주지 않음). 모든 계산에 64비트 정수를 쓰며 복잡도는 O(sqrt n)입니다."
+    ],
+    "vi": [
+      "n có thể lớn đến 10^10 nên không thể thử mọi k; nhưng floor(n/k) chỉ nhận khoảng 2*sqrt(n) giá trị khác nhau, và mỗi giá trị thương chiếm một đoạn k liên tiếp.",
+      "Với thương q = floor(n/k), các giá trị k' có floor(n/k') = q chính xác là khoảng [k, floor(n/q)]; vì vậy hãy cộng q một lần cho mỗi khoảng và nhảy thẳng đến floor(n/q) + 1. Các thương giảm chặt, nên mỗi thương chỉ được tính một lần.",
+      "Bắt đầu với k = 1 và answer = 0; trong khi k <= n: q = n / k, cộng q vào đáp án, và đặt k = n / q + 1; cuối cùng in đáp án (thương 0 không ảnh hưởng đến tổng). Dùng số nguyên 64 bit xuyên suốt; độ phức tạp là O(sqrt n)."
     ]
   },
   "explanationEn": "## Approach\n\nStart from k=1. The current quotient q = n//k stays the same over the whole interval [k, n//q]; add q once, then jump directly to n//q+1.\n\n## Why it is correct\n\nfloor(n/k)=q is equivalent to n/(q+1) < k <= n/q, so the given right end is exactly the end of the current quotient's contiguous interval. The intervals neither overlap nor leave gaps, and the quotients strictly decrease, so adding each once removes duplicates.\n\n## Complexity\n\nO(sqrt n) time and O(1) extra space."

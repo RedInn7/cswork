@@ -13,6 +13,21 @@
       "The answer is the number of skills minus the number of skills seen at least once in the window. As q grows, the window [q-window, q] only slides right, which suits sorting the queries offline and sliding.",
       "Sort the logs by time and the queries by time (keeping their original indices); two pointers keep the logs inside the current window, along with each skill's count in the window and how many skills have a positive count.",
       "Handle queries in increasing time: the right pointer adds every log with time <= q, and a skill whose count goes from 0 to 1 makes the active count grow by one; the left pointer removes every log with time < q - window, and a count going from 1 to 0 makes it shrink by one. Store numSkills minus the active count at the query's original index and print the answers in the original order."
+    ],
+    "ja": [
+      "答えは、スキルの総数から、窓の中で少なくとも 1 回見られたスキルの数を引いたものです。q が増えるにつれ、窓 [q-window, q] は右にスライドするだけなので、クエリをオフラインでソートしてスライドするのに向いています。",
+      "ログを時刻でソートし、クエリも時刻でソートします（元の添字を保持）。2 つのポインタで現在の窓の中のログを保ち、窓の中の各スキルの回数と、回数が正のスキルの数を持ちます。",
+      "クエリを時刻の昇順に処理します。右ポインタは時刻 <= q のすべてのログを追加し、回数が 0 から 1 になったスキルがあればアクティブ数を 1 増やします。左ポインタは時刻 < q - window のすべてのログを削除し、回数が 1 から 0 になればアクティブ数を 1 減らします。numSkills からアクティブ数を引いた値を、クエリの元の添字に保存し、元の順序で答えを出力します。"
+    ],
+    "ko": [
+      "답은 스킬의 수에서 창 안에서 적어도 한 번 나타난 스킬의 수를 뺀 것입니다. q가 커질수록 창 [q-window, q]는 오른쪽으로만 밀려가므로, 질의를 오프라인으로 정렬해 슬라이딩하기에 알맞습니다.",
+      "로그를 시간순으로, 질의를 시간순으로(원래 인덱스를 유지하며) 정렬합니다. 두 포인터가 현재 창 안의 로그를 유지하고, 창 안에서의 스킬별 개수와 개수가 양수인 스킬의 수를 함께 관리합니다.",
+      "질의를 시간이 증가하는 순서로 처리합니다. 오른쪽 포인터는 time <= q인 모든 로그를 추가하며, 스킬의 개수가 0에서 1이 되면 활성 수가 1 늘어납니다. 왼쪽 포인터는 time < q - window인 모든 로그를 제거하며, 개수가 1에서 0이 되면 1 줄어듭니다. numSkills에서 활성 수를 뺀 값을 질의의 원래 인덱스에 저장하고, 답은 원래 순서대로 출력합니다."
+    ],
+    "vi": [
+      "Đáp án là số kỹ năng trừ đi số kỹ năng xuất hiện ít nhất một lần trong cửa sổ. Khi q tăng, cửa sổ [q-window, q] chỉ trượt sang phải, rất hợp để sắp xếp các truy vấn ngoại tuyến rồi trượt cửa sổ.",
+      "Sắp xếp các bản ghi theo thời điểm và các truy vấn theo thời điểm (giữ chỉ số ban đầu của chúng); hai con trỏ giữ các bản ghi nằm trong cửa sổ hiện tại, cùng số lần của mỗi kỹ năng trong cửa sổ và số kỹ năng có số lần dương.",
+      "Xử lý các truy vấn theo thời điểm tăng dần: con trỏ phải thêm mọi bản ghi có thời điểm <= q, và một kỹ năng có số lần chuyển từ 0 lên 1 làm số hoạt động tăng một; con trỏ trái loại mọi bản ghi có thời điểm < q - window, và số lần chuyển từ 1 xuống 0 làm nó giảm một. Lưu numSkills trừ số hoạt động vào chỉ số ban đầu của truy vấn và in các đáp án theo thứ tự ban đầu."
     ]
   },
   "explanationEn": "## Approach\n\nSort the logs by time, and sort the queries by time as well. Two pointers maintain the logs inside the window; keep a frequency per skill and maintain the number of active skills; the answer = total number of skills - number of active skills.\n\n## Proof of correctness\n\nWhen the window moves through the queries in ascending order, all new logs with time <= q are added and all old logs with time < q - window are removed, so exactly the logs in the closed interval remain. The number of distinct skills is updated only when a frequency changes from 0 to 1 or from 1 to 0, which keeps repeated logs from counting a skill as active more than once.\n\n## Complexity\n\nTime O(m log m + q log q), space O(numSkills + m + q)."

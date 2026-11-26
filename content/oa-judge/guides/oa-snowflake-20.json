@@ -13,6 +13,21 @@
       "Handle duplicates first: after sorting by coordinates, if two adjacent points are equal the answer is 0. Coordinates are below 10^9, so squared distances stay below 2*10^18 and fit exactly in 64-bit integers; do not use floating point.",
       "Use the classic divide-and-conquer closest pair: sort by x, split in the middle and solve both halves recursively for the smallest squared distance best; for a pair that crosses the dividing line to be closer, both of its points must have a squared horizontal distance to the line smaller than best.",
       "On the way back, merge each range by y; collect the strip points with (x - cut)^2 < best (already sorted by y) and, for each one, check only the following points while (dy)^2 < best, updating best. Brute-force ranges of at most 3 points and sort them by y. Print the final best."
+    ],
+    "ja": [
+      "まず重複を処理します。座標でソートして、隣り合う 2 点が等しければ答えは 0 です。座標は 10^9 未満なので二乗距離は 2*10^18 未満で、64 ビット整数に正確に収まります。浮動小数点は使わないでください。",
+      "古典的な分割統治による最近点対を使います。x でソートして中央で分割し、両半分を再帰的に解いて最小の二乗距離 best を得ます。分割線をまたぐ組がそれより近くなるには、その両方の点について分割線までの水平距離の二乗が best より小さくなければなりません。",
+      "戻るときに、各範囲を y でマージします。(x - cut)^2 < best を満たす帯の点を（すでに y でソートされた状態で）集め、それぞれについて (dy)^2 < best の間だけ後続の点を調べて best を更新します。3 点以下の範囲は総当たりし、y でソートします。最後の best を出力してください。"
+    ],
+    "ko": [
+      "먼저 중복을 처리합니다. 좌표 순으로 정렬한 뒤 인접한 두 점이 같으면 답은 0입니다. 좌표는 10^9 미만이므로 제곱 거리는 2*10^18 미만이어서 64비트 정수로 정확히 표현할 수 있으며, 부동소수점은 쓰지 마세요.",
+      "고전적인 분할 정복 최근접 쌍 알고리즘을 씁니다. x로 정렬해 가운데에서 나누고 두 절반을 재귀적으로 풀어 최소 제곱 거리 best를 구합니다. 분할선을 가로지르는 쌍이 더 가까우려면 두 점 모두 분할선까지의 수평 제곱 거리가 best보다 작아야 합니다.",
+      "되돌아오면서 각 구간을 y 기준으로 병합하고, (x - cut)^2 < best인 띠 영역의 점들을 (이미 y 순으로 정렬된 채) 모아 각 점에 대해 (dy)^2 < best인 동안에만 뒤따르는 점들을 확인하며 best를 갱신합니다. 점이 3개 이하인 구간은 완전 탐색하고 y로 정렬합니다. 최종 best를 출력합니다."
+    ],
+    "vi": [
+      "Xử lý các điểm trùng trước: sau khi sắp xếp theo tọa độ, nếu hai điểm kề nhau bằng nhau thì đáp án là 0. Tọa độ nhỏ hơn 10^9, nên bình phương khoảng cách nhỏ hơn 2*10^18 và vừa chính xác trong số nguyên 64-bit; không dùng dấu phẩy động.",
+      "Dùng thuật toán chia để trị cổ điển cho cặp điểm gần nhất: sắp xếp theo x, chia đôi ở giữa và giải đệ quy hai nửa để có bình phương khoảng cách nhỏ nhất best; để một cặp vắt qua đường chia gần hơn, cả hai điểm của nó phải có bình phương khoảng cách ngang tới đường chia nhỏ hơn best.",
+      "Khi quay lui, trộn mỗi đoạn theo y; thu thập các điểm của dải với (x - cut)^2 < best (đã sắp theo y) và với mỗi điểm, chỉ kiểm tra các điểm tiếp theo khi (dy)^2 < best, cập nhật best. Vét cạn các đoạn có tối đa 3 điểm và sắp chúng theo y. In best cuối cùng."
     ]
   },
   "explanationEn": "## Approach\n\nSort by x and divide and conquer; each half recursively returns its minimum distance and its points sorted by y. When merging, scan only the strip whose squared distance to the dividing line is less than the current best, pruning by the difference in y.\n\n## Correctness\n\nThe closest pair is either found recursively on one side or crosses the dividing line. Points that cross the line and can improve the answer must lie inside the strip; after sorting by y, once the difference in y is already no smaller than the current distance, later points cannot do better either. Distances between points on the same side of the strip are already bounded by the subproblems' optima, and a packing argument guarantees that each point has only a constant number of candidates, so the scan is complete and linear.\n\n## Complexity\n\nTime O(n log n), space O(n)."

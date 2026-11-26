@@ -13,6 +13,21 @@
       "Adding x to the prefix of length i changes only the difference between elements i and i+1; every other adjacent difference stays the same.",
       "All elements are equal exactly when every adjacent difference is 0, and erasing one difference costs at least its absolute value; adjusting prefixes from right to left to match their right neighbor pays exactly this lower bound.",
       "Read the array, add up the absolute differences of all adjacent pairs, and print the sum; it can reach about 4·10^14, so use a 64-bit integer."
+    ],
+    "ja": [
+      "長さ i の接頭辞に x を加えると、変わるのは要素 i と i+1 の差だけで、他の隣接差は変わりません。",
+      "すべての要素が等しいことと、すべての隣接差が 0 であることは同値です。1つの差を消すには少なくともその絶対値のコストがかかります。右から左へ、各接頭辞を右隣に合わせて調整すれば、ちょうどこの下限を達成できます。",
+      "配列を読み込み、すべての隣接ペアの差の絶対値を足し合わせて出力します。最大で約 4·10^14 になるため、64 ビット整数を使います。"
+    ],
+    "ko": [
+      "길이 i인 접두사에 x를 더하면 i번째와 i+1번째 원소 사이의 차이만 바뀌고, 나머지 인접 차이는 그대로입니다.",
+      "모든 원소가 같다는 것은 모든 인접 차이가 0이라는 것과 같고, 차이 하나를 없애는 데는 최소한 그 절댓값만큼의 비용이 듭니다. 접두사를 오른쪽부터 차례로 오른쪽 이웃에 맞추면 이 하한을 정확히 달성합니다.",
+      "배열을 읽고 모든 인접 쌍의 차이의 절댓값을 더해 출력합니다. 합은 약 4·10^14까지 커질 수 있으므로 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Cộng x vào tiền tố độ dài i chỉ làm thay đổi hiệu giữa phần tử i và i+1; mọi hiệu liền kề khác giữ nguyên.",
+      "Mọi phần tử bằng nhau đúng khi mọi hiệu liền kề bằng 0, và xóa một hiệu tốn ít nhất giá trị tuyệt đối của nó; điều chỉnh các tiền tố từ phải sang trái để khớp với phần tử bên phải sẽ trả đúng cận dưới này.",
+      "Đọc mảng, cộng các giá trị tuyệt đối của hiệu mọi cặp liền kề, rồi in tổng; tổng có thể lên tới khoảng 4·10^14 nên hãy dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nThe answer is the sum of the absolute differences between adjacent elements.\n\n## Proof of correctness\n\nAn operation on the prefix of length i only affects the i-th adjacent difference; all other adjacent differences stay the same. Eliminating that difference costs at least its absolute value, so the sum over all boundaries is a lower bound. Working from back to front and adjusting each prefix to the value of its right neighbor pays exactly this sum, reaching the lower bound; shifting the whole array does not affect equality and is never needed.\n\n## Complexity\n\nO(n) time and O(1) space apart from the input."

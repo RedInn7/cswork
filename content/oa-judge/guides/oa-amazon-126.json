@@ -13,6 +13,21 @@
       "If a substring has k ones, its number of zeros must be k^2, so its length is fixed at k^2+k; k=0 would mean length 0, which is not a non-empty substring.",
       "The length is at most n, so k is at most about sqrt(n); for each k the length is fixed, and you only need to check, for every start, whether that window contains exactly k ones.",
       "Build prefix counts of 1s; for k = 1, 2, ... while k^2+k <= n, let length = k^2+k and for every start i add one when prefix[i+length] - prefix[i] == k; the total cost is O(n sqrt(n))."
+    ],
+    "ja": [
+      "部分文字列に 1 が k 個あれば、0 の個数は k^2 でなければならないので、長さは k^2+k に固定されます。k=0 だと長さが 0 になり、空でない部分文字列ではありません。",
+      "長さは n 以下なので、k は高々 sqrt(n) 程度です。各 k について長さが固定されるので、各開始位置について、その窓にちょうど k 個の 1 が含まれるかを調べるだけです。",
+      "1 の個数の累積和を作ります。k^2+k <= n の間、k = 1, 2, ... について length = k^2+k とし、各開始位置 i について prefix[i+length] - prefix[i] == k なら 1 を加えます。全体のコストは O(n sqrt(n)) です。"
+    ],
+    "ko": [
+      "부분 문자열에 1이 k개 있다면 0의 개수는 k^2이어야 하므로 길이는 k^2+k로 고정됩니다. k=0이면 길이가 0이 되어 비어 있지 않은 부분 문자열이 아닙니다.",
+      "길이는 n을 넘을 수 없으므로 k는 약 sqrt(n) 이하입니다. 각 k마다 길이가 고정되므로 모든 시작 위치에 대해 그 윈도우에 1이 정확히 k개 있는지만 확인하면 됩니다.",
+      "1의 누적 개수를 만들고, k^2+k <= n인 동안 k = 1, 2, ...에 대해 length = k^2+k로 두고 각 시작 위치 i마다 prefix[i+length] - prefix[i] == k이면 1을 더합니다. 전체 비용은 O(n sqrt(n))입니다."
+    ],
+    "vi": [
+      "Nếu một xâu con có k số 1, số số 0 của nó phải là k^2, nên độ dài cố định là k^2+k; k=0 nghĩa là độ dài 0, không phải xâu con không rỗng.",
+      "Độ dài tối đa là n, nên k tối đa khoảng sqrt(n); với mỗi k độ dài là cố định, và chỉ cần kiểm tra, với mỗi điểm bắt đầu, xem cửa sổ đó có đúng k số 1 hay không.",
+      "Xây tiền tố đếm các số 1; với k = 1, 2, ... trong khi k^2+k <= n, đặt length = k^2+k và với mỗi điểm bắt đầu i cộng một khi prefix[i+length] - prefix[i] == k; tổng chi phí là O(n sqrt(n))."
     ]
   },
   "explanationEn": "## Approach\n\nIf there are k ones, the substring length must be k^2+k with k>=1. So enumerate at most sqrt(n) values of k, and for each fixed length use prefix sums of the number of 1s to check every start.\n\n## Correctness\n\nNo valid non-empty substring can have k=0, because zero 0s would then require length 0. For k>=1 the condition is equivalent to having length k^2+k and containing k ones; enumerating these lengths and all starts misses nothing and counts nothing twice.\n\n## Complexity\n\nTime O(n sqrt(n)), space O(n)."

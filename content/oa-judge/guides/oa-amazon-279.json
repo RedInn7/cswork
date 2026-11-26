@@ -13,6 +13,21 @@
       "A median only looks at the middle element, so putting several large packets into one channel mostly wastes them. Take any two channels together and let M be their maximum: putting M alone and everything else together never lowers the sum of the two medians.",
       "Applying this exchange repeatedly, the largest channels−1 packets can each form their own channel, and all remaining packets go into the last channel. The answer is then the sum of those channels−1 large values plus the median of the rest.",
       "Sort; the remaining count is n−channels+1, and these are the smallest values; to avoid fractions, add up every quality times 2: each large value counts twice, and for the rest add twice the middle value when the count is odd, or the sum of the two middle values when it is even; finally print (sum+1) divided by 2 and rounded down, which rounds the real total up."
+    ],
+    "ja": [
+      "中央値は中央の要素しか見ないので、大きいパケットを 1 つのチャネルに複数入れると、ほとんどが無駄になります。任意の 2 つのチャネルをまとめて考え、その最大値を M とすると、M を単独にして残りを一緒にしても、2 つの中央値の和が下がることはありません。",
+      "この交換を繰り返し適用すると、最大の channels−1 個のパケットをそれぞれ単独のチャネルにでき、残りのパケットはすべて最後のチャネルに入れられます。答えは、それらの channels−1 個の大きい値の和と、残りの中央値の和です。",
+      "ソートします。残りの個数は n−channels+1 で、これらは最も小さい値です。分数を避けるため、すべての品質を 2 倍にして足します。大きい値はそれぞれ 2 回数え、残りについては、個数が奇数なら中央の値の 2 倍、偶数なら中央の 2 つの値の和を加えます。最後に (sum+1) を 2 で割って切り捨てた値を出力します。これは実際の合計を切り上げたものです。"
+    ],
+    "ko": [
+      "중앙값은 가운데 원소만 보므로 큰 패킷 여러 개를 한 채널에 넣으면 대부분 낭비됩니다. 임의의 두 채널을 합쳐서 보고 그 최댓값을 M이라 하면, M을 단독으로 두고 나머지를 함께 묶어도 두 중앙값의 합은 줄어들지 않습니다.",
+      "이 교환을 반복하면 가장 큰 channels−1개의 패킷은 각각 자기 채널을 이루고, 나머지 패킷은 모두 마지막 채널로 갑니다. 답은 그 channels−1개의 큰 값의 합에 나머지의 중앙값을 더한 것입니다.",
+      "정렬합니다. 남는 개수는 n−channels+1이고 이들은 가장 작은 값들입니다. 분수를 피하려고 모든 품질에 2를 곱해 더합니다. 큰 값은 각각 두 번 세고, 나머지는 개수가 홀수이면 가운데 값의 두 배를, 짝수이면 가운데 두 값의 합을 더합니다. 마지막으로 (합+1)을 2로 나눈 몫을 출력하면 실제 총합을 올림한 값이 됩니다."
+    ],
+    "vi": [
+      "Trung vị chỉ nhìn vào phần tử ở giữa, nên đặt nhiều gói tin lớn vào cùng một kênh phần lớn là lãng phí. Lấy hai kênh bất kỳ và gọi M là giá trị lớn nhất của chúng: đặt M riêng một mình và mọi thứ còn lại chung nhóm không bao giờ làm giảm tổng hai trung vị.",
+      "Áp dụng phép đổi này lặp lại, channels−1 gói tin lớn nhất có thể mỗi cái tạo một kênh riêng, và mọi gói còn lại vào kênh cuối. Đáp án khi đó là tổng của channels−1 giá trị lớn đó cộng với trung vị của phần còn lại.",
+      "Sắp xếp; số phần tử còn lại là n−channels+1, và đó là các giá trị nhỏ nhất; để tránh phân số, cộng mọi chất lượng nhân 2: mỗi giá trị lớn được tính hai lần, và với phần còn lại cộng hai lần giá trị ở giữa khi số lượng lẻ, hoặc tổng hai giá trị ở giữa khi số lượng chẵn; cuối cùng in (sum+1) chia 2 làm tròn xuống, tức là làm tròn lên tổng thực."
     ]
   },
   "explanationEn": "## Approach\n\nAfter sorting, put each of the largest channels−1 items in its own channel and everything else in the last channel. Sum all qualities multiplied by 2, then round up with (sum2+1)//2 at the end to avoid floating point.\n\n## Proof of correctness\n\nFor any two groups, let M be the maximum of their union and q the median of the remaining elements; then the sum of the two original medians is at most M+q: counting by the median positions of the two groups, after removing M at least half of the remaining numbers are no less than the sum of the two medians minus M, and in the even case averaging the two middle values works the same way. So M can be split off on its own and the rest merged into one group without lowering the total quality. Repeatedly exchanging between the channel holding the current maximum and another non-singleton channel yields an optimal form in which the largest channels−1 items are each alone. Computing the median of the rest directly is then optimal, and rounding once at the end preserves the order of the objective.\n\n## Complexity\n\nTime O(n log n), space O(n); the doubled quality sum uses 64 bits."

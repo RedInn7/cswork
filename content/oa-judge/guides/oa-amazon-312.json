@@ -13,6 +13,21 @@
       "A product counts as a duplicate as soon as some other product matches it in all three fields. Look at identical products as one group.",
       "A group with a single product contributes 0; a group with c≥2 products contributes c (not c−1), because every product in it has a partner.",
       "Count with a hash map keyed by (name, price, weight) (the name may be an empty string), then go over all groups and add up the counts that are ≥2."
+    ],
+    "ja": [
+      "他のある商品が3つの項目すべてで一致すれば、その商品は重複として数えます。同一の商品を1つのグループとして見ます。",
+      "商品が1つだけのグループの寄与は 0 です。c≥2 個の商品があるグループの寄与は(c−1 ではなく)c です。グループ内のどの商品にも相手がいるからです。",
+      "(name, price, weight) をキーとするハッシュマップで数えます(name は空文字列の場合もあります)。そのあとすべてのグループを調べ、個数が 2 以上のものを合計します。"
+    ],
+    "ko": [
+      "다른 어떤 상품이 세 필드 모두 일치하는 순간 그 상품은 중복으로 셉니다. 똑같은 상품들을 하나의 그룹으로 보세요.",
+      "상품이 하나뿐인 그룹은 0을 기여하고, c≥2개인 그룹은 (c−1이 아니라) c를 기여합니다. 그룹의 모든 상품에 짝이 있기 때문입니다.",
+      "(name, price, weight)를 키로 하는 해시 맵으로 개수를 세고(name은 빈 문자열일 수 있습니다), 모든 그룹을 훑으며 2 이상인 개수를 더합니다."
+    ],
+    "vi": [
+      "Một sản phẩm được tính là bản trùng ngay khi có một sản phẩm khác khớp với nó ở cả ba trường. Hãy xem các sản phẩm giống hệt nhau như một nhóm.",
+      "Nhóm chỉ có một sản phẩm đóng góp 0; nhóm có c≥2 sản phẩm đóng góp c (không phải c−1), vì mọi sản phẩm trong đó đều có một sản phẩm tương ứng.",
+      "Đếm bằng hash map với khóa (name, price, weight) (name có thể là chuỗi rỗng), rồi duyệt mọi nhóm và cộng các số lượng ≥2."
     ]
   },
   "explanationEn": "## Approach\n\nCount by the (name,price,weight) tuple and add up the full counts of all groups that appear ≥2 times.\n\n## Proof of correctness\n\nIf a group occurs once, its only product has no other identical product and contributes 0; if it occurs at least twice, every product in the group can use another one as a witness, so all of them count. Different groups are mutually exclusive because they differ in at least one field, so summing group by group neither double counts nor misses anything.\n\n## Complexity\n\nExpected time O(n), space O(n); names have at most 10 characters."

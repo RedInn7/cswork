@@ -13,6 +13,21 @@
       "The values 1..k occupy k distinct positions in the permutation. If those positions have no gaps between them, the contiguous block they form contains exactly 1..k.",
       "Add values in increasing order and only track the leftmost and rightmost positions seen so far. When the length of that enclosing range equals k, the k positions are contiguous.",
       "Record pos[v], the index of each value. Start with left = n and right = -1; for k = 1..n update left and right with pos[k], output 1 if right - left + 1 equals k and 0 otherwise, and join the results into a string of length n."
+    ],
+    "ja": [
+      "値 1..k は、順列の中で k 個の異なる位置を占めます。それらの位置の間に隙間がなければ、それらが作る連続したブロックには、ちょうど 1..k が含まれます。",
+      "値を昇順に追加し、これまでに見た最も左と最も右の位置だけを追跡します。その範囲の長さが k に等しいとき、k 個の位置は連続しています。",
+      "pos[v] に各値の添字を記録します。left = n、right = -1 から始め、k = 1..n について pos[k] で left と right を更新し、right - left + 1 が k に等しければ 1、そうでなければ 0 を出力して、結果を連結して長さ n の文字列にします。"
+    ],
+    "ko": [
+      "값 1..k는 순열 안에서 서로 다른 k개의 위치를 차지합니다. 그 위치들 사이에 빈틈이 없다면, 그들이 이루는 연속 블록에는 정확히 1..k가 들어 있습니다.",
+      "값을 오름차순으로 추가하면서 지금까지 본 가장 왼쪽과 가장 오른쪽 위치만 추적합니다. 그 구간을 감싸는 범위의 길이가 k와 같으면 k개의 위치는 연속입니다.",
+      "pos[v], 즉 각 값의 인덱스를 기록합니다. left = n, right = -1로 시작하고, k = 1..n에 대해 pos[k]로 left와 right를 갱신한 뒤 right - left + 1이 k와 같으면 1, 아니면 0을 출력하고, 결과를 이어 길이 n의 문자열로 만듭니다."
+    ],
+    "vi": [
+      "Các giá trị 1..k chiếm k vị trí phân biệt trong hoán vị. Nếu giữa các vị trí đó không có khoảng trống, khối liên tiếp mà chúng tạo thành chứa đúng 1..k.",
+      "Thêm các giá trị theo thứ tự tăng dần và chỉ theo dõi vị trí ngoài cùng bên trái và bên phải đã thấy. Khi độ dài khoảng bao quanh bằng k, k vị trí đó liên tiếp nhau.",
+      "Ghi lại pos[v], chỉ số của mỗi giá trị. Bắt đầu với left = n và right = -1; với k = 1..n cập nhật left và right bằng pos[k], in 1 nếu right - left + 1 bằng k và 0 nếu không, rồi nối các kết quả thành một xâu độ dài n."
     ]
   },
   "explanationEn": "## Approach\n\nInsert the positions of the values from 1 to n in order, maintaining the leftmost and rightmost positions. When the length of that range equals the number k of values added so far, these k positions are contiguous.\n\n## Correctness\n\nBecause the array is a permutation, the values 1..k occupy k distinct positions, all of which lie inside their minimal enclosing range. The enclosing range has length k exactly when there are no gaps, and in that case its elements are exactly 1..k.\n\n## Complexity\n\nTime O(n), space O(n)."

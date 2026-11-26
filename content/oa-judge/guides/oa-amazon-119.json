@@ -13,6 +13,21 @@
       "Fix one character c: c makes up exactly half of a substring exactly when, with c as +1 and every other character as -1, the substring sums to 0, which means two prefix sums are equal.",
       "Counting equal prefix-sum pairs for each character and adding them counts twice every substring made of exactly two characters in equal numbers; three characters can never each make up half, so subtract such substrings once per pair of characters.",
       "Step one: for each character that occurs, scan the whole string, count how often each prefix sum has appeared, and add the number of equal pairs. Step two: for each pair of characters (a,b), merge their positions by index; when positions are not consecutive another character lies between them, so reset the balance and the counts; with a as +1 and b as -1, count equal prefix-sum pairs inside each stretch and subtract them. Use a 64-bit answer."
+    ],
+    "ja": [
+      "1 つの文字 c を固定します。c を +1、それ以外を −1 としたとき、部分文字列の和が 0 になること、つまり 2 つの累積和が等しいことが、c がちょうど半分を占める条件です。",
+      "各文字について、等しい累積和のペアを数えて足し合わせると、ちょうど 2 種類の文字が同数ずつの部分文字列が 2 回数えられます。3 種類の文字がそれぞれ半分を占めることはないので、文字のペアごとに、そのような部分文字列を 1 回ずつ引きます。",
+      "ステップ 1: 出現する各文字について、文字列全体を走査し、各累積和が現れた回数を数え、等しいペアの個数を加算します。ステップ 2: 各文字のペア (a,b) について、位置をインデックス順にマージします。位置が連続していないときは間に他の文字があるので、釣り合いと回数をリセットします。a を +1、b を -1 として、各区間内の等しい累積和のペアを数え、それを引きます。答えは 64 ビットで持ってください。"
+    ],
+    "ko": [
+      "문자 c 하나를 고정합니다. c를 +1, 나머지를 -1로 두었을 때 부분 문자열의 합이 0이면 c가 정확히 절반을 차지하며, 이는 두 누적 합이 같다는 뜻입니다.",
+      "각 문자별로 같은 누적 합 쌍을 세어 더하면, 같은 개수의 두 문자로만 이루어진 부분 문자열이 두 번씩 세어집니다. 세 문자가 모두 절반을 차지할 수는 없으므로 이런 부분 문자열을 문자 쌍마다 한 번씩 빼 줍니다.",
+      "1단계: 등장하는 각 문자에 대해 문자열 전체를 훑으며 각 누적 합이 등장한 횟수를 세고 같은 쌍의 수를 더합니다. 2단계: 각 문자 쌍 (a,b)에 대해 두 문자의 위치를 인덱스 순으로 합칩니다. 위치가 연속하지 않으면 그 사이에 다른 문자가 있으므로 균형과 횟수를 초기화합니다. a를 +1, b를 -1로 두고 각 구간 안에서 같은 누적 합 쌍을 세어 뺍니다. 답은 64비트로 계산하세요."
+    ],
+    "vi": [
+      "Cố định một ký tự c: c chiếm đúng một nửa xâu con khi và chỉ khi, với c là +1 và mọi ký tự khác là -1, xâu con có tổng bằng 0, nghĩa là hai tổng tiền tố bằng nhau.",
+      "Đếm các cặp tổng tiền tố bằng nhau cho từng ký tự rồi cộng lại sẽ đếm hai lần mọi xâu con gồm đúng hai ký tự với số lượng bằng nhau; ba ký tự không bao giờ có thể mỗi ký tự chiếm một nửa, nên trừ các xâu con như vậy một lần cho mỗi cặp ký tự.",
+      "Bước một: với mỗi ký tự xuất hiện, quét toàn bộ xâu, đếm số lần mỗi tổng tiền tố đã xuất hiện, và cộng số cặp bằng nhau. Bước hai: với mỗi cặp ký tự (a,b), gộp các vị trí của chúng theo chỉ số; khi các vị trí không liên tiếp thì có một ký tự khác nằm giữa, nên đặt lại cân bằng và các số đếm; với a là +1 và b là -1, đếm các cặp tổng tiền tố bằng nhau trong mỗi đoạn và trừ chúng đi. Dùng đáp án 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nFor each character, map it to +1 and every other character to -1, and count pairs of equal prefix sums to find the substrings where it makes up exactly half. The only double counting happens when there are exactly two characters in equal numbers; for each pair of characters, merge their positions, do a balance count within the stretches that contain no other character, and subtract it.\n\n## Correctness\n\nA single character being balanced is equivalent to its frequency being exactly half the length. A non-empty substring cannot have three characters that each make up half; when two characters do, the substring necessarily contains no other character. Going pair by pair subtracts exactly those substrings that were counted one extra time, so every valid substring is counted once. Each position takes part in at most 25 pair merges.\n\n## Complexity\n\nTime O(26n), space O(n)."

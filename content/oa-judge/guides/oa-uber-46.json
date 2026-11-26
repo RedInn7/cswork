@@ -13,6 +13,21 @@
       "q can be large, so physically rotating or reflecting the n x n matrix each time is too slow. Rotations and diagonal reflections are affine maps on coordinates, and any composition of them is still affine.",
       "Track only how the original coordinate frame is transformed: where the origin (0,0) goes and what the unit steps \"row + 1\" and \"column + 1\" become. Each operation updates just these three 2D quantities, and at the end every element is placed once.",
       "Start with origin = (0,0), dr = (1,0), dc = (0,1). A clockwise rotation maps a point (r,c) to (c, n-1-r) and a vector (x,y) to (y, -x); the main-diagonal reflection swaps the two coordinates; the anti-diagonal reflection maps a point to (n-1-c, n-1-r) and a vector to (-y, -x). After all operations, put the original element at (i,j) into origin + i*dr + j*dc and print the result row by row."
+    ],
+    "ja": [
+      "q は大きくなりうるので、毎回 n x n の行列を物理的に回転したり反転したりするのは遅すぎます。回転と対角線反転は座標上のアフィン写像で、その合成もまたアフィンです。",
+      "元の座標系がどう変換されるかだけを追跡します。原点 (0,0) がどこに行くか、単位ステップ「行 + 1」と「列 + 1」が何になるかです。各操作はこの 3 つの 2 次元の量だけを更新し、最後に各要素を 1 回ずつ配置します。",
+      "origin = (0,0)、dr = (1,0)、dc = (0,1) から始めます。時計回りの回転は、点 (r,c) を (c, n-1-r) に、ベクトル (x,y) を (y, -x) に写します。主対角線反転は 2 つの座標を入れ替えます。反対角線反転は、点を (n-1-c, n-1-r) に、ベクトルを (-y, -x) に写します。すべての操作の後、元の (i,j) の要素を origin + i*dr + j*dc に置き、結果を行ごとに出力します。"
+    ],
+    "ko": [
+      "q가 클 수 있으므로 n x n 행렬을 매번 직접 회전하거나 반사하면 너무 느립니다. 회전과 대각선 반사는 좌표에 대한 아핀 변환이며, 그 합성도 여전히 아핀 변환입니다.",
+      "원래 좌표계가 어떻게 변환되는지만 추적합니다. 원점 (0,0)이 어디로 가는지, 단위 이동 \"행 + 1\"과 \"열 + 1\"이 무엇이 되는지입니다. 각 연산은 이 세 개의 2차원 양만 갱신하며, 마지막에 모든 원소를 한 번씩 배치합니다.",
+      "origin = (0,0), dr = (1,0), dc = (0,1)로 시작합니다. 시계 방향 회전은 점 (r,c)를 (c, n-1-r)로, 벡터 (x,y)를 (y, -x)로 보냅니다. 주대각선 반사는 두 좌표를 맞바꿉니다. 반대각선 반사는 점을 (n-1-c, n-1-r)로, 벡터를 (-y, -x)로 보냅니다. 모든 연산 후 원래 (i,j)의 원소를 origin + i*dr + j*dc에 놓고 결과를 행 단위로 출력합니다."
+    ],
+    "vi": [
+      "q có thể rất lớn, nên quay hoặc đối xứng thật sự ma trận n x n mỗi lần là quá chậm. Phép quay và phép đối xứng qua đường chéo là các ánh xạ afin trên tọa độ, và mọi hợp thành của chúng vẫn là afin.",
+      "Chỉ cần theo dõi khung tọa độ gốc bị biến đổi thế nào: gốc (0,0) đi đâu và các bước đơn vị \"hàng + 1\" và \"cột + 1\" trở thành gì. Mỗi thao tác chỉ cập nhật ba đại lượng 2D này, và cuối cùng mỗi phần tử được đặt đúng một lần.",
+      "Bắt đầu với origin = (0,0), dr = (1,0), dc = (0,1). Phép quay theo chiều kim đồng hồ ánh xạ điểm (r,c) thành (c, n-1-r) và vector (x,y) thành (y, -x); phép đối xứng qua đường chéo chính hoán đổi hai tọa độ; phép đối xứng qua đường chéo phụ ánh xạ một điểm thành (n-1-c, n-1-r) và một vector thành (-y, -x). Sau mọi thao tác, đặt phần tử gốc tại (i,j) vào origin + i*dr + j*dc và in kết quả theo từng hàng."
     ]
   },
   "explanationEn": "## Approach\n\nInstead of moving the whole matrix over and over, maintain the origin of the coordinate mapping and its two direction vectors. Each operation transforms the origin and the vectors; at the end, fill the result matrix once using the resulting coordinate mapping.\n\n## Correctness\n\nRotations and reflections are affine transformations, and an origin plus two unit vectors uniquely determine the entire coordinate mapping. Applying each transformation to the mapping in turn is equivalent to applying it to every element, so the final fill is exactly the composition of all the operations.\n\n## Complexity\n\nTime O(q+n²), space O(n²)."

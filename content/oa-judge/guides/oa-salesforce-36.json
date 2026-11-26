@@ -13,6 +13,21 @@
       "Whether adjacent characters are equal depends only on neighboring positions, so remembering the last letter of the prefix is enough to decide whether the next letter fits: use dynamic programming with 26 states.",
       "Let dp[c] be the number of valid prefixes ending with letter c. If the current position may hold letter c, the new count is the total number of prefixes minus those ending with c. A fixed letter keeps only its own state non-zero, while a question mark allows all 26 letters.",
       "Initialize dp from the first character (all 26 states are 1 for a question mark, otherwise only that letter is 1). For each later position compute total = sum of dp, then set the new dp[c] to total-dp[c] if c is allowed and 0 otherwise, all modulo 1000000007, adding the modulus back after subtraction. Finally print the sum of dp modulo 1000000007."
+    ],
+    "ja": [
+      "隣接する文字が等しいかどうかは隣り合う位置だけで決まるので、接頭辞の最後の文字を覚えておけば、次の文字が置けるかを判定できます。26 状態の動的計画法を使います。",
+      "dp[c] を、文字 c で終わる有効な接頭辞の個数とします。現在の位置に文字 c を置けるなら、新しい個数は接頭辞の総数から c で終わるものを引いた値です。固定文字ではその文字の状態だけが 0 以外になり、疑問符では 26 文字すべてが許されます。",
+      "最初の文字から dp を初期化します(疑問符なら 26 状態すべてが 1、そうでなければその文字だけが 1)。以降の各位置で total = dp の総和を計算し、許される文字 c には新しい dp[c] = total-dp[c] を、許されない文字には 0 を設定します。すべて 1000000007 を法とし、引き算の後は法を足して負にならないようにします。最後に dp の総和を 1000000007 で割った余りを出力します。"
+    ],
+    "ko": [
+      "인접한 문자가 같은지는 이웃한 위치에만 의존하므로, 접두사의 마지막 문자만 기억하면 다음 문자가 들어갈 수 있는지 판단할 수 있습니다. 26개의 상태를 사용하는 동적 계획법을 쓰세요.",
+      "dp[c]를 문자 c로 끝나는 유효한 접두사의 수라고 합니다. 현재 위치에 문자 c를 놓을 수 있다면 새 개수는 전체 접두사 수에서 c로 끝나는 수를 뺀 값입니다. 고정된 문자는 자기 상태만 0이 아닌 값으로 남기고, 물음표는 26개의 문자를 모두 허용합니다.",
+      "첫 문자로 dp를 초기화합니다(물음표이면 26개 상태가 모두 1, 아니면 해당 문자만 1). 이후 각 위치에서 total = dp의 합을 계산하고, c를 쓸 수 있으면 새 dp[c]를 total-dp[c], 아니면 0으로 설정하며, 모두 1000000007로 나눈 나머지로 처리하고 뺄셈 뒤에는 모듈러를 더해 보정합니다. 마지막에 dp의 합을 1000000007로 나눈 나머지를 출력합니다."
+    ],
+    "vi": [
+      "Việc hai ký tự kề nhau có bằng nhau hay không chỉ phụ thuộc vào các vị trí lân cận, nên chỉ cần nhớ chữ cái cuối của tiền tố là đủ để quyết định chữ cái tiếp theo có hợp lệ hay không: dùng quy hoạch động với 26 trạng thái.",
+      "Gọi dp[c] là số tiền tố hợp lệ kết thúc bằng chữ cái c. Nếu vị trí hiện tại có thể đặt chữ cái c, số cách mới bằng tổng số tiền tố trừ đi số tiền tố kết thúc bằng c. Một chữ cái cố định chỉ giữ trạng thái của chính nó khác không, còn dấu hỏi cho phép cả 26 chữ cái.",
+      "Khởi tạo dp từ ký tự đầu tiên (cả 26 trạng thái đều là 1 với dấu hỏi, ngược lại chỉ chữ cái đó là 1). Với mỗi vị trí sau đó, tính total = tổng dp, rồi đặt dp[c] mới bằng total-dp[c] nếu c được phép và 0 nếu không, tất cả modulo 1000000007, cộng lại modulo sau phép trừ. Cuối cùng in tổng dp modulo 1000000007."
     ]
   },
   "explanationEn": "## Approach\n\nUse 26 states to record the last letter. For a letter c usable at the current position, the new count equals the prefix's total count minus the count ending in c.\n\n## Proof of correctness\n\nEvery valid new prefix is uniquely formed by a valid old prefix followed by a new character different from its last letter; subtracting the count with the same last letter from the total excludes exactly the one invalid class. A fixed letter keeps only its own state, a question mark allows all states, and the claim follows by induction over positions.\n\n## Complexity\n\nTime O(26n), space O(26)."

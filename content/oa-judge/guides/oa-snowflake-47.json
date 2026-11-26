@@ -13,6 +13,21 @@
       "A result y can be produced from an original string x exactly when every 1 bit of x is also 1 in y, that is, x is a submask of y. So the question becomes how many n-bit masks contain at least one given mask as a subset.",
       "With n <= 20 there are only 2^n masks, so keep one boolean flag per mask and push the flags from subsets to supersets bit by bit (sum over subsets style propagation). Duplicate inputs merge automatically.",
       "Make a boolean array of length 2^n and mark every input value. For each bit step = 1, 2, 4, ..., walk over the blocks and, whenever low in the lower half is marked, mark low + step. After all bits are processed, the number of marked masks is the answer, with no modulus."
+    ],
+    "ja": [
+      "元の文字列 x から結果 y が得られるのは、x の 1 のビットがすべて y でも 1 であるとき、つまり x が y の部分マスクであるときに限ります。したがって問題は、与えられたマスクを少なくとも 1 つ部分集合として含む n ビットのマスクがいくつあるかになります。",
+      "n <= 20 なのでマスクは 2^n 個しかなく、マスクごとに真偽値フラグを 1 つ持ち、ビットごとに部分集合から上位集合へフラグを伝播させます(sum over subsets 風の伝播)。重複する入力は自動的に統合されます。",
+      "長さ 2^n の真偽値配列を作り、すべての入力値に印を付けます。各ビット step = 1, 2, 4, ... について、ブロックを走査し、下半分の low に印が付いていれば low + step にも印を付けます。すべてのビットを処理した後、印が付いたマスクの個数が答えです。剰余は取りません。"
+    ],
+    "ko": [
+      "결과 y가 원래 문자열 x에서 만들어질 수 있는 것은 x의 모든 1 비트가 y에서도 1일 때, 즉 x가 y의 부분 마스크일 때에 한합니다. 따라서 문제는 주어진 마스크 중 하나 이상을 부분집합으로 포함하는 n비트 마스크의 개수를 세는 것이 됩니다.",
+      "n <= 20이면 마스크는 2^n개뿐이므로 마스크마다 불리언 플래그를 하나씩 두고, 플래그를 비트별로 부분집합에서 상위 집합으로 전파합니다(부분집합 합 방식의 전파). 중복된 입력은 자동으로 합쳐집니다.",
+      "길이 2^n의 불리언 배열을 만들고 모든 입력 값을 표시합니다. 각 비트 step = 1, 2, 4, ...에 대해 블록들을 순회하며, 하위 절반의 low가 표시되어 있으면 low + step을 표시합니다. 모든 비트를 처리한 뒤 표시된 마스크의 개수가 답이며, 나머지 연산은 없습니다."
+    ],
+    "vi": [
+      "Một kết quả y có thể sinh ra từ xâu gốc x khi và chỉ khi mọi bit 1 của x cũng là 1 trong y, tức x là mask con của y. Vì vậy câu hỏi trở thành có bao nhiêu mask n bit chứa ít nhất một mask đã cho làm tập con.",
+      "Với n <= 20 chỉ có 2^n mask, nên giữ một cờ boolean cho mỗi mask và đẩy các cờ từ tập con lên tập cha từng bit một (lan truyền kiểu sum over subsets). Các đầu vào trùng lặp tự động được gộp.",
+      "Tạo một mảng boolean độ dài 2^n và đánh dấu mọi giá trị đầu vào. Với mỗi bit step = 1, 2, 4, ..., duyệt qua các khối và, khi low ở nửa dưới được đánh dấu, đánh dấu low + step. Sau khi xử lý mọi bit, số mask được đánh dấu là đáp án, không cần modulus."
     ]
   },
   "explanationEn": "## Approach\n\nMark the original masks in a boolean array. Propagate over subsets one bit at a time (SOS style): a state in the upper half absorbs the state in the lower half that differs only by the current bit. In the end, each mask's flag says whether it contains at least one original submask; add up the flags.\n\n## Correctness\n\nA result y can be generated from x if and only if every 1 bit of x is also in y, i.e. x is a submask of y. After the first j bits are processed, a flag says whether the mask is reachable from some input when 1s may be added only in those j bits; the next bit propagates sources lacking that bit to states having it, and by induction all positions where adding a 1 is allowed are covered. A boolean union removes duplicates, so the count is exactly the size of the union.\n\n## Complexity\n\nO(n * 2^n + k) time and O(2^n) bytes of space."

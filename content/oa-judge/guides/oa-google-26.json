@@ -13,6 +13,21 @@
       "An optimal segment either contains no changed position or contains exactly one changed position; on both sides of that position the original array must be non-decreasing.",
       "Precompute left[i], the non-decreasing run ending at i, and right[i], the run starting at i. Then enumerate the changed position i and consider joining only the left run, only the right run, or bridging both runs.",
       "Compute left and right; start the answer at max(left); for each i let l = left[i-1] and r = right[i+1] (0 when out of range) and update the answer with l + 1 and r + 1; if 0 < i < n-1 and a[i-1] <= a[i+1], also update with l + r + 1; print the answer."
+    ],
+    "ja": [
+      "最適な区間は、変更する位置を含まないか、変更する位置をちょうど 1 つ含むかのどちらかです。その位置の両側では、元の配列が非減少でなければなりません。",
+      "left[i]（i で終わる非減少区間）と right[i]（i から始まる区間）を前計算します。そのうえで変更する位置 i を列挙し、左の区間だけと結ぶ場合、右の区間だけと結ぶ場合、両方を橋渡しする場合を考えます。",
+      "left と right を計算し、答えを max(left) で初期化します。各 i について l = left[i-1]、r = right[i+1]（範囲外なら 0）とし、答えを l + 1 と r + 1 で更新します。0 < i < n-1 かつ a[i-1] <= a[i+1] なら、l + r + 1 でも更新します。最後に答えを出力します。"
+    ],
+    "ko": [
+      "최적의 구간은 수정한 위치를 포함하지 않거나, 수정한 위치를 정확히 하나 포함합니다. 후자에서는 그 위치의 양쪽이 원래 배열에서 비감소여야 합니다.",
+      "left[i]는 i에서 끝나는 비감소 구간, right[i]는 i에서 시작하는 구간의 길이로 미리 계산합니다. 그다음 수정할 위치 i를 순회하며 왼쪽 구간만, 오른쪽 구간만, 또는 두 구간을 이어 붙이는 경우를 고려합니다.",
+      "left와 right를 계산하고 답을 max(left)로 시작합니다. 각 i에 대해 l = left[i-1], r = right[i+1](범위를 벗어나면 0)로 두고 답을 l + 1과 r + 1로 갱신합니다. 0 < i < n-1이고 a[i-1] <= a[i+1]이면 l + r + 1로도 갱신합니다. 마지막에 답을 출력합니다."
+    ],
+    "vi": [
+      "Một đoạn tối ưu hoặc không chứa vị trí bị đổi, hoặc chứa đúng một vị trí bị đổi; ở cả hai phía của vị trí đó mảng gốc phải không giảm.",
+      "Tính trước left[i], đoạn không giảm kết thúc tại i, và right[i], đoạn bắt đầu tại i. Sau đó duyệt vị trí bị đổi i và xét: chỉ nối đoạn trái, chỉ nối đoạn phải, hoặc bắc cầu ghép cả hai đoạn.",
+      "Tính left và right; khởi tạo đáp án bằng max(left); với mỗi i đặt l = left[i-1] và r = right[i+1] (bằng 0 nếu ra ngoài phạm vi) và cập nhật đáp án với l + 1 và r + 1; nếu 0 < i < n-1 và a[i-1] <= a[i+1] thì cập nhật thêm với l + r + 1; in đáp án."
     ]
   },
   "explanationEn": "## Approach\n\nCompute, for every position, the length of the unmodified non-decreasing run ending there and starting there. When a position is modified, consider joining only the left run, only the right run, and, when the neighbouring values allow a bridge, merging both runs.\n\n## Correctness\n\nIf the optimal segment contains no modified position, it is already covered by an original non-decreasing run. If it contains the modified position, both sides of it must be non-decreasing on their own. When both sides are non-empty, a suitable integer for the middle exists if and only if the left neighbour is not greater than the right neighbour. Enumerating the modified position and these three cases covers every option.\n\n## Complexity\n\nTime O(n), space O(n)."

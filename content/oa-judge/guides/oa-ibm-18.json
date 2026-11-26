@@ -13,6 +13,21 @@
       "An operation only deletes letters equal to the chosen one, so different letters never affect each other; the chosen character itself stays, so at least one copy of each letter remains, and the shortest string keeps exactly one copy of every letter that occurs.",
       "A letter occurring f times needs f−1 deletions, and one operation deletes at most 2, so at least ceil((f−1)/2) = floor(f/2) operations are needed; choosing an occurrence in the middle deletes one on each side, so this bound is achievable.",
       "Count the frequency f of each letter and sum floor(f/2) over all letters."
+    ],
+    "ja": [
+      "操作が削除するのは選んだ文字と同じ文字だけなので、異なる文字どうしは影響し合いません。選んだ文字自体は残るので、各文字は最低 1 つ残ります。最短の文字列は、現れる各文字をちょうど 1 つずつ残したものです。",
+      "f 回現れる文字には f−1 個の削除が必要で、1 回の操作で削除できるのは高々 2 個です。したがって少なくとも ceil((f−1)/2) = floor(f/2) 回の操作が必要です。中ほどの出現を選べば両側を 1 つずつ削除できるので、この下限は達成できます。",
+      "各文字の出現回数 f を数え、すべての文字について floor(f/2) を合計します。"
+    ],
+    "ko": [
+      "연산은 고른 문자와 같은 문자만 삭제하므로 서로 다른 알파벳은 서로 영향을 주지 않습니다. 고른 문자 자신은 남으므로 각 알파벳이 최소 하나씩 남고, 가장 짧은 문자열은 등장하는 모든 알파벳을 정확히 하나씩 남깁니다.",
+      "f번 등장하는 알파벳은 f−1개를 삭제해야 하고, 한 번의 연산은 최대 2개를 삭제하므로 최소 ceil((f−1)/2) = floor(f/2)번의 연산이 필요합니다. 가운데에 있는 위치를 고르면 양쪽에서 하나씩 삭제되므로 이 하한은 달성할 수 있습니다.",
+      "각 알파벳의 빈도 f를 세고 모든 알파벳에 대해 floor(f/2)를 합산합니다."
+    ],
+    "vi": [
+      "Một thao tác chỉ xóa các chữ cái bằng ký tự được chọn, nên các chữ cái khác nhau không ảnh hưởng lẫn nhau; ký tự được chọn tự nó vẫn còn lại, nên mỗi chữ cái còn ít nhất một bản, và xâu ngắn nhất giữ đúng một bản của mỗi chữ cái xuất hiện.",
+      "Một chữ cái xuất hiện f lần cần f−1 lần xóa, và một thao tác xóa tối đa 2, nên cần ít nhất ceil((f−1)/2) = floor(f/2) thao tác; chọn một lần xuất hiện ở giữa sẽ xóa mỗi phía một ký tự, nên cận này đạt được.",
+      "Đếm tần suất f của từng chữ cái và cộng floor(f/2) trên mọi chữ cái."
     ]
   },
   "explanationEn": "## Approach\n\nAt least one copy of each letter must remain, so a letter with frequency f needs f−1 deletions, and one operation deletes at most 2; choosing a middle occurrence lets you keep deleting on both sides, so its contribution is floor(f/2).\n\n## Proof of correctness\n\nNo operation affects other letters, and the chosen letter is kept, so the shortest string has one copy of each letter. At least ceil((f−1)/2) steps are needed; when f≥3, choosing an occurrence that is not at either end deletes 2, and when 2 remain, one more deletion removes 1, which achieves this lower bound. Summing over the letters gives the answer.\n\n## Complexity\n\nTime O(n), space O(26)."

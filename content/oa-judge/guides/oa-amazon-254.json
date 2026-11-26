@@ -13,6 +13,21 @@
       "In the end every product occupies a different integer size, and a product can be placed at a size position only if its original size does not exceed that position. Each step a product is pushed further costs its unit cost.",
       "Scan the size positions from small to large and place exactly one product at each: among the unplaced products whose original size is already at most the current position, take the one with the highest unit cost, so the cheap products are the ones pushed further.",
       "Sort by (original size, cost); keep the currently placeable products in a max-heap; when the heap is empty, jump the position straight to the next product's original size; push every product whose original size is at most the position; pop the highest-cost one, add (position - original size) times its cost, and advance the position by one; repeat until all products are placed, accumulating in 64-bit integers."
+    ],
+    "ja": [
+      "最終的に各商品は互いに異なる整数のサイズを占め、商品を置けるのは、元のサイズがその位置以下の場所だけです。商品を 1 ステップ先へ押し出すたびに、その単位コストがかかります。",
+      "サイズの位置を小さい方から大きい方へ走査し、各位置にちょうど 1 つの商品を置きます。元のサイズがすでに現在の位置以下である、未配置の商品のうち、単位コストが最大のものを選ぶので、安い商品の方がより先へ押し出されます。",
+      "(元のサイズ, コスト) でソートします。現在配置可能な商品を最大ヒープに保持します。ヒープが空なら、位置を次の商品の元のサイズへ直接ジャンプさせます。元のサイズが位置以下の商品をすべて push し、コスト最大のものを pop して、(position - 元のサイズ) にそのコストを掛けた値を加算し、位置を 1 進めます。すべての商品が置かれるまで繰り返し、64 ビット整数で累積します。"
+    ],
+    "ko": [
+      "결국 모든 제품은 서로 다른 정수 크기를 차지하며, 제품은 원래 크기가 그 위치를 넘지 않을 때만 그 크기 위치에 놓일 수 있습니다. 제품을 한 칸 더 밀 때마다 그 제품의 단위 비용이 듭니다.",
+      "크기 위치를 작은 것부터 큰 것으로 훑으며 위치마다 정확히 하나의 제품을 놓습니다. 원래 크기가 현재 위치 이하인 미배치 제품 중 단위 비용이 가장 높은 것을 선택하면, 싼 제품이 더 멀리 밀립니다.",
+      "(원래 크기, 비용)으로 정렬하고, 현재 배치 가능한 제품들을 최대 힙에 유지합니다. 힙이 비어 있으면 위치를 다음 제품의 원래 크기로 바로 점프합니다. 원래 크기가 위치 이하인 모든 제품을 넣고, 비용이 가장 높은 것을 꺼내어 (위치 - 원래 크기) × 비용을 더한 뒤 위치를 하나 올립니다. 모든 제품이 배치될 때까지 반복하며, 64비트 정수로 누적합니다."
+    ],
+    "vi": [
+      "Cuối cùng mỗi sản phẩm chiếm một kích thước nguyên khác nhau, và một sản phẩm chỉ có thể đặt tại một vị trí kích thước nếu kích thước gốc của nó không vượt quá vị trí đó. Mỗi bước đẩy một sản phẩm đi xa hơn tốn chi phí đơn vị của nó.",
+      "Quét các vị trí kích thước từ nhỏ đến lớn và đặt đúng một sản phẩm tại mỗi vị trí: trong các sản phẩm chưa đặt mà kích thước gốc đã không vượt quá vị trí hiện tại, lấy sản phẩm có chi phí đơn vị cao nhất, để các sản phẩm rẻ là những sản phẩm bị đẩy đi xa hơn.",
+      "Sắp xếp theo (kích thước gốc, chi phí); giữ các sản phẩm có thể đặt hiện tại trong max-heap; khi heap rỗng thì nhảy vị trí thẳng đến kích thước gốc của sản phẩm kế tiếp; đẩy mọi sản phẩm có kích thước gốc không vượt quá vị trí vào heap; lấy ra cái có chi phí cao nhất, cộng (vị trí - kích thước gốc) nhân chi phí của nó, và tăng vị trí lên một; lặp lại đến khi mọi sản phẩm đều được đặt, cộng dồn bằng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nSort by original size and scan the available coordinates, putting into a heap the products whose original size has been reached; each time, fix the one with the highest unit cost first; when the heap is empty, jump to the next original size.\n\n## Proof of correctness\n\nIf some coordinate could hold a product but is left empty, moving a future product that fits there earlier only saves cost. If a low-cost product is placed now while a placeable high-cost product is placed later, swapping the two keeps each at least its original size, and the cost changes by the gap times (low cost - high cost), which does not increase. Therefore there is an optimal assignment that agrees with the greedy choice at every step.\n\n## Complexity\n\nTime O(n log n), space O(n); the final cost uses 64-bit integers."

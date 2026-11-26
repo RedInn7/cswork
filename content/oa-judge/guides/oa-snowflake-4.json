@@ -13,6 +13,21 @@
       "When the same piece is chosen again and again, the amount eaten each time, floor(w/2), never increases. Weights are only 1..10000, so you can count pieces per weight instead of storing every piece.",
       "Greedy: every day eat from the currently heaviest piece, which gives the largest reduction. Replace a heap with an array of buckets indexed by weight, with a pointer that only moves down from the largest weight.",
       "Build b[w] = number of pieces of weight w and the total weight, and let top be the largest weight. Each day, move top down to a non-empty bucket; if top is 1, stop early. Otherwise take one piece out of b[top], put it into b[ceil(top/2)], and subtract top - ceil(top/2) from the total. Keep the total in a 64-bit integer."
+    ],
+    "ja": [
+      "同じかけらを繰り返し選ぶと、毎回食べる量 floor(w/2) は増えることがありません。重さは 1..10000 しかないので、すべてのかけらを保持せず、重さごとの個数を数えれば十分です。",
+      "貪欲法です。毎日、現在最も重いかけらから食べると、減る量が最大になります。ヒープの代わりに、重さを添字とするバケットの配列と、最大の重さから下にしか動かないポインタを使います。",
+      "b[w] = 重さ w のかけらの個数と総重量を構築し、top を最大の重さとします。毎日、top を空でないバケットまで下げます。top が 1 なら早めに止めます。そうでなければ b[top] から 1 つ取り出して b[ceil(top/2)] に入れ、総重量から top - ceil(top/2) を引きます。総重量は 64 ビット整数で保持してください。"
+    ],
+    "ko": [
+      "같은 조각을 계속 고를 때 매번 먹는 양 floor(w/2)는 절대 늘어나지 않습니다. 무게가 1..10000뿐이므로 모든 조각을 저장하는 대신 무게별로 조각의 수를 세면 됩니다.",
+      "그리디: 매일 현재 가장 무거운 조각에서 먹으면 감소량이 가장 큽니다. 힙 대신 무게로 인덱싱한 버킷 배열을 쓰고, 가장 큰 무게에서 아래로만 움직이는 포인터를 둡니다.",
+      "b[w] = 무게가 w인 조각의 수와 총무게를 구하고 top을 가장 큰 무게로 둡니다. 매일 top을 비어 있지 않은 버킷까지 내리고, top이 1이면 일찍 멈춥니다. 그렇지 않으면 b[top]에서 조각 하나를 꺼내 b[ceil(top/2)]에 넣고 총무게에서 top - ceil(top/2)를 뺍니다. 총무게는 64비트 정수로 유지하세요."
+    ],
+    "vi": [
+      "Khi cùng một thanh được chọn đi chọn lại, lượng ăn mỗi lần, floor(w/2), không bao giờ tăng. Khối lượng chỉ từ 1..10000, nên bạn có thể đếm số thanh theo từng khối lượng thay vì lưu từng thanh.",
+      "Tham lam: mỗi ngày ăn thanh đang nặng nhất, cho mức giảm lớn nhất. Thay heap bằng một mảng các thùng đánh chỉ số theo khối lượng, với một con trỏ chỉ đi xuống từ khối lượng lớn nhất.",
+      "Xây b[w] = số thanh có khối lượng w và tổng khối lượng, và gọi top là khối lượng lớn nhất. Mỗi ngày, di chuyển top xuống một thùng không rỗng; nếu top bằng 1 thì dừng sớm. Ngược lại lấy một thanh ra khỏi b[top], đặt vào b[ceil(top/2)], và trừ top - ceil(top/2) khỏi tổng. Giữ tổng trong số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nBucket the pieces by weight, and each day take one piece from the highest non-empty bucket and halve it; as soon as every weight is 1, stop.\n\n## Correctness\n\nFor each piece, the gains of its future operations form a non-increasing sequence of floor(w/2) values. Choices from these sequences must respect the prefix constraint, and the largest gain currently available can always belong to an optimal choice: exchanging it for a smaller gain never makes the result worse. The largest weight gives the largest current gain, so the greedy choice is optimal.\n\n## Complexity\n\nO(n + d + 10000) time and O(10000) space."

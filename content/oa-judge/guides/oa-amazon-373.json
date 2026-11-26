@@ -13,6 +13,21 @@
       "A deletion always takes two different types, so whatever remains is held up by the most frequent type; also each step removes two items, so the remainder has the parity of n.",
       "There are two lower bounds: 2f−n (with f the top frequency, the other n−f items cancel at most n−f of it) and n mod 2; the larger one is always achievable.",
       "Count each type with a hash map or by sorting to get f, and print max(2f−n, n%2)."
+    ],
+    "ja": [
+      "削除は必ず異なる 2 種類から行うので、残りは最頻出の種類に引きずられます。また、1 回で 2 個ずつ減るため、残りの個数の偶奇は n と一致します。",
+      "下界は 2 つあります。2f−n (f は最大頻度で、他の n−f 個は最大でも n−f 個しか打ち消せません) と n mod 2 です。大きい方は常に達成できます。",
+      "ハッシュマップまたはソートで種類ごとの個数を数えて f を求め、max(2f−n, n%2) を出力します。"
+    ],
+    "ko": [
+      "삭제는 항상 서로 다른 두 종류를 가져가므로 남는 것은 가장 빈도가 높은 종류에 의해 결정됩니다. 또한 한 단계에 두 개씩 제거되므로 남는 개수의 홀짝은 n과 같습니다.",
+      "하한이 두 가지 있습니다. 2f−n (f는 최대 빈도이며 나머지 n−f개가 최대 n−f개만 상쇄할 수 있음)과 n mod 2이고, 둘 중 큰 값은 항상 달성 가능합니다.",
+      "해시 맵이나 정렬로 각 종류를 세어 f를 구하고 max(2f−n, n%2)를 출력합니다."
+    ],
+    "vi": [
+      "Mỗi lần xóa luôn lấy hai loại khác nhau, nên phần còn lại bị giữ chân bởi loại xuất hiện nhiều nhất; ngoài ra mỗi bước loại bỏ hai món, nên số còn lại có cùng tính chẵn lẻ với n.",
+      "Có hai cận dưới: 2f−n (với f là tần suất cao nhất, n−f món còn lại chỉ triệt tiêu được tối đa n−f món của nó) và n mod 2; giá trị lớn hơn luôn đạt được.",
+      "Đếm mỗi loại bằng hash map hoặc bằng sắp xếp để lấy f, rồi in max(2f−n, n%2)."
     ]
   },
   "explanationEn": "## Approach\n\nLet f be the highest frequency; the answer is max(2f−n, n%2).\n\n## Proof of correctness\n\nThe most frequent type can be cancelled by at most the other n−f items, so at least 2f−n remain; each step deletes 2, so the remainder must also have the same parity as n. If one type is more than half, cancelling it one by one with the other types reaches the majority bound. Otherwise, when n is even, sort the items grouped by type and pair each position of the first half with the corresponding position of the second half; since no type exceeds half, every pair has two different types. When n is odd, first set aside one item so that no type is more than half of the rest, then pair the same way. Hence exactly the larger of the two lower bounds is reached.\n\n## Complexity\n\nExpected O(n) time and O(number of distinct types) space."

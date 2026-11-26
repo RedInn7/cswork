@@ -13,6 +13,21 @@
       "Pair house i with house n + 1 - i (same distance from the two ends) and paint pair by pair from the ends toward the middle; the two houses of a pair must differ.",
       "The outermost pair has 3 * 2 = 6 colorings. Every later pair (c, d) only needs c to differ from the already painted a on its left, d from b on its right, and c != d; checking the cases shows there are exactly 3 options whatever a and b are.",
       "So the answer is 6 * 3^(n/2 - 1) modulo 10^9+7, computed with fast exponentiation."
+    ],
+    "ja": [
+      "家 i と家 n + 1 - i（両端から同じ距離）をペアにして、両端から中央へ向かってペアごとに塗ります。ペアの 2 軒は色が異なっていなければなりません。",
+      "最も外側のペアの塗り方は 3 * 2 = 6 通りです。その後のペア (c, d) は、左側のすでに塗られた a と c が異なり、右側の b と d が異なり、c != d であればよいだけです。場合を調べると、a と b が何であっても、ちょうど 3 通りです。",
+      "したがって答えは 10^9+7 で割った余りで 6 * 3^(n/2 - 1) となり、高速べき乗で計算できます。"
+    ],
+    "ko": [
+      "집 i와 집 n + 1 - i(양 끝에서 같은 거리)를 한 쌍으로 묶고 양 끝에서 가운데로 한 쌍씩 칠합니다. 한 쌍의 두 집은 서로 달라야 합니다.",
+      "가장 바깥 쌍의 칠하는 방법은 3 * 2 = 6가지입니다. 이후의 각 쌍 (c, d)는 c가 왼쪽에 이미 칠해진 a와 다르고 d가 오른쪽의 b와 다르며 c != d이기만 하면 되는데, 경우를 확인해 보면 a와 b가 무엇이든 선택지는 정확히 3가지입니다.",
+      "따라서 답은 6 * 3^(n/2 - 1)을 10^9+7로 나눈 나머지이며, 빠른 거듭제곱으로 계산합니다."
+    ],
+    "vi": [
+      "Ghép nhà i với nhà n + 1 - i (cùng khoảng cách tới hai đầu) và sơn từng cặp từ hai đầu vào giữa; hai ngôi nhà của một cặp phải khác màu.",
+      "Cặp ngoài cùng có 3 * 2 = 6 cách tô màu. Mỗi cặp (c, d) sau đó chỉ cần c khác a đã được sơn ở bên trái, d khác b ở bên phải, và c != d; kiểm tra các trường hợp cho thấy có đúng 3 lựa chọn dù a và b là gì.",
+      "Vậy đáp án là 6 * 3^(n/2 - 1) theo modulo 10^9+7, tính bằng lũy thừa nhanh."
     ]
   },
   "explanationEn": "## Approach\n\nPaint pair by pair from both ends toward the middle: the first pair has 6 options, and every later pair has 3.\n\n## Correctness\n\nThe left and right colors already painted are different values a,b; the new pair (c,d) requires c!=a, d!=b, and c!=d. With three colors there are exactly 3 ordered choices, the same for any a,b. The innermost adjacency constraint is just that the two houses of a pair differ, with no extra condition, so by the multiplication principle the answer is 6×3^(n/2-1).\n\n## Complexity\n\nTime O(log n), space O(1)."

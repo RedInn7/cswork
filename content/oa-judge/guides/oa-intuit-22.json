@@ -13,6 +13,21 @@
       "The fire's radius at time t is R * t, so at time T each fire covers the closed disk of radius R * T around it; lattice points include the boundary, that is 0 <= x <= N and 0 <= y <= M.",
       "The sizes are tiny (N, M, K <= 100), so you can enumerate every lattice point and check whether it lies in some fire's closed disk; compare squared distances with the squared radius to avoid square-root errors.",
       "Compute radius^2 = (R * T)^2; loop over x = 0..N and y = 0..M, and for each point check all fires: it is burned as soon as one fire has (x - fx)^2 + (y - fy)^2 <= radius^2; if every fire is farther away, count the point as safe; finally print the number of safe points."
+    ],
+    "ja": [
+      "時刻 t の火の半径は R * t なので、時刻 T には各火がその周りの半径 R * T の閉円盤を覆います。格子点には境界が含まれ、つまり 0 <= x <= N かつ 0 <= y <= M です。",
+      "サイズは非常に小さい（N, M, K <= 100）ので、すべての格子点を列挙し、それがいずれかの火の閉円盤に入っているかを調べられます。平方根による誤差を避けるため、距離の 2 乗を半径の 2 乗と比べます。",
+      "radius^2 = (R * T)^2 を計算し、x = 0..N と y = 0..M をループします。各点についてすべての火を調べ、いずれかの火で (x - fx)^2 + (y - fy)^2 <= radius^2 なら燃えているとします。すべての火が遠ければ、その点は安全として数えます。最後に安全な点の個数を出力します。"
+    ],
+    "ko": [
+      "시각 t에서 불의 반지름은 R * t이므로 시각 T에서 각 불은 그 주변 반지름 R * T의 닫힌 원판을 덮습니다. 격자점은 경계를 포함하며, 즉 0 <= x <= N, 0 <= y <= M입니다.",
+      "크기가 아주 작으므로(N, M, K <= 100) 모든 격자점을 열거하여 어떤 불의 닫힌 원판 안에 있는지 확인할 수 있습니다. 제곱근 오차를 피하려면 거리 제곱을 반지름 제곱과 비교합니다.",
+      "radius^2 = (R * T)^2을 계산하고 x = 0..N, y = 0..M을 순회하며 각 점에 대해 모든 불을 확인합니다. 어떤 불이 (x - fx)^2 + (y - fy)^2 <= radius^2이면 그 점은 불탄 것이고, 모든 불이 더 멀리 있으면 안전한 점으로 셉니다. 마지막으로 안전한 점의 수를 출력합니다."
+    ],
+    "vi": [
+      "Bán kính của lửa tại thời điểm t là R * t, nên tại thời điểm T mỗi đám cháy phủ hình tròn đóng bán kính R * T quanh nó; các điểm nguyên bao gồm cả biên, tức là 0 <= x <= N và 0 <= y <= M.",
+      "Kích thước rất nhỏ (N, M, K <= 100), nên có thể liệt kê mọi điểm nguyên và kiểm tra xem nó có nằm trong hình tròn đóng của đám cháy nào không; so sánh bình phương khoảng cách với bình phương bán kính để tránh sai số căn bậc hai.",
+      "Tính radius^2 = (R * T)^2; duyệt x = 0..N và y = 0..M, và với mỗi điểm kiểm tra mọi điểm cháy: điểm bị cháy ngay khi có một điểm cháy thỏa (x - fx)^2 + (y - fy)^2 <= radius^2; nếu mọi điểm cháy đều ở xa hơn thì đếm điểm đó là an toàn; cuối cùng in số điểm an toàn."
     ]
   },
   "explanationEn": "## Approach\n\nAt time T the fire's radius is R×T. Go through the full rectangle of integer lattice points and, for each point, check the squared distance to every fire; if all distances are greater than the squared radius, the point is safe. The coordinate list in the example enumerates points over the closed ranges 0..N and 0..M.\n\n## Proof of correctness\n\nEach lattice point is visited exactly once in the double loop. For that point, the algorithm checks exactly every fire; there is a fire whose squared distance does not exceed the squared radius if and only if the point lies inside the corresponding closed disk, so the algorithm counts as safe exactly the points that are not inside any fire's closed disk. The example establishes that boundary lattice points also belong to the plane, so the ranges must include N and M.\n\n## Complexity\n\nTime O(NMK), space O(K); on this site N,M,K≤100."

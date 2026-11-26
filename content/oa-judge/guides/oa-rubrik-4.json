@@ -13,6 +13,21 @@
       "Leading zeros do not change the value, so strip them first and then look at the shape of the remaining binary string.",
       "The binary form of 2^k is exactly a single 1 followed by k zeros. If nothing remains after stripping the leading zeros, the number is 0, and 0 is not a power of two.",
       "Trim surrounding whitespace and all leading 0s. If the rest is non-empty, starts with 1, and contains no further 1, print True; otherwise print False."
+    ],
+    "ja": [
+      "先頭の 0 は値を変えないので、まず取り除いてから、残った 2 進文字列の形を見ます。",
+      "2^k の 2 進表記は、1 が 1 つとその後ろに k 個の 0 が続く形ちょうどです。先頭の 0 を取り除いて何も残らなければ、その数は 0 であり、0 は 2 の冪ではありません。",
+      "前後の空白と先頭の 0 をすべて取り除きます。残りが空でなく、1 で始まり、それ以降に 1 を含まなければ True、そうでなければ False を出力します。"
+    ],
+    "ko": [
+      "앞쪽의 0은 값을 바꾸지 않으므로 먼저 제거한 뒤 남은 이진 문자열의 모양을 살펴보세요.",
+      "2^k의 이진 표현은 정확히 1 하나 뒤에 0이 k개 붙은 형태입니다. 앞쪽 0을 제거한 뒤 아무것도 남지 않으면 그 수는 0이고, 0은 2의 거듭제곱이 아닙니다.",
+      "양쪽 공백과 앞쪽의 모든 0을 제거합니다. 나머지가 비어 있지 않고, 1로 시작하며, 이후에 1이 더 없으면 True를, 아니면 False를 출력합니다."
+    ],
+    "vi": [
+      "Các số 0 ở đầu không làm thay đổi giá trị, nên hãy bỏ chúng trước rồi xem hình dạng của phần xâu nhị phân còn lại.",
+      "Dạng nhị phân của 2^k chính là một chữ số 1 theo sau bởi k chữ số 0. Nếu sau khi bỏ các số 0 ở đầu không còn gì, thì số đó là 0, và 0 không phải lũy thừa của hai.",
+      "Cắt khoảng trắng hai đầu và mọi số 0 ở đầu. Nếu phần còn lại không rỗng, bắt đầu bằng 1 và không chứa thêm chữ số 1 nào nữa, in True; ngược lại in False."
     ]
   },
   "explanationEn": "## Approach\n\nAfter stripping leading zeros, the binary representation is a 1 followed by some number of 0s if and only if the number is a power of 2.\n\n## Correctness\n\nThe binary representation of 2^k is exactly a 1 followed by k zeros; leading zeros do not change the value, and an all-zero string represents 0, so it should return False.\n\n## Complexity\n\nTime O(|s|), space O(|s|)."

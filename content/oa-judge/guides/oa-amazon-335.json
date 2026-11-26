@@ -13,6 +13,21 @@
       "After a deletion the two sides join, so equal characters that were not adjacent may become adjacent later and be deleted at once; you cannot just count the runs of the original string. Consider an interval [l, r] and focus on how the leftmost character s[l] gets deleted.",
       "Either s[l] is deleted on its own (cost 1 plus clearing [l+1, r]), or together with some later position k holding the same character: then [l+1, k−1] must be cleared first, after which s[l] rides along with k's deletion for free, and what remains is clearing [k, r].",
       "Let dp[l][r] be the minimum number of deletions to clear s[l..r], with 0 for an empty interval and 1 for a single character. Compute with l from right to left and r from left to right: start from 1+dp[l+1][r], then for every k with l<k≤r and s[k]=s[l] take the minimum with dp[l+1][k−1]+dp[k][r]. Compare characters by Unicode code point (decode the JSON first; a surrogate pair is one character), and the empty string gives 0."
+    ],
+    "ja": [
+      "削除後は両側がつながるので、隣り合っていなかった同じ文字が後で隣り合い、一度に削除できることがあります。元の文字列の連続部分の数を数えるだけではいけません。区間 [l, r] を考え、いちばん左の文字 s[l] がどう削除されるかに注目します。",
+      "s[l] は単独で削除される(コストは 1 に [l+1, r] を空にするコストを足したもの)か、同じ文字を持つ後方の位置 k と一緒に削除されるかのどちらかです。後者では、まず [l+1, k−1] を空にしておく必要があり、そうすれば s[l] は k の削除に無料で相乗りでき、残りは [k, r] を空にすることになります。",
+      "dp[l][r] を s[l..r] を空にする最小の削除回数とし、空の区間は 0、1 文字は 1 とします。l を右から左へ、r を左から右へ計算します。まず 1+dp[l+1][r] から始め、l<k≤r かつ s[k]=s[l] であるすべての k について dp[l+1][k−1]+dp[k][r] との最小を取ります。文字は Unicode のコードポイントで比較し(先に JSON をデコードします。サロゲートペアは1文字です)、空文字列は 0 です。"
+    ],
+    "ko": [
+      "삭제 후 양쪽이 이어 붙으므로, 처음에는 인접하지 않았던 같은 문자가 나중에 인접하게 되어 한 번에 삭제될 수 있습니다. 원래 문자열의 연속 구간 수를 세는 것만으로는 안 됩니다. 구간 [l, r]을 생각하고, 가장 왼쪽 문자 s[l]이 어떻게 삭제되는지에 주목합니다.",
+      "s[l]은 혼자 삭제되거나(비용 1에 [l+1, r]을 비우는 비용을 더한 값), 같은 문자를 가진 뒤쪽의 어떤 위치 k와 함께 삭제됩니다. 후자의 경우 [l+1, k−1]을 먼저 비워야 하고, 그러면 s[l]은 k의 삭제에 공짜로 딸려 가며 남는 일은 [k, r]을 비우는 것입니다.",
+      "dp[l][r]을 s[l..r]을 비우는 최소 삭제 횟수로 정의하고, 빈 구간은 0, 한 문자는 1입니다. l은 오른쪽에서 왼쪽으로, r은 왼쪽에서 오른쪽으로 계산합니다. 먼저 1+dp[l+1][r]에서 시작하고, l<k≤r이고 s[k]=s[l]인 모든 k에 대해 dp[l+1][k−1]+dp[k][r]과의 최솟값을 취합니다. 문자는 유니코드 코드 포인트 단위로 비교하며(먼저 JSON을 디코딩하고, 서로게이트 쌍은 한 문자입니다) 빈 문자열의 답은 0입니다."
+    ],
+    "vi": [
+      "Sau khi xóa, hai bên được nối lại nên các ký tự giống nhau trước đó không kề nhau có thể trở nên kề nhau và bị xóa cùng lúc; vì thế không thể chỉ đếm số đoạn của xâu gốc. Xét đoạn [l, r] và tập trung vào việc ký tự trái nhất s[l] bị xóa như thế nào.",
+      "Hoặc s[l] bị xóa riêng (chi phí 1 cộng với dọn [l+1, r]), hoặc cùng với một vị trí k về sau có cùng ký tự: khi đó phải dọn [l+1, k−1] trước, sau đó s[l] đi cùng lần xóa k mà không tốn thêm, và phần còn lại là dọn [k, r].",
+      "Gọi dp[l][r] là số lần xóa tối thiểu để dọn s[l..r], bằng 0 cho đoạn rỗng và 1 cho một ký tự. Tính với l từ phải sang trái và r từ trái sang phải: bắt đầu từ 1+dp[l+1][r], rồi với mọi k thỏa l<k≤r và s[k]=s[l] lấy giá trị nhỏ nhất với dp[l+1][k−1]+dp[k][r]. So sánh ký tự theo điểm mã Unicode (giải mã JSON trước; một cặp surrogate là một ký tự), và xâu rỗng cho 0."
     ]
   },
   "explanationEn": "## Approach\n\nInterval DP. Deleting the left character on its own gives 1+dp[l+1][r]; if s[k]=s[l], first clear the middle and then handle the left character in the same deletion as k, giving the candidate dp[l+1][k−1]+dp[k][r]. An empty interval is 0; enumerate every k with the same character and take the minimum.\n\n## Proof of correctness\n\nConsider the operation that deletes the left-end character. If it is not deleted together with any other original position, the cost is at least 1 plus the optimum for the rest; otherwise let k be the next original position in the same deletion. Everything in between must be cleared first, after which the left character can be attached to k's deletion at no extra charge. The independent optima of the two intervals give a lower bound; conversely, clearing the middle first, running the plan for the right part, and attaching the left character to the deletion that removes k achieves it. So the transitions cover every optimal plan, and computing by increasing length is correct.\n\n## Complexity\n\nTime O(n³), space O(n²); with n≤200 on this site, the triple loop is on the order of 8 million steps."

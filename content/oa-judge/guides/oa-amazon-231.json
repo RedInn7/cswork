@@ -13,6 +13,21 @@
       "Adding or subtracting 1 on the prefix of length i+1 changes only the difference between a[i] and a[i+1]; every other adjacent difference stays the same.",
       "View the array as the differences a[i]-a[i+1], with the last term being a[n-1] minus 0; making everything zero means making every difference 0, and each operation changes exactly one difference by 1.",
       "The answer is |a[n-1]| plus the sum of all |a[i]-a[i+1]|, accumulated in one pass; it can reach 2*10^14, so use 64-bit integers."
+    ],
+    "ja": [
+      "長さ i+1 の接頭辞に +1 または −1 を加えると、変わるのは a[i] と a[i+1] の差だけで、他のすべての隣り合う差は変わりません。",
+      "配列を差 a[i]-a[i+1] の列として見ます。最後の項は a[n-1] から 0 を引いたものです。すべてを 0 にするとはすべての差を 0 にすることで、各操作はちょうど 1 つの差を 1 だけ変えます。",
+      "答えは |a[n-1]| に、すべての |a[i]-a[i+1]| の和を加えたもので、1 回の走査で累積します。2*10^14 に達しうるので、64 ビット整数を使います。"
+    ],
+    "ko": [
+      "길이 i+1인 접두사에 1을 더하거나 빼면 a[i]와 a[i+1]의 차이만 바뀌고, 다른 인접 차이는 그대로입니다.",
+      "배열을 차이 a[i]-a[i+1]들로 보고, 마지막 항은 a[n-1]에서 0을 뺀 값으로 봅니다. 모두 0으로 만든다는 것은 모든 차이를 0으로 만드는 것이고, 각 연산은 정확히 하나의 차이를 1만큼 바꿉니다.",
+      "정답은 |a[n-1]|에 모든 |a[i]-a[i+1]|의 합을 더한 값이며 한 번의 순회로 누적합니다. 2*10^14까지 커질 수 있으므로 64비트 정수를 사용합니다."
+    ],
+    "vi": [
+      "Cộng hoặc trừ 1 trên tiền tố độ dài i+1 chỉ làm thay đổi hiệu giữa a[i] và a[i+1]; mọi hiệu kề khác vẫn giữ nguyên.",
+      "Hãy xem mảng như các hiệu a[i]-a[i+1], với số hạng cuối là a[n-1] trừ 0; đưa mọi thứ về 0 nghĩa là đưa mọi hiệu về 0, và mỗi phép toán làm thay đổi đúng một hiệu đi 1.",
+      "Đáp án là |a[n-1]| cộng tổng mọi |a[i]-a[i+1]|, cộng dồn trong một lượt duyệt; nó có thể đạt 2*10^14, nên hãy dùng số nguyên 64-bit."
     ]
   },
   "explanationEn": "## Approach\n\nThe answer is the absolute value of the last element plus the absolute value of every adjacent difference.\n\n## Proof of correctness\n\nTurn the array into differences b[i]=a[i]−a[i+1], with the last b[n−1]=a[n−1]. An operation on the prefix of length i+1 changes only b[i] by ±1 and leaves the other differences unchanged, so each difference needs at least its absolute value in operations; eliminating each difference independently attains exactly the total lower bound.\n\n## Complexity\n\nTime O(n), auxiliary space O(1) excluding the input."

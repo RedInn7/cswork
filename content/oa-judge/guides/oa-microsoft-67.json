@@ -13,6 +13,21 @@
       "In a strictly increasing part each value appears at most once, and the same holds for the strictly decreasing part; the peak is shared by both parts and appears only once.",
       "So every value other than the maximum can be used at most twice, once per side, and the maximum only once as the peak; this bound is always reached by using the maximum as the peak, one copy of each smaller value ascending on the left and a second copy, if any, descending on the right.",
       "Count the occurrences of each value (sort and group, or use a hash map); the answer is 1 plus the sum, over all values except the maximum, of the smaller of the count and 2."
+    ],
+    "ja": [
+      "真に増加する部分では各値は高々 1 回しか現れず、真に減少する部分も同じです。頂点は両方の部分に共有され、1 回しか現れません。",
+      "したがって、最大値以外の値は、片側に 1 回ずつ、合計で高々 2 回使え、最大値は頂点として 1 回だけ使えます。この上限は、最大値を頂点にし、左側に各小さい値を 1 つずつ昇順に、右側に 2 つ目があればそれを降順に並べることで、常に達成されます。",
+      "各値の出現回数を数えます（ソートしてグループ化するか、ハッシュマップを使います）。答えは 1 に、最大値を除くすべての値についての、出現回数と 2 の小さいほうの合計を足したものです。"
+    ],
+    "ko": [
+      "엄격하게 증가하는 부분에서는 각 값이 최대 한 번만 나타나고, 엄격하게 감소하는 부분도 마찬가지입니다. 꼭대기는 두 부분이 공유하므로 한 번만 나타납니다.",
+      "따라서 최댓값이 아닌 모든 값은 쪽마다 한 번씩 최대 두 번 쓸 수 있고, 최댓값은 꼭대기로 한 번만 쓸 수 있습니다. 이 상한은 최댓값을 꼭대기에 두고, 더 작은 값의 한 개씩을 왼쪽에 오름차순으로, 두 번째 개수가 있으면 오른쪽에 내림차순으로 배치하면 항상 달성됩니다.",
+      "각 값의 등장 횟수를 세세요(정렬 후 그룹화하거나 해시 맵을 사용). 답은 1에, 최댓값을 제외한 모든 값에 대해 개수와 2 중 작은 값을 더한 합을 더한 것입니다."
+    ],
+    "vi": [
+      "Trong phần tăng nghiêm ngặt mỗi giá trị xuất hiện nhiều nhất một lần, và phần giảm nghiêm ngặt cũng vậy; đỉnh được hai phần dùng chung và chỉ xuất hiện một lần.",
+      "Vì vậy mọi giá trị khác giá trị lớn nhất có thể dùng tối đa hai lần, mỗi bên một lần, còn giá trị lớn nhất chỉ một lần làm đỉnh; cận này luôn đạt được bằng cách lấy giá trị lớn nhất làm đỉnh, một bản sao của mỗi giá trị nhỏ hơn tăng dần ở bên trái và bản sao thứ hai, nếu có, giảm dần ở bên phải.",
+      "Đếm số lần xuất hiện của mỗi giá trị (sắp xếp rồi nhóm, hoặc dùng bảng băm); đáp án là 1 cộng tổng, trên mọi giá trị trừ giá trị lớn nhất, của số nhỏ hơn giữa số lần xuất hiện và 2."
     ]
   },
   "explanationEn": "## Approach\n\nThe maximum value can be used only once, at the peak, and every other value can appear at most once on each side. So the answer is 1 plus the sum of min(frequency,2) over the non-maximum values.\n\n## Correctness\n\nA value can appear at most once on a strictly monotonic side, and the maximum can only be the single peak, which gives this upper bound. Choosing the maximum as the peak, placing one copy of each smaller value in ascending order on the left and, if there is a second copy, in descending order on the right reaches the bound exactly.\n\n## Complexity\n\nExpected time O(N), space O(number of distinct values)."

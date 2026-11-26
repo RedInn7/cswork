@@ -13,6 +13,21 @@
       "An item's final price depends only on its last point assignment and on all global floors that come after it; earlier operations are overwritten.",
       "Process the operations backwards while tracking the largest floor seen among later operations; the first point assignment to an index met in reverse is its last one, so its final price is max(assigned value, current largest floor), and later-met (earlier) assignments to it are ignored.",
       "Read all operations; set floor = 0 and mark every answer as undecided; walk from the last operation to the first: for type 2 raise floor with v, for type 1 on an undecided index set its answer to max(v, floor); finally set every still-undecided index to max(initial price, floor) and print the array in order."
+    ],
+    "ja": [
+      "商品の最終価格は、最後の点代入と、それ以降のすべての全体下限だけで決まります。それより前の操作は上書きされます。",
+      "操作を後ろから処理しながら、後の操作で見た下限の最大値を持ちます。逆順で最初に出会う点代入がその添字の最後の代入なので、最終価格は max(代入値, 現在の最大下限) です。それより後に（つまり前の操作として）出会う同じ添字への代入は無視します。",
+      "すべての操作を読み、floor = 0 とし、すべての答えを未確定にします。最後の操作から最初の操作へ向かって、タイプ 2 なら v で floor を引き上げ、タイプ 1 で添字が未確定なら答えを max(v, floor) に設定します。最後に、まだ未確定の添字を max(初期価格, floor) に設定し、配列を順に出力します。"
+    ],
+    "ko": [
+      "상품의 최종 가격은 마지막 개별 설정과 그 이후에 오는 모든 전체 최저가에만 의존하며, 그보다 앞선 연산은 모두 덮어써집니다.",
+      "연산을 뒤에서부터 처리하면서 이후 연산들에서 본 가장 큰 최저가를 추적합니다. 거꾸로 훑을 때 어떤 인덱스에 대한 개별 설정을 처음 만나면 그것이 마지막 설정이므로 최종 가격은 max(설정값, 현재 가장 큰 최저가)가 되고, 이후에 만나는(시간상 앞선) 설정은 무시합니다.",
+      "모든 연산을 읽고 floor = 0으로 두고 모든 답을 미결정으로 표시합니다. 마지막 연산부터 첫 연산까지 거꾸로 훑으며, 유형 2이면 v로 floor를 갱신하고, 유형 1이고 해당 인덱스가 미결정이면 답을 max(v, floor)로 정합니다. 마지막으로 여전히 미결정인 모든 인덱스를 max(초기 가격, floor)로 정하고 배열을 순서대로 출력합니다."
+    ],
+    "vi": [
+      "Giá cuối cùng của một mặt hàng chỉ phụ thuộc vào lần gán điểm cuối cùng của nó và mọi sàn toàn cục xuất hiện sau đó; các thao tác trước bị ghi đè.",
+      "Xử lý các thao tác theo chiều ngược lại và theo dõi sàn lớn nhất đã thấy trong các thao tác phía sau; phép gán điểm đầu tiên gặp phải cho một chỉ số khi đi ngược chính là phép gán cuối cùng của nó, nên giá cuối của nó là max(giá trị gán, sàn lớn nhất hiện tại), còn các phép gán gặp sau (tức xảy ra trước) cho chỉ số đó bị bỏ qua.",
+      "Đọc tất cả thao tác; đặt floor = 0 và đánh dấu mọi đáp án là chưa xác định; đi từ thao tác cuối về thao tác đầu: với loại 2 thì nâng floor bằng v, với loại 1 trên một chỉ số chưa xác định thì đặt đáp án của nó là max(v, floor); cuối cùng đặt mọi chỉ số còn chưa xác định thành max(giá ban đầu, floor) và in mảng theo thứ tự."
     ]
   },
   "explanationEn": "## Approach\n\nProcess in reverse, tracking the maximum of the later global floors; the first time you meet a point assignment for an index, its final value is fixed as max(assigned value, later floor), and earlier assignments are ignored. Indices never assigned use their initial price.\n\n## Correctness\n\nThe last point assignment overrides every earlier operation on that item, and the floor operations after it are equivalent to taking the maximum of all those lower bounds. The first assignment met in reverse is exactly the last assignment, and the maintained maximum is exactly the later floor, so every item's result is correct.\n\n## Complexity\n\nTime O(n+q), space O(n+q)."

@@ -13,6 +13,21 @@
       "Only the sum of the three values matters, not their original positions, so you can sort first; each triplet is still counted exactly once by its sorted values.",
       "After sorting, fix the smallest value a[i] and run two pointers l and r to its right: if a[i]+a[l]+a[r] ≤ t, then replacing r with any position between l and r also works.",
       "Sort; for each i set l=i+1 and r=n−1; while l<r, if the sum is ≤ t add r−l to the answer and move l right, otherwise move r left. Sums reach about 3×10⁹ and the count can exceed 32 bits, so use 64-bit integers."
+    ],
+    "ja": [
+      "重要なのは 3 つの値の和だけで、元の位置は関係ないので、先にソートできます。それでも各三つ組は、ソート後の値でちょうど 1 回ずつ数えられます。",
+      "ソート後、最小の値 a[i] を固定し、その右に 2 つのポインタ l と r を動かします。a[i]+a[l]+a[r] ≤ t なら、r を l と r の間の任意の位置に置き換えても成り立ちます。",
+      "ソートします。各 i について l=i+1、r=n−1 とし、l<r の間、和が t 以下なら答えに r−l を加えて l を右に動かし、そうでなければ r を左に動かします。和は約 3×10⁹ に達し、個数は 32 ビットを超えうるので、64 ビット整数を使います。"
+    ],
+    "ko": [
+      "세 값의 합만 중요하고 원래 위치는 중요하지 않으므로 먼저 정렬할 수 있습니다. 각 삼중쌍은 정렬된 값 기준으로 여전히 정확히 한 번 세어집니다.",
+      "정렬한 뒤 가장 작은 값 a[i]를 고정하고 그 오른쪽에서 두 포인터 l과 r을 움직입니다. a[i]+a[l]+a[r] ≤ t이면 r을 l과 r 사이의 어떤 위치로 바꾸어도 조건을 만족합니다.",
+      "정렬하고, 각 i에 대해 l=i+1, r=n−1로 둡니다. l<r인 동안 합이 ≤ t이면 답에 r−l을 더하고 l을 오른쪽으로 옮기며, 아니면 r을 왼쪽으로 옮깁니다. 합은 약 3×10⁹까지 가고 개수는 32비트를 넘을 수 있으므로 64비트 정수를 사용합니다."
+    ],
+    "vi": [
+      "Chỉ tổng của ba giá trị là quan trọng, không phải vị trí ban đầu của chúng, nên bạn có thể sắp xếp trước; mỗi bộ ba vẫn được đếm đúng một lần theo các giá trị đã sắp xếp.",
+      "Sau khi sắp xếp, cố định giá trị nhỏ nhất a[i] và chạy hai con trỏ l và r ở bên phải nó: nếu a[i]+a[l]+a[r] ≤ t thì thay r bằng bất kỳ vị trí nào giữa l và r cũng thỏa.",
+      "Sắp xếp; với mỗi i đặt l=i+1 và r=n−1; trong khi l<r, nếu tổng ≤ t thì cộng r−l vào đáp án và dời l sang phải, ngược lại dời r sang trái. Các tổng lên tới khoảng 3×10⁹ và số đếm có thể vượt 32 bit, nên dùng số nguyên 64-bit."
     ]
   },
   "explanationEn": "## Approach\n\nSort the array, fix i, and scan the remaining elements with two pointers l and r. If the sum is ≤ t, every position between l and r can serve as the third element, so add r−l; otherwise decrease r.\n\n## Correctness\n\nAfter sorting, when a[i]+a[l]+a[r] ≤ t holds, it also holds for every k in (l, r], and each such k forms a different triplet. If the sum is too large, only shrinking the largest element can make it feasible again. Every i<j<k is counted exactly once.\n\n## Complexity\n\nTime O(n²), space O(n); the site adds n ≤ 2500."

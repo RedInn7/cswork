@@ -13,6 +13,21 @@
       "With n <= 1000, O(n^2) is fine but enumerating all triplets in O(n^3) is too slow; whether three numbers sum to a multiple of d depends only on their remainders modulo d.",
       "Fix the middle index j and enumerate k to its right; then the remainder that i must have on the left is uniquely (-arr[j] - arr[k]) mod d. If you know how many times each remainder occurs to the left of j, a single table lookup gives the number of valid i.",
       "Keep a count array of length d, initially holding the remainder of arr[0]; sweep j from 1 to n-2, and for each k > j add the count of the required remainder to the answer; after finishing j, add arr[j]'s remainder to the array. Normalize negative remainders into 0..d-1 and keep the answer in a 64-bit integer."
+    ],
+    "ja": [
+      "n <= 1000 なら O(n^2) で十分ですが、すべての 3 つ組を O(n^3) で列挙するのは遅すぎます。3 つの数の和が d の倍数になるかどうかは、d を法とした剰余だけで決まります。",
+      "中央の添字 j を固定し、その右側の k を列挙します。すると左側の i が持つべき剰余は (-arr[j] - arr[k]) mod d に一意に決まります。j の左側に各剰余が何回現れるかが分かっていれば、表を 1 回引くだけで有効な i の個数が求まります。",
+      "長さ d の個数配列を持ち、最初は arr[0] の剰余を入れておきます。j を 1 から n-2 まで動かし、各 k > j について必要な剰余の個数を答えに加えます。j の処理が終わったら、arr[j] の剰余を配列に加えます。負の剰余は 0..d-1 に正規化し、答えは 64 ビット整数で保持してください。"
+    ],
+    "ko": [
+      "n <= 1000이므로 O(n^2)은 충분하지만 모든 삼중쌍을 O(n^3)으로 열거하면 너무 느립니다. 세 수의 합이 d의 배수인지는 d로 나눈 나머지에만 의존합니다.",
+      "가운데 인덱스 j를 고정하고 그 오른쪽의 k를 열거하면, 왼쪽의 i가 가져야 하는 나머지는 (-arr[j] - arr[k]) mod d로 유일하게 정해집니다. j의 왼쪽에 각 나머지가 몇 번 나타났는지 알고 있으면 표를 한 번 조회하는 것만으로 유효한 i의 수를 얻습니다.",
+      "길이 d의 개수 배열을 유지하고 처음에는 arr[0]의 나머지를 넣어 둡니다. j를 1부터 n-2까지 움직이며 각 k > j에 대해 필요한 나머지의 개수를 답에 더하고, j를 끝낸 뒤 arr[j]의 나머지를 배열에 추가합니다. 음수 나머지는 0..d-1로 정규화하고 답은 64비트 정수로 유지합니다."
+    ],
+    "vi": [
+      "Với n <= 1000, O(n^2) là đủ nhưng duyệt mọi bộ ba trong O(n^3) thì quá chậm; việc ba số có tổng là bội của d hay không chỉ phụ thuộc vào số dư của chúng modulo d.",
+      "Cố định chỉ số giữa j và duyệt k ở bên phải nó; khi đó số dư mà i bên trái phải có được xác định duy nhất là (-arr[j] - arr[k]) mod d. Nếu biết mỗi số dư xuất hiện bao nhiêu lần ở bên trái j, chỉ một lần tra bảng là cho ra số i hợp lệ.",
+      "Giữ một mảng đếm độ dài d, ban đầu chứa số dư của arr[0]; quét j từ 1 đến n-2, và với mỗi k > j cộng số đếm của số dư cần thiết vào đáp án; sau khi xong j, thêm số dư của arr[j] vào mảng. Chuẩn hóa các số dư âm về 0..d-1 và giữ đáp án trong số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nCount the first two positions by remainder; modulo d, the third remainder is then uniquely determined. Use combinatorial counting to exclude repeated indices.\n\n## Proof of correctness\n\nWhen the middle index j is fixed, the frequency array records only the remainders of the elements to the left of j. For each k on the right, the only left remainder needed is -arr[j]-arr[k] (mod d), and a table lookup counts all valid i. Each contribution of a pair j,k corresponds to unique increasing triplets, so the total is exactly the answer.\n\n## Complexity\n\nO(n^2+d), space O(d)."

@@ -13,6 +13,21 @@
       "No character of the substring may appear outside it, so the substring must start at the first occurrence of its first character; there are at most 26 possible left ends.",
       "Fix a left end and extend to the right: once you meet a character whose first occurrence lies before the left end, this left end can never work, so stop; otherwise track the furthest last occurrence among the characters included so far, and whenever the right end reaches it you have a closed valid substring.",
       "Record each letter's first and last index. For each first-occurrence index left, set end = left and move right from left: stop if the character's first occurrence is before left; raise end to that character's last occurrence; if right >= end and the length right - left + 1 is less than n, update the answer with that length. After all left ends, print the maximum, or 0 if there was none."
+    ],
+    "ja": [
+      "部分文字列のどの文字も外側に現れてはならないので、部分文字列は先頭文字の初出位置から始まる必要があります。左端の候補は高々 26 個です。",
+      "左端を固定して右へ伸ばします。初出が左端より前にある文字に出会ったら、その左端は決して使えないので打ち切ります。そうでなければ、これまでに含めた文字の最終出現位置のうち最も右のものを追跡し、右端がそこに届くたびに、閉じた有効な部分文字列が得られます。",
+      "各文字の初出と最終出現のインデックスを記録します。初出インデックスである各 left について end = left とし、left から右へ進みます。その文字の初出が left より前なら打ち切り、end をその文字の最終出現位置まで引き上げ、right >= end かつ長さ right - left + 1 が n 未満なら、その長さで答えを更新します。すべての左端を試した後、最大値を出力し、1 つもなければ 0 を出力します。"
+    ],
+    "ko": [
+      "부분 문자열의 어떤 문자도 바깥에 나타나서는 안 되므로, 부분 문자열은 첫 문자의 첫 등장 위치에서 시작해야 합니다. 따라서 왼쪽 끝의 후보는 최대 26개입니다.",
+      "왼쪽 끝을 고정하고 오른쪽으로 확장합니다. 첫 등장 위치가 왼쪽 끝보다 앞에 있는 문자를 만나면 이 왼쪽 끝은 절대 성립할 수 없으므로 중단합니다. 그렇지 않으면 지금까지 포함한 문자들의 마지막 등장 위치 중 가장 먼 것을 추적하고, 오른쪽 끝이 그 위치에 도달할 때마다 조건을 만족하는 닫힌 부분 문자열이 됩니다.",
+      "각 문자의 첫 등장 인덱스와 마지막 등장 인덱스를 기록합니다. 각 첫 등장 인덱스 left에 대해 end = left로 두고 left부터 오른쪽으로 이동합니다. 해당 문자의 첫 등장 위치가 left보다 앞이면 중단하고, end를 그 문자의 마지막 등장 위치까지 올립니다. right >= end이고 길이 right - left + 1이 n보다 작으면 그 길이로 답을 갱신합니다. 모든 왼쪽 끝을 처리한 뒤 최댓값을 출력하고, 하나도 없으면 0을 출력합니다."
+    ],
+    "vi": [
+      "Không ký tự nào của xâu con được xuất hiện bên ngoài nó, nên xâu con phải bắt đầu tại lần xuất hiện đầu tiên của ký tự đầu của nó; do đó có tối đa 26 đầu trái khả dĩ.",
+      "Cố định một đầu trái rồi mở rộng sang phải: ngay khi gặp một ký tự có lần xuất hiện đầu tiên nằm trước đầu trái, đầu trái này không bao giờ dùng được nên dừng; nếu không thì theo dõi lần xuất hiện cuối cùng xa nhất trong các ký tự đã đưa vào, và mỗi khi đầu phải chạm tới vị trí đó ta có một xâu con đóng hợp lệ.",
+      "Ghi lại chỉ số đầu tiên và cuối cùng của mỗi chữ cái. Với mỗi chỉ số xuất hiện đầu tiên left, đặt end = left và di chuyển sang phải từ left: dừng nếu lần xuất hiện đầu tiên của ký tự nằm trước left; nâng end lên lần xuất hiện cuối cùng của ký tự đó; nếu right >= end và độ dài right - left + 1 nhỏ hơn n thì cập nhật đáp án bằng độ dài đó. Sau khi duyệt hết các đầu trái, in ra giá trị lớn nhất, hoặc 0 nếu không có."
     ]
   },
   "explanationEn": "## Approach\n\nThe left end can only be the first occurrence of some character, so there are at most 26 choices. Scan to the right from each of them and stop when a character whose first occurrence is earlier than the left end appears; maintain the furthest last occurrence of the characters seen, and when the right end covers all of them a closed segment is obtained. Exclude the whole string and take the maximum.\n\n## Proof of correctness\n\nThe character at a valid left end cannot appear outside, so the left end must be its first occurrence. If the scan includes a character that appeared earlier, this left end cannot become valid however far it is extended. Otherwise it suffices that the last occurrences of all included characters fall inside the segment, i.e. that the right end reaches their largest last position; this condition is necessary and sufficient. Enumerating all possible left ends and right ends and taking the maximum misses no solution.\n\n## Complexity\n\nTime O(26n), space O(n) including the input, auxiliary O(26)."

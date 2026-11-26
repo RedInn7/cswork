@@ -13,6 +13,21 @@
       "A pair is valid exactly when the shorter (or equal) word is a prefix of the other. After sorting lexicographically, all words that start with a given word form a contiguous block right after it.",
       "Every lowercase letter is smaller than the character '{', so the strings with prefix word lie exactly in the range [word, word + '{'). Binary search the insertion point of word + '{' in the sorted array to find the right end of that block.",
       "Sort all words. For each index i, binary search the first position p whose word is not less than w[i] + '{'; the block holds p - i - 1 words after i, and you add that to the answer (equal words fall into the block too and are counted per index). The answer can be large, so use a 64-bit integer."
+    ],
+    "ja": [
+      "ペアが有効なのは、短い方（または等しい方）の単語がもう一方の接頭辞であるときに限ります。辞書順に並べ替えた後、ある単語で始まるすべての単語は、その直後に連続したブロックを成します。",
+      "小文字はすべて文字 '{' より小さいので、接頭辞が word である文字列は、範囲 [word, word + '{') にちょうど収まります。並べ替えた配列で word + '{' の挿入位置を二分探索すると、そのブロックの右端が求まります。",
+      "すべての単語を並べ替えます。各添字 i について、w[i] + '{' 以上となる最初の位置 p を二分探索します。ブロックには i より後ろに p - i - 1 個の単語があるので、それを答えに加えます（等しい単語もブロックに入り、添字ごとに数えられます）。答えは大きくなりうるので、64 ビット整数を使ってください。"
+    ],
+    "ko": [
+      "쌍이 유효한 것은 더 짧은(또는 같은) 단어가 다른 단어의 접두사일 때뿐입니다. 사전순으로 정렬하면 주어진 단어로 시작하는 모든 단어는 그 바로 뒤에서 연속된 블록을 이룹니다.",
+      "모든 소문자는 문자 '{'보다 작으므로, 접두사 word를 가진 문자열은 정확히 구간 [word, word + '{')에 놓입니다. 정렬된 배열에서 word + '{'의 삽입 위치를 이분 탐색하면 그 블록의 오른쪽 끝을 구할 수 있습니다.",
+      "모든 단어를 정렬합니다. 각 인덱스 i에 대해 w[i] + '{'보다 작지 않은 첫 위치 p를 이분 탐색하면, 블록에서 i 뒤에 있는 단어는 p - i - 1개이므로 이를 답에 더합니다(같은 단어도 블록에 들어가며 인덱스별로 셉니다). 답이 커질 수 있으니 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Một cặp hợp lệ đúng khi từ ngắn hơn (hoặc bằng) là tiền tố của từ kia. Sau khi sắp xếp theo thứ tự từ điển, mọi từ bắt đầu bằng một từ cho trước tạo thành một khối liên tục ngay sau nó.",
+      "Mọi chữ cái thường đều nhỏ hơn ký tự '{', nên các xâu có tiền tố word nằm đúng trong khoảng [word, word + '{'). Tìm kiếm nhị phân điểm chèn của word + '{' trong mảng đã sắp xếp để tìm đầu mút phải của khối đó.",
+      "Sắp xếp mọi từ. Với mỗi chỉ số i, tìm kiếm nhị phân vị trí đầu tiên p có từ không nhỏ hơn w[i] + '{'; khối chứa p - i - 1 từ đứng sau i, và bạn cộng giá trị đó vào đáp án (các từ bằng nhau cũng rơi vào khối và được đếm theo từng chỉ số). Đáp án có thể lớn, nên dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nSort lexicographically. Taking each word as the earlier member of a pair, all words that start with it form a contiguous range, whose right end is the insertion point of the word followed by the character { found by binary search; only words after the current position are counted.\n\n## Correctness\n\nEvery lowercase letter is smaller than {, so the strings with prefix word lie exactly in [word, word+{). Every valid unordered pair appears exactly once, in the query of the shorter word (or the earlier of two equal words) after sorting, and invalid pairs never fall inside this prefix range.\n\n## Complexity\n\nTime O(total characters · log n), space O(total characters + n)."

@@ -13,6 +13,21 @@
       "Words do not affect each other, so each word can be judged independently; upper and lower case count as the same letter, so normalize every letter to lower (or upper) case before counting.",
       "For each word, count letters in an array of size 26; as soon as some letter reaches 3 occurrences the word qualifies, and it is counted only once no matter how many letters reach that threshold.",
       "Split the input on whitespace into words and set the answer to 0; for each word, reset the counts, count each character after lowercasing it, and mark a hit once any count reaches 3; add one to the answer for each hit word. Print the answer at the end."
+    ],
+    "ja": [
+      "単語どうしは互いに影響しないので、各単語を独立に判定できます。大文字と小文字は同じ文字として扱うため、数える前にすべての文字を小文字（または大文字）にそろえます。",
+      "各単語について、サイズ 26 の配列で文字を数えます。ある文字が3回に達した時点でその単語は条件を満たし、何種類の文字が閾値に達しても1回だけ数えます。",
+      "入力を空白で単語に分割し、答えを 0 にします。単語ごとにカウントをリセットし、各文字を小文字にしてから数え、どれかのカウントが 3 に達したらヒットとします。ヒットした単語ごとに答えに 1 を足し、最後に答えを出力します。"
+    ],
+    "ko": [
+      "단어끼리는 서로 영향을 주지 않으므로 각 단어를 독립적으로 판단할 수 있습니다. 대문자와 소문자는 같은 글자로 취급하므로, 세기 전에 모든 글자를 소문자(또는 대문자)로 통일하세요.",
+      "각 단어마다 크기 26의 배열로 글자 수를 셉니다. 어떤 글자가 3번에 도달하는 순간 그 단어는 조건을 만족하며, 기준에 도달한 글자가 여러 개여도 단어는 한 번만 셉니다.",
+      "입력을 공백 기준으로 나누어 단어 목록을 만들고 답을 0으로 둡니다. 각 단어마다 카운트를 초기화하고 모든 문자를 소문자로 바꿔 세다가, 어떤 카운트가 3에 도달하면 해당 단어를 조건 충족으로 표시합니다. 충족한 단어마다 답에 1을 더하고 마지막에 답을 출력합니다."
+    ],
+    "vi": [
+      "Các từ không ảnh hưởng lẫn nhau nên có thể xét độc lập từng từ; chữ hoa và chữ thường là cùng một chữ cái, vì vậy hãy chuẩn hóa mọi chữ cái về chữ thường (hoặc chữ hoa) trước khi đếm.",
+      "Với mỗi từ, đếm chữ cái bằng một mảng kích thước 26; ngay khi có chữ cái nào đạt 3 lần xuất hiện thì từ đó thỏa mãn, và chỉ được tính một lần dù có bao nhiêu chữ cái đạt ngưỡng đó.",
+      "Tách đầu vào theo khoảng trắng thành các từ và đặt đáp án bằng 0; với mỗi từ, đặt lại bộ đếm, đếm từng ký tự sau khi chuyển về chữ thường và đánh dấu khi có bộ đếm nào đạt 3; cộng thêm một vào đáp án cho mỗi từ được đánh dấu. Cuối cùng in đáp án."
     ]
   },
   "explanationEn": "## Approach\n\nFor each word, count letter frequencies ignoring case. If some letter has a frequency of at least 3, the word counts as one.\n\n## Proof of correctness\n\nThe frequency condition is the same as in the statement, and each word contributes only one boolean count, so each word contributes at most 1; summing over all words gives the answer.\n\n## Complexity\n\nTime O(L), space O(1) for the alphabet.\n\n## Source notes\n\nThis site supplied a deterministic standard input/output protocol. In upstream problem 9, the dense-arrival example omitted the completion time of one admitted guest; this site corrected it to 3301 according to the explicit 300-second service and queue rules, and states this truthfully in the source evidence."

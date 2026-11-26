@@ -13,6 +13,21 @@
       "First compute k, the smallest number of occurrences among the players that appear in the whole array. The window must have a maximum frequency of exactly k; relax this to every player appearing at most k times.",
       "The condition that every frequency is at most k is monotone over windows: when the right end moves right, the left end only moves right, so a sliding window finds the longest valid window. Then argue that the longest window always contains a player with frequency exactly k.",
       "Count all values to get k; slide a window with a second counter: after adding a[right], while its count exceeds k, remove a[left] and advance left; update the answer with right-left+1 at every step; print the maximum length."
+    ],
+    "ja": [
+      "まず、配列全体に現れるプレイヤーの出現回数の最小値 k を求めます。ウィンドウでは最大頻度がちょうど k である必要があります。これを、すべてのプレイヤーの出現が高々 k 回という条件に緩めます。",
+      "すべての頻度が k 以下という条件はウィンドウに対して単調です。右端が右へ進むとき左端は右へしか動かないので、スライディングウィンドウで最長の有効ウィンドウを求められます。そのうえで、最長のウィンドウには必ず頻度がちょうど k のプレイヤーがいることを論証します。",
+      "すべての値を数えて k を求めます。2 つ目のカウンタでウィンドウをスライドさせ、a[right] を加えた後、その回数が k を超える間は a[left] を取り除いて left を進めます。毎ステップで right-left+1 で答えを更新し、最大の長さを出力します。"
+    ],
+    "ko": [
+      "먼저 k, 즉 전체 배열에 나타나는 플레이어들의 등장 횟수 중 최솟값을 구합니다. 윈도우의 최대 빈도가 정확히 k여야 하는데, 이를 모든 플레이어가 최대 k번 나타나는 조건으로 완화합니다.",
+      "모든 빈도가 k 이하라는 조건은 윈도우에 대해 단조적입니다. 오른쪽 끝이 오른쪽으로 움직일 때 왼쪽 끝은 오른쪽으로만 움직이므로 슬라이딩 윈도우로 가장 긴 유효 윈도우를 찾을 수 있습니다. 이후 가장 긴 윈도우에는 항상 빈도가 정확히 k인 플레이어가 있음을 논증합니다.",
+      "모든 값을 세어 k를 구하고, 두 번째 카운터로 윈도우를 슬라이딩합니다. a[right]를 추가한 뒤 그 횟수가 k를 넘는 동안 a[left]를 제거하고 left를 전진시킵니다. 매 단계에서 right-left+1로 답을 갱신하고, 최대 길이를 출력합니다."
+    ],
+    "vi": [
+      "Trước hết tính k, số lần xuất hiện nhỏ nhất trong số các người chơi xuất hiện trong toàn mảng. Cửa sổ phải có tần suất lớn nhất đúng bằng k; hãy nới điều kiện này thành mỗi người chơi xuất hiện tối đa k lần.",
+      "Điều kiện mọi tần suất đều tối đa k có tính đơn điệu trên các cửa sổ: khi đầu phải dịch sang phải thì đầu trái chỉ dịch sang phải, nên cửa sổ trượt tìm được cửa sổ hợp lệ dài nhất. Sau đó chứng minh rằng cửa sổ dài nhất luôn chứa một người chơi có tần suất đúng bằng k.",
+      "Đếm mọi giá trị để có k; trượt một cửa sổ với bộ đếm thứ hai: sau khi thêm a[right], trong khi số đếm của nó vượt quá k, loại bỏ a[left] và tăng left; cập nhật đáp án bằng right-left+1 ở mỗi bước; in độ dài lớn nhất."
     ]
   },
   "explanationEn": "## Approach\n\nUse a sliding window that keeps every player's count at most k. After adding a new player, if its count exceeds k, move the left end until the window is valid again, and record the longest window.\n\n## Why it is correct\n\nFor the condition \"every frequency <= k\", the left end of a valid window can only move monotonically, so the sliding window finds the maximum length. The maximum window must contain a player whose frequency is exactly k: otherwise, if it is not the whole array, it could be extended further; if it is the whole array, at least one player's global frequency is k. Therefore this maximum length satisfies the equality required by the original problem.\n\n## Complexity\n\nTime O(n), extra space O(n)."

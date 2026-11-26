@@ -13,6 +13,21 @@
       "Adding as floating point and then flooring is risky: a sum that is exactly an integer, like 0.10000001 + 0.89999999, may come out slightly below 1 because of rounding error.",
       "The inputs have at most 8 decimal places, so multiplying each by 10^8 gives an exact integer; adding the two integers and dividing by 10^8 with integer division gives the floor of the original sum.",
       "Split each number at the decimal point into an integer part and a fractional part, pad the fractional part on the right with zeros to 8 digits (treat it as 0 when there is no point), and form integer part times 10^8 plus fractional part. Add the two values and print the sum divided by 10^8 with integer division. Values stay below about 2x10^14, so use 64-bit integers."
+    ],
+    "ja": [
+      "浮動小数点で足してから切り捨てるのは危険です。0.10000001 + 0.89999999 のように和がちょうど整数になる場合、丸め誤差のために 1 をわずかに下回ることがあります。",
+      "入力の小数点以下は高々 8 桁なので、それぞれに 10^8 を掛ければ正確な整数になります。2つの整数を足して 10^8 で整数除算すれば、元の和の切り捨てが得られます。",
+      "各数を小数点で整数部と小数部に分け、小数部は右側を 0 で 8 桁まで埋め（小数点がなければ 0 として扱う）、整数部 × 10^8 + 小数部 を作ります。2つの値を足し、その和を 10^8 で整数除算した値を出力します。値は約 2x10^14 未満なので、64 ビット整数を使ってください。"
+    ],
+    "ko": [
+      "부동소수점으로 더한 뒤 내림하는 것은 위험합니다. 0.10000001 + 0.89999999처럼 합이 정확히 정수여도 반올림 오차 때문에 1보다 조금 작게 나올 수 있습니다.",
+      "입력의 소수점 아래는 최대 8자리이므로 각각에 10^8을 곱하면 정확한 정수가 됩니다. 두 정수를 더하고 10^8로 정수 나눗셈하면 원래 합의 내림이 됩니다.",
+      "각 수를 소수점에서 정수부와 소수부로 나누고, 소수부를 오른쪽에 0으로 채워 8자리로 맞춥니다(소수점이 없으면 0으로 취급). 정수부 곱하기 10^8 더하기 소수부로 값을 만듭니다. 두 값을 더해 10^8로 정수 나눗셈한 결과를 출력합니다. 값은 약 2x10^14 미만이므로 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Cộng bằng số thực dấu phẩy động rồi lấy phần nguyên là rủi ro: một tổng chính xác là số nguyên, như 0.10000001 + 0.89999999, có thể ra hơi nhỏ hơn 1 do sai số làm tròn.",
+      "Đầu vào có tối đa 8 chữ số thập phân, nên nhân mỗi số với 10^8 cho ra một số nguyên chính xác; cộng hai số nguyên rồi chia nguyên cho 10^8 cho ra phần nguyên của tổng ban đầu.",
+      "Tách mỗi số tại dấu thập phân thành phần nguyên và phần thập phân, đệm bên phải phần thập phân bằng các chữ số 0 cho đủ 8 chữ số (coi là 0 khi không có dấu chấm), và tạo phần nguyên nhân 10^8 cộng phần thập phân. Cộng hai giá trị và in tổng chia nguyên cho 10^8. Các giá trị nhỏ hơn khoảng 2x10^14, nên hãy dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nPad each decimal to 8 decimal places and convert it to an integer, add the integers, then divide by 10^8.\n\n## Proof of correctness\n\nAfter multiplying by 10^8, every valid input is an exact integer; adding the integers and then dividing down by 10^8 gives exactly the floor of the original sum, with none of the rounding issues floating point has near integers.\n\n## Complexity\n\nO(input length) time, O(1) numeric space."

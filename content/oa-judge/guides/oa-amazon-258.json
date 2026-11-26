@@ -13,6 +13,21 @@
       "k batches need at least 1+2+...+k = k(k+1)/2 items, and each category gives at most one item per batch, so a category takes part in at most k batches and any stock beyond that is useless.",
       "Add the inventories from small to large: each new category raises the number of buildable batches by at most 1, and whether it does depends only on whether the running total reaches the next triangular number.",
       "Sort the inventories ascending and start with total 0 and k 0; add each inventory to the total, and if total >= (k+1)(k+2)/2, increase k by 1; output k at the end, using 64 bits for the total."
+    ],
+    "ja": [
+      "k 個のバッチには少なくとも 1+2+...+k = k(k+1)/2 個の商品が必要で、各カテゴリは 1 バッチにつき高々 1 個しか出せません。そのためカテゴリが関われるバッチは高々 k 個で、それを超える在庫は役に立ちません。",
+      "在庫を小さい方から大きい方へ加えていきます。新しいカテゴリによって作れるバッチ数が増えるのは高々 1 で、増えるかどうかは、累積合計が次の三角数に達するかどうかだけで決まります。",
+      "在庫を昇順にソートし、合計 0、k を 0 から始めます。各在庫を合計に加え、total >= (k+1)(k+2)/2 なら k を 1 増やします。最後に k を出力します。合計には 64 ビットを使います。"
+    ],
+    "ko": [
+      "k개의 묶음에는 최소 1+2+...+k = k(k+1)/2개의 물품이 필요하고, 각 카테고리는 묶음당 최대 한 개만 내놓을 수 있으므로 한 카테고리는 최대 k개의 묶음에만 참여하며 그 이상의 재고는 쓸모가 없습니다.",
+      "재고를 작은 것부터 큰 것으로 더합니다. 새 카테고리 하나가 만들 수 있는 묶음 수를 늘리는 양은 최대 1이며, 늘어나는지는 누적 총량이 다음 삼각수에 도달하는지에만 달려 있습니다.",
+      "재고를 오름차순으로 정렬하고 total 0, k 0으로 시작합니다. 각 재고를 total에 더하고, total >= (k+1)(k+2)/2이면 k를 1 늘립니다. 마지막에 k를 출력하며 total은 64비트로 계산합니다."
+    ],
+    "vi": [
+      "k lô cần ít nhất 1+2+...+k = k(k+1)/2 món, và mỗi danh mục cho tối đa một món mỗi lô, nên một danh mục tham gia nhiều nhất k lô và lượng tồn kho vượt quá đó là vô ích.",
+      "Cộng các lượng tồn kho từ nhỏ đến lớn: mỗi danh mục mới làm tăng số lô có thể tạo nhiều nhất 1, và việc đó có xảy ra hay không chỉ phụ thuộc vào việc tổng chạy có đạt số tam giác kế tiếp hay không.",
+      "Sắp xếp tồn kho tăng dần và bắt đầu với total 0 và k 0; cộng mỗi lượng tồn kho vào total, và nếu total >= (k+1)(k+2)/2 thì tăng k thêm 1; cuối cùng in k, dùng 64 bit cho total."
     ]
   },
   "explanationEn": "## Approach\n\nAccumulate the inventories in ascending order while maintaining the number of batches k that can be built; each time a new category is included, if the total reaches (k+1)(k+2)/2, increase k by 1. Each category adds at most one batch.\n\n## Proof of correctness\n\nAny k batches can be shrunk by removing items down to sizes 1..k. The cut condition of the bipartite integral flow is: for any j batches, their demand does not exceed the sum over categories of min(inventory, j), and it suffices to check the j batches with the largest demand, D_k(j)=j(2k−j+1)/2. Let k be the old optimum and let the new category have the largest capacity c. The new optimum is at most k+1, because after removing the new category and deleting the smallest batch, every remaining batch still holds at least sizes 1..k. If the total is below the next triangular number, k cannot increase; otherwise, for j≤c the new capacity contributes j, and the old cut condition D_k(j) plus j is exactly D_(k+1)(j) (for j=k+1 the old total demand also holds). For j>c every inventory is ≤c, so the capacity sum is the total, which is at least the next triangular number, so the cut condition also holds. All cut conditions hold, the integral flow guarantees that the new staircase can be built, and induction proves the algorithm.\n\n## Complexity\n\nTime O(n log n), space O(n)."

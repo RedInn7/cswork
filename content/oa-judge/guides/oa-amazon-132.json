@@ -13,6 +13,21 @@
       "Within one batch tasks run in order with positive durations, so the time used so far fully determines how many tasks are done; you only need to track the time accumulated in the current batch.",
       "Take prefix sums of the task durations so that prefix[i] is the moment task i finishes; with accumulated time T, the number of finished tasks is the number of prefixes not exceeding T, found by binary search. When the accumulated time reaches the total, the shift outputs 0, the excess is discarded, the accumulator resets, and the next shift restarts from the first task.",
       "Build prefix and the total duration; set elapsed = 0; for each shift length v: add v to elapsed; if elapsed >= total output 0 and set elapsed = 0; otherwise binary search the number done of prefixes <= elapsed and output n - done. Store times in 64-bit integers."
+    ],
+    "ja": [
+      "1 つのバッチ内では、タスクは正の所要時間で順に実行されるので、それまでに使った時間で、いくつ終わったかが完全に決まります。現在のバッチで累積した時間だけを追跡すれば十分です。",
+      "タスクの所要時間の累積和を取り、prefix[i] をタスク i が終わる時刻とします。累積時間が T のとき、終わったタスクの数は T を超えない prefix の個数で、二分探索で求められます。累積時間が合計に達したら、そのシフトは 0 を出力し、余りを捨て、累積をリセットして、次のシフトは最初のタスクから再開します。",
+      "prefix と合計の所要時間を作り、elapsed = 0 とします。各シフトの長さ v について elapsed に v を加えます。elapsed >= total なら 0 を出力して elapsed = 0 にし、そうでなければ prefix のうち elapsed 以下のものの個数 done を二分探索で求めて n - done を出力します。時間は 64 ビット整数で保持してください。"
+    ],
+    "ko": [
+      "한 배치 안에서 작업은 양의 시간으로 순서대로 실행되므로, 지금까지 쓴 시간만으로 끝난 작업의 수가 완전히 결정됩니다. 현재 배치에서 누적한 시간만 추적하면 됩니다.",
+      "작업 시간의 누적 합을 구해 prefix[i]가 i번째 작업이 끝나는 시각이 되게 합니다. 누적 시간이 T일 때 끝난 작업의 수는 T 이하인 누적 합의 개수이며 이분 탐색으로 구합니다. 누적 시간이 전체에 이르면 그 근무는 0을 출력하고 남는 시간은 버리며 누적값을 초기화하고, 다음 근무는 첫 작업부터 다시 시작합니다.",
+      "prefix와 전체 작업 시간을 만들고 elapsed = 0으로 둡니다. 각 근무 시간 v에 대해 elapsed에 v를 더하고, elapsed >= total이면 0을 출력하고 elapsed = 0으로 둡니다. 그렇지 않으면 prefix <= elapsed인 개수 done을 이분 탐색으로 구해 n - done을 출력합니다. 시간은 64비트 정수로 저장하세요."
+    ],
+    "vi": [
+      "Trong một lô, các nhiệm vụ chạy theo thứ tự với thời lượng dương, nên thời gian đã dùng cho đến giờ xác định hoàn toàn số nhiệm vụ đã xong; chỉ cần theo dõi thời gian tích lũy trong lô hiện tại.",
+      "Lấy tổng tiền tố của thời lượng các nhiệm vụ sao cho prefix[i] là thời điểm nhiệm vụ i hoàn thành; với thời gian tích lũy T, số nhiệm vụ đã xong là số tiền tố không vượt quá T, tìm bằng tìm kiếm nhị phân. Khi thời gian tích lũy đạt tổng, ca đó in ra 0, phần dư bị bỏ, bộ tích lũy được đặt lại, và ca tiếp theo bắt đầu lại từ nhiệm vụ đầu tiên.",
+      "Xây prefix và tổng thời lượng; đặt elapsed = 0; với mỗi độ dài ca v: cộng v vào elapsed; nếu elapsed >= total thì in 0 và đặt elapsed = 0; ngược lại tìm kiếm nhị phân số done các tiền tố <= elapsed và in n - done. Lưu thời gian bằng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nPrefix sums of the task durations record the completion times. Accumulate the time already used in the current batch and binary search the number of completed tasks; when the total duration is reached, output 0 and reset to zero, preparing the restart for the next shift.\n\n## Correctness\n\nWithin a batch the tasks run in order and every duration is positive, so the accumulated time reaches a given prefix if and only if the first that many tasks are complete. Binary search counts the prefixes not exceeding the current time, which gives the number of completed tasks. When the whole batch is reached, the excess is discarded and the state is reset as the source examples show; in all other shifts the time keeps accumulating, preserving the progress invariant.\n\n## Complexity\n\nTime O(n + m log n), space O(n+m)."

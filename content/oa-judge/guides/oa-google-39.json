@@ -13,6 +13,21 @@
       "Each step needs the longest dictionary entry matching at the current position, and every entry that matches there lies on one path: walking down the text characters meets all of them.",
       "Build a trie of the dictionary where each terminal node keeps only the first identifier given. Walk down the trie from the current position and remember the last terminal node passed: that is the longest match. Without a match, output the current character and advance by one.",
       "Insert every entry and write its identifier only if the terminal node has none yet; with i = 0, loop: walk from the root along text[i..], recording the identifier and end position at each terminal node; if one was found output that identifier and jump i to the end position, otherwise output text[i] and advance i by one; finally print the number of results followed by the results."
+    ],
+    "ja": [
+      "各ステップで必要なのは、現在位置で一致する最長の辞書項目です。そこで一致するすべての項目は 1 本の経路上にあるので、テキストの文字に沿って下りれば、すべてに出会えます。",
+      "各終端ノードに最初に与えられた識別子だけを保持する、辞書の Trie を作ります。現在位置から Trie を下り、最後に通過した終端ノードを覚えておきます。それが最長の一致です。一致がなければ、現在の文字を出力して 1 つ進みます。",
+      "すべての項目を挿入し、終端ノードにまだ識別子がない場合にのみ識別子を書き込みます。i = 0 から始めてループします。根から text[i..] に沿って下り、終端ノードごとに識別子と終了位置を記録します。見つかれば、その識別子を出力して i を終了位置へ進め、見つからなければ text[i] を出力して i を 1 つ進めます。最後に、結果の個数に続けて結果を出力します。"
+    ],
+    "ko": [
+      "매 단계에서 현재 위치에 일치하는 가장 긴 사전 항목이 필요하며, 거기서 일치하는 모든 항목은 한 경로 위에 있습니다. 텍스트의 문자를 따라 내려가면 그 모두를 만납니다.",
+      "각 종료 노드가 처음 주어진 식별자만 유지하는 사전의 트라이를 만듭니다. 현재 위치에서 트라이를 내려가며 마지막으로 지나친 종료 노드를 기억하면 그것이 가장 긴 일치입니다. 일치가 없으면 현재 문자를 출력하고 한 칸 전진합니다.",
+      "모든 항목을 삽입하되, 종료 노드에 식별자가 아직 없을 때만 씁니다. i = 0에서 시작하여 반복합니다. 루트에서 text[i..]를 따라 내려가며 종료 노드마다 식별자와 끝 위치를 기록하고, 찾았다면 그 식별자를 출력하고 i를 끝 위치로 옮기며, 아니면 text[i]를 출력하고 i를 1 늘립니다. 마지막으로 결과의 수와 결과를 출력합니다."
+    ],
+    "vi": [
+      "Mỗi bước cần mục từ điển dài nhất khớp tại vị trí hiện tại, và mọi mục khớp tại đó nằm trên một đường: đi xuống theo các ký tự của văn bản sẽ gặp tất cả chúng.",
+      "Xây một trie của từ điển trong đó mỗi nút kết thúc chỉ giữ định danh được cho đầu tiên. Đi xuống trie từ vị trí hiện tại và nhớ nút kết thúc cuối cùng đã đi qua: đó là khớp dài nhất. Nếu không khớp, xuất ký tự hiện tại và tiến một.",
+      "Chèn mọi mục và chỉ ghi định danh của nó nếu nút kết thúc chưa có; với i = 0, lặp: đi từ gốc dọc theo text[i..], ghi lại định danh và vị trí kết thúc tại mỗi nút kết thúc; nếu tìm được thì xuất định danh đó và nhảy i đến vị trí kết thúc, ngược lại xuất text[i] và tiến i một; cuối cùng in số kết quả theo sau là các kết quả."
     ]
   },
   "explanationEn": "## Approach\n\nBuild a trie in which every terminal node records only the first identifier. Walk down from the current position, remembering the last terminal node met; if a longest match exists, output it and skip over it, otherwise output the original character.\n\n## Correctness\n\nThe unique path along the text in the trie enumerates every matching entry, and the deepest terminal node corresponds to the longest entry. Only setting the identifier on an empty terminal mark keeps the first mapping. Each step makes the unique output required by the problem and advances correctly, and induction gives the complete greedy segmentation.\n\n## Complexity\n\nTime O(total dictionary length + text length * longest word length), space O(total dictionary length + output size)."

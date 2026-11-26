@@ -13,6 +13,21 @@
       "If the characters switch between 0 and 1 two or more times, you can always pick a subsequence of the form x y x; so in a good string the characters switch at most once.",
       "A good string has one of only two shapes: all 0s then all 1s, or all 1s then all 0s (all-0 and all-1 included). Enumerate the split point k, compute how many flips each of the two targets needs, and take the minimum.",
       "Count all 0s and 1s first; sweep k from 0 to n while keeping p1 and p0, the numbers of 1s and 0s among the first k characters. Turning s into k zeros followed by ones costs p1 + (zeros - p0), and into k ones followed by zeros costs p0 + (ones - p1); take the smaller one at every k and the minimum over all k."
+    ],
+    "ja": [
+      "0 と 1 の切り替わりが 2 回以上あると、x y x の形の部分列を必ず選べます。したがって良い文字列では、切り替わりは高々 1 回です。",
+      "良い文字列の形は 2 通りだけです。0 のあとに 1 が続くもの、または 1 のあとに 0 が続くもの（すべて 0、すべて 1 を含む）です。切り替え位置 k を全探索し、2 つの目標それぞれに必要な反転回数を求めて、その最小値を取ります。",
+      "まず 0 と 1 の総数を数えます。k を 0 から n まで動かしながら、先頭 k 文字に含まれる 1 の個数 p1 と 0 の個数 p0 を保持します。s を「k 個の 0 のあとに 1」にするコストは p1 + (zeros - p0)、「k 個の 1 のあとに 0」にするコストは p0 + (ones - p1) です。各 k で小さいほうを取り、全 k の最小値を答えとします。"
+    ],
+    "ko": [
+      "0과 1 사이에서 문자가 두 번 이상 바뀌면 항상 x y x 형태의 부분 수열을 고를 수 있습니다. 따라서 좋은 문자열에서는 문자가 최대 한 번만 바뀝니다.",
+      "좋은 문자열의 모양은 모두 0 뒤에 모두 1이거나, 모두 1 뒤에 모두 0인 두 가지뿐입니다(모두 0이거나 모두 1인 경우 포함). 분할 지점 k를 열거하여 두 목표 각각에 필요한 뒤집기 횟수를 계산하고 최솟값을 취합니다.",
+      "먼저 0과 1의 전체 개수를 센 뒤, 처음 k개 문자 중 1의 개수 p1과 0의 개수 p0을 유지하며 k를 0부터 n까지 훑습니다. s를 k개의 0 뒤에 1이 오는 형태로 바꾸는 비용은 p1 + (zeros - p0), k개의 1 뒤에 0이 오는 형태로 바꾸는 비용은 p0 + (ones - p1)이며, 각 k에서 더 작은 값을 취하고 모든 k에 대한 최솟값을 구합니다."
+    ],
+    "vi": [
+      "Nếu các ký tự đổi giữa 0 và 1 từ hai lần trở lên, luôn chọn được một dãy con dạng x y x; vì vậy trong một xâu tốt các ký tự đổi giá trị nhiều nhất một lần.",
+      "Một xâu tốt chỉ có một trong hai dạng: toàn 0 rồi toàn 1, hoặc toàn 1 rồi toàn 0 (bao gồm cả toàn 0 và toàn 1). Duyệt điểm chia k, tính số lần đảo cần cho mỗi trong hai đích, rồi lấy giá trị nhỏ nhất.",
+      "Đếm tất cả số 0 và số 1 trước; quét k từ 0 đến n và giữ p1 và p0, là số lượng 1 và 0 trong k ký tự đầu tiên. Biến s thành k số 0 rồi đến các số 1 tốn p1 + (zeros - p0), và thành k số 1 rồi đến các số 0 tốn p0 + (ones - p1); lấy giá trị nhỏ hơn ở mỗi k và lấy nhỏ nhất trên mọi k."
     ]
   },
   "explanationEn": "## Problem\n\nA 01 string is good if it contains neither the subsequence 010 nor the subsequence 101. Each operation flips one character; find the minimum number of operations to make the string good.\n\n## Approach\n\nContaining neither 010 nor 101 as a subsequence is equivalent to the characters switching at most once, that is, having the form 0...01...1 or 1...10...0 (including all 0s and all 1s). Enumerate the split point k (0..n): turning the string into \"first k characters 0, the rest 1\" costs the number of 1s in the prefix plus the number of 0s in the suffix; turning it into \"first k characters 1, the rest 0\" costs the number of 0s in the prefix plus the number of 1s in the suffix. Use prefix counts in a single scan and take the minimum.\n\n## Correctness\n\nIf a string switches two or more times, it necessarily contains a subsequence x y x (x != y), that is, 010 or 101; conversely, with at most one switch, no choice of three positions yields x y x. So the set of good strings is exactly the 2(n+1) target strings above, and the minimum number of flips equals the minimum Hamming distance to these targets.\n\n## Complexity\n\nO(n) time, O(1) extra space.\n\n## Independent verification\n\nThe oracle explicitly builds all 2(n+1) target strings and computes the Hamming distance to each one (O(n^2), small data only); on even smaller data it enumerates all 2^n binary strings, decides which are good with a subsequence check, and takes the minimum distance, directly verifying the \"at most one switch\" equivalence. Every binary string of length 1..10 is enumerated exhaustively and the reference program is actually run on each one. The wrong solutions cover considering only 0*1*, allowing only all-equal strings, counting by the number of switches, and missing the all-0/all-1 targets."

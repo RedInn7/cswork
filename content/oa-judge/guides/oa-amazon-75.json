@@ -13,6 +13,21 @@
       "A city can be covered by only two kinds of units: its own unit staying put, or the unit of the right neighbor moving left. So the decision at the current city depends only on whether the right neighbor moved in.",
       "Run a DP from right to left whose state records only whether the right city's unit moved into the current city. If the current city has a unit, it can stay (the city is certainly covered) or, unless it is the leftmost city, move left (the city is covered only if the right neighbor moved in), passing on whether it moves into the left neighbor.",
       "Let dp[0] and dp[1] be the best population of the processed cities when the right neighbor's unit did not / did move into the current city, starting with dp = [0, -infinity]; for i from n-1 down to 0, try each incoming state: with no unit the only new state is 0; with a unit, staying goes to state 0 and adds this city's population, while moving left (i > 0) goes to state 1 and adds the population only when incoming = 1; print dp[0] at the end."
+    ],
+    "ja": [
+      "ある都市をカバーできるユニットは 2 種類だけです。その都市自身のユニットが留まる場合と、右隣のユニットが左に移動してくる場合です。したがって現在の都市での判断は、右隣が移動してきたかどうかだけに依存します。",
+      "右から左へ DP を行い、状態には、右の都市のユニットが現在の都市に移動してきたかどうかだけを持たせます。現在の都市にユニットがあれば、留まる（都市は確実にカバーされます）か、最左の都市でない限り左へ移動する（右隣が移動してきた場合に限り、都市がカバーされます）かを選べ、左隣に移動するかどうかを引き継ぎます。",
+      "dp[0] と dp[1] を、右隣のユニットが現在の都市に移動してこなかった場合・移動してきた場合の、処理済みの都市の人口の最大値とし、dp = [0, -infinity] から始めます。i を n-1 から 0 まで下げながら、各入力状態を試します。ユニットがなければ、新しい状態は 0 だけです。ユニットがあれば、留まる場合は状態 0 に遷移してこの都市の人口を加え、左に移動する場合 (i > 0) は状態 1 に遷移し、incoming = 1 のときに限り人口を加えます。最後に dp[0] を出力します。"
+    ],
+    "ko": [
+      "도시는 두 종류의 유닛으로만 커버될 수 있습니다. 자기 유닛이 제자리에 머물거나, 오른쪽 이웃의 유닛이 왼쪽으로 이동해 오는 경우입니다. 따라서 현재 도시에서의 결정은 오른쪽 이웃이 이동해 왔는지에만 의존합니다.",
+      "오른쪽에서 왼쪽으로 DP를 수행하되, 상태는 오른쪽 도시의 유닛이 현재 도시로 이동해 왔는지 여부만 기록합니다. 현재 도시에 유닛이 있으면 머물거나(도시는 확실히 커버됨), 가장 왼쪽 도시가 아닌 한 왼쪽으로 이동할 수 있습니다(도시는 오른쪽 이웃이 이동해 왔을 때만 커버됨). 이때 왼쪽 이웃으로 이동하는지 여부를 넘깁니다.",
+      "dp[0]과 dp[1]을 각각 오른쪽 이웃의 유닛이 현재 도시로 이동하지 않았을 때 / 이동했을 때, 처리한 도시들의 최대 인구로 두고 dp = [0, -infinity]에서 시작합니다. i를 n-1부터 0까지 내려가며 각 들어오는 상태를 시도합니다. 유닛이 없으면 새 상태는 0뿐입니다. 유닛이 있으면, 머무르는 경우는 상태 0으로 가며 이 도시의 인구를 더하고, 왼쪽으로 이동하는 경우(i > 0)는 상태 1로 가며 incoming = 1일 때만 인구를 더합니다. 마지막에 dp[0]을 출력합니다."
+    ],
+    "vi": [
+      "Một thành phố chỉ có thể được phủ bởi hai loại đơn vị: đơn vị của chính nó giữ nguyên, hoặc đơn vị của láng giềng bên phải di chuyển sang trái. Vì vậy quyết định tại thành phố hiện tại chỉ phụ thuộc vào việc láng giềng bên phải có di chuyển vào hay không.",
+      "Chạy quy hoạch động từ phải sang trái với trạng thái chỉ ghi lại việc đơn vị của thành phố bên phải có di chuyển vào thành phố hiện tại hay không. Nếu thành phố hiện tại có đơn vị, nó có thể giữ nguyên (thành phố chắc chắn được phủ) hoặc, trừ khi là thành phố ngoài cùng bên trái, di chuyển sang trái (thành phố chỉ được phủ nếu láng giềng bên phải đã di chuyển vào), đồng thời truyền tiếp việc nó có di chuyển vào láng giềng bên trái hay không.",
+      "Gọi dp[0] và dp[1] là dân số tốt nhất của các thành phố đã xử lý khi đơn vị của láng giềng bên phải không / có di chuyển vào thành phố hiện tại, bắt đầu với dp = [0, -infinity]; với i từ n-1 xuống 0, thử từng trạng thái đi vào: nếu không có đơn vị thì trạng thái mới duy nhất là 0; nếu có đơn vị, giữ nguyên đi đến trạng thái 0 và cộng dân số của thành phố này, còn di chuyển sang trái (i > 0) đi đến trạng thái 1 và chỉ cộng dân số khi incoming = 1; cuối cùng in dp[0]."
     ]
   },
   "explanationEn": "## Approach\n\nDo a DP from right to left, where the state says whether the unit of the right neighbor moved into the current city. Enumerate whether the current unit stays or moves left, add the current city's population if it is covered, and pass on whether a unit moves into the left neighbor.\n\n## Proof of correctness\n\nThe current city can only be covered by its own unit or by the right neighbor's unit, and all other decisions on the right can be summarized by the single state of whether a unit moved in. Enumerating the legal moves at the current position counts the city's population only once, at the current position. The leftmost unit cannot move out of range, so the terminal state is correct; all plans are covered and the maximum is taken.\n\n## Complexity\n\nO(n) time; O(n) space to store the populations, and O(1) extra space for the DP states."

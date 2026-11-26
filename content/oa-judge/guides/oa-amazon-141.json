@@ -13,6 +13,21 @@
       "All not-yet-run tasks of one group (same original duration) always share the same current duration; different groups never affect each other, and they do not merge even if their durations later coincide.",
       "So each group needs just one number: how long its next task will take. When a task runs, add that number to the total and then update it to half, rounded up.",
       "Use a hash map next keyed by original duration; for each task's original duration x in order: let value be next[x] (or x if absent), add value to the total, and set next[x] = (value + 1)/2; print the total as a 64-bit integer."
+    ],
+    "ja": [
+      "同じグループ（元の所要時間が同じ）の未実行のタスクは、常に同じ現在の所要時間を共有しています。異なるグループは互いに影響せず、あとで所要時間が一致してもマージされません。",
+      "したがって、各グループに必要な値は 1 つだけで、次のタスクの所要時間です。タスクが実行されたら、その値を合計に加え、半分（切り上げ）に更新します。",
+      "元の所要時間をキーとするハッシュマップ next を使います。順に各タスクの元の所要時間 x について、value を next[x]（なければ x）とし、合計に value を加え、next[x] = (value + 1)/2 とします。合計を 64 ビット整数で出力してください。"
+    ],
+    "ko": [
+      "한 그룹(원래 소요 시간이 같은 것)에서 아직 실행되지 않은 작업은 항상 같은 현재 소요 시간을 가집니다. 서로 다른 그룹은 서로 영향을 주지 않으며, 나중에 소요 시간이 같아져도 합쳐지지 않습니다.",
+      "따라서 각 그룹마다 다음 작업이 걸릴 시간이라는 숫자 하나만 있으면 됩니다. 작업이 실행되면 그 숫자를 합계에 더하고, 이어서 절반(올림)으로 갱신합니다.",
+      "원래 소요 시간을 키로 하는 해시 맵 next를 사용합니다. 순서대로 각 작업의 원래 소요 시간 x에 대해 value를 next[x](없으면 x)로 두고, 합계에 value를 더한 뒤 next[x] = (value + 1)/2로 설정합니다. 합계는 64비트 정수로 출력합니다."
+    ],
+    "vi": [
+      "Mọi tác vụ chưa chạy của một nhóm (cùng thời lượng gốc) luôn có chung thời lượng hiện tại; các nhóm khác nhau không bao giờ ảnh hưởng lẫn nhau, và chúng không gộp lại dù thời lượng về sau có trùng nhau.",
+      "Vì vậy mỗi nhóm chỉ cần một con số: tác vụ tiếp theo của nó sẽ tốn bao lâu. Khi một tác vụ chạy, cộng con số đó vào tổng rồi cập nhật nó thành một nửa, làm tròn lên.",
+      "Dùng hash map next khóa theo thời lượng gốc; với thời lượng gốc x của mỗi tác vụ theo thứ tự: gọi value là next[x] (hoặc x nếu chưa có), cộng value vào tổng, và đặt next[x] = (value + 1)/2; in tổng dưới dạng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nKeep a dictionary keyed by original duration storing the group's next execution time; take it out and add it to the total, then update it to half, rounded up.\n\n## Correctness\n\nAll not-yet-run tasks in a group always have the same duration; one execution within the group updates all of them uniformly, and other groups are unaffected. Using the original duration as the key maintains exactly this group invariant, and accumulating step by step gives the true total time.\n\n## Complexity\n\nTime O(n), space O(n)."

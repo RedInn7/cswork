@@ -13,6 +13,21 @@
       "Since A is positive, the function is strictly convex on the interval and has a single minimum point. Comparing the function at two interior points tells you which side cannot contain the minimum, so about a third of the interval can be discarded.",
       "Run a ternary search on [left, right]: take two points x < y; if f(x) < f(y), move the right end to y, otherwise move the left end to x. After enough rounds the interval is far smaller than 10^-6; take its midpoint and round to six decimals. The comparison must be precise: plain doubles go wrong when large values cancel, so use high precision or an exact integer comparison.",
       "For each query, hold left and right in high precision, for example 60-digit decimals or fixed-point integers scaled by 10^15. Repeat 160 times: let x and y be the points at one third and two thirds of the interval; if f(x) < f(y), set right = y, otherwise set left = x. For x < y, f(x) < f(y) is equivalent to A(x + y) + B > 0, which allows an exact comparison. Finally print (left + right) / 2 rounded half up to six decimals."
+    ],
+    "ja": [
+      "A が正なので、関数は区間上で狭義凸で、最小点は 1 つだけです。内側の 2 点での関数値を比較すると、最小点を含みえない側がわかり、区間の約 3 分の 1 を捨てられます。",
+      "[left, right] 上で三分探索を行います。x < y の 2 点を取り、f(x) < f(y) なら右端を y に移し、そうでなければ左端を x に移します。十分な回数を繰り返すと、区間は 10^-6 よりずっと小さくなるので、その中点を取って小数第 6 位に丸めます。比較は正確でなければなりません。大きな値が打ち消し合うとき、単純な double では誤るので、高精度か整数による厳密な比較を使ってください。",
+      "各クエリについて、left と right を高精度で保持します（たとえば 60 桁の 10 進数、または 10^15 倍した固定小数点の整数）。160 回繰り返します。x と y を区間の 3 分の 1 と 3 分の 2 の点とし、f(x) < f(y) なら right = y、そうでなければ left = x とします。x < y のとき、f(x) < f(y) は A(x + y) + B > 0 と同値なので、厳密な比較ができます。最後に (left + right) / 2 を、小数第 6 位に四捨五入して出力します。"
+    ],
+    "ko": [
+      "A가 양수이므로 함수는 구간 위에서 엄격히 볼록하며 최소점이 하나뿐입니다. 구간 안의 두 점에서 함수값을 비교하면 최소점이 있을 수 없는 쪽을 알 수 있으므로 구간의 약 3분의 1을 버릴 수 있습니다.",
+      "[left, right]에서 삼분 탐색을 합니다. 두 점 x < y를 잡고, f(x) < f(y)이면 오른쪽 끝을 y로, 아니면 왼쪽 끝을 x로 옮깁니다. 충분히 반복하면 구간이 10^-6보다 훨씬 작아지므로, 그 중점을 취해 소수점 아래 여섯 자리로 반올림합니다. 비교는 정밀해야 합니다. 큰 값끼리 상쇄될 때 일반 double은 틀리므로 고정밀 또는 정확한 정수 비교를 사용하세요.",
+      "각 질의에서 left와 right를 고정밀로 유지합니다. 예를 들어 60자리 decimal이나 10^15를 곱한 고정 소수점 정수를 씁니다. 160번 반복하며 구간의 3분의 1 지점과 3분의 2 지점을 x와 y로 잡고, f(x) < f(y)이면 right = y, 아니면 left = x로 둡니다. x < y일 때 f(x) < f(y)는 A(x + y) + B > 0과 동치이므로 정확하게 비교할 수 있습니다. 마지막으로 (left + right) / 2를 소수점 아래 여섯 자리에서 반올림(half up)해 출력합니다."
+    ],
+    "vi": [
+      "Vì A dương, hàm lồi chặt trên khoảng và có một điểm cực tiểu duy nhất. So sánh giá trị hàm tại hai điểm bên trong cho biết phía nào không thể chứa điểm cực tiểu, nên có thể loại bỏ khoảng một phần ba của khoảng.",
+      "Chạy tìm kiếm tam phân trên [left, right]: lấy hai điểm x < y; nếu f(x) < f(y) thì dời đầu phải về y, ngược lại dời đầu trái tới x. Sau đủ số vòng, khoảng nhỏ hơn nhiều so với 10^-6; lấy trung điểm và làm tròn đến sáu chữ số thập phân. Phép so sánh phải chính xác: số thực kép thông thường sai khi các giá trị lớn triệt tiêu nhau, nên hãy dùng độ chính xác cao hoặc so sánh số nguyên chính xác.",
+      "Với mỗi truy vấn, giữ left và right ở độ chính xác cao, ví dụ số thập phân 60 chữ số hoặc số nguyên dấu phẩy cố định nhân tỉ lệ 10^15. Lặp lại 160 lần: gọi x và y là các điểm ở một phần ba và hai phần ba của khoảng; nếu f(x) < f(y) thì đặt right = y, ngược lại đặt left = x. Với x < y, f(x) < f(y) tương đương với A(x + y) + B > 0, cho phép so sánh chính xác. Cuối cùng in (left + right) / 2 làm tròn nửa lên đến sáu chữ số thập phân."
     ]
   },
   "explanationEn": "## Approach\n\nRun a ternary search with high-precision Decimal, narrowing the interval that contains the minimum point using function evaluations only, and finally round to six decimal places.\n\n## Correctness\n\nA>0 guarantees strict convexity; comparing the function values at the two ternary points excludes the side away from the minimum point, and the length of the interval containing the minimum point shrinks to 2/3 each round. After 160 rounds, the initial interval of at most 2×10⁶ is far smaller than 10⁻⁶; at an exact midpoint either rounding is valid, and high precision prevents floating-point cancellation from affecting the comparisons.\n\n## Complexity\n\nTime O(q·160), and O(1) space apart from input and output; Decimal uses a fixed precision of 60 digits."

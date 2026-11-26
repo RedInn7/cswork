@@ -13,6 +13,21 @@
       "Loading does not use up a truck and packages are independent: find the smallest capacity strictly greater than the weight, then the smallest index among trucks with that capacity.",
       "Sort trucks by capacity and keep only the smallest original index for each capacity; every query is then one binary search.",
       "After sorting (capacity, index) pairs, binary search the first entry whose capacity exceeds the weight; the first entry of that capacity has the smallest index. Print −1 when there is none."
+    ],
+    "ja": [
+      "積み込んでもトラックは使い切られず、荷物どうしは独立です。重さより厳密に大きい最小の容量を見つけ、その容量を持つトラックの中で最小の添字を選びます。",
+      "トラックを容量でソートし、各容量について元の添字の最小値だけを残せば、各クエリは二分探索 1 回で済みます。",
+      "(容量, 添字) の組をソートしたあと、容量が重さを超える最初の要素を二分探索します。その容量の最初の要素が最小の添字を持ちます。該当がなければ −1 を出力します。"
+    ],
+    "ko": [
+      "적재해도 트럭이 소모되지 않고 패키지들은 독립적입니다. 무게보다 엄격히 큰 가장 작은 용량을 찾은 뒤, 그 용량의 트럭 중 가장 작은 인덱스를 고릅니다.",
+      "트럭을 용량 순으로 정렬하고 각 용량에 대해 가장 작은 원래 인덱스만 남기면, 질의마다 이분 탐색 한 번이면 됩니다.",
+      "(용량, 인덱스) 쌍을 정렬한 뒤, 용량이 무게를 초과하는 첫 항목을 이분 탐색으로 찾습니다. 그 용량의 첫 항목이 가장 작은 인덱스를 가집니다. 없으면 −1을 출력합니다."
+    ],
+    "vi": [
+      "Việc xếp hàng không làm hết xe và các gói hàng độc lập với nhau: hãy tìm sức chứa nhỏ nhất lớn hơn chặt khối lượng, rồi lấy chỉ số nhỏ nhất trong các xe có sức chứa đó.",
+      "Sắp xếp các xe theo sức chứa và chỉ giữ chỉ số gốc nhỏ nhất của mỗi sức chứa; khi đó mỗi truy vấn chỉ là một lần tìm kiếm nhị phân.",
+      "Sau khi sắp xếp các cặp (capacity, index), tìm kiếm nhị phân phần tử đầu tiên có sức chứa vượt quá khối lượng; phần tử đầu tiên của sức chứa đó có chỉ số nhỏ nhất. In −1 khi không có."
     ]
   },
   "explanationEn": "## Approach\n\nSort by capacity, keep the smallest index for each capacity, and binary search for the first capacity strictly greater than the weight.\n\n## Proof of correctness\n\nBinary search skips every capacity that is not large enough, so the first remaining capacity is exactly the minimum usable capacity; the stored smallest index resolves ties within that capacity and nothing else. Independent queries do not modify the structure, which matches the rule that trucks can be reused.\n\n## Complexity\n\nO(n log n+m log n) time and O(n+m) space."

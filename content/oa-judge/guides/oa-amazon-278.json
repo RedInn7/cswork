@@ -13,6 +13,21 @@
       "To make the people of one speed contiguous, you must remove everyone of a different speed inside that stretch. The removal cost is the stretch's original length minus the number of same-speed people in it, regardless of the other speeds.",
       "So handle each speed separately: take all positions p where it occurs and choose a consecutive run p[l..r]; the cost is p[r]−p[l]−(r−l). The cost never decreases as the right end grows and never increases as the left end shrinks, which suits two pointers.",
       "Collect each speed's positions in index order; on each position array, advance the right pointer one step at a time and move the left pointer right while p[r]−p[l]−(r−l) > k; update the answer with r−l+1 at each step; print the maximum over all speeds."
+    ],
+    "ja": [
+      "1 つの速度の人たちを連続させるには、その区間の内側にいる異なる速度の人をすべて取り除かなければなりません。取り除くコストは、区間の元の長さから、その中にいる同じ速度の人数を引いたもので、ほかの速度がどうであるかには依存しません。",
+      "そこで速度ごとに別々に扱います。その速度が現れるすべての位置 p を取り、連続した列 p[l..r] を選びます。コストは p[r]−p[l]−(r−l) です。このコストは、右端が伸びると減らず、左端が縮むと増えないので、しゃくとり法に向いています。",
+      "各速度の位置をインデックス順に集めます。各位置配列で右ポインタを 1 つずつ進め、p[r]−p[l]−(r−l) > k である間は左ポインタを右へ動かします。各ステップで r−l+1 により答えを更新し、全速度にわたる最大値を出力します。"
+    ],
+    "ko": [
+      "한 속도의 사람들을 연속으로 만들려면 그 구간 안의 다른 속도의 사람을 모두 제거해야 합니다. 제거 비용은 구간의 원래 길이에서 그 안의 같은 속도 사람 수를 뺀 값이며, 다른 속도가 무엇인지와는 무관합니다.",
+      "따라서 속도별로 따로 처리합니다. 그 속도가 나타나는 모든 위치 p를 모으고 연속한 구간 p[l..r]을 고르면 비용은 p[r]−p[l]−(r−l)입니다. 비용은 오른쪽 끝이 커질수록 줄지 않고 왼쪽 끝이 줄어들수록 늘지 않으므로 투 포인터에 적합합니다.",
+      "각 속도의 위치를 인덱스 순서로 모읍니다. 각 위치 배열에서 오른쪽 포인터를 한 칸씩 전진시키고, p[r]−p[l]−(r−l) > k인 동안 왼쪽 포인터를 오른쪽으로 옮깁니다. 매 단계에서 r−l+1로 답을 갱신하고, 모든 속도에 대한 최댓값을 출력합니다."
+    ],
+    "vi": [
+      "Để những người cùng một tốc độ nằm liền nhau, bạn phải loại mọi người có tốc độ khác nằm trong đoạn đó. Chi phí loại bằng độ dài gốc của đoạn trừ đi số người cùng tốc độ trong đó, bất kể các tốc độ khác là gì.",
+      "Vì vậy hãy xử lý riêng từng tốc độ: lấy mọi vị trí p mà nó xuất hiện và chọn một dãy liên tiếp p[l..r]; chi phí là p[r]−p[l]−(r−l). Chi phí không bao giờ giảm khi đầu mút phải mở rộng và không bao giờ tăng khi đầu mút trái co lại, rất hợp với hai con trỏ.",
+      "Thu thập vị trí của từng tốc độ theo thứ tự chỉ số; trên mỗi mảng vị trí, tiến con trỏ phải từng bước và dịch con trỏ trái sang phải trong khi p[r]−p[l]−(r−l) > k; cập nhật đáp án bằng r−l+1 ở mỗi bước; in ra giá trị lớn nhất trên mọi tốc độ."
     ]
   },
   "explanationEn": "## Approach\n\nCollect the positions p of each speed separately. Run two pointers over that position array, keeping p[r]−p[l]−(r−l)≤k, and update the same-speed count r−l+1.\n\n## Proof of correctness\n\nDeleting every person of a different speed between p[l] and p[r] costs exactly the original length minus the number of same-speed people. Keeping more people of that speed never increases the deletion cost, so every optimal segment corresponds to some window of consecutive occurrence positions. The cost never decreases as the window extends to the right and never increases as it shrinks from the left, so two pointers enumerate the earliest valid left end for every right end and obtain the maximum count.\n\n## Complexity\n\nTime O(n), space O(n)."

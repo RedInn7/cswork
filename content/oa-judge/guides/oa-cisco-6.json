@@ -13,6 +13,21 @@
       "The question is how many distinct labels occur an odd number of times, and each occurrence flips the parity of that label's count.",
       "Let a set hold the labels seen an odd number of times so far: when a label arrives, remove it if present, otherwise add it; the final size of the set is the answer.",
       "Read N and the N integers (N may be 0); for each one, remove it from a hash set if present, else insert it; print the size of the set, not any particular date value."
+    ],
+    "ja": [
+      "問われているのは、奇数回現れる相異なるラベルがいくつあるかです。出現のたびに、そのラベルの回数の偶奇が反転します。",
+      "ここまでに奇数回見たラベルを集合に保持します。ラベルが来たら、集合にあれば削除し、なければ追加します。最終的な集合のサイズが答えです。",
+      "N と N 個の整数を読み込みます (N は 0 のこともあります)。各値について、ハッシュ集合にあれば削除し、なければ挿入します。特定の日付の値ではなく、集合のサイズを出力します。"
+    ],
+    "ko": [
+      "묻는 것은 홀수 번 나타나는 서로 다른 라벨의 개수이며, 각 등장은 해당 라벨의 횟수의 홀짝을 뒤집습니다.",
+      "지금까지 홀수 번 본 라벨들을 집합에 담습니다. 라벨이 도착하면 있으면 제거하고 없으면 추가하며, 집합의 최종 크기가 답입니다.",
+      "N과 N개의 정수를 읽습니다(N은 0일 수 있음). 각각에 대해 해시 집합에 있으면 제거하고 없으면 삽입합니다. 특정 날짜 값이 아니라 집합의 크기를 출력합니다."
+    ],
+    "vi": [
+      "Câu hỏi là có bao nhiêu nhãn phân biệt xuất hiện số lẻ lần, và mỗi lần xuất hiện đảo tính chẵn lẻ của số lần của nhãn đó.",
+      "Cho một tập giữ các nhãn đã gặp số lẻ lần cho đến lúc này: khi một nhãn đến, xóa nó nếu có, ngược lại thêm vào; kích thước cuối cùng của tập là đáp án.",
+      "Đọc N và N số nguyên (N có thể bằng 0); với mỗi số, xóa nó khỏi hash set nếu có, ngược lại chèn vào; in kích thước của tập, không phải một giá trị ngày cụ thể nào."
     ]
   },
   "explanationEn": "## Approach\n\nUse a set to hold the labels that have currently occurred an odd number of times: when a label is read, delete it if it is in the set, otherwise add it; finally return the size of the set.\n\n## Proof of correctness\n\nEach time the same label is read, the parity of its count flips, and its membership in the set flips in step. Therefore, after processing any prefix, the set contains exactly the labels with odd frequency in that prefix, and its final size is what the problem asks for.\n\n## Complexity\n\nO(N) expected time, O(number of distinct labels) space."

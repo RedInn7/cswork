@@ -13,6 +13,21 @@
       "Non-vowel characters never move; only the vowels shift one step to the right in order of appearance, and the set of vowel positions stays the same.",
       "Collect the vowels in order, rotate that sequence right by one (the last vowel goes to the front), and write it back into the original vowel positions in order.",
       "Record the indices of all vowels; if there are none, print the line unchanged. Otherwise, going from the back, give the i-th vowel position the character of vowel i−1, and give the first vowel position the original last vowel. Read the whole line keeping its spaces and strip only the trailing newline."
+    ],
+    "ja": [
+      "母音以外の文字は動きません。母音だけが出現順に 1 つ右へずれ、母音の位置の集合は変わりません。",
+      "母音を順に集め、その列を右に 1 つ回転し（最後の母音が先頭に来ます）、元の母音の位置に順に書き戻します。",
+      "すべての母音のインデックスを記録します。母音がなければ行をそのまま出力します。あるときは、後ろから見て i 番目の母音の位置に母音 i−1 の文字を置き、最初の母音の位置には元の最後の母音を置きます。行全体をスペースを保ったまま読み込み、末尾の改行だけを取り除きます。"
+    ],
+    "ko": [
+      "모음이 아닌 문자는 움직이지 않으며, 모음만 등장 순서대로 오른쪽으로 한 칸 이동합니다. 모음 위치의 집합은 그대로입니다.",
+      "모음을 순서대로 모아 그 수열을 오른쪽으로 한 칸 회전하고(마지막 모음이 맨 앞으로), 원래 모음 위치에 순서대로 다시 써 넣습니다.",
+      "모든 모음의 인덱스를 기록하고, 모음이 없으면 줄을 그대로 출력합니다. 있으면 뒤에서부터, i번째 모음 위치에는 i−1번째 모음의 문자를 넣고 첫 번째 모음 위치에는 원래의 마지막 모음을 넣습니다. 공백을 유지한 채 줄 전체를 읽고 끝의 개행만 제거합니다."
+    ],
+    "vi": [
+      "Các ký tự không phải nguyên âm không bao giờ di chuyển; chỉ các nguyên âm dịch một bước sang phải theo thứ tự xuất hiện, và tập các vị trí nguyên âm giữ nguyên.",
+      "Thu thập các nguyên âm theo thứ tự, xoay dãy này sang phải một vị trí (nguyên âm cuối đưa lên đầu), và ghi lại vào các vị trí nguyên âm ban đầu theo thứ tự.",
+      "Ghi lại chỉ số của mọi nguyên âm; nếu không có thì in dòng không đổi. Ngược lại, đi từ phía sau, gán cho vị trí nguyên âm thứ i ký tự của nguyên âm i−1, và gán cho vị trí nguyên âm đầu tiên nguyên âm cuối ban đầu. Đọc cả dòng và giữ các dấu cách, chỉ cắt ký tự xuống dòng ở cuối."
     ]
   },
   "explanationEn": "## Approach\n\nExtract the vowels, rotate them right by one, and write them back into the original vowel positions in order.\n\n## Why it works\n\nAfter rotation the first vowel comes from the original last one and the i-th comes from the original (i−1)-th, which moves every original vowel to the next vowel position. Only vowel positions are replaced; the other characters stay unchanged.\n\n## Complexity\n\nTime and extra space O(n)."

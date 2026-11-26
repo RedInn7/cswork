@@ -13,6 +13,21 @@
       "Each click follows one directed edge, so the fewest clicks is an unweighted shortest path on a directed graph.",
       "Simulate get_links with an adjacency list of outgoing edges only and run BFS from start; the level at which target is first reached is the answer; it is 0 when start equals target, and -1 if BFS ends without reaching target.",
       "Read all edges, map page names to integer ids (case-sensitive, names may contain non-English characters) and build the outgoing edge lists; run BFS with a queue and visited marks so self-loops and duplicate links never enqueue a node twice; when target is dequeued, print its distance."
+    ],
+    "ja": [
+      "1 回のクリックは 1 本の有向辺をたどるので、最小クリック数は有向グラフ上の重みなし最短経路です。",
+      "get_links は出辺のみの隣接リストでシミュレートし、start から BFS を行います。target に最初に到達した層が答えです。start が target と同じなら 0、BFS が target に到達せず終了したら -1 です。",
+      "すべての辺を読み込み、ページ名を整数 id に対応付け(大文字・小文字を区別し、英語以外の文字を含むことがあります)、出辺リストを構築します。キューと訪問済みの印で BFS を行い、自己ループや重複リンクでも同じノードを 2 回キューに入れないようにします。target がキューから取り出されたら、その距離を出力します。"
+    ],
+    "ko": [
+      "각 클릭은 방향 간선 하나를 따라가므로, 최소 클릭 횟수는 방향 그래프에서 가중치 없는 최단 경로입니다.",
+      "나가는 간선만 담은 인접 리스트로 get_links를 시뮬레이션하고 start에서 BFS를 수행합니다. target에 처음 도달하는 레벨이 답이며, start와 target이 같으면 0이고, target에 도달하지 못한 채 BFS가 끝나면 -1입니다.",
+      "모든 간선을 읽고 페이지 이름을 정수 id로 대응시켜(대소문자 구분, 이름에 영문이 아닌 문자가 있을 수 있음) 나가는 간선 리스트를 만듭니다. 큐와 방문 표시를 사용해 BFS를 수행하면 자기 루프와 중복 링크가 있어도 노드가 두 번 큐에 들어가지 않습니다. target을 큐에서 꺼낼 때 그 거리를 출력합니다."
+    ],
+    "vi": [
+      "Mỗi lần nhấp đi theo một cạnh có hướng, nên số lần nhấp ít nhất là đường đi ngắn nhất không trọng số trên đồ thị có hướng.",
+      "Mô phỏng get_links bằng danh sách kề chỉ gồm các cạnh đi ra và chạy BFS từ start; tầng mà target được tới lần đầu là đáp án; bằng 0 khi start bằng target, và -1 nếu BFS kết thúc mà không tới được target.",
+      "Đọc mọi cạnh, ánh xạ tên trang sang id nguyên (phân biệt hoa thường, tên có thể chứa ký tự không phải tiếng Anh) và xây danh sách cạnh đi ra; chạy BFS với hàng đợi và đánh dấu đã thăm để khuyên và liên kết trùng lặp không bao giờ đưa một nút vào hàng đợi hai lần; khi target được lấy ra, in khoảng cách của nó."
     ]
   },
   "explanationEn": "## Approach\n\nBuild an outgoing-edge table to simulate get_links, then run BFS from start and return the level at which target is first found.\n\n## Correctness\n\nEach edge on a path corresponds to one click, and BFS expands level by level in order of distance, so the distance at which a node is first reached is the shortest. Traversing only outgoing edges never turns a one-way link into a reverse link, and the visited marks keep self-loops from being repeated.\n\n## Complexity\n\nO(V+m) time and O(V+m) space, plus storage for the page names."

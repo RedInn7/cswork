@@ -13,6 +13,21 @@
       "Both conditions depend only on |x| and |y|. Let a=|x| and b=|y| with a≤b; whatever the signs of x and y, the two numbers |x−y| and |x+y| are exactly b−a and a+b in some order.",
       "Substituting, condition 2 becomes a+b≥b, which always holds, and condition 1 becomes b−a≤a, that is, b≤2a. So a pair qualifies exactly when the larger absolute value is at most twice the smaller one. Since n is only 1000, simply enumerate every pair of indices.",
       "Read the array into 64-bit integers; loop i in increasing order and j from i+1 to n−1, take p=|arr[i]| and q=|arr[j]|, and when max(p,q)≤2·min(p,q) count the pair and append \"arr[i] arr[j]\" to an output buffer. Print the count first and then the buffer; the enumeration order is already the required output order. Note that a pair containing 0 qualifies only when the other value is also 0."
+    ],
+    "ja": [
+      "どちらの条件も |x| と |y| だけに依存します。a=|x|、b=|y| (a≤b) とすると、x と y の符号に関係なく、2 つの数 |x−y| と |x+y| は順不同で b−a と a+b になります。",
+      "代入すると、条件 2 は a+b≥b となって常に成り立ち、条件 1 は b−a≤a、すなわち b≤2a になります。したがって、絶対値の大きいほうが小さいほうの 2 倍以下であることが、組が成立する条件です。n は 1000 しかないので、添字の組をすべて列挙すれば十分です。",
+      "配列を 64 ビット整数で読み込みます。i を昇順に、j を i+1 から n−1 まで回し、p=|arr[i]|、q=|arr[j]| として、max(p,q)≤2·min(p,q) のとき組を数え、\"arr[i] arr[j]\" を出力バッファに追加します。先に個数を出力し、その後にバッファを出力します。列挙順がそのまま要求された出力順になります。0 を含む組が成立するのは、もう一方の値も 0 の場合だけです。"
+    ],
+    "ko": [
+      "두 조건은 |x|와 |y|에만 의존합니다. a=|x|, b=|y|이고 a≤b라 하면, x와 y의 부호가 무엇이든 두 수 |x−y|와 |x+y|는 순서만 다를 뿐 정확히 b−a와 a+b입니다.",
+      "대입하면 조건 2는 a+b≥b가 되어 항상 성립하고, 조건 1은 b−a≤a, 즉 b≤2a가 됩니다. 따라서 절댓값이 큰 쪽이 작은 쪽의 두 배 이하일 때에 한해 쌍이 조건을 만족합니다. n이 1000뿐이므로 모든 인덱스 쌍을 그냥 열거합니다.",
+      "배열을 64비트 정수로 읽습니다. i를 증가 순으로, j를 i+1부터 n−1까지 순회하며 p=|arr[i]|, q=|arr[j]|로 두고 max(p,q)≤2·min(p,q)이면 쌍을 세고 \"arr[i] arr[j]\"를 출력 버퍼에 추가합니다. 개수를 먼저 출력한 뒤 버퍼를 출력하며, 열거 순서가 곧 요구되는 출력 순서입니다. 0이 포함된 쌍은 다른 값도 0일 때만 조건을 만족한다는 점에 유의하세요."
+    ],
+    "vi": [
+      "Cả hai điều kiện chỉ phụ thuộc vào |x| và |y|. Đặt a=|x| và b=|y| với a≤b; dù dấu của x và y thế nào, hai số |x−y| và |x+y| chính là b−a và a+b theo một thứ tự nào đó.",
+      "Thay vào, điều kiện 2 trở thành a+b≥b, luôn đúng, và điều kiện 1 trở thành b−a≤a, tức là b≤2a. Vậy một cặp thoả mãn đúng khi giá trị tuyệt đối lớn hơn không vượt quá hai lần giá trị nhỏ hơn. Vì n chỉ là 1000, cứ duyệt mọi cặp chỉ số.",
+      "Đọc mảng vào số nguyên 64 bit; lặp i theo thứ tự tăng và j từ i+1 đến n−1, lấy p=|arr[i]| và q=|arr[j]|, và khi max(p,q)≤2·min(p,q) thì đếm cặp và nối \"arr[i] arr[j]\" vào bộ đệm đầu ra. In số đếm trước rồi đến bộ đệm; thứ tự duyệt đã chính là thứ tự đầu ra yêu cầu. Lưu ý một cặp chứa 0 chỉ thoả mãn khi giá trị còn lại cũng bằng 0."
     ]
   },
   "explanationEn": "## Problem\n\nFind all index pairs i<j in the array such that x=arr[i] and y=arr[j] satisfy both:\n1. min(|x−y|,|x+y|) ≤ min(|x|,|y|);\n2. max(|x−y|,|x+y|) ≥ max(|x|,|y|).\nOutput (arr[i],arr[j]) sorted by i ascending and, for equal i, by j ascending.\n\n## Approach\n\nLet a=|x|≤b=|y|. Whatever the signs, {|x−y|,|x+y|}={b−a, a+b}. Condition 2 becomes a+b≥b, which always holds; condition 1 becomes b−a≤a, that is, b≤2a. So we only need to check max(|x|,|y|)≤2·min(|x|,|y|), and a double loop outputs the pairs in the required order.\n\n## Correctness\n\nThe simplification above holds for every combination of signs of x and y, because exactly one of |x−y| and |x+y| equals ||x|−|y|| and the other equals |x|+|y|. The enumeration order itself is the required output order.\n\n## Complexity\n\nO(n²), with at most n(n−1)/2 pairs in the output.\n\n## Independent verification\n\nThe oracle evaluates the two original conditions literally with Python big integers, without using the b≤2a simplification. All arrays of length 1..4 with values in −3..3 are enumerated exhaustively, and the reference program is actually run on each one. The wrong solutions cover dropping the absolute values while simplifying, including self-pairs, printing each pair sorted by value, and writing the condition as a strict inequality."

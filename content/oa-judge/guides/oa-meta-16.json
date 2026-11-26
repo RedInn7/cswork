@@ -13,6 +13,21 @@
       "The array is non-decreasing, so the sum of two entries grows as the left index moves right and shrinks as the right index moves left; that is exactly what lets two pointers discard candidates.",
       "Start the pointers at both ends: if the current sum is below the target, the left end paired with any smaller right index is even smaller, so drop the left end; otherwise the right end paired with any larger left index is even larger, so drop the right end. Update the best difference with the current sum at every step.",
       "While left < right: compute the absolute difference between the pair's sum and k and record the two values if it beats the best so far; then move left up by one if the sum is below k, otherwise move right down by one; finally print the recorded values. Use 64-bit integers for sums and differences; k may be negative."
+    ],
+    "ja": [
+      "配列は非減少なので、2 つの要素の和は、左のインデックスが右へ動くと増え、右のインデックスが左へ動くと減ります。まさにこれが、2 つのポインタで候補を捨てられる理由です。",
+      "ポインタを両端から始めます。現在の和が目標より小さければ、左端とそれより小さい右のインデックスとの組はさらに小さくなるので、左端を捨てます。そうでなければ、右端とそれより大きい左のインデックスとの組はさらに大きくなるので、右端を捨てます。各ステップで、現在の和で最良の差を更新します。",
+      "left < right の間、ペアの和と k の差の絶対値を計算し、それまでの最良を上回るなら 2 つの値を記録します。そのあと、和が k より小さければ left を 1 つ進め、そうでなければ right を 1 つ戻します。最後に記録した値を出力します。和と差には 64 ビット整数を使ってください。k は負になることがあります。"
+    ],
+    "ko": [
+      "배열이 비내림차순이므로 두 원소의 합은 왼쪽 인덱스가 오른쪽으로 갈수록 커지고 오른쪽 인덱스가 왼쪽으로 갈수록 작아집니다. 바로 이 성질 덕분에 두 포인터로 후보를 버릴 수 있습니다.",
+      "포인터를 양 끝에서 시작합니다. 현재 합이 목표보다 작으면 왼쪽 끝과 더 작은 어떤 오른쪽 인덱스를 짝지은 합은 더 작으므로 왼쪽 끝을 버립니다. 그렇지 않으면 오른쪽 끝과 더 큰 어떤 왼쪽 인덱스를 짝지은 합은 더 크므로 오른쪽 끝을 버립니다. 매 단계 현재 합으로 최선의 차이를 갱신합니다.",
+      "left < right인 동안 쌍의 합과 k의 차이의 절댓값을 계산하여 지금까지의 최선보다 좋으면 두 값을 기록합니다. 그다음 합이 k보다 작으면 left를 하나 올리고, 아니면 right를 하나 내립니다. 마지막에 기록한 값을 출력합니다. 합과 차이에는 64비트 정수를 사용하세요. k는 음수일 수 있습니다."
+    ],
+    "vi": [
+      "Mảng không giảm, nên tổng hai phần tử tăng khi chỉ số trái dịch sang phải và giảm khi chỉ số phải dịch sang trái; chính điều này cho phép hai con trỏ loại bỏ các ứng viên.",
+      "Bắt đầu các con trỏ ở hai đầu: nếu tổng hiện tại nhỏ hơn mục tiêu, thì đầu trái ghép với bất kỳ chỉ số phải nhỏ hơn nào sẽ còn nhỏ hơn, nên bỏ đầu trái; ngược lại đầu phải ghép với bất kỳ chỉ số trái lớn hơn nào sẽ còn lớn hơn, nên bỏ đầu phải. Cập nhật hiệu tốt nhất bằng tổng hiện tại ở mỗi bước.",
+      "Trong khi left < right: tính hiệu tuyệt đối giữa tổng của cặp và k và ghi lại hai giá trị nếu nó tốt hơn kết quả tốt nhất hiện có; sau đó tăng left lên một nếu tổng nhỏ hơn k, ngược lại giảm right xuống một; cuối cùng in các giá trị đã ghi. Dùng số nguyên 64 bit cho các tổng và hiệu; k có thể âm."
     ]
   },
   "explanationEn": "## Approach\n\nTwo pointers start from the two ends of the array and maintain the current minimum absolute difference. When the sum is less than the target, move the left pointer right; otherwise move the right pointer left, always keeping the two indices different.\n\n## Proof of correctness\n\nWhen the current sum is less than the target, keeping the left pointer and decreasing the right pointer only makes the sum smaller and cannot improve the current difference, so that left end can be discarded; when the sum is not less than the target, keeping the right end and increasing the left end is no better either, so that right end can be discarded. Every step records the current candidate, and in the end the globally optimal pair is kept.\n\n## Complexity\n\nTime O(n), space O(1) excluding the input."

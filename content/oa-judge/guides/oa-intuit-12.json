@@ -13,6 +13,21 @@
       "A subarray whose types are all distinct cannot be longer than m; for each length l <= m there are n - l + 1 windows of that length, and each window contributes at most one qualifying subarray, which bounds the answer from above.",
       "If every window of length at most m in the sequence has distinct types, the bound is reached. Cycling through 1, 2, ..., m does exactly that: any m consecutive positions contain all m different types.",
       "To reach the bound and also be lexicographically smallest, each position should take the smallest type that does not appear among the previous m - 1 positions, which yields exactly the cycle 1, 2, ..., m, 1, 2, ...; print position i (0-based) as i mod m + 1, n numbers in total, separated by spaces."
+    ],
+    "ja": [
+      "要素がすべて異なる部分配列の長さは m を超えられません。各長さ l <= m について、その長さの窓は n - l + 1 個あり、各窓は条件を満たす部分配列を高々 1 つしか寄与しないので、これが答えの上界になります。",
+      "列の中で長さ高々 m のすべての窓の要素が互いに異なれば、上界に達します。1, 2, ..., m を巡回させると、まさにそうなります。連続する m 個の位置には、m 種類すべてが含まれるからです。",
+      "上界に達し、かつ辞書順最小にするには、各位置で、直前の m - 1 個の位置に現れない最小の種類を選びます。すると、まさに巡回列 1, 2, ..., m, 1, 2, ... になります。位置 i（0 始まり）に i mod m + 1 を出力し、n 個の数をスペース区切りで出力します。"
+    ],
+    "ko": [
+      "모든 종류가 서로 다른 부분 배열의 길이는 m을 넘을 수 없습니다. 각 길이 l <= m에 대해 그 길이의 윈도우는 n - l + 1개이고, 각 윈도우는 조건을 만족하는 부분 배열을 최대 하나만 기여하므로 답의 상한이 정해집니다.",
+      "수열에서 길이가 m 이하인 모든 윈도우의 종류가 서로 다르면 이 상한에 도달합니다. 1, 2, ..., m을 순환시키면 정확히 그렇게 됩니다. 연속한 m개 위치에는 항상 m가지 종류가 모두 들어 있기 때문입니다.",
+      "상한에 도달하면서 사전순으로 가장 작게 만들려면, 각 위치에 직전 m - 1개 위치에 나타나지 않은 가장 작은 종류를 두어야 하며, 그 결과가 정확히 순환 1, 2, ..., m, 1, 2, ...입니다. 위치 i(0-based)를 i mod m + 1로 출력하며, 모두 n개의 수를 공백으로 구분합니다."
+    ],
+    "vi": [
+      "Một mảng con có các loại đôi một khác nhau không thể dài hơn m; với mỗi độ dài l <= m có n - l + 1 cửa sổ có độ dài đó, và mỗi cửa sổ đóng góp tối đa một mảng con thỏa điều kiện, điều này cho một cận trên của đáp án.",
+      "Nếu mọi cửa sổ có độ dài không quá m trong dãy đều gồm các loại đôi một khác nhau thì đạt được cận. Lặp vòng 1, 2, ..., m làm đúng việc đó: bất kỳ m vị trí liên tiếp nào đều chứa đủ m loại khác nhau.",
+      "Để đạt cận và đồng thời nhỏ nhất theo thứ tự từ điển, mỗi vị trí nên nhận loại nhỏ nhất không xuất hiện trong m - 1 vị trí trước đó, điều này cho đúng chu trình 1, 2, ..., m, 1, 2, ...; in vị trí i (tính từ 0) là i mod m + 1, tổng cộng n số, cách nhau bằng dấu cách."
     ]
   },
   "explanationEn": "## Approach\n\nConstruct the sequence by cycling through 1,2,…,m.\n\n## Proof of correctness\n\nEach range of length at most m contributes at most one qualifying subarray, and a range longer than m cannot have all distinct types; the upper bound is Σ(n−ℓ+1) over ℓ=1..min(n,m). The cyclic sequence makes every window of length ≤m all distinct, reaching this bound. The lexicographically smallest construction must each time choose the smallest type that does not appear among the previous m−1 positions, so it is exactly the cycle 1,2,…,m.\n\n## Complexity\n\nTime O(n), auxiliary space O(1) (not counting the output)."

@@ -13,6 +13,21 @@
       "Without skips, every full round you and your coworker together ship a+b items; who makes the final shipment is decided only by the leftover of less than one full round.",
       "Reduce the stock to a remainder r in 1..a+b: if r <= a you empty it right away with no skips; otherwise every extra shipment of yours needs one coworker skip, so at least (r-1)//a skips are needed. Every warehouse is worth 1 point, so buy points greedily in increasing order of skips needed.",
       "For each stock v compute cost = ((v-1) mod (a+b)) // a; sort the costs and, while the skip budget covers the next cost, subtract it and gain a point, stopping at the first one you cannot afford; print the score. a+b can exceed 32 bits, so use 64-bit integers."
+    ],
+    "ja": [
+      "スキップがなければ、1 ラウンドごとにあなたと同僚で合計 a+b 個を出荷します。最後に出荷するのが誰かは、1 ラウンドに満たない端数だけで決まります。",
+      "在庫を 1..a+b の範囲の余り r に落とします。r <= a ならスキップなしですぐに在庫を空にできます。そうでなければ、あなたの追加の出荷 1 回ごとに同僚のスキップが 1 回必要なので、少なくとも (r-1)//a 回のスキップが必要です。どの倉庫も価値は 1 点なので、必要スキップ数の小さい順に貪欲に得点を買います。",
+      "各在庫 v についてコスト = ((v-1) mod (a+b)) // a を計算します。コストをソートし、スキップの残りが次のコストを賄える間は、その分を引いて 1 点を加算し、払えないコストが現れた時点で止めます。得点を出力してください。a+b は 32 ビットを超えることがあるため、64 ビット整数を使います。"
+    ],
+    "ko": [
+      "건너뛰기가 없다면 당신과 동료는 한 라운드마다 합쳐서 a+b개를 출하합니다. 마지막 출하를 누가 하는지는 한 라운드가 채 되지 않는 나머지에 의해서만 결정됩니다.",
+      "재고를 1..a+b 범위의 나머지 r로 줄입니다. r <= a이면 건너뛰기 없이 바로 당신이 비웁니다. 그렇지 않으면 당신이 추가로 한 번 출하할 때마다 동료의 건너뛰기가 한 번씩 필요하므로 최소 (r-1)//a번이 필요합니다. 모든 창고의 가치는 1점으로 같으므로, 필요한 건너뛰기 횟수가 적은 순서대로 탐욕적으로 점수를 사면 됩니다.",
+      "각 재고 v에 대해 cost = ((v-1) mod (a+b)) // a를 계산합니다. 비용을 정렬한 뒤, 남은 건너뛰기 횟수로 다음 비용을 감당할 수 있는 동안 그만큼 빼고 1점을 얻으며, 처음으로 감당할 수 없는 비용에서 멈추고 점수를 출력합니다. a+b는 32비트를 넘을 수 있으므로 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Nếu không bỏ lượt, mỗi vòng đầy đủ bạn và đồng nghiệp cùng xuất a+b món; ai là người xuất lần cuối chỉ do phần dư chưa đủ một vòng quyết định.",
+      "Rút tồn kho về số dư r trong 1..a+b: nếu r <= a thì bạn làm rỗng ngay mà không cần bỏ lượt; ngược lại, mỗi lần xuất thêm của bạn cần đồng nghiệp bỏ một lượt, nên cần ít nhất (r-1)//a lần bỏ lượt. Mỗi kho đáng 1 điểm, nên hãy mua điểm theo kiểu tham lam, theo thứ tự số lần bỏ lượt cần thiết tăng dần.",
+      "Với mỗi tồn kho v, tính cost = ((v-1) mod (a+b)) // a; sắp xếp các chi phí và, chừng nào ngân sách bỏ lượt còn đủ cho chi phí tiếp theo, trừ nó đi và cộng một điểm, dừng ở chi phí đầu tiên không đủ khả năng chi trả; in ra điểm số. a+b có thể vượt quá 32 bit, nên hãy dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nA full round without skips always consumes a+b. Reduce the stock to a remainder r in 1..a+b; scoring a warehouse needs at least (r-1)//a skips. Sort these costs and buy as many cheap points as possible.\n\n## Correctness\n\nSkips can be postponed to the final stretch that decides who ships last without increasing the number needed. If the remainder r is greater than a, every extra shipment of yours needs one coworker skip, so at least ceil(r/a) - 1 skips are required. Each warehouse independently offers a point of the same value, and swapping a more expensive chosen warehouse with a cheaper unchosen one never lowers the score and never increases the total cost, so taking them in order of cost is optimal.\n\n## Complexity\n\nTime O(n log n), space O(n)."

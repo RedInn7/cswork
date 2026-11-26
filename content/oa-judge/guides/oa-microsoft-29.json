@@ -13,6 +13,21 @@
       "A GCD greater than 1 means all elements share a prime factor; counting per prime would count subsequences with several common primes more than once, so inclusion-exclusion is needed.",
       "For each squarefree d>1 let count[d] be how many elements d divides; then the number of subsequences with GCD greater than 1 is the sum over such d of −μ(d)(2^count[d]−1). An update changes only the counts of the squarefree divisors of the old and new values, at most 64 of each.",
       "Sieve smallest prime factors to get each number's primes, its radical (product of distinct primes) and the Möbius function, and precompute powers of 2. Initialize count and the current total. For each update, for every squarefree divisor of the old value remove its old contribution, decrement count and add the new contribution; then do the same for the new value with count incremented, keeping the total reduced mod 10⁹+7 and non-negative. Add the value after each update to the answer without taking it mod, and print it as a 64-bit integer."
+    ],
+    "ja": [
+      "GCD が 1 より大きいとは、全要素が共通の素因数を持つということです。素数ごとに数えると、共通の素因数を複数持つ部分列を重複して数えてしまうため、包除原理が必要です。",
+      "平方因子を持たない各 d>1 について、count[d] を d で割り切れる要素の個数とすると、GCD が 1 より大きい部分列の個数は、そのような d すべてにわたる −μ(d)(2^count[d]−1) の総和です。更新で変わるのは、古い値と新しい値の平方因子を持たない約数の count だけで、それぞれ高々 64 個です。",
+      "最小素因数を篩で求めて、各数の素因数、radical（異なる素因数の積）、メビウス関数を得て、2 の累乗を前計算します。count と現在の合計を初期化します。更新ごとに、古い値の平方因子を持たない各約数について、古い寄与を取り除き、count を 1 減らし、新しい寄与を加えます。続いて新しい値についても count を 1 増やしながら同じことを行い、合計は 10⁹+7 で割った余りを非負に保ちます。各更新後の値は mod を取らずに答えへ加え、64 ビット整数で出力します。"
+    ],
+    "ko": [
+      "GCD가 1보다 크다는 것은 모든 원소가 공통 소인수를 가진다는 뜻입니다. 소수별로 세면 공통 소인수가 여러 개인 부분 수열이 중복으로 세어지므로 포함-배제가 필요합니다.",
+      "제곱 없는 d>1마다 count[d]를 d로 나누어떨어지는 원소의 개수라고 하면, GCD가 1보다 큰 부분 수열의 개수는 이러한 d에 대한 −μ(d)(2^count[d]−1)의 합입니다. 갱신은 이전 값과 새 값의 제곱 없는 약수에 대한 count만 바꾸며, 각각 최대 64개입니다.",
+      "최소 소인수를 체로 구해 각 수의 소인수, radical(서로 다른 소인수의 곱), 뫼비우스 함수를 얻고 2의 거듭제곱을 미리 계산합니다. count와 현재 합계를 초기화합니다. 각 갱신마다 이전 값의 모든 제곱 없는 약수에 대해 기존 기여분을 빼고 count를 감소시킨 뒤 새 기여분을 더합니다. 그다음 새 값에 대해 count를 증가시키며 같은 작업을 수행하고, 합계는 항상 10⁹+7로 나눈 나머지로 유지하되 음수가 되지 않게 합니다. 각 갱신 후의 값을 나머지 연산 없이 정답에 더하고 64비트 정수로 출력합니다."
+    ],
+    "vi": [
+      "GCD lớn hơn 1 nghĩa là mọi phần tử có chung một ước nguyên tố; nếu đếm theo từng số nguyên tố thì các dãy con có nhiều ước nguyên tố chung sẽ bị đếm lặp, nên cần dùng bao hàm – loại trừ.",
+      "Với mỗi d>1 không chứa bình phương, gọi count[d] là số phần tử chia hết cho d; khi đó số dãy con có GCD lớn hơn 1 bằng tổng của −μ(d)(2^count[d]−1) trên các d như vậy. Một lần cập nhật chỉ thay đổi count của các ước không chứa bình phương của giá trị cũ và giá trị mới, mỗi bên tối đa 64 ước.",
+      "Sàng ước nguyên tố nhỏ nhất để lấy các thừa số nguyên tố của mỗi số, radical của nó (tích các số nguyên tố phân biệt) và hàm Möbius, đồng thời tính trước các lũy thừa của 2. Khởi tạo count và tổng hiện tại. Với mỗi lần cập nhật, với từng ước không chứa bình phương của giá trị cũ, bỏ đóng góp cũ của nó, giảm count rồi cộng đóng góp mới; sau đó làm tương tự cho giá trị mới với count tăng lên, luôn giữ tổng được rút gọn modulo 10⁹+7 và không âm. Cộng giá trị sau mỗi lần cập nhật vào đáp án mà không lấy modulo, rồi in ra dưới dạng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nUse inclusion-exclusion over prime factors: each squarefree factor d>1 contributes −μ(d)(2^count[d]−1). An update only changes the counts of these factors for the old and new values. Precompute the smallest prime factors and the powers of 2.\n\n## Proof of correctness\n\nIf a subsequence has a non-empty set of common prime factors, the inclusion-exclusion coefficients over its non-empty prime combinations sum to 1, and otherwise to 0; so the sum of the contributions counts exactly the subsequences whose GCD is greater than 1. A point update affects only the factors that divide the replaced values, and removing the old terms and adding the new ones term by term maintains the invariant.\n\n## Complexity\n\nTime O(V log V+(N+Q)·2^ω), space O(V+N+Q), with V≤100000 and ω≤6."

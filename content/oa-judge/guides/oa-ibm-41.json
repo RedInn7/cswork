@@ -13,6 +13,21 @@
       "Once the player with the largest potential reaches the front, they never lose; before that, the champion at the front only meets, in order, the next player from the original queue who has not played yet.",
       "So a single pass over the original order suffices: keep the current champion and its win streak, with no need to simulate the back of the queue or to run up to a huge k.",
       "Start with the first player as champion; for each following player v: if v is larger, v becomes champion with a streak of 1, otherwise the champion's streak increases by 1; as soon as the streak reaches k, print the champion. If the pass ends without reaching k, the current champion is the global maximum, so print it."
+    ],
+    "ja": [
+      "潜在能力が最大のプレイヤーが先頭に来たあとは、決して負けません。それ以前は、先頭のチャンピオンは、元の待ち行列でまだ対戦していない次のプレイヤーと順に当たるだけです。",
+      "したがって、元の順に 1 回走査すれば十分です。現在のチャンピオンとその連勝数を保持するだけでよく、後ろに回った人を模擬したり、巨大な k まで回したりする必要はありません。",
+      "最初のプレイヤーをチャンピオンとして開始します。続く各プレイヤー v について、v のほうが大きければ v が連勝数 1 の新しいチャンピオンになり、そうでなければチャンピオンの連勝数を 1 増やします。連勝数が k に達したらすぐにそのチャンピオンを出力します。k に達せずに走査が終わった場合、現在のチャンピオンが全体の最大なので、それを出力します。"
+    ],
+    "ko": [
+      "잠재력이 가장 큰 선수가 맨 앞에 오면 그 선수는 절대 지지 않습니다. 그전까지 맨 앞의 챔피언은 원래 대기열에서 아직 대결하지 않은 다음 선수와 순서대로만 만납니다.",
+      "따라서 원래 순서를 한 번만 훑으면 충분합니다. 현재 챔피언과 연승 횟수만 유지하면 되고, 대기열 뒤쪽을 시뮬레이션하거나 아주 큰 k까지 반복할 필요가 없습니다.",
+      "첫 번째 선수를 챔피언으로 시작합니다. 이후 각 선수 v에 대해, v가 더 크면 v가 연승 1회로 새 챔피언이 되고, 그렇지 않으면 챔피언의 연승이 1 늘어납니다. 연승이 k에 도달하는 즉시 챔피언을 출력합니다. k에 도달하지 못하고 끝나면 현재 챔피언이 전체 최댓값이므로 그를 출력합니다."
+    ],
+    "vi": [
+      "Một khi người có tiềm năng lớn nhất lên đầu hàng thì không bao giờ thua nữa; trước đó, nhà vô địch ở đầu hàng chỉ lần lượt gặp người kế tiếp trong hàng đợi ban đầu chưa thi đấu.",
+      "Vì vậy chỉ cần một lượt duyệt theo thứ tự ban đầu: giữ nhà vô địch hiện tại và chuỗi thắng, không cần mô phỏng phần cuối hàng hay chạy tới k rất lớn.",
+      "Bắt đầu với người đầu tiên làm nhà vô địch; với mỗi người v tiếp theo: nếu v lớn hơn thì v thành nhà vô địch với chuỗi thắng 1, ngược lại chuỗi thắng của nhà vô địch tăng thêm 1; ngay khi chuỗi thắng đạt k thì in nhà vô địch. Nếu duyệt xong mà chưa đạt k thì nhà vô địch hiện tại chính là giá trị lớn nhất toàn cục, in nó."
     ]
   },
   "explanationEn": "## Approach\n\nScan the original queue, maintaining the current champion and its win streak; when the champion changes, the streak becomes 1. If the scan ends without reaching k, the global maximum potential is bound to win.\n\n## Proof of correctness\n\nBefore the global maximum is first met, the champion at the front only plays the next person who has not yet played, so the single-pass simulation is exact. Once the maximum becomes champion it never loses, so if no winner has appeared before then, the final winner must be it, and there is no need to keep simulating a huge k.\n\n## Complexity\n\nTime O(n), extra space O(1)."

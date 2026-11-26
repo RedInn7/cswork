@@ -13,6 +13,21 @@
       "If the concatenation equals accessCode, the code is cut at some position into two parts: the first is the decimal string of the first fragment and the second is that of the second fragment. Each valid ordered pair corresponds to exactly one cut position.",
       "Count how many times each value appears, then try every cut position of the target and multiply the counts of the two parts. When both parts are the same string, exclude pairing an index with itself.",
       "Count the canonical decimal string of every fragment in a dictionary. For each cut position i from 1 to length - 1, take the left part a and the right part b and add count(a) * count(b) to the answer, using count(b) - 1 instead when a equals b. Print the answer."
+    ],
+    "ja": [
+      "連結が accessCode と等しいなら、コードはある位置で 2 つに分かれます。前半が 1 つ目の断片の 10 進文字列、後半が 2 つ目の断片の 10 進文字列です。有効な順序対は、分割位置ごとにちょうど 1 つ対応します。",
+      "各値の出現回数を数え、目標のすべての分割位置を試して、2 つの部分の出現回数を掛けます。2 つの部分が同じ文字列のときは、同じ添字どうしの組を除外します。",
+      "すべての断片の正規の 10 進文字列を辞書で数えます。分割位置 i を 1 から length - 1 まで動かし、左の部分 a と右の部分 b について、答えに count(a) * count(b) を加えます。ただし a と b が等しいときは count(b) - 1 を使います。答えを出力します。"
+    ],
+    "ko": [
+      "이어 붙인 결과가 accessCode이면, 코드는 어떤 위치에서 두 부분으로 잘리며 앞부분은 첫 번째 조각의 십진 문자열, 뒷부분은 두 번째 조각의 십진 문자열입니다. 유효한 순서쌍마다 자르는 위치가 정확히 하나씩 대응합니다.",
+      "각 값이 몇 번 나타나는지 센 다음, 목표의 모든 자르는 위치를 시도하며 두 부분의 개수를 곱합니다. 두 부분이 같은 문자열이면 같은 인덱스끼리 짝짓는 경우를 제외해야 합니다.",
+      "모든 조각의 표준 십진 문자열을 딕셔너리에 세어 둡니다. 자르는 위치 i를 1부터 길이 - 1까지 돌며 왼쪽 a와 오른쪽 b를 취해 count(a) * count(b)를 정답에 더하되, a와 b가 같으면 count(b) - 1을 사용합니다. 마지막에 정답을 출력합니다."
+    ],
+    "vi": [
+      "Nếu phép nối bằng accessCode thì mã bị cắt ở một vị trí thành hai phần: phần đầu là xâu thập phân của mảnh thứ nhất và phần sau là xâu thập phân của mảnh thứ hai. Mỗi cặp có thứ tự hợp lệ tương ứng với đúng một vị trí cắt.",
+      "Đếm mỗi giá trị xuất hiện bao nhiêu lần, rồi thử mọi vị trí cắt của mục tiêu và nhân số lần xuất hiện của hai phần. Khi hai phần là cùng một xâu, loại trừ trường hợp ghép một chỉ số với chính nó.",
+      "Đếm xâu thập phân chuẩn của mỗi mảnh trong một từ điển. Với mỗi vị trí cắt i từ 1 đến length - 1, lấy phần trái a và phần phải b rồi cộng count(a) * count(b) vào đáp án, dùng count(b) - 1 thay thế khi a bằng b. In đáp án."
     ]
   },
   "explanationEn": "## Approach\n\nCount the frequency of each integer's canonical decimal string, enumerate every split point of the target string, and multiply the frequencies of the two parts; when the two parts are the same, subtract the case of using the same index twice.\n\n## Correctness\n\nEvery valid concatenation has a unique split point, and each of the two parts must appear among the fragments. With different values any two indices can be paired, and with the same value there are c(c−1) ordered pairs, so counting over split points is complete and has no duplicates.\n\n## Complexity\n\nTime O(n+target length²), space O(n)."

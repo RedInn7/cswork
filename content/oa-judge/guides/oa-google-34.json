@@ -13,6 +13,21 @@
       "First compute the union of all meeting times, which is a set of disjoint intervals; then subtract the do-not-disturb interval. Intervals are half-open, and touching intervals must be merged.",
       "After sorting by start time, merge linearly: extend the current segment when the next interval overlaps or touches it, otherwise start a new segment. Once the union is known, subtracting the do-not-disturb interval leaves at most a left piece and a right piece of each segment.",
       "Sort and merge (merge when a <= the current segment's end); for each merged segment [a, b): if b <= ds or a >= de, keep it as is; otherwise keep [a, ds) when a < ds and [de, b) when b > de; print the number of segments and their start and end values."
+    ],
+    "ja": [
+      "まずすべての会議時間の和集合を求めます。これは互いに素な区間の集まりです。そのあとで応答不可の区間を引きます。区間は半開で、接している区間は統合しなければなりません。",
+      "開始時刻でソートしたあと、線形に統合します。次の区間が現在の区間と重なるか接するなら現在の区間を延ばし、そうでなければ新しい区間を始めます。和集合が求まったら、応答不可の区間を引くと、各区間につき高々左側と右側の 2 つが残ります。",
+      "ソートして統合します（a <= 現在の区間の終端 のときに統合）。統合された各区間 [a, b) について、b <= ds または a >= de ならそのまま残します。そうでなければ、a < ds のとき [a, ds) を、b > de のとき [de, b) を残します。区間の個数と、それぞれの開始と終了の値を出力します。"
+    ],
+    "ko": [
+      "먼저 모든 회의 시간의 합집합, 즉 서로소인 구간들의 집합을 구한 다음 방해 금지 구간을 뺍니다. 구간은 반개구간이며 맞닿은 구간은 병합해야 합니다.",
+      "시작 시각으로 정렬한 뒤 선형으로 병합합니다. 다음 구간이 현재 구간과 겹치거나 맞닿으면 현재 구간을 늘리고, 그렇지 않으면 새 구간을 시작합니다. 합집합을 구한 뒤 방해 금지 구간을 빼면 각 구간에서 왼쪽 조각과 오른쪽 조각이 최대 하나씩 남습니다.",
+      "정렬하고 병합합니다(a <= 현재 구간의 끝이면 병합). 병합된 각 구간 [a, b)에 대해 b <= ds 또는 a >= de이면 그대로 유지하고, 그렇지 않으면 a < ds일 때 [a, ds)를, b > de일 때 [de, b)를 유지합니다. 구간의 개수와 각 시작·끝 값을 출력합니다."
+    ],
+    "vi": [
+      "Trước hết tính hợp của mọi thời gian họp, là một tập các khoảng rời nhau; sau đó trừ khoảng không làm phiền. Các khoảng là nửa mở, và các khoảng tiếp giáp nhau phải được hợp nhất.",
+      "Sau khi sắp xếp theo thời điểm bắt đầu, hợp nhất tuyến tính: mở rộng đoạn hiện tại khi khoảng kế tiếp chồng lên hoặc tiếp giáp nó, ngược lại bắt đầu một đoạn mới. Khi đã có hợp, việc trừ khoảng không làm phiền để lại tối đa một phần trái và một phần phải của mỗi đoạn.",
+      "Sắp xếp và hợp nhất (hợp nhất khi a <= điểm kết thúc của đoạn hiện tại); với mỗi đoạn đã hợp nhất [a, b): nếu b <= ds hoặc a >= de thì giữ nguyên; ngược lại giữ [a, ds) khi a < ds và [de, b) khi b > de; in số đoạn và các giá trị bắt đầu, kết thúc của chúng."
     ]
   },
   "explanationEn": "## Approach\n\nFirst sort by start and merge the covered intervals, then subtract the do-not-disturb interval from each segment, keeping the non-empty left and right parts.\n\n## Correctness\n\nAfter sorting, an interval that overlaps or touches the current segment makes their union a single segment; otherwise a new segment must be started. Once the full union of meetings is known, the difference with the do-not-disturb interval can only leave its left part and its right part; keeping every non-empty part gives exactly the required set of times.\n\n## Complexity\n\nTime O(n log n), space O(n)."

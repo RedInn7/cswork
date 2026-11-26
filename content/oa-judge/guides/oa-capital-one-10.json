@@ -13,6 +13,21 @@
       "Whichever range you override, the profit outside it does not change; all that matters is how much extra profit turning one range into all sells brings.",
       "A day that was a buy (-price) becomes a sell (+price), gaining 2*price; days that were already sells are unaffected. So the task becomes the maximum sum of these gains over a contiguous range of length exactly k.",
       "Compute the original profit, then the gain of each day (2*price for a buy day, 0 for a sell day), find the maximum gain sum over all windows of length k with a sliding window, and print it plus the original profit. Use 64-bit integers throughout."
+    ],
+    "ja": [
+      "どの範囲を上書きしても、その外側の利益は変わりません。重要なのは、1つの範囲をすべて売りに変えることで、どれだけ追加の利益が得られるかだけです。",
+      "買いだった日(-price)が売り(+price)になると 2*price の利益増となり、すでに売りだった日は影響を受けません。したがって問題は、長さちょうど k の連続した範囲におけるこの増分の最大の合計を求めることになります。",
+      "元の利益を計算し、次に各日の増分(買いの日は 2*price、売りの日は 0)を求め、長さ k のすべてのウィンドウの増分合計の最大値をスライディングウィンドウで求め、元の利益に加えて出力します。全体を通して64ビット整数を使います。"
+    ],
+    "ko": [
+      "어떤 구간을 재정의하든 그 바깥의 이익은 변하지 않습니다. 중요한 것은 한 구간을 전부 매도로 바꿨을 때 추가로 생기는 이익이 얼마인가뿐입니다.",
+      "매수였던 날(-price)이 매도(+price)로 바뀌면 2*price만큼 이득이며, 이미 매도였던 날은 영향이 없습니다. 따라서 문제는 길이가 정확히 k인 연속 구간에서 이 이득의 합의 최댓값을 구하는 것이 됩니다.",
+      "원래 이익을 계산하고, 날마다의 이득(매수일은 2*price, 매도일은 0)을 구한 뒤, 슬라이딩 윈도우로 길이 k인 모든 구간에 대한 이득 합의 최댓값을 찾아 원래 이익에 더해 출력합니다. 전체에 64비트 정수를 사용합니다."
+    ],
+    "vi": [
+      "Dù bạn ghi đè đoạn nào, lợi nhuận bên ngoài đoạn đó không đổi; điều duy nhất quan trọng là việc biến một đoạn thành toàn lệnh bán mang lại thêm bao nhiêu lợi nhuận.",
+      "Một ngày vốn là mua (-price) trở thành bán (+price), lời thêm 2*price; các ngày vốn đã là bán không bị ảnh hưởng. Vậy bài toán trở thành tìm tổng lớn nhất của các khoản lời này trên một đoạn liên tiếp có độ dài đúng bằng k.",
+      "Tính lợi nhuận ban đầu, rồi khoản lời của từng ngày (2*price cho ngày mua, 0 cho ngày bán), tìm tổng lời lớn nhất trên mọi cửa sổ độ dài k bằng cửa sổ trượt, và in nó cộng với lợi nhuận ban đầu. Dùng số nguyên 64 bit xuyên suốt."
     ]
   },
   "explanationEn": "## Approach\n\nThe base profit is the same for every plan. Changing a day from buy to sell increases the profit by 2×price; a day that is already a sell adds 0. Use a sliding window of length k to maximize the increase.\n\n## Correctness\n\nFor each range of length k, the profit after the change equals the original profit plus 2×price for every 0 position inside the range. The sliding window enumerates all valid ranges and maintains the sum of this increase, so taking the maximum and adding the base profit gives the global optimum.\n\n## Complexity\n\nTime O(n), space O(n)."

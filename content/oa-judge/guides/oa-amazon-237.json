@@ -13,6 +13,21 @@
       "Look at two values u<v that are adjacent in sorted order: if v lies left of u in the original array, only an operation with a threshold u<x<=v can put them in order, and x must be a value present in the array.",
       "So every such inverted adjacent pair forces v to be chosen as a threshold; the other adjacent pairs are already in order and need nothing; applying the forced thresholds once each in ascending order sorts the array.",
       "Record each value's original position and sort the values into b; for i=1..n-1, collect b[i] whenever the original position of b[i-1] is greater than that of b[i]; output the collected values in ascending order, or -1 if there are none."
+    ],
+    "ja": [
+      "ソート順で隣り合う 2 つの値 u<v を見ます。v が元の配列で u の左にあるなら、閾値 u<x<=v の操作だけが順序を直せ、x は配列に存在する値でなければなりません。",
+      "したがって、そのような逆転した隣接ペアはどれも v を閾値に選ぶことを強制します。他の隣接ペアはすでに順序が正しく、何も必要ありません。強制された閾値を 1 回ずつ昇順に適用すれば、配列はソートされます。",
+      "各値の元の位置を記録し、値をソートして b とします。i=1..n-1 について、b[i-1] の元の位置が b[i] の元の位置より大きいときに b[i] を集めます。集めた値を昇順に出力し、なければ -1 を出力します。"
+    ],
+    "ko": [
+      "정렬 순서에서 인접한 두 값 u<v를 봅시다. 원래 배열에서 v가 u의 왼쪽에 있다면, 둘의 순서를 바로잡을 수 있는 것은 임계값 u<x<=v인 연산뿐이며, x는 배열에 있는 값이어야 합니다.",
+      "따라서 이렇게 뒤집힌 인접 쌍마다 v가 임계값으로 반드시 선택되어야 하고, 다른 인접 쌍은 이미 순서가 맞아 아무것도 필요하지 않습니다. 강제된 임계값을 각각 한 번씩 오름차순으로 적용하면 배열이 정렬됩니다.",
+      "각 값의 원래 위치를 기록하고 값을 정렬해 b로 둡니다. i=1..n-1에 대해 b[i-1]의 원래 위치가 b[i]의 원래 위치보다 클 때마다 b[i]를 모읍니다. 모은 값을 오름차순으로 출력하고, 없으면 -1을 출력합니다."
+    ],
+    "vi": [
+      "Xét hai giá trị u<v kề nhau trong thứ tự đã sắp xếp: nếu v nằm bên trái u trong mảng gốc, chỉ một phép toán với ngưỡng u<x<=v mới có thể đặt chúng đúng thứ tự, và x phải là một giá trị có trong mảng.",
+      "Vì vậy mọi cặp kề nhau bị đảo như vậy buộc v phải được chọn làm một ngưỡng; các cặp kề nhau khác đã đúng thứ tự và không cần gì; áp dụng mỗi ngưỡng bắt buộc một lần theo thứ tự tăng dần sẽ sắp xếp được mảng.",
+      "Ghi lại vị trí gốc của mỗi giá trị và sắp xếp các giá trị vào b; với i=1..n-1, thu thập b[i] bất cứ khi nào vị trí gốc của b[i-1] lớn hơn vị trí của b[i]; in các giá trị đã thu thập theo thứ tự tăng dần, hoặc -1 nếu không có giá trị nào."
     ]
   },
   "explanationEn": "## Approach\n\nSort the values into b and record the original positions pos; output, in ascending order, every b[i] satisfying pos[b[i−1]]>pos[b[i]].\n\n## Proof of correctness\n\nIf two values u<v that are adjacent in sorted order are inverted in their original positions, only a threshold u<x≤v can change their relative order; x must exist in the array, so v must be chosen. Within a block of consecutive values that needs no threshold between them, the original relative order is already correct. Executing every necessary threshold once in ascending order sorts between blocks while preserving the order within blocks, which is enough to finish. This set is a subset of every solution, so the number of operations is minimal, and ascending order is its lexicographically smallest arrangement.\n\n## Complexity\n\nTime O(n log n), space O(n)."

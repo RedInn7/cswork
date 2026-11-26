@@ -13,6 +13,21 @@
       "In a run of consecutive copies of the pattern, the last copy ends at some text position i, and removing it leaves exactly a shorter run of copies ending at i - m, where m is the pattern length.",
       "Let dp[i] be the number of consecutive pattern copies ending exactly after the first i characters of the text: if the length-m substring ending at i equals the pattern, dp[i] = dp[i - m] + 1, otherwise 0. The answer is the maximum dp value.",
       "Handle the edge cases first: if the pattern or the text is empty (an empty input line), print 0. Then for end from m to n compare long_s[end - m .. end) with the pattern, apply the recurrence and track the maximum. Since m < 10, the time is O(nm) and the space O(n)."
+    ],
+    "ja": [
+      "パターンが連続して繰り返される区間では、最後のコピーはテキストのある位置 i で終わります。それを取り除くと、i - m（m はパターンの長さ）で終わる、より短い繰り返し区間がちょうど残ります。",
+      "dp[i] を、テキストの先頭 i 文字の直後でちょうど終わる、パターンの連続コピーの個数とします。i で終わる長さ m の部分文字列がパターンに等しければ dp[i] = dp[i - m] + 1、そうでなければ 0 です。答えは dp の最大値です。",
+      "先に端のケースを処理します。パターンかテキストが空（入力行が空）なら 0 を出力します。そのうえで、end を m から n まで動かして long_s[end - m .. end) をパターンと比較し、漸化式を適用して最大値を更新します。m < 10 なので、時間は O(nm)、空間は O(n) です。"
+    ],
+    "ko": [
+      "패턴이 연속으로 반복되는 구간에서 마지막 사본은 텍스트의 어떤 위치 i에서 끝나고, 이를 떼어 내면 정확히 i - m에서 끝나는 더 짧은 반복 구간이 남습니다. 여기서 m은 패턴의 길이입니다.",
+      "dp[i]를 텍스트의 앞 i개 문자에서 정확히 끝나는 연속 패턴 사본의 개수라고 하세요. i에서 끝나는 길이 m의 부분 문자열이 패턴과 같으면 dp[i] = dp[i - m] + 1이고, 아니면 0입니다. 답은 dp의 최댓값입니다.",
+      "먼저 예외 경우를 처리하세요. 패턴이나 텍스트가 비어 있으면(빈 입력 줄) 0을 출력합니다. 그다음 end를 m부터 n까지 늘리며 long_s[end - m .. end)를 패턴과 비교하고, 점화식을 적용하며 최댓값을 갱신합니다. m < 10이므로 시간은 O(nm), 공간은 O(n)입니다."
+    ],
+    "vi": [
+      "Trong một dãy các bản sao liên tiếp của mẫu, bản sao cuối kết thúc ở vị trí văn bản i nào đó, và bỏ nó đi thì còn lại đúng một dãy ngắn hơn các bản sao kết thúc ở i - m, với m là độ dài mẫu.",
+      "Gọi dp[i] là số bản sao mẫu liên tiếp kết thúc ngay sau i ký tự đầu của văn bản: nếu xâu con độ dài m kết thúc ở i bằng mẫu thì dp[i] = dp[i - m] + 1, ngược lại là 0. Đáp án là giá trị dp lớn nhất.",
+      "Xử lý các trường hợp biên trước: nếu mẫu hoặc văn bản rỗng (một dòng đầu vào trống) thì in 0. Sau đó với end từ m đến n, so sánh long_s[end - m .. end) với mẫu, áp dụng công thức truy hồi và theo dõi giá trị lớn nhất. Vì m < 10, thời gian là O(nm) và bộ nhớ O(n)."
     ]
   },
   "explanationEn": "## Approach\n\nLet dp[i] be the number of consecutive repetitions of the pattern that end exactly at the first i characters of long_s. If the substring of length m at the end equals the pattern, then dp[i] = dp[i-m] + 1; otherwise it is 0. The answer is the maximum dp value.\n\n## Correctness\n\nThe last pattern copy of any run of consecutive repetitions must end at some position i, and just before it a shorter run of consecutive repetitions ended exactly at i-m; the recurrence therefore yields the true run length. If the end does not match, the position cannot belong to a repetition run ending there, so its value is 0. Going through every end position covers all candidates.\n\n## Complexity\n\nLet the pattern length be m and the text length n, with m < 10: time O(nm), space O(n)."

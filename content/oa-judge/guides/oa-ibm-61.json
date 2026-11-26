@@ -13,6 +13,21 @@
       "Turning one element into t takes at least |a[i] - t| operations and elements do not affect each other, so the answer to a query is the sum of absolute differences between all elements and t.",
       "Computing it element by element costs n * q. After sorting the array and building prefix sums, the part below t and the part not below t can each be computed at once as the difference between count * t and a range sum.",
       "Sort and build prefix sums prefix; for each query t, binary search the first position p whose value is not less than t; the answer is t * p - prefix[p] plus (prefix[n] - prefix[p]) - t * (n - p), all in 64-bit integers; the array itself is never modified, so queries stay independent."
+    ],
+    "ja": [
+      "1つの要素を t にするには少なくとも |a[i] - t| 回の操作が必要で、要素どうしは影響し合わないので、クエリの答えはすべての要素と t の絶対差の総和です。",
+      "要素ごとに計算すると n * q かかります。配列をソートして累積和を作れば、t より小さい部分とそうでない部分を、それぞれ個数 * t と区間和の差としてまとめて計算できます。",
+      "ソートして累積和 prefix を作ります。各クエリ t について、値が t 以上となる最初の位置 p を二分探索で求め、答えは t * p - prefix[p] に (prefix[n] - prefix[p]) - t * (n - p) を加えたもの(すべて64ビット整数)です。配列自体は変更しないので、クエリは独立のままです。"
+    ],
+    "ko": [
+      "한 원소를 t로 만들려면 최소 |a[i] - t|번의 연산이 필요하고 원소들은 서로 영향을 주지 않으므로, 질의의 답은 모든 원소와 t의 절댓값 차이의 합입니다.",
+      "원소마다 계산하면 n * q의 비용이 듭니다. 배열을 정렬하고 누적 합을 만들면, t보다 작은 부분과 작지 않은 부분을 각각 개수 * t와 구간 합의 차로 한 번에 계산할 수 있습니다.",
+      "정렬하고 누적 합 prefix를 만듭니다. 각 질의 t에 대해 값이 t 이상인 첫 위치 p를 이분 탐색으로 찾으면, 답은 t * p - prefix[p]에 (prefix[n] - prefix[p]) - t * (n - p)를 더한 값입니다. 모두 64비트 정수로 계산하며, 배열 자체는 수정하지 않으므로 질의는 독립적으로 유지됩니다."
+    ],
+    "vi": [
+      "Biến một phần tử thành t cần ít nhất |a[i] - t| thao tác và các phần tử không ảnh hưởng nhau, nên đáp án của một truy vấn là tổng các hiệu tuyệt đối giữa mọi phần tử và t.",
+      "Tính từng phần tử tốn n * q. Sau khi sắp xếp mảng và dựng tổng tiền tố, phần nhỏ hơn t và phần không nhỏ hơn t có thể tính mỗi phần bằng một lần, dưới dạng hiệu giữa count * t và một tổng đoạn.",
+      "Sắp xếp và dựng tổng tiền tố prefix; với mỗi truy vấn t, tìm kiếm nhị phân vị trí p đầu tiên có giá trị không nhỏ hơn t; đáp án là t * p - prefix[p] cộng (prefix[n] - prefix[p]) - t * (n - p), tất cả dùng số nguyên 64 bit; bản thân mảng không bao giờ bị sửa nên các truy vấn vẫn độc lập."
     ]
   },
   "explanationEn": "## Approach\n\nAfter sorting, compute prefix sums, and use binary search to split the numbers smaller than the target from those not smaller than it; compute the total increase and the total decrease separately.\n\n## Proof of correctness\n\nA single element needs at least as many operations as its absolute difference from the target, and that is achievable; elements are independent, so the answer is the sum of absolute differences. The part left of the split contributes t·p − prefix sum, and the right part contributes remaining sum − t·(n−p), so the prefix-sum formula is exact; the original array is never changed, which keeps queries independent.\n\n## Complexity\n\nPreprocessing O(n log n), O(log n) per query, space O(n+q); answers use 64-bit integers."

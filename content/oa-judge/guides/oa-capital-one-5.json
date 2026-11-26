@@ -13,6 +13,21 @@
       "The only legal starts are multiples of 8 (0, 8, 16, ...), and \"leftmost\" means the first usable block when the starts are tried in increasing order; freeing needs to know which allocation owns each unit.",
       "Keep one array with the occupied flag of every unit and another with the allocation ID that owns it; an allocation tries starts in steps of 8 and checks that the whole block is free, and a free scans the whole array to clear every unit with that ID.",
       "Allocate x: for s = 0, 8, 16, ..., if s + x <= n and [s, s + x) is all free, mark those units occupied with a new ID (IDs start at 1 and grow only on success) and output s; output -1 if no start works. Free id: scan all units, clear the ones whose ID equals id and count them; output the count if it is positive, otherwise -1. Initially occupied units carry no ID and are never freed."
+    ],
+    "ja": [
+      "有効な開始位置は8の倍数(0, 8, 16, ...)のみで、「最も左」とは開始位置を昇順に試したとき最初に使えるブロックのことです。解放では、各ユニットがどの割り当てに属するかを知る必要があります。",
+      "各ユニットの使用中フラグを持つ配列と、そのユニットを所有する割り当て ID を持つ配列の2つを用意します。確保では8刻みで開始位置を試し、ブロック全体が空いているかを確認します。解放では配列全体を走査し、その ID を持つすべてのユニットをクリアします。",
+      "x を確保: s = 0, 8, 16, ... について、s + x <= n かつ [s, s + x) がすべて空いていれば、そのユニットを新しい ID で使用中にして(ID は1から始まり、成功したときだけ増やす)s を出力します。どの開始位置も使えなければ -1 を出力します。id を解放: すべてのユニットを走査し、ID が id に等しいものをクリアして数えます。個数が正ならそれを出力し、そうでなければ -1 を出力します。最初から使用中のユニットは ID を持たず、解放されることはありません。"
+    ],
+    "ko": [
+      "유효한 시작 위치는 8의 배수(0, 8, 16, ...)뿐이며, \"가장 왼쪽\"이란 시작 위치를 증가하는 순서로 시도했을 때 처음으로 사용 가능한 블록을 뜻합니다. 해제하려면 각 단위를 어느 할당이 소유하는지 알아야 합니다.",
+      "모든 단위의 사용 여부 플래그를 담은 배열 하나와 그 단위를 소유한 할당 ID를 담은 배열 하나를 유지합니다. 할당은 8씩 증가하는 시작 위치를 시도하며 블록 전체가 비어 있는지 확인하고, 해제는 배열 전체를 훑으며 해당 ID를 가진 모든 단위를 비웁니다.",
+      "x 할당: s = 0, 8, 16, ...에 대해 s + x <= n이고 [s, s + x)가 모두 비어 있으면 해당 단위들을 새 ID로 사용 중 표시하고(ID는 1부터 시작하며 성공했을 때만 증가) s를 출력합니다. 가능한 시작 위치가 없으면 -1을 출력합니다. id 해제: 모든 단위를 훑어 ID가 id인 것을 비우고 개수를 셉니다. 개수가 양수이면 그 값을, 아니면 -1을 출력합니다. 처음부터 사용 중인 단위는 ID가 없으며 절대 해제되지 않습니다."
+    ],
+    "vi": [
+      "Các vị trí bắt đầu hợp lệ duy nhất là bội của 8 (0, 8, 16, ...), và \"ngoài cùng bên trái\" nghĩa là khối dùng được đầu tiên khi thử các vị trí bắt đầu theo thứ tự tăng dần; việc giải phóng cần biết lần cấp phát nào sở hữu từng đơn vị.",
+      "Giữ một mảng với cờ bị chiếm của từng đơn vị và một mảng khác với ID cấp phát sở hữu nó; cấp phát thử các vị trí bắt đầu theo bước 8 và kiểm tra cả khối đều trống, còn giải phóng quét toàn bộ mảng để xóa mọi đơn vị có ID đó.",
+      "Cấp phát x: với s = 0, 8, 16, ..., nếu s + x <= n và [s, s + x) hoàn toàn trống, đánh dấu các đơn vị đó là bị chiếm với một ID mới (ID bắt đầu từ 1 và chỉ tăng khi thành công) và in s; in -1 nếu không có vị trí nào phù hợp. Giải phóng id: quét mọi đơn vị, xóa những đơn vị có ID bằng id và đếm chúng; in số đếm nếu dương, ngược lại in -1. Các đơn vị bị chiếm ban đầu không có ID và không bao giờ được giải phóng."
     ]
   },
   "explanationEn": "## Approach\n\nCheck candidate starts in increasing multiples of 8 and allocate at the first one whose block is large enough and entirely free, writing the new ID into every unit of the block. To free, scan by ID and clear all matching units.\n\n## Proof of correctness\n\nEnumerating starts in increasing order covers every legal aligned start, so the first one that satisfies the contiguous-free condition is the leftmost allocatable block. Every successful allocation uses a unique ID, and a full scan frees exactly all of its units.\n\n## Complexity\n\nO(n) per operation, O(n) space.\n\n## Source notes\n\nThis site adds the input protocol and the convention that initially occupied units cannot be freed."

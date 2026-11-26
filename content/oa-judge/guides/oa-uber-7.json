@@ -13,6 +13,21 @@
       "Buildings can only be raised. Once the direction is fixed, the final shape is determined by the start height s: building i becomes s + i when ascending or s - i when descending, and each building gives an independent lower bound on s.",
       "Ascending needs s + i >= height[i] for every i, that is s >= max(height[i] - i); descending needs s >= max(height[i] + i). The total number of operations grows with s, so the smallest feasible s is optimal in each direction.",
       "In one scan compute asc = max(height[i] - i), desc = max(height[i] + i) and the sum total, and let offset = n(n - 1)/2. The ascending cost is n * asc + offset - total and the descending cost is n * desc - offset - total; output the smaller one. Intermediate values exceed 32 bits, so use 64-bit integers."
+    ],
+    "ja": [
+      "建物は高くすることしかできません。向きを決めると、最終的な形は開始高さ s で決まります。昇順なら建物 i は s + i、降順なら s - i になり、各建物から s に対する下限が独立に得られます。",
+      "昇順にはすべての i で s + i >= height[i]、つまり s >= max(height[i] - i) が必要です。降順には s >= max(height[i] + i) が必要です。操作回数の合計は s が大きいほど増えるので、各向きで実現可能な最小の s が最適です。",
+      "1 回の走査で asc = max(height[i] - i)、desc = max(height[i] + i)、および合計 total を求め、offset = n(n - 1)/2 とします。昇順のコストは n * asc + offset - total、降順のコストは n * desc - offset - total で、小さいほうを出力します。途中の値は 32 ビットを超えるので、64 ビット整数を使ってください。"
+    ],
+    "ko": [
+      "건물은 올릴 수만 있습니다. 방향이 정해지면 최종 모양은 시작 높이 s로 결정됩니다. 오름차순이면 건물 i는 s + i, 내림차순이면 s - i가 되며, 각 건물은 s에 대한 독립적인 하한을 줍니다.",
+      "오름차순은 모든 i에 대해 s + i >= height[i], 즉 s >= max(height[i] - i)가 필요합니다. 내림차순은 s >= max(height[i] + i)가 필요합니다. 총 연산 횟수는 s가 클수록 늘어나므로, 각 방향에서 가능한 가장 작은 s가 최적입니다.",
+      "한 번의 스캔으로 asc = max(height[i] - i), desc = max(height[i] + i)와 합 total을 구하고 offset = n(n - 1)/2로 둡니다. 오름차순 비용은 n * asc + offset - total, 내림차순 비용은 n * desc - offset - total이며, 둘 중 작은 값을 출력합니다. 중간 값이 32비트를 넘으므로 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Các tòa nhà chỉ có thể được nâng lên. Khi đã cố định hướng, hình dạng cuối cùng được xác định bởi chiều cao khởi đầu s: tòa nhà i trở thành s + i khi tăng dần hoặc s - i khi giảm dần, và mỗi tòa nhà cho một cận dưới độc lập đối với s.",
+      "Tăng dần cần s + i >= height[i] với mọi i, tức là s >= max(height[i] - i); giảm dần cần s >= max(height[i] + i). Tổng số thao tác tăng theo s, nên s nhỏ nhất khả thi là tối ưu ở mỗi hướng.",
+      "Trong một lần quét, tính asc = max(height[i] - i), desc = max(height[i] + i) và tổng total, rồi đặt offset = n(n - 1)/2. Chi phí cho hướng tăng dần là n * asc + offset - total và cho hướng giảm dần là n * desc - offset - total; in giá trị nhỏ hơn. Các giá trị trung gian vượt quá 32 bit, nên dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nThe ascending start height must be at least max(height[i] - i), and the descending start height at least max(height[i] + i). Take the smallest feasible start for each direction and compute the total difference.\n\n## Correctness\n\nEach building can only be raised, which gives an independent lower bound on the start height; taking the largest of these bounds satisfies every position at once. The total number of operations increases with the start height, so the smallest feasible start is optimal, and we take the smaller of the two directions.\n\n## Complexity\n\nTime O(n), space O(n) (for the input array)."

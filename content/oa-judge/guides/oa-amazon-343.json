@@ -13,6 +13,21 @@
       "Both lengths are at most 50, so you can enumerate every window of length |target| in content and judge each one separately.",
       "One adjacent swap changes only two adjacent positions. So a window either equals target exactly, or differs in exactly two positions that are next to each other.",
       "For each start, collect the indices where the window differs from target: with no difference, count it; with exactly two indices i and i+1 where window[i]=target[i+1] and window[i+1]=target[i], count it too; otherwise do not. Output the total."
+    ],
+    "ja": [
+      "どちらの長さも高々 50 なので、content の長さ |target| のウィンドウをすべて列挙し、それぞれを個別に判定できます。",
+      "隣接する1回の交換が変えるのは、隣り合う2つの位置だけです。したがって、ウィンドウは target とちょうど等しいか、隣り合うちょうど2つの位置で異なるかのどちらかです。",
+      "各開始位置について、ウィンドウが target と異なるインデックスを集めます。異なる位置がなければ数えます。異なる位置がちょうど i と i+1 の2つで、window[i]=target[i+1] かつ window[i+1]=target[i] であれば、これも数えます。それ以外は数えません。合計を出力します。"
+    ],
+    "ko": [
+      "두 길이가 모두 최대 50이므로 content에서 길이 |target|인 모든 윈도우를 열거하여 각각 따로 판정할 수 있습니다.",
+      "인접한 문자를 한 번 바꾸면 인접한 두 위치만 바뀝니다. 따라서 윈도우는 target과 정확히 같거나, 서로 이웃한 정확히 두 위치에서만 다릅니다.",
+      "각 시작 위치에서 윈도우가 target과 다른 인덱스를 모읍니다. 차이가 없으면 셉니다. 차이가 정확히 두 인덱스 i와 i+1이고 window[i]=target[i+1]이며 window[i+1]=target[i]이면 역시 셉니다. 그 외에는 세지 않습니다. 총합을 출력합니다."
+    ],
+    "vi": [
+      "Cả hai độ dài đều không quá 50, nên có thể liệt kê mọi cửa sổ độ dài |target| trong content và xét từng cửa sổ riêng.",
+      "Một lần hoán đổi hai ký tự kề nhau chỉ thay đổi hai vị trí kề nhau. Vì vậy một cửa sổ hoặc bằng target đúng nguyên, hoặc khác target ở đúng hai vị trí nằm cạnh nhau.",
+      "Với mỗi vị trí bắt đầu, thu các chỉ số mà cửa sổ khác target: nếu không có khác biệt thì đếm; nếu có đúng hai chỉ số i và i+1 mà window[i]=target[i+1] và window[i+1]=target[i] thì cũng đếm; ngược lại thì không. In tổng số."
     ]
   },
   "explanationEn": "## Approach\n\nFor each window, find the positions that differ. If there are none, it is valid; otherwise there must be exactly two differing positions, adjacent to each other, whose characters match crosswise after the swap.\n\n## Proof of correctness\n\nOne adjacent swap affects at most two adjacent positions. If the window is not equal to begin with, a valid swap must fix exactly those two differing positions, and crosswise equality is both necessary and sufficient; zero differing positions are handled by doing nothing. Enumerating every start position misses nothing.\n\n## Complexity\n\nTime O(|content|·|target|), space O(|target|)."

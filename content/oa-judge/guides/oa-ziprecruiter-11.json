@@ -13,6 +13,21 @@
       "Point p is lit by lamp [l, r] exactly when l ≤ p and r ≥ p; any lamp with right end < p also has left end < p.",
       "Lit count = (lamps with left end ≤ p) − (lamps with right end < p); after sorting the left ends and the right ends separately, each control point needs just two binary searches.",
       "Sort L and R separately; for each control point p compute upper_bound(L, p) − lower_bound(R, p), counting endpoints as lit; output in the original order of the control points, not after sorting them."
+    ],
+    "ja": [
+      "点 p がランプ [l, r] に照らされるのは、l ≤ p かつ r ≥ p のときに限ります。右端が < p のランプは左端も < p です。",
+      "照らされる数 = （左端が ≤ p のランプ数）−（右端が < p のランプ数）です。左端と右端を別々にソートしておけば、各制御点につき二分探索を2回するだけで済みます。",
+      "L と R を別々にソートし、各制御点 p について upper_bound(L, p) − lower_bound(R, p) を計算します（端点も照らされるものとして数えます）。制御点をソートせず、元の順序で出力してください。"
+    ],
+    "ko": [
+      "점 p가 전등 [l, r]에 비춰지는 것은 l ≤ p이고 r ≥ p일 때이며, 오른쪽 끝이 < p인 전등은 왼쪽 끝도 반드시 < p입니다.",
+      "비춰지는 개수 = (왼쪽 끝이 ≤ p인 전등 수) − (오른쪽 끝이 < p인 전등 수)입니다. 왼쪽 끝과 오른쪽 끝을 따로 정렬하면 각 관측 지점마다 이분 탐색 두 번이면 충분합니다.",
+      "L과 R을 따로 정렬하고, 각 관측 지점 p에 대해 upper_bound(L, p) − lower_bound(R, p)를 계산합니다(끝점도 비춰진 것으로 셈). 출력은 관측 지점을 정렬한 순서가 아니라 원래 입력 순서를 유지하세요."
+    ],
+    "vi": [
+      "Điểm p được đèn [l, r] chiếu sáng đúng khi l ≤ p và r ≥ p; bất kỳ đèn nào có đầu phải < p thì đầu trái cũng < p.",
+      "Số đèn chiếu sáng = (số đèn có đầu trái ≤ p) − (số đèn có đầu phải < p); sau khi sắp xếp riêng các đầu trái và các đầu phải, mỗi điểm kiểm soát chỉ cần hai lần tìm kiếm nhị phân.",
+      "Sắp xếp L và R riêng rẽ; với mỗi điểm kiểm soát p, tính upper_bound(L, p) − lower_bound(R, p), trong đó các đầu mút đều được tính là được chiếu sáng; in ra theo thứ tự ban đầu của các điểm kiểm soát, không phải sau khi đã sắp xếp chúng."
     ]
   },
   "explanationEn": "## Problem\n\nEach lamp lights the closed interval [lamps[i][0],lamps[i][1]] on the number line. For each control point points[j], count how many lamps light it (endpoints count) and output the results in the input order of the control points.\n\n## Approach\n\nPoint p is covered by interval [l,r] ⇔ l≤p and r≥p. Coverage = (number of lamps with left end ≤p) − (number of lamps with right end <p), because any lamp with right end <p also has left end <p. Sort all left ends and all right ends separately, and do two binary searches per control point.\n\n## Correctness\n\nAmong the lamps with left end ≤p, exactly those with right end <p do not cover p, and all the others do. The two binary searches give these two counts.\n\n## Complexity\n\nO((n+m) log n).\n\n## Independent verification\n\nThe oracle checks l≤p≤r lamp by lamp for each control point (O(nm), small data only), without sorting or binary search; large cases are computed separately with a Python difference-array sweep. All combinations of 1..2 lamps on coordinates 1..4 and all control points were enumerated and the reference program was actually run on each. Wrong solutions cover excluding the right or left endpoint, outputting in sorted control-point order, and forgetting to subtract lamps that have already ended."

@@ -13,6 +13,21 @@
       "A log involves at most two users, the sender and the recipient; a transfer to oneself counts only once for that user. The amount has nothing to do with the count.",
       "Count with a hash map how many logs each user takes part in: add one for the sender, and add one for the recipient only when the recipient differs from the sender. Finally keep the users whose count reaches the threshold.",
       "For each sender, recipient, amount: counts[sender]++, and if recipient != sender then counts[recipient]++. Collect the IDs with count >= threshold, sort them by numeric value (not lexicographic string order), and print the number of users followed by the IDs."
+    ],
+    "ja": [
+      "1 つのログに関与するユーザーは、送信者と受信者の最大 2 人です。自分自身への送金は、そのユーザーについて 1 回しか数えません。金額は件数と無関係です。",
+      "各ユーザーが関与したログの件数をハッシュマップで数えます。送信者に 1 を加え、受信者は送信者と異なる場合にのみ 1 を加えます。最後に件数が threshold に達したユーザーを残します。",
+      "各 sender, recipient, amount について、counts[sender]++ とし、recipient != sender なら counts[recipient]++ とします。count >= threshold の ID を集め、数値(辞書順の文字列ではなく)でソートし、ユーザー数に続けて ID を出力します。"
+    ],
+    "ko": [
+      "하나의 로그에는 최대 두 명의 사용자, 즉 보내는 사용자와 받는 사용자가 관여하며, 자기 자신에게 보내는 이체는 그 사용자에 대해 한 번만 계산합니다. 금액은 계산과 무관합니다.",
+      "해시 맵으로 각 사용자가 관여한 로그의 수를 셉니다. 보내는 사용자에게 1을 더하고, 받는 사용자에게는 보내는 사용자와 다를 때만 1을 더합니다. 마지막으로 횟수가 임계값에 도달한 사용자만 남깁니다.",
+      "각 sender, recipient, amount에 대해 counts[sender]++를 하고, recipient != sender이면 counts[recipient]++를 합니다. count >= threshold인 ID를 모아 숫자 값으로(문자열 사전순이 아니라) 정렬한 뒤, 사용자 수와 ID들을 출력합니다."
+    ],
+    "vi": [
+      "Mỗi dòng nhật ký liên quan đến nhiều nhất hai người dùng, người gửi và người nhận; chuyển cho chính mình chỉ tính một lần cho người dùng đó. Số tiền không liên quan đến việc đếm.",
+      "Dùng hash map đếm mỗi người dùng tham gia bao nhiêu dòng nhật ký: cộng một cho người gửi, và chỉ cộng một cho người nhận khi người nhận khác người gửi. Cuối cùng giữ những người dùng có số đếm đạt ngưỡng.",
+      "Với mỗi sender, recipient, amount: counts[sender]++, và nếu recipient != sender thì counts[recipient]++. Thu thập các ID có count >= threshold, sắp xếp theo giá trị số (không phải thứ tự từ điển của xâu), rồi in số người dùng theo sau là các ID."
     ]
   },
   "explanationEn": "## Approach\n\nFor each log, first count the sender; count the recipient as well only if it differs from the sender. Keep the users who reach the threshold and sort them as integers.\n\n## Correctness\n\nThe set of users taking part in one log has at most two members, and the conditional deduplication makes every user contribute exactly 1 per log. The accumulated frequency is therefore the number of logs the user takes part in, and filtering by >= threshold plus numeric sorting implements the requirement exactly.\n\n## Complexity\n\nO(n + U log U) time and O(U) space, where U <= 2n."

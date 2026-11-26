@@ -13,6 +13,11 @@
       "However the array is arranged, walking from the position of the minimum to the position of the maximum, the absolute differences along the way sum to at least max minus min.",
       "So the answer cannot be below max-min, and arranging the array in non-decreasing order makes the adjacent differences telescope to exactly max-min, which reaches that bound.",
       "No sorting or arrangement output is needed: one pass finds the maximum and minimum, and their difference is the answer."
+    ],
+    "vi": [
+      "Dù mảng được sắp xếp thế nào, khi đi từ vị trí của phần tử nhỏ nhất đến vị trí của phần tử lớn nhất, tổng các giá trị tuyệt đối của hiệu dọc đường đi ít nhất bằng max trừ min.",
+      "Vì vậy đáp án không thể nhỏ hơn max-min, và sắp xếp mảng không giảm làm các hiệu kề nhau triệt tiêu dần (telescoping) thành đúng max-min, đạt đúng cận dưới đó.",
+      "Không cần sắp xếp hay in cách sắp xếp: chỉ cần một lượt duyệt để tìm giá trị lớn nhất và nhỏ nhất, hiệu của chúng chính là đáp án."
     ]
   },
   "explanationEn": "## Approach\n\nThe answer is the maximum minus the minimum, which takes a single scan.\n\n## Proof of correctness\n\nIn any arrangement, the sum of absolute differences along the path between the minimum and the maximum is at least their difference, so the total is not less than max-min. Arranging in non-decreasing order makes the differences telescope to exactly max-min, reaching the lower bound.\n\n## Complexity\n\nO(n) time; the reference reads the input in O(n) space, which streaming can reduce to O(1)."

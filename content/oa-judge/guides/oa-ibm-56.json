@@ -13,6 +13,21 @@
       "After sorting, any two non-adjacent numbers have at least one other number between them, so their difference is larger than any single adjacent difference in between.",
       "Therefore the minimum absolute difference can only occur between neighbours in sorted order: first find the smallest adjacent difference, then collect the adjacent pairs whose difference equals it.",
       "Sort; scan the neighbours once to get the minimum difference d; scan again and record, in order, every adjacent pair whose difference is d (smaller number first); print the number of pairs and then one pair per line, since the scan order of the sorted array already matches the required output order."
+    ],
+    "ja": [
+      "ソートすると、隣り合っていない2つの数の間には必ず別の数が少なくとも1つ入るため、その差は間にある隣接差のどれよりも大きくなります。",
+      "したがって絶対差の最小値は、ソート後に隣り合う要素の間でのみ現れます。まず隣接差の最小値を求め、その差に等しい隣接ペアを集めます。",
+      "ソートし、隣接要素を1回走査して最小差 d を求めます。もう一度走査して、差が d に等しい隣接ペアを順に(小さい数を先に)記録します。ソート済み配列の走査順がそのまま求められる出力順になっているので、ペアの個数を出力し、続けて1行に1ペアずつ出力します。"
+    ],
+    "ko": [
+      "정렬하면 인접하지 않은 두 수 사이에는 다른 수가 적어도 하나 끼어 있으므로, 두 수의 차이는 그 사이의 어떤 인접 차이보다도 큽니다.",
+      "따라서 최소 절댓값 차이는 정렬된 순서에서 이웃한 원소 사이에서만 나타날 수 있습니다. 먼저 가장 작은 인접 차이를 구한 다음, 차이가 그 값과 같은 인접 쌍을 모읍니다.",
+      "정렬합니다. 이웃한 원소를 한 번 훑어 최소 차이 d를 구하고, 다시 훑으면서 차이가 d인 인접 쌍(작은 수 먼저)을 순서대로 기록합니다. 쌍의 개수를 출력한 뒤 한 줄에 한 쌍씩 출력합니다. 정렬된 배열의 탐색 순서가 이미 요구하는 출력 순서와 같습니다."
+    ],
+    "vi": [
+      "Sau khi sắp xếp, hai số không kề nhau luôn có ít nhất một số khác nằm giữa, nên hiệu của chúng lớn hơn hiệu của bất kỳ cặp kề nào nằm giữa.",
+      "Vì vậy hiệu tuyệt đối nhỏ nhất chỉ có thể xảy ra giữa hai phần tử kề nhau trong dãy đã sắp xếp: trước hết tìm hiệu kề nhỏ nhất, sau đó thu thập các cặp kề có hiệu bằng nó.",
+      "Sắp xếp; duyệt các cặp kề một lần để tìm hiệu nhỏ nhất d; duyệt lần nữa và ghi lại theo thứ tự mọi cặp kề có hiệu bằng d (số nhỏ đứng trước); in số lượng cặp rồi mỗi dòng một cặp, vì thứ tự duyệt của mảng đã sắp xếp vốn đã trùng với thứ tự đầu ra yêu cầu."
     ]
   },
   "explanationEn": "## Approach\n\nSort, find the minimum difference between adjacent elements, then output all adjacent pairs whose difference equals it.\n\n## Proof of correctness\n\nBetween two non-adjacent numbers there is at least one other distinct value, so their difference is the sum of at least two positive adjacent differences and is strictly greater than either of them. Hence the minimum difference can only occur between adjacent items. Enumerating all adjacent pairs and filtering them gives every pair exactly once, and the order is naturally increasing.\n\n## Complexity\n\nTime O(n log n), space O(n)."

@@ -13,6 +13,21 @@
       "Let q be the fewest 1s in any initial window of length k. However you operate, before the t-th operation at most t−1 ones have been removed, so the first q operations cost at least q, q−1, …, 1 in turn, and every later operation costs at least 1.",
       "This bound is reachable: first keep choosing the window with the fewest 1s until it is clear, paying exactly q+(q−1)+…+1; then slide outward from that all-zero window one cell at a time, so each newly met 1 is the only 1 in its window and costs 1 to remove. The total is T+q(q−1)/2, where T is the number of 1s.",
       "Count the total number of 1s, T; use a sliding window to find the minimum number q of 1s over all windows of length k; print T+q×(q−1)/2 as a 64-bit integer. An all-zero array naturally gives 0."
+    ],
+    "ja": [
+      "q を、長さ k の初期ウィンドウに含まれる 1 の最小個数とします。どのように操作しても、t 回目の操作の前に取り除かれた 1 は高々 t−1 個なので、最初の q 回の操作のコストはそれぞれ少なくとも q, q−1, …, 1 で、それ以降の操作のコストは少なくとも 1 です。",
+      "この下限は達成できます。まず、1 が最も少ないウィンドウをそれが空になるまで選び続け、ちょうど q+(q−1)+…+1 を支払います。その後、すべて 0 のウィンドウから 1 マスずつ外へスライドさせれば、新しく出会う 1 はそのウィンドウ内で唯一の 1 になるので、取り除くコストは 1 です。合計は T+q(q−1)/2 で、T は 1 の個数です。",
+      "1 の総数 T を数えます。スライディングウィンドウで、長さ k のすべてのウィンドウに含まれる 1 の最小個数 q を求め、T+q×(q−1)/2 を 64 ビット整数として出力します。すべて 0 の配列では自然に 0 になります。"
+    ],
+    "ko": [
+      "q를 길이 k의 초기 윈도 중 1이 가장 적은 개수라고 합니다. 어떻게 연산하든 t번째 연산 전에 제거된 1은 최대 t−1개이므로, 처음 q번의 연산은 차례로 최소 q, q−1, …, 1의 비용이 들고 이후의 연산은 각각 최소 1이 듭니다.",
+      "이 하한은 달성 가능합니다. 먼저 1이 가장 적은 윈도가 완전히 비워질 때까지 계속 그 윈도를 골라 정확히 q+(q−1)+…+1을 지불합니다. 그다음 전부 0이 된 윈도에서 바깥으로 한 칸씩 밀어 가면, 새로 만나는 1은 항상 자기 윈도의 유일한 1이므로 제거 비용이 1입니다. 총합은 T+q(q−1)/2이며 T는 1의 개수입니다.",
+      "1의 총 개수 T를 셉니다. 슬라이딩 윈도로 길이 k 윈도의 1의 개수 최솟값 q를 구하고, T+q×(q−1)/2를 64비트 정수로 출력합니다. 모두 0인 배열은 자연스럽게 0이 됩니다."
+    ],
+    "vi": [
+      "Gọi q là số lượng số 1 ít nhất trong mọi cửa sổ ban đầu có độ dài k. Dù thao tác thế nào, trước thao tác thứ t nhiều nhất t−1 số 1 đã bị xóa, nên q thao tác đầu tiên tốn ít nhất lần lượt q, q−1, …, 1, và mọi thao tác sau đó tốn ít nhất 1.",
+      "Cận này đạt được: đầu tiên liên tục chọn cửa sổ có ít số 1 nhất cho đến khi nó sạch, trả đúng q+(q−1)+…+1; sau đó trượt ra ngoài từ cửa sổ toàn số 0 đó từng ô một, để mỗi số 1 mới gặp là số 1 duy nhất trong cửa sổ của nó và tốn 1 để xóa. Tổng là T+q(q−1)/2, trong đó T là số lượng số 1.",
+      "Đếm tổng số số 1, T; dùng cửa sổ trượt để tìm số lượng số 1 nhỏ nhất q trong mọi cửa sổ độ dài k; in ra T+q×(q−1)/2 dưới dạng số nguyên 64 bit. Mảng toàn số 0 tự nhiên cho 0."
     ]
   },
   "explanationEn": "## Approach\n\nLet T be the total number of 1s, and use a sliding window to find the minimum number q of 1s in any initial window of length k; return T+q(q−1)/2.\n\n## Proof of correctness\n\nEvery initial window has at least q ones, and before the t-th operation at most t−1 have been removed, so the first q operations cost at least q,q−1,…,1, and every removal after that costs at least 1. Choosing the window with the fewest ones first and clearing it continuously pays exactly that triangular sum. Once a zero stretch of length k exists, extend it left and right one cell at a time; each newly reached 1 can be removed at cost 1 in a window whose other k−1 cells are already cleared, so the lower bound is reached. The fixed window length does not shrink at the edges of the array.\n\n## Complexity\n\nTime O(n), auxiliary space O(1) excluding the input; the answer uses 64 bits."

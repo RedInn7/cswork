@@ -13,6 +13,21 @@
       "Extending a subarray on either side never lowers the number of times any value occurs in it.",
       "So if any subarray qualifies, the whole array qualifies too; and if the whole array does not, no subarray can. The answer is either n or 0.",
       "Count how often each value occurs in the whole array and take the largest count; print n if it is strictly greater than k, otherwise print 0."
+    ],
+    "ja": [
+      "部分配列をどちら側に伸ばしても、その中でどの値の出現回数も減りません。",
+      "したがって、条件を満たす部分配列が 1 つでもあれば配列全体も条件を満たし、配列全体が満たさなければどの部分配列も満たしません。答えは n か 0 です。",
+      "配列全体で各値の出現回数を数え、最大の回数を取ります。それが k より厳密に大きければ n を、そうでなければ 0 を出力します。"
+    ],
+    "ko": [
+      "부분 배열을 어느 쪽으로 늘려도 어떤 값의 등장 횟수도 줄어들지 않습니다.",
+      "따라서 조건을 만족하는 부분 배열이 하나라도 있으면 전체 배열도 만족하고, 전체 배열이 만족하지 않으면 어떤 부분 배열도 만족하지 않습니다. 답은 n 아니면 0입니다.",
+      "전체 배열에서 각 값의 등장 횟수를 세어 가장 큰 횟수를 구하고, 그것이 k보다 엄격하게 크면 n을, 아니면 0을 출력합니다."
+    ],
+    "vi": [
+      "Mở rộng một mảng con về một trong hai phía không bao giờ làm giảm số lần xuất hiện của bất kỳ giá trị nào trong đó.",
+      "Vì vậy nếu có mảng con thỏa thì toàn mảng cũng thỏa; và nếu toàn mảng không thỏa thì không mảng con nào thỏa. Đáp án là n hoặc 0.",
+      "Đếm số lần xuất hiện của mỗi giá trị trong toàn mảng và lấy số đếm lớn nhất; in n nếu nó lớn hơn hẳn k, ngược lại in 0."
     ]
   },
   "explanationEn": "## Approach\n\nCount frequencies over the whole array. If any frequency exceeds k, the whole array is optimal; otherwise no subarray can qualify.\n\n## Why it works\n\nExtending a range never lowers the occurrence count of any value, so if a valid subarray exists, the full array is valid too. Conversely, when no value occurs more than k times in the full array, no shorter range can exceed k either.\n\n## Complexity\n\nExpected time O(n), extra space O(n)."

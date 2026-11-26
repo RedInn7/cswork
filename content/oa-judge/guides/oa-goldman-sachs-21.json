@@ -13,6 +13,21 @@
       "All elements are positive, so extending a subarray to the left only increases its sum. For a fixed right end, the valid left ends form a contiguous range.",
       "Use a sliding window: each time the right end moves one step, add the new element to the window sum; while the sum exceeds k, move the left end right and subtract the element leaving the window. The window is then the longest valid subarray ending at the current right end.",
       "Keep the left end l, the window sum s and the answer best; for each right end r: add a[r] to s, and while s > k subtract a[l] and increment l; then update best with r - l + 1 (the window may be empty, which gives length 0); print best."
+    ],
+    "ja": [
+      "すべての要素が正なので、部分配列を左へ伸ばすと和は増えるだけです。右端を固定すると、有効な左端は連続した範囲になります。",
+      "スライディングウィンドウを使います。右端が 1 つ進むたびに、新しい要素をウィンドウの和に加えます。和が k を超える間は、左端を右へ動かして、ウィンドウから出る要素を引きます。このときのウィンドウが、現在の右端で終わる最長の有効な部分配列です。",
+      "左端 l、ウィンドウの和 s、答え best を保持します。各右端 r について、a[r] を s に加え、s > k の間は a[l] を引いて l を増やします。その後、best を r - l + 1 で更新します（ウィンドウが空になることもあり、その場合の長さは 0 です）。最後に best を出力します。"
+    ],
+    "ko": [
+      "모든 원소가 양수이므로 부분 배열을 왼쪽으로 확장하면 합이 늘어나기만 합니다. 오른쪽 끝을 고정하면 유효한 왼쪽 끝은 연속된 구간을 이룹니다.",
+      "슬라이딩 윈도를 사용합니다. 오른쪽 끝이 한 칸 움직일 때마다 새 원소를 윈도 합에 더하고, 합이 k를 넘는 동안 왼쪽 끝을 오른쪽으로 옮기면서 윈도를 벗어나는 원소를 뺍니다. 그러면 윈도는 현재 오른쪽 끝에서 끝나는 가장 긴 유효한 부분 배열이 됩니다.",
+      "왼쪽 끝 l, 윈도 합 s, 답 best를 유지합니다. 각 오른쪽 끝 r에 대해 a[r]을 s에 더하고, s > k인 동안 a[l]을 빼고 l을 1 증가시킵니다. 그런 다음 best를 r - l + 1로 갱신합니다(윈도가 비어 있을 수 있으며 이 경우 길이는 0). 마지막에 best를 출력합니다."
+    ],
+    "vi": [
+      "Mọi phần tử đều dương, nên mở rộng một mảng con sang trái chỉ làm tăng tổng của nó. Với một đầu phải cố định, các đầu trái hợp lệ tạo thành một đoạn liên tiếp.",
+      "Dùng cửa sổ trượt: mỗi lần đầu phải tiến một bước, cộng phần tử mới vào tổng cửa sổ; khi tổng vượt quá k, dịch đầu trái sang phải và trừ phần tử rời khỏi cửa sổ. Khi đó cửa sổ là mảng con hợp lệ dài nhất kết thúc tại đầu phải hiện tại.",
+      "Giữ đầu trái l, tổng cửa sổ s và đáp án best; với mỗi đầu phải r: cộng a[r] vào s, và khi s > k thì trừ a[l] và tăng l; sau đó cập nhật best bằng r - l + 1 (cửa sổ có thể rỗng, khi đó độ dài là 0); in best."
     ]
   },
   "explanationEn": "## Approach\n\nPositive values allow a sliding window: add the element at the right end, and while the sum exceeds k keep removing elements from the left end, maintaining the maximum length of the current valid window.\n\n## Proof of correctness\n\nFor each right end, removing the fewest left elements gives the longest valid window ending at that point: all elements are positive, so any start further left only increases the sum. Scanning all right ends and taking the maximum gives the global optimum.\n\n## Complexity\n\nO(n) time, O(1) space."

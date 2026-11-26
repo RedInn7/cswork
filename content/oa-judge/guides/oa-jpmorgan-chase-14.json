@@ -13,6 +13,21 @@
       "The process is deterministic: every round removes both the current minimum and the current maximum, so you need a structure that gives fast access to both ends; with equal values the two must still come from different positions.",
       "Keep every element in both a min-heap and a max-heap, give each element a unique id, and delete lazily with validity flags; compute the cost with the integer identity ceil(p/q) = −floor(−p/q) for q>0, which is exact for negative numbers and avoids floating-point error.",
       "Both heaps hold (value, id); each round pop the valid minimum from the min-heap and mark it dead, then pop a different valid maximum from the max-heap and mark it dead; add ceil((min+max)/(max−min+1)) to the total and push their sum under a new id into both heaps; repeat n−1 times using 64-bit integers."
+    ],
+    "ja": [
+      "手順は決定的です。毎回、現在の最小値と最大値の両方を取り除くので、両端に素早くアクセスできる構造が必要です。値が等しい場合でも、2つは異なる位置のものでなければなりません。",
+      "各要素を最小ヒープと最大ヒープの両方に入れ、一意の id を付けて、有効フラグで遅延削除します。コストは整数の恒等式 ceil(p/q) = −floor(−p/q) (q>0)で計算します。これは負の数でも正確で、浮動小数点誤差も避けられます。",
+      "どちらのヒープも (値, id) を保持します。各ラウンドで、最小ヒープから有効な最小値を取り出して無効にし、次に最大ヒープから別の有効な最大値を取り出して無効にします。ceil((min+max)/(max−min+1)) を総コストに加え、2つの和を新しい id で両方のヒープに入れます。これを n−1 回繰り返し、64 ビット整数を使います。"
+    ],
+    "ko": [
+      "이 과정은 결정적입니다. 매 라운드 현재 최솟값과 최댓값을 모두 제거하므로 양 끝에 빠르게 접근할 수 있는 구조가 필요하며, 값이 같더라도 두 원소는 서로 다른 위치에서 나와야 합니다.",
+      "모든 원소를 최소 힙과 최대 힙에 모두 넣고 각각 고유 id를 부여한 뒤 유효 플래그로 지연 삭제합니다. 비용은 q>0일 때 정수 항등식 ceil(p/q) = −floor(−p/q)로 계산하면 음수에서도 정확하고 부동소수점 오차가 없습니다.",
+      "두 힙은 모두 (value, id)를 담습니다. 매 라운드 최소 힙에서 유효한 최솟값을 꺼내 죽은 것으로 표시하고, 최대 힙에서 다른 유효한 최댓값을 꺼내 역시 죽은 것으로 표시합니다. ceil((min+max)/(max−min+1))을 총합에 더하고 둘의 합을 새 id로 두 힙에 넣습니다. 64비트 정수로 n−1번 반복합니다."
+    ],
+    "vi": [
+      "Quá trình này là tất định: mỗi vòng đều xóa cả phần tử nhỏ nhất lẫn lớn nhất hiện tại, nên cần một cấu trúc truy cập nhanh cả hai đầu; khi có giá trị bằng nhau, hai phần tử vẫn phải đến từ hai vị trí khác nhau.",
+      "Giữ mọi phần tử trong cả min-heap và max-heap, gán cho mỗi phần tử một id duy nhất, và xóa lười bằng cờ hợp lệ; tính chi phí bằng đẳng thức số nguyên ceil(p/q) = −floor(−p/q) với q>0, chính xác cho số âm và tránh sai số dấu phẩy động.",
+      "Cả hai heap chứa (value, id); mỗi vòng lấy giá trị nhỏ nhất hợp lệ từ min-heap và đánh dấu đã chết, rồi lấy giá trị lớn nhất hợp lệ khác từ max-heap và đánh dấu đã chết; cộng ceil((min+max)/(max−min+1)) vào tổng và đẩy tổng của chúng với id mới vào cả hai heap; lặp n−1 lần với số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nKeep the elements, each with a unique ID, in both a min-heap and a max-heap, and use validity flags for lazy deletion. In each round, pop the two valid extremes, compute the exact ceiling, and insert the new element.\n\n## Proof of correctness\n\nThe validity flags ensure that the valid elements represented by the two heaps are always exactly the current multiset; once invalid entries are cleared from the top, each heap top is the corresponding extreme. Removing the minimum first and then taking the maximum guarantees that duplicate values also come from different positions. Inserting the sum of the two preserves the set invariant, so by induction every round matches the original process. The integer identity ceil(p/q)=−floor(−p/q) for q>0 also holds for negative numbers and is not affected by floating-point error.\n\n## Complexity\n\nO(n log n) time and O(n) space; intermediate results use exact integers."

@@ -13,6 +13,21 @@
       "Two closed intervals must be merged as soon as they share a point, including a shared endpoint; but adjacent integers such as [2,2] and [3,4] do not intersect. After sorting by start, intervals that join together always form a consecutive run.",
       "Sort by start and scan from left to right, keeping the start and the farthest end of the current block: if the next interval starts no later than the current end, absorb it and update the end; otherwise no later interval can reach the current block, so close it.",
       "Sort by (start, end); for each interval, if its start ≤ the current block's end, set the end to the larger of the two, otherwise push the current block to the result and start a new one; finally print the number of blocks, then each block's start and end on its own line."
+    ],
+    "ja": [
+      "2 つの閉区間は、端点を含め 1 点でも共有すれば併合しなければなりません。ただし、[2,2] と [3,4] のような隣り合う整数は交差しません。start でソートすると、つながり合う区間は必ず連続した並びになります。",
+      "start でソートして左から右へ走査し、現在のブロックの start と最も遠い end を保持します。次の区間の start が現在の end 以下なら、それを取り込んで end を更新し、そうでなければ、以降のどの区間も現在のブロックには届かないので、ブロックを閉じます。",
+      "(start, end) でソートします。各区間について、start が現在のブロックの end 以下なら end を両者の大きい方に設定し、そうでなければ現在のブロックを結果に追加して新しいブロックを始めます。最後にブロックの数を出力し、続いて各ブロックの start と end を 1 行ずつ出力します。"
+    ],
+    "ko": [
+      "두 닫힌 구간은 끝점을 포함해 한 점이라도 공유하면 즉시 병합해야 하지만, [2,2]와 [3,4]처럼 인접한 정수는 교차하지 않습니다. start로 정렬하면 서로 이어지는 구간들은 항상 연속한 묶음을 이룹니다.",
+      "start로 정렬하고 왼쪽에서 오른쪽으로 훑으며 현재 블록의 start와 가장 멀리 뻗은 end를 유지합니다. 다음 구간의 start가 현재 end보다 늦지 않으면 흡수하고 end를 갱신하며, 그렇지 않으면 이후의 어떤 구간도 현재 블록에 닿을 수 없으므로 블록을 닫습니다.",
+      "(start, end)로 정렬합니다. 각 구간에 대해 start가 현재 블록의 end 이하이면 end를 둘 중 큰 값으로 바꾸고, 그렇지 않으면 현재 블록을 결과에 넣고 새 블록을 시작합니다. 마지막으로 블록의 개수를 출력한 뒤 각 블록의 start와 end를 한 줄씩 출력합니다."
+    ],
+    "vi": [
+      "Hai đoạn đóng phải được gộp ngay khi chúng có chung một điểm, kể cả chung một đầu mút; nhưng các số nguyên liền kề như [2,2] và [3,4] không giao nhau. Sau khi sắp xếp theo start, các đoạn nối với nhau luôn tạo thành một dãy liên tiếp.",
+      "Sắp xếp theo start và quét từ trái sang phải, giữ start và end xa nhất của khối hiện tại: nếu đoạn tiếp theo bắt đầu không muộn hơn end hiện tại, hấp thụ nó và cập nhật end; ngược lại không đoạn nào sau đó có thể chạm tới khối hiện tại, nên đóng khối lại.",
+      "Sắp xếp theo (start, end); với mỗi đoạn, nếu start của nó ≤ end của khối hiện tại, đặt end bằng giá trị lớn hơn trong hai giá trị, ngược lại đẩy khối hiện tại vào kết quả và bắt đầu một khối mới; cuối cùng in số khối, rồi start và end của từng khối trên một dòng riêng."
     ]
   },
   "explanationEn": "## Approach\n\nSort by start. If the next start is ≤ the current end, extend the current end to the larger of the two; otherwise output the current interval and start a new one.\n\n## Proof of correctness\n\nThe current interval is the exact coverage of the last connected block scanned so far. If the next interval starts no later than its end, they really intersect and it must be merged; otherwise, since the intervals are sorted, no later interval can connect back to that block, so it can safely be closed. By induction this produces all and only the maximal blocks connected by overlaps.\n\n## Complexity\n\nTime O(n log n), space O(n)."

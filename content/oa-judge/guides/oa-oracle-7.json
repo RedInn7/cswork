@@ -13,6 +13,21 @@
       "A non-negative integer power of 2 has exactly one 1 bit in binary, and 0 is not a power of 2.",
       "For a positive integer v, v-1 turns the lowest 1 bit into 0 and every bit below it into 1. If v has a single 1 bit, v AND (v-1) is 0; otherwise a higher 1 bit survives.",
       "For each number test v>0 and v&(v-1)==0; print 1 if it holds and 0 otherwise, in input order separated by spaces."
+    ],
+    "ja": [
+      "2 の非負整数乗は、2進表記でちょうど1つの 1 のビットを持ち、0 は 2 の冪ではありません。",
+      "正の整数 v について、v-1 は最下位の 1 のビットを 0 にし、それより下のすべてのビットを 1 にします。v が 1 のビットを1つだけ持つなら v AND (v-1) は 0 になり、そうでなければより上位の 1 のビットが残ります。",
+      "各数について v>0 かつ v&(v-1)==0 を判定し、成り立てば 1、そうでなければ 0 を、入力順にスペース区切りで出力します。"
+    ],
+    "ko": [
+      "2의 음이 아닌 정수 거듭제곱은 이진수에서 1 비트가 정확히 하나이고, 0은 2의 거듭제곱이 아닙니다.",
+      "양의 정수 v에 대해 v-1은 가장 낮은 1 비트를 0으로, 그 아래의 모든 비트를 1로 바꿉니다. v에 1 비트가 하나뿐이면 v AND (v-1)은 0이고, 그렇지 않으면 더 높은 1 비트가 남습니다.",
+      "각 수에 대해 v>0이고 v&(v-1)==0인지 검사하여, 성립하면 1을, 아니면 0을 입력 순서대로 공백으로 구분해 출력합니다."
+    ],
+    "vi": [
+      "Lũy thừa không âm của 2 có đúng một bit 1 trong dạng nhị phân, và 0 không phải lũy thừa của 2.",
+      "Với số nguyên dương v, v-1 biến bit 1 thấp nhất thành 0 và mọi bit bên dưới nó thành 1. Nếu v chỉ có một bit 1, v AND (v-1) bằng 0; nếu không thì một bit 1 cao hơn còn sót lại.",
+      "Với mỗi số kiểm tra v>0 và v&(v-1)==0; in 1 nếu đúng và 0 nếu sai, theo thứ tự đầu vào và cách nhau bằng dấu cách."
     ]
   },
   "explanationEn": "## Approach\n\nA positive integer has exactly one 1 bit if and only if v&(v-1)=0; exclude 0 first.\n\n## Proof of correctness\n\n2^k has exactly one 1 bit in binary; subtracting 1 makes all lower bits 1, so the bitwise AND is 0. If there are at least two 1 bits, subtracting 1 clears only the lowest one, a higher 1 bit remains, and the AND is non-zero. 0 is not a power of 2 and must be excluded separately.\n\n## Complexity\n\nO(n) time, O(n) output space."

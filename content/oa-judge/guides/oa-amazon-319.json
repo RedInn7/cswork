@@ -13,6 +13,21 @@
       "However you delete from the two ends, what remains is always one contiguous substring of the original string, and conversely any contiguous substring can be reached. The type along the way does not matter.",
       "Deleting the most means keeping the shortest substring, which must start with the original first character and end with the original last character (a single character a has type aa, so when the first and last characters are equal you can keep just one character).",
       "Scan j from left to right and remember last, the latest position where the original first character s[0] appeared. If s[j] equals the original last character and last exists, update the shortest kept length with j−last+1. Finally output n minus the shortest length."
+    ],
+    "ja": [
+      "両端からどのように削除しても、残るのは常に元の文字列の連続する部分文字列1つで、逆に任意の連続する部分文字列に到達できます。途中の type は関係ありません。",
+      "最も多く削除するとは最短の部分文字列を残すことで、それは元の先頭の文字で始まり元の末尾の文字で終わらなければなりません(1文字 a の type は aa なので、先頭と末尾の文字が等しければ1文字だけを残せます)。",
+      "j を左から右へ走査し、元の先頭の文字 s[0] が最後に現れた位置 last を覚えておきます。s[j] が元の末尾の文字と等しく、かつ last が存在すれば、残す長さの最短値を j−last+1 で更新します。最後に n から最短の長さを引いた値を出力します。"
+    ],
+    "ko": [
+      "양 끝에서 어떻게 삭제하든 남는 것은 항상 원래 문자열의 하나의 연속 부분 문자열이며, 반대로 임의의 연속 부분 문자열에 도달할 수 있습니다. 도중의 타입은 상관없습니다.",
+      "가장 많이 삭제한다는 것은 가장 짧은 부분 문자열을 남긴다는 뜻이며, 그 부분 문자열은 원래의 첫 문자로 시작하고 원래의 마지막 문자로 끝나야 합니다(문자 하나 a의 타입은 aa이므로, 첫 문자와 마지막 문자가 같으면 문자 하나만 남겨도 됩니다).",
+      "j를 왼쪽에서 오른쪽으로 훑으면서 원래의 첫 문자 s[0]이 마지막으로 나타난 위치 last를 기억합니다. s[j]가 원래의 마지막 문자와 같고 last가 존재하면 남기는 가장 짧은 길이를 j−last+1로 갱신합니다. 마지막에 n에서 그 가장 짧은 길이를 뺀 값을 출력합니다."
+    ],
+    "vi": [
+      "Dù xóa từ hai đầu theo cách nào, phần còn lại luôn là một xâu con liên tiếp của xâu ban đầu, và ngược lại mọi xâu con liên tiếp đều đạt được. Kiểu trong quá trình xóa không quan trọng.",
+      "Xóa nhiều nhất nghĩa là giữ xâu con ngắn nhất, xâu con đó phải bắt đầu bằng ký tự đầu tiên ban đầu và kết thúc bằng ký tự cuối cùng ban đầu (một ký tự đơn a có kiểu aa, nên khi ký tự đầu và cuối bằng nhau, bạn có thể chỉ giữ một ký tự).",
+      "Quét j từ trái sang phải và nhớ last, vị trí gần nhất mà ký tự đầu tiên ban đầu s[0] xuất hiện. Nếu s[j] bằng ký tự cuối cùng ban đầu và last tồn tại, cập nhật độ dài giữ lại ngắn nhất bằng j−last+1. Cuối cùng in n trừ đi độ dài ngắn nhất."
     ]
   },
   "explanationEn": "## Approach\n\nWhat remains is always a contiguous substring of the original string. Scan every end position j while maintaining the nearest position i holding the original first character; if the current character equals the original last character, try keeping [i,j] and update the shortest length. Return n minus the shortest length.\n\n## Proof of correctness\n\nDeleting from both ends can leave exactly any contiguous substring, and whether it is valid depends only on its endpoints. For a fixed end, the nearest valid first character makes the kept length shortest; scanning all ends covers every valid substring, which gives the maximum number of deletions. When the first and last characters are equal, i=j may keep just one character, which by definition still has the same type; the original type is non-empty, so not everything can be deleted.\n\n## Complexity\n\nTime O(n), auxiliary space O(1)."

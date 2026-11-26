@@ -13,6 +13,21 @@
       "The two sides of a palindrome must pair up, so the number of times each letter appears in the left half is fixed at its frequency divided by 2; since the input is a palindrome, at most one letter has an odd count.",
       "The multiset of the left half is fixed, so to make the whole string lexicographically smallest just sort the left half in ascending order; the odd-count letter goes in the middle and the right half mirrors the left.",
       "Count the 26 letters; build the left half by repeating each letter from a to z frequency/2 times; take the letter with an odd count as the center; output left + center + reversed left."
+    ],
+    "ja": [
+      "回文の左右は対になる必要があるので、左半分に各文字が現れる回数は、その出現回数を 2 で割った値に固定されます。入力が回文なので、出現回数が奇数の文字は高々 1 種類です。",
+      "左半分の多重集合は固定なので、全体を辞書順最小にするには、左半分を昇順に並べればよいです。出現回数が奇数の文字は中央に置き、右半分は左半分の鏡像にします。",
+      "26 文字を数え、a から z の順に各文字を「出現回数/2」回ずつ繰り返して左半分を作ります。出現回数が奇数の文字を中央とし、left + center + reversed left を出力します。"
+    ],
+    "ko": [
+      "팰린드롬의 양쪽은 짝을 이루어야 하므로 각 문자가 왼쪽 절반에 등장하는 횟수는 빈도를 2로 나눈 값으로 고정됩니다. 입력이 팰린드롬이므로 홀수 번 등장하는 문자는 많아야 하나입니다.",
+      "왼쪽 절반의 다중집합이 고정되어 있으므로 전체를 사전순으로 가장 작게 만들려면 왼쪽 절반을 오름차순으로 정렬하면 됩니다. 홀수 번 등장하는 문자는 가운데에 두고 오른쪽 절반은 왼쪽을 대칭시킵니다.",
+      "26개 알파벳의 개수를 세고, a부터 z까지 각 문자를 frequency/2번 반복해 왼쪽 절반을 만듭니다. 홀수 번 등장하는 문자를 가운데로 삼아 left + center + reversed left를 출력합니다."
+    ],
+    "vi": [
+      "Hai phía của một palindrome phải ghép đôi với nhau, nên số lần mỗi chữ cái xuất hiện ở nửa trái là cố định, bằng tần suất của nó chia 2; vì đầu vào là palindrome nên có tối đa một chữ cái có số lần lẻ.",
+      "Tập đa (multiset) của nửa trái là cố định, nên để cả xâu nhỏ nhất theo từ điển chỉ cần sắp xếp nửa trái tăng dần; chữ cái có số lần lẻ nằm ở giữa và nửa phải đối xứng với nửa trái.",
+      "Đếm 26 chữ cái; xây nửa trái bằng cách lặp từng chữ cái từ a đến z frequency/2 lần; lấy chữ cái có số lần lẻ làm tâm; in ra left + center + reversed left."
     ]
   },
   "explanationEn": "## Approach\n\nPut half of each character into the left half in ascending letter order, put the only character with an odd count in the middle, and make the right half the reverse of the left half.\n\n## Correctness\n\nAny palindrome must pair characters across its two sides, so the number of each character in the left half is fixed at its frequency divided by 2 (integer division). Arranging the left half in ascending order makes it lexicographically smallest, the center character is uniquely determined by the odd frequency, and the right half is forced by the mirror constraint.\n\n## Complexity\n\nTime O(n+26), space O(n)."

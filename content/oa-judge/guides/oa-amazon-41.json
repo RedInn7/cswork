@@ -13,6 +13,21 @@
       "The chapter read i-th contributes its memory value to every later score, that is n-i+1 times; chapters read earlier carry larger weights.",
       "This is a pairing of values with decreasing weights: matching larger values with larger weights is optimal, and the exchange argument also holds for negative values, so simply read in descending order of memory value.",
       "Sort the memory values in descending order and keep a running prefix sum of the chapters read so far; for each chapter add it to the prefix, then add the prefix to the answer. The answer may be negative or large, so use a 64-bit integer."
+    ],
+    "ja": [
+      "i 番目に読んだ章は、その記憶値を以降のすべてのスコア、つまり n-i+1 回分に寄与します。先に読んだ章ほど重みが大きくなります。",
+      "これは、値と減少する重みのペアリングです。大きい値を大きい重みと組むのが最適で、交換の議論は負の値でも成り立つので、記憶値の降順に読めばよいのです。",
+      "記憶値を降順にソートし、これまでに読んだ章の累積和を保持します。各章を累積和に加えてから、その累積和を答えに加えます。答えは負にも大きくもなり得るので、64 ビット整数を使ってください。"
+    ],
+    "ko": [
+      "i번째로 읽은 챕터는 이후의 모든 점수에 자신의 기억 값을 기여하므로, 즉 n-i+1번 기여합니다. 먼저 읽은 챕터일수록 가중치가 큽니다.",
+      "이것은 값을 감소하는 가중치와 짝짓는 문제입니다. 더 큰 값을 더 큰 가중치와 짝지을 때 최적이며, 교환 논증은 음수 값에서도 성립하므로 기억 값의 내림차순으로 읽으면 됩니다.",
+      "기억 값을 내림차순으로 정렬하고 지금까지 읽은 챕터의 누적 합을 유지하세요. 각 챕터를 누적 합에 더한 뒤 그 누적 합을 답에 더합니다. 답은 음수이거나 클 수 있으므로 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Chương được đọc thứ i đóng góp giá trị ghi nhớ của nó cho mọi điểm về sau, tức n-i+1 lần; các chương đọc sớm hơn mang trọng số lớn hơn.",
+      "Đây là bài toán ghép các giá trị với các trọng số giảm dần: ghép giá trị lớn hơn với trọng số lớn hơn là tối ưu, và lập luận hoán đổi cũng đúng với giá trị âm, nên chỉ cần đọc theo thứ tự giảm dần của giá trị ghi nhớ.",
+      "Sắp xếp các giá trị ghi nhớ giảm dần và giữ tổng tiền tố đang chạy của các chương đã đọc; với mỗi chương, cộng nó vào tiền tố, rồi cộng tiền tố vào đáp án. Đáp án có thể âm hoặc lớn, nên dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nRead in descending order of memory value and add up the prefix sum at each step.\n\n## Proof of correctness\n\nThe value read i-th is counted in the next n-i+1 scores, so the weights decrease along the reading order. The exchange inequality that pairs larger values with larger weights holds for negative numbers as well, so descending order is optimal.\n\n## Complexity\n\nO(n log n) time and O(n) space."

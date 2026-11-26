@@ -13,6 +13,21 @@
       "The order between different distances is fixed by the rules; the only freedom is the order within one distance.",
       "Within one distance, serve the smaller demands first, which never lowers the number completed. As soon as the cheapest remaining order cannot be paid for, nothing else in that group or any farther group can be served.",
       "Sort the orders by (distance, demand) ascending and go through them: if the demand fits in the remaining stock, subtract it and add one to the count, otherwise stop at once; print the count. Stock can reach 10¹⁰, so use 64-bit integers."
+    ],
+    "ja": [
+      "異なる距離の間の順序はルールで固定されており、自由があるのは同じ距離の中の順序だけです。",
+      "同じ距離の中では需要の小さい注文を先に処理すると、完了する件数が減ることはありません。残っている最も安い注文を賄えなくなった時点で、そのグループの残りも、それより遠いグループも、もう対応できません。",
+      "注文を（距離、需要）の昇順にソートして順に見ていきます。需要が残りの在庫以内なら、引いて件数に 1 を加え、そうでなければすぐに止めます。件数を出力します。在庫は 10¹⁰ に達し得るので、64 ビット整数を使います。"
+    ],
+    "ko": [
+      "서로 다른 거리 사이의 순서는 규칙으로 정해져 있고, 자유로운 부분은 같은 거리 안에서의 순서뿐입니다.",
+      "같은 거리 안에서는 수요가 작은 주문을 먼저 처리해도 완료 수가 줄어들지 않습니다. 남은 주문 중 가장 싼 것조차 감당할 수 없으면 그 그룹의 나머지도, 더 먼 그룹도 처리할 수 없습니다.",
+      "주문을 (거리, 수요) 오름차순으로 정렬해 차례로 살펴봅니다. 수요가 남은 재고 이내이면 차감하고 개수를 1 늘리며, 그렇지 않으면 즉시 멈추고 개수를 출력합니다. 재고는 10¹⁰까지 갈 수 있으므로 64비트 정수를 사용합니다."
+    ],
+    "vi": [
+      "Thứ tự giữa các khoảng cách khác nhau đã được quy tắc cố định; sự tự do duy nhất là thứ tự trong cùng một khoảng cách.",
+      "Trong cùng một khoảng cách, phục vụ các nhu cầu nhỏ trước, điều này không bao giờ làm giảm số đơn hoàn thành. Ngay khi đơn rẻ nhất còn lại không thể thanh toán, không còn gì trong nhóm đó hay trong bất kỳ nhóm xa hơn có thể được phục vụ.",
+      "Sắp xếp các đơn theo (khoảng cách, nhu cầu) tăng dần và duyệt qua: nếu nhu cầu vừa với lượng hàng còn lại thì trừ đi và tăng đếm thêm một, ngược lại dừng ngay; in ra số đếm. Lượng hàng có thể lên tới 10¹⁰, nên hãy dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nSort by distance ascending, and by demand ascending within the same distance; deduct stock order by order and stop at the first shortfall.\n\n## Proof of correctness\n\nThe order across different distances is fixed by the rules. Within the same distance, swapping so that a smaller demand is delivered first never lowers the number completed; if delivering all of them is feasible, the order within the group does not affect the remaining stock. When even the cheapest cannot be paid for, neither this group nor any farther group can be served, so stopping is optimal.\n\n## Complexity\n\nTime O(N log N), space O(N)."

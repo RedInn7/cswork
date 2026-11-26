@@ -13,6 +13,21 @@
       "A day's time depends only on the first and last classes attended. When skipping a given number of classes that day, it is best to keep a consecutive block of classes and skip those at the two ends.",
       "First compute cost[s] for every day: the least time at school when skipping s classes (the kept classes form a consecutive block; enumerate its start). Then treat the days as groups in a knapsack and run a DP over the total number of skips, at most K.",
       "For each day list the hours with a class as pos (c classes in all). For s from 0 to min(K,c), keep c−s classes: the cost is 0 if none are kept, otherwise the minimum of pos[i+c−s−1]−pos[i]+1 over starts i from 0 to s. Let dp[u] be the least total time with u classes skipped so far, build a new dp from each day's costs, and print the minimum of dp at the end."
+    ],
+    "ja": [
+      "1日の時間は、出席した最初と最後の授業だけで決まります。その日に決まった数のコマを休むときは、連続する授業のブロックを残し、両端のコマを休むのが最善です。",
+      "まず、各日について cost[s]、つまり s コマ休んだときの学校での最小時間を計算します（残るコマは連続したブロックをなすので、その開始位置を列挙します）。次に、日をナップサックのグループとして扱い、休む総数（高々 K）についての DP を行います。",
+      "各日について、授業のある時刻を pos として並べます（合計 c コマ）。s を 0 から min(K,c) まで動かし、c−s コマを残します。何も残らなければコストは 0、そうでなければ開始位置 i を 0 から s まで動かしたときの pos[i+c−s−1]−pos[i]+1 の最小値です。dp[u] を、これまでに u コマ休んだときの最小の合計時間とし、各日のコストから新しい dp を作り、最後に dp の最小値を出力します。"
+    ],
+    "ko": [
+      "하루의 시간은 참석한 첫 수업과 마지막 수업에만 의존합니다. 그날 정해진 개수의 수업을 빠질 때는 연속된 수업 블록을 유지하고 양 끝의 수업을 빠지는 것이 최선입니다.",
+      "먼저 각 날에 대해 cost[s]를 계산합니다. s개의 수업을 빠질 때 학교에 있는 최소 시간입니다(유지하는 수업은 연속된 블록이며 시작점을 열거). 그런 다음 날들을 배낭의 그룹으로 보고, 최대 K개인 총 빠짐 수에 대해 DP를 합니다.",
+      "각 날에 대해 수업이 있는 시각을 pos로 나열합니다(총 c개). s를 0부터 min(K,c)까지 올리며 c−s개의 수업을 유지합니다. 하나도 유지하지 않으면 비용은 0이고, 그렇지 않으면 시작점 i가 0부터 s까지일 때 pos[i+c−s−1]−pos[i]+1의 최솟값입니다. dp[u]를 지금까지 u개를 빠졌을 때의 최소 총 시간이라 하고, 각 날의 비용으로 새 dp를 만들며 마지막에 dp의 최솟값을 출력합니다."
+    ],
+    "vi": [
+      "Thời gian của một ngày chỉ phụ thuộc vào tiết đầu tiên và tiết cuối cùng được tham dự. Khi bỏ một số tiết nhất định trong ngày đó, tốt nhất là giữ một khối các tiết liên tiếp và bỏ các tiết ở hai đầu.",
+      "Trước hết tính cost[s] cho mỗi ngày: thời gian ở trường ít nhất khi bỏ s tiết (các tiết giữ lại tạo thành một khối liên tiếp; duyệt vị trí bắt đầu của nó). Sau đó coi các ngày là các nhóm trong bài toán cái túi và chạy DP trên tổng số tiết bỏ, tối đa K.",
+      "Với mỗi ngày, liệt kê các giờ có tiết thành pos (tổng cộng c tiết). Với s từ 0 đến min(K,c), giữ c−s tiết: chi phí là 0 nếu không giữ tiết nào, ngược lại là giá trị nhỏ nhất của pos[i+c−s−1]−pos[i]+1 trên các vị trí bắt đầu i từ 0 đến s. Gọi dp[u] là tổng thời gian ít nhất khi đã bỏ u tiết, dựng dp mới từ chi phí của mỗi ngày, và cuối cùng in giá trị nhỏ nhất của dp."
     ]
   },
   "explanationEn": "## Approach\n\nFor each day, enumerate the number of skipped classes and find the shortest covering width over the remaining consecutive block of class indices; then run a knapsack over the days on the skip budget.\n\n## Proof of correctness\n\nWith the number of kept classes fixed, if some class between the first and last kept ones is skipped, an inner class can replace an outer one without enlarging the span, so only consecutive blocks of class indices are needed. The days' costs are independent, and the DP over the budget allocation enumerates every skipping plan.\n\n## Complexity\n\nTime O(NM²+NK²), space O(K+M)."

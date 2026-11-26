@@ -13,6 +13,21 @@
       "Groups contain no * and no nesting, so the regex is a sequence of atoms: one letter, one dot, or a group's contents; each atom either appears exactly once or carries * and repeats any number of times.",
       "For each query run a DP atom by atom, recording which prefixes of the query are fully matched by the atoms processed so far; an atom without * advances from the previous level by one atom length, while an atom with * can also keep repeating within the same level.",
       "Parse the regex into a list of (piece, has star); treat a query of - as the empty string; set dp[0] true; for each non-empty atom, with a star start the new level as a copy of the old one, then check end positions in increasing order: if the start is reachable and the piece matches character by character (a dot matches any letter), mark the end; without a star transition only from the old level; skip an empty ()* entirely; finally check whether the full query length is reachable."
+    ],
+    "ja": [
+      "グループには * も入れ子もないので、正規表現はアトムの列になります。アトムは 1 つの英字、1 つのドット、またはグループの中身で、それぞれちょうど 1 回現れるか、* が付いて任意の回数繰り返されます。",
+      "各クエリについて、アトムごとに DP を行い、ここまで処理したアトムでクエリのどの接頭辞が完全にマッチしたかを記録します。* のないアトムは、前のレベルからアトムの長さ 1 つ分だけ進みます。* のあるアトムは、同じレベルの中でさらに繰り返すこともできます。",
+      "正規表現を (piece, has star) のリストに分解します。クエリが - なら空文字列として扱い、dp[0] を真にします。空でない各アトムについて、* があるなら新しいレベルを古いレベルのコピーから始め、終了位置を昇順に確認します。開始位置に到達可能で piece が 1 文字ずつマッチする（ドットは任意の英字にマッチする）なら、その終了位置に印を付けます。* がなければ古いレベルからのみ遷移します。空の ()* は完全に飛ばします。最後に、クエリ全体の長さに到達可能かを確認します。"
+    ],
+    "ko": [
+      "그룹에는 *도 중첩도 없으므로 정규식은 원자들의 나열입니다. 원자는 글자 하나, 점 하나 또는 그룹의 내용이며, 각 원자는 정확히 한 번 나타나거나 *가 붙어 임의 횟수 반복됩니다.",
+      "각 질의에 대해 원자 단위 DP를 수행하며, 지금까지 처리한 원자들로 질의의 어떤 접두사가 완전히 매칭되는지를 기록합니다. *가 없는 원자는 이전 레벨에서 원자 길이만큼 전진하고, *가 있는 원자는 같은 레벨 안에서도 계속 반복할 수 있습니다.",
+      "정규식을 (조각, 별표 여부)의 리스트로 파싱합니다. 질의가 -이면 빈 문자열로 취급하고 dp[0]을 참으로 둡니다. 비어 있지 않은 각 원자에 대해, 별표가 있으면 새 레벨을 이전 레벨의 복사본으로 시작한 뒤 끝 위치를 증가하는 순서로 확인합니다. 시작이 도달 가능하고 조각이 문자 단위로 매칭되면(점은 아무 글자와 매칭) 끝 위치를 표시합니다. 별표가 없으면 이전 레벨에서만 전이합니다. 빈 ()*는 완전히 건너뜁니다. 마지막으로 질의 전체 길이가 도달 가능한지 확인합니다."
+    ],
+    "vi": [
+      "Nhóm không chứa * và không lồng nhau, nên biểu thức chính quy là một dãy các nguyên tử: một chữ cái, một dấu chấm, hoặc nội dung của một nhóm; mỗi nguyên tử hoặc xuất hiện đúng một lần hoặc mang * và lặp lại số lần tùy ý.",
+      "Với mỗi truy vấn chạy DP từng nguyên tử, ghi lại những tiền tố nào của truy vấn đã khớp hoàn toàn bởi các nguyên tử đã xử lý; nguyên tử không có * tiến từ tầng trước thêm một độ dài nguyên tử, còn nguyên tử có * còn có thể tiếp tục lặp trong cùng một tầng.",
+      "Phân tích biểu thức chính quy thành danh sách (mảnh, có dấu sao); coi truy vấn - là xâu rỗng; đặt dp[0] đúng; với mỗi nguyên tử không rỗng, nếu có dấu sao thì bắt đầu tầng mới bằng bản sao của tầng cũ, rồi xét các vị trí kết thúc theo thứ tự tăng dần: nếu vị trí bắt đầu đạt được và mảnh khớp từng ký tự (dấu chấm khớp mọi chữ cái) thì đánh dấu vị trí kết thúc; nếu không có dấu sao thì chỉ chuyển từ tầng cũ; bỏ qua hoàn toàn ()* rỗng; cuối cùng kiểm tra xem độ dài đầy đủ của truy vấn có đạt được không."
     ]
   },
   "explanationEn": "## Approach\n\nParse letters or dots and group contents into atoms, each flagged with whether it has *. Run a DP atom by atom over the query prefixes that can be matched; an atom without * consumes exactly once, while an atom with * can consume zero times or consume once more from a shorter prefix at the same level. Skip an empty ()* directly.\n\n## Proof of correctness\n\nAt the start of the DP only the empty prefix is reachable. Without *, each new prefix comes uniquely from the previous level by matching the atom once; with *, it either inherits the old level with zero repetitions, or continues matching from the position one atom length shorter at the same level. Computing in increasing prefix length covers any number of repetitions without cycles. Repeating an empty atom does not change the string, so skipping it preserves the semantics. Finally, the full length is reachable if and only if the whole query matches.\n\n## Complexity\n\nTime O(regex length × total query length + q × regex length), space O(longest query length + regex length)."

@@ -13,6 +13,21 @@
       "Each check only asks whether the half-open range [x, x+size) currently holds any obstacle, that is, whether the number of placed obstacles inside it is 0; coordinates are huge but there are only 10^5 operations.",
       "Read all operations offline and sort every placement coordinate to get compressed positions; then replay the operations in time order with a Fenwick tree of placed obstacles, so a check only sees placements that already happened.",
       "On a placement, binary search the coordinate's index in the sorted array and add 1 there in the Fenwick tree; on a check, binary search the first index not less than x and the first index not less than x+size, and emit the character 1 if the two prefix sums are equal, otherwise 0; concatenate all results into one string. x+size can exceed the 32-bit range."
+    ],
+    "ja": [
+      "各チェックは、半開区間 [x, x+size) に現在障害物があるか、つまりその中にある設置済みの障害物の個数が 0 かどうかを問うだけです。座標は巨大ですが、操作は 10^5 回しかありません。",
+      "すべての操作をオフラインで読み、設置座標をすべてソートして圧縮した位置を得ます。そのあと操作を時間順に再生しながら、設置済みの障害物を Fenwick 木で管理するので、チェックはすでに起きた設置だけを見ます。",
+      "設置では、その座標のソート済み配列での添字を二分探索し、Fenwick 木のそこに 1 を加えます。チェックでは、x 以上となる最初の添字と x+size 以上となる最初の添字を二分探索し、2 つの累積和が等しければ文字 1、そうでなければ 0 を出力します。すべての結果を連結して 1 つの文字列にします。x+size は 32 ビットの範囲を超えることがあります。"
+    ],
+    "ko": [
+      "각 확인은 반개구간 [x, x+size)에 현재 장애물이 하나라도 있는지, 즉 그 안에 놓인 장애물의 수가 0인지만 묻습니다. 좌표는 매우 크지만 작업은 10^5개뿐입니다.",
+      "모든 작업을 오프라인으로 읽고 장애물을 놓는 좌표들을 정렬해 압축된 위치를 얻습니다. 그런 다음 놓인 장애물의 펜윅 트리로 작업을 시간 순서대로 재생하면, 확인은 이미 일어난 배치만 보게 됩니다.",
+      "장애물을 놓을 때는 정렬된 배열에서 그 좌표의 인덱스를 이분 탐색하여 펜윅 트리의 그 위치에 1을 더합니다. 확인할 때는 x 이상인 첫 인덱스와 x+size 이상인 첫 인덱스를 이분 탐색하여, 두 접두사 합이 같으면 문자 1을, 아니면 0을 출력합니다. 모든 결과를 하나의 문자열로 이어 붙입니다. x+size는 32비트 범위를 넘을 수 있습니다."
+    ],
+    "vi": [
+      "Mỗi lần kiểm tra chỉ hỏi xem đoạn nửa mở [x, x+size) hiện có chứa chướng ngại vật nào không, tức là số chướng ngại vật đã đặt bên trong nó có bằng 0 hay không; tọa độ rất lớn nhưng chỉ có 10^5 thao tác.",
+      "Đọc tất cả thao tác ngoại tuyến và sắp xếp mọi tọa độ đặt để có các vị trí đã nén; sau đó phát lại các thao tác theo thứ tự thời gian với một cây Fenwick các chướng ngại vật đã đặt, để một lần kiểm tra chỉ thấy các lần đặt đã xảy ra.",
+      "Khi đặt, tìm nhị phân chỉ số của tọa độ trong mảng đã sắp xếp và cộng 1 tại đó trong cây Fenwick; khi kiểm tra, tìm nhị phân chỉ số đầu tiên không nhỏ hơn x và chỉ số đầu tiên không nhỏ hơn x+size, và in ký tự 1 nếu hai tổng tiền tố bằng nhau, ngược lại in 0; nối tất cả kết quả thành một xâu. x+size có thể vượt quá phạm vi 32 bit."
     ]
   },
   "explanationEn": "## Approach\n\nRead all placement coordinates in advance and compress them, using a Fenwick tree to record how many have been placed. When the range count between the two binary-searched indices is zero, the range is clear.\n\n## Why it is correct\n\nCompression keeps only coordinates that can hold an obstacle and does not change their order. The left bound uses lower_bound(x) and the right bound uses lower_bound(x+size); their difference counts exactly the placement operations already executed inside the half-open range, and includes neither future obstacles nor the right endpoint.\n\n## Complexity\n\nTime O(q log q), extra space O(q)."

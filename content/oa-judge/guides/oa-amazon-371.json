@@ -13,6 +13,21 @@
       "The total cost depends only on how many times each letter appears in the end (f occurrences cost f(f−1)/2), not on positions; so first decide how many of each letter to add, then where to put them.",
       "Adding one more copy of a letter costs its current count, so each ? should go to the letter with the smallest current count, the smaller letter on ties.",
       "Count the known letters; for each ?, pick the minimum (count, letter) among the 26 letters and increment its count. Then write the added letters in ascending alphabetical order into the ? positions from left to right."
+    ],
+    "ja": [
+      "総コストは各文字の最終的な出現回数だけで決まります (f 回出現すると f(f−1)/2)。位置には依存しません。そのため、まず各文字を何個足すかを決め、次にどこへ置くかを決めます。",
+      "文字をもう 1 個足すコストは現在の出現回数に等しいので、各 ? には現在の出現回数が最小の文字を割り当てます。同数なら小さい文字です。",
+      "既知の文字を数えます。各 ? について、26 文字の中から (回数, 文字) が最小のものを選んで回数を 1 増やします。その後、足した文字をアルファベット順に並べ、? の位置へ左から順に書き込みます。"
+    ],
+    "ko": [
+      "총 비용은 위치가 아니라 각 문자가 최종적으로 몇 번 나타나는지에만 달려 있습니다 (f번 나타나면 비용 f(f−1)/2). 따라서 먼저 각 문자를 몇 개 추가할지 정하고, 그다음 어디에 놓을지 정합니다.",
+      "문자를 하나 더 추가하는 비용은 그 문자의 현재 개수와 같으므로, 각 ?는 현재 개수가 가장 작은 문자에 배정하고 같으면 더 작은 문자를 택합니다.",
+      "이미 있는 문자를 센 뒤, 각 ?마다 26개 문자 중 (count, letter)가 최소인 것을 골라 count를 1 늘립니다. 그다음 추가한 문자들을 알파벳 오름차순으로 왼쪽부터 ? 위치에 씁니다."
+    ],
+    "vi": [
+      "Tổng chi phí chỉ phụ thuộc vào số lần mỗi chữ cái xuất hiện ở cuối cùng (f lần xuất hiện tốn f(f−1)/2), không phụ thuộc vị trí; vì vậy hãy quyết định số lượng mỗi chữ cần thêm trước, rồi mới quyết định đặt ở đâu.",
+      "Thêm một bản sao nữa của một chữ cái tốn bằng số lần nó đang có, nên mỗi ? nên dành cho chữ có số lần hiện tại nhỏ nhất, hòa thì chọn chữ nhỏ hơn.",
+      "Đếm các chữ đã biết; với mỗi ?, chọn (count, letter) nhỏ nhất trong 26 chữ cái và tăng count của nó. Sau đó ghi các chữ đã thêm theo thứ tự bảng chữ cái tăng dần vào các vị trí ? từ trái sang phải."
     ]
   },
   "explanationEn": "## Approach\n\nFirst count all known characters. Use a 26-entry min-heap to repeatedly choose the letter with the smallest current frequency, breaking ties by the smaller letter; record only how many copies of each letter are added, and finally fill the ? positions with the added letters in ascending order.\n\n## Proof of correctness\n\nA letter with frequency f has total cost C(f,2); the next copy costs f, and each later one costs one more. Merging the 26 increasing marginal-cost sequences and taking the q smallest values achieves the minimum total cost; breaking marginal ties with the smaller letter makes the added multiset lexicographically smallest. The cost does not depend on positions, so this multiset is placed in ascending order into the ? positions from left to right: swapping any inversion makes the result smaller without changing the cost, so the secondary objective is optimal too.\n\n## Complexity\n\nO(n log 26) time; O(n) space including the result, and O(26) for the frequencies and the heap."

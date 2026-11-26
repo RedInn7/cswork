@@ -13,6 +13,21 @@
       "A range can be turned entirely into 1s exactly when it contains at most k zeros; so the task is to find the longest contiguous range with at most k zeros.",
       "As the right end moves right, the leftmost valid left end only moves right, never left, so a sliding window works: shrink the left end whenever the window holds more than k zeros.",
       "Sweep the right end from left to right, adding one to the zero count on each 0; while the count exceeds k, advance the left end (subtracting one when a 0 leaves); after each step update the answer with the window length. With k = 0 the answer is the longest all-ones run."
+    ],
+    "ja": [
+      "区間をすべて 1 にできるのは、その区間に含まれる 0 が k 個以下のときに限ります。したがって、0 が高々 k 個の最長の連続区間を求める問題になります。",
+      "右端を右に動かしたとき、有効な左端のうち最も左のものは右へ動くだけで左へ戻ることはありません。そのためスライディングウィンドウが使えます。窓内の 0 が k 個を超えたら左端を縮めます。",
+      "右端を左から右へ走査し、0 に出会うたびに 0 の個数を 1 増やします。個数が k を超えている間は左端を進め (0 が窓から出るときは 1 減らす)、各ステップの後に窓の長さで答えを更新します。k = 0 のときの答えは、1 だけが並ぶ最長の連続部分の長さです。"
+    ],
+    "ko": [
+      "구간 전체를 1로 바꿀 수 있는 것은 그 구간에 0이 최대 k개일 때뿐입니다. 따라서 0이 최대 k개인 가장 긴 연속 구간을 찾는 문제입니다.",
+      "오른쪽 끝이 오른쪽으로 이동할 때 유효한 가장 왼쪽 시작점은 오른쪽으로만 움직이고 왼쪽으로 돌아가지 않으므로 슬라이딩 윈도를 쓸 수 있습니다. 윈도 안의 0이 k개를 넘을 때마다 왼쪽 끝을 줄입니다.",
+      "오른쪽 끝을 왼쪽에서 오른쪽으로 훑으면서 0을 만날 때마다 0의 개수에 1을 더합니다. 개수가 k를 넘는 동안 왼쪽 끝을 전진시키고(0이 빠져나갈 때 1을 뺍니다), 매 단계마다 윈도 길이로 답을 갱신합니다. k = 0이면 답은 가장 긴 연속 1의 길이입니다."
+    ],
+    "vi": [
+      "Một đoạn có thể biến hoàn toàn thành số 1 khi và chỉ khi nó chứa tối đa k số 0; do đó bài toán là tìm đoạn liên tục dài nhất có tối đa k số 0.",
+      "Khi đầu phải dịch sang phải, đầu trái hợp lệ nhỏ nhất chỉ dịch sang phải chứ không bao giờ lùi lại, nên cửa sổ trượt dùng được: thu hẹp đầu trái mỗi khi cửa sổ chứa nhiều hơn k số 0.",
+      "Quét đầu phải từ trái sang phải, mỗi lần gặp số 0 thì tăng biến đếm số 0 lên một; trong khi biến đếm vượt quá k thì dịch đầu trái (giảm một khi một số 0 rời cửa sổ); sau mỗi bước cập nhật đáp án bằng độ dài cửa sổ. Với k = 0 đáp án là đoạn toàn số 1 dài nhất."
     ]
   },
   "explanationEn": "## Approach\n\nA sliding window maintains the number of zeros inside it, shrinks the left end when that number exceeds k, and records the maximum length over all valid windows.\n\n## Why it is correct\n\nAn interval can be turned entirely into 1s if and only if it contains at most k zeros. For each right end, the left end after shrinking gives the longest valid window ending at that right end; scanning every right end therefore covers the globally optimal segment.\n\n## Complexity\n\nTime O(n), extra space O(1) excluding the input."

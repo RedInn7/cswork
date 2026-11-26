@@ -13,6 +13,21 @@
       "Whether a string starts and ends with a vowel can be decided on its own, and each query just asks how many such strings lie in a contiguous range.",
       "Both n and q reach 10^5, so scanning the range for every query is too slow; prefix sums bring each query down to O(1).",
       "Set prefix[0] = 0 and prefix[t] = prefix[t-1] plus 1 if the t-th string starts and ends with a vowel (0 otherwise); split each query at the dash to get i and r, and the answer is prefix[r] - prefix[i-1]. Indices are 1-based, both ends are inclusive, and each answer goes on its own line."
+    ],
+    "ja": [
+      "文字列の先頭と末尾がどちらも母音かどうかはその文字列だけで判定でき、各クエリは連続した区間内にそのような文字列がいくつあるかを尋ねているだけです。",
+      "n と q はどちらも 10^5 に達するので、クエリごとに区間を走査するのは遅すぎます。累積和を使えば各クエリを O(1) にできます。",
+      "prefix[0] = 0 とし、t 番目の文字列の先頭と末尾がどちらも母音なら prefix[t] = prefix[t-1] + 1、そうでなければ prefix[t] = prefix[t-1] とします。各クエリはハイフンで分割して i と r を取り出し、答えは prefix[r] - prefix[i-1] です。添字は 1 始まりで両端を含み、各答えは 1 行ずつ出力します。"
+    ],
+    "ko": [
+      "문자열이 모음으로 시작하고 끝나는지는 각각 독립적으로 판단할 수 있으며, 각 질의는 연속 구간에 그런 문자열이 몇 개인지만 묻습니다.",
+      "n과 q가 모두 10^5까지이므로 질의마다 구간을 훑으면 너무 느립니다. 누적 합을 쓰면 각 질의를 O(1)에 처리할 수 있습니다.",
+      "prefix[0] = 0으로 두고, t번째 문자열이 모음으로 시작하고 끝나면 prefix[t] = prefix[t-1] + 1, 아니면 prefix[t-1]로 합니다. 각 질의를 대시에서 나누어 i와 r을 얻으면 답은 prefix[r] - prefix[i-1]입니다. 인덱스는 1-기반이고 양 끝을 포함하며, 각 답은 한 줄씩 출력합니다."
+    ],
+    "vi": [
+      "Một xâu có bắt đầu và kết thúc bằng nguyên âm hay không có thể xác định độc lập, và mỗi truy vấn chỉ hỏi có bao nhiêu xâu như vậy nằm trong một đoạn liên tiếp.",
+      "Cả n và q đều lên tới 10^5, nên quét đoạn cho mỗi truy vấn là quá chậm; tổng tiền tố giúp mỗi truy vấn còn O(1).",
+      "Đặt prefix[0] = 0 và prefix[t] = prefix[t-1] cộng 1 nếu xâu thứ t bắt đầu và kết thúc bằng nguyên âm (ngược lại cộng 0); tách mỗi truy vấn tại dấu gạch ngang để lấy i và r, đáp án là prefix[r] - prefix[i-1]. Chỉ số bắt đầu từ 1, cả hai đầu đều được tính, và mỗi đáp án nằm trên một dòng riêng."
     ]
   },
   "explanationEn": "## Approach\n\nFollowing the source's explanation, use 1-based closed ranges.\n\n## Proof of correctness\n\nprefix[t] records how many of the first t strings both start and end with a vowel. The answer for the closed range [i,r] is exactly prefix[r]-prefix[i-1].\n\n## Complexity\n\nTime O(n+q), space O(n)."

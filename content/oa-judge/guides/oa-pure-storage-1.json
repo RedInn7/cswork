@@ -13,6 +13,21 @@
       "You start holding 1 unit, which can be sold on day 0 for A[0]; after that the problem becomes the classic one with unlimited buys and sells while holding at most 1 unit at a time.",
       "The profit of any holding interval splits into the sum of day-to-day price differences; you should not hold across negative differences, and every positive difference can be captured by buying the day before and selling the day after.",
       "Answer = A[0] + sum of max(0, A[i] - A[i-1]) for i from 1 to n - 1. Accumulate in a 64-bit integer and print the result modulo 10^9. Time O(n), extra space O(1)."
+    ],
+    "ja": [
+      "最初に 1 単位を保有しており、それを 0 日目に A[0] で売ることができます。そのあとは、同時に保有するのは高々 1 単位で、売買の回数に制限がない典型的な問題になります。",
+      "保有区間の利益は、日ごとの価格差の和に分解できます。負の差をまたいで保有してはならず、正の差はすべて、前日に買って翌日に売ることで取れます。",
+      "答え = A[0] + i = 1 から n - 1 についての max(0, A[i] - A[i-1]) の和です。64 ビット整数で累積し、結果を 10^9 で割った余りで出力します。時間 O(n)、補助空間 O(1) です。"
+    ],
+    "ko": [
+      "처음에 1단위를 보유하고 있으므로 0일차에 A[0]에 팔 수 있습니다. 그 이후 문제는 한 번에 최대 1단위만 보유하며 무제한으로 사고팔 수 있는 고전 문제가 됩니다.",
+      "어떤 보유 구간의 이익도 일별 가격 차이의 합으로 쪼갤 수 있습니다. 음의 차이 구간에서는 보유하지 않아야 하며, 양의 차이는 모두 전날 사고 다음 날 파는 것으로 얻을 수 있습니다.",
+      "답 = A[0] + i가 1부터 n - 1까지일 때 max(0, A[i] - A[i-1])의 합입니다. 64비트 정수로 누적한 뒤 10^9로 나눈 나머지를 출력합니다. 시간 O(n), 추가 공간 O(1)."
+    ],
+    "vi": [
+      "Bạn bắt đầu khi đang giữ 1 đơn vị, có thể bán vào ngày 0 với giá A[0]; sau đó bài toán trở thành bài kinh điển với số lần mua và bán không hạn chế khi tại mỗi thời điểm giữ tối đa 1 đơn vị.",
+      "Lợi nhuận của bất kỳ khoảng thời gian giữ nào cũng tách thành tổng các chênh lệch giá giữa các ngày liền kề; không nên giữ qua các chênh lệch âm, và mọi chênh lệch dương đều có thể thu được bằng cách mua vào ngày trước và bán vào ngày sau.",
+      "Đáp án = A[0] + tổng max(0, A[i] - A[i-1]) với i từ 1 đến n - 1. Tích lũy trong số nguyên 64 bit và in kết quả theo modulo 10^9. Thời gian O(n), bộ nhớ phụ O(1)."
     ]
   },
   "explanationEn": "## Approach\n\nThe unit held at the start can be cashed in on the first day at A[0]; after that, add up all positive day-to-day increases, and finally take the result modulo 10^9.\n\n## Correctness\n\nFirst sell the initial unit to get A[0]. After that, every purchase can be made after a price drop and sold during the following rise; split any holding interval into daily differences: you should not hold across negative differences, and every positive difference can be captured by an independent trade. Hence the maximum profit equals A[0] plus all positive adjacent differences, taken modulo at the end.\n\n## Complexity\n\nTime O(n), extra space O(1)."

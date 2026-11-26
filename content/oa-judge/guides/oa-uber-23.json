@@ -13,6 +13,21 @@
       "A leaf without passengers never needs to be visited, so such leaves can be peeled off layer by layer. In the remaining tree, the outermost passengers can be picked up from two steps further in, so two more layers of leaves can be peeled. Every edge left after that must be walked there and back.",
       "First use a queue to keep deleting leaves without passengers until none remain. Then peel two full layers of leaves from what is left, all at once per layer. The answer is twice the number of remaining edges.",
       "Compute degrees. Enqueue every node with degree at most 1 and no passenger; when one is dequeued and still alive, delete it, and for each alive neighbor decrease the remaining edge count and the neighbor's degree, enqueueing the neighbor if it became a leaf without passengers. Then take every alive node with degree at most 1 as the first layer and, for two rounds, delete the whole current layer, updating edges and degrees the same way, with neighbors whose degree drops to exactly 1 forming the next layer. Print 2 * max(0, remaining edges)."
+    ],
+    "ja": [
+      "乗客のいない葉を訪れる必要はないので、そのような葉は層ごとに順に取り除けます。残った木では、最も外側の乗客はさらに 2 歩内側から拾えるので、葉の層をあと 2 層取り除けます。その後に残った辺はすべて往復して歩く必要があります。",
+      "まずキューを使って、乗客のいない葉を、なくなるまで削除し続けます。次に、残った木から葉の 2 層を、層ごとにまとめて取り除きます。答えは、残った辺の数の 2 倍です。",
+      "次数を計算します。次数が 1 以下で乗客のいないすべてのノードをキューに入れます。取り出したノードがまだ生きていれば削除し、生きている各隣接ノードについて、残りの辺の数と隣接ノードの次数を減らし、隣接ノードが乗客のいない葉になったらキューに入れます。次に、次数が 1 以下で生きているすべてのノードを最初の層とし、2 ラウンドにわたって、現在の層全体を削除し、辺と次数を同様に更新します。次数がちょうど 1 に下がった隣接ノードが次の層になります。2 * max(0, 残りの辺の数) を出力します。"
+    ],
+    "ko": [
+      "승객이 없는 리프는 방문할 필요가 없으므로 이런 리프를 층별로 계속 제거할 수 있습니다. 남은 트리에서 가장 바깥쪽 승객은 두 걸음 안쪽에서 태울 수 있으므로 리프 층을 두 번 더 벗겨 낼 수 있습니다. 그 뒤에 남은 모든 간선은 왕복해야 합니다.",
+      "먼저 큐를 사용해 승객이 없는 리프를 더 이상 없을 때까지 계속 삭제합니다. 그 다음 남은 트리에서 리프 층을 두 겹, 각 층을 한꺼번에 벗겨 냅니다. 답은 남은 간선 수의 두 배입니다.",
+      "차수를 계산합니다. 차수가 1 이하이고 승객이 없는 모든 노드를 큐에 넣고, 꺼냈을 때 아직 살아 있으면 삭제하며, 살아 있는 각 이웃에 대해 남은 간선 수와 이웃의 차수를 줄이고 이웃이 승객 없는 리프가 되면 큐에 넣습니다. 그 다음 차수가 1 이하인 살아 있는 모든 노드를 첫 번째 층으로 삼아 두 라운드 동안 현재 층 전체를 삭제하며 같은 방식으로 간선 수와 차수를 갱신하고, 차수가 정확히 1이 된 이웃이 다음 층을 이룹니다. 2 * max(0, 남은 간선 수)를 출력합니다."
+    ],
+    "vi": [
+      "Một lá không có hành khách không bao giờ cần được ghé thăm, nên có thể gỡ các lá như vậy từng lớp một. Trong cây còn lại, các hành khách ngoài cùng có thể được đón từ vị trí sâu hơn hai bước, nên có thể gỡ thêm hai lớp lá. Mọi cạnh còn lại sau đó phải được đi cả đi lẫn về.",
+      "Trước hết dùng một hàng đợi để liên tục xóa các lá không có hành khách cho đến khi không còn. Sau đó gỡ hai lớp lá đầy đủ từ phần còn lại, mỗi lớp cùng một lúc. Đáp án là gấp đôi số cạnh còn lại.",
+      "Tính bậc. Đưa vào hàng đợi mọi nút có bậc nhiều nhất 1 và không có hành khách; khi một nút được lấy ra và vẫn còn sống, xóa nó, và với mỗi nút kề còn sống thì giảm số cạnh còn lại và bậc của nút kề, đưa nút kề vào hàng đợi nếu nó trở thành lá không có hành khách. Sau đó lấy mọi nút còn sống có bậc nhiều nhất 1 làm lớp đầu tiên và, trong hai vòng, xóa toàn bộ lớp hiện tại, cập nhật số cạnh và bậc theo cách tương tự, với các nút kề có bậc giảm xuống đúng 1 tạo thành lớp tiếp theo. In 2 * max(0, số cạnh còn lại)."
     ]
   },
   "explanationEn": "## Approach\n\nFirst keep peeling leaves without passengers, then peel two layers of leaves at once. Every edge of the remaining tree must be traversed there and back, so the answer is twice the number of remaining edges.\n\n## Correctness\n\nA leaf without passengers does not need to be visited and does not affect picking anyone up. Passengers on the outer side of the remaining tree can be picked up from two steps inward, so two layers are peeled. Each edge further inside has passengers on both sides that cannot be covered from the same side, so it must be crossed. A closed route on a tree walks every edge it uses at least twice, and traversing the remaining tree achieves this lower bound; when there are no edges, staying in place is enough.\n\n## Complexity\n\nTime O(n), space O(n)."

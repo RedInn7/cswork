@@ -13,6 +13,21 @@
       "With prefix sums S: a segment starting at l has every prefix sum non-negative if and only if every later prefix sum S[r] is at least S[l].",
       "So for each start l, the segment can extend up to just before the first index j to the right of l with S[j] < S[l]; finding the first strictly smaller element to the right is the classic monotonic stack problem.",
       "Build the prefix sum array of length n+1; scan left to right keeping a stack of increasing prefix sums, and when the current value is strictly smaller than the top, pop it and set stop[top] to the current index; indices never popped get stop = n+1; the answer is the maximum of stop[l]-l-1 over l < n (possibly 0). Use 64-bit prefix sums."
+    ],
+    "ja": [
+      "接頭辞和を S とすると、l から始まる区間のすべての接頭辞和が非負であることと、それ以降のすべての S[r] が S[l] 以上であることは同値です。",
+      "したがって各始点 l について、区間は、l の右側で最初に S[j] < S[l] となるインデックス j の直前まで伸ばせます。右側の最初の厳密に小さい要素を求めるのは、典型的な単調スタックの問題です。",
+      "長さ n+1 の接頭辞和の配列を作り、左から走査して、増加する接頭辞和のスタックを保持します。現在の値がスタックの先頭より厳密に小さいときは、それをポップして stop[top] を現在のインデックスにします。ポップされなかったインデックスは stop = n+1 とします。答えは l < n に対する stop[l]-l-1 の最大値（0 の場合もあります）です。接頭辞和は 64 ビットで持ちます。"
+    ],
+    "ko": [
+      "접두사 합 S가 있을 때, l에서 시작하는 구간의 모든 접두사 합이 음수가 아닌 것은 이후의 모든 접두사 합 S[r]이 S[l] 이상인 것과 동치입니다.",
+      "따라서 각 시작점 l에 대해 구간은 l의 오른쪽에서 S[j] < S[l]인 첫 인덱스 j 바로 앞까지 확장할 수 있습니다. 오른쪽에서 처음으로 엄격하게 작은 원소를 찾는 것은 전형적인 단조 스택 문제입니다.",
+      "길이 n+1의 접두사 합 배열을 만들고, 증가하는 접두사 합의 스택을 유지하면서 왼쪽에서 오른쪽으로 훑습니다. 현재 값이 top보다 엄격하게 작으면 pop하고 stop[top]을 현재 인덱스로 설정합니다. pop되지 않은 인덱스는 stop = n+1이 됩니다. 답은 l < n에 대한 stop[l]-l-1의 최댓값입니다(0일 수도 있음). 접두사 합은 64비트를 사용하세요."
+    ],
+    "vi": [
+      "Với tổng tiền tố S: một đoạn bắt đầu tại l có mọi tổng tiền tố không âm khi và chỉ khi mọi tổng tiền tố S[r] về sau đều không nhỏ hơn S[l].",
+      "Vì vậy với mỗi điểm bắt đầu l, đoạn có thể kéo dài đến ngay trước chỉ số j đầu tiên bên phải l thỏa S[j] < S[l]; tìm phần tử nhỏ hơn hẳn đầu tiên ở bên phải là bài toán ngăn xếp đơn điệu kinh điển.",
+      "Xây mảng tổng tiền tố độ dài n+1; duyệt từ trái sang phải giữ một ngăn xếp các tổng tiền tố tăng dần, khi giá trị hiện tại nhỏ hơn hẳn đỉnh thì pop nó và đặt stop[top] bằng chỉ số hiện tại; các chỉ số không bao giờ bị pop nhận stop = n+1; đáp án là giá trị lớn nhất của stop[l]-l-1 với l < n (có thể là 0). Dùng tổng tiền tố 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nOn the prefix sum array, find for each position the first prefix sum to its right that is strictly smaller. Every element before it can be taken, and reaching it means failure.\n\n## Proof of correctness\n\nFor a segment starting at l, every prefix being non-negative is equivalent to all later prefix sums staying >= S[l]. The first position with a value strictly smaller than S[l] is exactly the first invalid end point. A monotonic stack determines these positions one by one, and the longest valid length follows directly.\n\n## Complexity\n\nO(n) time and O(n) space."

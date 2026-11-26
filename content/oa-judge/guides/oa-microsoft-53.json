@@ -13,6 +13,21 @@
       "The records form a single chain, and its head is the only record whose start never appears as any record's end.",
       "Map each start to its record in a hash table and put every end in a set; that finds the head, and following end leads from one record to the next.",
       "Read line by line: a payload may have leading or trailing spaces or be empty, so keep the whole line instead of splitting on whitespace. From the head, walk N steps collecting payloads, join them once at the end to avoid quadratic string building, and finish with a newline."
+    ],
+    "ja": [
+      "レコードは 1 本の鎖を成し、その先頭は、start がどのレコードの end にも現れない唯一のレコードです。",
+      "各 start をそのレコードに対応づけるハッシュテーブルを作り、すべての end を集合に入れます。これで先頭が見つかり、end をたどれば次のレコードに進めます。",
+      "1 行ずつ読み込みます。ペイロードは先頭や末尾にスペースがあったり空だったりするので、空白で分割せず行全体を保持してください。先頭から N 歩進めてペイロードを集め、文字列を何度も結合して二乗の時間がかからないよう最後に 1 回だけ連結し、改行で終えます。"
+    ],
+    "ko": [
+      "레코드는 하나의 체인을 이루며, 그 첫 레코드는 start가 어떤 레코드의 end로도 나타나지 않는 유일한 레코드입니다.",
+      "각 start를 해시 테이블에서 해당 레코드로 매핑하고 모든 end를 집합에 넣으세요. 그러면 첫 레코드를 찾을 수 있고, end를 따라가면 한 레코드에서 다음 레코드로 이동합니다.",
+      "한 줄씩 읽으세요. 페이로드는 앞뒤에 공백이 있거나 비어 있을 수 있으므로 공백으로 split하지 말고 줄 전체를 보존해야 합니다. 첫 레코드에서 N단계를 따라가며 페이로드를 모으고, 이차 시간의 문자열 이어 붙이기를 피하기 위해 마지막에 한 번만 join한 뒤 줄바꿈으로 끝냅니다."
+    ],
+    "vi": [
+      "Các bản ghi tạo thành một chuỗi duy nhất, và đầu chuỗi là bản ghi duy nhất có start không bao giờ xuất hiện làm end của bất kỳ bản ghi nào.",
+      "Ánh xạ mỗi start tới bản ghi của nó trong bảng băm và đưa mọi end vào một tập hợp; cách này tìm ra đầu chuỗi, và đi theo end sẽ dẫn từ bản ghi này sang bản ghi kế tiếp.",
+      "Đọc theo từng dòng: payload có thể có dấu cách ở đầu hoặc cuối hoặc rỗng, nên hãy giữ nguyên cả dòng thay vì tách theo khoảng trắng. Từ đầu chuỗi, đi N bước để thu thập payload, nối chúng một lần ở cuối để tránh dựng xâu theo bình phương, và kết thúc bằng một ký tự xuống dòng."
     ]
   },
   "explanationEn": "## Approach\n\nMap the records by start, find the starting key that does not appear in the set of end keys, walk along end from it record by record collecting payloads, and concatenate them once at the end.\n\n## Correctness\n\nThe first key of the unique chain has no predecessor, while every other start key has one, so the starting point is unique. Looking up the next record by end each time follows exactly the required order, and walking N steps covers all records exactly once; the concatenation is the answer.\n\n## Complexity\n\nTime O(input bytes), space O(input bytes+N)."

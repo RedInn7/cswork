@@ -13,6 +13,21 @@
       "You can never move up, so inside each row the path is one contiguous horizontal stretch; reversing direction within a row would revisit a cell, which is not allowed.",
       "So each row is walked in one of only two ways: from the column you dropped into, keep going right, or keep going left. A row-by-row DP can record the maximum number of cells visited when reaching each cell.",
       "Keep the previous row's values (cells visited when dropping into each column; in the first row only the start can be entered); scan the current row once left to right and once right to left: a passable cell takes the larger of dropping in from above and arriving from its neighbor in the scan direction, plus one; take the larger of the two scans as the new previous row. At the end check the bottom-right cell, and output -1 if the start is blocked or the exit is unreachable."
+    ],
+    "ja": [
+      "上には動けないので、各行の中で経路は水平方向に連続した 1 区間になります。行の中で向きを反転すると同じマスを再び訪れることになり、認められません。",
+      "したがって各行を歩く方法は 2 通りしかありません。下りてきた列から、右へ進み続けるか、左へ進み続けるかです。行ごとの DP で、各マスに到達したときに訪れたマス数の最大値を記録できます。",
+      "前の行の値 (各列に下りるまでに訪れたマス数。最初の行では始点にしか入れません) を保持します。現在の行を左から右へ 1 回、右から左へ 1 回走査します。通行可能なマスは、上から下りてきた場合と走査方向の隣から来た場合の大きい方に 1 を足した値を取ります。2 回の走査のうち大きい方を新しい前の行とします。最後に右下のマスを確認し、始点が塞がれている場合や出口に到達できない場合は -1 を出力します。"
+    ],
+    "ko": [
+      "위로 이동할 수 없으므로 각 행 안에서 경로는 하나의 연속된 가로 구간입니다. 한 행 안에서 방향을 바꾸면 칸을 다시 방문하게 되어 허용되지 않습니다.",
+      "따라서 각 행은 두 가지 방식으로만 지나갑니다. 내려온 열에서 계속 오른쪽으로 가거나 계속 왼쪽으로 가는 것입니다. 행 단위 DP로 각 칸에 도달할 때까지 방문한 칸 수의 최댓값을 기록할 수 있습니다.",
+      "이전 행의 값(각 열로 내려올 때까지 방문한 칸 수이며, 첫 행에서는 출발점만 진입할 수 있음)을 유지합니다. 현재 행을 왼쪽에서 오른쪽으로 한 번, 오른쪽에서 왼쪽으로 한 번 훑습니다. 지나갈 수 있는 칸은 위에서 내려오는 경우와 훑는 방향의 이웃에서 오는 경우 중 더 큰 값에 1을 더한 값을 취하고, 두 훑기 중 더 큰 값을 새 이전 행으로 삼습니다. 마지막에 오른쪽 아래 칸을 확인하며, 출발점이 막혀 있거나 출구에 도달할 수 없으면 -1을 출력합니다."
+    ],
+    "vi": [
+      "Bạn không bao giờ được đi lên, nên trong mỗi hàng đường đi là một đoạn ngang liên tục; đổi hướng trong cùng một hàng sẽ thăm lại một ô, điều này không được phép.",
+      "Vì vậy mỗi hàng chỉ được đi theo một trong hai cách: từ cột bạn rơi xuống, tiếp tục đi sang phải hoặc tiếp tục đi sang trái. Quy hoạch động từng hàng có thể ghi lại số ô đã thăm lớn nhất khi tới mỗi ô.",
+      "Giữ các giá trị của hàng trước (số ô đã thăm khi rơi xuống mỗi cột; ở hàng đầu chỉ có điểm xuất phát là vào được); quét hàng hiện tại một lần từ trái sang phải và một lần từ phải sang trái: một ô đi được lấy giá trị lớn hơn giữa việc rơi xuống từ phía trên và việc đến từ ô lân cận theo hướng quét, cộng một; lấy giá trị lớn hơn của hai lượt quét làm hàng trước mới. Cuối cùng kiểm tra ô dưới bên phải, và in -1 nếu điểm xuất phát bị chặn hoặc không thể tới lối ra."
     ]
   },
   "explanationEn": "## Approach\n\nRow-by-row dynamic programming. Each row is entered by moving down from the previous row; run one left-to-right scan and one right-to-left scan, take the larger value at each position, and use it as the entry for the next row.\n\n## Proof of correctness\n\nThe path never moves up, so each row is visited in one stretch; changing the horizontal direction within a row would necessarily revisit a cell, which is illegal. Therefore the path inside each row is a segment going left or going right, and the two scans cover it completely. Merging the maximum of the two directions for the next row never reuses a cell of the current row, so the dynamic program enumerates exactly all valid routes.\n\n## Complexity\n\nTime O(RC), space O(C) excluding the input."

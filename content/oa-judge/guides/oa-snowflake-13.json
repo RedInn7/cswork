@@ -13,6 +13,21 @@
       "As the barrier grows, each particle's remaining energy max(energy - barrier, 0) can only stay or shrink, so the total energy is non-increasing in the barrier.",
       "Hence the barriers with total energy >= th form a prefix starting at 0, and binary search can find the last valid one; at a barrier equal to the maximum energy the total is 0, which is never valid.",
       "Binary search on [0, max(energy)]: take mid = (lo + hi + 1) / 2, compute the sum of max(e - mid, 0) with 64-bit integers, set lo = mid if it is >= th and hi = mid - 1 otherwise; print lo once they meet."
+    ],
+    "ja": [
+      "barrier が大きくなると、各粒子の残りのエネルギー max(energy - barrier, 0) は変わらないか減るだけなので、総エネルギーは barrier に対して非増加です。",
+      "したがって、総エネルギーが >= th となる barrier は 0 から始まる接頭辞を成し、二分探索で最後の有効な値を見つけられます。barrier が energy の最大値に等しいとき総エネルギーは 0 で、これは決して有効になりません。",
+      "[0, max(energy)] で二分探索します。mid = (lo + hi + 1) / 2 とし、max(e - mid, 0) の和を 64 ビット整数で計算します。それが >= th なら lo = mid、そうでなければ hi = mid - 1 とします。両者が一致したら lo を出力してください。"
+    ],
+    "ko": [
+      "barrier가 커질수록 각 입자의 남은 에너지 max(energy - barrier, 0)은 그대로이거나 줄어들기만 하므로, 총 에너지는 barrier에 대해 감소하지 않는(비증가) 함수입니다.",
+      "따라서 총 에너지가 th 이상인 barrier들은 0에서 시작하는 접두 구간을 이루므로 이분 탐색으로 마지막 유효 값을 찾을 수 있습니다. barrier가 최대 에너지와 같으면 총합이 0이 되어 절대 유효하지 않습니다.",
+      "[0, max(energy)] 구간에서 이분 탐색합니다. mid = (lo + hi + 1) / 2로 잡고 64비트 정수로 max(e - mid, 0)의 합을 구한 뒤, th 이상이면 lo = mid, 아니면 hi = mid - 1로 합니다. 두 값이 만나면 lo를 출력합니다."
+    ],
+    "vi": [
+      "Khi barrier tăng, năng lượng còn lại max(energy - barrier, 0) của mỗi hạt chỉ có thể giữ nguyên hoặc giảm, nên tổng năng lượng không tăng theo barrier.",
+      "Do đó các barrier mà tổng năng lượng >= th tạo thành một tiền tố bắt đầu từ 0, và tìm kiếm nhị phân có thể tìm giá trị hợp lệ cuối cùng; với barrier bằng năng lượng lớn nhất thì tổng bằng 0, không bao giờ hợp lệ.",
+      "Tìm kiếm nhị phân trên [0, max(energy)]: lấy mid = (lo + hi + 1) / 2, tính tổng max(e - mid, 0) bằng số nguyên 64-bit, đặt lo = mid nếu nó >= th, ngược lại hi = mid - 1; khi hai đầu gặp nhau thì in lo."
     ]
   },
   "explanationEn": "## Approach\n\nBinary search for the last barrier at which the total energy is still not below the threshold.\n\n## Correctness\n\nEach term is non-increasing as the barrier grows, so the valid barriers form a prefix; 0 is valid and the maximum initial energy is not. At every step the binary search keeps, according to the predicate, the interval that contains the last valid position, so it converges to the answer.\n\n## Complexity\n\nTime O(n log maxEnergy), space O(n)."

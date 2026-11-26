@@ -13,6 +13,21 @@
       "The rover moves one cell at a time, a command that would leave the grid is simply ignored and later commands still run, so it is enough to simulate the current position command by command.",
       "For each command first compute the candidate row and column after the move; move only if the candidate stays within 0..n-1, otherwise stay where you are.",
       "Start at (0, 0); UP decreases the row, DOWN increases it, LEFT decreases the column, RIGHT increases it; after computing the candidate check the bounds and update only if it is valid; after all m commands print row * n + column."
+    ],
+    "ja": [
+      "探査車は1マスずつ動き、グリッドの外へ出るコマンドは単に無視されて以降のコマンドは実行されるので、現在位置をコマンドごとにシミュレーションするだけで十分です。",
+      "各コマンドについて、まず移動後の行と列の候補を計算し、候補が 0..n-1 の範囲に収まる場合にのみ移動します。そうでなければその場にとどまります。",
+      "(0, 0) から始めます。UP は行を減らし、DOWN は行を増やし、LEFT は列を減らし、RIGHT は列を増やします。候補を計算して範囲を確認し、有効な場合にのみ更新します。m 個のコマンドをすべて処理したら row * n + column を出力します。"
+    ],
+    "ko": [
+      "로버는 한 번에 한 칸씩 움직이고, 격자를 벗어나는 명령은 단순히 무시되며 이후 명령은 계속 실행되므로, 명령을 하나씩 따라가며 현재 위치를 시뮬레이션하면 충분합니다.",
+      "명령마다 먼저 이동 후의 후보 행과 열을 계산합니다. 후보가 0..n-1 범위 안에 있을 때만 이동하고, 그렇지 않으면 제자리에 머뭅니다.",
+      "(0, 0)에서 시작합니다. UP은 행을 줄이고, DOWN은 행을 늘리며, LEFT는 열을 줄이고, RIGHT는 열을 늘립니다. 후보를 계산한 뒤 범위를 확인하여 유효할 때만 갱신합니다. m개의 명령이 모두 끝나면 row * n + column을 출력합니다."
+    ],
+    "vi": [
+      "Xe di chuyển từng ô, lệnh nào đưa xe ra khỏi lưới đơn giản là bị bỏ qua và các lệnh sau vẫn chạy, nên chỉ cần mô phỏng vị trí hiện tại theo từng lệnh.",
+      "Với mỗi lệnh, trước hết tính hàng và cột ứng viên sau khi di chuyển; chỉ di chuyển nếu ứng viên nằm trong 0..n-1, nếu không thì đứng yên.",
+      "Bắt đầu tại (0, 0); UP giảm hàng, DOWN tăng hàng, LEFT giảm cột, RIGHT tăng cột; sau khi tính ứng viên thì kiểm tra biên và chỉ cập nhật nếu hợp lệ; sau khi xử lý hết m lệnh, in row * n + column."
     ]
   },
   "explanationEn": "## Approach\n\nMaintain the row and column; for each command compute the candidate coordinates and update only if they are valid.\n\n## Proof of correctness\n\nThe initial coordinates are correct; each command moves to the adjacent target if it is valid and otherwise keeps the current cell, exactly as the statement says. By induction the final coordinates are correct, and plugging them into the given numbering formula yields the answer.\n\n## Complexity\n\nTime O(m), extra space O(1)."

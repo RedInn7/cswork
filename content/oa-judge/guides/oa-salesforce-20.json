@@ -13,6 +13,21 @@
       "After a node is deleted, the finally infected nodes are exactly those reachable in the remaining graph from the remaining initially infected nodes. With n and m both at most 1000, you can try deleting every node in turn.",
       "Remember that a healthy node may be deleted: a healthy cut vertex can separate the infection sources from a large part of the graph, which can be better than deleting any single source. So all n nodes must be candidates.",
       "For each candidate r: mark r as visited (this deletes it), push every other initially infected node into the queue, run one multi-source BFS, and count the visited nodes. Update the answer only when the count is strictly smaller than the best so far, which keeps the smallest number on ties. Print the 1-based number."
+    ],
+    "ja": [
+      "ノードを削除した後、最終的に感染するノードは、残りのグラフで、残った初期感染ノードから到達可能なノードにちょうど等しくなります。n と m がともに 1000 以下なので、すべてのノードを順に削除してみることができます。",
+      "感染していないノードも削除できることを忘れないでください。感染していない関節点は、感染源とグラフの大部分を切り離すことができ、感染源を 1 つだけ削除するよりも良い場合があります。したがって、n 個のノードすべてが候補です。",
+      "各候補 r について: r を訪問済みにし (これで削除したことになります)、r 以外の初期感染ノードをすべてキューに入れ、多始点 BFS を 1 回行って、訪問したノード数を数えます。数がこれまでの最良より厳密に小さいときだけ答えを更新すれば、同数のときは最小の番号が保たれます。1 始まりの番号を出力します。"
+    ],
+    "ko": [
+      "노드를 삭제한 뒤 최종 감염 노드는 남은 그래프에서 남은 초기 감염 노드로부터 도달 가능한 노드들입니다. n과 m이 모두 1000 이하이므로 모든 노드를 차례로 삭제해 볼 수 있습니다.",
+      "건강한 노드도 삭제할 수 있다는 점을 기억하세요. 건강한 절단점은 감염원과 그래프의 큰 부분을 분리할 수 있어, 감염원 하나를 삭제하는 어떤 경우보다 나을 수 있습니다. 따라서 n개 노드 전부가 후보입니다.",
+      "각 후보 r에 대해 r을 방문 처리하고(삭제), r을 제외한 모든 초기 감염 노드를 큐에 넣고, 다중 시작점 BFS를 한 번 실행하여 방문한 노드 수를 셉니다. 수가 지금까지의 최선보다 엄격하게 작을 때만 답을 갱신하면 동률에서 가장 작은 번호가 유지됩니다. 1부터 시작하는 번호를 출력합니다."
+    ],
+    "vi": [
+      "Sau khi một nút bị xoá, các nút bị nhiễm cuối cùng chính xác là các nút có thể đến được trong đồ thị còn lại từ các nút bị nhiễm ban đầu còn lại. Vì n và m đều không quá 1000, bạn có thể lần lượt thử xoá từng nút.",
+      "Hãy nhớ rằng một nút khoẻ mạnh có thể bị xoá: một đỉnh cắt khoẻ mạnh có thể tách các nguồn nhiễm khỏi một phần lớn của đồ thị, điều này có thể tốt hơn xoá bất kỳ nguồn đơn lẻ nào. Vì vậy cả n nút đều phải là ứng viên.",
+      "Với mỗi ứng viên r: đánh dấu r là đã thăm (việc này xoá nó), đẩy mọi nút bị nhiễm ban đầu khác vào hàng đợi, chạy một BFS đa nguồn, và đếm các nút đã thăm. Chỉ cập nhật đáp án khi số đếm nhỏ hơn chặt so với giá trị tốt nhất hiện có, nhờ đó giữ số hiệu nhỏ nhất khi hoà. In số hiệu tính từ 1."
     ]
   },
   "explanationEn": "## Approach\n\nEnumerate every node as the deletion candidate, simulate the spread in the remaining graph with a multi-source BFS each time, and compare the final infected counts and node numbers.\n\n## Correctness\n\nThe spread closure after the deletion is exactly the set of nodes reachable from all the non-deleted infection sources. BFS traverses exactly this set, so each candidate's cost is exact; enumerating all n nodes, including healthy cut vertices, and comparing first by infected count and then by node number gives the global optimum.\n\n## Complexity\n\nTime O(n(n+m)), extra space O(n+m)."

@@ -13,6 +13,21 @@
       "Each jump earns the square of the height difference, so bigger gaps are better; intuitively every jump should go between the highest and the lowest stones still left. Starting from the ground at 0, every stone is above you.",
       "After sorting, jump to the highest remaining stone, then to the lowest remaining, then the next highest, the next lowest, and so on, alternating between the two ends and adding the squared difference of every jump, including the first one from 0.",
       "Sort the heights ascending, with lo at the smallest and hi at the largest, and the current height at = 0; take a[hi] (then decrease hi) and a[lo] (then increase lo) in turn, and for each taken height v add (v - at) squared and set at = v, until all are used. The total exceeds 32 bits, so use 64-bit integers."
+    ],
+    "ja": [
+      "各ジャンプはその高さの差の 2 乗を稼ぐので、差が大きいほど有利です。直感的には、どのジャンプも残っている石のうち最も高いものと最も低いものの間で行うのがよいことになります。地面の 0 から始めるので、すべての石は自分より上にあります。",
+      "ソートした後、残っている最も高い石へ跳び、次に残っている最も低い石、次に 2 番目に高い石、2 番目に低い石……と、両端を交互に取りながら、最初の 0 からのジャンプも含めてすべてのジャンプの差の 2 乗を加えます。",
+      "高さを昇順にソートし、lo を最小、hi を最大の位置、現在の高さを at = 0 とします。a[hi]（その後 hi を減らす）と a[lo]（その後 lo を増やす）を交互に取り、取った高さ v ごとに (v - at) の 2 乗を加えて at = v とし、すべて使い切るまで続けます。合計は 32 ビットを超えるので、64 ビット整数を使ってください。"
+    ],
+    "ko": [
+      "각 점프는 높이 차의 제곱만큼 점수를 얻으므로 차이가 클수록 좋습니다. 직관적으로 모든 점프는 남은 돌 중 가장 높은 것과 가장 낮은 것 사이에서 이루어져야 합니다. 0의 지면에서 시작하면 모든 돌이 위에 있습니다.",
+      "정렬한 뒤 남은 돌 중 가장 높은 돌로 점프하고, 그다음 남은 돌 중 가장 낮은 돌, 그다음 두 번째로 높은 돌, 두 번째로 낮은 돌 순으로 양 끝을 번갈아 가며, 0에서의 첫 점프를 포함한 모든 점프의 높이 차의 제곱을 더합니다.",
+      "높이를 오름차순으로 정렬하고, lo는 가장 작은 쪽, hi는 가장 큰 쪽을 가리키며 현재 높이는 at = 0으로 둡니다. a[hi]를 취하고(hi를 감소) a[lo]를 취하는(lo를 증가) 과정을 번갈아 수행하면서, 취한 높이 v마다 (v - at)의 제곱을 더하고 at = v로 설정하는 것을 모두 사용할 때까지 반복합니다. 합계는 32비트를 넘으므로 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Mỗi cú nhảy kiếm được bình phương của chênh lệch độ cao, nên khoảng cách càng lớn càng tốt; theo trực giác mỗi cú nhảy nên đi giữa viên cao nhất và viên thấp nhất còn lại. Xuất phát từ mặt đất ở độ cao 0, mọi viên đá đều nằm trên bạn.",
+      "Sau khi sắp xếp, nhảy tới viên cao nhất còn lại, rồi tới viên thấp nhất còn lại, rồi viên cao nhất kế tiếp, viên thấp nhất kế tiếp, và cứ thế, luân phiên giữa hai đầu và cộng bình phương chênh lệch của mọi cú nhảy, kể cả cú đầu tiên từ 0.",
+      "Sắp xếp độ cao tăng dần, với lo ở phần tử nhỏ nhất và hi ở phần tử lớn nhất, và độ cao hiện tại at = 0; lần lượt lấy a[hi] (rồi giảm hi) và a[lo] (rồi tăng lo), và với mỗi độ cao v lấy được, cộng (v - at) bình phương và đặt at = v, cho đến khi dùng hết. Tổng vượt quá 32 bit, nên dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nSort the heights and visit, in turn, the highest remaining, the lowest remaining, the next highest, the next lowest, and so on, summing the squared differences of consecutive heights, including the first jump from 0.\n\n## Proof of correctness\n\nLet the current height x be no greater than every remaining height, and let M be the remaining maximum. Any subsequent order x,a,...,b,M,c,... can be turned, by reversing the segment from a to M, into x,M,b,...,a,c,...; the inner edges are unchanged because squared differences are symmetric, and the gain of the two changed edges changes by 2(M-a)(c-x)>=0. If M was at the end, only the edge from x to a is replaced by the edge from x to M, which also does not decrease the total. Hence some optimal plan chooses M next. When the current height is no less than every remaining height, the symmetric argument shows the next step can choose the remaining minimum. The starting point 0 satisfies the first condition, and fixing the prefix step by step shows that the alternating-extremes greedy is optimal.\n\n## Complexity\n\nTime O(n log n), space O(n)."

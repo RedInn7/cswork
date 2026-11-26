@@ -13,6 +13,21 @@
       "Once the smallest bag is chosen, every later bag is uniquely the square of the previous one, so a chain depends only on its start.",
       "Values are at most 10^6 and squares grow very fast: a chain has at most 5 elements (2, 4, 16, 256, 65536), so extending from every start by brute force is enough.",
       "Put all numbers in a set (or a boolean array of size 10^6+1); for each v, keep squaring while v≤1000 and v² is present, counting the length. Take the maximum length and print −1 if it is below 2."
+    ],
+    "ja": [
+      "最小の袋を選んだ時点で、以降の袋は必ず直前の 2 乗として一意に決まるので、連鎖は始点だけで決まります。",
+      "値は高々 10^6 で、2 乗は急速に増えます。連鎖は最大でも 5 要素 (2、4、16、256、65536) なので、すべての始点から力任せに伸ばせば十分です。",
+      "すべての数を集合 (またはサイズ 10^6+1 の真偽値配列) に入れます。各 v について、v≤1000 かつ v² が存在する間 2 乗し続け、長さを数えます。最大の長さを取り、2 未満なら −1 を出力します。"
+    ],
+    "ko": [
+      "가장 작은 가방을 고르고 나면 이후의 가방은 모두 이전 가방의 제곱으로 유일하게 정해지므로, 체인은 시작점에만 의존합니다.",
+      "값은 최대 10^6이고 제곱은 매우 빠르게 커집니다. 체인은 최대 5개 원소(2, 4, 16, 256, 65536)이므로 모든 시작점에서 브루트 포스로 확장해도 충분합니다.",
+      "모든 수를 집합(또는 크기 10^6+1의 불리언 배열)에 넣고, 각 v에 대해 v≤1000이고 v²가 집합에 있는 동안 제곱을 반복하며 길이를 셉니다. 최대 길이를 취하고 2 미만이면 −1을 출력합니다."
+    ],
+    "vi": [
+      "Khi đã chọn túi nhỏ nhất, mọi túi sau đó được xác định duy nhất là bình phương của túi trước, nên một chuỗi chỉ phụ thuộc vào điểm bắt đầu.",
+      "Giá trị tối đa là 10^6 và bình phương tăng rất nhanh: một chuỗi có tối đa 5 phần tử (2, 4, 16, 256, 65536), nên mở rộng vét cạn từ mọi điểm bắt đầu là đủ.",
+      "Đưa tất cả các số vào một tập hợp (hoặc mảng boolean kích thước 10^6+1); với mỗi v, tiếp tục bình phương khi v≤1000 và v² có trong tập, đồng thời đếm độ dài. Lấy độ dài lớn nhất và in −1 nếu nó nhỏ hơn 2."
     ]
   },
   "explanationEn": "## Approach\n\nStore all numbers in a set; starting from each number, square repeatedly and count the chain length while the value stays in the set.\n\n## Proof of correctness\n\nOnce the first element of a valid sequence is chosen, every later element is uniquely the square of the previous one. Extending from each start until the first missing value therefore finds the longest valid sequence for that start, and the maximum over all starts is the global optimum.\n\n## Complexity\n\nO(n log log 10^6) expected time and O(n) space; the longest chain is 2, 4, 16, 256, 65536, with 5 elements."

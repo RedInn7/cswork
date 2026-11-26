@@ -13,6 +13,21 @@
       "The total throughput is the bottleneck's throughput. For the bottleneck to be at least T, every service must reach T on its own, and the scaling costs of different services do not interact.",
       "Feasibility of a target T is monotone: a larger T needs more scale-ups. Binary search on T; service i needs at least x = max(0, ceil(T / a_i) - 1) scale-ups, and T is feasible when the total cost fits the budget.",
       "Use the smallest initial throughput as the lower bound and min(a_i * (budget / c_i + 1)) as the upper bound, which is what each service could reach by spending the whole budget alone. In each check add x * c_i and stop as soon as the budget is exceeded. The upper bound can reach about 10^21, beyond 64 bits, so use 128-bit integers or split T - 1 into two parts for the division; check x > budget / c_i before multiplying to avoid overflow."
+    ],
+    "ja": [
+      "全体のスループットはボトルネックのスループットです。ボトルネックが T 以上になるには、すべてのサービスがそれぞれ単独で T に到達する必要があり、サービスごとのスケールアップのコストは互いに影響しません。",
+      "目標 T が実現可能かどうかは単調で、T が大きいほどスケールアップが多く必要です。T で二分探索します。サービス i には少なくとも x = max(0, ceil(T / a_i) - 1) 回のスケールアップが必要で、総コストが予算に収まれば T は実現可能です。",
+      "下限には最小の初期スループットを、上限には min(a_i * (budget / c_i + 1)) を使います。これは各サービスが予算全体を単独で使って到達できる値です。各判定では x * c_i を加算し、予算を超えた時点で打ち切ります。上限は約 10^21 に達し 64 ビットを超えるので、128 ビット整数を使うか、T - 1 を 2 つの部分に分けて割り算してください。オーバーフローを避けるため、掛け算の前に x > budget / c_i を確認します。"
+    ],
+    "ko": [
+      "전체 처리량은 병목 서비스의 처리량입니다. 병목이 T 이상이 되려면 모든 서비스가 각자 T에 도달해야 하며, 서로 다른 서비스의 확장 비용은 서로 영향을 주지 않습니다.",
+      "목표 T의 달성 가능 여부는 단조입니다. T가 클수록 더 많은 확장이 필요합니다. T에 대해 이분 탐색을 하며, 서비스 i는 최소 x = max(0, ceil(T / a_i) - 1)번 확장해야 하고, 총비용이 예산 이내이면 T는 달성 가능합니다.",
+      "하한은 가장 작은 초기 처리량, 상한은 min(a_i * (budget / c_i + 1))으로 잡습니다. 이는 각 서비스가 예산 전체를 혼자 쓸 때 도달할 수 있는 값입니다. 각 판정에서 x * c_i를 더하며 예산을 넘는 즉시 멈춥니다. 상한은 약 10^21까지 갈 수 있어 64비트를 넘으므로 128비트 정수를 쓰거나 나눗셈을 위해 T - 1을 두 부분으로 나누세요. 곱셈 전에 x > budget / c_i인지 확인하여 오버플로를 피하세요."
+    ],
+    "vi": [
+      "Thông lượng tổng là thông lượng của điểm nghẽn. Để điểm nghẽn đạt ít nhất T, mọi dịch vụ phải tự đạt T, và chi phí mở rộng của các dịch vụ khác nhau không ảnh hưởng nhau.",
+      "Tính khả thi của mục tiêu T là đơn điệu: T lớn hơn cần nhiều lần mở rộng hơn. Chặt nhị phân theo T; dịch vụ i cần ít nhất x = max(0, ceil(T / a_i) - 1) lần mở rộng, và T khả thi khi tổng chi phí nằm trong ngân sách.",
+      "Dùng thông lượng ban đầu nhỏ nhất làm cận dưới và min(a_i * (budget / c_i + 1)) làm cận trên, chính là mức mà mỗi dịch vụ có thể đạt khi dùng toàn bộ ngân sách một mình. Trong mỗi lần kiểm tra, cộng x * c_i và dừng ngay khi vượt ngân sách. Cận trên có thể đạt khoảng 10^21, vượt quá 64 bit, nên dùng số nguyên 128 bit hoặc tách T - 1 thành hai phần để chia; kiểm tra x > budget / c_i trước khi nhân để tránh tràn số."
     ]
   },
   "explanationEn": "## Approach\n\nBinary search on the target T: each service needs at least max(0, ceil(T/a) - 1) scale-ups, and summing the costs tells whether the budget is exceeded. The upper bound is the minimum, over all services, of the throughput each would reach by using the whole budget alone.\n\n## Proof of correctness\n\nFor the bottleneck to be at least T, every service must reach T, and the minimum number of scale-ups follows directly from the inequality a(1+x) >= T. The services are independent, so the minimum cost is the sum over services, and the target is feasible if and only if that sum fits the budget. The cost is monotone in T and the upper bound is at least every feasible target, so the binary search finds the largest feasible value.\n\n## Complexity\n\nO(n log(upper bound)) time and O(n) space; the check stops early once the budget is exceeded."

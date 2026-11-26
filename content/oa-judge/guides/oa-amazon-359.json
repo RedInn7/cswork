@@ -13,6 +13,21 @@
       "Positions are changed independently, so each character of new can only become itself or its cyclic successor (after z comes a).",
       "This is subsequence matching where each position offers two candidate characters; greedily matching the next character of old as early as possible never hurts later matches.",
       "For each request keep a pointer j into old; for every character c of new, if c or its successor equals old[j], advance j. Print YES if j reaches the length of old, otherwise NO. An empty old is always YES."
+    ],
+    "ja": [
+      "各位置は独立に変更されるので、new の各文字が取りうるのは、そのままの文字か、巡回的な次の文字(z の次は a)のどちらかだけです。",
+      "これは、各位置が2つの候補文字を持つ部分列マッチングです。old の次の文字をできるだけ早く貪欲に対応づけても、後のマッチを損ないません。",
+      "各リクエストで old へのポインタ j を保持し、new の各文字 c について、c またはその次の文字が old[j] と等しければ j を進めます。j が old の長さに達すれば YES、そうでなければ NO を出力します。old が空なら常に YES です。"
+    ],
+    "ko": [
+      "위치는 서로 독립적으로 바뀌므로, new의 각 문자는 자기 자신이거나 순환 다음 글자(z 다음은 a)가 될 수만 있습니다.",
+      "각 위치가 후보 문자 두 개를 제공하는 부분 수열 매칭입니다. old의 다음 문자를 가능한 한 일찍 탐욕적으로 매칭하면 이후 매칭에 해가 되지 않습니다.",
+      "요청마다 old에 대한 포인터 j를 두고, new의 각 문자 c에 대해 c 또는 그 다음 글자가 old[j]와 같으면 j를 증가시킵니다. j가 old의 길이에 도달하면 YES, 아니면 NO를 출력합니다. old가 비어 있으면 항상 YES입니다."
+    ],
+    "vi": [
+      "Các vị trí được đổi độc lập với nhau, nên mỗi ký tự của new chỉ có thể trở thành chính nó hoặc chữ cái kế tiếp theo vòng (sau z là a).",
+      "Đây là bài khớp dãy con trong đó mỗi vị trí đưa ra hai ký tự ứng viên; khớp tham lam ký tự kế tiếp của old càng sớm càng tốt không bao giờ làm hại các lần khớp sau.",
+      "Với mỗi yêu cầu, giữ một con trỏ j vào old; với mỗi ký tự c của new, nếu c hoặc ký tự kế tiếp của nó bằng old[j] thì tăng j. In YES nếu j đạt độ dài của old, ngược lại in NO. old rỗng luôn cho YES."
     ]
   },
   "explanationEn": "## Approach\n\nScan new with two pointers; if the current character or its single cyclic successor equals the next character of old, match it immediately.\n\n## Proof of correctness\n\nEach position independently decides whether to change. The earliest position that can match the target character can replace a later matching position in any feasible plan and leaves no fewer positions for the rest. Therefore matching each character as early as possible preserves the existence of a feasible suffix, and old is fully matched if and only if the request is feasible.\n\n## Complexity\n\nO(total length of all passwords) time, with O(number of requests) extra space for the output."

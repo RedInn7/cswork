@@ -13,6 +13,21 @@
       "Every constraint involves only two adjacent packages, so knowing which stamp the previous package used is enough to decide which stamps the next one may use.",
       "Let dp[j] be the number of plans for the prefix whose last package uses stamp j; depending on whether the adjacent prices rise, fall or stay equal, transition from old states with a smaller number, a larger number, or any different number.",
       "Start with all five entries equal to 1; for each adjacent price pair build a new array where each j sums every dp[i] that satisfies the condition, reducing modulo 1000000007; finally output the sum of the five entries modulo 1000000007. A strictly monotone run that is too long naturally drives the states to 0."
+    ],
+    "ja": [
+      "すべての制約は隣り合う 2 つの荷物にしか関係しないので、前の荷物がどのスタンプを使ったかが分かれば、次の荷物がどのスタンプを使えるかが決まります。",
+      "dp[j] を、最後の荷物がスタンプ j を使う接頭辞のプランの数とします。隣り合う価格が上がるか、下がるか、等しいかに応じて、より小さい番号、より大きい番号、または異なる任意の番号の古い状態から遷移させます。",
+      "5 つの要素をすべて 1 にして始めます。隣り合う価格の組ごとに新しい配列を作り、各 j について条件を満たすすべての dp[i] を足し、1000000007 で割った余りを取ります。最後に 5 つの要素の和を 1000000007 で割った余りを出力します。長すぎる真の単調な連は、自然に状態を 0 にします。"
+    ],
+    "ko": [
+      "모든 제약은 인접한 두 패키지에만 관련되므로, 이전 패키지가 어떤 스탬프를 썼는지만 알면 다음 패키지가 쓸 수 있는 스탬프를 결정할 수 있습니다.",
+      "dp[j]를 마지막 패키지가 스탬프 j를 쓰는 접두사의 계획 수라고 합니다. 인접한 가격이 오르는지, 내리는지, 같은지에 따라 이전 상태 중 번호가 더 작은 것, 더 큰 것, 또는 다른 아무 것에서 전이합니다.",
+      "다섯 칸을 모두 1로 시작합니다. 인접한 가격 쌍마다 새 배열을 만들어 각 j에 조건을 만족하는 모든 dp[i]를 더하고 1000000007로 나눈 나머지를 취합니다. 마지막에 다섯 칸의 합을 1000000007로 나눈 나머지를 출력합니다. 엄밀한 단조 구간이 너무 길면 상태가 자연스럽게 0이 됩니다."
+    ],
+    "vi": [
+      "Mọi ràng buộc chỉ liên quan đến hai gói kề nhau, nên biết gói trước dùng tem nào là đủ để quyết định gói kế tiếp được dùng những tem nào.",
+      "Gọi dp[j] là số phương án cho tiền tố mà gói cuối dùng tem j; tùy theo các mức giá kề nhau tăng, giảm hay bằng nhau, chuyển từ các trạng thái cũ có số nhỏ hơn, số lớn hơn, hoặc bất kỳ số nào khác.",
+      "Bắt đầu với cả năm phần tử bằng 1; với mỗi cặp giá kề nhau xây một mảng mới trong đó mỗi j cộng mọi dp[i] thỏa điều kiện, lấy modulo 1000000007; cuối cùng in tổng của năm phần tử theo modulo 1000000007. Một dãy đơn điệu chặt quá dài tự nhiên đưa các trạng thái về 0."
     ]
   },
   "explanationEn": "## Approach\n\nUse a five-state DP on the last stamp number, transitioning from the previous numbers that satisfy the strict comparison or the not-equal condition required by the relation between adjacent prices.\n\n## Proof of correctness\n\nA single package has one plan for each stamp. Every longer valid plan splits uniquely into a prefix plan and its last stamp, and the transition condition checks exactly the new adjacent relation, so nothing is missed or counted twice. By induction over the items, the sum of the final states is the number of all plans.\n\n## Complexity\n\nTime O(25n), auxiliary space O(5) excluding the input."

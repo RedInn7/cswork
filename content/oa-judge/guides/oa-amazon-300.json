@@ -13,6 +13,21 @@
       "Position i must be covered by exactly target[i] operations. Of those, at most target[i−1] can continue from the neighbor on the left, and the rest must start at i.",
       "So whenever target[i] is higher than the previous item, target[i]−target[i−1] new ranges must start, and the first item needs target[0] new ranges; conversely, keeping active ranges by height, opening ranges on rises and closing the extra ones on drops, reaches this bound exactly.",
       "Start the answer at target[0]; from the second item on, add max(0, target[i]−target[i−1]); print the total."
+    ],
+    "ja": [
+      "位置 i は、ちょうど target[i] 回の操作で覆われなければなりません。そのうち、左隣から続けられるのは高々 target[i−1] 回で、残りは i から始まらなければなりません。",
+      "したがって、target[i] が前の項目より高いたびに、target[i]−target[i−1] 個の新しい区間が始まる必要があり、最初の項目には target[0] 個の新しい区間が必要です。逆に、高さに応じて有効な区間を保ち、上がるときに区間を開き、下がるときに余分なものを閉じれば、この下限をちょうど達成できます。",
+      "答えを target[0] で初期化します。2 番目の項目から、max(0, target[i]−target[i−1]) を加え、合計を出力します。"
+    ],
+    "ko": [
+      "위치 i는 정확히 target[i]번의 연산으로 덮여야 합니다. 그중 왼쪽 이웃에서 이어질 수 있는 것은 최대 target[i−1]개이며 나머지는 i에서 시작해야 합니다.",
+      "따라서 target[i]가 직전 항목보다 높을 때마다 target[i]−target[i−1]개의 새 구간이 시작되어야 하고, 첫 항목은 target[0]개의 새 구간이 필요합니다. 반대로 높이에 따라 활성 구간을 유지하며 올라갈 때 구간을 열고 내려갈 때 남는 구간을 닫으면 이 하한을 정확히 달성합니다.",
+      "답을 target[0]에서 시작하고, 두 번째 항목부터 max(0, target[i]−target[i−1])을 더한 뒤 총합을 출력합니다."
+    ],
+    "vi": [
+      "Vị trí i phải được phủ bởi đúng target[i] thao tác. Trong số đó, tối đa target[i−1] có thể tiếp nối từ láng giềng bên trái, và phần còn lại phải bắt đầu tại i.",
+      "Vì vậy mỗi khi target[i] cao hơn phần tử trước, phải có target[i]−target[i−1] đoạn mới bắt đầu, và phần tử đầu tiên cần target[0] đoạn mới; ngược lại, giữ các đoạn đang hoạt động theo độ cao, mở đoạn khi tăng và đóng bớt khi giảm, đạt đúng cận này.",
+      "Bắt đầu đáp án ở target[0]; từ phần tử thứ hai trở đi, cộng max(0, target[i]−target[i−1]); in ra tổng."
     ]
   },
   "explanationEn": "## Approach\n\nGoing from left to right, the first element needs target[0] new operations; after that, add as many operations as the difference only when the current element is higher than the previous one. Sum the first element and all positive differences.\n\n## Proof of correctness\n\nAt most target[i−1] of the operations covering position i can continue from its left neighbor, so every positive rise must open at least that many new ranges, and the first element must open target[0] ranges as well. Maintaining active ranges by height, opening ranges on a rise and ending the extra ranges on a drop, forms every target height exactly and reaches this lower bound.\n\n## Complexity\n\nTime O(n), auxiliary space O(1) excluding the input."

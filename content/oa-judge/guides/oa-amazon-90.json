@@ -13,6 +13,21 @@
       "n is at most 5000 and each round shortens the array by one, so there are about n^2/2 additions in total; a direct simulation is fast enough.",
       "Each round builds the next layer from the sums of adjacent pairs modulo 10. You can do it in place: replace a[i] with (a[i] + a[i+1]) mod 10 and then shrink the active length by one.",
       "Repeat until two elements remain and print those two digits as a two-character string; if the first digit is 0 it must still be printed, so do not print the pair as an integer."
+    ],
+    "ja": [
+      "n は高々 5000 で、1 ラウンドごとに配列が 1 つ短くなるので、加算は全部で約 n^2/2 回です。単純なシミュレーションで十分間に合います。",
+      "各ラウンドでは、隣接する 2 要素の和を 10 で割った余りで次の層を作ります。インプレースでもでき、a[i] を (a[i] + a[i+1]) mod 10 で置き換えてから有効長を 1 つ縮めます。",
+      "要素が 2 つになるまで繰り返し、その 2 つの数字を 2 文字の文字列として出力します。先頭が 0 の場合も出力しなければならないので、整数として出力しないでください。"
+    ],
+    "ko": [
+      "n은 최대 5000이고 매 라운드마다 배열이 하나씩 줄어드므로 덧셈은 전체적으로 약 n^2/2번입니다. 직접 시뮬레이션해도 충분히 빠릅니다.",
+      "매 라운드에서 인접한 두 원소의 합을 10으로 나눈 나머지로 다음 층을 만듭니다. 제자리에서 a[i]를 (a[i] + a[i+1]) mod 10으로 바꾼 뒤 사용하는 길이를 하나 줄이는 식으로 할 수 있습니다.",
+      "원소가 두 개 남을 때까지 반복하고, 그 두 숫자를 두 글자 문자열로 출력합니다. 첫 숫자가 0이어도 출력해야 하므로 쌍을 정수로 출력하면 안 됩니다."
+    ],
+    "vi": [
+      "n tối đa là 5000 và mỗi vòng làm mảng ngắn đi một phần tử, nên tổng cộng có khoảng n^2/2 phép cộng; mô phỏng trực tiếp là đủ nhanh.",
+      "Mỗi vòng tạo lớp tiếp theo từ tổng modulo 10 của các cặp kề nhau. Có thể làm tại chỗ: thay a[i] bằng (a[i] + a[i+1]) mod 10 rồi giảm độ dài đang dùng đi một.",
+      "Lặp lại cho đến khi còn hai phần tử và in hai chữ số đó dưới dạng xâu hai ký tự; nếu chữ số đầu là 0 thì vẫn phải in ra, vì vậy đừng in cặp này như một số nguyên."
     ]
   },
   "explanationEn": "## Approach\n\nCompute the adjacent sums layer by layer directly; each layer is one element shorter, and the final two digits are concatenated.\n\n## Proof of Correctness\n\nOne transformation builds the next layer strictly from the adjacent items of the previous layer; after repeating it n−2 times the length is exactly 2, so the simulation matches the definition. An independent cross-check uses the closed-form expression weighted by binomial coefficients.\n\n## Complexity\n\nTime O(n²), space O(n)."

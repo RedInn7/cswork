@@ -13,6 +13,21 @@
       "Only consecutive windows of length 3 can contribute: a string of length n has n-2 such windows (none when n < 3), and each window can be judged on its own without any extra data structure.",
       "\"Pairwise distinct\" needs three comparisons: first vs second, second vs third, and first vs third. Comparing only the two adjacent pairs wrongly counts windows like aba whose ends are equal; also do not deduplicate by substring, because the same triplet at different positions is counted separately.",
       "Read the string and set a counter to 0; for i from 0 to n-3, if s[i] != s[i+1], s[i+1] != s[i+2] and s[i] != s[i+2], increment the counter; print the counter at the end (when the length is below 3 the loop does not run and the answer is 0)."
+    ],
+    "ja": [
+      "条件に関わるのは長さ 3 の連続したウィンドウだけです。長さ n の文字列にはそのようなウィンドウが n-2 個あり（n < 3 なら 0 個）、各ウィンドウは追加のデータ構造なしに単独で判定できます。",
+      "「どの2つも異なる」には3回の比較が必要です。1文字目と2文字目、2文字目と3文字目、1文字目と3文字目です。隣接する2組だけを比べると、両端が等しい aba のようなウィンドウを誤って数えてしまいます。また、部分文字列で重複排除してはいけません。異なる位置にある同じ3文字組は別々に数えます。",
+      "文字列を読み込み、カウンタを 0 にします。i を 0 から n-3 まで動かし、s[i] != s[i+1]、s[i+1] != s[i+2]、s[i] != s[i+2] のすべてが成り立てばカウンタを増やします。最後にカウンタを出力します（長さが 3 未満ならループは実行されず、答えは 0 です）。"
+    ],
+    "ko": [
+      "연속한 길이 3의 윈도우만 답에 기여합니다. 길이 n인 문자열에는 이런 윈도우가 n-2개 있고(n < 3이면 없음), 각 윈도우는 추가 자료구조 없이 독립적으로 판단할 수 있습니다.",
+      "\"쌍마다 서로 다르다\"는 세 번의 비교가 필요합니다: 첫째 vs 둘째, 둘째 vs 셋째, 첫째 vs 셋째. 인접한 두 쌍만 비교하면 양 끝이 같은 aba 같은 윈도우를 잘못 세게 됩니다. 또한 부분 문자열로 중복을 제거해서도 안 됩니다. 같은 3개 조합이라도 위치가 다르면 따로 셉니다.",
+      "문자열을 읽고 카운터를 0으로 둡니다. i를 0부터 n-3까지 돌며 s[i] != s[i+1], s[i+1] != s[i+2], s[i] != s[i+2]가 모두 참이면 카운터를 1 증가시키고, 마지막에 카운터를 출력합니다(길이가 3 미만이면 반복이 실행되지 않아 답은 0입니다)."
+    ],
+    "vi": [
+      "Chỉ các cửa sổ liên tiếp có độ dài 3 mới đóng góp: một xâu độ dài n có n-2 cửa sổ như vậy (không có cửa sổ nào khi n < 3), và mỗi cửa sổ có thể được xét riêng mà không cần cấu trúc dữ liệu bổ sung.",
+      "\"Đôi một khác nhau\" cần ba phép so sánh: ký tự thứ nhất với thứ hai, thứ hai với thứ ba, và thứ nhất với thứ ba. Chỉ so sánh hai cặp liền kề sẽ đếm sai các cửa sổ như aba có hai đầu bằng nhau; đồng thời không được khử trùng theo xâu con, vì cùng một bộ ba ở các vị trí khác nhau được đếm riêng.",
+      "Đọc xâu và đặt bộ đếm bằng 0; với i từ 0 đến n-3, nếu s[i] != s[i+1], s[i+1] != s[i+2] và s[i] != s[i+2] thì tăng bộ đếm; cuối cùng in bộ đếm (khi độ dài nhỏ hơn 3 vòng lặp không chạy và đáp án là 0)."
     ]
   },
   "explanationEn": "## Problem\n\nCount the indices i such that s[i], s[i+1], s[i+2] are pairwise distinct. When the length is less than 3, the answer is 0.\n\n## Approach\n\nSlide a window of length 3 and check, for each window, whether all three pairs of characters are unequal.\n\n## Correctness\n\nEach valid index corresponds to exactly one window, and the three pairwise comparisons are equivalent to \"pairwise distinct\". Comparing only the two adjacent pairs would count windows like aba whose first and last characters are equal, and deduplicating by distinct substrings would undercount windows that occur more than once.\n\n## Complexity\n\nO(n).\n\n## Independent verification\n\nThe oracle decides with len(set(s[i:i+3]))==3, which differs from the pairwise comparison. All strings of length 1..7 over the alphabet {a,b,c} are enumerated and the reference program is actually run on each of them; the official cases cover the original examples, lengths 1 and 2, all-equal strings, period abc, period aba, random full-length strings, and more. The wrong solutions cover forgetting to compare the first and last characters, deduplicating by substring, missing the last window, and excluding only triplets whose three characters are all equal."

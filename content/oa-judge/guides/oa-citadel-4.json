@@ -13,6 +13,21 @@
       "Appending one character at the end creates at most one palindromic substring that has not appeared before, and if it exists it is the new longest palindromic suffix.",
       "A palindromic tree (eertree) is built on exactly this fact: each node is one distinct palindrome with a length, a failure link to its longest proper palindromic suffix, and outgoing edges by character; two special roots have lengths -1 and 0.",
       "Keep last as the node of the current longest palindromic suffix. To add s[i], follow failure links to the node p that can be wrapped by s[i] on both sides; if p has no edge for that character, create a node of length len(p) + 2 and find its failure link by continuing from link(p) (a length-1 node links to the length-0 root). The answer is the number of nodes minus 2."
+    ],
+    "ja": [
+      "末尾に 1 文字を追加すると、これまで現れていなかった回文部分文字列は高々 1 つしか生まれず、生まれる場合は新しい最長の回文接尾辞です。",
+      "回文木（palindromic tree、eertree）はまさにこの事実の上に作られています。各ノードは異なる回文 1 つに対応し、長さ、最長の真の回文接尾辞への failure リンク、文字ごとの出辺を持ちます。長さが -1 と 0 の 2 つの特別な根があります。",
+      "last を現在の最長の回文接尾辞のノードとして保持します。s[i] を追加するには、failure リンクをたどって、両側を s[i] で挟める p を探します。p にその文字の辺がなければ、長さ len(p) + 2 のノードを作り、その failure リンクは link(p) から探索を続けて求めます（長さ 1 のノードは長さ 0 の根にリンクします）。答えはノード数から 2 を引いた値です。"
+    ],
+    "ko": [
+      "끝에 문자 하나를 붙이면 이전에 나타난 적 없는 회문 부분 문자열이 최대 하나 생기며, 생긴다면 그것은 새로운 가장 긴 회문 접미사입니다.",
+      "회문 트리(eertree)는 바로 이 사실을 이용합니다. 각 노드는 서로 다른 회문 하나이며 길이, 가장 긴 진 회문 접미사를 가리키는 실패 링크, 문자별 간선을 가집니다. 길이가 -1, 0인 두 개의 특수 루트가 있습니다.",
+      "last를 현재 가장 긴 회문 접미사의 노드로 유지합니다. s[i]를 추가하려면 실패 링크를 따라 s[i]가 양쪽을 감쌀 수 있는 노드 p를 찾습니다. p에 해당 문자의 간선이 없으면 길이 len(p) + 2인 노드를 만들고, link(p)에서 계속 탐색하여 실패 링크를 찾습니다(길이 1인 노드는 길이 0인 루트에 연결). 답은 노드 수에서 2를 뺀 값입니다."
+    ],
+    "vi": [
+      "Thêm một ký tự vào cuối tạo ra tối đa một xâu con palindrome chưa từng xuất hiện, và nếu có thì đó chính là hậu tố palindrome dài nhất mới.",
+      "Cây palindrome (eertree) được xây dựng đúng trên sự thật này: mỗi nút là một palindrome phân biệt với độ dài, một liên kết failure tới hậu tố palindrome thực sự dài nhất của nó, và các cạnh đi ra theo ký tự; hai gốc đặc biệt có độ dài -1 và 0.",
+      "Giữ last là nút của hậu tố palindrome dài nhất hiện tại. Để thêm s[i], đi theo các liên kết failure tới nút p có thể được s[i] bọc ở cả hai phía; nếu p chưa có cạnh cho ký tự đó, tạo một nút có độ dài len(p) + 2 và tìm liên kết failure của nó bằng cách tiếp tục từ link(p) (nút độ dài 1 liên kết tới gốc độ dài 0). Đáp án là số nút trừ 2."
     ]
   },
   "explanationEn": "## Approach\n\nBuild a palindromic tree with two special roots of lengths -1 and 0; for each added character, follow the failure links from the longest palindromic suffix to find a node that can be extended, then create the new palindrome and its failure link.\n\n## Proof of correctness\n\nEach palindrome is uniquely determined by the shorter palindrome obtained by removing its first and last characters together with the outer character, and an edge represents this extension. If appending a character creates a new palindrome, it must be the new longest palindromic suffix; the other palindromic suffixes have appeared before, so at most one node is created per step. The failure links enumerate all candidate suffixes, nodes correspond one-to-one with distinct non-empty palindromes, and subtracting the two roots gives the answer.\n\n## Complexity\n\nO(n * transition cost of the dictionary) time and O(n) space."

@@ -13,6 +13,21 @@
       "Array a is tiny (at most 100 elements) and never changes. For a fixed index of a, the valid indices of b are exactly those whose value equals target minus that number, so you only need how many times each value occurs in b.",
       "Keep a hash map of value frequencies for b. On an update, decrease the count of the old value and increase the count of the new value. On a query, go over every number in a and add the frequency of its complement in b.",
       "Read a and b and build the frequency map of b. For an update, decrease the count of the old b[i], add x to b[i], and increase the count of the new value. For a query, add up the count of target - v over every v in a and print it on its own line. If there are no queries, print an empty line."
+    ],
+    "ja": [
+      "配列 a は小さく(最大 100 要素)、変化しません。a の添字を 1 つ固定すると、対応する b の添字は値が target からその数を引いた値に等しいものだけなので、b の中で各値が何回現れるかだけがわかれば十分です。",
+      "b の値の度数をハッシュマップで持ちます。更新では、古い値のカウントを減らし、新しい値のカウントを増やします。クエリでは a の各数について、その補数が b に現れる度数を足し合わせます。",
+      "a と b を読み込み、b の度数マップを作ります。更新では、古い b[i] のカウントを減らし、b[i] に x を足して、新しい値のカウントを増やします。クエリでは a のすべての v について target - v のカウントを合計し、1 行で出力します。クエリがなければ空行を出力します。"
+    ],
+    "ko": [
+      "배열 a는 매우 작고(최대 100개) 변하지 않습니다. a의 인덱스를 하나 고정하면 유효한 b의 인덱스는 값이 target에서 그 수를 뺀 값과 같은 것들뿐이므로, b에서 각 값이 몇 번 나타나는지만 알면 됩니다.",
+      "b의 값별 빈도를 해시 맵으로 유지합니다. 갱신 시 이전 값의 개수를 줄이고 새 값의 개수를 늘립니다. 질의 시 a의 모든 수를 돌며 b에서 그 보수의 빈도를 더합니다.",
+      "a와 b를 읽고 b의 빈도 맵을 만듭니다. 갱신 시 이전 b[i]의 개수를 줄이고, b[i]에 x를 더한 뒤, 새 값의 개수를 늘립니다. 질의 시 a의 모든 v에 대해 target - v의 개수를 더해 한 줄로 출력합니다. 질의가 없으면 빈 줄을 출력합니다."
+    ],
+    "vi": [
+      "Mảng a rất nhỏ (tối đa 100 phần tử) và không bao giờ thay đổi. Với một chỉ số cố định của a, các chỉ số hợp lệ của b chính là những chỉ số có giá trị bằng target trừ số đó, nên chỉ cần biết mỗi giá trị xuất hiện bao nhiêu lần trong b.",
+      "Giữ một bảng băm tần suất các giá trị của b. Khi cập nhật, giảm số đếm của giá trị cũ và tăng số đếm của giá trị mới. Khi truy vấn, duyệt qua mọi số trong a và cộng tần suất của số bù của nó trong b.",
+      "Đọc a và b rồi xây bảng tần suất của b. Với cập nhật, giảm số đếm của b[i] cũ, cộng x vào b[i], rồi tăng số đếm của giá trị mới. Với truy vấn, cộng số đếm của target - v trên mọi v thuộc a và in ra trên một dòng riêng. Nếu không có truy vấn nào, in ra một dòng trống."
     ]
   },
   "explanationEn": "## Approach\n\nMaintain the frequencies of b. An update first decreases the old value's frequency and then increases the new value's; a query enumerates every number in a and adds up how many times target minus that number appears in b.\n\n## Correctness\n\nFor a fixed index of a, all complement indices in b are exactly the valid partners. Different indices of a give different pairs, so summing the frequencies is exact; before and after each update the frequencies stay consistent with the array.\n\n## Complexity\n\nTime O(nb+q·na), space O(nb+q+na), where storing the queries belongs to input parsing."

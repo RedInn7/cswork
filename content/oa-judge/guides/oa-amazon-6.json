@@ -13,6 +13,21 @@
       "The total of all numbers is fixed, so maximizing your own score is the same as minimizing the opponent's score, and both goals point to the same way of picking.",
       "The intuition is to always take the largest remaining number. Prove it by induction on the count of remaining numbers: subtract the alternating sum for \"take the largest first\" from that for \"take something else first\", pair adjacent terms of the descending order, and the difference is non-negative, so taking the largest first is never worse.",
       "Sort the array in descending order; even indices go to player 1 and odd indices to player 2; compute the alternating sum a0 - a1 + a2 - ... and print its absolute value using a 64-bit integer."
+    ],
+    "ja": [
+      "全数の合計は固定なので、自分の得点を最大化することと相手の得点を最小化することは同じで、どちらも同じ取り方を指します。",
+      "直感的には、常に残りの最大の数を取ります。これは残りの個数に関する帰納法で証明できます。「最大を先に取る」場合の交互和から「別のものを先に取る」場合の交互和を引き、降順で隣り合う項をペアにすると差は非負になるので、最大を先に取って損することはありません。",
+      "配列を降順にソートします。偶数インデックスはプレイヤー 1、奇数インデックスはプレイヤー 2 のものです。交互和 a0 - a1 + a2 - ... を 64 ビット整数で計算し、その絶対値を出力します。"
+    ],
+    "ko": [
+      "모든 수의 합은 고정되어 있으므로 자신의 점수를 최대화하는 것은 상대의 점수를 최소화하는 것과 같고, 두 목표는 같은 선택 방식을 가리킵니다.",
+      "직관적으로는 항상 남은 수 중 가장 큰 수를 가져가면 됩니다. 남은 수의 개수에 대한 귀납법으로 증명할 수 있습니다. \"가장 큰 수를 먼저 가져갈 때\"의 교대 합에서 \"다른 수를 먼저 가져갈 때\"의 교대 합을 빼고, 내림차순에서 인접한 항을 짝지으면 차이가 음이 아니므로 가장 큰 수를 먼저 가져가는 것이 손해가 아닙니다.",
+      "배열을 내림차순으로 정렬하고 짝수 인덱스는 플레이어 1에게, 홀수 인덱스는 플레이어 2에게 줍니다. 교대 합 a0 - a1 + a2 - ...를 구해 64비트 정수로 그 절댓값을 출력합니다."
+    ],
+    "vi": [
+      "Tổng của tất cả các số là cố định, nên tối đa hóa điểm của mình cũng là tối thiểu hóa điểm của đối thủ, và cả hai mục tiêu cùng dẫn đến một cách chọn.",
+      "Trực giác là luôn lấy số lớn nhất còn lại. Chứng minh bằng quy nạp theo số phần tử còn lại: lấy tổng đan dấu của phương án \"lấy số lớn nhất trước\" trừ đi tổng đan dấu của phương án \"lấy số khác trước\", ghép các số hạng liền kề của thứ tự giảm dần, hiệu là không âm, nên lấy số lớn nhất trước không bao giờ tệ hơn.",
+      "Sắp xếp mảng giảm dần; các chỉ số chẵn thuộc người chơi 1 và các chỉ số lẻ thuộc người chơi 2; tính tổng đan dấu a0 - a1 + a2 - ... và in giá trị tuyệt đối của nó bằng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nThe sum of all values is fixed, so maximizing your own score is equivalent to minimizing the opponent's score. Sort the values in descending order, let the two players take numbers alternately, and compute the alternating sum.\n\n## Why it is correct\n\nUse induction on the number of remaining numbers. In the descending array a, taking the maximum first gives the score difference a0 - a1 + a2 - ...; after first taking some other position j, by the induction hypothesis the remaining numbers are also taken alternately. Subtracting the two expressions, the terms can be paired as adjacent items of the descending order, and the resulting difference is non-negative. Therefore there is always an optimal choice that takes the maximum first, and the induction holds.\n\n## Complexity\n\nO(n log n) time and O(n) extra space (sorting and storing the input)."

@@ -13,6 +13,21 @@
       "Sort first. Picture the set of values already placed: a prefix range depends only on its minimum and maximum, and if some unplaced value lies between them, placing it earlier never increases any prefix range.",
       "So some optimal order always has the placed values forming a contiguous interval of the sorted array, and the last value added is the left or right end of that interval. This gives the interval DP dp[l][r] = a[r] - a[l] + min(dp[l+1][r], dp[l][r-1]).",
       "Sort ascending; a single element has dp 0; iterate interval lengths from 2 to n keeping only a one-dimensional array for the previous length (current[l] comes from previous[l] and previous[l+1]); at the end previous[0] is the answer. That is O(n^2) work for n <= 2000, with 64-bit values."
+    ],
+    "ja": [
+      "まずソートします。すでに置かれた値の集合を考えると、接頭辞の範囲は最小値と最大値だけで決まり、その間にまだ置かれていない値があるなら、それを先に置いてもどの接頭辞の範囲も増えません。",
+      "したがって、置かれた値がソート済み配列の連続した区間をなし、最後に加えられた値がその区間の左端または右端であるような最適な順序が必ず存在します。これにより、区間 DP dp[l][r] = a[r] - a[l] + min(dp[l+1][r], dp[l][r-1]) が得られます。",
+      "昇順にソートします。要素 1 つの dp は 0 です。区間の長さを 2 から n まで反復し、1 つ前の長さに対する 1 次元配列だけを保持します（current[l] は previous[l] と previous[l+1] から求まります）。最後に previous[0] が答えです。n <= 2000 なので計算量は O(n^2) で、値は 64 ビットです。"
+    ],
+    "ko": [
+      "먼저 정렬하세요. 이미 놓은 값의 집합을 떠올려 봅니다. 접두사의 범위는 그 최솟값과 최댓값에만 의존하며, 둘 사이에 아직 놓지 않은 값이 있다면 그것을 더 일찍 놓아도 어떤 접두사의 범위도 커지지 않습니다.",
+      "따라서 놓인 값들이 정렬된 배열의 연속한 구간을 이루는 최적 순서가 항상 존재하며, 마지막에 추가되는 값은 그 구간의 왼쪽 끝이나 오른쪽 끝입니다. 이로부터 구간 DP dp[l][r] = a[r] - a[l] + min(dp[l+1][r], dp[l][r-1])이 나옵니다.",
+      "오름차순으로 정렬하고, 원소 하나의 dp는 0입니다. 구간 길이를 2부터 n까지 늘리며 이전 길이의 1차원 배열만 유지합니다(current[l]은 previous[l]과 previous[l+1]에서 나옵니다). 마지막에 previous[0]이 답입니다. n <= 2000이므로 O(n^2) 작업이며 값은 64비트로 다룹니다."
+    ],
+    "vi": [
+      "Hãy sắp xếp trước. Hình dung tập các giá trị đã được đặt: khoảng giá trị của một tiền tố chỉ phụ thuộc vào giá trị nhỏ nhất và lớn nhất của nó, và nếu có một giá trị chưa đặt nằm giữa chúng thì đặt nó sớm hơn không bao giờ làm tăng khoảng giá trị của bất kỳ tiền tố nào.",
+      "Vì vậy luôn tồn tại một thứ tự tối ưu mà các giá trị đã đặt tạo thành một khoảng liên tục của mảng đã sắp xếp, và giá trị được thêm vào sau cùng là đầu trái hoặc đầu phải của khoảng đó. Điều này cho ta quy hoạch động trên khoảng dp[l][r] = a[r] - a[l] + min(dp[l+1][r], dp[l][r-1]).",
+      "Sắp xếp tăng dần; một phần tử có dp bằng 0; duyệt độ dài khoảng từ 2 đến n, chỉ giữ một mảng một chiều cho độ dài trước đó (current[l] lấy từ previous[l] và previous[l+1]); cuối cùng previous[0] là đáp án. Đó là O(n^2) công việc với n <= 2000, dùng giá trị 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nAfter sorting, use an interval DP: dp[l,r] = a[r] - a[l] + min(dp[l+1,r], dp[l,r-1]), where a single element costs 0, rolling over layers that keep only the previous length.\n\n## Proof of correctness\n\nGiven the current minimum and maximum, if some value inside that range has not been chosen yet, choosing it earlier does not increase any prefix range, so there is an optimal order in which each step's chosen values form a contiguous range of the sorted array. The last value added can only be the left or right end of the range; the range of the whole segment is then fixed, and adding the optimal cost of the corresponding shorter range gives the recurrence.\n\n## Complexity\n\nO(n^2) time and O(n) space."

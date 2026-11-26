@@ -13,6 +13,21 @@
       "Characters can be picked from anywhere and rearranged freely, so positions and order do not matter; only the count of each letter does.",
       "Taking the target q times requires q times the demand of every letter in t, so q cannot exceed the count of that letter in s divided by its demand in t, rounded down; the minimum of these bounds is achievable.",
       "Count the 26 letters of s and of t; for each letter that appears in t, divide its count in s by its count in t, rounding down, and print the minimum."
+    ],
+    "ja": [
+      "文字は任意の場所から選べ、自由に並べ替えられるので、位置と順序は関係ありません。重要なのは各文字の個数だけです。",
+      "ターゲットを q 回取り出すには、t にあるすべての文字の需要の q 倍が必要です。したがって q は、各文字について s での個数を t での需要で割って切り捨てた値を超えられません。これらの上限の最小値は達成可能です。",
+      "s と t の 26 文字の個数を数えます。t に現れる各文字について、s での個数を t での個数で割って切り捨て、その最小値を出力します。"
+    ],
+    "ko": [
+      "문자는 어디서든 고르고 자유롭게 재배열할 수 있으므로 위치와 순서는 중요하지 않고 각 문자의 개수만 중요합니다.",
+      "목표를 q번 가져오려면 t의 모든 문자에 대해 그 수요의 q배가 필요합니다. 따라서 q는 s에 있는 그 문자의 개수를 t에서의 수요로 나눈 몫을 넘을 수 없으며, 이 상한들의 최솟값은 달성 가능합니다.",
+      "s와 t의 26개 알파벳 개수를 셉니다. t에 나타나는 각 문자에 대해 s에서의 개수를 t에서의 개수로 나눈 몫을 구하고, 그 최솟값을 출력합니다."
+    ],
+    "vi": [
+      "Các ký tự có thể được chọn từ bất cứ đâu và sắp xếp lại tự do, nên vị trí và thứ tự không quan trọng; chỉ có số lượng của từng chữ cái là quan trọng.",
+      "Lấy từ đích q lần đòi hỏi q lần nhu cầu của mọi chữ cái trong t, nên q không thể vượt quá số lượng chữ cái đó trong s chia cho nhu cầu của nó trong t, làm tròn xuống; giá trị nhỏ nhất của các cận này là đạt được.",
+      "Đếm 26 chữ cái của s và của t; với mỗi chữ cái xuất hiện trong t, chia số lượng của nó trong s cho số lượng trong t, làm tròn xuống, và in giá trị nhỏ nhất."
     ]
   },
   "explanationEn": "## Approach\n\nCount the characters of s and t separately. The answer is the minimum, over every character that appears in t, of how many times it can be supplied, countS//countT.\n\n## Proof of correctness\n\nTaking q copies requires q times the demand of every target letter, so each frequency ratio is an upper bound. If q does not exceed any bound, every letter has enough copies to distribute among the q copies, and arbitrary rearrangement lets each copy form the target independently, so the minimum bound is exactly achievable.\n\n## Complexity\n\nTime O(|s|+|t|), auxiliary space O(26)."

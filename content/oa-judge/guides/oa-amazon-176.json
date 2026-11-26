@@ -13,6 +13,21 @@
       "Label each cell with the minute it turns black; a k x k square is complete at the largest label inside it, and the answer is the smallest such maximum over all squares.",
       "A 2D window maximum splits into two 1D passes: sliding-window maxima of width k along every row, then sliding-window maxima of height k down every column of that result, each pass in amortized O(1) per cell with a monotonic queue.",
       "While reading, set the cell of the t-th coordinate to t. For each row, a decreasing monotonic queue gives its m-k+1 window maxima; then run a height-k sliding maximum down each column of those values, and every complete window updates the minimum answer. Print the minimum."
+    ],
+    "ja": [
+      "各マスに黒くなる分をラベルとして付けます。k x k の正方形はその中の最大のラベルの時刻で完成するので、答えはすべての正方形についての最大値の最小値です。",
+      "2 次元の窓の最大値は 2 回の 1 次元処理に分解できます。まず各行で幅 k のスライディングウィンドウの最大値を求め、次にその結果の各列で高さ k のスライディングウィンドウの最大値を求めます。どちらも単調キューにより 1 マスあたり償却 O(1) です。",
+      "読み込み中に、t 番目の座標のマスに t を設定します。各行について、減少する単調キューで m-k+1 個の窓の最大値を求めます。続いてそれらの値の各列に対して高さ k のスライディング最大値を求め、完成した窓ごとに最小の答えを更新します。最小値を出力してください。"
+    ],
+    "ko": [
+      "각 칸에 그 칸이 검게 변하는 분을 적어 둡니다. k x k 정사각형은 그 안의 가장 큰 값에서 완성되므로, 답은 모든 정사각형의 최댓값 중 가장 작은 값입니다.",
+      "2차원 윈도우 최댓값은 1차원 두 번으로 나눌 수 있습니다. 먼저 모든 행에서 너비 k의 슬라이딩 윈도우 최댓값을 구하고, 그 결과의 모든 열에서 높이 k의 슬라이딩 윈도우 최댓값을 구합니다. 각 단계는 단조 큐로 칸당 amortized O(1)입니다.",
+      "입력을 읽으며 t번째 좌표의 칸에 t를 기록합니다. 각 행마다 감소하는 단조 큐로 m-k+1개의 윈도우 최댓값을 구하고, 이 값들에 대해 각 열 방향으로 높이 k의 슬라이딩 최댓값을 구합니다. 완성된 윈도우마다 최솟값 답을 갱신하고, 마지막에 그 최솟값을 출력합니다."
+    ],
+    "vi": [
+      "Gán cho mỗi ô nhãn là phút nó bị tô đen; một hình vuông k x k hoàn thành tại nhãn lớn nhất bên trong nó, và đáp án là giá trị cực đại nhỏ nhất trong số mọi hình vuông.",
+      "Cực đại cửa sổ 2D tách thành hai lượt 1D: cực đại cửa sổ trượt độ rộng k dọc theo mỗi hàng, rồi cực đại cửa sổ trượt độ cao k xuống mỗi cột của kết quả đó, mỗi lượt tốn O(1) khấu hao cho mỗi ô nhờ hàng đợi đơn điệu.",
+      "Khi đọc, đặt ô của tọa độ thứ t bằng t. Với mỗi hàng, một hàng đợi đơn điệu giảm cho ra m-k+1 cực đại cửa sổ của hàng đó; sau đó chạy cực đại trượt độ cao k xuống từng cột của các giá trị này, và mỗi cửa sổ đầy đủ cập nhật đáp án nhỏ nhất. In giá trị nhỏ nhất."
     ]
   },
   "explanationEn": "## Approach\n\nFill each cell with its painting time; a square's completion time is the maximum time inside it. Compute the 2D k-window maximum with a monotone queue, first along each row and then along each column, and finally take the minimum.\n\n## Proof of correctness\n\nA cell is black exactly when the current time is no less than its own painting time, so a square's completion time equals its maximum. Composing two 1D window maxima gives the exact 2D maximum; the monotone queue removes expired candidates and those dominated by later larger values, keeping the correct maximum. Enumerating all windows and taking the minimum gives the first moment of success.\n\n## Complexity\n\nTime O(nm), space O(nm)."

@@ -13,6 +13,21 @@
       "Each query only asks whether the half-open range [x - size, x) contains an obstacle, that is, whether the number of placed obstacles in it is 0. Coordinates are large, but obstacles can only appear at coordinates that occur in insert operations.",
       "Read all operations first, sort and deduplicate the inserted coordinates to compress them, and keep a Fenwick tree marking which coordinates hold an obstacle. For a query, binary search both ends of the range into ranks and compare the two prefix sums.",
       "Collect every inserted coordinate offline, then sort and deduplicate them. Process the operations in order: for an insert whose coordinate is not placed yet, add 1 at its rank in the Fenwick tree. For a query, use lower_bound on x for the right end and on x - size for the left end; record 1 if the two prefix sums are equal, else 0. Print the resulting 01 string."
+    ],
+    "ja": [
+      "各クエリが尋ねているのは、半開区間 [x - size, x) に障害物があるか、つまり置かれた障害物の数が 0 かどうかだけです。座標は大きいですが、障害物が現れうるのは挿入操作に出てくる座標だけです。",
+      "すべての操作を先に読み込み、挿入される座標を整列して重複を除いて圧縮し、どの座標に障害物があるかを記録するFenwick 木を保ちます。クエリでは、区間の両端を二分探索で順位に変換し、2 つの累積和を比べます。",
+      "挿入される座標をオフラインですべて集め、整列して重複を除きます。操作を順に処理します。まだ置かれていない座標への挿入では、Fenwick 木のその順位に 1 を足します。クエリでは、右端の x に lower_bound を、左端の x - size にも lower_bound を使い、2 つの累積和が等しければ 1、そうでなければ 0 を記録します。得られた 01 の文字列を出力します。"
+    ],
+    "ko": [
+      "각 질의는 반열린 구간 [x - size, x)에 장애물이 있는지, 즉 그 안에 놓인 장애물 수가 0인지만 묻습니다. 좌표는 크지만 장애물은 삽입 연산에 나오는 좌표에만 나타날 수 있습니다.",
+      "모든 연산을 먼저 읽고, 삽입 좌표를 정렬하고 중복을 제거해 압축한 뒤, 어떤 좌표에 장애물이 있는지 표시하는 Fenwick tree를 유지하세요. 질의에서는 구간의 양 끝을 이분 탐색으로 순위로 바꾸고 두 접두사 합을 비교합니다.",
+      "삽입되는 모든 좌표를 오프라인으로 모은 뒤 정렬하고 중복을 제거하세요. 연산을 순서대로 처리합니다. 아직 놓이지 않은 좌표에 대한 삽입이면 Fenwick tree의 그 순위에 1을 더합니다. 질의에서는 오른쪽 끝은 x에 대한 lower_bound, 왼쪽 끝은 x - size에 대한 lower_bound를 쓰고, 두 접두사 합이 같으면 1, 아니면 0을 기록합니다. 결과로 만들어진 01 문자열을 출력하세요."
+    ],
+    "vi": [
+      "Mỗi truy vấn chỉ hỏi xem đoạn nửa mở [x - size, x) có chứa chướng ngại vật hay không, tức là số chướng ngại vật đã đặt trong đó có bằng 0 hay không. Tọa độ lớn, nhưng chướng ngại vật chỉ có thể xuất hiện ở các tọa độ có trong các thao tác chèn.",
+      "Đọc trước mọi thao tác, sắp xếp và loại trùng các tọa độ được chèn để nén chúng, và giữ một cây Fenwick đánh dấu tọa độ nào có chướng ngại vật. Với một truy vấn, tìm kiếm nhị phân cả hai đầu của đoạn thành các thứ hạng và so sánh hai tổng tiền tố.",
+      "Thu thập offline mọi tọa độ được chèn, rồi sắp xếp và loại trùng chúng. Xử lý các thao tác theo thứ tự: với một thao tác chèn có tọa độ chưa được đặt, cộng 1 tại thứ hạng của nó trong cây Fenwick. Với một truy vấn, dùng lower_bound trên x cho đầu mút phải và trên x - size cho đầu mút trái; ghi 1 nếu hai tổng tiền tố bằng nhau, ngược lại ghi 0. In xâu 01 thu được."
     ]
   },
   "explanationEn": "## Approach\n\nRead all inserted coordinates in advance and compress them, and use a Fenwick tree to record whether each one has been inserted. Use binary search to get the ranks of the left and right boundaries, and query the number of obstacles in the range.\n\n## Correctness\n\nA Fenwick prefix sum counts the set coordinates before a given rank. The right end uses lower_bound to exclude x, and the left end likewise uses lower_bound to include x−size; their difference is 0 exactly when there is no obstacle.\n\n## Complexity\n\nTime O(q log q), space O(q)."

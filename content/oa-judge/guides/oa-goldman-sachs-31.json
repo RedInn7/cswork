@@ -13,6 +13,21 @@
       "The costs are pairwise distinct and the target difference is positive, so every valid unordered pair {x, y} has a unique smaller value x and larger value y = x + target.",
       "Count from the smaller value only: for each x check whether x + target is in the set; each pair is then counted exactly once, with no need to enumerate all pairs.",
       "Put all costs into a hash set; for each x in the set, increment the count if x + target is also present; print the count. Values reach 2*10^9, so use 64-bit integers once target is added."
+    ],
+    "ja": [
+      "コストはすべて互いに異なり、目標の差は正なので、有効な順序なしペア {x, y} には、小さい方の値 x と大きい方の値 y = x + target が一意に定まります。",
+      "小さい方の値だけから数えます。各 x について x + target が集合にあるかを確認すれば、各ペアはちょうど 1 回数えられ、全ペアを列挙する必要はありません。",
+      "すべてのコストをハッシュ集合に入れ、集合内の各 x について x + target も存在すればカウントを 1 増やし、最後にカウントを出力します。値は 2*10^9 に達し、target を足すとさらに大きくなるため、64 ビット整数を使ってください。"
+    ],
+    "ko": [
+      "비용은 모두 서로 다르고 목표 차이는 양수이므로, 조건을 만족하는 모든 순서 없는 쌍 {x, y}에는 더 작은 값 x와 더 큰 값 y = x + target이 유일하게 존재합니다.",
+      "더 작은 값 쪽에서만 세세요. 각 x에 대해 x + target이 집합에 있는지 확인하면 각 쌍이 정확히 한 번씩 세어지며, 모든 쌍을 나열할 필요가 없습니다.",
+      "모든 비용을 해시 집합에 넣고, 집합의 각 x에 대해 x + target도 있으면 개수를 1 늘린 뒤 개수를 출력합니다. 값이 2*10^9까지 가므로 target을 더할 때는 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Các chi phí đôi một khác nhau và hiệu số mục tiêu dương, nên mọi cặp không có thứ tự {x, y} hợp lệ đều có một giá trị nhỏ hơn x duy nhất và giá trị lớn hơn y = x + target.",
+      "Chỉ đếm từ giá trị nhỏ hơn: với mỗi x kiểm tra xem x + target có trong tập hay không; khi đó mỗi cặp được đếm đúng một lần, không cần duyệt mọi cặp.",
+      "Đưa mọi chi phí vào một hash set; với mỗi x trong tập, tăng biến đếm nếu x + target cũng có mặt; in biến đếm. Giá trị lên tới 2*10^9 nên hãy dùng số nguyên 64-bit khi cộng thêm target."
     ]
   },
   "explanationEn": "## Approach\n\nPut the costs into a hash set; for each x check whether x+target exists. Because target>0, each unordered pair is counted only once, from its smaller value.\n\n## Proof of correctness\n\nIf the unordered pair {x,y} has absolute difference equal to the positive target, then there is exactly one smaller value x and one larger value y=x+target. Going through every cost and checking whether it plus target is in the set corresponds one-to-one with the valid value pairs.\n\n## Complexity\n\nAverage O(n) time, O(n) space."

@@ -13,6 +13,21 @@
       "Each occurrence of a longer substring contains an occurrence of its length-L prefix, and the prefix has no more distinct characters. So only substrings of length exactly minLength = L need to be considered.",
       "The task becomes: among substrings of length L with at most maxUnique distinct characters, find the largest number of occurrences of one text (overlaps allowed). Mark with a sliding window whether the length-L window ending at each i qualifies, and count occurrences exactly with a suffix automaton to avoid hash collisions.",
       "Build the suffix automaton, storing each state's occurrence count (1 for a new state, 0 for a clone) and the end position of its first occurrence; add counts up the suffix links in decreasing order of len. For each state with len(link) < L <= len whose window at the first end position qualifies, update the answer with its count; print 0 if none qualifies. The input is JSON and lengths count Unicode characters."
+    ],
+    "ja": [
+      "より長い部分文字列の各出現は、長さ L の接頭辞の出現を含み、その接頭辞の異なる文字数は増えません。したがって、長さがちょうど minLength = L の部分文字列だけを考えれば十分です。",
+      "問題は次のように言い換えられます: 長さ L で異なる文字数が maxUnique 以下の部分文字列のうち、同じテキストの出現回数(重なりを許す)の最大値を求める。スライディングウィンドウで、各 i で終わる長さ L のウィンドウが条件を満たすか印を付け、ハッシュ衝突を避けるために suffix automaton で出現回数を正確に数えます。",
+      "suffix automaton を構築し、各状態に出現回数(新しい状態は 1、クローンは 0)と最初の出現の終了位置を持たせます。len の降順に suffix link をたどって回数を加算します。len(link) < L <= len を満たし、最初の終了位置のウィンドウが条件を満たす各状態について、その回数で答えを更新します。1 つも条件を満たさなければ 0 を出力します。入力は JSON で、長さは Unicode 文字数で数えます。"
+    ],
+    "ko": [
+      "더 긴 부분 문자열의 각 등장에는 그 길이 L 접두사의 등장이 포함되며, 접두사의 서로 다른 문자 수는 더 많지 않습니다. 따라서 길이가 정확히 minLength = L인 부분 문자열만 고려하면 됩니다.",
+      "문제는 다음과 같이 바뀝니다. 서로 다른 문자가 최대 maxUnique개인 길이 L의 부분 문자열 중에서, 하나의 텍스트가 등장하는 횟수의 최댓값을 구합니다(겹침 허용). 슬라이딩 윈도우로 각 i에서 끝나는 길이 L 윈도우가 조건을 만족하는지 표시하고, 해시 충돌을 피하기 위해 서픽스 오토마톤으로 등장 횟수를 정확히 셉니다.",
+      "서픽스 오토마톤을 구성하면서 각 상태의 등장 횟수(새 상태는 1, 클론은 0)와 첫 등장의 끝 위치를 저장하고, len이 큰 순서대로 서픽스 링크를 따라 횟수를 위로 더합니다. len(link) < L <= len인 각 상태에 대해, 첫 등장 끝 위치의 윈도우가 조건을 만족하면 그 횟수로 답을 갱신합니다. 조건을 만족하는 것이 없으면 0을 출력합니다. 입력은 JSON이며 길이는 유니코드 문자 단위로 셉니다."
+    ],
+    "vi": [
+      "Mỗi lần xuất hiện của một xâu con dài hơn đều chứa một lần xuất hiện của tiền tố độ dài L, và tiền tố đó có không nhiều ký tự phân biệt hơn. Vì vậy chỉ cần xét các xâu con có độ dài đúng bằng minLength = L.",
+      "Bài toán trở thành: trong các xâu con độ dài L có tối đa maxUnique ký tự phân biệt, tìm số lần xuất hiện lớn nhất của một đoạn văn bản (cho phép chồng lấn). Dùng cửa sổ trượt đánh dấu cửa sổ độ dài L kết thúc tại mỗi i có thỏa mãn hay không, và đếm số lần xuất hiện chính xác bằng suffix automaton để tránh va chạm hash.",
+      "Xây suffix automaton, lưu cho mỗi trạng thái số lần xuất hiện (1 với trạng thái mới, 0 với bản sao) và vị trí kết thúc của lần xuất hiện đầu tiên; cộng dồn số đếm lên theo các suffix link theo thứ tự len giảm dần. Với mỗi trạng thái có len(link) < L <= len mà cửa sổ tại vị trí kết thúc đầu tiên thỏa mãn, cập nhật đáp án bằng số đếm của nó; in 0 nếu không có trạng thái nào thỏa mãn. Đầu vào là JSON và độ dài tính theo ký tự Unicode."
     ]
   },
   "explanationEn": "## Approach\n\nOnly the shortest length L needs to be considered: the length-L prefix of any longer substring occurs at least as often and has no more distinct characters. Use a sliding window to mark the qualifying length-L windows, and a suffix automaton to count the occurrences of each substring exactly; then filter the states that represent length L.\n\n## Correctness\n\nEach occurrence of a valid longer substring corresponds to an occurrence of its prefix, so shortening to L is never worse. Each state of the suffix automaton represents the substrings that share the same set of end positions, with lengths between len(link)+1 and len; if a state covers L, it represents a unique text of length L. Accumulating end counts along suffix links in decreasing order of length gives exact occurrence counts, and the sliding-window mark at the representative position checks the number of distinct characters; taking the maximum gives the answer without any collision-prone hashing.\n\n## Complexity\n\nTime O(n log n) (states sorted by length), space O(n)."

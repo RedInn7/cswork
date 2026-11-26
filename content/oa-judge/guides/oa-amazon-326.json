@@ -13,6 +13,21 @@
       "Each processor's query is independent and does not use up any processes. The processes matching a processor are exactly those whose power lies in the closed interval [minPower, maxPower]; once the powers are sorted, they form one contiguous block of the sorted array.",
       "Sort the powers in ascending order and build a prefix-sum array. For each interval, binary search for the first position l with a value ≥minPower and the first position r with a value >maxPower; the number of processes in range is r−l and their total power is prefix[r]−prefix[l]. Duplicate power values all fall inside that block, so they are naturally counted separately.",
       "Read n, m and the n powers, sort them, and compute prefix sums of length n+1 (these must be 64-bit integers, since the total can reach 1.2×10^14). For each processor read minPower and maxPower, get l with lower_bound(minPower) and r with upper_bound(maxPower), and print \"r−l prefix[r]−prefix[l]\". With n up to 1.2 million, use fast input and output."
+    ],
+    "ja": [
+      "各プロセッサのクエリは独立で、プロセスを消費しません。プロセッサに対応するプロセスは、電力が閉区間 [minPower, maxPower] にあるものそのもので、電力をソートすると、ソート済み配列の中の連続した1つのブロックになります。",
+      "電力を昇順にソートして累積和の配列を作ります。各区間について、二分探索で値が minPower 以上となる最初の位置 l と、値が maxPower より大きくなる最初の位置 r を求めます。範囲内のプロセスの数は r−l、合計電力は prefix[r]−prefix[l] です。同じ電力値はすべてそのブロック内に入るので、自然に別々に数えられます。",
+      "n、m と n 個の電力を読み込み、ソートして長さ n+1 の累積和を計算します(合計は 1.2×10^14 に達しうるので 64 ビット整数が必要です)。各プロセッサについて minPower と maxPower を読み、lower_bound(minPower) で l を、upper_bound(maxPower) で r を求め、\"r−l prefix[r]−prefix[l]\" を出力します。n が最大 120 万なので、高速な入出力を使ってください。"
+    ],
+    "ko": [
+      "각 프로세서의 조회는 독립적이며 프로세스를 소진시키지 않습니다. 프로세서에 맞는 프로세스는 전력이 닫힌 구간 [minPower, maxPower]에 있는 것들이며, 전력을 정렬하면 정렬된 배열의 하나의 연속 구간이 됩니다.",
+      "전력을 오름차순으로 정렬하고 접두 합 배열을 만듭니다. 각 구간에 대해 값이 ≥minPower인 첫 위치 l과 값이 >maxPower인 첫 위치 r을 이분 탐색하면, 범위 안의 프로세스 수는 r−l이고 총 전력은 prefix[r]−prefix[l]입니다. 전력 값이 같은 프로세스는 모두 그 구간 안에 들어가므로 자연스럽게 따로 셉니다.",
+      "n, m과 n개의 전력을 읽고 정렬한 뒤 길이 n+1의 접두 합을 계산합니다(총합이 1.2×10^14까지 될 수 있으므로 64비트 정수여야 합니다). 각 프로세서에 대해 minPower와 maxPower를 읽고, lower_bound(minPower)로 l을, upper_bound(maxPower)로 r을 구하여 \"r−l prefix[r]−prefix[l]\"을 출력합니다. n이 최대 120만이므로 빠른 입출력을 사용합니다."
+    ],
+    "vi": [
+      "Truy vấn của mỗi bộ xử lý là độc lập và không tiêu hao tiến trình nào. Các tiến trình khớp với một bộ xử lý chính xác là những tiến trình có công suất nằm trong đoạn đóng [minPower, maxPower]; sau khi sắp xếp các công suất, chúng tạo thành một khối liên tiếp trong mảng đã sắp xếp.",
+      "Sắp xếp các công suất theo thứ tự tăng dần và xây mảng tổng tiền tố. Với mỗi đoạn, tìm kiếm nhị phân vị trí đầu tiên l có giá trị ≥minPower và vị trí đầu tiên r có giá trị >maxPower; số tiến trình trong phạm vi là r−l và tổng công suất của chúng là prefix[r]−prefix[l]. Các giá trị công suất trùng nhau đều nằm trong khối đó, nên chúng tự nhiên được đếm riêng.",
+      "Đọc n, m và n công suất, sắp xếp chúng, và tính tổng tiền tố có độ dài n+1 (phải là số nguyên 64 bit, vì tổng có thể đạt 1.2×10^14). Với mỗi bộ xử lý, đọc minPower và maxPower, lấy l bằng lower_bound(minPower) và r bằng upper_bound(maxPower), rồi in \"r−l prefix[r]−prefix[l]\". Với n lên đến 1.2 triệu, hãy dùng nhập và xuất nhanh."
     ]
   },
   "explanationEn": "## Approach\n\nSort power and build packed unsigned 64-bit prefix sums. For each closed range, use lower_bound(min) and upper_bound(max) to get the indices [l,r); the count is r−l and the total is prefix[r]−prefix[l]. Release references to the power strings after reading, and do not keep multiple copies of nested results.\n\n## Proof of correctness\n\nAfter sorting, the elements in the range lie exactly between the first element ≥min and the first element >max; this includes all duplicate values and is closed at both ends. The number of positions gives the number of processes, and the prefix difference sums exactly these elements. Processor queries do not modify any process, so computing each one independently is correct; 64 bits hold the largest possible total, 120000000000000.\n\n## Complexity\n\nTime O(n log n+m log n), space O(n+m), with the prefix sums taking only 8(n+1) bytes; the output is at most about 4.8MB, and the limit is configured at 8MiB."

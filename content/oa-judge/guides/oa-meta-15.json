@@ -13,6 +13,21 @@
       "The matrix is at most 30 x 30, so checking each non-zero cell's comparison region directly is fast enough; cells with value 0 are never candidates.",
       "For a cell (i,j) with value v, the comparison region is the square of radius v centered on it, intersected with the matrix; skip the center itself and the four corners of the full square (the positions whose row and column differences both equal v). The corners come from the full square, not from the clipped region.",
       "Enumerate non-zero cells row by row, then column by column, and look inside the clipped range for any other cell whose value is at least v (excluding the center and the four corners); if none exists, record the coordinate. Print the count first, then one row and column per line. v can be far larger than the matrix, so clip the range carefully."
+    ],
+    "ja": [
+      "行列は最大 30 x 30 なので、0 でない各セルの比較領域を直接調べても十分に速いです。値が 0 のセルは候補になりません。",
+      "値 v のセル (i,j) の比較領域は、それを中心とする半径 v の正方形を行列と交差させたものです。中心自身と、完全な正方形の 4 つの角（行の差と列の差がどちらも v に等しい位置）は飛ばします。角は切り取った領域ではなく、完全な正方形から決まります。",
+      "0 でないセルを行ごと、列ごとに列挙し、切り取った範囲の中に、値が v 以上のほかのセル（中心と 4 つの角を除く）がないか調べます。なければその座標を記録します。最初に個数を、続いて 1 行に 1 つずつ行と列を出力します。v が行列よりはるかに大きいことがあるので、範囲の切り取りに注意してください。"
+    ],
+    "ko": [
+      "행렬은 최대 30 x 30이므로 0이 아닌 칸마다 비교 영역을 직접 검사해도 충분히 빠릅니다. 값이 0인 칸은 후보가 될 수 없습니다.",
+      "값이 v인 칸 (i,j)의 비교 영역은 중심을 기준으로 반지름 v인 정사각형을 행렬과 교차시킨 것이며, 중심 자신과 전체 정사각형의 네 모서리(행 차이와 열 차이가 모두 v인 위치)는 건너뜁니다. 모서리는 잘린 영역이 아니라 전체 정사각형에서 정해집니다.",
+      "0이 아닌 칸을 행 순서, 그다음 열 순서로 열거하며, 잘린 범위 안에서 값이 v 이상인 다른 칸(중심과 네 모서리 제외)이 있는지 찾아 없으면 좌표를 기록합니다. 먼저 개수를 출력하고 이어서 한 줄에 행과 열을 하나씩 출력합니다. v는 행렬보다 훨씬 클 수 있으므로 범위를 주의해서 자르세요."
+    ],
+    "vi": [
+      "Ma trận tối đa 30 x 30, nên kiểm tra trực tiếp vùng so sánh của mỗi ô khác không là đủ nhanh; các ô có giá trị 0 không bao giờ là ứng viên.",
+      "Với ô (i,j) có giá trị v, vùng so sánh là hình vuông bán kính v có tâm tại đó, giao với ma trận; bỏ qua chính tâm và bốn góc của hình vuông đầy đủ (các vị trí mà hiệu hàng và hiệu cột đều bằng v). Các góc lấy từ hình vuông đầy đủ, không lấy từ vùng đã cắt.",
+      "Liệt kê các ô khác không theo từng hàng, rồi từng cột, và tìm trong phạm vi đã cắt xem có ô nào khác có giá trị ít nhất v (không kể tâm và bốn góc) không; nếu không có thì ghi lại tọa độ. In số đếm trước, rồi mỗi dòng một cặp hàng và cột. v có thể lớn hơn nhiều so với ma trận, nên hãy cắt phạm vi cẩn thận."
     ]
   },
   "explanationEn": "## Approach\n\nEnumerate every non-zero cell, clip the checked range to the matrix, and test the cells one by one, skipping the center and the corners of the original square.\n\n## Why it is correct\n\nClipping only removes cells that do not exist. The loops cover exactly the cells that the rule says to compare; if some value >=v appears, the cell is not a strict maximum, otherwise it is. Scanning in row-then-column order keeps the output sorted.\n\n## Complexity\n\nTime O((RC)^2), space O(RC) excluding the output."

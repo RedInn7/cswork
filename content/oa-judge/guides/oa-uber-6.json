@@ -13,6 +13,21 @@
       "The statement does not require the fewest lines, only that every line follows the rules. So lines can be broken greedily in the simplest way: put as many words on a line as fit when separated by single spaces within width.",
       "After breaking, each line has one of two layouts: the last line of a paragraph or a single-word line is centered, and every other multi-word line is fully justified. Justification spreads the spare spaces over the gaps by quotient and remainder, with the remainder going to the leftmost gaps.",
       "Print a row of width + 4 asterisks first. For each paragraph, starting at start, keep adding words until one more would exceed width. If this is the paragraph's last line or holds one word, join with single spaces and split the leftover padding into padding/2 on the left and the rest on the right; otherwise gaps = words - 1, each gap gets (width - letters) / gaps spaces and the first (width - letters) mod gaps gaps get one more. Print each line as \"* \" + content + \" *\", and finish with another row of asterisks."
+    ],
+    "ja": [
+      "問題文は行数の最小化を求めておらず、すべての行が規則に従っていればよいだけです。したがって最も単純に、幅 width の範囲で単語を 1 つの空白で区切って入るだけ詰める貪欲な改行を使えます。",
+      "改行後の各行は 2 つのレイアウトのどちらかになります。段落の最終行と単語 1 つの行は中央揃え、それ以外で単語が複数ある行は両端揃えです。両端揃えでは、余った空白を商と余りで隙間に配分し、余りは左側の隙間から順に割り当てます。",
+      "まず width + 4 個のアスタリスクの行を出力します。各段落について、start から始めて、もう 1 語足すと width を超える直前まで単語を追加します。その行が段落の最終行または単語 1 つの行なら、単語を 1 つの空白でつなぎ、残りの余白 padding を左に padding/2、残りを右に振り分けます。そうでなければ gaps = 単語数 - 1 とし、各隙間に (width - letters) / gaps 個の空白を入れ、先頭から (width - letters) mod gaps 個の隙間にはさらに 1 つ足します。各行は \"* \" + 内容 + \" *\" として出力し、最後にもう一度アスタリスクの行を出力します。"
+    ],
+    "ko": [
+      "줄 수를 최소로 만들 필요는 없고 모든 줄이 규칙만 따르면 됩니다. 따라서 가장 단순하게 탐욕적으로 줄을 나눌 수 있습니다. 단어 사이를 공백 하나로 이었을 때 width 안에 들어가는 만큼 한 줄에 담습니다.",
+      "줄을 나눈 뒤 각 줄의 배치는 두 가지입니다. 문단의 마지막 줄이거나 단어가 하나인 줄은 가운데 정렬하고, 그 밖의 여러 단어 줄은 양쪽 정렬합니다. 양쪽 정렬은 남는 공백을 몫과 나머지로 각 간격에 나누며, 나머지는 왼쪽 간격부터 배정합니다.",
+      "먼저 별표 width + 4개로 이루어진 줄을 출력합니다. 각 문단에서는 start부터 시작해, 단어를 하나 더 넣으면 width를 넘기 직전까지 단어를 추가합니다. 문단의 마지막 줄이거나 단어가 하나이면 단어를 공백 하나로 이은 뒤 남는 패딩을 왼쪽 padding/2, 나머지를 오른쪽으로 나눕니다. 그렇지 않으면 gaps = words - 1로 두고, 각 간격에 (width - letters) / gaps개의 공백을 넣으며 앞쪽 (width - letters) mod gaps개의 간격에는 하나씩 더 넣습니다. 각 줄은 \"* \" + content + \" *\" 형태로 출력하고, 마지막에 별표 줄을 한 번 더 출력합니다."
+    ],
+    "vi": [
+      "Đề bài không yêu cầu số dòng ít nhất, chỉ cần mỗi dòng tuân theo quy tắc. Vì vậy có thể ngắt dòng tham lam theo cách đơn giản nhất: đặt vào một dòng càng nhiều từ càng tốt sao cho khi ngăn cách bằng một khoảng trắng đơn vẫn vừa trong width.",
+      "Sau khi ngắt, mỗi dòng có một trong hai kiểu bố cục: dòng cuối của đoạn hoặc dòng một từ thì được căn giữa, còn mọi dòng nhiều từ khác được căn đều hai bên. Căn đều hai bên là chia số khoảng trắng dư cho các khe theo thương và số dư, phần dư dồn vào các khe bên trái nhất.",
+      "In trước một hàng gồm width + 4 dấu sao. Với mỗi đoạn, bắt đầu từ start, cứ thêm từ cho đến khi thêm một từ nữa sẽ vượt quá width. Nếu đó là dòng cuối của đoạn hoặc dòng chỉ có một từ, nối các từ bằng một khoảng trắng đơn rồi chia phần đệm còn lại thành padding/2 ở bên trái và phần còn lại ở bên phải; ngược lại, gaps = words - 1, mỗi khe nhận (width - letters) / gaps khoảng trắng và (width - letters) mod gaps khe đầu tiên nhận thêm một. In mỗi dòng dưới dạng \"* \" + content + \" *\", và kết thúc bằng một hàng dấu sao nữa."
     ]
   },
   "explanationEn": "## Approach\n\nThe reference solution greedily puts as many words as possible on each line. An ordinary line that is not the last line of a paragraph spreads its spaces using the quotient and remainder; the last line of a paragraph or a single-word line computes left and right centering spaces. Any other valid line breaking is equally correct.\n\n## Correctness\n\nProcessing words in order keeps the word order and the paragraph boundaries unchanged, and the fit condition guarantees each line's length. Distributing spaces by quotient and remainder is even and favors the left; centering keeps the left and right sides within 1 of each other, with the right side never shorter than the left. Adding the outer margins and the star frame produces a valid output that meets every requirement.\n\n## Complexity\n\nTime O(output length), space O(output length)."

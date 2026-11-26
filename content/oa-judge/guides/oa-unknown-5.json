@@ -13,6 +13,21 @@
       "Single-threaded means only the function on top of the call stack runs at any moment. The time between two consecutive log entries belongs entirely to the function on top of the stack at that time.",
       "Simulate the call chain with a stack and keep a variable previous, the next time point not yet assigned. For each log, first add [previous, timestamp) to the top of the stack; a start time point belongs to the new function's later execution, while an end time point itself still belongs to the function that is ending (the end time is inclusive).",
       "Start with previous = 0 and an empty stack. For id:start:t, if the stack is non-empty add t - previous to its top, then push id and set previous = t. For id:end:t, add t - previous to the top, add 1 more to id for the time point t itself, pop, and set previous = t + 1. Finally output the n exclusive times by function id."
+    ],
+    "ja": [
+      "シングルスレッドとは、どの瞬間にもコールスタックの先頭の関数だけが実行されていることを意味します。連続する 2 つのログの間の時間は、その時点でスタックの先頭にある関数にすべて属します。",
+      "スタックで呼び出しの連鎖をシミュレートし、変数 previous、すなわちまだ割り当てられていない次の時刻を保持します。各ログでまず [previous, timestamp) をスタックの先頭に加えます。開始の時刻は新しい関数のそれ以降の実行に属し、終了の時刻そのものは終了する関数にまだ属します(終了時刻は両端を含みます)。",
+      "previous = 0、空のスタックから始めます。id:start:t では、スタックが空でなければ t - previous をその先頭に加え、id を push して previous = t とします。id:end:t では、先頭に t - previous を加え、時刻 t そのものの分として id にさらに 1 を加え、pop して previous = t + 1 とします。最後に、n 個の排他的時間を関数の id 順に出力します。"
+    ],
+    "ko": [
+      "단일 스레드란 어느 순간에든 호출 스택의 맨 위에 있는 함수만 실행된다는 뜻입니다. 연속한 두 로그 사이의 시간은 모두 그 시점에 스택의 맨 위에 있던 함수의 것입니다.",
+      "스택으로 호출 체인을 시뮬레이션하며 아직 배정되지 않은 다음 시점인 변수 previous를 유지합니다. 각 로그에서 먼저 [previous, timestamp)를 스택의 맨 위에 더합니다. start 시점은 새 함수의 이후 실행에 속하고, end 시점 자체는 여전히 끝나는 함수의 것입니다(end 시간은 포함).",
+      "previous = 0과 빈 스택으로 시작합니다. id:start:t에서는 스택이 비어 있지 않으면 맨 위에 t - previous를 더하고, id를 push한 뒤 previous = t로 둡니다. id:end:t에서는 맨 위에 t - previous를 더하고, 시점 t 자체에 해당하는 1을 id에 더한 뒤 pop하고 previous = t + 1로 둡니다. 마지막에 n개의 독점 시간을 함수 id 순서대로 출력합니다."
+    ],
+    "vi": [
+      "Đơn luồng nghĩa là tại mỗi thời điểm chỉ có hàm ở đỉnh ngăn xếp lời gọi đang chạy. Khoảng thời gian giữa hai log liên tiếp hoàn toàn thuộc về hàm ở đỉnh ngăn xếp lúc đó.",
+      "Mô phỏng chuỗi lời gọi bằng một ngăn xếp và giữ một biến previous, là mốc thời gian kế tiếp chưa được gán. Với mỗi log, trước hết cộng [previous, timestamp) cho đỉnh ngăn xếp; mốc start thuộc về phần thực thi sau đó của hàm mới, còn bản thân mốc end vẫn thuộc về hàm đang kết thúc (thời điểm end được tính bao gồm).",
+      "Bắt đầu với previous = 0 và ngăn xếp rỗng. Với id:start:t, nếu ngăn xếp không rỗng thì cộng t - previous cho đỉnh của nó, rồi push id và đặt previous = t. Với id:end:t, cộng t - previous cho đỉnh, cộng thêm 1 cho id vì chính mốc t, pop, và đặt previous = t + 1. Cuối cùng in n thời gian thực thi riêng theo id hàm."
     ]
   },
   "explanationEn": "## Approach\n\nUse a stack to hold the current call chain, and use `previous` to record the first time point not yet assigned. When each log arrives, first add `[previous, timestamp)` to the function on top of the stack; a `start` then pushes the new function, while an `end` also adds the ending time point to the current function and pops it.\n\n## Proof of Correctness\n\nBetween any two consecutive logs, only the function on top of the stack runs exclusively, so the length of that interval must be added to the top of the stack and to nothing else. A start event's time point is not part of the new function's already-executed interval; an end event is an inclusive bound by the statement, so the timestamp itself is added separately. As a result, every unit of execution time is counted exactly once for the right function.\n\n## Complexity\n\nTime O(m), space O(n), where m is the number of logs and n the number of functions."

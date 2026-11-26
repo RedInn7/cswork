@@ -13,6 +13,21 @@
       "Every valid substring contains k consecutive ones; trimming the characters before its first one and after its last one keeps it valid and makes it shorter.",
       "So the shortest candidates start exactly at some one and end at the k-th one from there; it is enough to enumerate every window of k consecutive ones.",
       "Record the indices of all ones; for each i take the substring from the i-th one to the (i+k-1)-th one; compare first by length and then lexicographically, keeping the smallest; print it. The statement guarantees there are at least k ones."
+    ],
+    "ja": [
+      "有効な部分文字列はどれも連続する k 個の 1 を含みます。最初の 1 より前と最後の 1 より後の文字を取り除いても有効なままで、より短くなります。",
+      "したがって、最短の候補は、ある 1 から始まり、そこから数えて k 番目の 1 で終わるものに限られます。連続する k 個の 1 のウィンドウをすべて列挙すれば十分です。",
+      "すべての 1 のインデックスを記録します。各 i について、i 番目の 1 から (i+k-1) 番目の 1 までの部分文字列を取り、まず長さ、次に辞書順で比較して最小のものを保持し、出力します。問題文は、1 が少なくとも k 個あることを保証しています。"
+    ],
+    "ko": [
+      "유효한 부분 문자열은 모두 연속된 k개의 1을 포함합니다. 첫 번째 1 앞의 문자들과 마지막 1 뒤의 문자들을 잘라 내도 여전히 유효하고 더 짧아집니다.",
+      "따라서 가장 짧은 후보는 정확히 어떤 1에서 시작해 거기서부터 k번째 1에서 끝나므로, 연속된 k개의 1로 이루어진 모든 윈도우를 열거하면 충분합니다.",
+      "모든 1의 인덱스를 기록합니다. 각 i에 대해 i번째 1부터 (i+k-1)번째 1까지의 부분 문자열을 취하고, 먼저 길이로, 그다음 사전순으로 비교하여 가장 작은 것을 유지한 뒤 출력합니다. 문제에서 1이 최소 k개 있음을 보장합니다."
+    ],
+    "vi": [
+      "Mọi xâu con hợp lệ đều chứa k chữ số 1 liên tiếp; cắt bỏ các ký tự trước chữ số 1 đầu tiên và sau chữ số 1 cuối cùng của nó vẫn giữ nó hợp lệ và làm nó ngắn hơn.",
+      "Vì vậy các ứng viên ngắn nhất bắt đầu đúng tại một chữ số 1 nào đó và kết thúc tại chữ số 1 thứ k tính từ đó; chỉ cần duyệt mọi cửa sổ gồm k chữ số 1 liên tiếp.",
+      "Ghi lại chỉ số của mọi chữ số 1; với mỗi i lấy xâu con từ chữ số 1 thứ i đến chữ số 1 thứ (i+k-1); so sánh trước hết theo độ dài rồi theo thứ tự từ điển, giữ cái nhỏ nhất; in nó. Đề đảm bảo có ít nhất k chữ số 1."
     ]
   },
   "explanationEn": "## Approach\n\nEnumerate every group of k consecutive ones by their indices in the string, take the shortest substring covering those ones, and compare by length and then lexicographically.\n\n## Correctness\n\nEvery valid substring contains some k consecutive ones; removing the characters before its first one and after its last one keeps it valid and makes it shorter, so the shortest candidates start exactly at some first one and end at the k-th one. Going through every window of k consecutive ones covers all shortest candidates, and taking the minimum by length and then lexicographic order is correct.\n\n## Complexity\n\nLet the string length be n and the number of ones q. Time O(q), space O(n) (storing the positions of the ones and the answer)."

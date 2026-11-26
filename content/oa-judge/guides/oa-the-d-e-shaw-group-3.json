@@ -13,6 +13,21 @@
       "After deleting a range, prefix + suffix remains. It is strictly increasing exactly when the prefix and the suffix are each strictly increasing and, when both are non-empty, the prefix's last value is smaller than the suffix's first value; the remainder may be empty.",
       "The kept prefix must lie within the longest strictly increasing prefix, and the suffix start must lie within the longest strictly increasing suffix. Enumerate the kept prefix length i; the earliest suffix start j that joins it only moves right as i grows, so use two pointers.",
       "Find the last index left of the longest strictly increasing prefix; if the whole array is strictly increasing, the answer is n(n+1)/2. Otherwise find the start right of the longest strictly increasing suffix and set j = right. For i = 0..left+1: j = max(j, i + 1); if i > 0, move j right until a[j] > a[i-1]; then add n - j + 1 (this includes an empty suffix). Use 64-bit integers."
+    ],
+    "ja": [
+      "部分範囲を削除すると、接頭辞 + 接尾辞が残ります。それが狭義単調増加になるのは、接頭辞と接尾辞がそれぞれ狭義単調増加で、両方が空でないときは、接頭辞の最後の値が接尾辞の最初の値より小さいときに限ります。残りが空であってもかまいません。",
+      "残す接頭辞は最長の狭義単調増加な接頭辞の内側に、接尾辞の開始位置は最長の狭義単調増加な接尾辞の内側になければなりません。残す接頭辞の長さ i を列挙します。それにつなげられる最も早い接尾辞の開始位置 j は、i が大きくなるにつれて右にしか動かないので、two pointers を使えます。",
+      "最長の狭義単調増加な接頭辞の最後の添字 left を求めます。配列全体が狭義単調増加なら、答えは n(n+1)/2 です。そうでなければ、最長の狭義単調増加な接尾辞の開始位置 right を求め、j = right とします。i = 0..left+1 について：j = max(j, i + 1) とし、i > 0 なら a[j] > a[i-1] となるまで j を右に動かします。その後 n - j + 1 を加えます（これは空の接尾辞を含みます）。64 ビット整数を使ってください。"
+    ],
+    "ko": [
+      "범위를 삭제하면 접두사 + 접미사가 남습니다. 접두사와 접미사가 각각 엄격하게 증가하고, 둘 다 비어 있지 않으면 접두사의 마지막 값이 접미사의 첫 값보다 작을 때 정확히 엄격하게 증가합니다. 남은 배열은 비어 있어도 됩니다.",
+      "남기는 접두사는 가장 긴 엄격하게 증가하는 접두사 안에 있어야 하고, 접미사의 시작은 가장 긴 엄격하게 증가하는 접미사 안에 있어야 합니다. 남기는 접두사 길이 i를 열거하세요. i가 커질수록 이어 붙일 수 있는 가장 이른 접미사 시작 j는 오른쪽으로만 움직이므로 two pointers를 사용합니다.",
+      "가장 긴 엄격하게 증가하는 접두사의 끝 바로 왼쪽 인덱스 left를 구하세요. 배열 전체가 엄격하게 증가하면 답은 n(n+1)/2입니다. 그렇지 않으면 가장 긴 엄격하게 증가하는 접미사의 시작 right를 구하고 j = right로 두세요. i = 0..left+1에 대해: j = max(j, i + 1); i > 0이면 a[j] > a[i-1]이 될 때까지 j를 오른쪽으로 옮기고, n - j + 1을 더합니다(빈 접미사 포함). 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Sau khi xóa một đoạn, còn lại tiền tố + hậu tố. Nó tăng ngặt chính xác khi tiền tố và hậu tố mỗi bên tăng ngặt và, khi cả hai không rỗng, giá trị cuối của tiền tố nhỏ hơn giá trị đầu của hậu tố; phần còn lại có thể rỗng.",
+      "Tiền tố được giữ phải nằm trong tiền tố tăng ngặt dài nhất, và điểm bắt đầu hậu tố phải nằm trong hậu tố tăng ngặt dài nhất. Duyệt độ dài tiền tố được giữ i; điểm bắt đầu hậu tố j sớm nhất nối được với nó chỉ dịch sang phải khi i tăng, nên dùng hai con trỏ.",
+      "Tìm chỉ số cuối left của tiền tố tăng ngặt dài nhất; nếu cả mảng tăng ngặt thì đáp án là n(n+1)/2. Ngược lại tìm điểm bắt đầu right của hậu tố tăng ngặt dài nhất và đặt j = right. Với i = 0..left+1: j = max(j, i + 1); nếu i > 0, dịch j sang phải cho đến khi a[j] > a[i-1]; rồi cộng n - j + 1 (bao gồm hậu tố rỗng). Dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nFind the longest strictly increasing prefix and suffix. Enumerate the kept prefix length i and use two pointers to find the earliest suffix start j that joins it while staying strictly increasing; every suffix start after j also works, so add up the count.\n\n## Proof of correctness\n\nAfter deleting the segment [i, j), the remainder is strictly increasing if and only if the prefix is strictly increasing by itself, the suffix is strictly increasing by itself, and where they meet the prefix's last value is smaller than the suffix's first value; no comparison is needed when either side is empty. The prefix length can only lie within the longest increasing prefix, and the suffix start can only lie within the longest increasing suffix. As the prefix's last value increases, the smallest feasible suffix start never moves left, so the two pointers count every non-empty deletion range exactly once and nothing else.\n\n## Complexity\n\nO(n) time and O(n) extra space (the input)."

@@ -13,6 +13,21 @@
       "The larger the target length L of the longest run, the easier it is to reach, so feasibility is monotone and you can binary search L. But L=1 forces the whole string to alternate strictly, leaving only 0101... and 1010..., so handle it separately.",
       "For L>=2 the original runs can be considered independently: in a run of length r every L+1 consecutive characters need at least one flip, so at least floor(r/(L+1)) flips are needed; spacing the flips apart and shifting them near the run's end so it does not merge with its neighbors always achieves that number.",
       "First compute the flips needed to reach 0101... and 1010...; if the smaller is at most k, print 1. Otherwise collect all original run lengths, binary search L in [2, longest run], check whether the sum of floor(r/(L+1)) is at most k, and print the smallest feasible L."
+    ],
+    "ja": [
+      "最長ランの目標長 L が大きいほど達成しやすいので、実現可能性は単調で、L を二分探索できます。ただし L=1 では文字列全体が厳密に交互でなければならず、0101... と 1010... の 2 通りだけになるので、別に処理します。",
+      "L>=2 では、元のランを独立に考えられます。長さ r のラン内では、連続する L+1 文字ごとに少なくとも 1 回の反転が必要なので、少なくとも floor(r/(L+1)) 回が必要です。反転位置を等間隔に置き、ランの末尾付近では隣のランと結合しないようにずらすことで、常にその回数で達成できます。",
+      "まず 0101... と 1010... にするための反転数を計算し、小さいほうが k 以下なら 1 を出力します。そうでなければ、元のランの長さをすべて集め、L を [2, 最長ラン] の範囲で二分探索します。floor(r/(L+1)) の合計が k 以下となる最小の L を出力します。"
+    ],
+    "ko": [
+      "목표 길이 L이 클수록 달성하기 쉬우므로 가능 여부는 단조적이며 L을 이분 탐색할 수 있습니다. 다만 L=1은 문자열 전체가 엄격하게 번갈아 나와야 하므로 0101...과 1010... 두 가지뿐이며, 따로 처리합니다.",
+      "L>=2일 때는 원래 구간들을 독립적으로 생각할 수 있습니다. 길이 r인 구간에서 연속한 L+1개의 문자마다 최소 한 번의 뒤집기가 필요하므로 최소 floor(r/(L+1))번이 필요합니다. 뒤집는 위치를 간격을 두고 배치하고 구간 끝 쪽으로 옮겨 이웃 구간과 합쳐지지 않게 하면 항상 이 횟수로 달성됩니다.",
+      "먼저 0101...과 1010...이 되기 위해 필요한 뒤집기 횟수를 계산합니다. 둘 중 작은 값이 k 이하이면 1을 출력합니다. 그렇지 않으면 원래 구간의 길이를 모두 모은 뒤 [2, 가장 긴 구간]에서 L을 이분 탐색하여 floor(r/(L+1))의 합이 k 이하인지 확인하고, 가능한 가장 작은 L을 출력합니다."
+    ],
+    "vi": [
+      "L càng lớn thì càng dễ đạt, nên tính khả thi đơn điệu và có thể tìm kiếm nhị phân theo L. Nhưng L=1 buộc cả xâu phải xen kẽ nghiêm ngặt, chỉ còn 0101... và 1010..., nên cần xử lý riêng.",
+      "Với L>=2, các đoạn gốc có thể xét độc lập: trong một đoạn độ dài r, mỗi L+1 ký tự liên tiếp cần ít nhất một lần đảo, nên cần ít nhất floor(r/(L+1)) lần đảo; đặt các lần đảo cách đều nhau và dịch về gần cuối đoạn để không dính với đoạn lân cận thì luôn đạt đúng số này.",
+      "Trước hết tính số lần đảo để đạt 0101... và 1010...; nếu giá trị nhỏ hơn trong hai số này ≤ k thì in 1. Ngược lại, thu thập độ dài mọi đoạn gốc, tìm kiếm nhị phân L trong [2, đoạn dài nhất], kiểm tra tổng các floor(r/(L+1)) có ≤ k hay không, và in L nhỏ nhất khả thi."
     ]
   },
   "explanationEn": "## Approach\n\nBinary search on the maximum run length L. When L=1, compute the minimum number of flips to reach either of the two alternating strings; when L>=2, each original run of length r needs at least floor(r/(L+1)) flips, and check whether the sum is <=k.\n\n## Proof of correctness\n\nIn an original run of length r, every L+1 consecutive characters must be flipped at least once, which gives the required lower bound. For L>=2 the flips can be spaced apart, with positions adjusted at the ends to avoid merging with neighboring runs, which achieves that number; each run reaches its bound independently. For L=1 every pair of adjacent positions must differ, so only the two alternating strings are possible, and their Hamming distances must be compared specifically. Feasibility is monotone in L, so binary search is correct.\n\n## Complexity\n\nTime O(n log n), space O(n) to store the original runs."

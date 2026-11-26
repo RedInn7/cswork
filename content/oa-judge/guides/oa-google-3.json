@@ -13,6 +13,21 @@
       "Only two numbers matter: how many coins are currently on the table, and how many have been won so far. Coins left on the table at the end are not a reward.",
       "Update these two counters event by event: insert adds one; take removes one but never goes below 0; win adds the table count to the reward and then clears the table.",
       "Set table = 0 and answer = 0; for each character: on i add one to table, on d set table = max(0, table - 1), on w add table to answer and set table = 0; print only answer at the end."
+    ],
+    "ja": [
+      "重要な数は 2 つだけです。現在テーブルにあるコインの数と、これまでに獲得した数です。最後にテーブルに残ったコインは報酬ではありません。",
+      "この 2 つのカウンタをイベントごとに更新します。挿入は 1 枚足し、取り除きは 1 枚減らしますが 0 を下回りません。獲得はテーブルの枚数を報酬に加えてからテーブルを空にします。",
+      "table = 0、answer = 0 とします。各文字について、i なら table に 1 を足し、d なら table = max(0, table - 1) とし、w なら answer に table を足して table = 0 にします。最後に answer だけを出力します。"
+    ],
+    "ko": [
+      "중요한 수는 둘뿐입니다. 지금 테이블 위에 있는 동전 수와 지금까지 얻은 동전 수입니다. 마지막에 테이블에 남은 동전은 보상이 아닙니다.",
+      "이벤트마다 두 카운터를 갱신합니다. 올리기는 하나를 더하고, 치우기는 하나를 빼되 0 아래로 내려가지 않으며, 획득은 테이블의 동전 수를 보상에 더한 뒤 테이블을 비웁니다.",
+      "table = 0, answer = 0으로 둡니다. 각 문자에 대해 i이면 table에 1을 더하고, d이면 table = max(0, table - 1)로 하며, w이면 answer에 table을 더하고 table = 0으로 합니다. 마지막에 answer만 출력합니다."
+    ],
+    "vi": [
+      "Chỉ hai con số quan trọng: hiện có bao nhiêu đồng xu trên bàn, và đã thắng bao nhiêu cho đến nay. Các đồng xu còn lại trên bàn ở cuối không phải phần thưởng.",
+      "Cập nhật hai bộ đếm này theo từng sự kiện: đặt thêm cộng một; lấy đi trừ một nhưng không bao giờ xuống dưới 0; thắng cộng số đồng xu trên bàn vào phần thưởng rồi dọn sạch bàn.",
+      "Đặt table = 0 và answer = 0; với mỗi ký tự: gặp i cộng một vào table, gặp d đặt table = max(0, table - 1), gặp w cộng table vào answer và đặt table = 0; cuối cùng chỉ in answer."
     ]
   },
   "explanationEn": "## Approach\n\nUse table for the number of coins on the table and answer for the number already won. On d, keep table non-negative; on w, settle the coins first and then reset table to zero.\n\n## Why it is correct\n\nAfter processing each prefix, table is exactly the number of coins on the table that have not been settled yet, and answer is exactly the reward of all previous w events. The three updates correspond to the three rules and preserve this invariant. At the end only answer is printed, so the remaining coins that were never won are not counted.\n\n## Complexity\n\nTime O(n), extra space O(1) apart from the input."

@@ -13,6 +13,21 @@
       "If the kept array becomes strictly increasing after deleting at most one more element, then without that element it is a strictly increasing subsequence of the original array. So how many elements you can keep depends on the length L of the longest strictly increasing subsequence.",
       "At most L+1 elements can be kept: keep one longest strictly increasing subsequence and add back any one unused element; deleting that extra element leaves an increasing array. Keeping more would leave an increasing subsequence longer than L after one deletion, a contradiction. So the answer is max(0, n-L-1).",
       "Compute the strict LIS in O(n log n): keep an array tails where tails[i] is the smallest tail of an increasing subsequence of length i+1. For each x, binary search the first position with a value >= x (lower_bound, because the order is strict) and replace it or append. Print max(0, n-len(tails)-1)."
+    ],
+    "ja": [
+      "残した配列が、あと高々 1 個の要素を削除すると狭義単調増加になるなら、その要素を除いたものは、元の配列の狭義単調増加部分列です。したがって、残せる要素の数は、最長の狭義単調増加部分列の長さ L で決まります。",
+      "残せるのは高々 L+1 個です。最長の狭義単調増加部分列を 1 つ残し、使われていない要素を 1 つ戻すと、その余分な要素を削除すれば増加する配列になります。それ以上を残すと、1 個削除した後に L より長い増加部分列が残り、矛盾します。したがって答えは max(0, n-L-1) です。",
+      "狭義の LIS を O(n log n) で計算します。配列 tails を持ち、tails[i] を、長さ i+1 の増加部分列の最小の末尾とします。各 x について、値が >= x の最初の位置を二分探索 (順序が狭義なので lower_bound) し、置き換えるか末尾に追加します。max(0, n-len(tails)-1) を出力します。"
+    ],
+    "ko": [
+      "남긴 배열에서 최대 하나를 더 삭제하여 엄격하게 증가하게 만들 수 있다면, 그 원소를 뺀 배열은 원래 배열의 엄격하게 증가하는 부분 수열입니다. 따라서 남길 수 있는 원소 수는 가장 긴 순증가 부분 수열의 길이 L에 달려 있습니다.",
+      "남길 수 있는 원소는 최대 L+1개입니다. 가장 긴 순증가 부분 수열 하나를 남기고 사용하지 않은 원소 아무거나 하나를 되돌려 넣으면, 그 여분의 원소를 삭제했을 때 증가하는 배열이 됩니다. 더 많이 남기면 한 번 삭제한 뒤 L보다 긴 증가 부분 수열이 생겨 모순입니다. 따라서 답은 max(0, n-L-1)입니다.",
+      "엄격한 LIS를 O(n log n)에 계산합니다. 배열 tails를 유지하고, tails[i]는 길이 i+1인 증가 부분 수열의 가장 작은 끝값입니다. 각 x에 대해 값이 >= x인 첫 위치를 이분 탐색(순서가 엄격하므로 lower_bound)하여 교체하거나 끝에 추가합니다. max(0, n-len(tails)-1)을 출력합니다."
+    ],
+    "vi": [
+      "Nếu mảng được giữ lại trở thành tăng chặt sau khi xoá thêm tối đa một phần tử nữa, thì khi bỏ phần tử đó nó là một dãy con tăng chặt của mảng gốc. Vì vậy số phần tử có thể giữ phụ thuộc vào độ dài L của dãy con tăng chặt dài nhất.",
+      "Có thể giữ tối đa L+1 phần tử: giữ một dãy con tăng chặt dài nhất và thêm lại một phần tử chưa dùng bất kỳ; xoá phần tử thừa đó thì còn lại mảng tăng. Giữ nhiều hơn sẽ để lại một dãy con tăng dài hơn L sau một lần xoá, mâu thuẫn. Vậy đáp án là max(0, n-L-1).",
+      "Tính LIS chặt trong O(n log n): giữ một mảng tails, trong đó tails[i] là phần đuôi nhỏ nhất của một dãy con tăng có độ dài i+1. Với mỗi x, tìm kiếm nhị phân vị trí đầu tiên có giá trị >= x (lower_bound, vì thứ tự là chặt) rồi thay thế hoặc thêm vào cuối. In max(0, n-len(tails)-1)."
     ]
   },
   "explanationEn": "## Approach\n\nFind the length L of the longest strictly increasing subsequence; the answer is max(0,n-L-1).\n\n## Proof of correctness\n\nIf m elements are kept and deleting at most one more makes them increasing, then the original array has an increasing subsequence of length at least m-1, so m<=L+1. Conversely, choose an LIS and add any one unchosen element; deleting that extra element gives an increasing array, which reaches min(n,L+1).\n\n## Complexity\n\nTime O(n log n), space O(n)."

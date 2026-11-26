@@ -13,6 +13,21 @@
       "A permutation has no repeated values. Values 1..k form one contiguous subarray exactly when their k positions fill a contiguous range, that is, when the span from the smallest to the largest position holds exactly k cells.",
       "Record each value's position, then add the positions of values 1, 2, ..., n in order while keeping the minimum and maximum position added so far, and check whether the span equals k.",
       "Store pos[value] = index. Start with left = n and right = -1. For k from 1 to n, update left and right with pos[k]; the k-th character is 1 if right - left + 1 equals k and 0 otherwise. Print the resulting string."
+    ],
+    "ja": [
+      "順列には重複する値がありません。値 1..k が 1 つの連続部分配列を作るのは、その k 個の位置が連続した範囲を埋めるとき、つまり最小の位置から最大の位置までの幅がちょうど k マスのときです。",
+      "各値の位置を記録し、値 1, 2, ..., n の位置を順に加えながら、これまでに加えた位置の最小値と最大値を保持して、幅が k に等しいかを調べます。",
+      "pos[value] = index を保存します。left = n、right = -1 から始めます。k を 1 から n まで動かし、pos[k] で left と right を更新します。right - left + 1 が k に等しければ k 文字目は 1、そうでなければ 0 です。できた文字列を出力します。"
+    ],
+    "ko": [
+      "순열에는 중복된 값이 없습니다. 값 1..k가 하나의 연속 부분 배열을 이루는 것은 k개의 위치가 연속된 구간을 채울 때, 즉 가장 작은 위치부터 가장 큰 위치까지의 폭이 정확히 k칸일 때와 같습니다.",
+      "각 값의 위치를 기록한 뒤, 값 1, 2, ..., n의 위치를 순서대로 추가하면서 지금까지 추가된 위치의 최솟값과 최댓값을 유지하고 폭이 k와 같은지 검사합니다.",
+      "pos[value] = index로 저장합니다. left = n, right = -1로 시작합니다. k를 1부터 n까지 돌며 pos[k]로 left와 right를 갱신하고, right - left + 1이 k와 같으면 k번째 문자는 1, 아니면 0입니다. 완성된 문자열을 출력합니다."
+    ],
+    "vi": [
+      "Một hoán vị không có giá trị lặp. Các giá trị 1..k tạo thành một mảng con liên tiếp khi và chỉ khi k vị trí của chúng lấp đầy một đoạn liên tiếp, tức là khi khoảng từ vị trí nhỏ nhất đến vị trí lớn nhất chứa đúng k ô.",
+      "Ghi lại vị trí của mỗi giá trị, rồi lần lượt thêm vị trí của các giá trị 1, 2, ..., n trong khi giữ vị trí nhỏ nhất và lớn nhất đã thêm đến lúc đó, và kiểm tra xem độ rộng của khoảng có bằng k không.",
+      "Lưu pos[value] = index. Bắt đầu với left = n và right = -1. Với k từ 1 đến n, cập nhật left và right bằng pos[k]; ký tự thứ k là 1 nếu right - left + 1 bằng k và là 0 nếu ngược lại. In xâu kết quả."
     ]
   },
   "explanationEn": "## Approach\n\nFind the position of each value, add 1..k in order while maintaining the leftmost and rightmost positions; the values are contiguous exactly when the span of the two positions is k.\n\n## Correctness\n\nA permutation has no duplicates, so there are k distinct positions. If exactly k cells fit between the largest and smallest positions, no position in between is missing; conversely, any k contiguous cells must have span k, so the condition is necessary and sufficient.\n\n## Complexity\n\nTime O(n), space O(n)."

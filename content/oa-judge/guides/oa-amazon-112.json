@@ -13,6 +13,21 @@
       "Between two stations on a ring there are only two non-looping paths, one clockwise and one counterclockwise, and their lengths add up to the perimeter.",
       "Prefix sums give the distance d between the two stations in the unrolled line; the other direction is the perimeter minus d, so take the smaller one. Queries are independent, so minimize each one and add them up.",
       "Let prefix[i] be the sum of the first i edges and the perimeter be prefix[n]; for each query (a,b) take d = |prefix[a] - prefix[b]| and add min(d, prefix[n] - d). The total can be large, so use 64-bit integers."
+    ],
+    "ja": [
+      "環状の 2 駅の間には、ループしない経路が時計回りと反時計回りの 2 通りしかなく、その長さの和は周長に等しくなります。",
+      "累積和を使うと、直線に展開したときの 2 駅間の距離 d が求まります。逆回りの距離は周長から d を引いた値なので、小さいほうを選びます。クエリは独立なので、それぞれ最小化して足し合わせるだけです。",
+      "prefix[i] を先頭 i 本の辺の長さの和、周長を prefix[n] とします。各クエリ (a,b) について d = |prefix[a] - prefix[b]| とし、min(d, prefix[n] - d) を加算します。合計は大きくなりうるので、64 ビット整数を使ってください。"
+    ],
+    "ko": [
+      "원형으로 놓인 두 역 사이에는 순환하지 않는 경로가 시계 방향과 반시계 방향 두 가지뿐이며, 두 길이의 합은 둘레와 같습니다.",
+      "누적 합으로 펼친 직선에서 두 역 사이의 거리 d를 구하면 반대 방향은 둘레에서 d를 뺀 값이므로 둘 중 작은 쪽을 택합니다. 쿼리는 서로 독립이므로 각각 최소화한 뒤 더하면 됩니다.",
+      "prefix[i]를 처음 i개 간선의 합, 둘레를 prefix[n]이라 하고, 쿼리 (a,b)마다 d = |prefix[a] - prefix[b]|를 구해 min(d, prefix[n] - d)를 더합니다. 합이 커질 수 있으므로 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Giữa hai trạm trên một vòng tròn chỉ có hai đường đi không lặp, một theo chiều kim đồng hồ và một ngược chiều, và độ dài của chúng cộng lại bằng chu vi.",
+      "Tổng tiền tố cho khoảng cách d giữa hai trạm khi trải vòng ra thành đường thẳng; chiều còn lại là chu vi trừ d, nên lấy giá trị nhỏ hơn. Các truy vấn độc lập, nên chỉ cần tối thiểu hóa từng truy vấn rồi cộng lại.",
+      "Gọi prefix[i] là tổng của i cạnh đầu tiên và chu vi là prefix[n]; với mỗi truy vấn (a,b), lấy d = |prefix[a] - prefix[b]| và cộng min(d, prefix[n] - d). Tổng có thể rất lớn nên hãy dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nPrefix sums give the distance d in the linear unrolling, and the shortest distance on the ring is min(d, perimeter - d); add it up query by query.\n\n## Correctness\n\nWith positive edge weights, a shortest path on a ring is always one of the two simple arcs that do not wrap around, and the prefix difference and its complement with respect to the perimeter are exactly the lengths of those two arcs. The queries are independent, so minimizing each one separately and then summing is correct.\n\n## Complexity\n\nTime O(n+q), space O(n)."

@@ -13,6 +13,21 @@
       "Health only goes down and never recovers, so if it is still above 0 after the last round, it was above 0 after every earlier round too. The question becomes: what is the smallest possible total effective damage?",
       "The armor is used once and blocks min(armor, that round's damage). To block as much as possible, use it on the round with the largest damage.",
       "Compute the total damage S and the largest single hit M; the answer is S−min(armor, M)+1. The total can reach 10^14, so use 64-bit integers."
+    ],
+    "ja": [
+      "体力は減る一方で回復しないので、最後のラウンドの後でもまだ 0 より大きければ、それ以前のすべてのラウンドの後でも 0 より大きかったことになります。問題は、実際に受ける総ダメージの最小値は何か、ということになります。",
+      "アーマーは 1 回使え、そのラウンドのダメージのうち min(armor, そのラウンドのダメージ) を防ぎます。できるだけ多く防ぐには、ダメージが最大のラウンドに使います。",
+      "総ダメージ S と最大の 1 回のダメージ M を計算し、答えは S−min(armor, M)+1 です。総和は 10^14 に達しうるので、64 ビット整数を使います。"
+    ],
+    "ko": [
+      "체력은 줄어들기만 하고 회복되지 않으므로, 마지막 라운드 후에도 0보다 크다면 그 전 모든 라운드 후에도 0보다 컸습니다. 문제는 실제 총 피해의 최솟값이 얼마인가로 바뀝니다.",
+      "방어구는 한 번 사용되며 min(armor, 그 라운드의 피해)만큼 막습니다. 최대한 많이 막으려면 피해가 가장 큰 라운드에 사용합니다.",
+      "총 피해 S와 가장 큰 한 번의 피해 M을 계산하면 답은 S−min(armor, M)+1입니다. 총합은 10^14에 이를 수 있으므로 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Máu chỉ giảm và không bao giờ hồi, nên nếu sau vòng cuối máu vẫn lớn hơn 0 thì sau mọi vòng trước đó nó cũng lớn hơn 0. Câu hỏi trở thành: tổng sát thương thực tế nhỏ nhất có thể là bao nhiêu?",
+      "Giáp dùng một lần và chặn min(armor, sát thương của vòng đó). Để chặn được nhiều nhất, hãy dùng nó ở vòng có sát thương lớn nhất.",
+      "Tính tổng sát thương S và đòn đánh đơn lớn nhất M; đáp án là S−min(armor, M)+1. Tổng có thể đạt 10^14, nên hãy dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nSubtract min(armor,max(power)) from the total damage, then add 1.\n\n## Proof of correctness\n\nThe amount blocked is at most the smaller of the armor value and the largest single hit, and using the armor on the largest hit achieves it. The remaining damage in every round is non-negative, so health never increases from round to round; hence being strictly positive at the end is equivalent to being strictly positive after every round. The initial health must exceed the minimum total effective damage by at least 1, and the formula achieves exactly that.\n\n## Complexity\n\nTime O(n), auxiliary space O(1) excluding input, 64-bit integers."

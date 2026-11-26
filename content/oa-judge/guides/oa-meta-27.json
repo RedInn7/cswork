@@ -13,6 +13,21 @@
       "Fibonacci numbers grow quickly; only about thirty of them are at most 10^6, so generating them one by one is perfectly fine.",
       "The sequence is non-decreasing, so the Fibonacci number nearest to N is one of the two consecutive terms that bracket N: the last term not exceeding N or the first term not less than N.",
       "Keep two consecutive terms, starting with 0 and 1, and advance both by one step while the later term is less than N. Then output the smaller of N minus the earlier term and the later term minus N; for N = 0 the earlier term 0 already matches and the answer is 0."
+    ],
+    "ja": [
+      "フィボナッチ数は急速に増加し、10^6 以下のものは 30 個ほどしかないので、1 つずつ生成しても十分に高速です。",
+      "数列は非減少なので、N に最も近いフィボナッチ数は、N を挟む連続する 2 項のどちらかです。N 以下の最後の項か、N 以上の最初の項です。",
+      "0 と 1 から始めて連続する 2 項を保持し、後の項が N より小さい間、両方を 1 ステップ進めます。その後、N から前の項を引いた値と、後の項から N を引いた値の小さい方を出力します。N = 0 のときは前の項 0 がすでに一致しており、答えは 0 です。"
+    ],
+    "ko": [
+      "피보나치 수는 빠르게 증가하며 10^6 이하인 것은 서른 개 정도뿐이므로 하나씩 생성해도 충분합니다.",
+      "수열은 비감소이므로 N에 가장 가까운 피보나치 수는 N을 감싸는 연속한 두 항, 즉 N 이하의 마지막 항이나 N 이상의 첫 항 중 하나입니다.",
+      "연속한 두 항을 0과 1에서 시작하여, 뒤쪽 항이 N보다 작은 동안 둘 다 한 칸씩 전진시킵니다. 그런 다음 N에서 앞쪽 항을 뺀 값과 뒤쪽 항에서 N을 뺀 값 중 작은 것을 출력합니다. N = 0이면 앞쪽 항 0이 이미 일치하므로 답은 0입니다."
+    ],
+    "vi": [
+      "Các số Fibonacci tăng rất nhanh; chỉ có khoảng ba mươi số không vượt quá 10^6, nên sinh từng số một là hoàn toàn ổn.",
+      "Dãy không giảm, nên số Fibonacci gần N nhất là một trong hai số hạng liên tiếp kẹp N: số hạng cuối cùng không vượt quá N hoặc số hạng đầu tiên không nhỏ hơn N.",
+      "Giữ hai số hạng liên tiếp, bắt đầu với 0 và 1, và tiến cả hai lên một bước trong khi số hạng sau nhỏ hơn N. Sau đó in giá trị nhỏ hơn giữa N trừ số hạng trước và số hạng sau trừ N; với N = 0, số hạng trước 0 đã khớp và đáp án là 0."
     ]
   },
   "explanationEn": "## Approach\n\nGenerate consecutive Fibonacci numbers until the later one is not less than N; compare the distances from these two numbers to N.\n\n## Proof of correctness\n\nThe sequence is non-decreasing, and the two consecutive terms that bracket N are its nearest candidates on the left and on the right; no other term can be closer, so take the smaller of the two distances.\n\n## Complexity\n\nTime O(log(N+1)), extra space O(1)."

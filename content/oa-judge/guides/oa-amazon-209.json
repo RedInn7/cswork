@@ -13,6 +13,21 @@
       "Each day's mandatory task uses a fixed amount of time, and H minus that time is the room left for an optional task that day; the task becomes a matching between capacities and optional tasks.",
       "Sort both capacities and optional times ascending; the smallest optional task should go to the smallest capacity that holds it, and a capacity that cannot hold the smallest optional task cannot hold any.",
       "Compute cap[i] = H - mandatory[i] and sort it, sort the optional times; j = 0; for capacities from small to large: if optional[j] <= cap, increment j; print j."
+    ],
+    "ja": [
+      "各日の必須タスクは一定の時間を使い、H からその時間を引いたものが、その日の任意タスクに残された余裕です。したがって、容量と任意タスクのマッチングの問題になります。",
+      "容量と任意タスクの時間をどちらも昇順にソートします。最小の任意タスクは、それを収められる最小の容量に割り当てるべきで、最小の任意タスクを収められない容量は、どの任意タスクも収められません。",
+      "cap[i] = H - mandatory[i] を計算してソートし、任意タスクの時間もソートします。j = 0 として、容量を小さい方から順に見て、optional[j] <= cap なら j を 1 増やします。j を出力します。"
+    ],
+    "ko": [
+      "매일의 필수 작업은 고정된 시간을 사용하며, H에서 그 시간을 뺀 값이 그날 선택 작업에 쓸 수 있는 여유입니다. 따라서 용량과 선택 작업 사이의 매칭 문제가 됩니다.",
+      "용량과 선택 작업 시간을 모두 오름차순으로 정렬합니다. 가장 작은 선택 작업은 그것을 담을 수 있는 가장 작은 용량에 넣어야 하며, 가장 작은 선택 작업을 담지 못하는 용량은 어떤 선택 작업도 담지 못합니다.",
+      "cap[i] = H - mandatory[i]를 계산해 정렬하고 선택 작업 시간도 정렬합니다. j = 0으로 두고 용량을 작은 것부터 보며 optional[j] <= cap이면 j를 1 증가시킵니다. j를 출력합니다."
+    ],
+    "vi": [
+      "Nhiệm vụ bắt buộc của mỗi ngày dùng một lượng thời gian cố định, và H trừ đi thời gian đó là chỗ còn lại cho một nhiệm vụ tùy chọn trong ngày; bài toán trở thành ghép cặp giữa các sức chứa và các nhiệm vụ tùy chọn.",
+      "Sắp xếp cả sức chứa và thời gian tùy chọn tăng dần; nhiệm vụ tùy chọn nhỏ nhất nên được xếp vào sức chứa nhỏ nhất có thể chứa nó, và sức chứa không chứa được nhiệm vụ tùy chọn nhỏ nhất thì không chứa được cái nào.",
+      "Tính cap[i] = H - mandatory[i] và sắp xếp, sắp xếp các thời gian tùy chọn; j = 0; với các sức chứa từ nhỏ đến lớn: nếu optional[j] <= cap, tăng j; in j."
     ]
   },
   "explanationEn": "## Approach\n\nTurn each mandatory task into a remaining capacity H minus its time. Sort the capacities and the optional times ascending, and match the current smallest optional task with the smallest capacity that can hold it.\n\n## Proof of correctness\n\nA capacity that cannot hold the smallest task cannot hold any other optional task either, so it can be skipped. Otherwise some optimal solution matches these two smallest available elements: if the original solution matches them crosswise, the pairs can be swapped while staying feasible, and otherwise adding this pair directly does not reduce the count. Repeating this yields a maximum matching.\n\n## Complexity\n\nTime O(n log n), space O(n)."

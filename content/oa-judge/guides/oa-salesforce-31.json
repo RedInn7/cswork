@@ -13,6 +13,21 @@
       "Only equal adjacent characters matter; split the word into runs of identical consecutive characters, and the runs can be handled independently.",
       "A run of length L contains floor(L/2) disjoint adjacent pairs and each pair needs at least one change; changing every other character to a letter different from both neighbours (26 letters are enough) uses exactly floor(L/2) changes, so each run contributes floor(L/2).",
       "Scan each word once, remembering the previous character and the current run length; when the character changes add run/2 to the answer and reset the run to 1, otherwise grow the run; after the scan add the last run's run/2. Print the answers in input order. The total length can reach 10^7 characters, so read the input quickly."
+    ],
+    "ja": [
+      "問題になるのは隣り合う同じ文字だけです。単語を同じ文字が連続するランに分割すれば、ランどうしは独立に扱えます。",
+      "長さ L のランには互いに重ならない隣接ペアが floor(L/2) 組あり、各ペアに少なくとも 1 回の変更が必要です。1 つおきの文字を両隣と異なる文字(26 文字あれば十分)に変えれば、ちょうど floor(L/2) 回で済みます。したがって各ランの寄与は floor(L/2) です。",
+      "各単語を 1 回走査し、直前の文字と現在のランの長さを保持します。文字が変わったら答えに run/2 を加えてランを 1 にリセットし、そうでなければランを伸ばします。走査後に最後のランの run/2 を加えます。答えは入力順に出力します。総文字数は 10^7 に達し得るので、入力は高速に読み込んでください。"
+    ],
+    "ko": [
+      "인접한 같은 문자만 문제가 되므로, 단어를 같은 문자가 연속하는 구간으로 나누면 각 구간을 독립적으로 처리할 수 있습니다.",
+      "길이 L인 구간에는 서로 겹치지 않는 인접 쌍이 floor(L/2)개 있고, 각 쌍마다 최소 한 번의 변경이 필요합니다. 한 칸씩 건너뛰며 양쪽 이웃과 모두 다른 문자(26개의 문자면 충분)로 바꾸면 정확히 floor(L/2)번의 변경으로 충분하므로, 각 구간은 floor(L/2)만큼 기여합니다.",
+      "각 단어를 한 번만 훑으면서 이전 문자와 현재 구간의 길이를 기억합니다. 문자가 바뀌면 답에 run/2를 더하고 구간 길이를 1로 초기화하며, 같으면 구간을 늘립니다. 스캔이 끝난 뒤 마지막 구간의 run/2를 더합니다. 답을 입력 순서대로 출력합니다. 전체 길이가 10^7 문자에 이를 수 있으므로 입력을 빠르게 읽으세요."
+    ],
+    "vi": [
+      "Chỉ các ký tự kề nhau bằng nhau mới quan trọng; hãy chia từ thành các đoạn gồm các ký tự liên tiếp giống nhau, và các đoạn có thể xử lý độc lập.",
+      "Một đoạn độ dài L chứa floor(L/2) cặp kề nhau không giao nhau, và mỗi cặp cần ít nhất một lần đổi; đổi cách một ký tự thành một chữ cái khác cả hai ký tự lân cận (26 chữ cái là đủ) thì dùng đúng floor(L/2) lần, nên mỗi đoạn đóng góp floor(L/2).",
+      "Quét mỗi từ một lần, nhớ ký tự trước đó và độ dài đoạn hiện tại; khi ký tự thay đổi thì cộng run/2 vào đáp án và đặt lại run về 1, ngược lại thì tăng run; sau khi quét xong cộng thêm run/2 của đoạn cuối. In đáp án theo thứ tự đầu vào. Tổng độ dài có thể lên tới 10^7 ký tự, nên hãy đọc đầu vào nhanh."
     ]
   },
   "explanationEn": "## Approach\n\nSplit each word into runs of equal consecutive characters; a run of length L contributes floor(L/2).\n\n## Proof of correctness\n\nWithin each run, take disjoint pairs of adjacent characters; each pair needs at least one change, which gives the lower bound floor(L/2). Change every other character, choosing a letter different from both neighbours; 26 letters are enough, so the lower bound is achieved exactly without breaking the boundaries between runs. Add up the runs.\n\n## Complexity\n\nO(total number of characters) time, with O(1) extra state while scanning each word; the largest input is 10000104 bytes."

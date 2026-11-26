@@ -13,6 +13,21 @@
       "Multiset Jaccard similarity only depends on how many times each character occurs in each string, not on positions.",
       "For each character, the intersection can keep at most the smaller of its two counts, and the union must hold the larger one. So the intersection size is the sum of min(counts) over characters and the union size is the sum of max(counts).",
       "Read the two lines and count the occurrences of each letter in each. Over all characters, add min(countA[c], countB[c]) to the intersection size and max(countA[c], countB[c]) to the union size. Both strings are non-empty, so the union is positive; output intersection / union with enough decimal places, for example 12."
+    ],
+    "ja": [
+      "多重集合の Jaccard 類似度は、各文字が各文字列に何回現れるかだけに依存し、位置には依存しません。",
+      "各文字について、積集合に残せるのは 2 つの個数のうち小さい方までで、和集合は大きい方を持たなければなりません。したがって、積集合の大きさは文字ごとの min(個数) の和、和集合の大きさは max(個数) の和です。",
+      "2 行を読み込み、それぞれで各文字の出現回数を数えます。すべての文字について、min(countA[c], countB[c]) を積集合の大きさに、max(countA[c], countB[c]) を和集合の大きさに加えます。両方の文字列は空でないので、和集合は正です。積集合 / 和集合を十分な桁数(例えば 12 桁)で出力してください。"
+    ],
+    "ko": [
+      "멀티셋 Jaccard 유사도는 각 문자열에서 각 문자가 몇 번 나타나는지에만 의존하며 위치에는 의존하지 않습니다.",
+      "각 문자에 대해 교집합은 두 개수 중 작은 쪽까지만 가질 수 있고 합집합은 큰 쪽을 담아야 합니다. 따라서 교집합의 크기는 문자별 min(개수)의 합이고 합집합의 크기는 max(개수)의 합입니다.",
+      "두 줄을 읽고 각 문자열에서 각 문자의 등장 횟수를 셉니다. 모든 문자 c에 대해 교집합 크기에 min(countA[c], countB[c])를, 합집합 크기에 max(countA[c], countB[c])를 더합니다. 두 문자열 모두 비어 있지 않으므로 합집합은 양수이며, 교집합 / 합집합을 충분한 소수 자릿수(예: 12)로 출력합니다."
+    ],
+    "vi": [
+      "Độ tương đồng Jaccard đa tập hợp chỉ phụ thuộc vào số lần mỗi ký tự xuất hiện trong từng chuỗi, không phụ thuộc vào vị trí.",
+      "Với mỗi ký tự, giao chỉ có thể giữ tối đa số đếm nhỏ hơn trong hai số đếm của nó, còn hợp phải chứa số đếm lớn hơn. Vì vậy kích thước giao là tổng min(số đếm) trên các ký tự và kích thước hợp là tổng max(số đếm).",
+      "Đọc hai dòng và đếm số lần xuất hiện của từng chữ cái trong mỗi dòng. Trên mọi ký tự, cộng min(countA[c], countB[c]) vào kích thước giao và max(countA[c], countB[c]) vào kích thước hợp. Cả hai chuỗi đều không rỗng nên hợp dương; in giao / hợp với đủ chữ số thập phân, ví dụ 12."
     ]
   },
   "explanationEn": "## Approach\n\nCount the occurrences of each character in the two strings separately. The size of the multiset intersection is the sum over characters of the minimum count, and the size of the union is the sum of the maximum counts; the answer is their ratio.\n\n## Proof of Correctness\n\nFor each character, the intersection keeps at most the number of occurrences on the side where it appears less often, and the union must keep the number on the side where it appears more often. Summing over the character classes gives the sizes of the multiset intersection and union respectively, and their ratio is exactly the multiset Jaccard similarity.\n\n## Complexity\n\nWith an alphabet of size σ, time O(n+m+σ), space O(σ)."

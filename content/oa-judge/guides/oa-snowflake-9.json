@@ -13,6 +13,21 @@
       "There are only 7 positions and at most 9 values per ?, so all completions can be searched directly. The key is to try digits in increasing order position by position, so the output is automatically in lexicographic order.",
       "Precompute the minimum and maximum hours that positions i..6 can still contribute (a ? contributes 0 or day_hours). During the search, prune immediately when the remaining hours fall outside that range.",
       "Compute low[i] and high[i] from the back. Depth-first visit(i, remaining): return if remaining is out of range; at i = 7 record the current string; at a ? try 0..day_hours in ascending order, and a fixed digit has a single branch. Print the number of schedules and then each schedule on its own line; there can be hundreds of thousands of lines, so buffer the output."
+    ],
+    "ja": [
+      "位置は 7 つだけで、? ごとの値は高々 9 通りなので、すべての補完を直接探索できます。肝心なのは、位置ごとに数字を昇順に試すことで、出力が自動的に辞書順になることです。",
+      "位置 i..6 がこれから寄与できる最小時間と最大時間を前計算します（? の寄与は 0 から day_hours まで）。探索中は、残り時間がこの範囲から外れた時点ですぐに枝刈りします。",
+      "low[i] と high[i] を後ろから計算します。深さ優先の visit(i, remaining) で、remaining が範囲外なら戻り、i = 7 なら現在の文字列を記録し、? では 0..day_hours を昇順に試し、固定された数字では分岐は 1 つだけです。スケジュールの個数を出力し、続いて 1 行に 1 つずつスケジュールを出力します。数十万行になりうるので、出力はバッファリングしてください。"
+    ],
+    "ko": [
+      "위치가 7개뿐이고 ?당 값이 최대 9가지이므로 모든 완성 방법을 직접 탐색할 수 있습니다. 핵심은 위치별로 숫자를 오름차순으로 시도하여 출력이 자동으로 사전순이 되게 하는 것입니다.",
+      "위치 i..6이 앞으로 기여할 수 있는 시간의 최솟값과 최댓값을 미리 계산합니다(?는 0 또는 day_hours를 기여). 탐색 중 남은 시간이 그 범위를 벗어나면 즉시 가지치기합니다.",
+      "뒤에서부터 low[i]와 high[i]를 계산합니다. 깊이 우선 visit(i, remaining): remaining이 범위를 벗어나면 반환하고, i = 7이면 현재 문자열을 기록하며, ?에서는 0..day_hours를 오름차순으로 시도하고 고정된 숫자는 가지가 하나입니다. 일정의 수를 출력한 뒤 각 일정을 한 줄에 하나씩 출력합니다. 줄이 수십만 개일 수 있으므로 출력을 버퍼링하세요."
+    ],
+    "vi": [
+      "Chỉ có 7 vị trí và tối đa 9 giá trị cho mỗi ?, nên có thể tìm kiếm trực tiếp mọi cách hoàn thành. Mấu chốt là thử các chữ số theo thứ tự tăng dần từng vị trí, để đầu ra tự động theo thứ tự từ điển.",
+      "Tính trước số giờ tối thiểu và tối đa mà các vị trí i..6 còn có thể đóng góp (một ? đóng góp 0 hoặc day_hours). Trong khi tìm kiếm, cắt tỉa ngay khi số giờ còn lại nằm ngoài khoảng đó.",
+      "Tính low[i] và high[i] từ phía sau. Duyệt theo chiều sâu visit(i, remaining): return nếu remaining nằm ngoài khoảng; tại i = 7 ghi lại xâu hiện tại; tại một ? thử 0..day_hours theo thứ tự tăng dần, còn chữ số cố định chỉ có một nhánh. In số lịch rồi từng lịch trên một dòng riêng; có thể có hàng trăm nghìn dòng, nên hãy đệm đầu ra."
     ]
   },
   "explanationEn": "## Approach\n\nEnumerate digits from left to right in ascending order, prune with the minimum and maximum hours still achievable, and keep the leaves that reach the total exactly.\n\n## Correctness\n\nEvery completion corresponds to a unique root-to-leaf path: a fixed position has a single branch and an unknown position enumerates all legal digits. Pruning only removes prefixes that cannot reach the total, so nothing is missed, and the ascending depth-first search naturally outputs in lexicographic order.\n\n## Complexity\n\nO(9^7) time and O(7R) output space; R is at most 273127, within the 4 MiB output limit."

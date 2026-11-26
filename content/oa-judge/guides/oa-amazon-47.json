@@ -13,6 +13,21 @@
       "There are only 7 letters a..g, so a substring has at most 7 distinct characters, and a valid substring therefore has a top frequency of at most 7.",
       "By the pigeonhole principle, a substring longer than 49 has some letter at least 8 times, which exceeds any possible number of distinct characters, so it is never valid; from each left end you only need to extend at most 49 characters.",
       "For each start, reset 7 counters and keep the number of distinct letters and the maximum frequency; move the end from start up to min(n, start+49)-1, update the three values for each added character, and add one to the answer whenever maximum <= distinct."
+    ],
+    "ja": [
+      "文字は a..g の 7 種類しかないので、部分文字列に含まれる文字は高々 7 種類です。したがって、条件を満たす部分文字列の最大出現回数は高々 7 です。",
+      "鳩の巣原理により、長さが 49 を超える部分文字列では、ある文字が少なくとも 8 回現れ、これは異なる文字の種類数としてありうるどの値も超えるので、条件を満たしません。したがって、各左端から伸ばすのは高々 49 文字で十分です。",
+      "各開始位置について、7 個のカウンタをリセットし、異なる文字の種類数と最大出現回数を保持します。終端を start から min(n, start+49)-1 まで動かし、文字を追加するたびに 3 つの値を更新して、maximum <= distinct のときに答えに 1 を加えます。"
+    ],
+    "ko": [
+      "문자는 a..g의 7종뿐이므로 부분 문자열의 서로 다른 문자는 최대 7개이고, 따라서 유효한 부분 문자열의 최대 빈도는 7 이하입니다.",
+      "비둘기집 원리에 의해 길이가 49를 넘는 부분 문자열에는 어떤 문자가 8번 이상 나타나 가능한 서로 다른 문자의 수를 넘으므로 절대 유효하지 않습니다. 따라서 각 왼쪽 끝에서 최대 49글자까지만 확장하면 됩니다.",
+      "각 시작 위치마다 카운터 7개를 초기화하고 서로 다른 문자의 수와 최대 빈도를 유지합니다. 끝 위치를 start부터 min(n, start+49)-1까지 옮기며, 문자를 추가할 때마다 세 값을 갱신하고 maximum <= distinct이면 답에 1을 더합니다."
+    ],
+    "vi": [
+      "Chỉ có 7 chữ cái a..g, nên một xâu con có tối đa 7 ký tự phân biệt, và do đó một xâu con hợp lệ có tần suất cao nhất tối đa là 7.",
+      "Theo nguyên lý chuồng bồ câu, một xâu con dài hơn 49 có một chữ cái xuất hiện ít nhất 8 lần, vượt quá mọi số ký tự phân biệt có thể có, nên nó không bao giờ hợp lệ; từ mỗi đầu trái bạn chỉ cần mở rộng tối đa 49 ký tự.",
+      "Với mỗi điểm bắt đầu, đặt lại 7 bộ đếm và giữ số chữ cái phân biệt cùng tần suất lớn nhất; dịch điểm kết thúc từ start đến min(n, start+49)-1, cập nhật ba giá trị cho mỗi ký tự được thêm, và cộng một vào đáp án mỗi khi maximum <= distinct."
     ]
   },
   "explanationEn": "## Approach\n\nA valid substring has at most 7 kinds of characters, each appearing at most 7 times, so its length is at most 49. From each left end, extend at most 49 positions while maintaining the counts, the number of distinct characters, and the maximum frequency.\n\n## Proof of correctness\n\nIf the length exceeds 49, the pigeonhole principle makes some letter appear at least 8 times, more than the at most 7 kinds of characters, so the substring cannot be valid. Enumerating lengths up to 49 covers every possibility, and comparing the two maintained counts follows the definition directly.\n\n## Complexity\n\nO(49n) time and O(7) space."

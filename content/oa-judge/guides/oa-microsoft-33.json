@@ -13,6 +13,21 @@
       "The island's perimeter is the total number of sides of its land cells minus the interior edges shared by two land cells.",
       "Count 4 sides for every land cell; each shared edge was counted once by each of its two cells and is not on the outer boundary, so subtract 2 for each shared edge.",
       "Scan every cell: for land add 4, subtract 2 if the cell above is land and another 2 if the cell to the left is land (looking only up and left handles each shared edge exactly once), then print the total."
+    ],
+    "ja": [
+      "島の周囲の長さは、陸地セルの辺の総数から、2 つの陸地セルが共有する内側の辺を引いたものです。",
+      "陸地セルごとに辺を 4 本と数えます。共有する辺は 2 つのセルからそれぞれ 1 回ずつ数えられ、外側の境界ではないので、共有する辺 1 本につき 2 を引きます。",
+      "すべてのセルを走査します。陸地なら 4 を加え、上のセルが陸地なら 2 を引き、左のセルが陸地ならさらに 2 を引きます（上と左だけを見れば、共有する辺をちょうど 1 回ずつ処理できます）。最後に合計を出力します。"
+    ],
+    "ko": [
+      "섬의 둘레는 땅 칸들의 변의 총수에서 두 땅 칸이 공유하는 내부 변을 뺀 값입니다.",
+      "모든 땅 칸에 대해 변 4개를 셉니다. 공유되는 변은 두 칸이 각각 한 번씩 센 것이고 바깥 경계가 아니므로, 공유되는 변마다 2를 뺍니다.",
+      "모든 칸을 훑으면서 땅이면 4를 더하고, 위쪽 칸이 땅이면 2를, 왼쪽 칸이 땅이면 다시 2를 뺍니다(위와 왼쪽만 보면 공유되는 변을 정확히 한 번씩만 처리합니다). 그리고 총합을 출력합니다."
+    ],
+    "vi": [
+      "Chu vi của hòn đảo bằng tổng số cạnh của các ô đất trừ đi các cạnh bên trong được hai ô đất chung.",
+      "Đếm 4 cạnh cho mỗi ô đất; mỗi cạnh chung đã bị mỗi ô trong hai ô đếm một lần và không nằm trên biên ngoài, nên trừ 2 cho mỗi cạnh chung.",
+      "Duyệt mọi ô: với ô đất cộng 4, trừ 2 nếu ô phía trên là đất và trừ thêm 2 nếu ô bên trái là đất (chỉ nhìn lên và sang trái là xử lý mỗi cạnh chung đúng một lần), rồi in tổng."
     ]
   },
   "explanationEn": "## Approach\n\nEach land cell first contributes 4, and each edge shared with land above or to the left subtracts 2.\n\n## Proof of correctness\n\nAmong a single cell's four sides, each interior shared edge is counted twice by the two cells and is not part of the outer perimeter, so 2 must be subtracted. Checking only upward and leftward handles each shared edge exactly once.\n\n## Complexity\n\nTime O(NM), space O(NM) to store the input."

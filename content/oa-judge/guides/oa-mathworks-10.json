@@ -13,6 +13,21 @@
       "Two words have the same shape exactly when one is the other shifted by a fixed number of letters, and then their sequences of signed differences between adjacent letters are identical.",
       "Turn each word into its sequence of adjacent-letter differences and use it as a signature (keep the sign, do not take absolute values); n-1 words share one signature and only the answer has a different one.",
       "Compute every word's signature, count how often each signature occurs, and output the word whose signature occurs exactly once; n >= 3 guarantees the majority signature appears at least twice, so there is no ambiguity."
+    ],
+    "ja": [
+      "2 つの単語は、一方が他方を一定の文字数だけずらしたものであるときに限って同じ形になり、そのとき隣り合う文字の符号付き差分の列も一致します。",
+      "各単語を隣り合う文字の差分列に変換してシグネチャとして使います（符号を保持し、絶対値は取りません）。n-1 個の単語が 1 つのシグネチャを共有し、答えだけが異なるシグネチャを持ちます。",
+      "すべての単語のシグネチャを計算し、各シグネチャの出現回数を数えて、出現回数がちょうど 1 のシグネチャを持つ単語を出力します。n >= 3 なので多数派のシグネチャは少なくとも 2 回現れ、曖昧さはありません。"
+    ],
+    "ko": [
+      "두 단어의 모양이 같다는 것은 한 단어를 일정한 글자 수만큼 평행 이동한 것이 다른 단어라는 뜻이며, 이때 인접한 글자 사이의 부호 있는 차이 수열이 서로 같습니다.",
+      "각 단어를 인접한 글자 사이의 차이 수열로 바꾸어 시그니처로 사용합니다(부호를 유지하고 절댓값은 취하지 않습니다). n-1개의 단어는 같은 시그니처를 갖고, 답만 다른 시그니처를 가집니다.",
+      "모든 단어의 시그니처를 계산해 각 시그니처가 몇 번 나오는지 센 뒤, 정확히 한 번만 나오는 시그니처를 가진 단어를 출력합니다. n >= 3이므로 다수 시그니처는 최소 두 번 나오며, 따라서 모호함이 없습니다."
+    ],
+    "vi": [
+      "Hai từ có cùng \"hình dạng\" khi và chỉ khi từ này là từ kia dịch đi một số chữ cái cố định, và khi đó dãy hiệu có dấu giữa các chữ cái liền kề của chúng giống hệt nhau.",
+      "Biến mỗi từ thành dãy hiệu giữa các chữ cái liền kề và dùng nó làm chữ ký (giữ nguyên dấu, không lấy giá trị tuyệt đối); n-1 từ có chung một chữ ký và chỉ từ đáp án có chữ ký khác.",
+      "Tính chữ ký của mọi từ, đếm số lần xuất hiện của từng chữ ký, rồi in ra từ có chữ ký xuất hiện đúng một lần; n >= 3 đảm bảo chữ ký chiếm đa số xuất hiện ít nhất hai lần nên không có nhập nhằng."
     ]
   },
   "explanationEn": "## Approach\n\nCompare the directed sequences of adjacent-letter differences. For example, ACB and BDC are both (+2,-1).\n\n## Proof of correctness\n\nThe problem guarantees that exactly one word has a difference signature different from all the others. After counting the signatures, the only word whose signature occurs exactly once is the answer.\n\n## Complexity\n\nO(nL), space O(nL)."

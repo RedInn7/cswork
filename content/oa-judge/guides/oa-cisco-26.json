@@ -13,6 +13,21 @@
       "There are only four kinds of legal placement: a row, a column, or either of them reversed; the word must be a contiguous piece of one of these lines.",
       "Turn every row, every column and their reversals into code-point sequences, then search each word on these lines with KMP; repeated words can reuse a cached result.",
       "Parse the grid rows and the word list from the JSON and work on Unicode code points (not bytes); build the 2 * (rows + columns) search lines; for each word not yet cached compute its prefix function and run KMP on each line, answering Yes on the first match; print Yes or No in query order."
+    ],
+    "ja": [
+      "正当な配置は 4 種類だけです。行、列、またはそれらの反転で、単語はそのような線の連続した一部でなければなりません。",
+      "すべての行、すべての列、およびそれらの反転をコードポイント列にし、各単語をこれらの線上で KMP により探索します。繰り返される単語はキャッシュした結果を再利用できます。",
+      "JSON からグリッドの行と単語のリストを解析し、（バイトではなく）Unicode コードポイントで処理します。2 * (行数 + 列数) 本の探索用の線を作り、まだキャッシュにない各単語について接頭辞関数を計算して各線に KMP を実行し、最初に一致した時点で Yes と答えます。クエリの順に Yes または No を出力します。"
+    ],
+    "ko": [
+      "합법적인 배치는 네 종류뿐입니다. 행, 열, 또는 그 각각을 뒤집은 것이며, 단어는 이 직선 중 하나의 연속된 조각이어야 합니다.",
+      "모든 행, 모든 열과 그 뒤집은 것을 코드 포인트 시퀀스로 바꾼 뒤, 이 직선들에서 각 단어를 KMP로 검색합니다. 반복되는 단어는 캐시된 결과를 재사용할 수 있습니다.",
+      "JSON에서 격자 행과 단어 목록을 파싱하고 바이트가 아닌 유니코드 코드 포인트 단위로 작업합니다. 검색 직선 2 * (행 수 + 열 수)개를 만듭니다. 아직 캐시되지 않은 각 단어에 대해 접두사 함수를 계산하고 각 직선에서 KMP를 실행하며, 처음 일치하면 Yes로 답합니다. 질의 순서대로 Yes 또는 No를 출력합니다."
+    ],
+    "vi": [
+      "Chỉ có bốn kiểu đặt hợp lệ: một hàng, một cột, hoặc một trong hai đảo ngược; từ phải là một đoạn liên tiếp của một trong các dòng này.",
+      "Biến mọi hàng, mọi cột và các bản đảo ngược của chúng thành các dãy code point, rồi tìm mỗi từ trên các dòng này bằng KMP; các từ lặp lại có thể dùng lại kết quả đã lưu đệm.",
+      "Phân tích các hàng của lưới và danh sách từ từ JSON và làm việc trên Unicode code point (không phải byte); xây 2 * (rows + columns) dòng tìm kiếm; với mỗi từ chưa được lưu đệm, tính hàm tiền tố của nó và chạy KMP trên từng dòng, trả lời Yes ngay khi có khớp đầu tiên; in Yes hoặc No theo thứ tự truy vấn."
     ]
   },
   "explanationEn": "## Approach\n\nPrecompute all rows, all columns and their reversed strings. Build a KMP prefix table for every word and search for it on these strings one by one; cache the result for repeated queries of the same word.\n\n## Proof of correctness\n\nAll legal directions correspond exactly to the four kinds of lines: rows, columns and their reversals, and a contiguous match on a search line is exactly a straight, non-turning segment as the problem requires. KMP only skips positions already proven unable to start a match, so it does not change whether a match exists.\n\n## Complexity\n\nO(KNM + total word length) time, O(NM + total word length) space."

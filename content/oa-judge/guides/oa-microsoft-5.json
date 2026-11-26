@@ -13,6 +13,21 @@
       "Start by giving every task to the second person; the total is the sum of the second person's rewards. Moving one task to the first person changes the total by exactly the difference of the two rewards for that task.",
       "So the task is to pick exactly k of the n differences (first reward minus second reward) with the largest sum. Even negative differences must be taken if fewer than k are positive.",
       "Compute all differences, sort them in descending order, and answer the second person's total plus the sum of the first k differences; with k=0 it is just the second person's total."
+    ],
+    "ja": [
+      "最初にすべてのタスクを2人目に割り当てます。合計は2人目の報酬の総和です。1つのタスクを1人目に移すと、合計はそのタスクの2つの報酬の差だけ変化します。",
+      "したがって、課題は、n 個の差(1人目の報酬 − 2人目の報酬)から、和が最大になるちょうど k 個を選ぶことです。正の差が k 個に満たないときは、負の差であっても取らなければなりません。",
+      "すべての差を計算して降順にソートし、答えは、2人目の合計に、先頭 k 個の差の和を足したものです。k=0 のときは、2人目の合計そのものです。"
+    ],
+    "ko": [
+      "먼저 모든 작업을 두 번째 사람에게 주면 합계는 두 번째 사람의 보상의 합입니다. 작업 하나를 첫 번째 사람에게 옮기면 합계는 그 작업의 두 보상의 차이만큼 정확히 변합니다.",
+      "따라서 n개의 차이(첫 번째 보상 빼기 두 번째 보상) 중 합이 가장 큰 정확히 k개를 고르는 문제입니다. 양수인 차이가 k개보다 적다면 음수인 차이도 골라야 합니다.",
+      "모든 차이를 계산하여 내림차순으로 정렬하고, 두 번째 사람의 합에 처음 k개의 차이의 합을 더한 값을 답으로 합니다. k=0이면 두 번째 사람의 합이 그대로 답입니다."
+    ],
+    "vi": [
+      "Bắt đầu bằng cách giao mọi nhiệm vụ cho người thứ hai; tổng là tổng phần thưởng của người thứ hai. Chuyển một nhiệm vụ sang người thứ nhất làm tổng thay đổi đúng bằng hiệu hai phần thưởng của nhiệm vụ đó.",
+      "Vì vậy bài toán là chọn đúng k trong n hiệu (phần thưởng thứ nhất trừ phần thưởng thứ hai) có tổng lớn nhất. Ngay cả hiệu âm cũng phải lấy nếu có ít hơn k hiệu dương.",
+      "Tính mọi hiệu, sắp xếp giảm dần, và đáp án là tổng của người thứ hai cộng tổng k hiệu đầu tiên; với k=0 đó chỉ là tổng của người thứ hai."
     ]
   },
   "explanationEn": "## Approach\n\nFirst give all tasks to the second person, then choose the k tasks where the first person's gain over the second person is largest.\n\n## Proof of correctness\n\nAny assignment equals the total of the second person doing everything plus k gain differences. If a smaller difference was chosen while a larger one was left out, swapping them never makes the result worse, so choosing the k largest is optimal.\n\n## Complexity\n\nTime O(n log n), space O(n)."

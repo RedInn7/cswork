@@ -13,6 +13,21 @@
       "The total work is fixed, so the two cores' payoffs always add up to the sum S of all times. Each side maximizing its own payoff is therefore equivalent to maximizing its own payoff minus the other's.",
       "Look from the last task backwards: let d be the best advantage of the lock holder over the other core for the remaining tasks. If the current holder takes the task and hands over the lock, the advantage is time-d; if it gives the task away and keeps the lock, it is d-time. The better of the two is |time-d|.",
       "Start with d=0 and, from the last task to the first, set d=|time-d|; also compute the total S. The first core gets (S+d)/2 and the second gets (S-d)/2; print them in that order using 64-bit integers."
+    ],
+    "ja": [
+      "仕事の総量は固定なので、2 つのコアの得点の和は常にすべての時間の和 S になります。したがって、各側が自分の得点を最大化することは、自分の得点から相手の得点を引いた差を最大化することと同じです。",
+      "最後のタスクから後ろ向きに見ます。残りのタスクについて、ロック保持者の相手に対する最良の得点差を d とします。現在の保持者がタスクを取ってロックを渡すと、得点差は time-d で、タスクを渡してロックを保持し続けると、得点差は d-time です。よいほうが |time-d| です。",
+      "d=0 から始め、最後のタスクから最初のタスクへ向かって d=|time-d| とし、合計 S も計算します。コア 1 は (S+d)/2、コア 2 は (S-d)/2 を得ます。64 ビット整数を使って、この順に出力します。"
+    ],
+    "ko": [
+      "전체 작업량은 고정이므로 두 코어의 보수의 합은 항상 모든 시간의 합 S입니다. 따라서 각자 자신의 보수를 최대화하는 것은 자신의 보수에서 상대의 보수를 뺀 값을 최대화하는 것과 같습니다.",
+      "마지막 작업부터 거꾸로 봅니다. d를 남은 작업에 대해 락을 가진 쪽이 다른 코어보다 가질 수 있는 최선의 우위라 하겠습니다. 현재 보유자가 작업을 가져가고 락을 넘기면 우위는 time-d이고, 작업을 넘기고 락을 유지하면 d-time입니다. 둘 중 나은 쪽은 |time-d|입니다.",
+      "d=0에서 시작하여 마지막 작업부터 첫 작업까지 d=|time-d|로 갱신하고, 총합 S도 계산합니다. 첫 번째 코어는 (S+d)/2, 두 번째 코어는 (S-d)/2를 가지며, 64비트 정수로 이 순서대로 출력합니다."
+    ],
+    "vi": [
+      "Tổng công việc là cố định, nên lợi ích của hai lõi luôn cộng lại bằng tổng S của mọi thời gian. Do đó mỗi bên cực đại hoá lợi ích của mình tương đương với cực đại hoá lợi ích của mình trừ lợi ích của bên kia.",
+      "Nhìn từ tác vụ cuối trở ngược lại: gọi d là lợi thế tốt nhất của bên giữ khoá so với lõi còn lại trên các tác vụ còn lại. Nếu bên giữ hiện tại nhận tác vụ và chuyển khoá đi, lợi thế là time-d; nếu nó giao tác vụ đi và giữ khoá, lợi thế là d-time. Lựa chọn tốt hơn trong hai là |time-d|.",
+      "Bắt đầu với d=0 và, từ tác vụ cuối đến tác vụ đầu, đặt d=|time-d|; đồng thời tính tổng S. Lõi thứ nhất nhận (S+d)/2 và lõi thứ hai nhận (S-d)/2; in chúng theo thứ tự đó dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nGoing from back to front, maintain d, the optimal payoff advantage of the lock holder over the other core, starting from 0 and updated for each item as |time-d|. Finally, recover the two cores' payoffs from the total S as (S+d)/2 and (S-d)/2.\n\n## Proof of correctness\n\nTaking the task and handing over the lock produces an advantage of time-d; giving it to the other core and keeping the lock produces d-time. With a fixed total, maximizing one's own payoff is equivalent to maximizing the advantage, and the larger of the two is the absolute value. Backward induction holds; in a tie, the two cores' payoffs are still uniquely determined by the same total and advantage.\n\n## Complexity\n\nTime O(n), space O(1) apart from the input; payoffs use 64 bits."

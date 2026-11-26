@@ -13,6 +13,21 @@
       "Whatever the order of left and right takes, once you fix that l bags come from the left and r=n−l from the right, the left takes are exactly the first l bags and the right takes are exactly the last r, so the base cost is fully determined.",
       "What remains is the extra cost for consecutive same-side takes: r right takes split the l left takes into at most r+1 groups, so there are at least l−r−1 left repeats, and symmetrically at least r−l−1 right repeats; alternating as much as possible and putting the surplus at the end on one side reaches both bounds at once.",
       "Compute the total weight; enumerate l from 0 to n while keeping the weight sum of the first l bags, with cost = prefix×X + (total − prefix)×Y + max(0, l−r−1)×El + max(0, r−l−1)×Er, and print the minimum. The result can exceed 64 bits, so use 128-bit or big integers."
+    ],
+    "ja": [
+      "左右の取り出しの順序がどうであっても、l 個の荷物を左から、r=n−l 個を右から取ると決めれば、左から取るのはちょうど先頭の l 個、右から取るのはちょうど末尾の r 個になるので、基本コストは完全に決まります。",
+      "残るのは、同じ側を連続して取ることによる追加コストです。r 回の右からの取り出しは、l 回の左からの取り出しを高々 r+1 個のグループに分けるので、左の繰り返しは少なくとも l−r−1 回あり、対称的に右の繰り返しは少なくとも r−l−1 回あります。できるだけ交互に取り、余りを末尾で片側にまとめれば、2 つの下限を同時に達成できます。",
+      "総重量を計算し、l を 0 から n まで列挙しながら先頭 l 個の重さの和を保持します。コストは 接頭辞和×X + (総重量 − 接頭辞和)×Y + max(0, l−r−1)×El + max(0, r−l−1)×Er で、その最小値を出力します。結果は 64 ビットを超えうるので、128 ビットまたは多倍長整数を使います。"
+    ],
+    "ko": [
+      "왼쪽과 오른쪽을 어떤 순서로 가져가든, l개의 가방은 왼쪽에서 r=n−l개는 오른쪽에서 가져간다고 정하면 왼쪽에서 가져가는 것은 정확히 처음 l개의 가방이고 오른쪽에서 가져가는 것은 정확히 마지막 r개이므로 기본 비용은 완전히 결정됩니다.",
+      "남는 것은 같은 쪽을 연속으로 가져갈 때의 추가 비용입니다. 오른쪽 가져가기 r번은 왼쪽 가져가기 l번을 최대 r+1개의 묶음으로 나누므로 왼쪽 반복은 최소 l−r−1번이고, 대칭적으로 오른쪽 반복은 최소 r−l−1번입니다. 최대한 번갈아 가져가고 남는 분량을 한쪽 끝에 몰아 두면 두 하한을 동시에 달성합니다.",
+      "전체 무게를 구하고, l을 0부터 n까지 열거하면서 처음 l개 가방의 무게 합을 유지합니다. 비용은 prefix×X + (total − prefix)×Y + max(0, l−r−1)×El + max(0, r−l−1)×Er이며 최솟값을 출력합니다. 결과가 64비트를 넘을 수 있으므로 128비트 또는 큰 정수를 사용하세요."
+    ],
+    "vi": [
+      "Dù thứ tự lấy trái và phải thế nào, khi đã cố định l túi lấy từ bên trái và r=n−l túi từ bên phải, các lần lấy bên trái chính xác là l túi đầu và các lần lấy bên phải chính xác là r túi cuối, nên chi phí cơ bản hoàn toàn được xác định.",
+      "Phần còn lại là chi phí thêm cho các lần lấy liên tiếp cùng phía: r lần lấy bên phải chia l lần lấy bên trái thành tối đa r+1 nhóm, nên có ít nhất l−r−1 lần lặp bên trái, và đối xứng có ít nhất r−l−1 lần lặp bên phải; xen kẽ tối đa có thể và đặt phần dư ở cuối về một phía đạt cả hai cận cùng lúc.",
+      "Tính tổng khối lượng; duyệt l từ 0 đến n trong khi giữ tổng khối lượng của l túi đầu, với cost = prefix×X + (total − prefix)×Y + max(0, l−r−1)×El + max(0, r−l−1)×Er, và in ra giá trị nhỏ nhất. Kết quả có thể vượt quá 64 bit, nên hãy dùng số nguyên 128 bit hoặc số nguyên lớn."
     ]
   },
   "explanationEn": "## Approach\n\nEnumerate the final number of left takes l and right takes r=n−l. The base cost is uniquely determined by the first l items and the last r items, and the minimum numbers of consecutive left/right repeats are max(0,l−r−1) and max(0,r−l−1) respectively. Accumulate prefix sums and enumerate to find the minimum.\n\n## Proof of correctness\n\nWith the counts fixed, whatever the interleaving, the left side takes exactly the first l items and the right side exactly the last r items. r right takes can separate l left takes into at most r+1 groups, so there are at least l−r−1 left repeats, and the right side is symmetric; alternating as much as possible and attaching the surplus takes at the end on the same side reaches both lower bounds at once. Extra costs are non-negative, so this construction is optimal. Enumerating every l covers all plans.\n\n## Complexity\n\nTime O(n), auxiliary space O(1) excluding the input; use arbitrary-precision integers."

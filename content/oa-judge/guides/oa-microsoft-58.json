@@ -13,6 +13,21 @@
       "The underlying graph is a tree, so every city has exactly one path to the capital 0; for every city to reach 0, each edge must point toward the end closer to 0.",
       "Rooting the tree at 0, the required direction of every edge is from child to parent. Edges already pointing from child to parent stay, edges pointing from parent to child must be reversed, and there is no choice either way.",
       "Build an undirected adjacency list and tag each edge with its original direction: a→b is stored with tag 1 in a's list (it leaves a) and tag 0 in b's list. Traverse the tree from 0, and whenever you go from parent to child along an edge, add its tag; the total is the number of reversals. N can reach 50000, so use an explicit stack instead of recursion."
+    ],
+    "ja": [
+      "元のグラフは木なので、どの都市にも首都 0 への道がちょうど 1 本あります。すべての都市が 0 に到達するには、各辺が 0 に近いほうの端点を向いている必要があります。",
+      "0 を根とすると、各辺に必要な向きは子から親です。すでに子から親を向いている辺はそのままで、親から子を向いている辺は反転が必要であり、どちらの場合も選択の余地はありません。",
+      "無向の隣接リストを作り、各辺に元の向きのタグを付けます。a→b は a のリストにタグ 1（a から出ていく）、b のリストにタグ 0 で保存します。0 から木をたどり、親から子へ辺を進むたびにそのタグを足します。合計が反転回数です。N は 50000 に達しうるので、再帰ではなく明示的なスタックを使ってください。"
+    ],
+    "ko": [
+      "기저 그래프가 트리이므로 모든 도시에서 수도 0까지 가는 경로는 정확히 하나입니다. 모든 도시가 0에 도달하려면 각 간선이 0에 더 가까운 쪽을 향해야 합니다.",
+      "트리의 루트를 0으로 잡으면 모든 간선의 필요한 방향은 자식에서 부모입니다. 이미 자식에서 부모로 향하는 간선은 그대로 두고, 부모에서 자식으로 향하는 간선은 뒤집어야 하며, 어느 쪽이든 선택의 여지가 없습니다.",
+      "무방향 인접 리스트를 만들고 각 간선에 원래 방향을 태그로 붙이세요. a→b는 a의 리스트에 태그 1(a에서 나가는 방향)로, b의 리스트에 태그 0으로 저장합니다. 0에서 트리를 순회하며 부모에서 자식으로 간선을 따라갈 때마다 그 태그를 더하면, 합계가 뒤집는 횟수입니다. N이 50000까지 가능하므로 재귀 대신 명시적 스택을 사용하세요."
+    ],
+    "vi": [
+      "Đồ thị nền là một cây, nên mỗi thành phố có đúng một đường đến thủ đô 0; để mọi thành phố đến được 0, mỗi cạnh phải hướng về đầu mút gần 0 hơn.",
+      "Khi cây có gốc ở 0, chiều bắt buộc của mọi cạnh là từ con sang cha. Các cạnh đã hướng từ con sang cha thì giữ nguyên, các cạnh hướng từ cha sang con phải đảo chiều, và không có lựa chọn nào khác.",
+      "Xây danh sách kề vô hướng và gắn nhãn mỗi cạnh theo chiều ban đầu: a→b được lưu với nhãn 1 trong danh sách của a (nó đi ra khỏi a) và nhãn 0 trong danh sách của b. Duyệt cây từ 0, và mỗi khi đi từ cha xuống con qua một cạnh thì cộng nhãn của nó; tổng là số lần đảo chiều. N có thể đạt 50000, nên hãy dùng ngăn xếp tường minh thay vì đệ quy."
     ]
   },
   "explanationEn": "## Approach\n\nTraverse the undirected tree from 0. If a parent–child edge originally points from parent to child, it must be reversed; if it points from child to parent, keep it. Count the edges of the first kind.\n\n## Correctness\n\nEvery non-root city has a unique undirected path to the root, and every edge on that path must point toward the parent; therefore the final direction of each edge is unique. The algorithm counts exactly the edges whose original direction differs from the required one, which is both necessary and sufficient.\n\n## Complexity\n\nTime O(N), space O(N)."

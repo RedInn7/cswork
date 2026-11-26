@@ -13,6 +13,21 @@
       "Whether a window of length m+1 matches depends only on its m adjacent comparisons; the actual values do not matter.",
       "Turn the array into its comparison sequence of length n−1 (each entry 1, 0 or −1). The task becomes counting the occurrences of the pattern p in that sequence, which KMP does in linear time.",
       "Build the prefix function of p. While scanning the comparison sequence, fall back through the prefix function on a mismatch and advance on a match; whenever the match length reaches m, add one to the answer and fall back to the prefix function value at m−1, so overlapping occurrences are counted too."
+    ],
+    "ja": [
+      "長さ m+1 のウィンドウが一致するかどうかは、その m 個の隣接比較だけで決まります。実際の値は関係ありません。",
+      "配列を長さ n−1 の比較列（各要素は 1、0、−1）に変換します。すると問題は、その列の中でパターン p が出現する回数を数えることになり、KMP なら線形時間で解けます。",
+      "p の接頭辞関数を構築します。比較列を走査しながら、不一致のときは接頭辞関数でフォールバックし、一致のときは前に進めます。一致の長さが m に達するたびに答えに 1 を加え、m−1 の接頭辞関数の値までフォールバックするので、重なる出現も数えられます。"
+    ],
+    "ko": [
+      "길이 m+1의 구간이 일치하는지는 m개의 인접 비교에만 달려 있고, 실제 값은 상관없습니다.",
+      "배열을 길이 n−1의 비교 수열(각 항목은 1, 0 또는 −1)로 바꿉니다. 그러면 문제는 이 수열에서 패턴 p의 등장 횟수를 세는 것이 되며, KMP로 선형 시간에 풀 수 있습니다.",
+      "p의 접두사 함수를 만듭니다. 비교 수열을 스캔하면서 불일치하면 접두사 함수로 되돌아가고 일치하면 전진합니다. 일치 길이가 m에 도달할 때마다 답에 1을 더하고 m−1의 접두사 함수 값으로 되돌아가, 겹치는 등장도 센다."
+    ],
+    "vi": [
+      "Một cửa sổ độ dài m+1 có khớp hay không chỉ phụ thuộc vào m phép so sánh kề nhau của nó; các giá trị thực sự không quan trọng.",
+      "Biến mảng thành dãy so sánh độ dài n−1 (mỗi phần tử là 1, 0 hoặc −1). Bài toán trở thành đếm số lần xuất hiện của mẫu p trong dãy này, điều mà KMP làm được trong thời gian tuyến tính.",
+      "Xây dựng hàm tiền tố của p. Khi quét dãy so sánh, lùi theo hàm tiền tố nếu không khớp và tiến lên nếu khớp; mỗi khi độ dài khớp đạt m, cộng một vào đáp án và lùi về giá trị hàm tiền tố tại m−1, nhờ đó các lần xuất hiện chồng lấn cũng được đếm."
     ]
   },
   "explanationEn": "## Approach\n\nConvert the adjacent comparisons into a sequence of −1, 0, 1, match the whole pattern with KMP, and after each successful match fall back via the prefix function so overlapping matches are kept.\n\n## Why it works\n\nWindows of length m+1 in the original array correspond one-to-one with windows of length m in the sequence of adjacent signs. The KMP state is the length of the longest match between a suffix of the scanned sequence and a prefix of the pattern; falling back on a mismatch keeps every prefix that could still match, and reaching m corresponds exactly to one valid window.\n\n## Complexity\n\nTime O(n+m), extra space O(m)."

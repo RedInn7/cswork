@@ -13,6 +13,21 @@
       "Matching ignores case, so first convert the whole review to lowercase. A substring is valid exactly when it does not fully contain any occurrence of a banned word.",
       "Use a sliding window: move the right end one step at a time; if some banned word ends exactly at the right end and starts at p, the window's left end must be greater than p. The left end only moves right, and the longest valid window for each right end is [left, right].",
       "Set left=0. For each right, check each banned word w: when start=right−|w|+1≥0 and s[start..right] equals w, set left=max(left, start+1); then update the answer with right−left+1. There are at most 10 words of at most 10 letters, so the total work is small."
+    ],
+    "ja": [
+      "照合は大文字と小文字を区別しないので、まず review 全体を小文字に変換します。部分文字列が有効であるのは、禁止語の出現を完全には含まないときです。",
+      "スライディングウィンドウを使います。右端を1つずつ動かし、右端でちょうど終わり、位置 p から始まる禁止語があれば、ウィンドウの左端は p より大きくなければなりません。左端は右へしか動かず、各右端に対する最長の有効ウィンドウは [left, right] です。",
+      "left=0 とします。各 right について、各禁止語 w を確認します。start=right−|w|+1≥0 かつ s[start..right] が w に等しければ、left=max(left, start+1) とします。その後、答えを right−left+1 で更新します。禁止語は最大 10 個で、それぞれ最大 10 文字なので、全体の作業量は小さいです。"
+    ],
+    "ko": [
+      "매칭은 대소문자를 구분하지 않으므로 먼저 리뷰 전체를 소문자로 바꿉니다. 부분 문자열이 유효하다는 것은 금지어의 어떤 등장도 완전히 포함하지 않는다는 것과 같습니다.",
+      "슬라이딩 윈도우를 사용합니다. 오른쪽 끝을 한 칸씩 옮기다가 어떤 금지어가 정확히 오른쪽 끝에서 끝나고 p에서 시작한다면 윈도우의 왼쪽 끝은 p보다 커야 합니다. 왼쪽 끝은 오른쪽으로만 움직이며, 각 오른쪽 끝에 대해 가장 긴 유효한 윈도우는 [left, right]입니다.",
+      "left=0으로 둡니다. 각 right마다 각 금지어 w를 확인합니다. start=right−|w|+1≥0이고 s[start..right]가 w와 같으면 left=max(left, start+1)로 두고, 그다음 right−left+1로 정답을 갱신합니다. 금지어는 최대 10개이고 길이도 최대 10이므로 전체 작업량은 작습니다."
+    ],
+    "vi": [
+      "Việc so khớp không phân biệt hoa thường, nên trước hết chuyển toàn bộ review sang chữ thường. Một xâu con là hợp lệ khi và chỉ khi nó không chứa trọn vẹn bất kỳ lần xuất hiện nào của từ bị cấm.",
+      "Dùng cửa sổ trượt: dịch đầu mút phải từng bước; nếu một từ bị cấm kết thúc đúng tại đầu mút phải và bắt đầu tại p, thì đầu mút trái của cửa sổ phải lớn hơn p. Đầu mút trái chỉ dịch sang phải, và cửa sổ hợp lệ dài nhất cho mỗi đầu mút phải là [left, right].",
+      "Đặt left=0. Với mỗi right, kiểm tra từng từ bị cấm w: khi start=right−|w|+1≥0 và s[start..right] bằng w, đặt left=max(left, start+1); sau đó cập nhật đáp án với right−left+1. Có tối đa 10 từ, mỗi từ tối đa 10 chữ cái, nên tổng công việc nhỏ."
     ]
   },
   "explanationEn": "## Approach\n\nConvert the review to lowercase. Enumerate the right end and check whether each banned word ends there; if one matches starting at p, move the left end of the window to at least p+1, then measure the length.\n\n## Proof of correctness\n\nA valid window cannot fully contain any matched range [p,r], so its left end must be greater than p. Keeping the largest p+1 over all matches so far excludes exactly every banned word that ends no later than the current right end, and any smaller left end would contain some banned word. So this window is the longest valid window for each right end, and taking the maximum covers the global optimum.\n\n## Complexity\n\nTime O(n·number of words·longest word length), space O(n)."

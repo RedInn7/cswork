@@ -13,6 +13,21 @@
       "This is an ordinary first-in, first-out queue; the main difficulty is that an ID can be any Unicode string (including the empty string, spaces and emoji), so both input and output must be decoded and escaped correctly as JSON.",
       "INSERT puts the ID at the back of the queue. For SHIP, if the queue has fewer than 3 items, output just [\"N/A\"] and leave the queue unchanged; otherwise take the first three in order as one group. Every SHIP produces exactly one group.",
       "Parse the whole JSON array first (handling \\uXXXX escapes; an emoji is a surrogate pair) and simulate the queue to get the list of results. When printing, escape by JSON rules: quotes and backslashes get a backslash, while control characters, spaces and every non-ASCII character are written as lowercase \\uXXXX (a space is \\u0020, and a character outside the BMP becomes two surrogate escapes). With no SHIP, output []."
+    ],
+    "ja": [
+      "これは通常の先入れ先出しキューです。主な難しさは、ID が任意の Unicode 文字列(空文字列、空白、絵文字を含む)になりうることで、入力も出力も JSON として正しくデコードしエスケープしなければなりません。",
+      "INSERT は ID をキューの末尾に入れます。SHIP では、キューの要素が 3 個未満なら [\"N/A\"] だけを出力してキューは変更せず、そうでなければ先頭の3個を順に1つのグループとして取り出します。SHIP ごとにちょうど1つのグループが生成されます。",
+      "まず JSON 配列全体を解析し(\\uXXXX のエスケープを処理します。絵文字はサロゲートペアです)、キューをシミュレートして結果のリストを得ます。出力するときは JSON の規則でエスケープします。引用符とバックスラッシュにはバックスラッシュを付け、制御文字、空白、すべての非 ASCII 文字は小文字の \\uXXXX で書きます(空白は \\u0020、BMP 外の文字は2つのサロゲートのエスケープになります)。SHIP がなければ [] を出力します。"
+    ],
+    "ko": [
+      "이것은 평범한 선입선출 대기열이며, 어려운 점은 ID가 어떤 유니코드 문자열(빈 문자열, 공백, 이모지 포함)이든 될 수 있어 입력과 출력을 모두 JSON으로 올바르게 디코딩하고 이스케이프해야 한다는 것입니다.",
+      "INSERT는 ID를 대기열의 뒤에 넣습니다. SHIP에서 대기열에 3개 미만이 있으면 [\"N/A\"]만 출력하고 대기열은 그대로 둡니다. 그렇지 않으면 앞의 세 개를 순서대로 한 그룹으로 가져옵니다. 모든 SHIP은 정확히 하나의 그룹을 만듭니다.",
+      "먼저 전체 JSON 배열을 파싱하고(\\uXXXX 이스케이프를 처리하며, 이모지는 서로게이트 쌍입니다) 대기열을 시뮬레이션하여 결과 목록을 얻습니다. 출력할 때는 JSON 규칙에 따라 이스케이프합니다. 따옴표와 역슬래시에는 역슬래시를 붙이고, 제어 문자, 공백, 모든 비ASCII 문자는 소문자 \\uXXXX로 씁니다(공백은 \\u0020 형태이고, BMP 밖의 문자는 두 개의 서로게이트 이스케이프가 됩니다). SHIP이 없으면 []를 출력합니다."
+    ],
+    "vi": [
+      "Đây là một hàng đợi vào trước ra trước thông thường; khó khăn chính là một ID có thể là bất kỳ chuỗi Unicode nào (kể cả chuỗi rỗng, dấu cách và emoji), nên cả đầu vào lẫn đầu ra phải được giải mã và escape đúng theo JSON.",
+      "INSERT đặt ID vào cuối hàng đợi. Với SHIP, nếu hàng đợi có ít hơn 3 phần tử, in đúng [\"N/A\"] và giữ nguyên hàng đợi; ngược lại lấy ba phần tử đầu theo thứ tự thành một nhóm. Mỗi SHIP tạo ra đúng một nhóm.",
+      "Phân tích toàn bộ mảng JSON trước (xử lý các escape \\uXXXX; một emoji là một cặp surrogate) và mô phỏng hàng đợi để có danh sách kết quả. Khi in, escape theo quy tắc JSON: dấu nháy và dấu gạch chéo ngược được thêm một dấu gạch chéo ngược, còn ký tự điều khiển, dấu cách và mọi ký tự không thuộc ASCII được viết dưới dạng \\uXXXX chữ thường (dấu cách là \\u0020, và ký tự ngoài BMP trở thành hai escape surrogate). Nếu không có SHIP nào, in []."
     ]
   },
   "explanationEn": "## Approach\n\nKeep all unshipped IDs in a deque; INSERT appends, and SHIP checks the length and then takes the first three or returns N/A.\n\n## Proof of correctness\n\nThe loop invariant is that the queue holds exactly all packages not yet shipped, in the order they first entered. Appending keeps the order; a successful shipment takes the first three, which is exactly the earliest group; when there are not enough, the queue is unchanged, so those packages remain available later. Every SHIP outputs exactly one item, no more and no fewer.\n\n## Complexity\n\nTime O(q+number of input and output characters), space O(q+number of output characters)."

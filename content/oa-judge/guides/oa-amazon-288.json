@@ -13,6 +13,21 @@
       "When number v is collected, the scan is sitting at v's position. If the next number v+1 lies to its right, it can be collected in the same pass; if it lies to the left, this pass has already missed it.",
       "So each time v+1's position is to the left of v's, exactly one more pass is needed, and nothing else forces a new pass. The answer is 1 plus the number of such cases.",
       "Build pos[v], the index of number v in the sequence; for v = 1..n−1, count how many times pos[v+1] < pos[v], then print that count plus 1."
+    ],
+    "ja": [
+      "数 v を集めた時点で、走査は v の位置にいます。次の数 v+1 が右側にあれば同じ走査で集められ、左側にあれば、この走査ではもう取り逃しています。",
+      "したがって、v+1 の位置が v の位置より左にあるたびに、走査がちょうど 1 回余分に必要になり、それ以外に新しい走査を強いる要因はありません。答えは 1 にそのような場合の回数を加えた値です。",
+      "pos[v](数列における数 v の添字)を作り、v = 1..n−1 について pos[v+1] < pos[v] となる回数を数えて、その回数に 1 を加えて出力します。"
+    ],
+    "ko": [
+      "수 v를 모으는 순간 스캔은 v의 위치에 있습니다. 다음 수 v+1이 오른쪽에 있으면 같은 스캔에서 모을 수 있고, 왼쪽에 있으면 이번 스캔은 이미 놓친 것입니다.",
+      "따라서 v+1의 위치가 v의 위치보다 왼쪽인 경우마다 스캔이 정확히 한 번 더 필요하며, 그 외에는 새 스캔을 강제하는 것이 없습니다. 답은 1에 이런 경우의 수를 더한 값입니다.",
+      "수열에서 수 v의 인덱스 pos[v]를 만들고, v = 1..n−1에 대해 pos[v+1] < pos[v]인 횟수를 센 뒤 그 횟수에 1을 더해 출력합니다."
+    ],
+    "vi": [
+      "Khi số v được thu thập, lượt quét đang đứng ở vị trí của v. Nếu số tiếp theo v+1 nằm bên phải, nó có thể được thu thập trong cùng lượt; nếu nằm bên trái, lượt này đã bỏ lỡ nó.",
+      "Vì vậy mỗi lần vị trí của v+1 nằm bên trái vị trí của v, cần đúng thêm một lượt, và không có gì khác buộc phải thêm lượt mới. Đáp án là 1 cộng với số trường hợp như vậy.",
+      "Xây dựng pos[v], chỉ số của số v trong dãy; với v = 1..n−1, đếm số lần pos[v+1] < pos[v], rồi in ra số đó cộng 1."
     ]
   },
   "explanationEn": "## Approach\n\nRecord the original position pos of each number; the answer is 1 plus the number of times pos[v+1]<pos[v].\n\n## Proof of correctness\n\nWhen v is collected, the scan is at pos[v]. If pos[v+1] is further right, it can still be collected in this pass; if it is further left, this pass has already missed it, and exactly one more pass must be started. Carrying out these necessary pass changes in order is also sufficient, so the count is exact.\n\n## Complexity\n\nTime O(n), space O(n)."

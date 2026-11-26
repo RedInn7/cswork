@@ -13,6 +13,21 @@
       "Sorting the chosen characters in ascending order can only move 0s left and 1s right, and the total numbers of 0s and 1s stay the same. So the number of 1s in any prefix never increases.",
       "Conversely, as long as the target has the same total number of 0s as the original and each prefix of the target has no more 1s than the original prefix of the same length, it is reachable (move the 0s left one at a time). As for what each ? should be: with the totals fixed, putting the needed 0s on the earliest ? positions makes every prefix have as few 1s as possible.",
       "Precompute the original string's total number of 0s and its prefix counts of 1s. For each target: need = original 0s − fixed 0s in the target; if need<0 or need exceeds the number of ?, answer NO. Otherwise scan from the left, treating ? as 0 while need>0 (decrementing need) and as 1 afterwards, counting the 1s; as soon as the count exceeds the original prefix, answer NO, and if the scan finishes, answer YES."
+    ],
+    "ja": [
+      "選んだ文字を昇順にソートすると、0 は左へ、1 は右へしか動かず、0 と 1 の総数は変わりません。したがって、どの接頭辞でも 1 の個数が増えることはありません。",
+      "逆に、ターゲットの 0 の総数が元の文字列と等しく、ターゲットの各接頭辞の 1 の個数が、同じ長さの元の接頭辞以下であれば、到達可能です(0 を1つずつ左へ動かします)。各 ? をどうするかについては、総数が決まっているので、必要な 0 を最も前方の ? の位置に置くと、どの接頭辞でも 1 の個数が最小になります。",
+      "元の文字列の 0 の総数と 1 の接頭辞の個数を前計算します。各ターゲットについて、need = 元の 0 の個数 − ターゲットの固定された 0 の個数 とし、need<0 または need が ? の個数を超えるなら NO と答えます。そうでなければ左から走査し、need>0 の間は ? を 0 として(need を減らしながら)、それ以降は 1 として扱い、1 を数えます。個数が元の接頭辞を超えた時点で NO とし、走査を最後まで終えれば YES とします。"
+    ],
+    "ko": [
+      "선택한 문자들을 오름차순으로 정렬하면 0은 왼쪽으로, 1은 오른쪽으로만 움직일 수 있고 0과 1의 총개수는 변하지 않습니다. 따라서 어떤 접두사의 1의 개수도 늘어나지 않습니다.",
+      "반대로 목표 문자열의 0의 총개수가 원래와 같고 목표의 각 접두사에서 1의 개수가 같은 길이의 원래 접두사 이하이면 도달할 수 있습니다(0을 하나씩 왼쪽으로 옮기면 됩니다). 각 ?를 무엇으로 할지는, 총개수가 고정되어 있을 때 필요한 0을 가장 앞쪽의 ? 위치에 놓아야 모든 접두사의 1이 가장 적어집니다.",
+      "원래 문자열의 0의 총개수와 1의 접두사 개수를 미리 계산합니다. 각 목표 문자열에 대해 need = 원래 0의 개수 − 목표의 고정된 0의 개수를 구하고, need<0이거나 need가 ?의 개수를 넘으면 NO입니다. 그렇지 않으면 왼쪽부터 훑으면서 need>0인 동안은 ?를 0으로 보고(need를 감소) 이후에는 1로 보며 1의 개수를 셉니다. 개수가 원래 접두사를 넘는 즉시 NO이고, 끝까지 훑으면 YES입니다."
+    ],
+    "vi": [
+      "Sắp xếp tăng dần các ký tự đã chọn chỉ có thể đẩy số 0 sang trái và số 1 sang phải, còn tổng số chữ số 0 và 1 không đổi. Vì vậy số chữ số 1 trong một tiền tố bất kỳ không bao giờ tăng.",
+      "Ngược lại, miễn là xâu đích có cùng tổng số chữ số 0 với xâu ban đầu và mỗi tiền tố của xâu đích có không quá số chữ số 1 của tiền tố cùng độ dài trong xâu ban đầu, thì nó đạt được (dịch từng số 0 sang trái). Còn mỗi ? nên là gì: khi các tổng đã cố định, đặt các số 0 cần thiết vào những vị trí ? sớm nhất sẽ làm mọi tiền tố có ít chữ số 1 nhất có thể.",
+      "Tính trước tổng số chữ số 0 của xâu ban đầu và số chữ số 1 theo tiền tố. Với mỗi xâu đích: need = số 0 của xâu ban đầu − số 0 cố định trong xâu đích; nếu need<0 hoặc need vượt quá số ?, trả lời NO. Ngược lại quét từ trái sang, coi ? là 0 khi need>0 (giảm need) và là 1 sau đó, đồng thời đếm số chữ số 1; ngay khi số đếm vượt tiền tố của xâu ban đầu thì trả lời NO, và nếu quét xong thì trả lời YES."
     ]
   },
   "explanationEn": "## Approach\n\nThe total number of 0s in the target must equal that of the original string. First subtract the fixed 0s, place the required 0s at the earliest ? positions, and fill the remaining ? with 1; if there are too few or too many, answer NO. Then check that every prefix of the target has no more 1s than the matching prefix of the original; answer YES only if all of them hold.\n\n## Proof of correctness\n\nSorting a subsequence in ascending order can only move 1s right and 0s left, so it keeps the totals and never increases the number of 1s in any prefix. Conversely, the prefix condition is equivalent to every 0 of the target being no later than the corresponding 0 of the original, which can be achieved by moving the 0s left one at a time with adjacent 10→01 sorts. With the totals fixed, putting 0s in the earliest ? positions minimizes the number of 1s in every prefix at once; if that still exceeds a bound, no other replacement can work, and if it satisfies them all, it is a witness of reachability.\n\n## Complexity\n\nTime O(L+Lq), space O(L+q) excluding the input characters."

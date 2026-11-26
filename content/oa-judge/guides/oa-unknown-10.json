@@ -13,6 +13,21 @@
       "The task asks for the maximum absolute difference between adjacent items of the original array. \"Adjacent\" means adjacent in input order, so you must not sort first.",
       "A single left-to-right scan is enough: compute the absolute difference of each adjacent pair and keep the maximum. With a single element there is no adjacent pair, so the answer is 0.",
       "Initialize the answer to 0 and remember the previous element prev. For each following element cur, update the answer with |cur - prev| and then set prev = cur. Output the answer after the scan."
+    ],
+    "ja": [
+      "求めるのは、元の配列で隣り合う要素の絶対差の最大値です。「隣り合う」とは入力順で隣り合うことなので、先にソートしてはいけません。",
+      "左から右への 1 回の走査で足ります。隣り合う各ペアの絶対差を計算し、最大値を保持します。要素が 1 個のときは隣り合うペアがないので、答えは 0 です。",
+      "答えを 0 で初期化し、直前の要素 prev を覚えておきます。続く各要素 cur について、答えを |cur - prev| で更新し、prev = cur とします。走査の後に答えを出力します。"
+    ],
+    "ko": [
+      "이 문제는 원래 배열에서 인접한 항목 간 절댓값 차이의 최댓값을 구합니다. “인접”은 입력 순서에서 인접하다는 뜻이므로 먼저 정렬해서는 안 됩니다.",
+      "왼쪽에서 오른쪽으로 한 번 스캔하면 충분합니다. 인접한 쌍마다 절댓값 차이를 계산하여 최댓값을 유지하세요. 원소가 하나뿐이면 인접한 쌍이 없으므로 답은 0입니다.",
+      "답을 0으로 초기화하고 이전 원소 prev를 기억합니다. 뒤따르는 각 원소 cur에 대해 답을 |cur - prev|로 갱신하고 prev = cur로 둡니다. 스캔이 끝나면 답을 출력합니다."
+    ],
+    "vi": [
+      "Bài toán yêu cầu hiệu tuyệt đối lớn nhất giữa các phần tử liền kề của mảng gốc. \"Liền kề\" nghĩa là liền kề theo thứ tự đầu vào, nên bạn không được sắp xếp trước.",
+      "Một lần duyệt từ trái sang phải là đủ: tính hiệu tuyệt đối của mỗi cặp liền kề và giữ giá trị lớn nhất. Với một phần tử không có cặp liền kề nào, nên đáp án là 0.",
+      "Khởi tạo đáp án bằng 0 và nhớ phần tử trước đó prev. Với mỗi phần tử cur tiếp theo, cập nhật đáp án với |cur - prev| rồi đặt prev = cur. In đáp án sau khi duyệt xong."
     ]
   },
   "explanationEn": "## Approach\n\nScan the array once, computing the absolute difference of each pair of adjacent elements and maintaining the maximum. Sorting is not allowed, because sorting would change the adjacency defined by the statement.\n\n## Proof of Correctness\n\nWhen the scan reaches position i, the current difference is exactly the difference between items i-1 and i of the original array. The maintained maximum is therefore exactly the maximum difference over all adjacent positions, which is what the problem asks for.\n\n## Complexity\n\nTime O(n), extra space O(1)."

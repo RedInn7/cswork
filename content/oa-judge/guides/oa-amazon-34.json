@@ -13,6 +13,21 @@
       "As long as a digit has some smaller digit to its right, leaving it in place blocks that smaller digit, so the final string could not be ascending. A moved digit can be inserted anywhere, but it becomes min(d+1,9).",
       "Moving each such digit exactly once (incrementing by 1 only) is best. Looking from right to left, the current digit must move if it is greater than the minimum of all digits to its right; otherwise it stays, and the digits that stay are naturally non-decreasing.",
       "Scan from right to left, keeping minimum, the smallest digit to the right (starting at 10): if the current value is greater than minimum, count min(value+1, 9); otherwise count the value itself and update minimum. Finally print each digit from 0 to 9 as many times as it was counted."
+    ],
+    "ja": [
+      "ある数字の右により小さい数字がある限り、それをその場に残すとその小さい数字をふさぐので、最終的な文字列が昇順にならなくなります。移動した数字は任意の位置に挿入できますが、min(d+1,9) になります。",
+      "そのような数字をちょうど 1 回だけ移動する（1 だけ増やす）のが最善です。右から左へ見て、現在の数字は、右にあるすべての数字の最小値より大きければ移動する必要があり、そうでなければ残ります。残る数字は自然に非減少になります。",
+      "右から左へ走査し、右側の最小の数字を minimum（初期値は 10）として保持します。現在の値が minimum より大きければ min(value+1, 9) を数え、そうでなければその値自体を数えて minimum を更新します。最後に、0 から 9 までの各数字を数えた回数だけ出力します。"
+    ],
+    "ko": [
+      "어떤 숫자의 오른쪽에 더 작은 숫자가 있으면, 그 숫자를 제자리에 두는 것이 더 작은 숫자의 앞을 막으므로 최종 문자열이 오름차순이 될 수 없습니다. 옮겨진 숫자는 어디에든 삽입할 수 있지만 min(d+1,9)가 됩니다.",
+      "이런 숫자를 각각 정확히 한 번만 옮기는 것(1만 증가)이 최선입니다. 오른쪽에서 왼쪽으로 보면, 현재 숫자가 오른쪽 모든 숫자의 최솟값보다 크면 옮겨야 하고, 그렇지 않으면 그대로 두며, 그대로 두는 숫자들은 자연스럽게 비감소 순서가 됩니다.",
+      "오른쪽에서 왼쪽으로 훑으며, 오른쪽의 가장 작은 숫자 minimum(초깃값 10)을 유지합니다. 현재 값이 minimum보다 크면 min(value+1, 9)를 세고, 그렇지 않으면 value 자체를 세고 minimum을 갱신합니다. 마지막에 0부터 9까지 각 숫자를 센 횟수만큼 출력합니다."
+    ],
+    "vi": [
+      "Chừng nào một chữ số còn có chữ số nhỏ hơn ở bên phải, để nó tại chỗ sẽ chặn chữ số nhỏ hơn đó, nên xâu cuối không thể tăng dần. Một chữ số được chuyển có thể chèn vào bất kỳ đâu, nhưng nó trở thành min(d+1,9).",
+      "Chuyển mỗi chữ số như vậy đúng một lần (chỉ tăng 1) là tốt nhất. Nhìn từ phải sang trái, chữ số hiện tại phải được chuyển nếu nó lớn hơn giá trị nhỏ nhất của mọi chữ số bên phải; nếu không thì nó ở lại, và các chữ số ở lại tự nhiên không giảm.",
+      "Duyệt từ phải sang trái, giữ minimum, chữ số nhỏ nhất bên phải (bắt đầu từ 10): nếu giá trị hiện tại lớn hơn minimum, đếm min(value+1, 9); ngược lại đếm chính giá trị và cập nhật minimum. Cuối cùng in mỗi chữ số từ 0 đến 9 đúng bằng số lần nó được đếm."
     ]
   },
   "explanationEn": "## Approach\n\nGo from right to left, maintaining the minimum digit to the right. If the current digit is larger than that minimum, it must be moved and incremented; all others are kept. Finally, sort the transformed digits.\n\n## Proof of correctness\n\nIf a digit has a smaller digit after it, leaving it in place would block the smaller digit from moving forward, so an optimal solution can move it and increment it only once; extra increments never help. The unmoved digits form a non-decreasing sequence and the moved digits can be inserted anywhere, so all digits can be merged in ascending order, giving the smallest result.\n\n## Complexity\n\nTime O(n+10), space O(n)."

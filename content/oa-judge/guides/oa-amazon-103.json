@@ -13,6 +13,21 @@
       "You must apply exactly one multiplication or one division to a non-empty range and then take the maximum subarray sum. The two operations can be handled separately, keeping the better result.",
       "For a fixed operation, view the final subarray as original part + modified part + original part and run a maximum-subarray DP with three states: before the modified range, inside it, and after it, requiring the final subarray to contain at least one modified position.",
       "Make one pass for multiplication and one for division (truncating toward zero): with changed as the modified value of the current element, set after = max(inside + v, after + v), inside = max(changed, before + changed, inside + changed), before = max(v, before + v) (all from the previous step's values), and update the answer with inside and after at every step. Start from a sufficiently small negative value without overflowing; sums can reach about 2 * 10^14."
+    ],
+    "ja": [
+      "空でない範囲にちょうど 1 回の掛け算か 1 回の割り算を適用し、その後で最大部分配列和を取る必要があります。2 つの操作は別々に扱い、良いほうの結果を採用できます。",
+      "操作を固定すると、最終的な部分配列は「元のまま + 変更部分 + 元のまま」と見られます。変更範囲の前、中、後の 3 状態の最大部分配列 DP を行い、最終的な部分配列に変更された位置が少なくとも 1 つ含まれるようにします。",
+      "掛け算のパスと割り算（0 方向への切り捨て）のパスをそれぞれ 1 回行います。changed を現在の要素の変更後の値とし、（すべて前のステップの値から）after = max(inside + v, after + v)、inside = max(changed, before + changed, inside + changed)、before = max(v, before + v) と更新し、各ステップで inside と after で答えを更新します。オーバーフローしない十分小さい負の値から始めてください。和は約 2 * 10^14 に達しえます。"
+    ],
+    "ko": [
+      "비어 있지 않은 구간에 정확히 한 번 곱셈 또는 나눗셈을 적용한 뒤 최대 부분 배열 합을 구해야 합니다. 두 연산을 따로 처리하고 더 좋은 결과를 취하면 됩니다.",
+      "연산을 고정하면 최종 부분 배열을 원래 부분 + 수정된 부분 + 원래 부분으로 보고, 수정 구간 이전, 수정 구간 내부, 수정 구간 이후의 세 상태를 가진 최대 부분 배열 DP를 수행하되 최종 부분 배열이 수정된 위치를 하나 이상 포함하도록 요구합니다.",
+      "곱셈에 한 번, 나눗셈(0 방향으로 절단)에 한 번 순회합니다. changed를 현재 원소의 수정된 값이라 하고 (모두 이전 단계의 값으로) after = max(inside + v, after + v), inside = max(changed, before + changed, inside + changed), before = max(v, before + v)로 설정하며, 매 단계에서 inside와 after로 답을 갱신합니다. 오버플로 없이 충분히 작은 음수 값에서 시작하세요. 합은 약 2 * 10^14까지 될 수 있습니다."
+    ],
+    "vi": [
+      "Bạn phải áp dụng đúng một phép nhân hoặc một phép chia cho một đoạn khác rỗng rồi lấy tổng mảng con lớn nhất. Hai thao tác có thể xử lý riêng và giữ kết quả tốt hơn.",
+      "Với một thao tác cố định, hãy xem mảng con cuối cùng là phần gốc + phần đã sửa + phần gốc và chạy DP tổng mảng con lớn nhất với ba trạng thái: trước đoạn bị sửa, bên trong nó và sau nó, yêu cầu mảng con cuối cùng chứa ít nhất một vị trí đã sửa.",
+      "Chạy một lượt cho phép nhân và một lượt cho phép chia (cắt về phía không): với changed là giá trị đã sửa của phần tử hiện tại, đặt after = max(inside + v, after + v), inside = max(changed, before + changed, inside + changed), before = max(v, before + v) (tất cả tính từ giá trị của bước trước), và cập nhật đáp án bằng inside và after ở mỗi bước. Bắt đầu từ một giá trị âm đủ nhỏ nhưng không gây tràn số; các tổng có thể lên tới khoảng 2 * 10^14."
     ]
   },
   "explanationEn": "## Approach\n\nHandle multiplication and division separately, with a three-state contiguous-subarray DP whose states mean: not yet in the modified range, inside the modified range, and already past it. Take the maximum subarray sum that contains at least one modified position.\n\n## Proof of correctness\n\nAny final subarray that intersects the modified range splits into an original part, a modified part and an original part, and the three states enumerate all of these forms. There is also always an optimal solution in which the modification intersects the target subarray: if the target sum is non-negative, multiplying exactly the target range by the factor is no worse; if every non-empty subarray sum is negative, dividing only the largest element is no worse. So better solutions with the operation outside the target are not missed.\n\n## Complexity\n\nTime O(n), O(n) space to store the array, O(1) extra for the DP."

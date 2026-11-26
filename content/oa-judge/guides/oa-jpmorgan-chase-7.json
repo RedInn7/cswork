@@ -13,6 +13,21 @@
       "Threads never expire and there is no time window: whether a request is served depends only on the threads added so far minus the requests already served.",
       "Simulate in order with a count of available threads: a positive event adds threads, and a request consumes one thread if any is available, otherwise it is dropped.",
       "Start with zero available threads and zero drops; for each event, a positive value adds to the available count, and a −1 decrements the available count if it is positive or otherwise increments the drop count; print the drop count."
+    ],
+    "ja": [
+      "スレッドは期限切れにならず、時間のウィンドウもありません。リクエストが処理されるかどうかは、それまでに追加されたスレッドから、すでに処理されたリクエストを引いた数だけで決まります。",
+      "利用可能なスレッド数を持って順にシミュレートします。正のイベントはスレッドを追加し、リクエストは、利用可能なら 1 つ消費し、そうでなければドロップされます。",
+      "利用可能数とドロップ数を 0 から始めます。各イベントについて、正の値なら利用可能数に加え、−1 なら利用可能数が正のときは 1 減らし、そうでなければドロップ数を 1 増やします。最後にドロップ数を出力します。"
+    ],
+    "ko": [
+      "스레드는 만료되지 않으며 시간 윈도도 없습니다. 요청이 처리되는지는 지금까지 추가된 스레드에서 이미 처리된 요청을 뺀 수에만 달려 있습니다.",
+      "사용 가능한 스레드 수로 순서대로 시뮬레이션합니다. 양수 이벤트는 스레드를 추가하고, 요청은 사용 가능한 스레드가 있으면 하나를 소비하며 없으면 버려집니다.",
+      "사용 가능한 스레드 0개, 버려진 요청 0개에서 시작합니다. 각 이벤트에서 양수 값은 사용 가능 수에 더하고, −1은 사용 가능 수가 양수이면 하나 줄이고 아니면 버려진 수를 늘립니다. 버려진 수를 출력합니다."
+    ],
+    "vi": [
+      "Luồng không bao giờ hết hạn và không có cửa sổ thời gian: một yêu cầu có được phục vụ hay không chỉ phụ thuộc vào số luồng đã thêm cho đến lúc đó trừ đi số yêu cầu đã được phục vụ.",
+      "Mô phỏng theo thứ tự với một biến đếm số luồng khả dụng: một sự kiện dương thêm luồng, và một yêu cầu tiêu thụ một luồng nếu còn, ngược lại nó bị bỏ.",
+      "Bắt đầu với không luồng khả dụng và không yêu cầu bị bỏ; với mỗi sự kiện, giá trị dương được cộng vào số khả dụng, còn −1 thì giảm số khả dụng nếu nó dương, ngược lại tăng số yêu cầu bị bỏ; in số yêu cầu bị bỏ."
     ]
   },
   "explanationEn": "## Approach\n\nTrack the number of available threads in order; when a request arrives, decrement it if a thread is available, otherwise count a drop.\n\n## Proof of correctness\n\nAfter processing any prefix, the available count is exactly the threads added minus the successful requests; deciding whether the next request succeeds by whether this count is zero matches the original rule exactly, so by induction the drop count is correct.\n\n## Complexity\n\nO(n) time and O(1) space apart from the input."

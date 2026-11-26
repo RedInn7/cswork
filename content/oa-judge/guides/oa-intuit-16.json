@@ -13,6 +13,21 @@
       "A valid segment cannot contain digits, so no valid substring can cross a digit; the digits cut the string into letter-only pieces.",
       "Inside one letter-only piece, as long as the piece contains at least one uppercase letter, the whole piece is the longest valid substring in it; a piece without uppercase letters contributes nothing.",
       "Append a sentinel digit to the string, scan from left to right and remember where the current piece starts; at every digit, check whether the piece from that start up to just before the digit has an uppercase letter, and if so update the answer with its length, then move the start past the digit; the answer starts at -1 and is printed at the end."
+    ],
+    "ja": [
+      "有効な区間は数字を含めないので、有効な部分文字列が数字をまたぐことはありません。数字が文字列を英字のみの断片に切り分けます。",
+      "英字のみの 1 つの断片の中では、その断片に英大文字が少なくとも 1 つ含まれている限り、断片全体がその中で最長の有効な部分文字列です。英大文字を含まない断片は何も寄与しません。",
+      "文字列の末尾に番兵となる数字を 1 つ付け足し、左から右へ走査して、現在の断片の開始位置を覚えておきます。数字に出会うたびに、その開始位置から数字の直前までの断片に英大文字があるかを調べ、あればその長さで答えを更新し、そのあと開始位置を数字の次に進めます。答えは -1 から始め、最後に出力します。"
+    ],
+    "ko": [
+      "유효한 구간에는 숫자가 있을 수 없으므로 어떤 유효한 부분 문자열도 숫자를 가로지를 수 없습니다. 숫자들이 문자열을 영문자로만 된 조각들로 자릅니다.",
+      "영문자로만 된 한 조각 안에서 그 조각이 대문자를 하나 이상 포함하기만 하면, 조각 전체가 그 안에서 가장 긴 유효한 부분 문자열입니다. 대문자가 없는 조각은 아무것도 기여하지 않습니다.",
+      "문자열 끝에 센티널 숫자를 하나 붙이고 왼쪽에서 오른쪽으로 훑으며 현재 조각의 시작 위치를 기억합니다. 숫자를 만날 때마다 그 시작 위치부터 숫자 직전까지의 조각에 대문자가 있는지 확인하여, 있으면 그 길이로 답을 갱신하고 시작 위치를 숫자 다음으로 옮깁니다. 답은 -1에서 시작하며 마지막에 출력합니다."
+    ],
+    "vi": [
+      "Một đoạn hợp lệ không thể chứa chữ số, nên không xâu con hợp lệ nào có thể băng qua một chữ số; các chữ số cắt xâu thành các mảnh chỉ gồm chữ cái.",
+      "Trong một mảnh chỉ gồm chữ cái, miễn là mảnh đó chứa ít nhất một chữ hoa thì cả mảnh là xâu con hợp lệ dài nhất trong nó; mảnh không có chữ hoa thì không đóng góp gì.",
+      "Thêm một chữ số làm lính canh vào cuối xâu, quét từ trái sang phải và nhớ vị trí bắt đầu của mảnh hiện tại; tại mỗi chữ số, kiểm tra xem mảnh từ vị trí bắt đầu đó đến ngay trước chữ số có chữ hoa không, nếu có thì cập nhật đáp án bằng độ dài của nó, rồi dời vị trí bắt đầu qua chữ số; đáp án khởi đầu là -1 và được in ở cuối."
     ]
   },
   "explanationEn": "## Approach\n\nDigits split the string into letter-only segments; only segments that contain an uppercase letter are valid.\n\n## Proof of correctness\n\nNo valid substring can cross a digit, so it lies entirely within one letter segment separated by digits; it suffices to check whether each segment contains an uppercase letter.\n\n## Complexity\n\nTime O(n), space O(1)."

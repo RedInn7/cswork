@@ -13,6 +13,21 @@
       "Each server needs a fixed number of attacks p = ceil(health/k); it contributes request requests every second until it is shut down, so the total equals the sum over servers of (shutdown time x request), plus the final 1.",
       "Interleaving attacks never helps: scheduling each server's attacks contiguously in completion order makes no server finish later. The problem becomes single-machine weighted completion time: for adjacent servers i and j, doing i first is better exactly when p_i*w_j < p_j*w_i.",
       "For each server compute (p, w = request), sort by p/w ascending using the integer cross-product comparison instead of floating point; then accumulate elapsed += p and answer += elapsed*w starting from answer = 1, using 64-bit integers."
+    ],
+    "ja": [
+      "各サーバーを停止させるのに必要な攻撃回数は p = ceil(health/k) で固定されており、停止するまで毎秒 request 個のリクエストを発生させます。したがって総数は、サーバーごとの（停止時刻 x request）の合計に最後の 1 を加えたものです。",
+      "攻撃を交互に挟んでも得にはなりません。各サーバーの攻撃を完了順に連続して並べても、どのサーバーの完了も遅くなりません。問題は単一マシンでの重み付き完了時間最小化になり、隣り合うサーバー i と j について、i を先にするのが良いのは p_i*w_j < p_j*w_i のときちょうどです。",
+      "各サーバーについて (p, w = request) を計算し、浮動小数点ではなく整数の交差積による比較で p/w の昇順にソートします。その後、answer = 1 から始めて、elapsed += p、answer += elapsed*w と累積します。64 ビット整数を使います。"
+    ],
+    "ko": [
+      "각 서버는 고정된 횟수 p = ceil(health/k)의 공격이 필요하며, 종료될 때까지 매초 request개의 요청을 발생시킵니다. 따라서 총합은 서버별 (종료 시각 x request)의 합에 마지막 요청 1을 더한 값입니다.",
+      "공격을 섞어 쓰는 것은 도움이 되지 않습니다. 각 서버의 공격을 완료 순서대로 연속해서 배치해도 어떤 서버도 더 늦게 끝나지 않습니다. 문제는 단일 기계의 가중 완료 시간 문제가 되며, 인접한 서버 i와 j에서 i를 먼저 처리하는 것이 더 좋은 경우는 p_i*w_j < p_j*w_i일 때 그리고 그때뿐입니다.",
+      "각 서버에 대해 (p, w = request)를 계산하고, 부동소수점 대신 정수 교차곱 비교로 p/w 오름차순 정렬합니다. 이후 answer = 1에서 시작해 elapsed += p, answer += elapsed*w를 누적합니다. 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Mỗi máy chủ cần một số lần tấn công cố định p = ceil(health/k); nó đóng góp request yêu cầu mỗi giây cho đến khi bị tắt, nên tổng bằng tổng trên các máy chủ của (thời điểm bị tắt x request), cộng thêm 1 cuối cùng.",
+      "Xen kẽ các đòn tấn công không bao giờ có lợi: xếp các đòn tấn công của mỗi máy chủ liền nhau theo thứ tự hoàn thành không làm máy chủ nào kết thúc muộn hơn. Bài toán trở thành thời gian hoàn thành có trọng số trên một máy: với hai máy chủ kề nhau i và j, làm i trước tốt hơn đúng khi p_i*w_j < p_j*w_i.",
+      "Với mỗi máy chủ tính (p, w = request), sắp xếp theo p/w tăng dần bằng phép so sánh tích chéo số nguyên thay vì dấu phẩy động; sau đó tích lũy elapsed += p và answer += elapsed*w bắt đầu từ answer = 1, dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nA server needs p = ceil(health/k) attacks and has weight request. Process the servers contiguously in ascending order of p/request, comparing ratios with integer cross products.\n\n## Proof of correctness\n\nAny interleaved attack plan can be rearranged to handle the servers contiguously in their completion order, so that no server finishes later; hence there is an optimal solution without interleaving. For adjacent jobs i and j, the cost saved by putting i before j instead of the reverse is determined by p_i*w_j - p_j*w_i; sorting by this ratio removes every inversion and is therefore optimal. The total number of requests is the sum of completion time x request, plus the final 1.\n\n## Complexity\n\nO(n log n) time and O(n) space."

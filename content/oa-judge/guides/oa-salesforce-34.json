@@ -13,6 +13,21 @@
       "The elements are distinct, so after sorting, a pair with the minimum difference must be adjacent: if another number sat between them, their difference would split into two positive gaps and be strictly larger than one of the adjacent differences.",
       "So sort once, compute the smallest difference among adjacent elements, and collect every adjacent pair that reaches it. Scanning in sorted order automatically puts the smaller value first and orders the pairs by first item and then second item.",
       "Read and sort. In a first pass find best, the minimum adjacent difference (it can reach 2*10^9, so use 64 bits). In a second pass print every adjacent pair with a[i]-a[i-1]=best as \"small large\" on its own line; do not print the count or the difference."
+    ],
+    "ja": [
+      "要素はすべて異なるので、ソート後に差が最小となるペアは必ず隣接しています。間に別の数があれば、その差は 2 つの正の隙間に分かれ、隣接差の一方より真に大きくなるためです。",
+      "したがって 1 回ソートし、隣接要素間の最小差を求め、それに等しい隣接ペアをすべて集めます。ソート順に走査すれば、自動的に小さい値が先になり、ペアも第 1 要素、次に第 2 要素の順に並びます。",
+      "読み込んでソートします。1 回目の走査で隣接差の最小値 best を求めます(最大で 2*10^9 になり得るので 64 ビットを使います)。2 回目の走査で a[i]-a[i-1]=best となる隣接ペアを、「小 大」の形で 1 行ずつ出力します。個数や差は出力しません。"
+    ],
+    "ko": [
+      "원소가 서로 다르므로 정렬한 뒤 차이가 최소인 쌍은 반드시 인접해야 합니다. 둘 사이에 다른 수가 있다면 그 차이는 두 개의 양수 간격으로 쪼개지므로 인접한 차이 중 하나보다 엄격하게 커집니다.",
+      "따라서 한 번 정렬하고, 인접한 원소 사이의 가장 작은 차이를 계산한 뒤, 그 값에 도달하는 모든 인접 쌍을 모읍니다. 정렬된 순서로 스캔하면 작은 값이 먼저 오고 쌍도 첫 항목, 두 번째 항목 순으로 자동으로 정렬됩니다.",
+      "입력을 읽고 정렬합니다. 첫 번째 패스에서 인접 차이의 최솟값 best를 구합니다(최대 2*10^9에 이를 수 있으므로 64비트를 사용). 두 번째 패스에서 a[i]-a[i-1]=best인 모든 인접 쌍을 \"작은 값 큰 값\" 형태로 한 줄씩 출력합니다. 개수나 차이는 출력하지 않습니다."
+    ],
+    "vi": [
+      "Các phần tử đôi một khác nhau, nên sau khi sắp xếp, cặp có hiệu nhỏ nhất phải kề nhau: nếu có số khác nằm giữa, hiệu của chúng bị tách thành hai khoảng dương và sẽ lớn hơn ngặt một trong các hiệu kề nhau.",
+      "Vậy chỉ cần sắp xếp một lần, tính hiệu nhỏ nhất giữa các phần tử kề nhau, và thu thập mọi cặp kề nhau đạt giá trị đó. Quét theo thứ tự đã sắp xếp tự động đặt giá trị nhỏ hơn lên trước và sắp xếp các cặp theo phần tử đầu rồi phần tử thứ hai.",
+      "Đọc và sắp xếp. Ở lượt đầu tìm best, hiệu kề nhau nhỏ nhất (có thể lên tới 2*10^9, nên dùng 64 bit). Ở lượt thứ hai in mọi cặp kề nhau có a[i]-a[i-1]=best dưới dạng \"nhỏ lớn\" trên một dòng riêng; không in số lượng hay giá trị hiệu."
     ]
   },
   "explanationEn": "## Approach\n\nAfter sorting, find the minimum difference between adjacent elements, then output in order every adjacent pair that achieves it.\n\n## Proof of correctness\n\nIf there are other numbers between the two values of a pair, their difference is split by two positive gaps, so it is strictly larger than at least one adjacent difference; hence the minimum difference can only come from adjacent elements. Scanning in sorted order naturally satisfies all the ordering requirements of the result.\n\n## Complexity\n\nTime O(n log n), space O(n+output); the worst-case output is less than 2400000 bytes."

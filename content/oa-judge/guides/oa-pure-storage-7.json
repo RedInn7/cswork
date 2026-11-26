@@ -13,6 +13,21 @@
       "Every palindromic substring has a unique center: a character for odd length, or the gap between two characters for even length. So if you know how far each center can expand, you can count the palindromes around it directly.",
       "If the longest palindrome around a center has radius k, there are exactly k palindromes with that center (radii 1..k). Expanding every center by brute force is O(n^2) in the worst case; Manacher's algorithm reuses the mirror position inside the rightmost known palindrome to bring the total down to O(n).",
       "Build an odd-center array d1 and an even-center array d2. Keep the palindrome [l, r] that reaches furthest right; when i lies inside it, start from the smaller of the mirror position's radius and r - i + 1, then keep expanding, and update [l, r] when you pass r. The answer is the sum of all d1[i] and d2[i], which can reach about 2 * 10^10, so use 64-bit integers."
+    ],
+    "ja": [
+      "回文である部分文字列にはそれぞれ一意な中心があります。長さが奇数なら 1 文字、偶数なら隣り合う 2 文字の間です。したがって各中心がどこまで広げられるかが分かれば、その中心まわりの回文の個数を直接数えられます。",
+      "ある中心まわりで最長の回文の半径が k なら、その中心をもつ回文はちょうど k 個です（半径 1..k）。すべての中心を愚直に広げると最悪 O(n^2) ですが、Manacher 法では、これまでに見つかった最も右まで届く回文の内側で鏡像位置の値を再利用することで、全体を O(n) に抑えられます。",
+      "奇数長の中心用の配列 d1 と偶数長の中心用の配列 d2 を作ります。最も右まで届く回文 [l, r] を保持し、i がその内側にあるときは、鏡像位置の半径と r - i + 1 の小さい方から始めて、さらに広げます。r を超えたら [l, r] を更新します。答えは d1[i] と d2[i] をすべて足した値で、約 2 * 10^10 に達しうるので、64 ビット整数を使ってください。"
+    ],
+    "ko": [
+      "모든 회문 부분 문자열에는 유일한 중심이 있습니다. 길이가 홀수이면 문자 하나, 짝수이면 두 문자 사이의 틈입니다. 따라서 각 중심이 얼마나 넓게 확장되는지 알면 그 중심에서 생기는 회문의 수를 바로 셀 수 있습니다.",
+      "어떤 중심에서 가장 긴 회문의 반지름이 k이면, 그 중심의 회문은 정확히 k개(반지름 1..k)입니다. 모든 중심을 brute force로 확장하면 최악의 경우 O(n^2)이지만, Manacher 알고리즘은 가장 오른쪽까지 알려진 회문 안에서 대칭 위치의 값을 재사용하여 전체를 O(n)으로 줄입니다.",
+      "홀수 중심 배열 d1과 짝수 중심 배열 d2를 만드세요. 오른쪽 끝이 가장 먼 회문 [l, r]을 유지하고, i가 그 안에 있으면 대칭 위치의 반지름과 r - i + 1 중 작은 값에서 시작해 계속 확장하며, r을 넘으면 [l, r]을 갱신합니다. 답은 모든 d1[i]와 d2[i]의 합이며 약 2 * 10^10까지 커질 수 있으므로 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Mỗi xâu con đối xứng có đúng một tâm: một ký tự nếu độ dài lẻ, hoặc khoảng giữa hai ký tự nếu độ dài chẵn. Vì vậy nếu biết mỗi tâm mở rộng được xa đến đâu thì có thể đếm trực tiếp các xâu đối xứng quanh tâm đó.",
+      "Nếu xâu đối xứng dài nhất quanh một tâm có bán kính k thì có đúng k xâu đối xứng với tâm đó (bán kính 1..k). Mở rộng vét cạn từng tâm là O(n^2) trong trường hợp xấu nhất; thuật toán Manacher tận dụng vị trí đối xứng (gương) bên trong xâu đối xứng xa nhất về bên phải đã biết để đưa tổng chi phí xuống O(n).",
+      "Xây mảng tâm lẻ d1 và mảng tâm chẵn d2. Giữ xâu đối xứng [l, r] vươn xa nhất về bên phải; khi i nằm trong nó, bắt đầu từ giá trị nhỏ hơn giữa bán kính tại vị trí gương và r - i + 1, rồi tiếp tục mở rộng, và cập nhật [l, r] khi vượt qua r. Đáp án là tổng của mọi d1[i] và d2[i], có thể lên tới khoảng 2 * 10^10, nên hãy dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nUse Manacher's algorithm to compute, for every center, the longest odd and even palindrome radius. Each center's radius is the number of palindromic substrings around that center; add them all up.\n\n## Correctness\n\nFor each odd center, radius k represents the k palindromes of lengths 1 through 2k-1; likewise an even center corresponds to the k palindromes of lengths 2 through 2k. Manacher's expansion and mirror reuse only change how efficiently the radii are found, without missing or repeating a center, so every position pair is counted exactly once.\n\n## Complexity\n\nTime O(n), space O(n)."

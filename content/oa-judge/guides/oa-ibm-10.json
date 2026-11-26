@@ -13,6 +13,21 @@
       "Only the top-level keys need comparing: a key present on one side only is always a difference, and a key on both sides differs when the values are not structurally equal.",
       "Structural equality is recursive: the types must match (a bool is not a number, null is not a missing key); objects compare their key sets and each key's value, regardless of key order; arrays compare element by element; numbers compare by exact decimal value, so 1e-6 equals 0.000001 and −0 equals 0.",
       "Parse the two JSON lines (handle \\uXXXX escapes and surrogate pairs in strings), and normalise every number into an exact form: sign, significant digits without leading or trailing zeros, and an exponent. Collect the differing keys, sort them by Unicode code point (UTF-8 byte order is code point order; Java's String comparison is UTF-16 order, so compare code points yourself), and print them as a JSON array of strings."
+    ],
+    "ja": [
+      "比較が必要なのはトップレベルのキーだけです。片側にしかないキーは常に違いで、両側にあるキーは、値が構造的に等しくなければ違いです。",
+      "構造的な等価性は再帰的です。型が一致しなければならず（bool は数値ではなく、null はキーの欠落ではありません）、オブジェクトはキーの順序に関わらずキー集合と各キーの値を比較し、配列は要素ごとに比較し、数値は厳密な 10 進数の値で比較するので、1e-6 は 0.000001 と等しく、−0 は 0 と等しくなります。",
+      "2 行の JSON を解析し（文字列中の \\uXXXX エスケープとサロゲートペアを扱います）、すべての数値を厳密な形に正規化します。符号、先頭と末尾のゼロのない有効数字、指数です。異なるキーを集め、Unicode コードポイント順にソートし（UTF-8 のバイト順はコードポイント順です。Java の String の比較は UTF-16 順なので、自分でコードポイントを比較してください）、文字列の JSON 配列として出力します。"
+    ],
+    "ko": [
+      "최상위 키만 비교하면 됩니다. 한쪽에만 있는 키는 항상 차이이고, 양쪽에 있는 키는 값이 구조적으로 같지 않으면 차이입니다.",
+      "구조적 동등성은 재귀적입니다. 타입이 같아야 하고(bool은 숫자가 아니고 null은 존재하지 않는 키가 아닙니다), 객체는 키의 순서와 무관하게 키 집합과 각 키의 값을 비교하며, 배열은 원소를 하나씩 비교하고, 숫자는 정확한 십진 값으로 비교하므로 1e-6은 0.000001과 같고 −0은 0과 같습니다.",
+      "두 JSON 줄을 파싱하고(문자열의 \\uXXXX 이스케이프와 서로게이트 쌍을 처리), 모든 숫자를 정확한 형태, 즉 부호, 앞뒤 0이 없는 유효 숫자, 지수로 정규화합니다. 다른 키를 모아 유니코드 코드 포인트 순으로 정렬하고(UTF-8 바이트 순서가 코드 포인트 순서이며, Java의 String 비교는 UTF-16 순서이므로 코드 포인트를 직접 비교해야 합니다) 문자열의 JSON 배열로 출력합니다."
+    ],
+    "vi": [
+      "Chỉ cần so sánh các khóa cấp cao nhất: một khóa chỉ có ở một bên luôn là một khác biệt, và một khóa có ở cả hai bên khác nhau khi các giá trị không bằng nhau về cấu trúc.",
+      "Bằng nhau về cấu trúc là đệ quy: các kiểu phải khớp (bool không phải số, null không phải khóa bị thiếu); các đối tượng so sánh tập khóa và giá trị của từng khóa, bất kể thứ tự khóa; các mảng so sánh từng phần tử một; các số so sánh theo giá trị thập phân chính xác, nên 1e-6 bằng 0.000001 và −0 bằng 0.",
+      "Phân tích hai dòng JSON (xử lý các escape \\uXXXX và cặp surrogate trong xâu), và chuẩn hóa mỗi số về dạng chính xác: dấu, các chữ số có nghĩa không có số 0 ở đầu hoặc cuối, và một số mũ. Gom các khóa khác nhau, sắp xếp chúng theo code point Unicode (thứ tự byte UTF-8 chính là thứ tự code point; so sánh String của Java theo thứ tự UTF-16, nên hãy tự so sánh các code point), và in chúng thành một mảng JSON các xâu."
     ]
   },
   "explanationEn": "## Idea\n\nParse numbers as exact Decimals and compare the union of the keys one by one; recurse while preserving types, array order and object key sets, and finally sort the differing keys.\n\n## Proof of correctness\n\nThe recursion decides leaves by value and type, arrays over all corresponding indices, and objects over all keys, so the structural equality test is exact. Each key in the top-level union is added if and only if it is missing on one side or its values differ, and sorting gives the specified unique order.\n\n## Complexity\n\nO(input length + K log K·maximum key length) time, O(input length) space."

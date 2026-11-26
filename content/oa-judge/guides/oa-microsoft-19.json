@@ -13,6 +13,21 @@
       "A board covers a contiguous stretch of the axis, so after sorting the holes, the two boards cover a prefix and a suffix of the sorted list.",
       "Enumerate the split between prefix and suffix: the needed length is the larger of the two spans (largest minus smallest coordinate), and at least 1; take the minimum over all splits.",
       "Sort the coordinates and start with the answer max(1, largest minus smallest), as if one board covered everything. For each i from 1 to N−1, the left group is the first i holes and the right group the rest; the length is max(1, left span, right span). Print the minimum."
+    ],
+    "ja": [
+      "板は座標軸上の連続した区間を覆うので、穴をソートすると、2枚の板が覆うのはソートしたリストの接頭辞と接尾辞です。",
+      "接頭辞と接尾辞の分割点を列挙します。必要な長さは2つの幅（最大座標 − 最小座標）のうち大きいほう、かつ少なくとも 1 です。すべての分割にわたる最小値を取ります。",
+      "座標をソートし、答えの初期値を max(1, 最大 − 最小) とします（1枚の板ですべてを覆う場合）。i を 1 から N−1 まで動かし、左グループを最初の i 個の穴、右グループを残りとします。長さは max(1, 左の幅, 右の幅) です。最小値を出力します。"
+    ],
+    "ko": [
+      "판자 하나는 축 위의 연속한 구간을 덮으므로, 구멍을 정렬하면 두 판자는 정렬된 목록의 접두사와 접미사를 덮습니다.",
+      "접두사와 접미사를 나누는 위치를 열거합니다. 필요한 길이는 두 폭(최대 좌표 − 최소 좌표) 중 큰 값이며 최소 1입니다. 모든 분할에 대해 최솟값을 취합니다.",
+      "좌표를 정렬하고, 판자 하나가 전부 덮는 경우처럼 답을 max(1, 최댓값 − 최솟값)으로 시작합니다. i를 1부터 N−1까지 열거하며 왼쪽 그룹은 앞의 i개 구멍, 오른쪽 그룹은 나머지로 하고, 길이는 max(1, 왼쪽 폭, 오른쪽 폭)입니다. 최솟값을 출력합니다."
+    ],
+    "vi": [
+      "Một tấm ván che một đoạn liên tục của trục, nên sau khi sắp xếp các lỗ, hai tấm ván che một tiền tố và một hậu tố của danh sách đã sắp xếp.",
+      "Duyệt vị trí chia giữa tiền tố và hậu tố: độ dài cần thiết là giá trị lớn hơn trong hai khoảng trải (tọa độ lớn nhất trừ nhỏ nhất), và ít nhất bằng 1; lấy giá trị nhỏ nhất trên mọi cách chia.",
+      "Sắp xếp các tọa độ và bắt đầu với đáp án max(1, lớn nhất trừ nhỏ nhất), như thể một tấm ván che tất cả. Với mỗi i từ 1 đến N−1, nhóm trái là i lỗ đầu và nhóm phải là phần còn lại; độ dài là max(1, khoảng trải trái, khoảng trải phải). In giá trị nhỏ nhất."
     ]
   },
   "explanationEn": "## Approach\n\nAfter sorting, enumerate the boundary between the left and right groups covered by the two boards; the length must be at least the larger span of the two groups, and at least 1.\n\n## Proof of correctness\n\nA board covers a contiguous range of coordinates, so any feasible solution can be split in sorted order into two segments, each covered by one board. With the boundary fixed, the span between each segment's ends is exactly the minimum length needed; enumerating all boundaries gives the global optimum.\n\n## Complexity\n\nTime O(N log N), space O(N)."

@@ -13,6 +13,21 @@
       "You may order the meetings freely, and the goal is to keep the running index strictly above 0 after every step while attending as many as possible. Intuitively you should attend the most effective meetings first to build the index up.",
       "Sort effectiveness from largest to smallest and add them in that order. If adding a value makes the running index no longer positive, every remaining value is no larger, so continuing can only be worse and you can stop.",
       "Sort the array in descending order; keep a running sum total (it can reach 10^14, use 64 bits) and a count; for each value v in turn: if total + v <= 0 stop, otherwise add v to total and increment count; print count."
+    ],
+    "ja": [
+      "会議の順序は自由で、目標は、各ステップの後で累積指数を真に 0 より大きく保ちながら、できるだけ多く参加することです。直感的には、最も効果の高い会議から先に参加して指数を積み上げるのがよいです。",
+      "effectiveness を大きい順にソートして、その順に加えます。値を加えた結果、累積指数が正でなくなったなら、残りの値はどれもそれ以下なので、続けても悪くなるだけで、そこで止めてかまいません。",
+      "配列を降順にソートします。累積和 total（10^14 に達しうるので 64 ビットを使います）と個数 count を保持します。各値 v を順に見て、total + v <= 0 なら止め、そうでなければ total に v を加えて count を増やします。最後に count を出力します。"
+    ],
+    "ko": [
+      "회의의 순서는 자유롭게 정할 수 있고, 목표는 매 단계 후 누적 지수를 엄격하게 0보다 크게 유지하면서 가능한 한 많이 참석하는 것입니다. 직관적으로는 지수를 쌓기 위해 가장 효과적인 회의부터 참석해야 합니다.",
+      "effectiveness를 큰 값부터 작은 값 순으로 정렬하고 그 순서대로 더합니다. 어떤 값을 더해서 누적 지수가 양수가 아니게 되면, 남은 값은 모두 그보다 크지 않으므로 계속해 봐야 나빠지기만 하여 멈출 수 있습니다.",
+      "배열을 내림차순으로 정렬합니다. 누적 합 total(10^14에 이를 수 있으므로 64비트 사용)과 개수 count를 유지하고, 각 값 v를 차례로 처리합니다. total + v <= 0이면 멈추고, 아니면 v를 total에 더하고 count를 1 증가시킵니다. 마지막에 count를 출력합니다."
+    ],
+    "vi": [
+      "Bạn có thể sắp xếp các cuộc họp tự do, và mục tiêu là giữ chỉ số đang chạy luôn lớn hơn 0 chặt sau mỗi bước trong khi tham dự càng nhiều càng tốt. Theo trực giác, nên tham dự các cuộc họp hiệu quả nhất trước để xây dựng chỉ số.",
+      "Sắp xếp effectiveness từ lớn đến nhỏ và cộng theo thứ tự đó. Nếu việc cộng một giá trị làm chỉ số đang chạy không còn dương, thì mọi giá trị còn lại đều không lớn hơn, nên tiếp tục chỉ có thể tệ hơn và bạn có thể dừng.",
+      "Sắp xếp mảng giảm dần; giữ tổng đang chạy total (có thể đạt 10^14, dùng 64 bit) và một biến đếm; với mỗi giá trị v lần lượt: nếu total + v <= 0 thì dừng, ngược lại cộng v vào total và tăng biến đếm; in biến đếm."
     ]
   },
   "explanationEn": "## Approach\n\nSort effectiveness from largest to smallest and add meetings one by one; keep going as long as the new running index is still strictly greater than 0, otherwise no later value can rescue that prefix.\n\n## Proof of correctness\n\nFor any feasible arrangement of length k, swap an adjacent smaller value x and larger value y: in the original order x,y the first prefix is lower, and swapping to y,x does not lower either running sum at these two positions. So there is an optimal feasible prefix in non-increasing order. When scanning in descending order, if adding the current value makes the index not greater than 0, all remaining values are not greater than it, and no complete prefix including them can stay positive, so stop. The scanned prefix is feasible and cannot be extended.\n\n## Complexity\n\nO(n log n) time, O(n) space."

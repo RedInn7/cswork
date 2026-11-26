@@ -13,6 +13,21 @@
       "This is weighted interval scheduling: two screenings can both be chosen only if one ends strictly before the other starts; equal endpoints count as a conflict.",
       "Sort by end time and let dp[i] be the best audience using only the first i screenings; each screening is either skipped or appended after all screenings that end strictly before it starts.",
       "Use start+duration as the end time, sort, and keep the array of end times; for screening i, binary search the number c of end times strictly less than its start, set dp[i+1] = max(dp[i], dp[c] + volume), and output dp[n]. End times can reach 2*10^9, so use 64-bit integers."
+    ],
+    "ja": [
+      "これは重み付き区間スケジューリングです。2 つの上映を両方選べるのは、一方が他方の開始より厳密に前に終わるときだけで、端点が等しいのは競合とみなされます。",
+      "終了時刻でソートし、dp[i] を最初の i 本の上映だけを使ったときの最良の観客数とします。各上映は、飛ばすか、開始より厳密に前に終わるすべての上映の後に追加するかのどちらかです。",
+      "start+duration を終了時刻としてソートし、終了時刻の配列を持ちます。上映 i について、終了時刻が開始より厳密に小さいものの個数 c を二分探索で求め、dp[i+1] = max(dp[i], dp[c] + volume) とし、dp[n] を出力します。終了時刻は 2*10^9 に達しうるので、64 ビット整数を使ってください。"
+    ],
+    "ko": [
+      "이것은 가중치가 있는 구간 스케줄링입니다. 두 상영을 함께 고를 수 있는 것은 한쪽이 다른 쪽이 시작하기 전에 엄격하게 끝날 때뿐이며, 끝점이 같으면 충돌로 봅니다.",
+      "종료 시각으로 정렬하고 dp[i]를 앞의 i개 상영만 사용했을 때의 최선의 관객 수라 합니다. 각 상영은 건너뛰거나, 그 시작 전에 엄격하게 끝나는 모든 상영 뒤에 이어 붙입니다.",
+      "start+duration을 종료 시각으로 쓰고 정렬하여 종료 시각 배열을 유지합니다. 상영 i에 대해 종료 시각이 그 시작보다 엄격하게 작은 개수 c를 이분 탐색으로 구하고, dp[i+1] = max(dp[i], dp[c] + volume)으로 두며 dp[n]을 출력합니다. 종료 시각은 2*10^9까지 될 수 있으므로 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Đây là bài toán xếp lịch khoảng có trọng số: hai suất chiếu chỉ có thể cùng được chọn nếu một suất kết thúc trước hẳn khi suất kia bắt đầu; các đầu mút bằng nhau được tính là xung đột.",
+      "Sắp xếp theo thời điểm kết thúc và để dp[i] là lượng khán giả tốt nhất chỉ dùng i suất chiếu đầu tiên; mỗi suất hoặc bị bỏ qua, hoặc được nối vào sau mọi suất kết thúc trước hẳn khi nó bắt đầu.",
+      "Dùng start+duration làm thời điểm kết thúc, sắp xếp, và giữ mảng các thời điểm kết thúc; với suất chiếu i, tìm kiếm nhị phân số c các thời điểm kết thúc nhỏ hơn chặt thời điểm bắt đầu của nó, đặt dp[i+1] = max(dp[i], dp[c] + volume), và in dp[n]. Các thời điểm kết thúc có thể lên tới 2*10^9, nên hãy dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nSort by end time and let dp record the best value of the first several screenings; for each screening, binary search the number of screenings that end strictly before it starts, and compare taking it with skipping it.\n\n## Correctness\n\nAny optimal plan either does not contain the screening that currently ends last, or all of its earlier screenings end strictly before that screening starts. The two cases are covered by the previous dp value and by the compatible prefix plus the current value respectively, so induction gives the global optimum.\n\n## Complexity\n\nTime O(n log n), space O(n)."

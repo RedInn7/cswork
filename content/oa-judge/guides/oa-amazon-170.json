@@ -13,6 +13,21 @@
       "With transport in one direction only, every edge carries a non-negative flow in that direction. The flows on two neighbouring edges differ by the surplus of the container between them, so fixing one edge's flow fixes all the others.",
       "Let P_i be the cumulative surplus of the first i containers over the average. Clockwise, edge i carries P_i plus one common constant c; non-negative flows need c >= -min(P), so the cost is sum(P) - n*min(P). Counterclockwise is symmetric with cost n*max(P) - sum(P). Take the smaller.",
       "Compute avg; walk the containers with prefix += a[i] - avg, add each prefix into total, and track the smallest prefix low and the largest high (both starting at 0); print min(total - n*low, n*high - total). The intermediate values can be huge, so use a wide enough integer type (or unsigned arithmetic) to avoid overflow."
+    ],
+    "ja": [
+      "一方向のみの輸送では、どの辺にもその方向に非負の流量が流れます。隣り合う 2 つの辺の流量は、その間のコンテナの過不足の分だけ異なるので、1 つの辺の流量を決めれば、ほかのすべてが決まります。",
+      "P_i を、最初の i 個のコンテナの平均に対する累積の過不足とします。時計回りでは、辺 i は P_i に共通の定数 c を加えた流量を運びます。流量が非負であるには c >= -min(P) が必要なので、コストは sum(P) - n*min(P) です。反時計回りは対称で、コストは n*max(P) - sum(P) です。小さい方を取ります。",
+      "avg を計算し、コンテナを走査して prefix += a[i] - avg とし、各 prefix を total に加え、最小の prefix の low と最大の high（どちらも 0 から開始）を追跡します。min(total - n*low, n*high - total) を出力します。途中の値は非常に大きくなりうるので、十分な幅の整数型（または符号なし演算）を使ってオーバーフローを避けてください。"
+    ],
+    "ko": [
+      "한 방향으로만 운송하면 모든 간선은 그 방향으로 음이 아닌 흐름을 가집니다. 이웃한 두 간선의 흐름은 그 사이 컨테이너의 초과량만큼 차이가 나므로, 한 간선의 흐름을 정하면 나머지가 모두 정해집니다.",
+      "P_i를 처음 i개 컨테이너의 평균 대비 누적 초과량이라 합시다. 시계 방향에서 간선 i는 P_i에 공통 상수 c를 더한 만큼을 운반합니다. 흐름이 음이 아니려면 c >= -min(P)여야 하므로 비용은 sum(P) - n*min(P)입니다. 반시계 방향은 대칭이며 비용은 n*max(P) - sum(P)입니다. 둘 중 작은 값을 취하세요.",
+      "avg를 계산합니다. 컨테이너를 따라가며 prefix += a[i] - avg를 하고, 각 prefix를 total에 더하면서 가장 작은 prefix low와 가장 큰 high(둘 다 0에서 시작)를 추적합니다. min(total - n*low, n*high - total)을 출력합니다. 중간 값이 매우 커질 수 있으므로 충분히 넓은 정수 타입(또는 부호 없는 연산)을 사용해 오버플로를 피하세요."
+    ],
+    "vi": [
+      "Khi chỉ vận chuyển một chiều, mỗi cạnh mang một luồng không âm theo chiều đó. Luồng trên hai cạnh liền kề chênh nhau bằng phần dư của thùng nằm giữa chúng, nên cố định luồng của một cạnh là cố định luồng của mọi cạnh khác.",
+      "Gọi P_i là phần dư tích lũy của i thùng đầu so với giá trị trung bình. Theo chiều kim đồng hồ, cạnh i mang P_i cộng một hằng số chung c; để luồng không âm cần c >= -min(P), nên chi phí là sum(P) - n*min(P). Ngược chiều kim đồng hồ đối xứng với chi phí n*max(P) - sum(P). Lấy giá trị nhỏ hơn.",
+      "Tính avg; duyệt các thùng với prefix += a[i] - avg, cộng mỗi prefix vào total, và theo dõi prefix nhỏ nhất low và lớn nhất high (cả hai bắt đầu từ 0); in min(total - n*low, n*high - total). Các giá trị trung gian có thể rất lớn, nên dùng kiểu số nguyên đủ rộng (hoặc số học không dấu) để tránh tràn."
     ]
   },
   "explanationEn": "## Approach\n\nCompute each container's prefix surplus P relative to the average. The clockwise cost is sum(P)-n min(P) and the counterclockwise cost is n max(P)-sum(P); take the smaller.\n\n## Proof of correctness\n\nFor clockwise edge flows, the difference between adjacent edge flows equals that container's surplus, so all flows are P plus one common constant. Non-negativity requires the constant to be at least -min(P), and taking this lower bound minimizes the cost. Counterclockwise works the same way, shifting the prefixes down by max(P) so they are non-positive. Take the smaller of the two one-direction plans; the two-direction median may not be used instead.\n\n## Complexity\n\nTime O(n), space O(n) including the input."

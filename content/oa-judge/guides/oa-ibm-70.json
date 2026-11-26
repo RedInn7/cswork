@@ -13,6 +13,21 @@
       "Only the start of each line matters: a line starting with \"# \" is a chapter, one starting with \"## \" is a section, and all other lines are ignored. The numbering depends only on how many chapters have appeared so far and how many sections have appeared in the current chapter.",
       "Scan in order and keep a chapter number and a section number: a chapter increments the chapter number and resets the section number; a section increments the section number. The title text only loses its fixed-length prefix; every other character, including whitespace and any Unicode, is kept as is.",
       "Parse the input JSON array of strings; for a chapter line output \"chapter. \" followed by the original text without its first 2 characters, for a section line output \"chapter.section. \" followed by the text without its first 3 characters; finally print the result as the canonical JSON the statement requires: one space after each comma, non-ASCII characters written directly, and double quotes, backslashes and control characters escaped per JSON (the same as Python's json.dumps with ensure_ascii=False)."
+    ],
+    "ja": [
+      "各行の先頭だけが重要です。\"# \" で始まる行は章、\"## \" で始まる行は節で、それ以外の行は無視します。番号付けは、これまでに現れた章の数と、現在の章で現れた節の数だけで決まります。",
+      "順に走査し、章番号と節番号を保持します。章では章番号を増やして節番号をリセットし、節では節番号を増やします。タイトルの文字列からは固定長の接頭辞だけを取り除き、空白や Unicode を含む他のすべての文字はそのまま残します。",
+      "入力の JSON 文字列配列をパースします。章の行では \"章. \" に、先頭 2 文字を除いた元のテキストを続けて出力し、節の行では \"章.節. \" に、先頭 3 文字を除いたテキストを続けて出力します。最後に、問題文が求める正規形の JSON として結果を出力します。カンマの後ろに空白を1つ付け、非 ASCII 文字はそのまま書き、二重引用符、バックスラッシュ、制御文字は JSON に従ってエスケープします(Python の json.dumps に ensure_ascii=False を指定したものと同じです)。"
+    ],
+    "ko": [
+      "각 줄의 시작 부분만 중요합니다. \"# \"로 시작하는 줄은 장, \"## \"로 시작하는 줄은 절이며, 나머지 줄은 모두 무시합니다. 번호는 지금까지 나온 장의 수와 현재 장에서 나온 절의 수에만 달려 있습니다.",
+      "순서대로 훑으면서 장 번호와 절 번호를 유지합니다. 장이면 장 번호를 늘리고 절 번호를 초기화하며, 절이면 절 번호를 늘립니다. 제목 텍스트에서는 고정 길이의 접두사만 제거하고, 공백과 유니코드를 포함한 나머지 모든 문자는 그대로 유지합니다.",
+      "입력 JSON 문자열 배열을 파싱합니다. 장 줄이면 \"chapter. \" 뒤에 앞의 2글자를 제거한 원문을, 절 줄이면 \"chapter.section. \" 뒤에 앞의 3글자를 제거한 원문을 출력합니다. 마지막으로 문제에서 요구하는 정규 JSON으로 결과를 출력합니다. 쉼표 뒤에 공백 하나를 두고, 비ASCII 문자는 그대로 쓰며, 큰따옴표, 백슬래시, 제어 문자는 JSON 규칙에 따라 이스케이프합니다(Python의 json.dumps에 ensure_ascii=False를 준 것과 같습니다)."
+    ],
+    "vi": [
+      "Chỉ phần đầu mỗi dòng quan trọng: dòng bắt đầu bằng \"# \" là chương, dòng bắt đầu bằng \"## \" là mục, mọi dòng khác bị bỏ qua. Việc đánh số chỉ phụ thuộc vào đã xuất hiện bao nhiêu chương và bao nhiêu mục trong chương hiện tại.",
+      "Duyệt theo thứ tự và giữ số chương và số mục: một chương tăng số chương và đặt lại số mục; một mục tăng số mục. Văn bản tiêu đề chỉ mất tiền tố có độ dài cố định; mọi ký tự khác, kể cả khoảng trắng và Unicode bất kỳ, được giữ nguyên.",
+      "Phân tích mảng JSON các xâu ở đầu vào; với dòng chương in \"chapter. \" theo sau là văn bản gốc bỏ 2 ký tự đầu, với dòng mục in \"chapter.section. \" theo sau là văn bản bỏ 3 ký tự đầu; cuối cùng in kết quả dưới dạng JSON chuẩn tắc mà đề yêu cầu: một dấu cách sau mỗi dấu phẩy, ký tự non-ASCII viết trực tiếp, và dấu nháy kép, dấu gạch chéo ngược cùng ký tự điều khiển được escape theo JSON (giống json.dumps của Python với ensure_ascii=False)."
     ]
   },
   "explanationEn": "## Approach\n\nScan in order, maintaining the chapter number and the current section number. On a chapter, increment the chapter number and reset the section number to zero; on a section, increment the section number. Join the number, one separating space, and the original title with its marker removed.\n\n## Proof of correctness\n\nAt any position the chapter number equals the number of chapter titles so far, and the section number equals the number of section titles since the most recent chapter; the corresponding incremental updates preserve these two invariants, so the numbering is correct. Slicing removes only the fixed-length marker and does not change any character of the title, and the output in scan order is exactly the outline order of the original text.\n\n## Complexity\n\nTime O(total number of input characters), space O(total number of characters in the outline)."

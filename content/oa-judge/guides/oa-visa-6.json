@@ -13,6 +13,21 @@
       "Exactly one operation is required, so there are only 2n candidates: reverse the prefix of length k or the suffix of length k (k = 1..n); the original string itself is not a candidate.",
       "The site limits the length to 2000, so building all 2n results and comparing them lexicographically, O(n²) in total, is easily fast enough.",
       "For k = 1..n build reverse(w[0..k)) + w[k..) and w[0..n−k) + reverse(w[n−k..)), compare each with the best so far and keep the smaller; print the best at the end."
+    ],
+    "ja": [
+      "操作はちょうど 1 回必要なので、候補は 2n 通りしかありません。長さ k の接頭辞または接尾辞を反転します（k = 1..n）。元の文字列そのものは候補ではありません。",
+      "このサイトでは長さが 2000 に制限されているので、2n 個の結果をすべて作って辞書順に比較しても、全体で O(n²) であり、十分高速です。",
+      "k = 1..n について reverse(w[0..k)) + w[k..) と w[0..n−k) + reverse(w[n−k..)) を作り、それまでの最良のものと比較して小さい方を残します。最後に最良のものを出力します。"
+    ],
+    "ko": [
+      "연산을 정확히 한 번 수행해야 하므로 후보는 2n개뿐입니다. 길이 k의 접두사를 뒤집거나 길이 k의 접미사를 뒤집는 것입니다(k = 1..n). 원래 문자열 자체는 후보가 아닙니다.",
+      "사이트가 길이를 2000으로 제한하므로, 2n개의 결과를 모두 만들어 사전식으로 비교하는 O(n²)의 전체 비용이면 충분히 빠릅니다.",
+      "k = 1..n에 대해 reverse(w[0..k)) + w[k..)와 w[0..n−k) + reverse(w[n−k..))를 만들고, 각각 지금까지의 최선과 비교해 작은 쪽을 유지합니다. 마지막에 최선의 결과를 출력합니다."
+    ],
+    "vi": [
+      "Phải thực hiện đúng một thao tác, nên chỉ có 2n ứng viên: đảo ngược tiền tố độ dài k hoặc hậu tố độ dài k (k = 1..n); bản thân xâu gốc không phải là ứng viên.",
+      "Trang này giới hạn độ dài ở 2000, nên xây tất cả 2n kết quả và so sánh theo thứ tự từ điển, tổng cộng O(n²), là quá đủ nhanh.",
+      "Với k = 1..n, xây reverse(w[0..k)) + w[k..) và w[0..n−k) + reverse(w[n−k..)), so sánh từng cái với kết quả tốt nhất hiện có và giữ cái nhỏ hơn; in kết quả tốt nhất ở cuối."
     ]
   },
   "explanationEn": "## Approach\n\nEnumerate k = 1..n, build the two results of reversing the prefix and reversing the suffix, and take the minimum.\n\n## Correctness\n\nThere are exactly 2n operations allowed by the definition; the loop builds and compares each of them, so the smallest is the answer. The original string is not added as an extra candidate, which matches the requirement of exactly one operation.\n\n## Complexity\n\nTime O(n²), candidate space O(n²); the site adds n ≤ 2000."

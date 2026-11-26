@@ -13,6 +13,21 @@
       "A newly added element v must follow some chosen element u, and the condition u XOR v = k forces u = v XOR k. So the predecessor depends only on the value, not on the position.",
       "Let dp[value] be the length of the longest valid subsequence seen so far that ends with that value. Scanning left to right, a new value v can extend a subsequence ending with value v XOR k, or start on its own.",
       "Use an array indexed by value (values are at most 10^6, so XOR results are below 2^21) or a hash map; for each v: set dp[v] = max(dp[v], dp[v XOR k] + 1) (missing entries count as 0) and update the answer with dp[v]; the answer is at least 1; print it."
+    ],
+    "ja": [
+      "新しく追加される要素 v は、選ばれた何らかの要素 u の後ろに続かなければならず、条件 u XOR v = k から u = v XOR k が決まります。つまり直前の要素は、位置ではなく値だけに依存します。",
+      "dp[value] を、その値で終わる、これまでに見た有効な最長の部分列の長さとします。左から右へ走査すると、新しい値 v は、値 v XOR k で終わる部分列を伸ばすか、単独で始まることができます。",
+      "値を添字とする配列（値は最大 10^6 なので、XOR の結果は 2^21 未満）か、ハッシュマップを使います。各 v について dp[v] = max(dp[v], dp[v XOR k] + 1) とし（存在しない要素は 0 とみなします）、dp[v] で答えを更新します。答えは少なくとも 1 で、それを出力します。"
+    ],
+    "ko": [
+      "새로 추가되는 원소 v는 이미 선택한 어떤 원소 u 뒤에 와야 하며, 조건 u XOR v = k에 의해 u = v XOR k로 정해집니다. 따라서 선행 원소는 위치가 아니라 값에만 의존합니다.",
+      "dp[value]를 해당 값으로 끝나는, 지금까지 본 가장 긴 유효한 부분 수열의 길이라고 합시다. 왼쪽에서 오른쪽으로 스캔할 때 새 값 v는 값 v XOR k로 끝나는 부분 수열을 이어 가거나 혼자 시작할 수 있습니다.",
+      "값으로 인덱싱하는 배열(값이 최대 10^6이므로 XOR 결과는 2^21 미만)이나 해시 맵을 사용합니다. 각 v에 대해 dp[v] = max(dp[v], dp[v XOR k] + 1)로 설정하고(없는 항목은 0으로 간주) dp[v]로 답을 갱신합니다. 답은 최소 1이며 이를 출력합니다."
+    ],
+    "vi": [
+      "Một phần tử mới v được thêm vào phải đứng sau một phần tử đã chọn u nào đó, và điều kiện u XOR v = k buộc u = v XOR k. Vì vậy phần tử đứng trước chỉ phụ thuộc vào giá trị, không phụ thuộc vị trí.",
+      "Gọi dp[value] là độ dài của dãy con hợp lệ dài nhất đã thấy cho đến nay kết thúc bằng giá trị đó. Quét từ trái sang phải, một giá trị mới v có thể nối dài một dãy con kết thúc bằng giá trị v XOR k, hoặc tự bắt đầu một dãy mới.",
+      "Dùng một mảng đánh chỉ số theo giá trị (các giá trị tối đa 10^6, nên kết quả XOR nhỏ hơn 2^21) hoặc một hash map; với mỗi v: đặt dp[v] = max(dp[v], dp[v XOR k] + 1) (các ô thiếu coi là 0) và cập nhật đáp án bằng dp[v]; đáp án ít nhất là 1; in nó."
     ]
   },
   "explanationEn": "## Approach\n\nMaintain dp[v]: the longest valid subsequence ending with value v within the current prefix. A new value v can follow the value v XOR k.\n\n## Proof of correctness\n\nIf the new element v follows a previous element u, validity requires u XOR v=k, which uniquely gives u=v XOR k. The transition takes that state plus one and keeps any existing best state ending with v. Scanning the elements one by one guarantees that only earlier elements are used, which matches the order of a subsequence.\n\n## Complexity\n\nO(n) time, O(distinct(arr)) space."

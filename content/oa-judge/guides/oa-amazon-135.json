@@ -13,6 +13,21 @@
       "A larger capacity is always easier to fit, so feasibility is monotone in the capacity and you can binary search it; with at most 15 games, checking whether everything fits into at most N disks of a given capacity can be done with a bitmask DP over subsets.",
       "For each subset of games already packed, remember only the fewest disks used and, for that number of disks, the smallest load on the last disk; fewer disks is better, and with equal disks a lighter last disk is better. Transition by choosing which game was added last. If the fewest disks is below N, since m >= N you can split non-empty disks to reach exactly N without raising the capacity.",
       "Binary search between max(largest game, ceil(total/N)) and the total. In the check set dp[0] = (1, 0); for each mask try every game i in it, starting from dp[mask without i] = (r, l): if l + g[i] <= capacity you get (r, l + g[i]), otherwise (r + 1, g[i]); keep the lexicographically smallest as dp[mask]; the capacity works when dp[full set] uses at most N disks."
+    ],
+    "ja": [
+      "容量が大きいほど収まりやすいので、実行可能性は容量について単調で、二分探索できます。ゲームは高々 15 個なので、与えられた容量でディスク N 枚以内に収まるかの判定は、部分集合に対するビットマスク DP でできます。",
+      "すでに詰めたゲームの各部分集合について、使ったディスクの最小枚数と、その枚数のときの最後のディスクの最小負荷だけを覚えます。枚数が少ないほど良く、枚数が同じなら最後のディスクが軽いほど良いです。最後に追加したゲームを選んで遷移します。最小枚数が N 未満でも、m >= N なので、空でないディスクを分割して容量を増やさずにちょうど N 枚にできます。",
+      "max(最大のゲーム, ceil(合計/N)) から合計までの範囲で二分探索します。判定では dp[0] = (1, 0) とし、各 mask について、そこに含まれる各ゲーム i を試します。dp[mask without i] = (r, l) から、l + g[i] <= capacity なら (r, l + g[i])、そうでなければ (r + 1, g[i]) を得て、辞書式で最小のものを dp[mask] とします。dp[full set] が高々 N 枚なら、その容量は実行可能です。"
+    ],
+    "ko": [
+      "용량이 클수록 항상 담기 쉬우므로 가능 여부는 용량에 대해 단조이고, 이분 탐색을 할 수 있습니다. 게임이 최대 15개이므로, 주어진 용량에서 모든 게임이 최대 N개의 디스크에 들어가는지는 부분 집합에 대한 비트마스크 DP로 판정할 수 있습니다.",
+      "이미 담은 게임의 각 부분 집합에 대해 사용한 최소 디스크 수와, 그 디스크 수에서의 마지막 디스크의 최소 적재량만 기억합니다. 디스크 수가 적을수록 좋고, 디스크 수가 같다면 마지막 디스크가 가벼울수록 좋습니다. 마지막에 추가한 게임을 고르는 방식으로 전이합니다. 최소 디스크 수가 N보다 작더라도 m >= N이므로 비어 있지 않은 디스크를 쪼개어 용량을 올리지 않고 정확히 N개로 맞출 수 있습니다.",
+      "max(가장 큰 게임, ceil(total/N))과 total 사이에서 이분 탐색합니다. 판정에서는 dp[0] = (1, 0)으로 두고, 각 mask에 대해 그 안의 모든 게임 i를 시도합니다. dp[mask without i] = (r, l)에서 시작해, l + g[i] <= capacity이면 (r, l + g[i])를, 아니면 (r + 1, g[i])를 얻고, 사전순으로 가장 작은 것을 dp[mask]로 유지합니다. dp[full set]이 최대 N개의 디스크를 사용하면 그 용량은 가능합니다."
+    ],
+    "vi": [
+      "Dung lượng càng lớn thì càng dễ xếp vừa, nên tính khả thi đơn điệu theo dung lượng và bạn có thể tìm kiếm nhị phân; với tối đa 15 trò, việc kiểm tra mọi thứ có xếp vừa vào tối đa N đĩa với dung lượng cho trước có thể làm bằng DP bitmask trên các tập con.",
+      "Với mỗi tập con trò chơi đã được xếp, chỉ cần nhớ số đĩa ít nhất đã dùng và, ứng với số đĩa đó, tải nhỏ nhất của đĩa cuối; ít đĩa hơn thì tốt hơn, và khi số đĩa bằng nhau thì đĩa cuối nhẹ hơn tốt hơn. Chuyển trạng thái bằng cách chọn trò nào được thêm vào sau cùng. Nếu số đĩa ít nhất nhỏ hơn N, do m >= N nên bạn có thể tách các đĩa không rỗng để đạt đúng N mà không làm tăng dung lượng.",
+      "Tìm kiếm nhị phân giữa max(trò lớn nhất, ceil(tổng/N)) và tổng. Trong bước kiểm tra, đặt dp[0] = (1, 0); với mỗi mask, thử từng trò i trong đó, xuất phát từ dp[mask bỏ i] = (r, l): nếu l + g[i] <= capacity thì được (r, l + g[i]), nếu không thì (r + 1, g[i]); giữ giá trị nhỏ nhất theo thứ tự từ điển làm dp[mask]; dung lượng dùng được khi dp[tập đầy đủ] dùng tối đa N đĩa."
     ]
   },
   "explanationEn": "## Approach\n\nBinary search the capacity, and use a subset DP to decide whether everything fits into at most N bins. The state stores the minimum number of bins needed to pack the subset, and, for that number of bins, the minimum load of the last bin; enumerate which game is added last.\n\n## Correctness\n\nFor the same chosen set, fewer bins is better, and with the same number of bins a lighter last bin is never worse, so this lexicographically smallest state dominates every other arrangement. Enumerating the last added item builds every packing order, which yields the minimum number of bins. If it is less than N, then because m >= N and every item is independent, non-empty bins can be split until there are exactly N bins without increasing the capacity. Feasibility is monotone in the capacity, so binary search finds the optimum.\n\n## Complexity\n\nTime O(m * 2^m * log S), space O(2^m), where S is the total size."

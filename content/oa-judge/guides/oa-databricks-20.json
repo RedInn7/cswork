@@ -13,6 +13,21 @@
       "Point p is covered by [left, right] exactly when left <= p and right >= p. Checking every lamp for every point costs m * q, which is too slow.",
       "Count from another angle: among the intervals with left <= p, only those with right < p miss p. So coverage = (intervals with left <= p) - (intervals with right < p), and each term depends on just one endpoint.",
       "Sort all left endpoints and all right endpoints separately. For each query, binary search the number of left endpoints <= p (upper bound) and the number of right endpoints < p (lower bound), subtract, and print the results in input order separated by spaces."
+    ],
+    "ja": [
+      "点 p が [left, right] に覆われるのは、left <= p かつ right >= p のときちょうどです。すべての点についてすべてのランプを調べると m * q かかり、遅すぎます。",
+      "別の角度から数えます。left <= p である区間のうち、p を覆わないのは right < p のものだけです。したがって被覆数 = (left <= p の区間数) - (right < p の区間数) で、各項は片方の端点だけに依存します。",
+      "すべての左端と、すべての右端をそれぞれ別々にソートします。各クエリについて、二分探索で p 以下の左端の個数(upper bound)と、p 未満の右端の個数(lower bound)を求めて引き算し、結果を入力順に空白区切りで出力します。"
+    ],
+    "ko": [
+      "지점 p가 [left, right]에 포함되는 것은 left <= p이고 right >= p일 때이며 그때에 한합니다. 모든 지점마다 모든 램프를 검사하면 m * q번이라 너무 느립니다.",
+      "관점을 바꿔 셉니다. left <= p인 구간들 중에서 right < p인 것만 p를 비추지 못합니다. 따라서 조명 수 = (left <= p인 구간 수) - (right < p인 구간 수)이며, 각 항은 끝점 하나에만 의존합니다.",
+      "모든 왼쪽 끝점과 오른쪽 끝점을 각각 정렬합니다. 질의마다 이분 탐색으로 p 이하인 왼쪽 끝점의 수(upper bound)와 p 미만인 오른쪽 끝점의 수(lower bound)를 구해 빼고, 결과를 입력 순서대로 공백으로 구분하여 출력합니다."
+    ],
+    "vi": [
+      "Điểm p được phủ bởi [left, right] đúng khi left <= p và right >= p. Kiểm tra mọi đèn cho mọi điểm tốn m * q, quá chậm.",
+      "Hãy đếm từ góc khác: trong các đoạn có left <= p, chỉ những đoạn có right < p là không chứa p. Vậy độ phủ = (số đoạn có left <= p) - (số đoạn có right < p), và mỗi số hạng chỉ phụ thuộc vào một đầu mút.",
+      "Sắp xếp riêng tất cả các đầu mút trái và tất cả các đầu mút phải. Với mỗi truy vấn, tìm nhị phân số đầu mút trái <= p (upper bound) và số đầu mút phải < p (lower bound), lấy hiệu, rồi in kết quả theo thứ tự nhập, cách nhau bởi dấu cách."
     ]
   },
   "explanationEn": "## Approach\n\nSort all left endpoints and all right endpoints separately. The coverage of point p equals the number of intervals with left<=p minus the number of intervals with right<p.\n\n## Proof of correctness\n\nEach closed interval is counted when its left endpoint is not greater than p; among these, the intervals whose right endpoint is strictly less than p do not cover p and must be subtracted. The remaining intervals satisfy left<=p<=right, so the difference of the two terms is exactly the number of lamps covering p.\n\n## Complexity\n\nO((m+q)log(m+q)) time and O(m+q) space."

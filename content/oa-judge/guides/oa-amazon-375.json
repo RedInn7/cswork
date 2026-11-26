@@ -13,6 +13,21 @@
       "Deletions never change the relative order of the remaining items, so the first two items of a value in the current queue are the two with the smallest original indices; original indices can be used for ordering throughout.",
       "Group by value: each value keeps a min-heap of original indices, and a max-heap holds positive values that may occur at least twice; when popped, skip a value whose group has fewer than two items (lazy deletion).",
       "Each round, take the largest duplicated value p and pop the two smallest indices of its group: delete the first, set the second to p/2 and push it into the group of p/2. Push p back if its group still has at least two items, and push p/2 if it is positive and its group has at least two. Finally print the count and the surviving values in original index order."
+    ],
+    "ja": [
+      "削除しても残りの要素の相対順序は変わらないので、現在のキューでのある値の先頭 2 つは、元の添字が最小の 2 つです。順序づけは常に元の添字で行えます。",
+      "値でグループ化します。各値は元の添字の最小ヒープを持ち、2 回以上現れうる正の値を最大ヒープで管理します。取り出した値のグループが 2 要素未満なら、その値は読み飛ばします (遅延削除)。",
+      "各ラウンドで、重複している最大値 p を取り出し、そのグループから最小の 2 つの添字を pop します。1 つ目を削除し、2 つ目を p/2 にして p/2 のグループへ push します。p のグループにまだ 2 要素以上あれば p を戻し、p/2 が正でグループが 2 要素以上になれば p/2 も push します。最後に、個数と生き残った値を元の添字順に出力します。"
+    ],
+    "ko": [
+      "삭제는 남은 항목의 상대 순서를 바꾸지 않으므로, 현재 큐에서 어떤 값의 처음 두 항목은 원래 인덱스가 가장 작은 두 항목입니다. 순서 비교에는 끝까지 원래 인덱스를 쓸 수 있습니다.",
+      "값별로 묶습니다. 각 값은 원래 인덱스의 최소 힙을 가지고, 최대 힙에는 두 번 이상 나타날 수 있는 양수 값을 담습니다. 꺼냈을 때 그룹의 항목이 둘 미만인 값은 건너뜁니다 (지연 삭제).",
+      "매 라운드 중복된 가장 큰 값 p를 잡고 그 그룹에서 가장 작은 인덱스 둘을 꺼냅니다. 첫 번째는 삭제하고 두 번째는 p/2로 바꿔 p/2의 그룹에 넣습니다. p의 그룹에 항목이 아직 둘 이상 있으면 p를 다시 넣고, p/2가 양수이고 그 그룹에 둘 이상 있으면 p/2를 넣습니다. 마지막으로 개수와 살아남은 값을 원래 인덱스 순서대로 출력합니다."
+    ],
+    "vi": [
+      "Việc xóa không bao giờ thay đổi thứ tự tương đối của các phần tử còn lại, nên hai phần tử đầu tiên của một giá trị trong hàng đợi hiện tại chính là hai phần tử có chỉ số gốc nhỏ nhất; có thể dùng chỉ số gốc để sắp thứ tự xuyên suốt.",
+      "Nhóm theo giá trị: mỗi giá trị giữ một min-heap các chỉ số gốc, và một max-heap chứa các giá trị dương có thể xuất hiện ít nhất hai lần; khi lấy ra, bỏ qua giá trị mà nhóm của nó có ít hơn hai phần tử (xóa lười).",
+      "Mỗi vòng, lấy giá trị trùng lớn nhất p và lấy hai chỉ số nhỏ nhất của nhóm nó: xóa chỉ số thứ nhất, đặt chỉ số thứ hai thành p/2 và đẩy nó vào nhóm của p/2. Đẩy lại p nếu nhóm của nó vẫn còn ít nhất hai phần tử, và đẩy p/2 nếu nó dương và nhóm của nó có ít nhất hai phần tử. Cuối cùng in số lượng và các giá trị còn lại theo thứ tự chỉ số gốc."
     ]
   },
   "explanationEn": "## Approach\n\nFor each value, keep a min-heap of original indices; a max-heap schedules the duplicated positive values. In each round, take the two smallest indices, mark the first one as deleted, push the second one into the group of the halved value, and update the duplicate candidates.\n\n## Proof of correctness\n\nDeletions do not change the relative order of the surviving items, so comparing original indices agrees exactly with the order in the current queue. Each value's heap always holds all surviving items with that value, so taking its two smallest indices follows the rule exactly; the max candidate heap covers all duplicated positive values, and lazily discarding stale records with fewer than two items does not change the choice of the largest valid value. Each step updates exactly according to the original rule, so by induction the whole execution, and the final queue filtered by original index, agree with the process.\n\n## Complexity\n\nAt most n−1 successful operations; O(n log n) time and O(n) space."

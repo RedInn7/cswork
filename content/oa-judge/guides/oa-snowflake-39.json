@@ -13,6 +13,21 @@
       "Only the minimum index gap between a person and a cake matters. When the larger index of a pair is fixed, the best partner is the nearest element of the other kind to its left; any farther candidate of that kind cannot be better.",
       "Scan once from left to right, remembering the latest position of a person and the latest position of a cake. Whenever you meet a non-zero element, compare it only with the latest element of the other kind.",
       "Keep last[1] and last[2], both starting at -1, and best = infinity. For a value v != 0 at index i, if last[3 - v] >= 0, update best with i - last[3 - v], then set last[v] = i. If best is still infinity at the end, one kind is missing, so output -1."
+    ],
+    "ja": [
+      "重要なのは人とケーキの間の最小インデックス差だけです。組のうち大きい方のインデックスを固定すると、最適な相手はその左側にある、もう一方の種類で最も近い要素です。それより遠い候補はより良くなりません。",
+      "左から右へ 1 回走査し、人の直近の位置とケーキの直近の位置を覚えておきます。0 でない要素に出会うたびに、もう一方の種類の直近の要素とだけ比較します。",
+      "last[1] と last[2] をともに -1 で、best を無限大で初期化します。インデックス i の値 v != 0 について、last[3 - v] >= 0 なら best を i - last[3 - v] で更新し、その後 last[v] = i とします。最後まで best が無限大のままなら、どちらかの種類が存在しないので -1 を出力します。"
+    ],
+    "ko": [
+      "사람과 케이크 사이의 최소 인덱스 차이만 중요합니다. 한 쌍에서 더 큰 인덱스가 고정되면 가장 좋은 짝은 그 왼쪽에서 가장 가까운 반대 종류의 원소이며, 더 먼 후보는 더 나을 수 없습니다.",
+      "왼쪽에서 오른쪽으로 한 번 스캔하면서 사람의 가장 최근 위치와 케이크의 가장 최근 위치를 기억합니다. 0이 아닌 원소를 만날 때마다 반대 종류의 가장 최근 원소와만 비교합니다.",
+      "last[1]과 last[2]를 둘 다 -1로 시작하고 best = 무한대로 둡니다. 인덱스 i의 값 v != 0에 대해 last[3 - v] >= 0이면 i - last[3 - v]로 best를 갱신하고, 그런 다음 last[v] = i로 둡니다. 끝까지 best가 무한대이면 한 종류가 없는 것이므로 -1을 출력합니다."
+    ],
+    "vi": [
+      "Chỉ khoảng cách chỉ số nhỏ nhất giữa một người và một chiếc bánh là quan trọng. Khi chỉ số lớn hơn của một cặp đã cố định, đối tác tốt nhất là phần tử thuộc loại kia gần nhất bên trái nó; mọi ứng viên xa hơn cùng loại đều không thể tốt hơn.",
+      "Quét một lần từ trái sang phải, nhớ vị trí gần nhất của một người và vị trí gần nhất của một chiếc bánh. Mỗi khi gặp một phần tử khác 0, chỉ so sánh nó với phần tử gần nhất thuộc loại còn lại.",
+      "Giữ last[1] và last[2], đều bắt đầu bằng -1, và best = vô cực. Với giá trị v != 0 tại chỉ số i, nếu last[3 - v] >= 0 thì cập nhật best bằng i - last[3 - v], rồi đặt last[v] = i. Nếu cuối cùng best vẫn là vô cực thì thiếu một loại, nên in -1."
     ]
   },
   "explanationEn": "## Approach\n\nWhile scanning, keep the index of the most recent person and the most recent cake. Each time a non-zero element appears, pair it with the most recent element of the other kind.\n\n## Correctness\n\nFor the current element taken as the right end, the shortest valid distance is given by the nearest element of the other kind on its left. The larger index of every valid pair becomes the current element at some point of the scan, so the minimum over these local minima is the global minimum.\n\n## Complexity\n\nO(n) time and O(1) space."

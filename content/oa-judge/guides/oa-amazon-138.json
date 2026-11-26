@@ -13,6 +13,21 @@
       "Times are non-decreasing, so a window holding more than k requests is equivalent to the request k places earlier still lying inside that window.",
       "Dropped requests still count, so compare original indices directly: request i breaks a limit if it is in the same second as request i-3, or less than 10 seconds after request i-20, or less than 60 seconds after request i-60.",
       "Read the times t (1-based); for every i, add one to the answer when (i > 3 and t[i] == t[i-3]) or (i > 20 and t[i] - t[i-20] < 10) or (i > 60 and t[i] - t[i-60] < 60); combining the three conditions with OR counts each request at most once."
+    ],
+    "ja": [
+      "時刻は非減少なので、窓に k 件より多くのリクエストが入っていることは、k 個前のリクエストがまだその窓の中にあることと同値です。",
+      "破棄されたリクエストも数えるので、元の添字を直接比べます。リクエスト i が制限を破るのは、リクエスト i-3 と同じ秒にある場合、リクエスト i-20 から 10 秒未満の場合、またはリクエスト i-60 から 60 秒未満の場合です。",
+      "時刻 t を読み込みます（1 始まり）。各 i について、(i > 3 and t[i] == t[i-3]) または (i > 20 and t[i] - t[i-20] < 10) または (i > 60 and t[i] - t[i-60] < 60) のとき、答えに 1 を加えます。3 つの条件を OR で結べば、各リクエストは高々 1 回しか数えられません。"
+    ],
+    "ko": [
+      "시간이 감소하지 않으므로, 어떤 창에 k개를 초과하는 요청이 있다는 것은 k개 앞의 요청이 여전히 그 창 안에 있다는 것과 같습니다.",
+      "거부된 요청도 계속 세므로 원래 인덱스를 그대로 비교하면 됩니다. 요청 i가 한도를 어기는 경우는 요청 i-3과 같은 초에 있거나, 요청 i-20보다 10초 미만 뒤이거나, 요청 i-60보다 60초 미만 뒤인 경우입니다.",
+      "시간 t를 (1-기반으로) 읽고, 모든 i에 대해 (i > 3 and t[i] == t[i-3]) 또는 (i > 20 and t[i] - t[i-20] < 10) 또는 (i > 60 and t[i] - t[i-60] < 60)이면 답에 1을 더합니다. 세 조건을 OR로 묶으면 각 요청이 최대 한 번만 세어집니다."
+    ],
+    "vi": [
+      "Thời điểm không giảm, nên một cửa sổ chứa nhiều hơn k yêu cầu tương đương với việc yêu cầu đứng trước nó k vị trí vẫn nằm trong cửa sổ đó.",
+      "Các yêu cầu bị loại bỏ vẫn được tính, nên hãy so sánh trực tiếp theo chỉ số gốc: yêu cầu i vi phạm một giới hạn nếu nó cùng giây với yêu cầu i-3, hoặc sau yêu cầu i-20 chưa đến 10 giây, hoặc sau yêu cầu i-60 chưa đến 60 giây.",
+      "Đọc các thời điểm t (đánh số từ 1); với mỗi i, cộng một vào đáp án khi (i > 3 and t[i] == t[i-3]) or (i > 20 and t[i] - t[i-20] < 10) or (i > 60 and t[i] - t[i-60] < 60); kết hợp ba điều kiện bằng OR sẽ đếm mỗi yêu cầu tối đa một lần."
     ]
   },
   "explanationEn": "## Approach\n\nRequest i exceeds a limit if it is in the same second as request i-3, or less than 10 apart from request i-20, or less than 60 apart from request i-60. Take the OR of the three conditions.\n\n## Correctness\n\nThe times are sorted, so the number of requests in a recent window exceeds the threshold if and only if the request that many places earlier is still inside the window. Using the original request indices directly naturally includes the dropped requests, and counting with OR avoids counting one request twice for several rules.\n\n## Complexity\n\nTime O(n), space O(n) for storing the input; the whole integer array is not copied."

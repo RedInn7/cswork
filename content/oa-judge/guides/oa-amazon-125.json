@@ -13,6 +13,21 @@
       "Valid substrings come in two kinds: all characters are the same, or the first and last characters are equal and the middle is a block of one other character.",
       "Compress the string into runs of equal characters. The first kind is any choice of two endpoints inside one run; for the second kind the middle must be exactly one whole run, and the two ends can only be the adjacent characters of its neighbouring runs.",
       "Run-length encode into (character, length) pairs; each run of length L contributes L(L-1)/2; then for every run that has both a left and a right neighbour, add 1 when those two neighbouring runs have the same character. The answer can exceed 32 bits, so use 64-bit integers."
+    ],
+    "ja": [
+      "条件を満たす部分文字列は 2 種類あります。すべての文字が同じものと、先頭と末尾が等しく、中央が別の 1 種類の文字のかたまりであるものです。",
+      "文字列を同じ文字のランに圧縮します。1 つ目の種類は、1 つのランの中から 2 つの端点を選ぶ場合です。2 つ目の種類では、中央がちょうど 1 つのランの全体でなければならず、両端は、その隣のランの隣接する文字だけになります。",
+      "(文字, 長さ) の組にランレングス圧縮します。長さ L のランごとに L(L-1)/2 を加算します。次に、左右両方に隣のランがあるランについて、その 2 つの隣のランの文字が同じなら 1 を加えます。答えは 32 ビットを超えうるので、64 ビット整数を使ってください。"
+    ],
+    "ko": [
+      "유효한 부분 문자열은 두 종류입니다. 모든 문자가 같거나, 첫 문자와 마지막 문자가 같고 가운데가 다른 한 문자로 이루어진 블록입니다.",
+      "문자열을 같은 문자의 런으로 압축합니다. 첫 번째 종류는 한 런 안에서 두 끝점을 고르는 모든 경우이고, 두 번째 종류는 가운데가 정확히 하나의 런 전체이며 양 끝은 이웃한 런의 인접한 문자 하나씩일 수밖에 없습니다.",
+      "(문자, 길이) 쌍으로 런 렝스 인코딩을 하고, 길이 L인 런마다 L(L-1)/2를 더합니다. 그런 다음 왼쪽과 오른쪽 이웃이 모두 있는 런마다 두 이웃 런의 문자가 같으면 1을 더합니다. 답이 32비트를 넘을 수 있으므로 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Các xâu con hợp lệ có hai loại: tất cả ký tự giống nhau, hoặc ký tự đầu và cuối bằng nhau và phần giữa là một khối gồm một ký tự khác.",
+      "Nén xâu thành các chuỗi ký tự giống nhau (run). Loại thứ nhất là cách chọn bất kỳ hai đầu mút trong cùng một chuỗi; với loại thứ hai, phần giữa phải đúng là một chuỗi nguyên vẹn, và hai đầu chỉ có thể là các ký tự kề của hai chuỗi lân cận.",
+      "Mã hóa độ dài chạy thành các cặp (ký tự, độ dài); mỗi chuỗi độ dài L đóng góp L(L-1)/2; sau đó với mỗi chuỗi có cả chuỗi lân cận bên trái và bên phải, cộng 1 khi hai chuỗi lân cận đó có cùng ký tự. Đáp án có thể vượt quá 32 bit nên hãy dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nUse run-length encoding. A run of equal characters of length L contributes L(L-1)/2 internally. The case where the two ends differ from the middle character corresponds exactly to three consecutive runs whose outer characters are equal, and each such middle run contributes 1.\n\n## Correctness\n\nSubstrings consisting entirely of one character are all counted by the in-run counts. For any other valid substring the middle must be one complete single run, and each end can only take the one character of the adjacent run that is next to it; this works only when the two sides are equal, and there is no other choice. The two kinds are disjoint and together cover all valid substrings.\n\n## Complexity\n\nTime O(n), space O(n)."

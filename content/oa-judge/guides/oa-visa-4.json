@@ -13,6 +13,21 @@
       "Position p is lit by [l, r] exactly when l ≤ p and r ≥ p; any lamp whose right end is below p also has its left end below p.",
       "Coverage = (lamps with left end ≤ p) − (lamps with right end < p); after sorting all left ends and all right ends separately, both counts come from binary search.",
       "Sort the l array and the r array separately; for each query p compute upper_bound(l, p) − lower_bound(r, p), noting that one is \"≤\" and the other \"<\" because endpoints count as lit; print the answers in query order separated by spaces."
+    ],
+    "ja": [
+      "位置 p が [l, r] で照らされるのは、l ≤ p かつ r ≥ p のときに限ります。右端が p より小さいランプは、左端も p より小さいです。",
+      "カバー数 = (左端が ≤ p のランプの数) − (右端が < p のランプの数) です。すべての左端とすべての右端をそれぞれ別々にソートしておけば、どちらの個数も二分探索で求められます。",
+      "l の配列と r の配列を別々にソートします。各クエリ p について upper_bound(l, p) − lower_bound(r, p) を計算します。端点も照らされるとみなすので、一方は「≤」、もう一方は「<」になることに注意してください。答えはクエリの順に空白区切りで出力します。"
+    ],
+    "ko": [
+      "위치 p가 [l, r]에 의해 밝혀지는 것은 정확히 l ≤ p이고 r ≥ p일 때이며, 오른쪽 끝이 p보다 작은 전등은 왼쪽 끝도 p보다 작습니다.",
+      "커버 횟수 = (왼쪽 끝이 ≤ p인 전등 수) − (오른쪽 끝이 < p인 전등 수)입니다. 모든 왼쪽 끝과 모든 오른쪽 끝을 각각 정렬하면 두 개수 모두 이분 탐색으로 구할 수 있습니다.",
+      "l 배열과 r 배열을 따로 정렬합니다. 각 질의 p에 대해 upper_bound(l, p) − lower_bound(r, p)를 계산하되, 끝점도 밝혀진 것으로 치므로 하나는 \"≤\", 다른 하나는 \"<\"임에 유의합니다. 답을 질의 순서대로 공백으로 구분해 출력합니다."
+    ],
+    "vi": [
+      "Vị trí p được [l, r] chiếu sáng đúng khi l ≤ p và r ≥ p; mọi đèn có đầu phải nhỏ hơn p thì đầu trái cũng nhỏ hơn p.",
+      "Số lần phủ = (số đèn có đầu trái ≤ p) − (số đèn có đầu phải < p); sau khi sắp xếp riêng các đầu trái và riêng các đầu phải, cả hai số đếm đều lấy được bằng tìm kiếm nhị phân.",
+      "Sắp xếp riêng mảng l và mảng r; với mỗi truy vấn p tính upper_bound(l, p) − lower_bound(r, p), lưu ý một cái là \"≤\" và cái kia là \"<\" vì các đầu mút cũng được chiếu sáng; in các đáp án theo thứ tự truy vấn, cách nhau bởi dấu cách."
     ]
   },
   "explanationEn": "## Approach\n\nSort the left endpoints and the right endpoints separately; the number of intervals covering p is the number of left endpoints not greater than p minus the number of right endpoints less than p.\n\n## Correctness\n\nAn interval contains p if and only if l ≤ p and r ≥ p. upper_bound(l, p) includes intervals whose left endpoint equals p, and lower_bound(r, p) only excludes intervals with r < p, so the endpoint conditions are right.\n\n## Complexity\n\nPreprocessing O(n log n), each query O(log n), space O(n)."

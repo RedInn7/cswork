@@ -13,6 +13,21 @@
       "After an AWS is deleted, the left and right parts join and may form a new AWS, so you need a structure that naturally handles joining after deletion.",
       "Simulate with a stack, pushing characters one by one; the prefix already on the stack can never be deleted again, so a new AWS can only end with the character just pushed. AWS has no overlap between its prefixes and suffixes, so the deletion order does not change the final result.",
       "After each push, check whether the top three characters are A, W, S in order and pop them if so; when the scan ends, the stack content is the result, and print -1 if it is empty."
+    ],
+    "ja": [
+      "AWS を削除すると、左右の部分がつながって、新しい AWS ができることがあります。そのため、削除後のつなぎ合わせを自然に扱える構造が必要です。",
+      "スタックでシミュレートし、文字を 1 つずつ積みます。すでにスタックにある接頭辞は二度と削除されないので、新しい AWS は、いま積んだ文字で終わるものに限られます。AWS は、接頭辞と接尾辞が重ならないので、削除の順序は最終結果に影響しません。",
+      "積むたびに、先頭の 3 文字が順に A、W、S かどうかを調べ、そうなら取り除きます。走査が終わったとき、スタックの中身が結果です。空なら -1 を出力します。"
+    ],
+    "ko": [
+      "AWS를 삭제하면 왼쪽과 오른쪽이 이어지면서 새로운 AWS가 만들어질 수 있으므로, 삭제 후 이어 붙이는 것을 자연스럽게 처리하는 구조가 필요합니다.",
+      "스택으로 시뮬레이션하며 문자를 하나씩 넣습니다. 이미 스택에 있는 접두 부분은 다시 삭제될 수 없으므로 새 AWS는 방금 넣은 문자로 끝날 수밖에 없습니다. AWS는 접두사와 접미사가 겹치지 않으므로 삭제 순서가 최종 결과를 바꾸지 않습니다.",
+      "문자를 넣을 때마다 맨 위 세 문자가 순서대로 A, W, S인지 확인하여 그러면 꺼냅니다. 훑기가 끝났을 때 스택의 내용이 결과이며, 비어 있으면 -1을 출력합니다."
+    ],
+    "vi": [
+      "Sau khi xóa một AWS, phần trái và phần phải nối lại với nhau và có thể tạo thành một AWS mới, nên cần một cấu trúc xử lý tự nhiên việc nối lại sau khi xóa.",
+      "Mô phỏng bằng ngăn xếp, đẩy từng ký tự; tiền tố đã nằm trong ngăn xếp không bao giờ bị xóa nữa, nên một AWS mới chỉ có thể kết thúc ở ký tự vừa được đẩy. AWS không có phần trùng giữa tiền tố và hậu tố của nó, nên thứ tự xóa không làm thay đổi kết quả cuối cùng.",
+      "Sau mỗi lần đẩy, kiểm tra ba ký tự trên cùng có đúng là A, W, S theo thứ tự không và lấy chúng ra nếu có; khi quét xong, nội dung ngăn xếp là kết quả, và in -1 nếu nó rỗng."
     ]
   },
   "explanationEn": "## Approach\n\nPush characters onto a stack one by one, and whenever the top of the stack is exactly AWS, delete those three characters.\n\n## Proof of correctness\n\nBefore a character is pushed, the prefix on the stack is already undeletable, so a newly formed AWS can only end with the new character, and the prefix exposed after a deletion is still a previously undeletable stack prefix. AWS has no non-empty proper prefix equal to a suffix, so two occurrences that are deletable at the same time do not overlap and their deletions commute; any deletion order gives the same result.\n\n## Complexity\n\nTime O(n), space O(n)."

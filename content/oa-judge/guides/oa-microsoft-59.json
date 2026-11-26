@@ -13,6 +13,21 @@
       "Decide which K indices to take first, then decide the output order; the two steps are independent.",
       "Larger values win and, among equal values, smaller indices win, so sorting indices by value descending and index ascending and taking the first K matches the cutoff rule exactly.",
       "Sort the indices that way and take the first K, then sort those K indices in ascending order and print the corresponding elements separated by spaces; print an empty line when K is 0."
+    ],
+    "ja": [
+      "まずどの K 個の添字を取るかを決め、その後に出力の順序を決めます。この 2 つのステップは独立しています。",
+      "大きい値が優先され、同じ値なら小さい添字が優先されるので、添字を値の降順、添字の昇順でソートして先頭 K 個を取れば、カットオフの規則とちょうど一致します。",
+      "添字をそのようにソートして先頭 K 個を取り、その K 個の添字を昇順にソートして、対応する要素をスペース区切りで出力します。K が 0 のときは空行を出力します。"
+    ],
+    "ko": [
+      "어떤 K개의 인덱스를 취할지 먼저 정하고, 그다음 출력 순서를 정하세요. 두 단계는 서로 독립적입니다.",
+      "큰 값이 우선이고 값이 같으면 작은 인덱스가 우선이므로, 인덱스를 값 내림차순, 인덱스 오름차순으로 정렬해 앞에서 K개를 취하면 경계 규칙과 정확히 일치합니다.",
+      "인덱스를 그렇게 정렬해 앞에서 K개를 취한 뒤, 이 K개의 인덱스를 오름차순으로 정렬하여 대응하는 원소를 공백으로 구분해 출력합니다. K가 0이면 빈 줄을 출력합니다."
+    ],
+    "vi": [
+      "Hãy quyết định trước K chỉ số nào được lấy, rồi mới quyết định thứ tự in; hai bước này độc lập với nhau.",
+      "Giá trị lớn hơn thì thắng và, giữa các giá trị bằng nhau, chỉ số nhỏ hơn thì thắng, nên sắp xếp các chỉ số theo giá trị giảm dần và chỉ số tăng dần rồi lấy K phần tử đầu khớp chính xác với quy tắc ở ngưỡng cắt.",
+      "Sắp xếp các chỉ số theo cách đó và lấy K phần tử đầu, sau đó sắp xếp K chỉ số này tăng dần và in các phần tử tương ứng, cách nhau bởi dấu cách; in một dòng trống khi K bằng 0."
     ]
   },
   "explanationEn": "## Approach\n\nPick K indices by value in descending order and index in ascending order, then sort these indices in ascending order and output the corresponding elements.\n\n## Correctness\n\nThe first sort strictly follows the rule of larger values first and, for equal values, earliest first, so the chosen set is correct; the second sort by original index only restores the original relative order and does not change which elements are chosen.\n\n## Complexity\n\nTime O(N log N), space O(N)."

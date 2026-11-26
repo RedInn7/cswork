@@ -13,6 +13,21 @@
       "Each of the three arrays is sorted, just like the merge step of merge sort: the smallest of all remaining elements must be one of the three current heads.",
       "When elements come out in merge order, equal values are next to each other, so comparing with the last output value is enough to remove duplicates and keep the result strictly increasing.",
       "Keep one pointer per array; each time take the smallest head among the arrays that still have elements and advance that pointer, appending the value only if it differs from the last output value. When everything is consumed print the values separated by spaces, or an empty line if there are none; note that an empty input array is an empty line."
+    ],
+    "ja": [
+      "3 つの配列はいずれもソート済みで、マージソートのマージ処理と同じ状況です。残っている要素の中で最小のものは、3 つの先頭要素のどれかです。",
+      "要素をマージ順に取り出すと、等しい値は隣り合って出てきます。したがって直前に出力した値と比較するだけで重複を除去でき、結果は狭義単調増加になります。",
+      "配列ごとに 1 本のポインタを持ちます。要素が残っている配列の先頭のうち最小のものを取り出してそのポインタを進め、直前の出力値と異なる場合のみ値を追加します。すべて消費したら値を空白区切りで出力し、1 つもなければ空行を出力します。入力の空配列は空行である点に注意してください。"
+    ],
+    "ko": [
+      "세 배열은 각각 정렬되어 있으므로 병합 정렬의 병합 단계와 같습니다. 남은 모든 원소 중 가장 작은 값은 세 배열의 현재 맨 앞 원소 중 하나입니다.",
+      "병합 순서대로 원소를 꺼내면 같은 값이 서로 인접하므로, 마지막으로 출력한 값과 비교하는 것만으로 중복을 제거하고 결과를 순증가로 유지할 수 있습니다.",
+      "배열마다 포인터를 하나씩 두고, 원소가 남아 있는 배열의 맨 앞 값 중 가장 작은 것을 꺼내 해당 포인터를 전진시킵니다. 값이 마지막으로 출력한 값과 다를 때만 추가합니다. 모두 소비하면 값을 공백으로 구분해 출력하고, 값이 없으면 빈 줄을 출력합니다. 입력 배열이 비어 있으면 빈 줄이라는 점에 유의하세요."
+    ],
+    "vi": [
+      "Mỗi mảng trong ba mảng đều đã sắp xếp, giống bước trộn của merge sort: phần tử nhỏ nhất trong số tất cả phần tử còn lại chắc chắn là một trong ba phần tử đầu hiện tại.",
+      "Khi các phần tử được lấy ra theo thứ tự trộn, các giá trị bằng nhau nằm cạnh nhau, nên chỉ cần so với giá trị vừa in gần nhất là loại được phần tử trùng và giữ kết quả tăng chặt.",
+      "Giữ một con trỏ cho mỗi mảng; mỗi lần lấy phần tử đầu nhỏ nhất trong các mảng còn phần tử và dịch con trỏ đó, chỉ thêm giá trị vào kết quả nếu nó khác giá trị in gần nhất. Khi đã lấy hết, in các giá trị cách nhau bằng dấu cách, hoặc in một dòng trống nếu không có giá trị nào; lưu ý mảng đầu vào rỗng là một dòng trống."
     ]
   },
   "explanationEn": "## Approach\n\nMaintain three pointers; each time take the smallest value not yet consumed, append it only if it differs from the last output value, and then advance the pointer that supplied it.\n\n## Why it is correct\n\nEach input is already sorted, so the minimum of the unconsumed elements must be at one of the three pointers. Repeatedly taking the minimum keeps the output non-decreasing, and equal values are adjacent in merge order, so skipping repeats of the last value keeps each distinct integer exactly once.\n\n## Complexity\n\nTime O(n+m+k), extra space O(n+m+k) for the output."

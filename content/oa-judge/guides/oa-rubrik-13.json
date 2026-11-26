@@ -13,6 +13,21 @@
       "A point assignment sets a service to an exact new value, and every later operation 2 can only raise it by taking a maximum. So the final value of a service depends only on its last assigned value and the largest x that appears after that assignment.",
       "Do not treat the largest operation-2 target in the whole history as a permanent floor, because a point assignment can lower a value. Precompute suffix maxima of the type-2 targets over the operation list, and record each service's last assigned value and time.",
       "Scan the operations backwards to get suffix[t], the largest type-2 x among operations t+1..m (a type-1 operation counts as 0). Scan forwards to record each service's last assigned value and its time, with the initial value at time 0. Each answer is max(last value, suffix[last time])."
+    ],
+    "ja": [
+      "点への代入はサービスを正確な新しい値に設定し、それ以降の操作 2 は最大値を取って引き上げるだけです。したがって、サービスの最終的な値は、最後の代入値と、その代入より後に現れる x の最大値だけで決まります。",
+      "点への代入は値を下げることがあるので、履歴全体の最大の操作 2 の目標値を永続的な下限として扱ってはいけません。操作列についてタイプ 2 の目標値の接尾辞最大値を前計算し、各サービスの最後の代入値とその時刻を記録します。",
+      "操作を後ろから走査して suffix[t](操作 t+1..m の中での、タイプ 2 の x の最大値。タイプ 1 の操作は 0 として数えます)を求めます。前から走査して、各サービスの最後の代入値とその時刻を記録します(初期値は時刻 0)。各答えは max(最後の値, suffix[最後の時刻]) です。"
+    ],
+    "ko": [
+      "점 대입은 서비스를 정확히 새 값으로 설정하고, 이후의 모든 연산 2는 최댓값을 취해 그 값을 올리기만 할 수 있습니다. 따라서 서비스의 최종 값은 마지막으로 대입된 값과 그 대입 이후에 나타난 가장 큰 x에만 달려 있습니다.",
+      "점 대입이 값을 낮출 수 있으므로 전체 기록에서 가장 큰 연산 2의 목표를 영구적인 하한으로 취급하면 안 됩니다. 연산 목록에서 타입 2 목표의 접미사 최댓값을 미리 계산하고, 각 서비스의 마지막 대입 값과 시각을 기록하세요.",
+      "연산을 뒤에서부터 스캔하여 suffix[t], 즉 연산 t+1..m 중 가장 큰 타입 2의 x를 구합니다(타입 1 연산은 0으로 칩니다). 앞에서부터 스캔하며 각 서비스의 마지막 대입 값과 시각을 기록하고, 초기값은 시각 0으로 둡니다. 각 답은 max(last value, suffix[last time])입니다."
+    ],
+    "vi": [
+      "Một phép gán điểm đặt một service về một giá trị mới chính xác, và mọi thao tác 2 sau đó chỉ có thể nâng nó lên bằng cách lấy cực đại. Vì vậy giá trị cuối cùng của một service chỉ phụ thuộc vào giá trị được gán gần nhất của nó và giá trị x lớn nhất xuất hiện sau phép gán đó.",
+      "Đừng coi mục tiêu thao tác 2 lớn nhất trong toàn bộ lịch sử là một ngưỡng sàn vĩnh viễn, vì một phép gán điểm có thể hạ giá trị xuống. Hãy tính trước cực đại hậu tố của các mục tiêu loại 2 trên danh sách thao tác, và ghi lại giá trị được gán gần nhất cùng thời điểm của mỗi service.",
+      "Duyệt các thao tác ngược để có suffix[t], giá trị x loại 2 lớn nhất trong các thao tác t+1..m (thao tác loại 1 được tính là 0). Duyệt xuôi để ghi lại giá trị được gán gần nhất của mỗi service và thời điểm của nó, với giá trị ban đầu ở thời điểm 0. Mỗi đáp án là max(giá trị gần nhất, suffix[thời điểm gần nhất])."
     ]
   },
   "explanationEn": "## Approach\n\nOperation 2 applies chmax(x) to every current value, while operation 1 overwrites a single position and may lower it. Therefore the maximum of all historical HPA values cannot be used as a permanent floor. For each position, record the value and the time of its last assignment (initial value or point assignment); then compute, from right to left, the largest type-2 x at or after each point in time (including the operation at that time position). Each final item is `max(last assigned value, largest HPA x after the last assignment)`.\n\n## Proof of correctness\n\nFix a service i. Its initial value or its last type-1 operation sets the current value exactly to `last_value[i]`. After that, type-1 operations no longer affect it; each type-2 operation takes the maximum of it and x. Applying these operations one after another gives the same result as taking the maximum with the largest of these x values. Therefore the answer is `max(last_value[i], suffix_max[last_assignment[i]])`. HPA operations before that assignment have been overwritten by that type-1 operation, so they are not wrongly counted.\n\n## Complexity\n\nTime O(n+m), space O(n+m).\n\n## Source notes\n\nThe pinned OAMaster source describes the two kinds of operations, but that MDX does not provide a complete input protocol or ranges; this site explicitly adds 1-based point indices and size bounds. The monotone historical-floor solution attached upstream is incorrect when a point assignment can lower a value; this problem fixes it with a suffix maximum."

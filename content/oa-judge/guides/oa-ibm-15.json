@@ -13,6 +13,21 @@
       "Numbers of the form 3^x·5^y grow very fast; only a few hundred of them fit below 2^63−1, so they can all be enumerated. By unique prime factorization, different (x,y) pairs give different values, so nothing is counted twice.",
       "In the outer loop enumerate powers of 3; in the inner loop keep multiplying by 5, and while the value does not exceed high, check whether it is at least low. If high is less than 1 the answer is 0.",
       "To avoid overflow, before multiplying by 5 check whether the current value already exceeds high divided by 5 (integer division), and likewise use high divided by 3 before multiplying by 3; stop that layer when it does. Count every value that lands in [low,high] once."
+    ],
+    "ja": [
+      "3^x·5^y の形の数は非常に速く大きくなり、2^63−1 以下のものは数百個しかないので、すべて列挙できます。素因数分解の一意性により、異なる (x,y) は異なる値になるので、重複して数えることはありません。",
+      "外側のループで 3 の冪を列挙し、内側のループで 5 を掛け続けます。値が high 以下の間、それが low 以上かどうかを調べます。high が 1 未満なら答えは 0 です。",
+      "オーバーフローを避けるため、5 を掛ける前に現在の値が high を 5 で割った値(整数除算)を超えていないか確認します。3 を掛ける前も同様に high を 3 で割った値と比べ、超えていればその層を打ち切ります。[low,high] に入る値をそれぞれ 1 回ずつ数えます。"
+    ],
+    "ko": [
+      "3^x·5^y 꼴의 수는 매우 빠르게 커지므로 2^63−1 이하에는 수백 개만 들어갑니다. 따라서 모두 열거할 수 있습니다. 소인수분해의 유일성 때문에 서로 다른 (x,y) 쌍은 서로 다른 값을 만들므로 중복 계산은 없습니다.",
+      "바깥 루프에서 3의 거듭제곱을 열거하고, 안쪽 루프에서 계속 5를 곱합니다. 값이 high를 넘지 않는 동안 low 이상인지 확인합니다. high가 1보다 작으면 답은 0입니다.",
+      "오버플로를 피하려면 5를 곱하기 전에 현재 값이 high를 5로 나눈 몫(정수 나눗셈)보다 큰지 확인하고, 3을 곱할 때도 high를 3으로 나눈 몫을 사용합니다. 크면 그 층을 멈춥니다. [low,high]에 들어오는 값은 각각 한 번씩 셉니다."
+    ],
+    "vi": [
+      "Các số dạng 3^x·5^y tăng rất nhanh; chỉ có vài trăm số nhỏ hơn 2^63−1 nên có thể liệt kê hết. Theo phân tích ra thừa số nguyên tố duy nhất, các cặp (x,y) khác nhau cho giá trị khác nhau, nên không đếm trùng.",
+      "Ở vòng ngoài, duyệt các lũy thừa của 3; ở vòng trong, liên tục nhân với 5, và khi giá trị chưa vượt quá high thì kiểm tra xem nó có ít nhất bằng low không. Nếu high nhỏ hơn 1 thì đáp án là 0.",
+      "Để tránh tràn số, trước khi nhân với 5 hãy kiểm tra xem giá trị hiện tại đã vượt quá high chia cho 5 (chia nguyên) chưa, và tương tự dùng high chia cho 3 trước khi nhân với 3; dừng tầng đó khi điều này xảy ra. Mỗi giá trị rơi vào [low,high] được đếm đúng một lần."
     ]
   },
   "explanationEn": "## Approach\n\nGenerate, layer by layer, the powers of 3 not exceeding high and the values obtained by multiplying them by 5, and count those not less than low; check the upper bound with division before multiplying.\n\n## Proof of correctness\n\nPrime factorization is unique, so different exponent pairs give different values. The loops cover every exponent combination that satisfies the upper bound, with no omissions or repeats, and filtering by the lower bound afterwards gives exactly the answer for the interval.\n\n## Complexity\n\nTime O(log high·log high), space O(1)."

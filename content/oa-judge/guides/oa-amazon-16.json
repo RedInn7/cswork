@@ -13,6 +13,21 @@
       "Prices are at most 2000, so the target T is at most 4000 and can simply be enumerated. With T fixed, price x can only pair with price T-x, and different price pairs do not interfere.",
       "For each T: every item priced exactly T is a bundle by itself; prices x < T-x give min(cnt[x], cnt[T-x]) bundles; when x = T-x, items of that price pair up among themselves for cnt[x]/2 bundles. Add these up and take the best T.",
       "Count each price into cnt. For T from 1 to twice the maximum price: start with cnt[T], add min(cnt[x], cnt[T-x]) for x from max(1, T - max) to min(max, (T-1)/2), and if T is even add cnt[T/2]/2; update the answer. The work is about the square of the value range, which is fast enough."
+    ],
+    "ja": [
+      "価格は高々 2000 なので、目標 T は高々 4000 であり、単純に全探索できます。T を固定すると、価格 x がペアになれるのは価格 T-x だけで、異なる価格のペア同士は干渉しません。",
+      "各 T について、価格がちょうど T の商品はそれぞれ単独でバンドルになります。価格 x < T-x のペアからは min(cnt[x], cnt[T-x]) 個のバンドルができ、x = T-x のときは、その価格の商品同士でペアになって cnt[x]/2 個のバンドルができます。これらを合計し、最良の T を取ります。",
+      "各価格を cnt に数えます。T を 1 から最大価格の 2 倍まで動かし、cnt[T] から始めて、x を max(1, T - max) から min(max, (T-1)/2) まで動かしながら min(cnt[x], cnt[T-x]) を加えます。T が偶数なら cnt[T/2]/2 も加え、答えを更新します。計算量は値の範囲の 2 乗程度で、十分高速です。"
+    ],
+    "ko": [
+      "가격은 최대 2000이므로 목표 T는 최대 4000이고 단순히 열거할 수 있습니다. T를 고정하면 가격 x는 가격 T-x와만 짝지을 수 있고, 서로 다른 가격 쌍은 서로 간섭하지 않습니다.",
+      "각 T에 대해: 가격이 정확히 T인 상품은 각각 혼자서 하나의 묶음입니다. 가격 x < T-x인 경우 min(cnt[x], cnt[T-x])개의 묶음이 나오고, x = T-x이면 그 가격의 상품끼리 짝을 지어 cnt[x]/2개의 묶음이 나옵니다. 이를 모두 더해 최적의 T를 고릅니다.",
+      "각 가격을 cnt에 셉니다. T를 1부터 최대 가격의 두 배까지 돌면서 cnt[T]로 시작하고, x가 max(1, T - max)부터 min(max, (T-1)/2)까지일 때 min(cnt[x], cnt[T-x])를 더하며, T가 짝수이면 cnt[T/2]/2를 더해 답을 갱신합니다. 작업량은 값 범위의 제곱 정도이며 충분히 빠릅니다."
+    ],
+    "vi": [
+      "Giá nhiều nhất là 2000, nên mục tiêu T nhiều nhất là 4000 và có thể duyệt trực tiếp. Khi T cố định, giá x chỉ có thể ghép với giá T-x, và các cặp giá khác nhau không ảnh hưởng nhau.",
+      "Với mỗi T: mọi món có giá đúng bằng T tự tạo thành một gói; các giá x < T-x cho min(cnt[x], cnt[T-x]) gói; khi x = T-x, các món cùng giá đó ghép cặp với nhau cho cnt[x]/2 gói. Cộng các giá trị này lại và lấy T tốt nhất.",
+      "Đếm mỗi mức giá vào cnt. Với T từ 1 đến hai lần giá lớn nhất: bắt đầu với cnt[T], cộng min(cnt[x], cnt[T-x]) với x từ max(1, T - max) đến min(max, (T-1)/2), và nếu T chẵn thì cộng cnt[T/2]/2; cập nhật đáp án. Khối lượng công việc xấp xỉ bình phương miền giá trị, đủ nhanh."
     ]
   },
   "explanationEn": "## Approach\n\nEnumerate T = 1..2max(cost), counting the single-item bundles priced T. For each pair of distinct complementary prices take the smaller frequency; for equal prices take half the frequency.\n\n## Proof of correctness\n\nOnce T is fixed, a price can only be paired with its unique complementary price, and different pairs share no items. Prices are positive, so a single item priced T cannot take part in a two-item bundle of total T. Therefore the maximum number of bundles of each group can be taken independently and summed, and then T is enumerated.\n\n## Complexity\n\nTime O(n+V^2), space O(V), V<=2000."

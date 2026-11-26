@@ -13,6 +13,21 @@
       "After removing a contiguous block, the pairs of originally adjacent elements outside it are untouched; only two things change: every edge touching a removed element disappears, and (when elements remain on both sides) one new edge joins the left neighbor and the right neighbor.",
       "A prefix sum of the absolute adjacent differences gives the total cost of any run of consecutive edges in O(1), so you can try every removal window of length k.",
       "Let prefix[i] be the cost of the edges between positions 0..i; for each start with end = start+k-1, take lo = max(0, start-1) and hi = min(n-1, end+1); the cost is total - (prefix[hi] - prefix[lo]), plus |a[end+1] - a[start-1]| when start > 0 and end+1 < n; take the minimum over all windows using 64-bit integers."
+    ],
+    "ja": [
+      "連続したブロックを取り除いた後、その外側で元々隣り合っていた要素の組は影響を受けません。変わるのは 2 点だけです。取り除かれた要素に接するすべての辺が消えること、そして（両側に要素が残る場合は）左隣と右隣を結ぶ新しい辺が 1 本できることです。",
+      "隣接差の絶対値の累積和を使えば、連続する辺の任意の区間のコストを O(1) で求められるので、長さ k の取り除き窓をすべて試せます。",
+      "prefix[i] を位置 0..i の間の辺のコストとします。各 start について end = start+k-1 とし、lo = max(0, start-1)、hi = min(n-1, end+1) を取ります。コストは total - (prefix[hi] - prefix[lo]) で、start > 0 かつ end+1 < n のときは |a[end+1] - a[start-1]| を加えます。すべての窓にわたる最小値を 64 ビット整数で求めます。"
+    ],
+    "ko": [
+      "연속된 블록을 제거하면 그 바깥에서 원래 인접했던 쌍은 그대로입니다. 바뀌는 것은 두 가지뿐입니다. 제거된 원소에 닿는 모든 간선이 사라지고, (양쪽에 원소가 남아 있다면) 왼쪽 이웃과 오른쪽 이웃을 잇는 새 간선이 하나 생깁니다.",
+      "인접한 차이의 절댓값에 대한 누적 합을 쓰면 연속한 간선 구간의 총비용을 O(1)에 구할 수 있으므로 길이 k의 모든 제거 구간을 시도할 수 있습니다.",
+      "prefix[i]를 위치 0..i 사이의 간선 비용이라 합시다. 각 start에 대해 end = start+k-1로 두고 lo = max(0, start-1), hi = min(n-1, end+1)를 구합니다. 비용은 total - (prefix[hi] - prefix[lo])이며, start > 0이고 end+1 < n이면 |a[end+1] - a[start-1]|을 더합니다. 모든 구간에 대한 최솟값을 64비트 정수로 구하세요."
+    ],
+    "vi": [
+      "Sau khi xóa một khối liên tiếp, các cặp phần tử vốn kề nhau nằm ngoài khối không bị ảnh hưởng; chỉ có hai điều thay đổi: mọi cạnh chạm vào một phần tử bị xóa biến mất, và (khi cả hai phía còn phần tử) một cạnh mới nối hàng xóm bên trái với hàng xóm bên phải.",
+      "Tổng tiền tố của các hiệu tuyệt đối kề nhau cho tổng chi phí của bất kỳ đoạn cạnh liên tiếp nào trong O(1), nên bạn có thể thử mọi cửa sổ xóa có độ dài k.",
+      "Gọi prefix[i] là chi phí của các cạnh giữa các vị trí 0..i; với mỗi start và end = start+k-1, lấy lo = max(0, start-1) và hi = min(n-1, end+1); chi phí là total - (prefix[hi] - prefix[lo]), cộng thêm |a[end+1] - a[start-1]| khi start > 0 và end+1 < n; lấy giá trị nhỏ nhất trên mọi cửa sổ, dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nStore the costs of adjacent edges in a prefix sum. Enumerate the removal window, subtract the edges inside it and those connecting to it, and when both sides remain, add the new connecting edge.\n\n## Proof of correctness\n\nAfter removing a range, the originally adjacent edges outside it stay unchanged; every edge involving a removed element disappears; and at most one new edge, from the left neighbor to the right neighbor, can appear. The prefix sum gives the weight of the disappearing edges exactly, and taking the minimum over all valid starts gives the answer.\n\n## Complexity\n\nO(n) time and O(n) space."

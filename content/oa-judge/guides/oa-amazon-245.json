@@ -13,6 +13,21 @@
       "The win condition a[i]+a[j] > b[i]+b[j] rearranges to (a[i]-b[i]) + (a[j]-b[j]) > 0, which depends only on each index's own difference.",
       "Compute the differences d[i] at the original indices first; the task becomes counting unordered pairs in d with a sum strictly greater than 0, and since sorting d does not change that count, two pointers apply after sorting.",
       "Sort d ascending with left=0 and right=n-1; if d[left]+d[right] > 0, then right pairs successfully with every index in left..right-1, so add right-left and move right left; otherwise move left right; finally reduce modulo 1000000007. The two teams must not be sorted separately."
+    ],
+    "ja": [
+      "勝利条件 a[i]+a[j] > b[i]+b[j] は (a[i]-b[i]) + (a[j]-b[j]) > 0 と変形でき、各添字自身の差だけで決まります。",
+      "まず元の添字で差 d[i] を計算します。問題は、d の中で和が 0 より真に大きい順序なしのペアを数えることになります。d をソートしても個数は変わらないので、ソート後に 2 つのポインタが使えます。",
+      "d を昇順にソートし、left=0、right=n-1 とします。d[left]+d[right] > 0 なら、right は left..right-1 のすべての添字と組めるので、right-left を加算して right を左へ動かします。そうでなければ left を右へ動かします。最後に 1000000007 で割った余りをとります。2 つのチームを別々にソートしてはいけません。"
+    ],
+    "ko": [
+      "승리 조건 a[i]+a[j] > b[i]+b[j]는 (a[i]-b[i]) + (a[j]-b[j]) > 0으로 바꿀 수 있으며, 각 인덱스 자신의 차이에만 의존합니다.",
+      "원래 인덱스에서 차이 d[i]를 먼저 계산합니다. 문제는 d에서 합이 엄격히 0보다 큰 순서 없는 쌍을 세는 것으로 바뀌며, d를 정렬해도 그 개수는 변하지 않으므로 정렬 후 두 포인터를 쓸 수 있습니다.",
+      "d를 오름차순으로 정렬하고 left=0, right=n-1로 둡니다. d[left]+d[right] > 0이면 right는 left..right-1의 모든 인덱스와 성공적으로 짝을 이루므로 right-left를 더하고 right를 왼쪽으로 옮깁니다. 아니면 left를 오른쪽으로 옮깁니다. 마지막에 1000000007로 나눈 나머지를 구합니다. 두 팀을 따로 정렬해서는 안 됩니다."
+    ],
+    "vi": [
+      "Điều kiện thắng a[i]+a[j] > b[i]+b[j] biến đổi thành (a[i]-b[i]) + (a[j]-b[j]) > 0, chỉ phụ thuộc vào chênh lệch riêng của từng chỉ số.",
+      "Tính trước các chênh lệch d[i] tại chỉ số gốc; bài toán trở thành đếm số cặp không có thứ tự trong d có tổng lớn hơn hoàn toàn 0, và vì sắp xếp d không làm đổi số đếm này nên dùng được hai con trỏ sau khi sắp xếp.",
+      "Sắp xếp d tăng dần với left=0 và right=n-1; nếu d[left]+d[right] > 0 thì right ghép thành công với mọi chỉ số trong left..right-1, nên cộng right-left và dịch right sang trái; ngược lại dịch left sang phải; cuối cùng lấy modulo 1000000007. Không được sắp xếp riêng hai đội."
     ]
   },
   "explanationEn": "## Approach\n\nFirst compute the skill difference between the two teams at each original index, then sort the differences and use two pointers to count unordered index pairs whose sum is strictly greater than 0.\n\n## Proof of correctness\n\nThe original inequality is equivalent to d[i]+d[j]>0. Sorting only rearranges these complete differences and does not change the number of index pairs. If the smallest plus the largest is >0, the largest also succeeds with every number in between, contributing right−left, after which the largest is removed; otherwise the smallest cannot pair with the current or any smaller maximum and can be removed. The two branches count everything exactly once.\n\n## Complexity\n\nTime O(n log n), space O(n)."

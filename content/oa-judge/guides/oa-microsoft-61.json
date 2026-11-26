@@ -13,6 +13,21 @@
       "After deleting a block, a prefix remains on the left and a suffix on the right, and each compresses exactly as before; the only change is that when the last letter of the prefix equals the first letter of the suffix, the two boundary runs merge into one.",
       "A run of v equal letters compresses to length 1 when v is 1 and otherwise to the number of decimal digits of v plus 1. Precompute the compressed length of every prefix and every suffix, plus the length of the run ending the prefix and the run starting the suffix, and each deletion window costs O(1) to evaluate.",
       "From left to right compute the compressed length of the first i characters and the length of the run ending at character i−1; from right to left compute the compressed length of the suffix starting at i and the length of the run starting at i. For each start l with r=l+K, the result is the prefix length at l plus the suffix length at r; if l>0, r<N and the letters meeting at the boundary are equal, subtract the costs of the two runs and add the cost of the merged run. Print the minimum over all l. The string can be 10^6 long, so use compact integer arrays."
+    ],
+    "ja": [
+      "ブロックを削除すると、左に接頭辞、右に接尾辞が残り、それぞれの圧縮は以前と同じです。変わるのは、接頭辞の最後の文字と接尾辞の最初の文字が等しいときに、境界の 2 つの連なりが 1 つに結合される点だけです。",
+      "v 個の同じ文字の連なりの圧縮長は、v が 1 なら 1、そうでなければ v の 10 進の桁数に 1 を足した値です。すべての接頭辞と接尾辞の圧縮長に加え、接頭辞を終える連なりと接尾辞を始める連なりの長さを前計算しておけば、各削除区間を O(1) で評価できます。",
+      "左から右へ、先頭 i 文字の圧縮長と、文字 i−1 で終わる連なりの長さを求めます。右から左へ、i から始まる接尾辞の圧縮長と、i から始まる連なりの長さを求めます。各開始位置 l について r=l+K とすると、結果は l での接頭辞の長さと r での接尾辞の長さの和です。l>0、r<N で境界に接する文字が等しければ、2 つの連なりのコストを引き、結合した連なりのコストを足します。すべての l にわたる最小値を出力します。文字列の長さは 10^6 になりうるので、コンパクトな整数配列を使ってください。"
+    ],
+    "ko": [
+      "블록을 삭제하면 왼쪽에는 접두사가, 오른쪽에는 접미사가 남고 각각은 이전과 똑같이 압축됩니다. 달라지는 것은 접두사의 마지막 문자와 접미사의 첫 문자가 같을 때 경계의 두 run이 하나로 합쳐진다는 점뿐입니다.",
+      "같은 문자 v개로 이루어진 run은 v가 1이면 압축 길이가 1이고, 그 외에는 v의 십진 자릿수에 1을 더한 값입니다. 모든 접두사와 접미사의 압축 길이, 그리고 접두사를 끝맺는 run과 접미사를 시작하는 run의 길이를 미리 계산하면 각 삭제 구간을 O(1)에 평가할 수 있습니다.",
+      "왼쪽에서 오른쪽으로 처음 i개 문자의 압축 길이와 i−1번째 문자에서 끝나는 run의 길이를 계산하고, 오른쪽에서 왼쪽으로 i번째부터 시작하는 접미사의 압축 길이와 i에서 시작하는 run의 길이를 계산하세요. 각 시작점 l에 대해 r=l+K로 두면, 결과는 l에서의 접두사 길이에 r에서의 접미사 길이를 더한 값입니다. l>0, r<N이고 경계에서 만나는 문자가 같으면 두 run의 비용을 빼고 합쳐진 run의 비용을 더합니다. 모든 l에 대한 최솟값을 출력하세요. 문자열 길이가 10^6일 수 있으므로 정수 배열을 compact하게 사용합니다."
+    ],
+    "vi": [
+      "Sau khi xóa một khối, bên trái còn một tiền tố và bên phải còn một hậu tố, mỗi phần nén giống hệt như trước; thay đổi duy nhất là khi chữ cái cuối của tiền tố bằng chữ cái đầu của hậu tố, hai đoạn ở biên gộp thành một.",
+      "Một đoạn gồm v chữ cái giống nhau nén thành độ dài 1 khi v bằng 1, và ngược lại là số chữ số thập phân của v cộng 1. Tính trước độ dài nén của mọi tiền tố và mọi hậu tố, cùng độ dài của đoạn kết thúc tiền tố và đoạn bắt đầu hậu tố, thì mỗi cửa sổ xóa tính được trong O(1).",
+      "Từ trái sang phải tính độ dài nén của i ký tự đầu và độ dài của đoạn kết thúc ở ký tự i−1; từ phải sang trái tính độ dài nén của hậu tố bắt đầu tại i và độ dài của đoạn bắt đầu tại i. Với mỗi vị trí bắt đầu l và r=l+K, kết quả là độ dài tiền tố tại l cộng độ dài hậu tố tại r; nếu l>0, r<N và các chữ cái gặp nhau ở biên bằng nhau, trừ chi phí của hai đoạn và cộng chi phí của đoạn đã gộp. In giá trị nhỏ nhất trên mọi l. Xâu có thể dài 10^6, nên hãy dùng các mảng số nguyên gọn."
     ]
   },
   "explanationEn": "## Approach\n\nPrecompute the compressed length of every prefix and suffix and the lengths of the runs at the boundaries. Enumerate the deletion window: if the characters on the two sides differ, simply add the two lengths; if they are the same, remove the old costs of the two runs and add the cost of the merged run.\n\n## Correctness\n\nA deletion can only change the two runs that meet at the left and right boundaries; all other compressed runs stay exactly the same. Recording the boundary run lengths is enough to compute the merge adjustment exactly. Enumerating all N−K+1 valid start positions and taking the minimum covers every possible operation.\n\n## Complexity\n\nTime is O(N log N) as a character-level upper bound (computing a decimal length of at most 7 digits); under the fixed constraints it is O(N). Space is O(N), in four compact integer arrays."

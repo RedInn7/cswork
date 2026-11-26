@@ -13,6 +13,21 @@
       "An expression only goes straight right or straight down, so every valid expression is a contiguous piece of one row or one column; treat each row and each column as an independent 1D string.",
       "Scan a 1D string from left to right and keep prev, the largest value of an expression ending at the current digit. At a digit x you either start fresh from x or extend the expression ending at the previous digit (with exactly one + or - in between), and take the larger.",
       "While scanning: at a digit, if a valid sign directly precedes it and prev exists, v = max(x, prev +/- x), otherwise v = x; update the answer with v and set prev = v. At a sign right after a digit, remember the sign. Anything else (two signs in a row, a leading sign) clears prev and the sign. Scan every row and every column once and take the maximum; a single digit is also a valid expression."
+    ],
+    "ja": [
+      "式はまっすぐ右かまっすぐ下にしか進まないので、有効な式はすべて1つの行または1つの列の連続した部分になります。各行と各列を独立な1次元の文字列として扱います。",
+      "1次元の文字列を左から右へ走査し、現在の数字で終わる式の最大値 prev を保持します。数字 x では、x から新しく始めるか、直前の数字で終わる式を（間にちょうど1つの + か - を挟んで）延長するかのうち、大きい方を取ります。",
+      "走査中、数字では、直前に有効な符号があり prev が存在すれば v = max(x, prev +/- x)、そうでなければ v = x とします。答えを v で更新し、prev = v とします。数字の直後の符号は、その符号を覚えておきます。それ以外（符号が2つ連続する、先頭が符号）では prev と符号をクリアします。すべての行と列を1回ずつ走査して最大値を取ります。数字1つだけも有効な式です。"
+    ],
+    "ko": [
+      "식은 오른쪽이나 아래쪽으로만 곧게 나아가므로, 모든 유효한 식은 한 행 또는 한 열의 연속된 조각입니다. 각 행과 각 열을 독립적인 1차원 문자열로 취급하세요.",
+      "1차원 문자열을 왼쪽에서 오른쪽으로 훑으며, 현재 숫자에서 끝나는 식의 최댓값 prev를 유지합니다. 숫자 x에서는 x에서 새로 시작하거나, 바로 앞 숫자에서 끝나는 식에 (사이에 +나 -가 정확히 하나 있는 경우) 이어 붙이는 것 중 더 큰 쪽을 택합니다.",
+      "훑는 동안: 숫자에서, 바로 앞에 유효한 부호가 있고 prev가 존재하면 v = max(x, prev +/- x), 아니면 v = x로 하고, 답을 v로 갱신하며 prev = v로 둡니다. 숫자 바로 뒤에 오는 부호에서는 그 부호를 기억합니다. 그 밖의 경우(부호가 연달아 나오거나 맨 앞에 부호가 있는 경우)는 prev와 부호를 지웁니다. 모든 행과 열을 한 번씩 훑어 최댓값을 취하며, 숫자 하나도 유효한 식입니다."
+    ],
+    "vi": [
+      "Một biểu thức chỉ đi thẳng sang phải hoặc thẳng xuống dưới, nên mọi biểu thức hợp lệ là một đoạn liên tục của một hàng hoặc một cột; hãy coi mỗi hàng và mỗi cột là một xâu 1D độc lập.",
+      "Quét một xâu 1D từ trái sang phải và giữ prev, giá trị lớn nhất của một biểu thức kết thúc tại chữ số hiện tại. Tại chữ số x, bạn hoặc bắt đầu mới từ x hoặc nối dài biểu thức kết thúc tại chữ số trước đó (với đúng một dấu + hoặc - ở giữa), và lấy giá trị lớn hơn.",
+      "Trong khi quét: tại một chữ số, nếu có dấu hợp lệ đứng ngay trước nó và prev tồn tại thì v = max(x, prev +/- x), ngược lại v = x; cập nhật đáp án bằng v và đặt prev = v. Tại một dấu ngay sau một chữ số, ghi nhớ dấu đó. Mọi trường hợp khác (hai dấu liên tiếp, dấu ở đầu) xóa prev và dấu. Quét mỗi hàng và mỗi cột một lần và lấy giá trị lớn nhất; một chữ số đơn lẻ cũng là biểu thức hợp lệ."
     ]
   },
   "explanationEn": "## Approach\n\nScan each row and each column linearly, recording the largest expression ending at the current digit; the previous term can be extended through the sign in between, or the expression can restart at the current digit.\n\n## Correctness\n\nEvery valid expression corresponds to a contiguous segment on one row or one column. The state covers all segments ending at the current digit: either a new one starting at the current digit, or one continuing the segment that ends at the previous digit; an invalid character breaks the chain. Taking the maximum over all rows and columns gives the global optimum.\n\n## Complexity\n\nO(hw) time and O(max(h,w)) space."

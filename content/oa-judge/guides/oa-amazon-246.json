@@ -13,6 +13,21 @@
       "A task's best chance to survive is to absorb everything smaller than itself first, then challenge the larger tasks in increasing order, so its total keeps growing.",
       "Sort the counts ascending and take prefix sums: if a value is strictly greater than the sum of all values before it, the tasks before it can never beat it however they merge, so none of them can survive.",
       "Scan in ascending order keeping the sum so far; whenever the current value exceeds that sum, set the threshold to the current value, then add it to the sum; finally output, in increasing order, every 1-based index whose count is at least the threshold. Use 64 bits for the sum."
+    ],
+    "ja": [
+      "タスクが生き残る最善の方法は、まず自分より小さいものをすべて吸収し、その後に大きいタスクを小さい順に挑むことです。こうすれば合計は増え続けます。",
+      "ロボット数を昇順にソートして累積和をとります。ある値がそれより前のすべての値の和より真に大きいなら、それより前のタスクはどう合流しても勝てないので、どれも生き残れません。",
+      "昇順に走査しながら、それまでの和を保持します。現在の値がその和を超えるたびに、しきい値を現在の値に設定し、その後で和に加えます。最後に、ロボット数がしきい値以上であるすべての 1 始まりの添字を昇順に出力します。和には 64 ビットを使います。"
+    ],
+    "ko": [
+      "작업이 살아남을 최선의 전략은 먼저 자기보다 작은 것을 모두 흡수한 뒤, 더 큰 작업들을 증가하는 순서로 상대하는 것입니다. 그러면 총합이 계속 커집니다.",
+      "개수를 오름차순으로 정렬하고 누적합을 구합니다. 어떤 값이 그보다 앞선 모든 값의 합보다 엄격히 크면, 앞의 작업들은 어떻게 합쳐도 그 값을 이길 수 없으므로 그중 어느 것도 살아남을 수 없습니다.",
+      "오름차순으로 훑으면서 지금까지의 합을 유지합니다. 현재 값이 그 합보다 크면 임계값을 현재 값으로 설정한 뒤 합에 더합니다. 마지막으로 개수가 임계값 이상인 모든 1-based 인덱스를 증가하는 순서로 출력합니다. 합은 64비트로 계산하세요."
+    ],
+    "vi": [
+      "Cơ hội sống sót tốt nhất của một nhiệm vụ là hấp thụ mọi nhiệm vụ nhỏ hơn nó trước, rồi thách đấu các nhiệm vụ lớn hơn theo thứ tự tăng dần, nhờ đó tổng của nó luôn tăng.",
+      "Sắp xếp các số lượng tăng dần và tính tổng tiền tố: nếu một giá trị lớn hơn hoàn toàn tổng mọi giá trị đứng trước nó thì các nhiệm vụ đứng trước dù gộp thế nào cũng không bao giờ thắng được nó, nên không nhiệm vụ nào trong số đó sống sót.",
+      "Duyệt theo thứ tự tăng dần và giữ tổng cho đến hiện tại; mỗi khi giá trị hiện tại vượt quá tổng đó thì đặt ngưỡng bằng giá trị hiện tại, rồi cộng nó vào tổng; cuối cùng in theo thứ tự tăng dần mọi chỉ số (đánh số từ 1) có số lượng ít nhất bằng ngưỡng. Dùng 64 bit cho tổng."
     ]
   },
   "explanationEn": "## Approach\n\nSort the counts in ascending order and accumulate from left to right. Whenever the current value is greater than the sum of all previous values, move the start of the candidate surviving suffix to the current position; finally output the original indices whose count is not less than the value at that start.\n\n## Proof of correctness\n\nIf at some point the total of a prefix is smaller than the next number, then no task in that prefix, however it merges first, can defeat any task to the right, so none of them can survive. After the last such breakpoint, a candidate first absorbs all tasks smaller than itself and then absorbs the larger tasks in ascending order; since there are no later breakpoints, its accumulated amount is always enough, and in a tie it may choose to win. Thus everything excluded is impossible and everything kept can be constructed.\n\n## Complexity\n\nTime O(n log n), space O(n); the accumulated amount uses 64-bit integers."

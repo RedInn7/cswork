@@ -13,6 +13,21 @@
       "Changing at most 3 numbers means at least n-3 original values are kept; each changed number can simply be set to a value inside the kept range, which never increases the amplitude.",
       "After sorting, the best kept set is always a contiguous block of n-3 elements: once the smallest and largest kept values are fixed, the elements between them need no change. There are only 4 such windows: drop i from the left and 3-i from the right.",
       "If n <= 4, all numbers can be made equal, so print 0; otherwise sort and compute A[n-4+i] - A[i] for i = 0..3, and print the minimum."
+    ],
+    "ja": [
+      "高々 3 つの数を変更するということは、元の値のうち少なくとも n-3 個が残るということです。変更した数は、残った範囲の内側の値にするだけでよく、それで振幅が増えることはありません。",
+      "ソート後、最適な残す集合は常に連続した n-3 個のブロックになります。残る最小値と最大値が決まれば、その間にある要素は変更する必要がないからです。このような窓は 4 通りだけで、左から i 個、右から 3-i 個を取り除きます。",
+      "n <= 4 ならすべての数を等しくできるので 0 を出力します。そうでなければソートして、i = 0..3 について A[n-4+i] - A[i] を計算し、最小値を出力します。"
+    ],
+    "ko": [
+      "최대 3개를 바꾼다는 것은 원래 값 중 적어도 n-3개가 유지된다는 뜻입니다. 바꾼 각 수는 유지되는 값의 범위 안의 값으로 설정하면 되며, 이는 진폭을 늘리지 않습니다.",
+      "정렬하면 최적으로 유지되는 집합은 항상 연속한 n-3개의 블록입니다. 유지되는 최솟값과 최댓값이 정해지면 그 사이의 원소는 바꿀 필요가 없습니다. 이러한 윈도우는 4개뿐입니다. 왼쪽에서 i개, 오른쪽에서 3-i개를 버리는 경우입니다.",
+      "n <= 4이면 모든 수를 같게 만들 수 있으므로 0을 출력합니다. 그렇지 않으면 정렬한 뒤 i = 0..3에 대해 A[n-4+i] - A[i]를 계산하고 그 최솟값을 출력합니다."
+    ],
+    "vi": [
+      "Thay đổi tối đa 3 số nghĩa là ít nhất n-3 giá trị gốc được giữ lại; mỗi số bị thay đổi có thể đặt thành một giá trị nằm trong đoạn được giữ, điều này không bao giờ làm tăng biên độ.",
+      "Sau khi sắp xếp, tập giữ lại tốt nhất luôn là một khối liên tiếp gồm n-3 phần tử: khi giá trị nhỏ nhất và lớn nhất được giữ đã cố định, các phần tử ở giữa không cần thay đổi. Chỉ có 4 cửa sổ như vậy: bỏ i phần tử bên trái và 3-i phần tử bên phải.",
+      "Nếu n <= 4, có thể làm cho mọi số bằng nhau, nên in 0; ngược lại sắp xếp và tính A[n-4+i] - A[i] với i = 0..3, rồi in giá trị nhỏ nhất."
     ]
   },
   "explanationEn": "## Approach\n\nAt most 3 elements may be changed. After sorting, changing a middle element is never more effective than changing an end element, so it is enough to enumerate removing i elements from the left and 3-i from the right (i = 0, 1, 2, 3); the width of the remaining range is `A[n-4+i] - A[i]`, and we take the minimum. If n <= 4, at most three elements of the array can be changed to the remaining value, so the answer is 0.\n\n## Correctness\n\nAfter changing at most three elements, at least n-3 original values are kept. Once the smallest and largest kept values are fixed, every element between them needs no change, and the changed values outside that range can be placed inside the final range. So the optimum is equivalent to choosing a contiguous window of n-3 items in the sorted array as the kept values; any non-contiguous choice spans no less than the contiguous window that covers it. There are four ways to assign the window's ends, and enumerating them gives the minimum amplitude. When n <= 4, all final values can be made equal, and the amplitude is 0.\n\n## Complexity\n\nSorting O(n log n), scanning O(1), space O(n) (sorted copy / sorted storage).\n\n## Sources and site conventions\n\nThe fixed OAMaster snapshot has a truncated statement and no constraints: https://oamaster.com/docs/companies/google#48-min-amplitude (upstream commit `e66f809f4c953bce129f68491726176615db6afc`, content fingerprint `60efd7fedc0458888bbd6e558a07eb6c952a417fe99fb9068d73d5fa0ac3117e`). A Google OA source of the same problem fully keeps \"replace at most three elements with any integers\", two examples consistent with OAMaster, and the constraints: https://www.fastprep.io/problems/google-min-amplitude. This site completes the missing statement from it; the standard input/output format is an addition by this site. The complete rule and constraints are not attributed to the original OAMaster snapshot."

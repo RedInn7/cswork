@@ -13,6 +13,21 @@
       "A day has only 1440 minutes and who is busy does not matter: everyone is free in a minute exactly when no event covers it. Both the start and the end minute of an event are busy.",
       "Add each event [start, end] to a difference array on the minute axis: diff[start] += 1, diff[end+1] -= 1; prefix sums give the number of busy events in each minute.",
       "Scan from 00:00 to 23:59 keeping run, the number of consecutive free minutes (add one when the busy count is 0, reset otherwise); the first time run >= k the meeting starts at t - k + 1, printed as two-digit hours and minutes; if it never happens print -1."
+    ],
+    "ja": [
+      "1 日は 1440 分しかなく、誰が使用中かは関係ありません。ある分に全員が空いているのは、その分をカバーするイベントがないときです。イベントの開始分と終了分は、どちらも使用中です。",
+      "各イベント [start, end] を分の軸上の差分配列に加えます。diff[start] += 1、diff[end+1] -= 1 とし、接頭辞和で各分の使用中のイベント数が得られます。",
+      "00:00 から 23:59 まで走査し、run（連続する空き分の数）を保持します（使用中の数が 0 なら 1 を加え、そうでなければリセット）。初めて run >= k になったとき、会議の開始は t - k + 1 で、時と分を 2 桁で出力します。一度もならなければ -1 を出力してください。"
+    ],
+    "ko": [
+      "하루는 1440분뿐이고 누가 바쁜지는 중요하지 않습니다. 어떤 이벤트도 그 분을 덮지 않는 것과 모두가 한가한 것은 동치입니다. 이벤트의 시작 분과 종료 분은 모두 바쁜 시간입니다.",
+      "각 이벤트 [start, end]를 분 축의 차분 배열에 diff[start] += 1, diff[end+1] -= 1로 더하면, 접두사 합이 각 분의 바쁜 이벤트 수를 줍니다.",
+      "00:00부터 23:59까지 훑으며 run, 즉 연속으로 한가한 분의 수를 유지합니다(바쁜 수가 0이면 1을 더하고, 아니면 0으로 초기화). run >= k가 되는 첫 순간 회의는 t - k + 1에 시작하며, 두 자리 시와 분으로 출력합니다. 그런 순간이 없으면 -1을 출력합니다."
+    ],
+    "vi": [
+      "Một ngày chỉ có 1440 phút và ai bận không quan trọng: mọi người đều rảnh trong một phút đúng khi không có sự kiện nào phủ phút đó. Cả phút bắt đầu và phút kết thúc của sự kiện đều bận.",
+      "Thêm mỗi sự kiện [start, end] vào một mảng hiệu trên trục phút: diff[start] += 1, diff[end+1] -= 1; tổng tiền tố cho số sự kiện bận trong mỗi phút.",
+      "Quét từ 00:00 đến 23:59 giữ run, số phút rảnh liên tiếp (cộng một khi số bận là 0, đặt lại về 0 trong trường hợp ngược lại); lần đầu tiên run >= k thì cuộc họp bắt đầu lúc t - k + 1, in dưới dạng giờ và phút hai chữ số; nếu không bao giờ xảy ra thì in -1."
     ]
   },
   "explanationEn": "## Approach\n\nApply a difference array over [start,end+1) on the minute axis for each event to get the number of busy people in each minute. Scan the run of consecutive minutes with zero occupancy; the first time it reaches k gives the earliest slot.\n\n## Correctness\n\nEveryone is free if and only if no event covers that minute. The prefix sums of the difference array count the occupancy of closed intervals exactly, and k consecutive zeros mean exactly that a complete meeting can take place. The first time the condition is met in increasing time order is the earliest.\n\n## Complexity\n\nTime O(n+1440), space O(1440)."

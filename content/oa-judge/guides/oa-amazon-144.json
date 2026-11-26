@@ -13,6 +13,21 @@
       "Two prefixes of length j+1 are equal exactly when their length-j prefixes are equal and their (j+1)-th characters are equal.",
       "So refine the groups column by column: each string carries the id of its current prefix group, and the new group in the next column is uniquely determined by (old group id, current character); count the members of each group per column, and the largest count is the answer for that length, with no need to store all prefixes or build a trie.",
       "Start with every row in group 0. For each column j: assign a new id to each (old group, character) pair the first time it appears, record each row's new id while counting the members of each new group, and take the largest count as this column's answer; then replace the old ids with the new ones for the next column. Output the answers for lengths 1..m in order."
+    ],
+    "ja": [
+      "長さ j+1 の 2 つのプレフィックスが等しいのは、長さ j のプレフィックスが等しく、かつ (j+1) 番目の文字が等しいときに限ります。",
+      "したがって、グループを列ごとに細分化します。各文字列は現在のプレフィックスグループの id を持ち、次の列での新しいグループは (古いグループ id, 現在の文字) によって一意に決まります。列ごとに各グループのメンバー数を数え、最大の数がその長さの答えです。すべてのプレフィックスを保存したり、トライ木を作ったりする必要はありません。",
+      "すべての行をグループ 0 から始めます。各列 j について、(古いグループ, 文字) の組が初めて現れるたびに新しい id を割り当て、各行の新しい id を記録しながら新しい各グループのメンバー数を数え、最大の数をその列の答えとします。その後、次の列のために古い id を新しい id に置き換えます。長さ 1..m の答えを順に出力します。"
+    ],
+    "ko": [
+      "길이 j+1인 두 접두사가 같은 것은, 길이 j인 접두사가 같고 (j+1)번째 문자도 같을 때, 그리고 그때에만입니다.",
+      "따라서 그룹을 열 단위로 세분화합니다. 각 문자열이 현재 접두사 그룹의 id를 가지고 있고, 다음 열에서의 새 그룹은 (이전 그룹 id, 현재 문자)로 유일하게 결정됩니다. 열마다 각 그룹의 구성원 수를 세면 가장 큰 값이 그 길이의 답이며, 모든 접두사를 저장하거나 트라이를 만들 필요가 없습니다.",
+      "모든 행을 그룹 0에서 시작합니다. 각 열 j에서 (이전 그룹, 문자) 쌍이 처음 나타날 때마다 새 id를 부여하고, 각 행의 새 id를 기록하면서 새 그룹별 구성원 수를 셉니다. 가장 큰 개수가 이 열의 답이며, 다음 열을 위해 이전 id를 새 id로 교체합니다. 길이 1..m의 답을 순서대로 출력합니다."
+    ],
+    "vi": [
+      "Hai tiền tố độ dài j+1 bằng nhau chính xác khi tiền tố độ dài j của chúng bằng nhau và ký tự thứ (j+1) của chúng bằng nhau.",
+      "Vì vậy hãy làm mịn các nhóm theo từng cột: mỗi chuỗi mang id của nhóm tiền tố hiện tại, và nhóm mới ở cột kế tiếp được xác định duy nhất bởi (id nhóm cũ, ký tự hiện tại); đếm số thành viên của mỗi nhóm ở từng cột, và số đếm lớn nhất là đáp án cho độ dài đó, không cần lưu mọi tiền tố hay xây trie.",
+      "Bắt đầu với mọi hàng thuộc nhóm 0. Với mỗi cột j: gán một id mới cho mỗi cặp (nhóm cũ, ký tự) ngay lần đầu nó xuất hiện, ghi lại id mới của mỗi hàng đồng thời đếm số thành viên của từng nhóm mới, và lấy số đếm lớn nhất làm đáp án của cột này; sau đó thay các id cũ bằng id mới cho cột kế tiếp. Xuất đáp án cho các độ dài 1..m theo thứ tự."
     ]
   },
   "explanationEn": "## Approach\n\nRefine the prefix groups column by column: a new group is uniquely determined by the old prefix group number and the current character; count the members of each group and take the maximum.\n\n## Correctness\n\nPrefixes of length j+1 are equal if and only if the length-j prefixes are equal and the current characters are equal. So the column-by-column update of group numbers represents the prefix equality relation exactly, and the largest group size in each column is what is asked. There is no need to store all prefixes or a million trie nodes.\n\n## Complexity\n\nTime O(nm), space O(nm) including the input, O(n) extra."

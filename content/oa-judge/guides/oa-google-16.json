@@ -13,6 +13,21 @@
       "The expression is nested add(x,y) and sub(x,y). When you reach a closing parenthesis, both arguments of that call have already been evaluated.",
       "Avoid recursion (the nesting can be very deep) and use two stacks: an operator stack for the add/sub calls still open, and a value stack for evaluated values. At a closing parenthesis, pop two values and one operator, compute, and push the result back onto the value stack.",
       "Scan character by character: on a or s push add or sub onto the operator stack and skip three characters; on - or a digit read the whole signed integer and push it; on ) pop the right argument first, then the left one, apply the top operator and push the result; skip opening parentheses, commas and spaces; at the end the only value left is the answer, and intermediate values use 64-bit integers."
+    ],
+    "ja": [
+      "式は add(x,y) と sub(x,y) の入れ子です。閉じ括弧に達した時点で、その呼び出しの 2 つの引数はすでに評価されています。",
+      "再帰 (入れ子はとても深くなりえます) を避け、2 つのスタックを使います。まだ開いている add/sub の呼び出しを積む演算子スタックと、評価済みの値を積む値スタックです。閉じ括弧では、2 つの値と 1 つの演算子を pop して計算し、結果を値スタックに戻します。",
+      "1 文字ずつ走査します。a または s なら add または sub を演算子スタックに積んで 3 文字進めます。- または数字なら符号付き整数全体を読んで積みます。) なら、先に右の引数、次に左の引数を pop し、先頭の演算子を適用して結果を積みます。開き括弧、カンマ、空白は読み飛ばします。最後に残る値が答えで、途中の値には 64 ビット整数を使います。"
+    ],
+    "ko": [
+      "식은 중첩된 add(x,y)와 sub(x,y)입니다. 닫는 괄호에 도달했을 때, 그 호출의 두 인자는 이미 모두 계산되어 있습니다.",
+      "재귀를 피하고(중첩이 매우 깊을 수 있습니다) 두 개의 스택을 사용합니다. 아직 열려 있는 add/sub 호출을 위한 연산자 스택과, 계산된 값을 위한 값 스택입니다. 닫는 괄호에서 값 두 개와 연산자 하나를 pop하여 계산한 뒤 결과를 값 스택에 push합니다.",
+      "문자를 하나씩 스캔합니다. a 또는 s이면 연산자 스택에 add 또는 sub를 push하고 세 글자를 건너뜁니다. - 또는 숫자이면 부호 있는 정수 전체를 읽어 push합니다. )이면 오른쪽 인자를 먼저, 다음에 왼쪽 인자를 pop하고 top의 연산자를 적용하여 결과를 push합니다. 여는 괄호, 쉼표, 공백은 건너뜁니다. 끝에 남는 유일한 값이 답이며, 중간 값에는 64비트 정수를 사용합니다."
+    ],
+    "vi": [
+      "Biểu thức là các add(x,y) và sub(x,y) lồng nhau. Khi bạn gặp dấu ngoặc đóng, cả hai đối số của lời gọi đó đã được tính xong.",
+      "Tránh đệ quy (độ lồng có thể rất sâu) và dùng hai ngăn xếp: một ngăn xếp toán tử cho các lời gọi add/sub còn đang mở, và một ngăn xếp giá trị cho các giá trị đã tính. Tại dấu ngoặc đóng, lấy ra hai giá trị và một toán tử, tính, rồi đẩy kết quả trở lại ngăn xếp giá trị.",
+      "Quét từng ký tự: với a hoặc s, đẩy add hoặc sub vào ngăn xếp toán tử và bỏ qua ba ký tự; với - hoặc chữ số, đọc cả số nguyên có dấu và đẩy nó vào; với ) lấy ra đối số bên phải trước, rồi đến đối số bên trái, áp dụng toán tử trên cùng và đẩy kết quả; bỏ qua dấu ngoặc mở, dấu phẩy và dấu cách; cuối cùng giá trị duy nhất còn lại là đáp án, và các giá trị trung gian dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nLexically scan for add, sub, signed integers and closing parentheses. Use an operator stack and a value stack; when a closing parenthesis appears, pop two values and perform one operation, which avoids deep recursion.\n\n## Why it is correct\n\nWhen a closing parenthesis is reached, the subexpressions of its two arguments have already been evaluated, and the top of the value stack holds the right argument and then the left argument. Computing with the most recent unfinished operation and pushing the result back is equivalent to replacing the whole subexpression. After eliminating all operations from the inside out, only the total result remains.\n\n## Complexity\n\nO(L) time, O(L) extra space."

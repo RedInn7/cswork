@@ -13,6 +13,21 @@
       "In any non-empty sequence that remains, the first element must be a group header. So, scanning from the left, each position has only two fates: it is deleted, or it becomes a header that takes some following elements with it.",
       "If position i is kept as a header, taking the a[i] elements immediately after it as its members is optimal: member values have no requirement, and skipping elements only causes more deletions and leaves fewer elements for later. That allows a DP from right to left.",
       "Let dp[i] be the minimum number of deletions that make the suffix a[i..] valid, with dp[n] = 0. Going from i = n - 1 down to 0, set dp[i] = 1 + dp[i+1] (delete a[i]); if i + a[i] + 1 <= n, also take the minimum with dp[i + a[i] + 1] (a[i] is a header followed by the next a[i] elements). The answer is dp[0]."
+    ],
+    "ja": [
+      "残る空でない数列では、最初の要素は必ずグループの先頭になります。したがって、左から見ると、各位置の行き先は 2 通りだけです。削除されるか、後続のいくつかの要素を従えるグループの先頭になるかです。",
+      "位置 i を先頭として残す場合、その直後の a[i] 個の要素をそのままメンバーとするのが最適です。メンバーの値には要件がなく、要素を飛ばしてもかえって削除が増え、後ろに使える要素が減るだけだからです。これにより、右から左への DP が可能になります。",
+      "dp[i] を、接尾辞 a[i..] を有効にするための最小削除数とし、dp[n] = 0 とします。i = n - 1 から 0 まで下りながら dp[i] = 1 + dp[i+1]（a[i] を削除）とし、i + a[i] + 1 <= n であれば dp[i + a[i] + 1]（a[i] が先頭で、続く a[i] 個の要素が従う）との最小値も取ります。答えは dp[0] です。"
+    ],
+    "ko": [
+      "남은 수열이 비어 있지 않다면 그 첫 번째 원소는 반드시 그룹의 머리여야 합니다. 따라서 왼쪽부터 보면 각 위치에는 두 가지 운명뿐입니다. 삭제되거나, 뒤따르는 원소 몇 개를 데리고 가는 머리가 됩니다.",
+      "위치 i를 머리로 남긴다면 바로 뒤의 a[i]개 원소를 멤버로 삼는 것이 최적입니다. 멤버의 값에는 조건이 없고, 원소를 건너뛰면 삭제만 늘어나며 뒤쪽에 쓸 원소도 줄어들기 때문입니다. 그래서 오른쪽에서 왼쪽으로 DP를 할 수 있습니다.",
+      "dp[i]를 접미사 a[i..]를 유효하게 만드는 최소 삭제 횟수라 하고 dp[n] = 0으로 둡니다. i = n - 1부터 0까지 내려가며 dp[i] = 1 + dp[i+1](a[i] 삭제)로 두고, i + a[i] + 1 <= n이면 dp[i + a[i] + 1](a[i]가 머리이고 그 뒤 a[i]개 원소가 멤버)과의 최솟값을 취합니다. 답은 dp[0]입니다."
+    ],
+    "vi": [
+      "Trong mọi dãy không rỗng còn lại, phần tử đầu tiên phải là đầu nhóm. Vì vậy, khi quét từ trái, mỗi vị trí chỉ có hai số phận: bị xóa, hoặc trở thành đầu nhóm kéo theo một số phần tử phía sau.",
+      "Nếu vị trí i được giữ làm đầu nhóm, lấy a[i] phần tử ngay sau nó làm thành viên là tối ưu: giá trị thành viên không có yêu cầu gì, còn bỏ qua phần tử chỉ gây thêm xóa và để lại ít phần tử hơn cho các nhóm sau. Điều đó cho phép quy hoạch động từ phải sang trái.",
+      "Gọi dp[i] là số lần xóa tối thiểu để hậu tố a[i..] hợp lệ, với dp[n] = 0. Đi từ i = n - 1 xuống 0, đặt dp[i] = 1 + dp[i+1] (xóa a[i]); nếu i + a[i] + 1 <= n, lấy thêm min với dp[i + a[i] + 1] (a[i] là đầu nhóm theo sau là a[i] phần tử tiếp theo). Đáp án là dp[0]."
     ]
   },
   "explanationEn": "## Approach\n\nDP from right to left. The current position can be deleted, costing 1 + dp[i+1]; or it can serve as a group header that keeps the next a[i] elements, costing dp[i+a[i]+1], which requires staying in bounds.\n\n## Correctness\n\nThe first element of any non-empty valid remaining sequence is a group header. If i is kept as a header, choosing the a[i] elements immediately after it is never worse than skipping over some elements: the values chosen as group content have no requirement, so using earlier elements means fewer deletions and leaves more elements available for what follows. Therefore an optimal solution only needs to consider this complete contiguous group or deleting i, and these two cases cover the optimum.\n\n## Complexity\n\nTime O(n), space O(n)."

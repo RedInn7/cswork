@@ -13,6 +13,21 @@
       "Split people into four groups by skills: both skills, only skill 1, only skill 2, and none; costs are non-negative, so people with no skill never need to be chosen.",
       "Once you fix taking j people with both skills, each single-skill group still needs K−j people, and every group should contribute its cheapest members; the total f(j) comes from prefix sums of the three sorted groups in O(1), and f is convex in j.",
       "Sort the three groups and build prefix sums; for each K, the feasible j range is [max(0, K−|X|, K−|Y|), min(K, |B|)], and if it is empty print −1; otherwise binary search in the range for the first j with f(j+1)−f(j) ≥ 0 and print f(j), using 64-bit integers."
+    ],
+    "ja": [
+      "スキルによって人を 4 つのグループに分けます: 両方持つ、スキル 1 のみ、スキル 2 のみ、どちらも持たない。コストは非負なので、スキルのない人を選ぶ必要はありません。",
+      "両方のスキルを持つ人を j 人取ると決めると、片方のスキルのみのグループからはそれぞれ K−j 人が必要で、どのグループも安い順に取るのが最適です。合計 f(j) は 3 つのソート済みグループの累積和から O(1) で求まり、f は j について凸です。",
+      "3 つのグループをソートして累積和を作ります。各 K について、実現可能な j の範囲は [max(0, K−|X|, K−|Y|), min(K, |B|)] で、空なら −1 を出力します。そうでなければその範囲で、f(j+1)−f(j) ≥ 0 となる最初の j を二分探索し、f(j) を 64 ビット整数で出力します。"
+    ],
+    "ko": [
+      "기술에 따라 사람을 네 그룹으로 나눕니다. 두 기술 모두, 기술 1만, 기술 2만, 기술 없음입니다. 비용은 음이 아니므로 기술이 없는 사람은 선택할 필요가 없습니다.",
+      "두 기술을 모두 가진 사람을 j명 뽑는다고 고정하면, 단일 기술 그룹에서는 각각 K−j명이 더 필요하고 각 그룹에서 가장 저렴한 사람부터 뽑아야 합니다. 총합 f(j)는 정렬된 세 그룹의 누적 합으로 O(1)에 구할 수 있고, f는 j에 대해 볼록입니다.",
+      "세 그룹을 정렬하고 누적 합을 만듭니다. 각 K에 대해 가능한 j의 범위는 [max(0, K−|X|, K−|Y|), min(K, |B|)]이며, 범위가 비어 있으면 −1을 출력합니다. 그렇지 않으면 범위 안에서 이분 탐색으로 f(j+1)−f(j) ≥ 0인 첫 j를 찾아 f(j)를 64비트 정수로 출력합니다."
+    ],
+    "vi": [
+      "Chia mọi người thành bốn nhóm theo kỹ năng: có cả hai, chỉ kỹ năng 1, chỉ kỹ năng 2, và không có kỹ năng nào; chi phí không âm nên người không có kỹ năng nào không bao giờ cần chọn.",
+      "Khi đã cố định lấy j người có cả hai kỹ năng, mỗi nhóm đơn kỹ năng vẫn cần K−j người, và mỗi nhóm nên đóng góp những người rẻ nhất; tổng f(j) tính được từ tổng tiền tố của ba nhóm đã sắp xếp trong O(1), và f là hàm lồi theo j.",
+      "Sắp xếp ba nhóm và xây tổng tiền tố; với mỗi K, khoảng j khả thi là [max(0, K−|X|, K−|Y|), min(K, |B|)], và nếu rỗng thì in −1; ngược lại tìm kiếm nhị phân trong khoảng để tìm j đầu tiên có f(j+1)−f(j) ≥ 0 và in f(j), dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nSplit people into four groups: B with both skills, X with only skill 1, Y with only skill 2, and those with none; with non-negative costs, people with no skill never need to be chosen. After fixing j people from B, each of the other two groups must supply K−j people, at cost f(j) = PB[j] + PX[K−j] + PY[K−j]. The feasible range of j is [max(0, K−|X|, K−|Y|), min(K, |B|)].\n\n## Correctness\n\nFor a given number j of people with both skills, the cheapest feasible plan must take the cheapest required number from each group, which gives f(j). Prefix sums of sorted costs have non-decreasing marginal costs; the difference of f is the marginal cost of B[j] minus the marginal costs of the last members removed from X and Y, which is non-decreasing in j, so f is discretely convex. Binary searching the first non-negative difference finds the minimum on the range. Non-negative costs allow dropping unnecessary people; the non-negativity restriction is site-added.\n\n## Complexity\n\nSorting takes O(n log n) and each K needs an O(log n) binary search, for a total time of O(n log n) and space O(n)."

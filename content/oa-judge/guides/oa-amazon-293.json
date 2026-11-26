@@ -13,6 +13,21 @@
       "Look at two crossing pairs: if x ≤ y and u ≤ v, then pairing x with u and y with v gives a total absolute difference no larger than pairing x with v and y with u. In other words, a crossing pairing can always be uncrossed without getting worse.",
       "Removing crossings repeatedly ends with both sides sorted and paired in order, so that pairing is optimal.",
       "Sort both arrays in ascending order, add |a[i]−b[i]| for every index i, and print the total. Values can be negative and the total can reach about 2×10^14, so use 64-bit integers."
+    ],
+    "ja": [
+      "交差する 2 組を考えます。x ≤ y かつ u ≤ v のとき、x と u、y と v を組み合わせたほうが、x と v、y と u を組み合わせるより絶対差の合計は大きくなりません。つまり、交差したペアリングは、悪化させることなく解消できます。",
+      "交差を繰り返し解消すると、最終的に両側がソートされ、順番どおりに組み合わされた状態になるので、そのペアリングが最適です。",
+      "両方の配列を昇順にソートし、すべての添字 i について |a[i]−b[i]| を加えて、合計を出力します。値は負になりえ、合計は約 2×10^14 に達しうるので、64 ビット整数を使います。"
+    ],
+    "ko": [
+      "교차하는 두 쌍을 봅니다. x ≤ y이고 u ≤ v일 때, x와 u, y와 v를 짝짓는 것이 x와 v, y와 u를 짝짓는 것보다 절댓값 차이의 합이 크지 않습니다. 즉 교차한 짝짓기는 항상 나빠지지 않게 풀 수 있습니다.",
+      "교차를 반복해서 없애면 양쪽이 정렬되어 순서대로 짝지어진 상태에 도달하므로, 그 짝짓기가 최적입니다.",
+      "두 배열을 오름차순으로 정렬하고 모든 인덱스 i에 대해 |a[i]−b[i]|를 더해 합을 출력합니다. 값은 음수일 수 있고 합은 약 2×10^14에 이를 수 있으므로 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Xét hai cặp cắt nhau: nếu x ≤ y và u ≤ v, thì ghép x với u và y với v cho tổng chênh lệch tuyệt đối không lớn hơn ghép x với v và y với u. Nói cách khác, một cách ghép chéo luôn có thể được gỡ chéo mà không tệ đi.",
+      "Gỡ chéo lặp đi lặp lại sẽ kết thúc khi cả hai phía đã được sắp xếp và ghép theo thứ tự, nên cách ghép đó là tối ưu.",
+      "Sắp xếp cả hai mảng tăng dần, cộng |a[i]−b[i]| cho mọi chỉ số i, và in tổng. Các giá trị có thể âm và tổng có thể lên tới khoảng 2×10^14, nên hãy dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nSort both arrays in ascending order, pair them in that order, and add up the absolute differences.\n\n## Proof of correctness\n\nIf x≤y and u≤v, then |x−u|+|y−v|≤|x−v|+|y−u|. So any crossing pairing can be swapped into a non-crossing one without increasing the cost. Repeatedly removing crossings gives the sorted, same-order pairing, which is exactly what the algorithm builds, so it is optimal.\n\n## Complexity\n\nTime O(n log n), space O(n); the total cost is at most 2×10^14 and needs 64 bits."

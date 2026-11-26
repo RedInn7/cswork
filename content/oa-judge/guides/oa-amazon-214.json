@@ -13,6 +13,21 @@
       "Picks strictly increase from left to right, so the right end takes the most; with the right end fixed, taking it in full never makes the left side worse.",
       "After taking the right end in full, go left: the most a pile can give is min(its capacity, the right neighbour's pick - 1); taking that maximum at every step leaves the loosest constraint for piles further left.",
       "n <= 5000, so O(n^2) is fine: for each right end r, set limit = a[r] + 1 and total = 0; walking left from r, limit = min(a[l], limit - 1), stop when limit <= 0, otherwise total += limit; update the answer with total (64-bit)."
+    ],
+    "ja": [
+      "取る個数は左から右へ狭義に増加するので、右端が最も多く取ります。右端を固定したとき、それを全部取っても左側が悪くなることはありません。",
+      "右端を全部取ったら左へ進みます。1 つの山が出せる最大は min(その容量, 右隣の取得数 - 1) で、毎回この最大を取れば、さらに左の山に対する制約が最も緩くなります。",
+      "n <= 5000 なので O(n^2) で十分です。各右端 r について limit = a[r] + 1、total = 0 とします。r から左へ進みながら limit = min(a[l], limit - 1) とし、limit <= 0 になったら止め、そうでなければ total += limit とします。total で答えを更新します（64 ビット）。"
+    ],
+    "ko": [
+      "가져오는 양은 왼쪽에서 오른쪽으로 엄격히 증가하므로 오른쪽 끝이 가장 많이 가져갑니다. 오른쪽 끝을 고정하면 그 더미를 전부 가져가도 왼쪽이 더 나빠지는 일은 없습니다.",
+      "오른쪽 끝을 전부 가져간 뒤 왼쪽으로 가면, 한 더미가 줄 수 있는 최대량은 min(그 용량, 오른쪽 이웃의 양 - 1)입니다. 매 단계에서 이 최댓값을 가져가면 더 왼쪽의 더미에 대한 제약이 가장 느슨해집니다.",
+      "n <= 5000이므로 O(n^2)이면 충분합니다. 각 오른쪽 끝 r에 대해 limit = a[r] + 1, total = 0으로 두고 r에서 왼쪽으로 가면서 limit = min(a[l], limit - 1)을 계산하여 limit <= 0이면 멈추고, 아니면 total += limit을 합니다. total로 정답을 갱신합니다(64비트)."
+    ],
+    "vi": [
+      "Số lượng lấy tăng ngặt từ trái sang phải, nên đầu phải lấy nhiều nhất; với đầu phải cố định, lấy trọn nó không bao giờ làm phía trái tệ hơn.",
+      "Sau khi lấy trọn đầu phải, đi sang trái: một đống cho nhiều nhất min(sức chứa của nó, số lấy của đống bên phải - 1); lấy giá trị tối đa đó ở mỗi bước để lại ràng buộc lỏng nhất cho các đống xa hơn bên trái.",
+      "n <= 5000 nên O(n^2) là được: với mỗi đầu phải r, đặt limit = a[r] + 1 và total = 0; đi sang trái từ r, limit = min(a[l], limit - 1), dừng khi limit <= 0, nếu không thì total += limit; cập nhật đáp án bằng total (64-bit)."
     ]
   },
   "explanationEn": "## Approach\n\nEnumerate the right end and take it in full; going left, take min(this pile's capacity, the right neighbour's pick - 1) each time, stop when this becomes 0, and record the largest running total.\n\n## Proof of correctness\n\nWith the right end fixed, taking more from the rightmost pile only loosens the constraints on the left, so some optimal plan takes it in full. Once the pick to the right is fixed, the largest valid pick for the current pile is min(capacity, right pick - 1), and a larger current pick never hurts feasibility further left; backward induction gives the termwise largest plan. Extending further left only adds positive numbers and increases the total, and after reaching 0 no pile further left can take a positive amount. Enumerating all right ends covers the global optimum.\n\n## Complexity\n\nTime O(n^2), space O(n); the answer can reach about 5*10^12, so 64-bit integers are needed."

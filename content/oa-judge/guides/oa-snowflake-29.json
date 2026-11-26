@@ -13,6 +13,21 @@
       "A point assignment wipes out all earlier history for that service, while a global raise [2, -1, x] is a max with x, and several raises combined only depend on their largest x.",
       "So a service's final value depends only on its last point assignment and the largest raise after it; a service never assigned ends at the max of its initial value and the largest raise overall.",
       "Scan the logs backward keeping floor = the largest raise seen so far: a raise updates floor; an assignment to p, when p has no final value yet, sets it to max(x, floor). After the scan, every undetermined service gets max(initial, floor). Print n and then the values."
+    ],
+    "ja": [
+      "個別の設定は、そのサービスのそれ以前の履歴をすべて消します。一方、全体の引き上げ [2, -1, x] は x との max であり、複数の引き上げを合わせた結果は最大の x だけで決まります。",
+      "したがって、サービスの最終値は、最後の個別設定と、その後の最大の引き上げだけで決まります。一度も設定されなかったサービスは、初期値と全体で最大の引き上げの max で終わります。",
+      "ログを後ろから走査し、floor = これまでに見た最大の引き上げ、を保持します。引き上げは floor を更新します。サービス p への設定は、p にまだ最終値がなければ、max(x, floor) に決めます。走査の後、未確定のサービスにはすべて max(initial, floor) を与えます。n と、続いて値を出力してください。"
+    ],
+    "ko": [
+      "개별 설정은 그 서비스의 이전 이력을 모두 지우고, 전역 상향 [2, -1, x]는 x와의 max이며 여러 번의 상향을 합치면 가장 큰 x에만 달려 있습니다.",
+      "따라서 서비스의 최종 값은 마지막 개별 설정과 그 이후의 가장 큰 상향에만 달려 있습니다. 한 번도 설정되지 않은 서비스는 초깃값과 전체에서 가장 큰 상향 중 큰 값으로 끝납니다.",
+      "로그를 뒤에서부터 훑으며 floor = 지금까지 본 가장 큰 상향 값을 유지합니다. 상향은 floor를 갱신하고, p에 대한 설정은 p의 최종 값이 아직 없으면 max(x, floor)로 정합니다. 훑은 뒤 값이 정해지지 않은 서비스는 max(초깃값, floor)를 받습니다. n을 출력하고 이어서 값들을 출력합니다."
+    ],
+    "vi": [
+      "Một lần gán điểm xóa sạch mọi lịch sử trước đó của dịch vụ đó, còn một lần nâng toàn cục [2, -1, x] là phép max với x, và nhiều lần nâng gộp lại chỉ phụ thuộc vào x lớn nhất.",
+      "Vì vậy giá trị cuối cùng của một dịch vụ chỉ phụ thuộc vào lần gán điểm cuối cùng của nó và mức nâng lớn nhất sau đó; một dịch vụ chưa bao giờ được gán kết thúc ở max của giá trị ban đầu và mức nâng lớn nhất tổng thể.",
+      "Quét các bản ghi lùi lại, giữ floor = mức nâng lớn nhất đã thấy cho đến nay: một lần nâng cập nhật floor; một lần gán cho p, khi p chưa có giá trị cuối cùng, đặt nó thành max(x, floor). Sau khi quét, mọi dịch vụ chưa xác định nhận max(initial, floor). In n rồi các giá trị."
     ]
   },
   "explanationEn": "## Approach\n\nProcess the logs in reverse order, maintaining the maximum of the global raises seen so far. When the last point assignment of a service is reached, its final value is determined; every other service combines its initial value with all the raises.\n\n## Correctness\n\nThe last point assignment overrides all history before it, and the global raises after it are equivalent to taking the max with the largest threshold of that suffix. The first time the reverse scan meets an assignment to the service, it has exactly the needed suffix value; services that are never assigned keep their initial values and then apply all the raises.\n\n## Complexity\n\nTime O(n+m), space O(n+m)."

@@ -13,6 +13,21 @@
       "If some k cars can be built, the k shortest cars can be built too: swapping a chosen long car for an unchosen short one never pushes either line over its budget.",
       "So sort the durations ascending and test prefixes one at a time. A group of cars fits on the two lines when some total s assigned to line 1 satisfies s≤X and total−s≤Y, which is a subset-sum question.",
       "Keep a bitset of the totals line 1 can reach, limited to bits 0..X, starting with only 0. Add the i-th shortest car: increase the running total and stop if it exceeds X+Y; OR the bitset with itself shifted left by the duration and cut it back to X; if some reachable bit is at least total−Y, set the answer to i+1, otherwise stop."
+    ],
+    "ja": [
+      "ある k 台が作れるなら、最も短い k 台も作れます。選んだ長い車を、選ばなかった短い車と入れ替えても、どちらのラインも上限を超えないからです。",
+      "そこで所要時間を昇順にソートし、接頭辞を 1 つずつ試します。車の集まりが 2 本のラインに収まるのは、第 1 ラインに割り当てる合計 s が s≤X かつ total−s≤Y を満たすときで、これは部分和問題です。",
+      "第 1 ラインが到達できる合計のビットセットを、ビット 0..X に限って持ち、最初は 0 だけを立てておきます。短い順に i 番目の車を加えます。まず累計を増やし、X+Y を超えたら止めます。ビットセットを所要時間だけ左にシフトしたものと OR を取り、X までに切り詰めます。立っているビットのうち total−Y 以上のものがあれば、答えを i+1 とし、なければ止めます。"
+    ],
+    "ko": [
+      "어떤 k대를 만들 수 있다면 가장 짧은 k대도 만들 수 있습니다. 고른 긴 자동차를 고르지 않은 짧은 자동차로 바꿔도 어느 라인의 예산도 넘지 않기 때문입니다.",
+      "따라서 소요 시간을 오름차순으로 정렬해 접두사를 하나씩 검사합니다. 어떤 자동차 집합이 두 라인에 들어가려면 라인 1에 배정되는 합 s가 s≤X이고 total−s≤Y여야 하며, 이는 부분 집합 합 문제입니다.",
+      "라인 1이 만들 수 있는 합의 비트셋을 0..X 비트로 제한해 유지하며, 처음에는 0만 켭니다. i번째로 짧은 자동차를 추가할 때 누적 합을 늘리고 X+Y를 넘으면 멈춥니다. 비트셋을 소요 시간만큼 왼쪽으로 시프트한 것과 OR하고 X까지 잘라 냅니다. 도달 가능한 비트 중 total−Y 이상인 것이 있으면 정답을 i+1로 두고, 없으면 멈춥니다."
+    ],
+    "vi": [
+      "Nếu có thể lắp k xe nào đó thì cũng lắp được k xe ngắn nhất: đổi một xe dài đã chọn lấy một xe ngắn hơn chưa chọn không bao giờ làm dây chuyền nào vượt ngân sách.",
+      "Vì vậy hãy sắp xếp thời lượng tăng dần và thử từng tiền tố một. Một nhóm xe vừa trên hai dây chuyền khi tồn tại tổng s giao cho dây chuyền 1 thỏa s≤X và total−s≤Y, đây là bài toán tổng tập con.",
+      "Giữ một bitset các tổng mà dây chuyền 1 đạt được, giới hạn trong các bit 0..X, ban đầu chỉ có 0. Thêm xe ngắn thứ i: tăng tổng hiện tại và dừng nếu vượt X+Y; lấy OR bitset với chính nó dịch trái theo thời lượng rồi cắt về X; nếu có bit nào đạt được mà không nhỏ hơn total−Y thì đặt đáp án là i+1, ngược lại thì dừng."
     ]
   },
   "explanationEn": "## Approach\n\nTry adding prefixes in ascending order of duration, and use a bitset to maintain the reachable total durations on the first line for this group of cars. The prefix can be built if there is a total s≤X with total sum−s≤Y.\n\n## Proof of correctness\n\nWhenever some k cars are feasible, swapping a selected longer car for an unselected shorter one never makes either line exceed its budget, so the k shortest cars are feasible too. The bitset exactly enumerates the subset sums of every assignment of each car to the first or second line; the longest feasible prefix is the optimal number of cars.\n\n## Complexity\n\nTime O(N log N+NX/w), bitset space O(X/w), plus O(N) to store the input, where w is the machine word width."

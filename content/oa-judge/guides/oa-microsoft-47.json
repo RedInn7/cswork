@@ -13,6 +13,21 @@
       "A swap only decides which of the two digits at a position goes on top, so positions with equal digits do not matter. The first differing position decides which number is larger, and no later position can overturn it.",
       "Once the direction of the first differing position is fixed, the smallest difference requires every later differing position to give the smaller digit to the larger number, that is, to point opposite to the first one. The two choices of the first position are mirror images and give the same minimum difference.",
       "Scan the differing positions: remember the direction of the first one, then count later positions in the same direction as same and in the opposite direction as opposite. Keeping the first position means swapping all same positions; swapping it means swapping all opposite positions plus the first one itself. The answer is the smaller of same and opposite+1, or 0 when the strings are identical."
+    ],
+    "ja": [
+      "入れ替えは、ある位置の 2 つの数字のどちらを上に置くかを決めるだけなので、数字が等しい位置は関係ありません。最初に異なる位置がどちらの数が大きいかを決め、それ以降のどの位置もそれを覆せません。",
+      "最初に異なる位置の向きが決まると、差を最小にするには、それ以降の異なる位置のすべてで、小さい方の数字を大きい方の数に渡す、つまり最初の位置と逆向きにする必要があります。最初の位置についての 2 つの選択は互いに鏡像で、最小の差は同じになります。",
+      "異なる位置を走査します。最初のものの向きを覚え、それ以降の位置のうち、同じ向きのものを same、逆向きのものを opposite と数えます。最初の位置を保つなら、same の位置をすべて入れ替え、最初の位置を入れ替えるなら、opposite の位置をすべてと最初の位置自身を入れ替えます。答えは same と opposite+1 の小さい方で、文字列が同一なら 0 です。"
+    ],
+    "ko": [
+      "교환은 한 위치의 두 숫자 중 어느 것이 위쪽에 놓일지만 결정하므로 숫자가 같은 위치는 상관없습니다. 처음으로 다른 위치가 어느 수가 더 큰지를 결정하며, 이후 어떤 위치도 이를 뒤집을 수 없습니다.",
+      "처음으로 다른 위치의 방향이 정해지면, 차이를 최소로 하려면 이후 모든 다른 위치에서 작은 숫자를 더 큰 수 쪽에 주어야 합니다. 즉 첫 위치와 반대 방향을 향해야 합니다. 첫 위치의 두 선택은 서로 거울상이며 최소 차이가 같습니다.",
+      "다른 위치들을 훑으면서 첫 번째 위치의 방향을 기억하고, 이후 위치 중 같은 방향인 것은 same, 반대 방향인 것은 opposite로 셉니다. 첫 위치를 그대로 두면 모든 same 위치를 교환해야 하고, 첫 위치를 교환하면 모든 opposite 위치와 첫 위치 자신을 교환해야 합니다. 답은 same과 opposite+1 중 작은 값이며, 두 문자열이 같으면 0입니다."
+    ],
+    "vi": [
+      "Một lần đổi chỗ chỉ quyết định chữ số nào trong hai chữ số tại một vị trí nằm trên, nên các vị trí có chữ số bằng nhau không quan trọng. Vị trí khác nhau đầu tiên quyết định số nào lớn hơn, và không vị trí nào sau đó có thể đảo ngược điều này.",
+      "Khi hướng của vị trí khác nhau đầu tiên đã cố định, hiệu nhỏ nhất đòi hỏi mọi vị trí khác nhau sau đó trao chữ số nhỏ hơn cho số lớn hơn, tức là hướng ngược với vị trí đầu. Hai lựa chọn cho vị trí đầu là ảnh phản chiếu của nhau và cho cùng hiệu nhỏ nhất.",
+      "Duyệt các vị trí khác nhau: nhớ hướng của vị trí đầu tiên, rồi đếm các vị trí sau cùng hướng là same và ngược hướng là opposite. Giữ vị trí đầu nghĩa là đổi chỗ mọi vị trí same; đổi vị trí đầu nghĩa là đổi chỗ mọi vị trí opposite cộng thêm chính vị trí đầu. Đáp án là giá trị nhỏ hơn giữa same và opposite+1, hoặc 0 khi hai xâu giống hệt nhau."
     ]
   },
   "explanationEn": "## Approach\n\nThe first differing position decides which number is larger, and every later differing position should offset that difference in the opposite direction. Compute the number of swaps for two options, leaving the first position unswapped or swapping it, and take the smaller.\n\n## Correctness\n\nThe first differing position contributes at least one unit of its place value, while the sum of all differences at later positions is strictly smaller than that, so they cannot change which number is larger. With that position's direction fixed, each later position independently has to contribute in the opposite direction to make the absolute difference minimal. The two directions of the first position are swaps of the whole strings and give the same difference, so it suffices to compare their minimum swap counts.\n\n## Complexity\n\nTime O(N), space O(1) apart from the input."

@@ -13,6 +13,21 @@
       "Processes running at the same moment need different cores, so the maximum concurrency is a lower bound on the number of cores, and assigning free cores in order of start time reaches exactly this bound.",
       "The problem becomes finding the maximum overlap of closed intervals. Touching endpoints still overlap, so when a start time equals an end time, count the start before processing the end.",
       "Sort all start times and all end times separately; walk through the start times, first removing every process whose end time is strictly less than the current start (concurrency minus 1), then adding the current process and updating the maximum concurrency, which is the answer."
+    ],
+    "ja": [
+      "同時刻に実行されるプロセスは別々のコアが必要なので、同時実行数の最大値がコア数の下界になります。開始時刻順に空いているコアを割り当てれば、ちょうどこの下界に達します。",
+      "問題は閉区間の最大重なり数を求めることに帰着します。端点が接していても重なるため、開始時刻と終了時刻が等しいときは、終了の処理より先に開始を数えます。",
+      "開始時刻と終了時刻をそれぞれ別にソートします。開始時刻を順に見ていき、まず終了時刻が現在の開始時刻より真に小さいプロセスをすべて取り除き (同時実行数を 1 減らす)、次に現在のプロセスを加えて同時実行数の最大値を更新します。その最大値が答えです。"
+    ],
+    "ko": [
+      "같은 시각에 실행되는 프로세스들은 서로 다른 코어가 필요하므로 최대 동시 실행 수가 코어 수의 하한이 되며, 시작 시각 순서대로 비어 있는 코어를 배정하면 정확히 이 하한에 도달합니다.",
+      "문제는 닫힌 구간들의 최대 겹침 수를 구하는 것으로 바뀝니다. 끝점이 맞닿아도 겹치므로, 시작 시각과 종료 시각이 같으면 종료를 처리하기 전에 시작을 먼저 셉니다.",
+      "모든 시작 시각과 모든 종료 시각을 각각 정렬합니다. 시작 시각을 차례로 훑으면서, 먼저 종료 시각이 현재 시작 시각보다 엄격하게 작은 프로세스를 모두 제거(동시 실행 수 −1)하고, 그다음 현재 프로세스를 추가하며 최대 동시 실행 수를 갱신합니다. 이 최댓값이 답입니다."
+    ],
+    "vi": [
+      "Các tiến trình chạy cùng một lúc cần các lõi khác nhau, nên số tiến trình đồng thời lớn nhất là cận dưới của số lõi, và việc gán lõi trống theo thứ tự thời điểm bắt đầu đạt đúng cận này.",
+      "Bài toán trở thành tìm độ chồng lấn lớn nhất của các đoạn đóng. Các đầu mút chạm nhau vẫn chồng lấn, nên khi thời điểm bắt đầu bằng thời điểm kết thúc, hãy đếm thời điểm bắt đầu trước khi xử lý thời điểm kết thúc.",
+      "Sắp xếp riêng tất cả thời điểm bắt đầu và tất cả thời điểm kết thúc; duyệt qua các thời điểm bắt đầu, trước hết loại bỏ mọi tiến trình có thời điểm kết thúc nhỏ hơn hẳn thời điểm bắt đầu hiện tại (số đồng thời trừ 1), sau đó thêm tiến trình hiện tại và cập nhật số đồng thời lớn nhất, đó chính là đáp án."
     ]
   },
   "explanationEn": "## Approach\n\nSort the start times and end times separately and scan with two pointers. When a start equals an end, process the start first, and update the maximum current concurrency.\n\n## Proof of correctness\n\nProcesses running at the same moment all need different cores, so the maximum concurrency is a lower bound. Assign processes in order of start time to any free core, and open a new core only when all assigned cores are still busy; at that moment the number of running processes equals the number of cores. Hence the number of cores never exceeds the maximum concurrency, which reaches the lower bound.\n\n## Complexity\n\nTime O(n log n), space O(n)."

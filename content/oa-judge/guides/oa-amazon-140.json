@@ -13,6 +13,21 @@
       "Swapping two letters throughout the string applies a permutation to the alphabet; however many times you do it, the pattern of which positions hold equal characters never changes.",
       "So the target is reachable exactly when there is a letter correspondence that is consistent in both directions: the same source letter always maps to the same target letter, and each target letter comes from only one source letter. Such a correspondence extends to a permutation of all 26 letters, and any permutation decomposes into swaps.",
       "For each pair of strings use two arrays forward and back of size 26, initially undefined; for each position take x = a[i], y = b[i], and if forward[x] is defined and differs from y, or back[y] is defined and differs from x, output 0; otherwise record forward[x] = y and back[y] = x. If every position is consistent output 1."
+    ],
+    "ja": [
+      "文字列全体で 2 文字を入れ替える操作は、アルファベットに置換を適用することです。何回行っても、どの位置が等しい文字を持つかというパターンは変わりません。",
+      "したがって、目標に到達できるのは、両方向で矛盾のない文字の対応があるときに限ります。同じ元の文字は常に同じ目標の文字に写り、各目標の文字は 1 つの元の文字からしか来ません。そのような対応は 26 文字全体の置換に拡張でき、どの置換も互換（入れ替え）に分解できます。",
+      "文字列のペアごとに、大きさ 26 の配列 forward と back を未定義で用意します。各位置で x = a[i]、y = b[i] を取り、forward[x] が定義済みで y と異なる、または back[y] が定義済みで x と異なる場合は 0 を出力します。そうでなければ forward[x] = y、back[y] = x と記録します。すべての位置で矛盾がなければ 1 を出力します。"
+    ],
+    "ko": [
+      "문자열 전체에서 두 글자를 맞바꾸는 것은 알파벳에 순열을 적용하는 것이며, 몇 번을 반복해도 어떤 위치끼리 같은 문자를 가지는지의 패턴은 변하지 않습니다.",
+      "따라서 양방향으로 일관된 글자 대응이 있을 때, 그리고 그때에만 목표에 도달할 수 있습니다. 같은 원본 글자는 항상 같은 목표 글자로 대응되고, 각 목표 글자는 하나의 원본 글자에서만 와야 합니다. 이런 대응은 26개 글자 전체의 순열로 확장할 수 있고, 모든 순열은 맞바꿈들의 합성으로 분해됩니다.",
+      "각 문자열 쌍마다 크기 26의 배열 forward와 back을 처음에는 정의되지 않은 상태로 둡니다. 각 위치에서 x = a[i], y = b[i]라 할 때, forward[x]가 정의되어 있으면서 y와 다르거나, back[y]가 정의되어 있으면서 x와 다르면 0을 출력합니다. 그렇지 않으면 forward[x] = y, back[y] = x를 기록합니다. 모든 위치가 일관되면 1을 출력합니다."
+    ],
+    "vi": [
+      "Hoán đổi hai chữ cái trên toàn chuỗi áp dụng một hoán vị lên bảng chữ cái; dù thực hiện bao nhiêu lần, mẫu các vị trí chứa ký tự giống nhau không bao giờ thay đổi.",
+      "Vì vậy chuỗi đích đạt được chính xác khi tồn tại một phép tương ứng chữ cái nhất quán theo cả hai chiều: cùng một chữ cái nguồn luôn ánh xạ tới cùng một chữ cái đích, và mỗi chữ cái đích chỉ đến từ một chữ cái nguồn. Phép tương ứng như vậy mở rộng được thành hoán vị của cả 26 chữ cái, và mọi hoán vị đều phân tích được thành các phép hoán đổi.",
+      "Với mỗi cặp chuỗi, dùng hai mảng forward và back kích thước 26, ban đầu chưa xác định; với mỗi vị trí lấy x = a[i], y = b[i], và nếu forward[x] đã xác định và khác y, hoặc back[y] đã xác định và khác x, thì xuất 0; ngược lại ghi forward[x] = y và back[y] = x. Nếu mọi vị trí đều nhất quán thì xuất 1."
     ]
   },
   "explanationEn": "## Approach\n\nBuild, position by position, the mapping from source characters to target characters and the reverse mapping; a conflict in either direction makes it impossible, otherwise it is feasible.\n\n## Correctness\n\nGlobal letter swaps compose into a permutation of the alphabet, which always preserves whether the characters at any two positions are equal. A mapping that is consistent in both directions is exactly this preservation of the equality pattern; it can be extended to a permutation of the whole 26-letter alphabet, and any permutation can be decomposed into pairwise swaps, so the condition is also sufficient.\n\n## Complexity\n\nTime O(total characters), space O(total input size), with O(26) auxiliary mapping per pair."

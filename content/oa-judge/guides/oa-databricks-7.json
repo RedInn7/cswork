@@ -13,6 +13,21 @@
       "A legal final matrix is determined by a pair of different digits: the digit of the Y and the background digit. Choosing an ordered pair of different values from 0, 1, 2 gives only 6 combinations.",
       "With the pair fixed, every cell must become the value assigned to its region (inside or outside the Y), and the cost is the number of cells whose current value differs. So you only need how many 0s, 1s and 2s lie inside and outside the Y.",
       "Let mid = n / 2; cell (r, c) is on the Y exactly when r <= mid and c equals r or n - 1 - r, or when r > mid and c = mid. Scan once to fill the two count arrays, then evaluate n^2 - inside[y] - outside[b] for the 6 pairs of different digits and print the minimum."
+    ],
+    "ja": [
+      "最終的な行列は、Y の数字と背景の数字という異なる 2 つの数字の組で決まります。0、1、2 から異なる値を順序つきで選ぶと、組み合わせはわずか 6 通りです。",
+      "組を固定すると、各セルは自分の領域(Y の内側か外側か)に割り当てられた値にしなければならず、コストは現在の値が異なるセルの個数です。したがって、Y の内側と外側にある 0、1、2 の個数がそれぞれ分かれば十分です。",
+      "mid = n / 2 とすると、セル (r, c) が Y 上にあるのは、r <= mid かつ c が r または n - 1 - r に等しいとき、もしくは r > mid かつ c = mid のときです。1 回走査して 2 つの個数配列を埋め、異なる数字の 6 組について n^2 - inside[y] - outside[b] を評価し、最小値を出力します。"
+    ],
+    "ko": [
+      "가능한 최종 행렬은 서로 다른 두 숫자, 즉 Y의 숫자와 배경 숫자의 쌍으로 결정됩니다. 0, 1, 2 중에서 서로 다른 값의 순서쌍을 고르면 경우의 수는 6가지뿐입니다.",
+      "쌍을 정하면 모든 칸은 자신이 속한 영역(Y 안 또는 밖)에 배정된 값이 되어야 하며, 비용은 현재 값이 다른 칸의 수입니다. 따라서 Y 안과 밖에 각각 0, 1, 2가 몇 개 있는지만 알면 됩니다.",
+      "mid = n / 2라 하면, 칸 (r, c)가 Y에 속하는 조건은 r <= mid이면서 c가 r 또는 n - 1 - r인 경우, 또는 r > mid이면서 c = mid인 경우입니다. 한 번 훑어 두 개수 배열을 채운 뒤, 서로 다른 숫자 쌍 6가지에 대해 n^2 - inside[y] - outside[b]를 계산하고 최솟값을 출력합니다."
+    ],
+    "vi": [
+      "Một ma trận cuối cùng hợp lệ được xác định bởi một cặp chữ số khác nhau: chữ số của Y và chữ số nền. Chọn một cặp có thứ tự gồm hai giá trị khác nhau trong 0, 1, 2 chỉ cho 6 khả năng.",
+      "Khi đã cố định cặp, mỗi ô phải trở thành giá trị gán cho vùng của nó (trong hay ngoài chữ Y), và chi phí là số ô có giá trị hiện tại khác. Vì vậy chỉ cần biết có bao nhiêu chữ số 0, 1 và 2 nằm trong và ngoài chữ Y.",
+      "Đặt mid = n / 2; ô (r, c) nằm trên chữ Y đúng khi r <= mid và c bằng r hoặc n - 1 - r, hoặc khi r > mid và c = mid. Duyệt một lần để điền hai mảng đếm, rồi tính n^2 - inside[y] - outside[b] cho 6 cặp chữ số khác nhau và in giá trị nhỏ nhất."
     ]
   },
   "explanationEn": "## Approach\n\nDetermine for each cell whether it belongs to the Y, and count the 0s, 1s, and 2s inside and outside the Y separately. Enumerate the six distinct (Y digit, background digit) pairs, compute the number of mismatched cells, and take the minimum.\n\n## Proof of correctness\n\nEvery legal target matrix is determined by a unique pair of different digits: the Y digit and the background digit. Once this pair is fixed, every position must become the value assigned to its region, and the cost of modification is exactly the number of positions whose current value differs from the assigned value. The six combinations cover all legal options, and taking the minimum gives the global optimum.\n\n## Complexity\n\nO(6n^2) time and O(1) extra space."

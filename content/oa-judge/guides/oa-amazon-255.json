@@ -13,6 +13,21 @@
       "Each step subtracts the same amount from every positive value, so differences between distinct positive values never change, and equal positive values always move together.",
       "Hence one operation can turn at most one kind of positive value (the current smallest) into 0, so the number of distinct positive values is a lower bound; subtracting the current smallest positive value each time reaches it exactly.",
       "Collect the distinct values greater than 0 in a set and output its size; zeros are not counted."
+    ],
+    "ja": [
+      "各ステップですべての正の値から同じ量を引くので、異なる正の値の間の差は変わらず、等しい正の値は常に一緒に動きます。",
+      "したがって、1 回の操作で 0 にできる正の値は高々 1 種類（現在の最小値）です。そのため異なる正の値の個数が下限となり、毎回現在の最小の正の値を引けば、ちょうどそこに到達します。",
+      "0 より大きい異なる値を集合に集め、そのサイズを出力します。0 は数えません。"
+    ],
+    "ko": [
+      "각 단계는 모든 양수에서 같은 양을 빼므로 서로 다른 양수 값 사이의 차이는 변하지 않고, 같은 양수 값은 항상 함께 움직입니다.",
+      "따라서 한 번의 연산으로 0이 될 수 있는 양수 값의 종류는 최대 하나(현재 가장 작은 값)이므로, 서로 다른 양수 값의 개수가 하한입니다. 매번 현재 가장 작은 양수를 빼면 정확히 그 값에 도달합니다.",
+      "0보다 큰 서로 다른 값을 집합에 모아 그 크기를 출력합니다. 0은 세지 않습니다."
+    ],
+    "vi": [
+      "Mỗi bước trừ cùng một lượng khỏi mọi giá trị dương, nên hiệu giữa các giá trị dương phân biệt không bao giờ đổi, và các giá trị dương bằng nhau luôn di chuyển cùng nhau.",
+      "Do đó một phép toán nhiều nhất đưa được một loại giá trị dương (giá trị nhỏ nhất hiện tại) về 0, nên số giá trị dương phân biệt là cận dưới; mỗi lần trừ giá trị dương nhỏ nhất hiện tại thì đạt đúng cận đó.",
+      "Gom các giá trị lớn hơn 0 phân biệt vào một tập hợp và in kích thước của nó; số 0 không được đếm."
     ]
   },
   "explanationEn": "## Approach\n\nCount the distinct positive values; 0 does not count.\n\n## Proof of correctness\n\nAn operation subtracts the same amount from all positive values at once, so the differences between originally different positive values stay the same, and at most the smallest kind of positive value can become 0. Hence at least as many operations as there are distinct positive values are needed. Taking the current smallest positive value each time eliminates exactly one kind, which attains the lower bound.\n\n## Complexity\n\nTime O(n), space O(101)."

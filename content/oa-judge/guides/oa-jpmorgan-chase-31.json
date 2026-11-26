@@ -13,6 +13,21 @@
       "The whole merging process is a binary tree in which each original number contributes itself times the depth of its leaf; to minimize the total, smaller numbers should sit deeper.",
       "This is exactly Huffman coding: always merge the two smallest current numbers, put their sum back, and repeat until one number is left.",
       "Put all numbers in a min-heap; while it holds more than one element, pop the two smallest, add their sum to the cost, and push the sum back; print the accumulated cost as a 64-bit integer."
+    ],
+    "ja": [
+      "併合の全体は二分木で、各元の数は自分自身に葉の深さを掛けた分だけ寄与します。合計を最小にするには、小さい数ほど深くに置くべきです。",
+      "これはまさにハフマン符号化です。現在の最小の2つの数を併合し、その和を戻すことを、1つになるまで繰り返します。",
+      "すべての数を最小ヒープに入れます。ヒープに2つ以上ある間は、最小の2つを取り出し、その和をコストに加えて和をヒープに戻します。累積したコストを 64 ビット整数で出力します。"
+    ],
+    "ko": [
+      "합치는 전체 과정은 이진 트리이며 각 원래 수는 자신의 리프 깊이만큼 기여합니다. 총합을 최소화하려면 작은 수가 더 깊이 있어야 합니다.",
+      "이것은 정확히 허프만 코딩입니다. 현재 가장 작은 두 수를 항상 합치고, 합을 다시 넣는 과정을 하나의 수가 남을 때까지 반복합니다.",
+      "모든 수를 최소 힙에 넣고, 원소가 둘 이상인 동안 가장 작은 두 개를 꺼내 그 합을 비용에 더하고 합을 다시 넣습니다. 누적된 비용을 64비트 정수로 출력합니다."
+    ],
+    "vi": [
+      "Toàn bộ quá trình gộp là một cây nhị phân trong đó mỗi số gốc đóng góp chính nó nhân với độ sâu của lá; để tối thiểu hóa tổng, các số nhỏ hơn nên nằm sâu hơn.",
+      "Đây chính xác là mã hóa Huffman: luôn gộp hai số nhỏ nhất hiện tại, đặt tổng của chúng trở lại, và lặp lại cho đến khi còn một số.",
+      "Đặt mọi số vào một min-heap; khi nó còn nhiều hơn một phần tử, lấy hai phần tử nhỏ nhất, cộng tổng của chúng vào chi phí, và đẩy tổng trở lại; in chi phí tích lũy dưới dạng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nRepeatedly pop the two smallest items from a min-heap, add their sum to the total, and push the sum back.\n\n## Proof of correctness\n\nThe merging process is a binary tree in which each original value contributes itself times its leaf depth. The two smallest weights can be placed as a pair of sibling leaves at the deepest level: swapping them with larger weights does not increase the total cost. Contracting this pair of leaves into one with the sum as its weight turns the optimal problem into one smaller by one, plus the fixed cost of this merge; by induction, greedily merging the two smallest items is optimal.\n\n## Complexity\n\nO(n log n) time and O(n) space."

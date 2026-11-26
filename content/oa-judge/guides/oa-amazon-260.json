@@ -13,6 +13,21 @@
       "The task is to sum the K largest of all n^2 ordered pair sums (including i=j); enumerating them is too slow, but the number of ordered pairs with sum >= T never increases as T grows.",
       "Binary search the K-th largest pair sum T: after sorting, two pointers give for each i the range of j with a[i]+a[j] >= T, so counting takes O(n), and prefix sums give the total of those pairs at the same time.",
       "Binary search in [2*min, 2*max] for the largest T whose count is at least K; then compute the count C and total S for that T, and the answer is S - (C-K)*T. The result can reach about 8*10^19, beyond signed 64 bits, so use 128-bit or big integers."
+    ],
+    "ja": [
+      "n^2 個の順序付きペア和（i=j を含む）のうち大きい方から K 個の合計を求める問題です。全部列挙すると遅すぎますが、和が T 以上の順序付きペアの個数は T が大きくなっても増えません。",
+      "K 番目に大きいペア和 T を二分探索します。ソート後、しゃくとり法で各 i について a[i]+a[j] >= T を満たす j の範囲が求まるので、個数の計算は O(n) で済み、同時に累積和でそれらのペアの合計も得られます。",
+      "[2*min, 2*max] の範囲で、個数が K 以上となる最大の T を二分探索します。その T について個数 C と合計 S を計算すると、答えは S - (C-K)*T です。結果は約 8*10^19 に達し得て符号付き 64 ビットを超えるため、128 ビット整数または多倍長整数を使ってください。"
+    ],
+    "ko": [
+      "이 문제는 n^2개의 순서쌍(i=j 포함) 합 중 가장 큰 K개의 합을 구하는 것입니다. 하나씩 나열하면 너무 느리지만, 합이 T 이상인 순서쌍의 개수는 T가 커질수록 줄어들기만 합니다.",
+      "K번째로 큰 쌍의 합 T를 이분 탐색합니다. 정렬한 뒤 투 포인터로 각 i에 대해 a[i]+a[j] >= T인 j의 범위를 구하면 O(n)에 개수를 셀 수 있고, 누적 합으로 그 쌍들의 총합도 동시에 구할 수 있습니다.",
+      "[2*min, 2*max] 범위에서 개수가 K 이상인 가장 큰 T를 이분 탐색한 뒤, 그 T에 대한 개수 C와 총합 S를 계산하면 답은 S - (C-K)*T입니다. 결과는 약 8*10^19까지 커질 수 있어 부호 있는 64비트를 넘으므로 128비트 또는 큰 정수를 사용하세요."
+    ],
+    "vi": [
+      "Bài toán là cộng K tổng cặp lớn nhất trong tất cả n^2 cặp có thứ tự (kể cả i=j); liệt kê hết thì quá chậm, nhưng số cặp có thứ tự với tổng >= T không bao giờ tăng khi T tăng.",
+      "Tìm kiếm nhị phân tổng cặp lớn thứ K là T: sau khi sắp xếp, hai con trỏ cho biết với mỗi i khoảng j thỏa a[i]+a[j] >= T, nên việc đếm tốn O(n), đồng thời tổng tiền tố cho tổng của các cặp đó.",
+      "Tìm kiếm nhị phân trong [2*min, 2*max] để lấy T lớn nhất có số lượng ít nhất là K; sau đó tính số lượng C và tổng S ứng với T, đáp án là S - (C-K)*T. Kết quả có thể lên tới khoảng 8*10^19, vượt quá số nguyên có dấu 64 bit, nên hãy dùng số 128 bit hoặc số nguyên lớn."
     ]
   },
   "explanationEn": "## Approach\n\nBinary search the K-th largest pair sum T. After sorting, use two pointers and prefix sums to get the count C and the total S of all pairs with sum ≥T; the result is S−(C−K)T.\n\n## Proof of correctness\n\nAs the pair-sum threshold grows, the number of qualifying ordered pairs does not increase. The largest integer threshold that still has at least K pairs is the K-th largest pair sum. All sums above it must be chosen, and those equal to it only need to fill up to K, so subtracting the surplus C−K copies of T from all sums ≥T gives exactly the sum of the top K. Counting all qualifying second servers for each first server in turn keeps the ordered identities and the self-pairs.\n\n## Complexity\n\nTime O(n log n+n log V), space O(n); V is the range of the capacity values."

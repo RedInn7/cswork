@@ -13,6 +13,21 @@
       "Moving a parenthesis does not change how many left and right parentheses there are, so the total balance (lefts minus rights) must be 0; also, moving one parenthesis raises the balance of any prefix by at most 1.",
       "So the minimum prefix balance must be at least −1; conversely, if the minimum is exactly −1, moving the right parenthesis that first makes the balance negative to the end fixes the string.",
       "Scan each string once and compute its total balance and its minimum prefix balance; print 1 if the total is 0 and the minimum is at least −1, otherwise print 0."
+    ],
+    "ja": [
+      "括弧を動かしても左括弧と右括弧の個数は変わらないので、全体の釣り合い (左括弧の数 − 右括弧の数) は 0 でなければなりません。また、括弧を 1 つ動かすと、任意の接頭辞の釣り合いは高々 1 しか増えません。",
+      "したがって、接頭辞の釣り合いの最小値は −1 以上でなければなりません。逆に、最小値がちょうど −1 なら、最初に釣り合いが負になる右括弧を末尾に動かせば、文字列を正せます。",
+      "各文字列を 1 回走査して、全体の釣り合いと接頭辞の釣り合いの最小値を計算します。全体が 0 で最小値が −1 以上なら 1 を、そうでなければ 0 を出力します。"
+    ],
+    "ko": [
+      "괄호를 옮겨도 여는 괄호와 닫는 괄호의 개수는 변하지 않으므로 전체 균형(여는 괄호 수 − 닫는 괄호 수)은 0이어야 합니다. 또한 괄호 하나를 옮기면 어떤 접두사의 균형도 최대 1만 올라갑니다.",
+      "따라서 접두사 균형의 최솟값은 −1 이상이어야 합니다. 반대로 최솟값이 정확히 −1이면, 처음으로 균형을 음수로 만드는 닫는 괄호를 맨 끝으로 옮겨 문자열을 고칠 수 있습니다.",
+      "각 문자열을 한 번 스캔하여 전체 균형과 접두사 균형의 최솟값을 구합니다. 전체 균형이 0이고 최솟값이 −1 이상이면 1을, 그렇지 않으면 0을 출력합니다."
+    ],
+    "vi": [
+      "Di chuyển một dấu ngoặc không làm đổi số ngoặc trái và ngoặc phải, nên tổng cân bằng (số ngoặc trái trừ số ngoặc phải) phải bằng 0; ngoài ra, di chuyển một dấu ngoặc làm tăng cân bằng của mỗi tiền tố nhiều nhất 1.",
+      "Vì vậy cân bằng tiền tố nhỏ nhất phải ít nhất là −1; ngược lại, nếu giá trị nhỏ nhất đúng bằng −1 thì chuyển dấu ngoặc phải đầu tiên làm cân bằng âm xuống cuối xâu sẽ sửa được xâu.",
+      "Quét mỗi xâu một lần và tính tổng cân bằng cùng cân bằng tiền tố nhỏ nhất; in 1 nếu tổng bằng 0 và giá trị nhỏ nhất ít nhất −1, ngược lại in 0."
     ]
   },
   "explanationEn": "## Approach\n\nCompute the total balance and the minimum prefix balance; the total balance must be 0, and it suffices that the minimum is not less than −1.\n\n## Proof of correctness\n\nA move does not change the total numbers of left and right parentheses, and it raises the balance of any prefix by at most 1, so a total balance of 0 and a minimum of at least −1 are necessary. If the minimum is −1, take out the right parenthesis that first makes the balance negative and put it at the end: the prefixes before it were already non-negative, the prefixes after it gain 1 and are non-negative too, and the total returns to 0 at the end. If there is no negative value, no move is needed.\n\n## Complexity\n\nTime O(total length), extra O(1) per string."

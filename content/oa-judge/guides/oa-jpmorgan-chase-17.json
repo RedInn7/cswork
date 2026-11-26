@@ -13,6 +13,21 @@
       "After deleting AWS the two sides are joined, and a new AWS may form at the seam, so a single substring scan is not enough; but any newly formed AWS must end at the character just processed.",
       "Simulate with a stack: push characters one by one and, after each push, check whether the top three characters are A, W, S in order; if so, pop all three.",
       "Walk through the string pushing each character; whenever the stack has at least 3 characters ending in A, W, S, remove those three; finally print the stack as a string, or −1 if it is empty."
+    ],
+    "ja": [
+      "AWS を削除すると両側がつながり、継ぎ目に新しい AWS ができることがあります。そのため単純な部分文字列の走査では足りませんが、新しくできた AWS は必ず直前に処理した文字で終わります。",
+      "スタックでシミュレーションします。文字を1つずつ積み、積むたびに先頭の3文字が順に A, W, S かどうかを調べ、そうなら3つとも pop します。",
+      "文字列を順に走査してスタックに積み、スタックに3文字以上あって末尾が A, W, S なら、その3文字を取り除きます。最後にスタックを文字列として出力し、空なら −1 を出力します。"
+    ],
+    "ko": [
+      "AWS를 삭제하면 양쪽이 이어지므로 이음매에서 새로운 AWS가 생길 수 있어 부분 문자열을 한 번 훑는 것으로는 부족합니다. 다만 새로 생긴 AWS는 항상 방금 처리한 문자에서 끝납니다.",
+      "스택으로 시뮬레이션합니다. 문자를 하나씩 push하고, 매번 상위 세 문자가 순서대로 A, W, S인지 확인해서 맞으면 세 개를 모두 pop합니다.",
+      "문자열을 훑으면서 각 문자를 push하고, 스택에 3개 이상의 문자가 있고 A, W, S로 끝나면 그 세 개를 제거합니다. 마지막에 스택을 문자열로 출력하고, 비어 있으면 −1을 출력합니다."
+    ],
+    "vi": [
+      "Sau khi xóa AWS, hai phía được nối lại, và một AWS mới có thể hình thành tại chỗ nối, nên một lần quét xâu con là chưa đủ; nhưng mọi AWS mới hình thành đều phải kết thúc tại ký tự vừa xử lý.",
+      "Mô phỏng bằng ngăn xếp: đẩy từng ký tự và sau mỗi lần đẩy kiểm tra xem ba ký tự trên cùng có phải A, W, S theo thứ tự không; nếu có thì lấy ra cả ba.",
+      "Duyệt xâu và đẩy từng ký tự; mỗi khi ngăn xếp có ít nhất 3 ký tự kết thúc bằng A, W, S thì xóa ba ký tự đó; cuối cùng in ngăn xếp dưới dạng xâu, hoặc −1 nếu rỗng."
     ]
   },
   "explanationEn": "## Approach\n\nPush characters onto a stack one by one, and whenever the stack ends with AWS, delete those three characters.\n\n## Proof of correctness\n\nAfter a prefix is processed, the stack contains no AWS; appending one character can only form AWS at the new suffix, and after it is deleted the rest already had no match. AWS has no non-empty proper prefix equal to a suffix, so two deletable matches never overlap and the order of deletions can be swapped; the terminating process has a unique result, and the stack produces it.\n\n## Complexity\n\nO(n) time and O(n) space."

@@ -13,6 +13,21 @@
       "Every bit set in the AND of the whole array is also set in the AND of every segment. So if the whole AND is non-zero, k segments cost at least k times that value, and the best choice is not to cut at all.",
       "When the whole AND is 0, the minimum cost is 0, which requires every segment's AND to be 0. To get the most segments, end each segment the moment its AND first becomes 0; a leftover tail that never reaches 0 is merged into the previous segment and the cost stays 0.",
       "Compute the AND of the whole array and print 1 if it is non-zero; otherwise accumulate the AND from left to right starting from all ones, and each time it becomes 0, increase the count and reset to all ones; print the count, without counting the leftover tail separately."
+    ],
+    "ja": [
+      "配列全体の AND で立っているビットは、すべての区間の AND でも立っています。したがって全体の AND が 0 以外なら、k 個の区間のコストは少なくともその値の k 倍になり、最良の選択は一度も切らないことです。",
+      "全体の AND が 0 のとき、最小コストは 0 で、これにはすべての区間の AND が 0 である必要があります。区間数を最大にするには、AND が最初に 0 になった瞬間に各区間を終わらせます。0 に達しなかった残りの末尾は直前の区間に併合され、コストは 0 のままです。",
+      "配列全体の AND を計算し、0 以外なら 1 を出力します。そうでなければ、すべてのビットが立った状態から左へ AND を累積し、0 になるたびにカウントを増やして、すべてのビットが立った状態に戻します。カウントを出力します。残った末尾は別に数えません。"
+    ],
+    "ko": [
+      "전체 배열의 AND에서 켜진 모든 비트는 모든 구간의 AND에서도 켜져 있습니다. 따라서 전체 AND가 0이 아니면 k개 구간의 비용은 최소 그 값의 k배이고, 최선은 전혀 자르지 않는 것입니다.",
+      "전체 AND가 0이면 최소 비용은 0이며, 이를 위해서는 모든 구간의 AND가 0이어야 합니다. 구간을 가장 많이 만들려면 각 구간을 AND가 처음 0이 되는 순간 끝냅니다. 끝내 0에 도달하지 못한 꼬리는 직전 구간에 합치면 비용은 그대로 0입니다.",
+      "전체 배열의 AND를 계산해 0이 아니면 1을 출력합니다. 그렇지 않으면 모든 비트가 1인 값에서 시작해 왼쪽에서 오른쪽으로 AND를 누적하고, 0이 될 때마다 개수를 늘리고 다시 모든 비트가 1인 값으로 초기화합니다. 개수를 출력하며, 남은 꼬리는 따로 세지 않습니다."
+    ],
+    "vi": [
+      "Mọi bit được đặt trong AND của cả mảng cũng được đặt trong AND của mọi đoạn. Vì vậy nếu AND toàn mảng khác không, k đoạn tốn ít nhất k lần giá trị đó, và lựa chọn tốt nhất là không cắt.",
+      "Khi AND toàn mảng bằng 0, chi phí tối thiểu là 0, điều này đòi hỏi AND của mọi đoạn đều bằng 0. Để có nhiều đoạn nhất, hãy kết thúc mỗi đoạn ngay khi AND của nó lần đầu bằng 0; phần đuôi còn lại không bao giờ về 0 thì gộp vào đoạn trước và chi phí vẫn là 0.",
+      "Tính AND của cả mảng và in 1 nếu nó khác không; ngược lại tích lũy AND từ trái sang phải bắt đầu từ toàn bit 1, mỗi lần nó bằng 0 thì tăng biến đếm và đặt lại về toàn bit 1; in ra biến đếm, không đếm riêng phần đuôi còn lại."
     ]
   },
   "explanationEn": "## Approach\n\nIf the AND of the whole array is non-zero, only 1 segment is possible. Otherwise, scan from left to right and cut as soon as the current segment's AND becomes 0; merge a final tail that never reaches 0 into the previous segment.\n\n## Proof of correctness\n\nEvery 1 bit of the overall AND G is 1 in every segment's AND, so if G>0, k segments cost at least kG while one whole segment costs G, and the optimum must have k=1. When G=0 the minimum cost is 0, which requires every segment's AND to be 0. Taking the earliest prefix whose AND reaches 0 as the first segment never reduces the number of segments possible in the rest: cut any optimal first segment earlier, and merging the extra suffix into the next segment keeps that segment's AND at 0. So the greedy number of resets to zero is maximal, and merging the tail into the previous segment does not change the zero cost.\n\n## Complexity\n\nTime O(n), auxiliary space O(1) excluding the input."

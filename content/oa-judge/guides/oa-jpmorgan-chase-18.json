@@ -13,6 +13,21 @@
       "Only adjacent digits of the same parity can be swapped, so a digit can never pass a digit of the other parity; each maximal run of equal parity occupies a fixed range of positions.",
       "Adjacent swaps can produce any order inside a run, so sorting every run in descending order gives the lexicographically largest, and also numerically largest, result.",
       "Cut the string from left to right into maximal same-parity runs, count each run's digits in 10 buckets, and output them from 9 down to 0; every 0, including leading zeros, must be kept."
+    ],
+    "ja": [
+      "偶奇が同じ隣り合う数字しか入れ替えられないので、数字が偶奇の異なる数字を追い越すことはありません。偶奇が等しい最大の連ごとに、占める位置の範囲は固定です。",
+      "隣接する入れ替えで連の中は任意の順序にできるため、各連を降順にソートすると辞書順で最大に、したがって数値としても最大になります。",
+      "文字列を左から、偶奇が同じ最大の連に切り分け、各連の数字を 10 個のバケットで数え、9 から 0 の順に出力します。先頭の 0 を含め、すべての 0 を残さなければなりません。"
+    ],
+    "ko": [
+      "홀짝이 같은 인접한 숫자만 교환할 수 있으므로, 숫자는 홀짝이 다른 숫자를 절대 넘을 수 없습니다. 홀짝이 같은 최대 구간은 각각 고정된 위치 범위를 차지합니다.",
+      "인접 교환으로 구간 내부의 어떤 순서든 만들 수 있으므로, 각 구간을 내림차순으로 정렬하면 사전순으로도 수치로도 가장 큰 결과가 됩니다.",
+      "문자열을 왼쪽부터 홀짝이 같은 최대 구간으로 자르고, 각 구간의 숫자를 10개의 버킷으로 센 뒤 9부터 0까지 출력합니다. 선행 0을 포함해 모든 0을 유지해야 합니다."
+    ],
+    "vi": [
+      "Chỉ các chữ số liền kề cùng tính chẵn lẻ mới hoán đổi được, nên một chữ số không bao giờ vượt qua chữ số có tính chẵn lẻ khác; mỗi đoạn cực đại cùng tính chẵn lẻ chiếm một dãy vị trí cố định.",
+      "Các phép hoán đổi liền kề có thể tạo ra mọi thứ tự trong một đoạn, nên sắp xếp mỗi đoạn giảm dần cho kết quả lớn nhất theo từ điển, và cũng lớn nhất về giá trị số.",
+      "Cắt xâu từ trái sang phải thành các đoạn cực đại cùng tính chẵn lẻ, đếm các chữ số của mỗi đoạn trong 10 thùng, và in chúng từ 9 xuống 0; phải giữ mọi số 0, kể cả số 0 ở đầu."
     ]
   },
   "explanationEn": "## Approach\n\nSplit the string into maximal runs of the same parity and output each run's digits from largest to smallest, counting them with 10 buckets.\n\n## Proof of correctness\n\nSwaps never cross a boundary between different parities, so the range of positions of each run is fixed; any arrangement within a run can be achieved by adjacent swaps. Sorting each run in descending order puts the largest value at the first differing position, giving the lexicographically largest string overall, and the same holds for numerical comparison at equal length.\n\n## Complexity\n\nO(n) time, O(n) space for the output, and O(1) for the buckets."

@@ -13,6 +13,21 @@
       "The walk is fully deterministic: the next step depends only on the current position. So as soon as a position is revisited, the walk loops forever.",
       "Simulate step by step and record every position entered (teleport starts and ends included) in a set: first check for a revisit, then whether you stand on a teleport start, then whether you are at the bottom-right corner, and finally move right if possible, otherwise down.",
       "The count starts at 1 for the start cell and increases by one for every move or teleport. A revisit prints -2; reaching (n-1, m-1) prints the count; if neither right nor down is possible (out of bounds or an obstacle), print -1. Store obstacles and teleports in hash maps or 2D arrays."
+    ],
+    "ja": [
+      "歩行は完全に決定的で、次の一歩は現在位置だけで決まります。したがって、一度でも同じ位置を再訪したら、その歩行は永久にループします。",
+      "1歩ずつシミュレーションし、入った位置(テレポートの始点と終点を含む)をすべて集合に記録します。まず再訪のチェック、次にテレポートの始点にいるか、次に右下隅にいるかを調べ、最後に、可能なら右へ、そうでなければ下へ進みます。",
+      "カウントは出発セルで 1 から始まり、移動またはテレポートのたびに 1 ずつ増えます。再訪したら -2 を出力します。(n-1, m-1) に到達したらカウントを出力します。右にも下にも進めない場合(範囲外または障害物)は -1 を出力します。障害物とテレポートはハッシュマップまたは2次元配列に保存します。"
+    ],
+    "ko": [
+      "이동은 완전히 결정적입니다. 다음 걸음은 현재 위치에만 의존합니다. 따라서 어떤 위치를 다시 방문하는 순간 영원히 순환합니다.",
+      "한 걸음씩 시뮬레이션하며 진입한 모든 위치(텔레포트 시작점과 도착점 포함)를 집합에 기록합니다. 먼저 재방문 여부를 확인하고, 다음으로 텔레포트 시작점에 서 있는지, 그다음 오른쪽 아래 모서리에 있는지를 확인하며, 마지막으로 가능하면 오른쪽, 아니면 아래로 이동합니다.",
+      "카운트는 시작 칸에서 1로 시작하여 이동이나 텔레포트마다 1씩 증가합니다. 재방문하면 -2를 출력하고, (n-1, m-1)에 도달하면 카운트를 출력하며, 오른쪽도 아래도 불가능하면(범위를 벗어나거나 장애물) -1을 출력합니다. 장애물과 텔레포트는 해시 맵이나 2차원 배열에 저장합니다."
+    ],
+    "vi": [
+      "Cuộc đi hoàn toàn xác định: bước tiếp theo chỉ phụ thuộc vào vị trí hiện tại. Vì vậy ngay khi một vị trí bị đi lại, cuộc đi lặp mãi mãi.",
+      "Mô phỏng từng bước và ghi mọi vị trí đã vào (kể cả điểm bắt đầu và điểm kết thúc của cổng dịch chuyển) vào một tập: trước hết kiểm tra việc đi lại, rồi xem bạn có đang đứng ở điểm bắt đầu cổng dịch chuyển không, rồi xem có ở góc dưới bên phải không, và cuối cùng đi sang phải nếu được, nếu không thì đi xuống.",
+      "Số đếm bắt đầu bằng 1 cho ô bắt đầu và tăng một cho mỗi lần di chuyển hoặc dịch chuyển. Đi lại in -2; đến (n-1, m-1) in số đếm; nếu cả sang phải lẫn xuống đều không được (ra ngoài biên hoặc gặp chướng ngại vật), in -1. Lưu chướng ngại vật và cổng dịch chuyển trong hash map hoặc mảng 2 chiều."
     ]
   },
   "explanationEn": "## Approach\n\nSimulate deterministically cell by cell, recording the coordinates already entered to detect cycles. At each step apply a teleport first, then check for the exit; an ordinary move prefers right and otherwise goes down.\n\n## Proof of Correctness\n\nThe simulated state transitions follow the rules of the statement one by one, and the count covers the start, every cell moved into, and the teleport ends. If the same position is revisited, the path repeats periodically from then on, because the map and the choice rules are fixed.\n\n## Complexity\n\nO(1) per step, at most O(nm) cells visited; space O(nm).\n\n## Source Note\n\nThe source writes the bottom-right index as (n,m); this site specifies it explicitly as (n−1,m−1) using 0-based matrix indices."

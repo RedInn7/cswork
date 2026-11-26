@@ -13,6 +13,21 @@
       "Characters other than the star cannot change, so the part before the star must appear at the start of the text and the part after it at the end.",
       "Those two parts cannot share characters, so the text must also be at least as long as both parts together; when all this holds, whatever lies between them is what the star becomes.",
       "For each text and pattern, split the pattern at the star into a prefix and a suffix; output YES if the length condition holds, the text starts with the prefix and ends with the suffix, otherwise NO."
+    ],
+    "ja": [
+      "スター以外の文字は変更できないので、スターより前の部分はテキストの先頭に、後ろの部分は末尾に現れなければなりません。",
+      "この 2 つの部分が文字を共有することはできません。そのためテキストの長さは、両者を合わせた長さ以上でなければなりません。これらがすべて成り立つとき、その間にあるものがスターの置き換え結果になります。",
+      "各テキストとパターンについて、パターンをスターで接頭辞と接尾辞に分割します。長さの条件が成り立ち、テキストが接頭辞で始まり接尾辞で終わるなら YES、そうでなければ NO を出力します。"
+    ],
+    "ko": [
+      "별표 이외의 문자는 바꿀 수 없으므로, 별표 앞 부분은 텍스트의 시작에, 뒤 부분은 텍스트의 끝에 나타나야 합니다.",
+      "두 부분은 문자를 공유할 수 없으므로 텍스트의 길이는 두 부분의 길이의 합 이상이어야 합니다. 이 조건이 모두 성립하면 둘 사이에 있는 것이 별표가 바뀐 문자열입니다.",
+      "각 텍스트와 패턴에 대해 패턴을 별표에서 접두사와 접미사로 나눕니다. 길이 조건이 성립하고, 텍스트가 접두사로 시작하며 접미사로 끝나면 YES, 아니면 NO를 출력합니다."
+    ],
+    "vi": [
+      "Các ký tự khác dấu sao không thể thay đổi, nên phần trước dấu sao phải xuất hiện ở đầu văn bản và phần sau nó ở cuối.",
+      "Hai phần này không thể dùng chung ký tự, nên văn bản cũng phải dài ít nhất bằng tổng độ dài hai phần; khi tất cả điều này thỏa, phần nằm giữa chúng chính là thứ mà dấu sao biến thành.",
+      "Với mỗi văn bản và mẫu, tách mẫu tại dấu sao thành tiền tố và hậu tố; in YES nếu điều kiện độ dài thỏa, văn bản bắt đầu bằng tiền tố và kết thúc bằng hậu tố, ngược lại in NO."
     ]
   },
   "explanationEn": "## Approach\n\nSplit the pattern into the prefix before the star and the suffix after it; the text must be long enough to hold both parts, and its beginning and end must equal them respectively.\n\n## Proof of correctness\n\nThe characters outside the star must appear unchanged at the two ends of the text, and the two parts cannot overlap, so the condition is necessary. When it holds, taking all characters between the two parts (possibly none) as the star's replacement yields exactly the full text, so it is sufficient.\n\n## Complexity\n\nTime O(total number of input characters), space O(total number of input characters) including reading."

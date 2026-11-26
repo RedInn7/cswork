@@ -13,6 +13,21 @@
       "When the same pile is operated on repeatedly, the number of stones removed each time, floor(x/2), only decreases, so each step should pick the pile from which the most stones can be removed right now.",
       "Keep all piles in a max-heap: take out the largest pile x and put back ceil(x/2). Once the maximum is 1, every further operation removes 0 stones, so you can stop.",
       "Push all piles into a max-heap. Repeat k times: if the top is 1, break; otherwise replace the top x with (x + 1) / 2 using integer division and restore the heap. Finally output the sum of all values in the heap, using a 64-bit integer."
+    ],
+    "ja": [
+      "同じ山に繰り返し操作すると、取り除かれる石の数 floor(x/2) は減る一方なので、各ステップでは、その時点で最も多くの石を取り除ける山を選ぶべきです。",
+      "すべての山を最大ヒープに入れます。最大の山 x を取り出し、ceil(x/2) を戻します。最大値が 1 になったら、以降のどの操作も 0 個しか取り除かないので、止めてかまいません。",
+      "すべての山を最大ヒープに入れます。k 回繰り返します: 先頭が 1 なら break し、そうでなければ先頭の x を整数除算で (x + 1) / 2 に置き換え、ヒープを復元します。最後にヒープ内の全値の合計を 64 ビット整数で出力します。"
+    ],
+    "ko": [
+      "같은 더미에 연산을 반복하면 매번 제거되는 돌의 수 floor(x/2)는 줄어들기만 하므로, 매 단계에서 지금 가장 많은 돌을 제거할 수 있는 더미를 골라야 합니다.",
+      "모든 더미를 최대 힙에 넣습니다. 가장 큰 더미 x를 꺼내 ceil(x/2)를 다시 넣습니다. 최댓값이 1이 되면 이후의 모든 연산이 0개를 제거하므로 멈출 수 있습니다.",
+      "모든 더미를 최대 힙에 넣습니다. k번 반복하되, 맨 위가 1이면 중단하고, 아니면 맨 위 x를 정수 나눗셈 (x + 1) / 2로 바꾸고 힙을 복구합니다. 마지막으로 힙에 있는 모든 값의 합을 64비트 정수로 출력합니다."
+    ],
+    "vi": [
+      "Khi thao tác lặp lại trên cùng một đống, số viên đá lấy đi mỗi lần, floor(x/2), chỉ giảm dần, nên mỗi bước nên chọn đống mà lúc này có thể lấy đi được nhiều viên nhất.",
+      "Giữ mọi đống trong một max-heap: lấy ra đống lớn nhất x và đặt lại ceil(x/2). Khi giá trị lớn nhất là 1, mọi thao tác tiếp theo đều lấy đi 0 viên, nên có thể dừng.",
+      "Đẩy mọi đống vào max-heap. Lặp k lần: nếu đỉnh là 1 thì break; ngược lại thay đỉnh x bằng (x + 1) / 2 theo phép chia nguyên rồi khôi phục heap. Cuối cùng in tổng mọi giá trị trong heap, dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nUse a max-heap (negated values in Python). Each time, take the largest pile, remove the floor of its half, and put back the ceiling of its half. Once the maximum is 1, further operations change nothing, so you can stop.\n\n## Correctness\n\nThe gains of consecutive operations on each pile are non-increasing, and always choosing the current largest gain is a feasible prefix choice of a global optimum. The largest pile yields the largest floor(x/2) gain; an exchange argument turns the first step of any optimal plan into this pile without making it worse. When every pile is 1, each of the remaining required operations removes 0 stones, so computing the final sum early is valid.\n\n## Complexity\n\nO(n + k log n) time and O(n) space."

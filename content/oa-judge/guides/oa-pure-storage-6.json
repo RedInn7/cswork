@@ -13,6 +13,21 @@
       "\"Release in reverse order of acquisition\" means that at any moment only the most recently acquired, still unreleased lock may be released; that is exactly the top of a stack.",
       "Keep a stack for the acquisition order and a hash set for the locks currently held. An ACQUIRE of a lock already in the set is an error; a RELEASE must name exactly the top of the stack, otherwise it is an error.",
       "Process the events in order and output the 1-based index of the first error as soon as it appears. A valid ACQUIRE pushes onto the stack and adds to the set; a valid RELEASE pops and removes from the set. After all events, output 0 if the stack is empty, otherwise some lock is dangling and the answer is n + 1. With n = 0, output 0. Time O(n)."
+    ],
+    "ja": [
+      "「取得の逆順に解放する」とは、いつでも解放できるのは、最も最近に取得されてまだ解放されていないロックだけだということで、これはまさにスタックの先頭です。",
+      "取得順のためのスタックと、現在保持しているロックのためのハッシュ集合を持ちます。すでに集合にあるロックの ACQUIRE は誤りです。RELEASE はスタックの先頭とちょうど同じ名前でなければならず、そうでなければ誤りです。",
+      "イベントを順に処理し、最初の誤りが現れたらすぐにその 1 始まりの添字を出力します。有効な ACQUIRE はスタックに積み、集合に加えます。有効な RELEASE は取り出し、集合から取り除きます。全イベントのあとで、スタックが空なら 0 を、そうでなければ解放されていないロックがあるので n + 1 を出力します。n = 0 なら 0 を出力します。時間 O(n) です。"
+    ],
+    "ko": [
+      "\"획득의 역순으로 해제\"는 어느 시점에서든 가장 최근에 획득했고 아직 해제하지 않은 락만 해제할 수 있다는 뜻이며, 이는 정확히 스택의 맨 위입니다.",
+      "획득 순서를 위한 스택과 현재 보유 중인 락을 위한 해시 집합을 유지합니다. 이미 집합에 있는 락의 ACQUIRE는 오류이고, RELEASE는 스택의 맨 위와 정확히 같은 이름이어야 하며 그렇지 않으면 오류입니다.",
+      "이벤트를 순서대로 처리하며 첫 오류가 나타나는 즉시 그 1-based 인덱스를 출력합니다. 유효한 ACQUIRE는 스택에 push하고 집합에 추가하며, 유효한 RELEASE는 pop하고 집합에서 제거합니다. 모든 이벤트 후 스택이 비어 있으면 0을 출력하고, 아니면 해제되지 않은 락이 있으므로 답은 n + 1입니다. n = 0이면 0을 출력합니다. 시간 O(n)."
+    ],
+    "vi": [
+      "\"Giải phóng theo thứ tự ngược với thứ tự chiếm giữ\" nghĩa là tại mọi thời điểm chỉ khóa được chiếm gần nhất mà chưa giải phóng mới được giải phóng; đó chính là đỉnh của một ngăn xếp.",
+      "Giữ một ngăn xếp cho thứ tự chiếm giữ và một hash set cho các khóa đang được giữ. ACQUIRE một khóa đã có trong tập là lỗi; RELEASE phải gọi đúng đỉnh ngăn xếp, nếu không là lỗi.",
+      "Xử lý các sự kiện theo thứ tự và in chỉ số (từ 1) của lỗi đầu tiên ngay khi nó xuất hiện. Một ACQUIRE hợp lệ đẩy vào ngăn xếp và thêm vào tập; một RELEASE hợp lệ lấy ra và xóa khỏi tập. Sau tất cả các sự kiện, in 0 nếu ngăn xếp rỗng, ngược lại còn khóa treo và đáp án là n + 1. Với n = 0, in 0. Thời gian O(n)."
     ]
   },
   "explanationEn": "## Approach\n\nUse a stack to record the acquisition order and a set to record the locks currently held. An ACQUIRE of a lock already in the set is a violation; otherwise push it and add it to the set. A RELEASE must match the top of the stack, otherwise it is a violation; after a match, pop the stack and remove the lock from the set. If the stack is non-empty after the traversal, a lock is dangling.\n\n## Correctness\n\nThe set describes exactly all acquired but unreleased locks, so a repeated acquisition is recognized in constant time. The top of the stack is the most recent acquisition not yet released; the problem requires release in reverse order, so only the top may be released. The first event that violates any condition is the index of the first violation; with no violation, an empty stack is equivalent to everything having been released, and otherwise n+1 is returned by the rule.\n\n## Complexity\n\nEach event is pushed and popped at most once: time O(n), space O(n)."

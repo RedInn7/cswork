@@ -13,6 +13,21 @@
       "Prefixes grow one character at a time, and each new character changes the count of just one letter; with only 26 letters you can check every prefix directly for who is most frequent.",
       "Keep the current count of each of the 26 letters and how many times each letter has been most frequent; after adding a character, find the current maximum count and add 1 to every letter whose count equals it, ties included.",
       "Walk the string: increase the count of the current letter; let top be the largest of the 26 counts; add 1 to the tally of every letter whose count equals top. At the end print the largest of the 26 tallies."
+    ],
+    "ja": [
+      "接頭辞は 1 文字ずつ伸び、新しい文字が変えるのは 1 つの文字の個数だけです。文字は 26 種類しかないので、各接頭辞で最頻出がどれかを直接調べられます。",
+      "26 文字それぞれの現在の個数と、各文字が最頻出だった回数を保持します。文字を追加するたびに現在の最大個数を求め、個数がそれに等しいすべての文字に、同率も含めて 1 を加えます。",
+      "文字列を走査します。現在の文字の個数を増やし、26 個の個数のうち最大のものを top とし、個数が top に等しいすべての文字の集計に 1 を加えます。最後に 26 個の集計のうち最大のものを出力します。"
+    ],
+    "ko": [
+      "접두사는 한 번에 한 문자씩 늘어나고, 새 문자는 한 글자의 횟수만 바꿉니다. 문자가 26개뿐이므로 각 접두사마다 누가 최다인지 직접 확인할 수 있습니다.",
+      "26개 문자 각각의 현재 횟수와 각 문자가 최다였던 누적 횟수를 유지합니다. 문자를 추가한 뒤 현재 최대 횟수를 구하고, 횟수가 그 값과 같은 모든 문자(동률 포함)에 1을 더합니다.",
+      "문자열을 순회합니다. 현재 문자의 횟수를 늘리고, 26개 횟수 중 가장 큰 값을 top으로 둡니다. 횟수가 top과 같은 모든 문자의 누적값에 1을 더합니다. 마지막에 26개 누적값 중 가장 큰 값을 출력합니다."
+    ],
+    "vi": [
+      "Các tiền tố lớn dần từng ký tự một, và mỗi ký tự mới chỉ thay đổi số đếm của một chữ cái; chỉ có 26 chữ cái nên bạn có thể kiểm tra trực tiếp từng tiền tố xem ai xuất hiện nhiều nhất.",
+      "Giữ số đếm hiện tại của mỗi trong 26 chữ cái và số lần mỗi chữ cái từng là chữ xuất hiện nhiều nhất; sau khi thêm một ký tự, tìm số đếm lớn nhất hiện tại và cộng 1 cho mọi chữ cái có số đếm bằng mức đó, kể cả các chữ đồng hạng.",
+      "Duyệt xâu: tăng số đếm của chữ cái hiện tại; gọi top là số lớn nhất trong 26 số đếm; cộng 1 vào điểm của mọi chữ cái có số đếm bằng top. Cuối cùng in ra điểm lớn nhất trong 26 điểm."
     ]
   },
   "explanationEn": "## Approach\n\nMaintain the 26 frequencies and the accumulated counts; each time a character is added, add one to every character tied for the highest frequency.\n\n## Proof of correctness\n\nThe loop processes exactly all non-empty prefixes, and the frequencies equal the true counts in that prefix; checking one by one which counts equal the maximum implements exactly the definition with ties, and the result is the maximum of the accumulated counts.\n\n## Complexity\n\nTime O(26n), auxiliary space O(26)."

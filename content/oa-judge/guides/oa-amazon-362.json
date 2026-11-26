@@ -13,6 +13,21 @@
       "Reversal only changes the inside of the window and everything before it is identical, so the lexicographic result depends only on the first position in the window that changes.",
       "After reversal, position j of the window holds the character from its mirror position. Compare pairs from both ends toward the middle; at the first unequal pair, the reversal is smaller exactly when the right character is smaller than the left one. If all pairs are equal the window is a palindrome and does not count.",
       "Decode the JSON string into code points first (handle \\uXXXX escapes, join surrogate pairs into one code point, and decode raw UTF-8), then compare by code point. Enumerate every start; with k≤20 each window compares at most 10 pairs."
+    ],
+    "ja": [
+      "反転で変わるのは窓の内側だけで、それより前は同一なので、辞書順での結果は、窓の中で最初に変化する位置だけで決まります。",
+      "反転後、窓の位置 j には鏡像の位置の文字が入ります。両端から中央へ向かってペアを比較し、最初に等しくないペアで、右の文字が左の文字より小さいときにちょうど、反転後の方が小さくなります。すべてのペアが等しければ窓は回文で、数えません。",
+      "まず JSON 文字列をコードポイントにデコードし(\\uXXXX のエスケープを処理し、サロゲートペアを1つのコードポイントにまとめ、生の UTF-8 をデコードします)、その後コードポイントで比較します。開始位置をすべて列挙します。k≤20 なので、各窓の比較は高々 10 ペアです。"
+    ],
+    "ko": [
+      "뒤집기는 구간 안만 바꾸고 그 앞은 모두 같으므로, 사전순 결과는 구간 안에서 처음으로 바뀌는 위치에만 달려 있습니다.",
+      "뒤집은 뒤 구간의 위치 j에는 대칭 위치의 문자가 놓입니다. 양 끝에서 가운데로 쌍을 비교하여, 처음으로 다른 쌍에서 오른쪽 문자가 왼쪽 문자보다 작을 때에만 뒤집은 결과가 더 작습니다. 모든 쌍이 같으면 구간은 팰린드롬이므로 세지 않습니다.",
+      "먼저 JSON 문자열을 코드 포인트로 디코딩하고(\\uXXXX 이스케이프를 처리하며, 서로게이트 쌍은 하나의 코드 포인트로 합치고, 원시 UTF-8을 디코딩), 코드 포인트 기준으로 비교합니다. 모든 시작 위치를 열거하며, k≤20이므로 각 구간에서 쌍은 최대 10개만 비교합니다."
+    ],
+    "vi": [
+      "Phép đảo chỉ thay đổi phần bên trong cửa sổ và mọi thứ trước nó đều giống hệt, nên kết quả so sánh từ điển chỉ phụ thuộc vào vị trí đầu tiên trong cửa sổ bị thay đổi.",
+      "Sau khi đảo, vị trí j của cửa sổ chứa ký tự từ vị trí đối xứng của nó. So sánh các cặp từ hai đầu vào giữa; ở cặp khác nhau đầu tiên, phép đảo cho xâu nhỏ hơn đúng khi ký tự bên phải nhỏ hơn ký tự bên trái. Nếu mọi cặp đều bằng nhau thì cửa sổ là xâu đối xứng và không được đếm.",
+      "Trước hết giải mã xâu JSON thành các code point (xử lý các chuỗi thoát \\uXXXX, ghép cặp surrogate thành một code point, và giải mã UTF-8 thô), rồi so sánh theo code point. Duyệt mọi vị trí bắt đầu; với k≤20, mỗi cửa sổ so sánh tối đa 10 cặp."
     ]
   },
   "explanationEn": "## Approach\n\nEverything outside the window is unchanged, so compare from both ends of the window toward the middle; if, at the first pair of different characters, the right one is smaller than the left one, that reversal succeeds.\n\n## Proof of correctness\n\nThe two strings are identical before the window. After the reversal, position j of the window holds the character from the symmetric position. When all earlier pairs are equal, the first unequal pair is exactly the first differing position of the whole string, and its comparison alone decides the lexicographic order; if all pairs are equal, the window is a palindrome and the reversal is not strictly smaller. Enumerating all windows misses nothing and counts nothing twice.\n\n## Complexity\n\nO(nk) time; since k≤20, each window compares at most 10 pairs in practice. O(1) space besides the input string."

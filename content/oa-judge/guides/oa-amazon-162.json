@@ -13,6 +13,21 @@
       "Count by the last element: a subarray ending at index i is balanced exactly when it starts no later than the nearest strictly greater element to the left of i.",
       "A monotonic stack (strictly decreasing from bottom to top) gives, for each position, the index p of the nearest strictly greater element on its left; the balanced subarrays ending at i number p+1 (0-based), or 0 when there is none.",
       "Process a[i] from left to right: pop every index whose value is <= a[i]; if the stack is not empty, add its top index plus 1 to the answer; push i. The total can reach about n^2/2, so use 64-bit integers."
+    ],
+    "ja": [
+      "末尾の要素ごとに数えます。インデックス i で終わる部分配列が釣り合っているのは、i の左にある真に大きい最も近い要素より遅くない位置から始まるときに限ります。",
+      "単調スタック（下から上へ真に減少）を使うと、各位置について、左側で真に大きい最も近い要素のインデックス p が得られます。i で終わる釣り合った部分配列は p+1 個（0 始まり）で、そのような要素がなければ 0 個です。",
+      "a[i] を左から右へ処理します。値が a[i] 以下のインデックスをすべてポップし、スタックが空でなければその先頭のインデックスに 1 を足した値を答えに加え、i をプッシュします。合計は約 n^2/2 に達しうるので、64 ビット整数を使ってください。"
+    ],
+    "ko": [
+      "마지막 원소를 기준으로 셉니다. 인덱스 i에서 끝나는 부분 배열이 균형 잡혀 있을 필요충분조건은, 시작점이 i의 왼쪽에서 가장 가까운 엄격하게 더 큰 원소보다 늦지 않은 것입니다.",
+      "단조 스택(아래에서 위로 엄격하게 감소)은 각 위치에 대해 왼쪽에서 가장 가까운 엄격하게 더 큰 원소의 인덱스 p를 알려 줍니다. i에서 끝나는 균형 잡힌 부분 배열은 p+1개(0-기반)이며, 그런 원소가 없으면 0개입니다.",
+      "a[i]를 왼쪽에서 오른쪽으로 처리합니다. 값이 <= a[i]인 인덱스를 모두 pop하고, 스택이 비어 있지 않으면 맨 위 인덱스에 1을 더한 값을 답에 더한 다음 i를 push합니다. 합계는 약 n^2/2까지 커질 수 있으므로 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Đếm theo phần tử cuối: một mảng con kết thúc tại chỉ số i là cân bằng đúng khi nó bắt đầu không muộn hơn phần tử lớn hơn thực sự gần nhất bên trái i.",
+      "Một ngăn xếp đơn điệu (giảm thực sự từ đáy lên đỉnh) cho biết, với mỗi vị trí, chỉ số p của phần tử lớn hơn thực sự gần nhất bên trái nó; số mảng con cân bằng kết thúc tại i là p+1 (đánh số từ 0), hoặc 0 khi không có.",
+      "Xử lý a[i] từ trái sang phải: lấy ra mọi chỉ số có giá trị <= a[i]; nếu ngăn xếp không rỗng, cộng chỉ số đỉnh cộng 1 vào đáp án; đẩy i vào. Tổng có thể đạt khoảng n^2/2, nên dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nMaintain a monotonically decreasing stack of indices to find, for each last item, the position p of the nearest strictly greater value on its left; that last item contributes p+1 starting points.\n\n## Proof of correctness\n\nA subarray contains an element larger than its last item only when its start is no later than the nearest greater position; there are exactly p+1 such starts. Popping the elements not greater than the current value does not affect later nearest-greater queries. Counting grouped by the last item counts every subarray exactly once.\n\n## Complexity\n\nTime O(n), space O(n)."

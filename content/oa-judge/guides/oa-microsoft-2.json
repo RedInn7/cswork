@@ -13,6 +13,21 @@
       "Only positions with A[i]=B[i] force a value to appear in C; a position with A[i]≠B[i] can always avoid any one chosen value.",
       "A value x can be missing from C exactly when no position forces it: at every position pick the option that is not x. So the answer is the smallest positive integer missing from the set of forced values.",
       "Go through the positions and mark the value as forced whenever A[i] equals B[i] (values above N can be ignored, since the answer is at most N+1). Then search upward from 1 for the first unmarked positive integer and print it."
+    ],
+    "ja": [
+      "A[i]=B[i] の位置だけが、ある値を C に必ず現れさせます。A[i]≠B[i] の位置は、選ばれた任意の1つの値を常に避けることができます。",
+      "値 x が C から欠けうるのは、どの位置も x を強制していないとき、つまり、すべての位置で x でない方を選べるときに限ります。したがって答えは、強制された値の集合に含まれない最小の正の整数です。",
+      "位置を順に調べ、A[i] が B[i] に等しいときにその値を強制されたものとして印を付けます(答えは多くても N+1 なので、N より大きい値は無視できます)。その後、1 から上へ向かって、印の付いていない最初の正の整数を探して出力します。"
+    ],
+    "ko": [
+      "A[i]=B[i]인 위치만 C에 어떤 값이 반드시 나타나게 하며, A[i]≠B[i]인 위치는 선택한 값 하나를 언제나 피할 수 있습니다.",
+      "값 x가 C에서 빠질 수 있는 것은 어떤 위치도 x를 강제하지 않을 때뿐입니다. 모든 위치에서 x가 아닌 쪽을 고르면 됩니다. 따라서 답은 강제된 값의 집합에서 빠져 있는 가장 작은 양의 정수입니다.",
+      "위치를 훑으며 A[i]와 B[i]가 같을 때마다 그 값을 강제된 값으로 표시합니다(N보다 큰 값은 답이 최대 N+1이므로 무시해도 됩니다). 그런 다음 1부터 위로 올라가며 표시되지 않은 첫 양의 정수를 찾아 출력합니다."
+    ],
+    "vi": [
+      "Chỉ các vị trí có A[i]=B[i] mới buộc một giá trị phải xuất hiện trong C; vị trí có A[i]≠B[i] luôn có thể tránh bất kỳ một giá trị nào được chọn.",
+      "Một giá trị x có thể vắng mặt trong C đúng khi không vị trí nào buộc nó: ở mọi vị trí chọn phương án không phải x. Vì vậy đáp án là số nguyên dương nhỏ nhất không có trong tập các giá trị bị buộc.",
+      "Duyệt qua các vị trí và đánh dấu giá trị là bị buộc mỗi khi A[i] bằng B[i] (có thể bỏ qua các giá trị lớn hơn N, vì đáp án nhiều nhất là N+1). Sau đó tìm tăng dần từ 1 số nguyên dương đầu tiên chưa được đánh dấu và in nó."
     ]
   },
   "explanationEn": "## Approach\n\nOnly positions with A[i]=B[i] force a value to appear. Collect these forced values and output the smallest positive integer not in that set.\n\n## Proof of correctness\n\nA forced value appears in every C and cannot be missing. If x is not forced, every position has at least one option other than x, and choosing it at every position gives a C without x. So the smallest positive integer that can be missing equals the smallest value missing from the forced set.\n\n## Complexity\n\nTime O(N), space O(N)."

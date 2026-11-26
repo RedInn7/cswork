@@ -13,6 +13,21 @@
       "There are at most three tiles, so put the number used into the state: for each prefix, record the best covered sum using at most t tiles, for t from 0 to 3.",
       "Look at the last element of the prefix: either it is uncovered and the result equals that of the previous prefix, or a tile covers it, in which case the tile covers the last two elements and follows the best solution with one fewer tile on the prefix two elements shorter.",
       "Keep the four states of the two previous prefixes, all starting at 0 (placing no tile is allowed). For element i, start the new states as a copy of the previous prefix; if i≥1, for t from 1 to 3 take the larger of the previous prefix's state t and the state t−1 of the prefix before it plus a[i−1]+a[i]. Print the state for at most 3 tiles. Sums can exceed 32 bits."
+    ],
+    "ja": [
+      "タイルは高々 3 枚なので、使った枚数を状態に入れます。各接頭辞について、t を 0 から 3 として、高々 t 枚のタイルで覆える最良の和を記録します。",
+      "接頭辞の最後の要素に注目します。覆われていなければ、結果は 1 つ前の接頭辞と同じです。覆われているなら、そのタイルは最後の 2 要素を覆い、2 要素短い接頭辞でタイル 1 枚少ない最良の解に続きます。",
+      "直前の 2 つの接頭辞の 4 つの状態を持ち、すべて 0 から始めます（タイルを置かないことも許されます）。要素 i について、新しい状態を前の接頭辞のコピーとして始めます。i≥1 なら、t を 1 から 3 まで、前の接頭辞の状態 t と、その前の接頭辞の状態 t−1 に a[i−1]+a[i] を足した値の大きいほうを取ります。高々 3 枚の状態を出力します。和は 32 ビットを超えることがあります。"
+    ],
+    "ko": [
+      "타일이 최대 세 개이므로 사용한 개수를 상태에 넣으세요. 각 접두사에 대해 t = 0..3에서 타일을 최대 t개 사용해 덮은 최대 합을 기록합니다.",
+      "접두사의 마지막 원소를 보세요. 덮이지 않았다면 결과는 이전 접두사와 같고, 덮였다면 타일이 마지막 두 원소를 덮으며 두 원소 짧은 접두사에서 타일을 하나 덜 쓴 최적해를 이어 붙인 것입니다.",
+      "직전 두 접두사의 네 상태를 유지하고 모두 0으로 시작합니다(타일을 놓지 않아도 됩니다). 원소 i에 대해 새 상태를 직전 접두사의 복사본으로 시작하고, i≥1이면 t를 1부터 3까지 돌며 직전 접두사의 상태 t와, 그 앞 접두사의 상태 t−1에 a[i−1]+a[i]를 더한 값 중 큰 쪽을 취합니다. 타일 최대 3개에 해당하는 상태를 출력합니다. 합은 32비트를 넘을 수 있습니다."
+    ],
+    "vi": [
+      "Có tối đa ba viên gạch, nên hãy đưa số viên đã dùng vào trạng thái: với mỗi tiền tố, ghi lại tổng được phủ tốt nhất khi dùng tối đa t viên gạch, với t từ 0 đến 3.",
+      "Hãy nhìn phần tử cuối của tiền tố: hoặc nó không được phủ và kết quả bằng của tiền tố trước đó, hoặc một viên gạch phủ nó, khi đó viên gạch phủ hai phần tử cuối và nối tiếp nghiệm tốt nhất với ít hơn một viên gạch trên tiền tố ngắn hơn hai phần tử.",
+      "Giữ bốn trạng thái của hai tiền tố trước, tất cả bắt đầu từ 0 (cho phép không đặt viên nào). Với phần tử i, bắt đầu các trạng thái mới bằng bản sao của tiền tố trước; nếu i≥1, với t từ 1 đến 3 lấy giá trị lớn hơn giữa trạng thái t của tiền tố trước và trạng thái t−1 của tiền tố đứng trước nữa cộng a[i−1]+a[i]. In trạng thái cho tối đa 3 viên gạch. Các tổng có thể vượt quá 32 bit."
     ]
   },
   "explanationEn": "## Approach\n\nA prefix DP maintains the maximum sum using at most 0, 1, 2, 3 tiles. The last element may stay uncovered; or one tile covers the last two cells and follows the best solution, with one fewer tile, that ends before those two cells.\n\n## Correctness\n\nIf a valid solution covers the last cell, its last tile must cover the last two cells and nothing before may overlap it; otherwise the solution belongs to a shorter prefix. The two branches exhaust all solutions, and initializing with zero allows not using tiles with negative gain.\n\n## Complexity\n\nTime O(3N), space O(1) apart from the input."

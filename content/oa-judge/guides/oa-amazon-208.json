@@ -13,6 +13,21 @@
       "Stability is the minimum availability times the reliability sum; once a threshold for the minimum availability is fixed, every server at or above it should be taken, because reliabilities are positive.",
       "So it is enough to try each server's availability as the threshold; when scanning in decreasing availability, the servers at or above the current threshold are exactly those scanned so far.",
       "Sort by availability descending; keep the running reliability sum total and update the maximum with availability * total at every step (up to about 10^17, so use 64-bit); find the full maximum first and take it modulo 1000000007 only at the end."
+    ],
+    "ja": [
+      "安定性は可用性の最小値に信頼性の総和を掛けたものです。可用性の最小値の閾値を決めたら、信頼性は正なので、それ以上のサーバーはすべて採用するのがよいです。",
+      "したがって、各サーバーの可用性を閾値として試せば十分です。可用性の降順に走査すると、現在の閾値以上のサーバーはちょうどこれまでに走査したものになります。",
+      "可用性の降順にソートし、信頼性の累積和 total を保持して、毎ステップ availability * total で最大値を更新します（約 10^17 になるので 64 ビットを使います）。まず完全な最大値を求め、最後にだけ 1000000007 で割った余りを取ります。"
+    ],
+    "ko": [
+      "안정성은 최소 가용성 곱하기 신뢰도 합입니다. 최소 가용성의 임계값을 고정하면 신뢰도가 양수이므로 그 값 이상인 서버는 모두 선택하는 것이 좋습니다.",
+      "따라서 각 서버의 가용성을 임계값으로 시도하면 충분하며, 가용성의 내림차순으로 훑을 때 현재 임계값 이상인 서버는 정확히 지금까지 훑은 서버들입니다.",
+      "가용성을 내림차순으로 정렬하고, 신뢰도 누적 합 total을 유지하면서 매 단계 availability * total로 최댓값을 갱신합니다(약 10^17까지 커지므로 64비트 사용). 먼저 전체 최댓값을 구한 뒤 마지막에만 1000000007로 나눈 나머지를 취합니다."
+    ],
+    "vi": [
+      "Độ ổn định là độ khả dụng nhỏ nhất nhân tổng độ tin cậy; khi đã cố định ngưỡng cho độ khả dụng nhỏ nhất, nên lấy mọi máy chủ có độ khả dụng từ ngưỡng trở lên, vì độ tin cậy đều dương.",
+      "Vì vậy chỉ cần thử độ khả dụng của từng máy chủ làm ngưỡng; khi duyệt theo độ khả dụng giảm dần, các máy chủ từ ngưỡng hiện tại trở lên chính là những máy đã duyệt.",
+      "Sắp xếp theo độ khả dụng giảm dần; giữ tổng độ tin cậy đang chạy total và cập nhật giá trị lớn nhất bằng availability * total ở mỗi bước (lên đến khoảng 10^17 nên dùng 64-bit); tìm giá trị lớn nhất đầy đủ trước và chỉ lấy modulo 1000000007 ở cuối."
     ]
   },
   "explanationEn": "## Approach\n\nProcess servers in decreasing availability, accumulating reliability, and compare the current availability times the accumulated sum.\n\n## Proof of correctness\n\nWith the minimum availability fixed as a threshold, every server at or above the threshold can be added, and positive reliability means adding one never decreases the stability. The minimum availability of some optimal subset is an actual value; once the scan has processed all members at that value, it has a candidate at least as good. Every candidate is itself feasible, so the largest candidate is optimal.\n\n## Complexity\n\nTime O(n log n), space O(n), with 64-bit products."

@@ -13,6 +13,21 @@
       "Every day all non-empty centers lose the same x, so the difference between any two distinct positive stock values never changes and they can never reach 0 on the same day.",
       "A day can empty at most the group with the current smallest positive value, so you need at least as many days as there are distinct positive values; subtracting exactly the current smallest positive value each day removes one group per day and meets that bound.",
       "Read all stocks, ignore zeros, put the positive values in a set (or sort and de-duplicate), and print the number of distinct positive values; if everything is 0 the answer is 0."
+    ],
+    "ja": [
+      "毎日、空でないすべてのセンターから同じ x が減るため、異なる 2 つの正の在庫量の差は変わらず、同じ日に 0 になることはありません。",
+      "1 日に空にできるのは、その時点で最小の正の値を持つグループだけです。そのため、日数は相異なる正の値の個数以上必要です。毎日、その時点の最小の正の値ちょうどを引けば、1 日に 1 グループずつ消えるので、この下限を達成できます。",
+      "在庫をすべて読み込み、0 を無視して、正の値を集合に入れます(またはソートして重複を除きます)。相異なる正の値の個数を出力します。すべて 0 なら答えは 0 です。"
+    ],
+    "ko": [
+      "매일 비어 있지 않은 모든 센터에서 같은 x만큼 줄어들므로, 서로 다른 두 양의 재고 값의 차이는 변하지 않으며 같은 날 동시에 0이 될 수 없습니다.",
+      "하루에 비울 수 있는 것은 현재 가장 작은 양의 값을 가진 그룹뿐이므로, 서로 다른 양의 값의 개수 이상의 일수가 필요합니다. 매일 현재 가장 작은 양의 값만큼 정확히 빼면 하루에 한 그룹씩 사라져 이 하한을 달성합니다.",
+      "모든 재고를 읽고 0은 무시한 뒤 양의 값을 집합에 넣습니다(또는 정렬 후 중복 제거). 서로 다른 양의 값의 개수를 출력하며, 모두 0이면 답은 0입니다."
+    ],
+    "vi": [
+      "Mỗi ngày mọi trung tâm chưa rỗng đều giảm cùng một lượng x, nên hiệu giữa hai giá trị tồn kho dương khác nhau không bao giờ đổi, và chúng không thể cùng về 0 trong một ngày.",
+      "Một ngày chỉ có thể làm rỗng nhiều nhất nhóm có giá trị dương nhỏ nhất hiện tại, nên cần ít nhất bằng số giá trị dương phân biệt; mỗi ngày trừ đúng giá trị dương nhỏ nhất hiện tại sẽ loại một nhóm mỗi ngày và đạt đúng cận này.",
+      "Đọc toàn bộ tồn kho, bỏ qua các số 0, đưa các giá trị dương vào một tập hợp (hoặc sắp xếp rồi khử trùng), và in ra số giá trị dương phân biệt; nếu tất cả đều bằng 0 thì đáp án là 0."
     ]
   },
   "explanationEn": "## Approach\n\nThe answer is the number of distinct positive stock values; convert each token to an integer and add it to a set, without keeping a separate full integer array.\n\n## Proof of correctness\n\nEach day all positive values decrease by the same x, so the differences between the existing distinct positive values stay unchanged, and at most the single current smallest positive value can become 0; hence at least as many days as there are distinct positive values are needed. Subtracting exactly the current smallest positive value each day eliminates one value, which reaches the lower bound. Zero values need no shipping.\n\n## Complexity\n\nO(n) time, O(number of distinct positive values) space, without copying a full integer array."

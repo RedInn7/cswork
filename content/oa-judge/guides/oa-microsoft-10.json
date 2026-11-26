@@ -13,6 +13,21 @@
       "Crossing the same edge twice flips its letter twice, which cancels out. So the final string depends only on the end point: the letters between the start and the end are flipped and the rest are unchanged.",
       "Walking straight to an end point is the shortest way to reach it, so it is enough to enumerate every end point reached by walking straight left or straight right and check whether a and b balance after the flips.",
       "Compute the count of a minus the count of b; if it is 0, print 0. Otherwise walk left and right step by step: each crossed a turned into b lowers the difference by 2, and each b turned into a raises it by 2. Record the steps when the difference becomes 0, take the smaller over the two directions, and print −1 if neither works (always the case when the length is odd)."
+    ],
+    "ja": [
+      "同じ辺を2回通ると文字は2回反転して元に戻ります。したがって最終的な文字列は終点だけで決まります。始点と終点の間にある文字は反転し、それ以外は変わりません。",
+      "終点までまっすぐ進むのがそこへ到達する最短の方法なので、左または右へまっすぐ進んで到達できるすべての終点を列挙し、反転後に a と b が釣り合うかを確認すれば十分です。",
+      "a の個数から b の個数を引いた値を計算し、0 なら 0 を出力します。そうでなければ左と右へ1歩ずつ進みます。通り越した a が b になれば差は 2 減り、b が a になれば差は 2 増えます。差が 0 になったときの歩数を記録し、2方向のうち小さいほうを取ります。どちらでも不可能なら −1 を出力します（長さが奇数のときは常にそうなります）。"
+    ],
+    "ko": [
+      "같은 간선을 두 번 건너면 문자가 두 번 뒤집혀 원래대로 돌아갑니다. 따라서 최종 문자열은 도착점에만 의존합니다. 출발점과 도착점 사이의 문자는 뒤집히고 나머지는 그대로입니다.",
+      "도착점까지 곧장 걸어가는 것이 가장 짧은 방법이므로, 왼쪽 또는 오른쪽으로 곧장 걸어 도달하는 모든 도착점을 열거하여 뒤집은 뒤 a와 b가 균형인지 확인하면 충분합니다.",
+      "a의 개수에서 b의 개수를 뺀 값을 계산합니다. 0이면 0을 출력합니다. 그렇지 않으면 왼쪽과 오른쪽으로 한 걸음씩 걸어갑니다. 건넌 a가 b로 바뀌면 차이가 2 줄고, 건넌 b가 a로 바뀌면 차이가 2 늘어납니다. 차이가 0이 될 때의 걸음 수를 기록하고, 두 방향 중 작은 값을 출력합니다. 어느 쪽도 불가능하면 −1을 출력합니다(길이가 홀수이면 항상 그렇습니다)."
+    ],
+    "vi": [
+      "Đi qua cùng một cạnh hai lần thì chữ cái trên đó bị lật hai lần, tức là triệt tiêu nhau. Vì vậy xâu cuối cùng chỉ phụ thuộc vào điểm cuối: các chữ cái nằm giữa điểm xuất phát và điểm cuối bị lật, phần còn lại giữ nguyên.",
+      "Đi thẳng đến một điểm cuối là cách ngắn nhất để tới đó, nên chỉ cần duyệt mọi điểm cuối đạt được bằng cách đi thẳng sang trái hoặc thẳng sang phải và kiểm tra xem a và b có cân bằng sau khi lật hay không.",
+      "Tính số chữ a trừ số chữ b; nếu bằng 0 thì in 0. Ngược lại hãy đi từng bước sang trái và sang phải: mỗi chữ a bị đổi thành b làm hiệu giảm 2, mỗi chữ b bị đổi thành a làm hiệu tăng 2. Ghi lại số bước khi hiệu bằng 0, lấy giá trị nhỏ hơn trong hai hướng, và in −1 nếu cả hai đều không được (luôn như vậy khi độ dài là số lẻ)."
     ]
   },
   "explanationEn": "## Approach\n\nWhether an edge ends up flipped depends only on whether the end point and the start lie on opposite sides of it; enumerate every end point reached by walking straight left or right and check whether the letter counts balance.\n\n## Proof of correctness\n\nCrossing the same edge twice cancels out, so for any walk the edges finally flipped are exactly the contiguous segment between the start and the end point. Walking directly to the end point is the shortest, so enumerating all straight paths covers every possible final state. An odd length can never be split evenly.\n\n## Complexity\n\nTime O(N), extra space O(1)."

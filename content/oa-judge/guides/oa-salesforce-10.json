@@ -13,6 +13,21 @@
       "A substring of the form 0^k1^k or 1^k0^k always crosses exactly one boundary between different adjacent characters, with k equal characters on its left and k of the other character on its right.",
       "Split the string into runs of equal characters. For two adjacent runs of lengths a and b, the valid substrings crossing their boundary can use k=1..min(a,b), contributing exactly min(a,b), and different boundaries never produce the same substring.",
       "Scan from left to right, keeping current as the length of the current run and previous as the length of the run before it. Whenever the character changes, add min(previous,current) to the answer and set previous=current, current=1. After the scan, add min(previous,current) once more."
+    ],
+    "ja": [
+      "0^k1^k または 1^k0^k の形の部分文字列は、必ず異なる文字が隣り合う境界をちょうど 1 つまたぎ、その左側に k 個の同じ文字、右側に k 個の別の文字が並びます。",
+      "文字列を同じ文字のランに分割します。長さ a と b の隣り合う 2 つのランについて、その境界をまたぐ有効な部分文字列は k=1..min(a,b) が使えるので、ちょうど min(a,b) 個を寄与し、異なる境界が同じ部分文字列を生むことはありません。",
+      "左から右へ走査し、current を現在のランの長さ、previous をその 1 つ前のランの長さとして保持します。文字が変わるたびに答えに min(previous,current) を加え、previous=current、current=1 とします。走査後にもう一度 min(previous,current) を加えます。"
+    ],
+    "ko": [
+      "0^k1^k 또는 1^k0^k 형태의 부분 문자열은 항상 서로 다른 인접 문자 사이의 경계를 정확히 하나 가로지르며, 왼쪽에 같은 문자 k개, 오른쪽에 다른 문자 k개가 있습니다.",
+      "문자열을 같은 문자가 이어진 run으로 나눕니다. 길이가 a와 b인 인접한 두 run의 경계를 가로지르는 유효한 부분 문자열은 k=1..min(a,b)를 쓸 수 있으므로 정확히 min(a,b)개이고, 서로 다른 경계는 같은 부분 문자열을 만들지 않습니다.",
+      "왼쪽에서 오른쪽으로 훑으며 current는 현재 run의 길이, previous는 그 앞 run의 길이로 유지합니다. 문자가 바뀔 때마다 답에 min(previous,current)를 더하고 previous=current, current=1로 갱신합니다. 훑기가 끝난 뒤 min(previous,current)를 한 번 더 더합니다."
+    ],
+    "vi": [
+      "Một xâu con dạng 0^k1^k hoặc 1^k0^k luôn vượt qua đúng một ranh giới giữa hai ký tự kề nhau khác nhau, với k ký tự giống nhau ở bên trái và k ký tự của loại còn lại ở bên phải.",
+      "Chia xâu thành các đoạn gồm các ký tự bằng nhau. Với hai đoạn kề nhau có độ dài a và b, các xâu con hợp lệ vượt qua ranh giới của chúng có thể dùng k=1..min(a,b), đóng góp đúng min(a,b), và các ranh giới khác nhau không bao giờ tạo ra cùng một xâu con.",
+      "Quét từ trái sang phải, giữ current là độ dài đoạn hiện tại và previous là độ dài đoạn trước đó. Mỗi khi ký tự đổi, cộng min(previous,current) vào đáp án và đặt previous=current, current=1. Sau khi quét xong, cộng thêm min(previous,current) một lần nữa."
     ]
   },
   "explanationEn": "## Approach\n\nSplit the string into runs of identical consecutive characters; two adjacent runs of lengths a,b contribute min(a,b).\n\n## Correctness\n\nEvery valid substring crosses exactly one run boundary, and the lengths on both sides must be equal, ranging from 1 to min(a,b). Different boundaries or different lengths determine different intervals; conversely, every valid interval is counted exactly once.\n\n## Complexity\n\nTime O(n), space O(1)."

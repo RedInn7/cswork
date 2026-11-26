@@ -13,6 +13,21 @@
       "Once a nonzero increment x is chosen, only elements equal to v = k - x inside the range become k, and the range's original k values are lost. So for a fixed v, the gain of a range is the number of v in it minus the number of k in it.",
       "For each v this is a maximum-subarray problem: v counts +1, k counts -1, everything else 0. An optimal segment can start and end at a v, so update only when v appears, and deduct the k values in between at once via the difference of running k counts.",
       "Scan the array with cnt = number of k so far; for v != k: if v was seen, gain = max(1, previous gain - (cnt - previous cnt) + 1), otherwise gain = 1; store (gain, cnt) for v and update best. The answer is cnt + best (best starts at 0, meaning no operation)."
+    ],
+    "ja": [
+      "0 でない増分 x を選ぶと、範囲内で k になるのは v = k - x に等しい要素だけで、範囲内の元の k は失われます。したがって、固定した v について、範囲の利得は、その中の v の個数から k の個数を引いたものです。",
+      "各 v について、これは最大部分配列問題です。v は +1、k は -1、それ以外は 0 と数えます。最適な区間は v で始まり v で終わるとしてよいので、v が現れたときだけ更新し、その間にある k は、k の累積個数の差で一度に差し引きます。",
+      "cnt = これまでの k の個数として配列を走査します。v != k のとき、v が既出なら gain = max(1, 前回の gain - (cnt - 前回の cnt) + 1)、そうでなければ gain = 1 とします。v について (gain, cnt) を保存し、best を更新します。答えは cnt + best です（best は 0 から始まり、操作をしない場合を表します）。"
+    ],
+    "ko": [
+      "0이 아닌 증분 x를 고르면 구간 안에서 v = k - x인 원소만 k가 되고, 구간 안의 원래 k는 사라집니다. 따라서 v를 고정하면 구간의 이득은 그 안의 v의 개수에서 k의 개수를 뺀 값입니다.",
+      "각 v에 대해 이는 최대 부분 배열 문제입니다. v는 +1, k는 -1, 나머지는 0입니다. 최적 구간은 v에서 시작해서 v에서 끝나도록 잡을 수 있으므로, v가 나타날 때만 갱신하고 그 사이의 k는 누적 k 개수의 차이로 한 번에 차감합니다.",
+      "cnt = 지금까지의 k의 개수로 두고 배열을 훑습니다. v != k이면, v가 이전에 나왔을 경우 gain = max(1, 이전 gain - (cnt - 이전 cnt) + 1), 아니면 gain = 1로 두고 v에 대해 (gain, cnt)를 저장하며 best를 갱신합니다. 정답은 cnt + best입니다(best는 0에서 시작하며 연산을 하지 않는 경우를 뜻합니다)."
+    ],
+    "vi": [
+      "Khi đã chọn một số gia x khác 0, chỉ các phần tử bằng v = k - x trong đoạn mới trở thành k, và các giá trị k ban đầu trong đoạn bị mất. Vậy với một v cố định, lợi ích của một đoạn là số v trong đó trừ số k trong đó.",
+      "Với mỗi v đây là bài toán mảng con có tổng lớn nhất: v tính +1, k tính -1, mọi thứ khác 0. Một đoạn tối ưu có thể bắt đầu và kết thúc tại một v, nên chỉ cập nhật khi v xuất hiện, và trừ ngay các giá trị k ở giữa qua hiệu của số đếm k đang chạy.",
+      "Duyệt mảng với cnt = số k cho đến hiện tại; với v != k: nếu v đã thấy, gain = max(1, previous gain - (cnt - previous cnt) + 1), nếu không thì gain = 1; lưu (gain, cnt) cho v và cập nhật best. Đáp án là cnt + best (best bắt đầu từ 0, nghĩa là không thao tác)."
     ]
   },
   "explanationEn": "## Approach\n\nIf some v != k is turned into k, every v in the window gains +1, every original k loses 1 (counts -1), and other values count 0. For each v keep the best segment gain at its last occurrence and the running count of k at that time; deduct the k values in between lazily via the count difference, and restart as in Kadane's algorithm.\n\n## Proof of correctness\n\nA fixed nonzero increment turns only the unique value v = k-x into k and makes the original k values disappear, so the net gain definition is exact. An optimal segment with positive gain can start and end at a v, and between two v's only the k values cost points. When a new v is processed, choosing between restarting at 1 and extending the previous best gain minus the k values in between plus 1 is exactly Kadane's transition for that v. Each v is updated only at its occurrences, n visits in total, and the largest net gain plus the original number of k values is the answer.\n\n## Complexity\n\nTime O(n), space O(n)."

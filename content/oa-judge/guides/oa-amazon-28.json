@@ -13,6 +13,21 @@
       "The weight i grows with the position, so larger values belong later. If a larger value sits at a smaller weight, swapping increases the sum by the product of two positive differences, so the optimal permutation has non-decreasing values.",
       "Swapping equal values does not change the sum and only affects the lexicographic order; to make it smallest, list equal values in increasing index order.",
       "Sort the indices by (value, index) in ascending order and print them, numbered from 1."
+    ],
+    "ja": [
+      "重み i は位置とともに大きくなるので、大きい値ほど後ろに置くべきです。大きい値が小さい重みの位置にあるとき、入れ替えると和は 2 つの正の差の積だけ増えます。したがって最適な順列では値が非減少になります。",
+      "等しい値を入れ替えても和は変わらず、辞書順にだけ影響します。辞書順で最小にするには、等しい値をインデックスの昇順に並べます。",
+      "インデックスを (値, インデックス) の昇順でソートし、1 から数えて出力します。"
+    ],
+    "ko": [
+      "가중치 i는 위치가 뒤로 갈수록 커지므로 큰 값은 뒤에 두어야 합니다. 더 큰 값이 더 작은 가중치에 있다면 서로 바꿨을 때 합이 두 양의 차이의 곱만큼 증가하므로, 최적 순열의 값은 비감소 순서입니다.",
+      "같은 값끼리 바꾸는 것은 합을 바꾸지 않고 사전순에만 영향을 줍니다. 가장 작게 만들려면 같은 값들을 인덱스가 증가하는 순서로 나열하세요.",
+      "인덱스를 (값, 인덱스)의 오름차순으로 정렬하고 1부터 번호를 매겨 출력하세요."
+    ],
+    "vi": [
+      "Trọng số i tăng theo vị trí, nên các giá trị lớn hơn thuộc về phía sau. Nếu một giá trị lớn hơn nằm ở trọng số nhỏ hơn, hoán đổi sẽ tăng tổng đúng bằng tích của hai hiệu dương, nên hoán vị tối ưu có các giá trị không giảm.",
+      "Hoán đổi các giá trị bằng nhau không làm đổi tổng và chỉ ảnh hưởng đến thứ tự từ điển; để nhỏ nhất, hãy liệt kê các giá trị bằng nhau theo chỉ số tăng dần.",
+      "Sắp xếp các chỉ số theo (giá trị, chỉ số) tăng dần và in chúng, đánh số từ 1."
     ]
   },
   "explanationEn": "## Approach\n\nOrder the indices by element value in ascending order; for equal values, order them by original index in ascending order.\n\n## Proof of correctness\n\nIf a larger value is at a position with smaller weight, swapping them gains the product of two positive differences, so an optimal permutation has non-decreasing values. Equal values can be swapped freely without changing the sum, and ascending indices give the lexicographically smallest arrangement.\n\n## Complexity\n\nTime O(n log n), space O(n)."

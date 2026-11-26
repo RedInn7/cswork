@@ -13,6 +13,21 @@
       "n is at most 5000, so simulating every round directly takes about n^2/2, a bit over ten million additions, which is fast enough; no combinatorial tricks are needed.",
       "Each round replaces item i with the last digit of item i plus item i+1, which can be done in place from left to right in one array, because once item i is written this round, it is not read again.",
       "While the effective length len is greater than 2: for i from 0 to len-2 set a[i] to (a[i] + a[i+1]) mod 10, then decrease len. Finally print a[0] and a[1] as two digit characters, keeping a leading 0."
+    ],
+    "ja": [
+      "n は最大 5000 なので、すべてのラウンドを直接シミュレーションすると約 n^2/2、つまり 1000 万回強の加算で、十分に高速です。組合せ論的な工夫は必要ありません。",
+      "各ラウンドでは、要素 i を、要素 i と要素 i+1 の和の下 1 桁に置き換えます。このラウンドで要素 i を書き込んだあとは、それが再び読まれることはないので、左から右へ 1 つの配列の中でその場で行えます。",
+      "実効的な長さ len が 2 より大きい間、i を 0 から len-2 まで動かして a[i] を (a[i] + a[i+1]) mod 10 に設定し、そのあと len を減らします。最後に a[0] と a[1] を、先頭の 0 を保ったまま 2 つの数字の文字として出力します。"
+    ],
+    "ko": [
+      "n이 최대 5000이므로 모든 라운드를 직접 시뮬레이션해도 덧셈이 약 n^2/2번, 즉 천만 번을 조금 넘는 수준이라 충분히 빠릅니다. 조합론적 기법은 필요 없습니다.",
+      "각 라운드에서 항목 i를 항목 i와 항목 i+1의 합의 일의 자리로 바꾸며, 한 배열에서 왼쪽에서 오른쪽으로 제자리에서 할 수 있습니다. 이번 라운드에서 항목 i를 쓰고 나면 그 값은 다시 읽히지 않기 때문입니다.",
+      "유효 길이 len이 2보다 큰 동안, i를 0부터 len-2까지 돌며 a[i]를 (a[i] + a[i+1]) mod 10으로 설정한 뒤 len을 줄입니다. 마지막으로 a[0]과 a[1]을 앞의 0을 유지한 두 자리 문자열로 출력합니다."
+    ],
+    "vi": [
+      "n tối đa là 5000, nên mô phỏng trực tiếp từng vòng tốn khoảng n^2/2, hơn mười triệu phép cộng một chút, đủ nhanh; không cần mẹo tổ hợp nào.",
+      "Mỗi vòng thay phần tử i bằng chữ số cuối của tổng phần tử i và phần tử i+1, có thể làm tại chỗ từ trái sang phải trong một mảng, vì khi phần tử i đã được ghi trong vòng này thì nó không được đọc lại.",
+      "Khi độ dài hiệu dụng len lớn hơn 2: với i từ 0 đến len-2 đặt a[i] bằng (a[i] + a[i+1]) mod 10, rồi giảm len. Cuối cùng in a[0] và a[1] dưới dạng hai ký tự chữ số, giữ số 0 đứng đầu."
     ]
   },
   "explanationEn": "## Approach\n\nUpdate in place, moving forward, with the sums of adjacent elements modulo 10; each round shortens the effective length by one, until it is 2.\n\n## Proof of correctness\n\nIn round r, each item by definition equals the sum of two adjacent items of the previous round modulo 10. Writing forward overwrites only the left item, which has already been used, and does not change the right item that is read next, so by induction every row is correct.\n\n## Complexity\n\nTime O(n^2), space O(n)."

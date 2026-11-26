@@ -13,6 +13,21 @@
       "The number of mutual friends between user i and a candidate c is the number of two-step paths i → friend → c. With at most 15 friends per user there are very few such paths.",
       "For each user enumerate friends of friends, skip the user and existing friends, and count how often each candidate appears; every candidate that never appears has 0 mutual friends.",
       "If some count is positive, take the candidate with the largest count and then the smallest id; otherwise find the smallest id that is neither the user nor a friend, or output −1 if none exists. Use one global count array plus a list of touched indices to reset it, instead of clearing O(n) each time."
+    ],
+    "ja": [
+      "ユーザー i と候補 c の共通の友人の数は、2 歩の経路 i → 友人 → c の数です。各ユーザーの友人は高々 15 人なので、そのような経路はごくわずかです。",
+      "各ユーザーについて友人の友人を列挙し、本人と既存の友人を除いて、各候補の出現回数を数えます。一度も現れない候補の共通の友人は 0 人です。",
+      "正の回数があれば、回数が最大で番号が最小の候補を選びます。なければ、本人でも友人でもない最小の番号を探し、なければ −1 を出力します。毎回 O(n) をクリアする代わりに、グローバルなカウント配列と、触れたインデックスのリストを使ってリセットしてください。"
+    ],
+    "ko": [
+      "사용자 i와 후보 c의 공통 친구 수는 i → 친구 → c의 두 단계 경로의 수입니다. 사용자당 친구가 최대 15명이므로 이런 경로는 매우 적습니다.",
+      "각 사용자에 대해 친구의 친구를 순회하면서 본인과 기존 친구를 건너뛰고, 각 후보가 몇 번 나타나는지 셉니다. 한 번도 나타나지 않는 후보는 공통 친구가 0명입니다.",
+      "양수인 횟수가 있으면 횟수가 가장 크고 id가 가장 작은 후보를 고르고, 없으면 사용자 본인도 친구도 아닌 가장 작은 id를 찾으며, 그런 id도 없으면 −1을 출력합니다. 매번 O(n)을 초기화하는 대신, 전역 횟수 배열 하나와 건드린 인덱스 목록을 두고 그 목록으로 초기화하세요."
+    ],
+    "vi": [
+      "Số bạn chung giữa người dùng i và ứng viên c là số đường đi hai bước i → bạn → c. Với tối đa 15 bạn mỗi người, có rất ít đường đi như vậy.",
+      "Với mỗi người dùng, liệt kê các bạn của bạn, bỏ qua chính người đó và các bạn hiện tại, rồi đếm mỗi ứng viên xuất hiện bao nhiêu lần; mọi ứng viên không bao giờ xuất hiện đều có 0 bạn chung.",
+      "Nếu có số đếm dương, chọn ứng viên có số đếm lớn nhất rồi đến id nhỏ nhất; ngược lại tìm id nhỏ nhất không phải người dùng đó cũng không phải bạn, hoặc in −1 nếu không có. Dùng một mảng đếm toàn cục cùng một danh sách các chỉ số đã chạm tới để đặt lại, thay vì xóa O(n) mỗi lần."
     ]
   },
   "explanationEn": "## Idea\n\nFor each person, walk over the friends of their friends and count every candidate that is not a friend; if some count is positive, take the best by count and then by id. If no count is positive, it is enough to find the smallest id that is neither the person nor a friend.\n\n## Correctness\n\nEach mutual friend between a candidate and the current user corresponds to one two-step path, so the enumeration counts exactly. Candidates that never appear have 0 and cannot beat a positive count; if all counts are 0, the valid candidate with the smallest id is the answer.\n\n## Complexity\n\nO(n+Σ degree²) time, bounded by O(n+30m); O(n+m) space, with at most 225 local counts."

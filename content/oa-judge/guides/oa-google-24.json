@@ -13,6 +13,21 @@
       "A valid subsequence of length greater than 1 that ends with value v must have a previously seen v-1 as its second-to-last element.",
       "Use a dynamic program keyed by the ending value: dp[v] is the longest subsequence in the current prefix that ends with v, and reading v transitions from dp[v-1].",
       "Store dp in a hash map; read values left to right and set dp[v] = max(dp[v], dp[v-1] + 1), treating missing keys as 0; keep the overall maximum and print it."
+    ],
+    "ja": [
+      "長さが 1 より大きい有効な部分列で、末尾の値が v のものは、それ以前に現れた v-1 を末尾から2番目の要素として持つはずです。",
+      "末尾の値をキーとする動的計画法を使います。dp[v] は現在の接頭辞で v で終わる最長の部分列の長さで、v を読んだときは dp[v-1] から遷移します。",
+      "dp をハッシュマップに持ちます。値を左から順に読み、存在しないキーを 0 とみなして dp[v] = max(dp[v], dp[v-1] + 1) と更新します。全体の最大値を保持して出力します。"
+    ],
+    "ko": [
+      "길이가 1보다 큰 유효한 부분 수열이 값 v로 끝난다면, 끝에서 두 번째 원소는 이미 본 v-1이어야 합니다.",
+      "끝 값을 키로 하는 동적 계획법을 사용합니다. dp[v]는 현재 접두사에서 v로 끝나는 가장 긴 부분 수열의 길이이며, v를 읽을 때 dp[v-1]에서 전이합니다.",
+      "dp를 해시 맵에 저장합니다. 값을 왼쪽부터 읽으면서 dp[v] = max(dp[v], dp[v-1] + 1)로 갱신하되, 없는 키는 0으로 취급합니다. 전체 최댓값을 유지하다가 출력합니다."
+    ],
+    "vi": [
+      "Một dãy con hợp lệ có độ dài lớn hơn 1 và kết thúc bằng giá trị v thì phần tử áp chót của nó phải là một giá trị v-1 đã xuất hiện trước đó.",
+      "Dùng quy hoạch động theo giá trị kết thúc: dp[v] là dãy con dài nhất trong tiền tố hiện tại kết thúc bằng v, và khi đọc v thì chuyển trạng thái từ dp[v-1].",
+      "Lưu dp trong một hash map; đọc các giá trị từ trái sang phải và gán dp[v] = max(dp[v], dp[v-1] + 1), coi khóa không tồn tại là 0; giữ giá trị lớn nhất toàn cục rồi in ra."
     ]
   },
   "explanationEn": "## Approach\n\nLet dp[v] be the best length of a subsequence of the current prefix that ends with v. When v is scanned, update dp[v] with dp[v-1] + 1.\n\n## Correctness\n\nAny valid subsequence that ends with this occurrence of v and has length greater than one must have an earlier v-1 as its second-to-last element; its best length is already stored in dp[v-1]. Appending v gives the best candidate, and taking the maximum with the old value preserves the prefix invariant.\n\n## Complexity\n\nExpected time O(n), space O(n)."

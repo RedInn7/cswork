@@ -13,6 +13,21 @@
       "Trading at the current market price changes cash and the market value of your holdings by exactly opposite amounts, so BUY and SELL themselves never change net profit and loss; only price changes do.",
       "You only need each stock's holding and one running profit and loss: BUY and SELL just adjust the holding, CHANGE adds holding times delta for that stock, and QUERY records the current value.",
       "Parse the JSON array of strings and split each event on spaces; keep holdings in a hash map keyed by the decoded stock name; on QUERY append the current profit and loss to the results; finally print the number of queries followed by one result per line (just 0 when there is no query), using 64-bit integers."
+    ],
+    "ja": [
+      "現在の市場価格での取引は、現金と保有資産の時価をちょうど逆の量だけ変えるので、BUY と SELL そのものは純損益を変えません。変えるのは価格の変動だけです。",
+      "必要なのは、各銘柄の保有数量と、1 つの累計損益だけです。BUY と SELL は保有数量を調整するだけ、CHANGE はその銘柄の保有数量に delta を掛けた値を加え、QUERY は現在の値を記録します。",
+      "文字列の JSON 配列をパースし、各イベントを空白で分割します。保有数量は、デコードした銘柄名をキーとするハッシュマップに保持します。QUERY では現在の損益を結果に追加します。最後に、クエリの個数に続けて結果を 1 行に 1 つずつ出力します(クエリがなければ 0 だけ)。64 ビット整数を使ってください。"
+    ],
+    "ko": [
+      "현재 시장 가격으로 거래하면 현금과 보유분의 시장 가치가 정확히 반대로 같은 금액만큼 변하므로 BUY와 SELL 자체는 순손익을 바꾸지 않습니다. 가격 변동만이 손익을 바꿉니다.",
+      "필요한 것은 종목별 보유량과 하나의 누적 손익뿐입니다. BUY와 SELL은 보유량만 조정하고, CHANGE는 그 종목의 보유량에 delta를 곱한 값을 더하며, QUERY는 현재 값을 기록합니다.",
+      "문자열 JSON 배열을 파싱하고 각 이벤트를 공백으로 분리합니다. 보유량은 디코딩된 종목 이름을 키로 하는 해시 맵에 보관합니다. QUERY에서는 현재 손익을 결과에 추가하고, 마지막에 쿼리의 수와 결과를 한 줄에 하나씩 출력합니다(쿼리가 없으면 0만). 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Giao dịch theo giá thị trường hiện tại thay đổi tiền mặt và giá trị thị trường của số nắm giữ đúng bằng hai lượng ngược nhau, nên bản thân BUY và SELL không bao giờ thay đổi lãi lỗ ròng; chỉ các thay đổi giá mới làm thay đổi nó.",
+      "Bạn chỉ cần số nắm giữ của mỗi cổ phiếu và một giá trị lãi lỗ đang chạy: BUY và SELL chỉ điều chỉnh số nắm giữ, CHANGE cộng số nắm giữ nhân delta của cổ phiếu đó, và QUERY ghi lại giá trị hiện tại.",
+      "Phân tích mảng JSON các xâu và tách mỗi sự kiện theo dấu cách; giữ số nắm giữ trong một bảng băm với khóa là tên cổ phiếu đã giải mã; với QUERY thì thêm lãi lỗ hiện tại vào kết quả; cuối cùng in số truy vấn rồi mỗi dòng một kết quả (chỉ in 0 khi không có truy vấn), dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nMaintain each stock's holding and the cumulative profit and loss; buying and selling only change the holdings, and a price change adds the holding times the change to the profit and loss.\n\n## Proof of correctness\n\nWhen trading at the market price, the change in cash and the change in the market value of the holdings cancel out, so net worth does not change; only a price change increases net worth, by the current holding times the price difference. The profit and loss starts at 0, and by induction over the events the maintained value always equals the change in cash plus the market value of holdings relative to the start.\n\n## Complexity\n\nO(input length) time, O(number of stocks + number of queries) space."

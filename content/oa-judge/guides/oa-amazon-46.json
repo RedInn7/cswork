@@ -13,6 +13,21 @@
       "The limit applies inside each maximal run of identical characters of the original string, and skipping commands never changes the runs, so the runs are completely independent.",
       "All profits are positive, so each run should use as many slots as it can; with a fixed number of slots, picking the largest profits is optimal, so each run contributes its min(k, run length) largest profits.",
       "Scan left to right to find each maximal run [start, i); sort that run's profits in descending order (or select its top k) and add the first k; after all runs, print the total as a 64-bit integer."
+    ],
+    "ja": [
+      "制限は元の文字列の同じ文字が連続する極大な区間の内側で適用され、コマンドを飛ばしてもランは変わらないので、各ランは完全に独立です。",
+      "利益はすべて正なので、各ランは使える枠をできるだけ使うべきです。枠の数が決まっていれば、利益の大きいものを選ぶのが最適なので、各ランは利益の大きい方から min(k, ランの長さ) 個を寄与します。",
+      "左から走査して各極大ラン [start, i) を見つけ、そのランの利益を降順にソートして（またはその上位 k 個を選んで）先頭の k 個を加算します。すべてのランを処理した後、合計を 64 ビット整数で出力します。"
+    ],
+    "ko": [
+      "제한은 원래 문자열에서 같은 문자가 연속하는 각 최대 구간 안에서 적용되며, 명령을 건너뛰어도 구간은 바뀌지 않으므로 구간들은 완전히 독립적입니다.",
+      "이익이 모두 양수이므로 각 구간은 가능한 한 많은 칸을 써야 합니다. 칸 수가 정해져 있을 때는 이익이 가장 큰 것을 고르는 것이 최적이므로, 각 구간은 이익이 큰 순서로 min(k, 구간 길이)개를 기여합니다.",
+      "왼쪽에서 오른쪽으로 훑으며 각 최대 구간 [start, i)를 찾고, 그 구간의 이익을 내림차순으로 정렬(또는 상위 k개를 선택)하여 앞의 k개를 더합니다. 모든 구간을 처리한 뒤 합계를 64비트 정수로 출력합니다."
+    ],
+    "vi": [
+      "Giới hạn áp dụng bên trong mỗi đoạn cực đại gồm các ký tự giống nhau của xâu gốc, và việc bỏ qua lệnh không bao giờ làm thay đổi các đoạn, nên các đoạn hoàn toàn độc lập với nhau.",
+      "Mọi lợi nhuận đều dương, nên mỗi đoạn nên dùng hết số suất có thể; với số suất cố định, chọn các lợi nhuận lớn nhất là tối ưu, vì vậy mỗi đoạn đóng góp min(k, độ dài đoạn) lợi nhuận lớn nhất.",
+      "Duyệt từ trái sang phải để tìm từng đoạn cực đại [start, i); sắp xếp lợi nhuận của đoạn đó giảm dần (hoặc chọn k phần tử lớn nhất) và cộng k phần tử đầu; sau khi xử lý hết các đoạn, in tổng dưới dạng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nHandle each original run independently and choose at most k items with the largest profits in that run.\n\n## Proof of correctness\n\nThe slots of different runs do not affect each other, and since profits are positive, each run should take items whenever it can. With a fixed number of slots, if a lower profit were chosen while a higher one was left out, swapping them would improve the total, so taking the k largest items of each run is optimal, and summing them gives the global optimum.\n\n## Complexity\n\nO(n log n) time and O(n) space."

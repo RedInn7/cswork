@@ -13,6 +13,21 @@
       "Look at the last jar: either you skip it, or you take it, and taking it rules out the jar before it.",
       "Let f[i] be the best total over the first i jars; then f[i] = max(f[i - 1], f[i - 2] + a[i]); it only depends on the two previous values, so two rolling variables suffice.",
       "Start older (best for the first i - 2 jars) and previous (best for the first i - 1 jars) at 0; for each amount v the new value is max(previous, older + v), then older takes the old previous and previous takes the new value; print previous, using 64-bit integers."
+    ],
+    "ja": [
+      "最後の瓶に注目します。飛ばすか取るかのどちらかで、取る場合はその直前の瓶を取れなくなります。",
+      "f[i] を最初の i 個の瓶での合計の最大値とすると、f[i] = max(f[i - 1], f[i - 2] + a[i]) です。直前の 2 つの値にしか依存しないので、ローリング変数 2 つで足ります。",
+      "older (最初の i - 2 個の瓶での最良値) と previous (最初の i - 1 個の瓶での最良値) を 0 で始めます。各個数 v について、新しい値は max(previous, older + v) で、その後 older に古い previous を、previous に新しい値を入れます。previous を出力します。64 ビット整数を使ってください。"
+    ],
+    "ko": [
+      "마지막 병을 보면 건너뛰거나 가져가는 두 경우가 있고, 가져가면 그 앞의 병은 가져갈 수 없습니다.",
+      "f[i]를 처음 i개 병에 대한 최선의 총합이라 하면 f[i] = max(f[i - 1], f[i - 2] + a[i])이며, 이전 두 값에만 의존하므로 변수 두 개를 굴리면 충분합니다.",
+      "older(처음 i - 2개 병의 최선)와 previous(처음 i - 1개 병의 최선)를 0에서 시작합니다. 각 개수 v에 대해 새 값은 max(previous, older + v)이고, 이후 older는 이전 previous를 받고 previous는 새 값을 받습니다. previous를 출력하며 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Hãy nhìn hũ cuối cùng: hoặc bạn bỏ qua nó, hoặc bạn lấy nó, và lấy nó thì loại hũ đứng trước.",
+      "Gọi f[i] là tổng tốt nhất trên i hũ đầu; khi đó f[i] = max(f[i - 1], f[i - 2] + a[i]); nó chỉ phụ thuộc hai giá trị trước, nên hai biến cuộn là đủ.",
+      "Bắt đầu older (giá trị tốt nhất cho i - 2 hũ đầu) và previous (giá trị tốt nhất cho i - 1 hũ đầu) bằng 0; với mỗi lượng v, giá trị mới là max(previous, older + v), sau đó older nhận previous cũ và previous nhận giá trị mới; in previous, dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nKeep the optimum for the first i-2 jars and for the first i-1 jars; the current optimum is the larger of \"skip the current jar\" (the previous optimum) and \"take the current jar\" (the optimum two back + a[i]).\n\n## Proof of correctness\n\nWhen an optimal plan skips the current jar, its value is the optimum for the first i-1 jars; when it takes the current jar, it must skip the adjacent previous jar, and the rest is exactly the optimum for the first i-2 jars. The two branches cover all plans, and the empty prefix with value 0 starts the induction, so the rolling update gives the global optimum.\n\n## Complexity\n\nO(N) time and O(1) auxiliary space not counting the input; totals are 64-bit."

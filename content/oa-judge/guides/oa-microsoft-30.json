@@ -13,6 +13,21 @@
       "The total time can reach 10⁹ hours, so simulating hour by hour is too slow; compute each order's completion time directly and add them up.",
       "Before order i finishes, T[i]−1 full rounds pass, during which every order j uses min(T[j],T[i]−1) hours; in the final round, each order at or before i with T[j]≥T[i] uses one more hour.",
       "Sort T and take prefix sums; binary search the number split of orders with T less than T[i], so the first part is prefix[split]+(N−split)×(T[i]−1). Process orders by index with a Fenwick tree over the T values seen so far; the second part is i+1 minus how many of them have T less than T[i]. Their sum is the completion time; add these up in 64-bit integers and print the total mod 10⁹."
+    ],
+    "ja": [
+      "合計時間は 10⁹ 時間に達し得るので、1 時間ずつのシミュレーションでは遅すぎます。各注文の完成時刻を直接計算して足し合わせます。",
+      "注文 i が完成するまでに T[i]−1 周の完全なラウンドが過ぎ、その間にすべての注文 j は min(T[j],T[i]−1) 時間を使います。最後のラウンドでは、i 以前にあって T[j]≥T[i] を満たす各注文がさらに 1 時間ずつ使います。",
+      "T をソートして累積和を取り、T[i] 未満の注文の個数を二分探索で split として求めると、前半は prefix[split]+(N−split)×(T[i]−1) です。添字順に処理しながら、これまでに見た T の値に対する Fenwick 木を使います。後半は i+1 から、そのうち T[i] 未満のものの個数を引いた値です。両者の和が完成時刻で、これらを 64 ビット整数で足し合わせ、合計を 10⁹ で割った余りを出力します。"
+    ],
+    "ko": [
+      "전체 시간은 10⁹시간에 이를 수 있으므로 시간 단위로 시뮬레이션하면 너무 느립니다. 각 주문의 완료 시각을 직접 계산해 더하세요.",
+      "주문 i가 완료되기 전에 T[i]−1번의 전체 라운드가 지나며, 이때 모든 주문 j는 min(T[j],T[i]−1)시간을 사용합니다. 마지막 라운드에서는 i 이전(i 포함)에 있으면서 T[j]≥T[i]인 각 주문이 1시간씩 더 사용됩니다.",
+      "T를 정렬해 누적합을 구하고, T[i]보다 작은 주문의 수 split을 이분 탐색으로 찾으면 첫 번째 부분은 prefix[split]+(N−split)×(T[i]−1)입니다. 인덱스 순서대로 처리하면서 지금까지 본 T 값에 대한 Fenwick tree를 유지하면 두 번째 부분은 i+1에서 그중 T[i]보다 작은 값의 개수를 뺀 것입니다. 둘의 합이 완료 시각이며, 이를 64비트 정수로 모두 더해 총합을 10⁹로 나눈 나머지를 출력합니다."
+    ],
+    "vi": [
+      "Tổng thời gian có thể lên tới 10⁹ giờ, nên mô phỏng từng giờ là quá chậm; hãy tính trực tiếp thời điểm hoàn thành của từng đơn rồi cộng lại.",
+      "Trước khi đơn i hoàn thành, có T[i]−1 vòng đầy đủ trôi qua, trong đó mỗi đơn j dùng min(T[j],T[i]−1) giờ; ở vòng cuối, mỗi đơn đứng trước i (hoặc chính i) có T[j]≥T[i] dùng thêm một giờ.",
+      "Sắp xếp T và lấy tổng tiền tố; tìm kiếm nhị phân vị trí tách theo số đơn có T nhỏ hơn T[i], khi đó phần thứ nhất là prefix[split]+(N−split)×(T[i]−1). Xử lý các đơn theo chỉ số với cây Fenwick trên các giá trị T đã gặp; phần thứ hai là i+1 trừ đi số đơn trong đó có T nhỏ hơn T[i]. Tổng của chúng là thời điểm hoàn thành; cộng chúng lại bằng số nguyên 64 bit và in tổng theo modulo 10⁹."
     ]
   },
   "explanationEn": "## Approach\n\nBefore order i is finished, T[i]−1 full rounds pass in total, contributing Σmin(T[j],T[i]−1), plus the number of still unfinished orders before i in the final round. Sorted prefix sums give the first term and a Fenwick tree counts the second.\n\n## Proof of correctness\n\nIn the first T[i]−1 rounds each order consumes exactly min(T[j],T[i]−1) hours; in the final round the original order is unchanged, and only orders with index ≤ i and T[j] ≥ T[i] are processed. These two parts neither overlap nor miss anything, and summing the completion times gives the total waiting time.\n\n## Complexity\n\nTime O(N log N+N log V), space O(N+V), where V≤10000."

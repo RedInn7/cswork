@@ -13,6 +13,21 @@
       "The usage in each second equals the number of active users at that moment, and that number changes only when some user starts or ends, so the timeline splits into segments with a constant number of active users.",
       "Turn each user into two events, +1 at start and -1 at end+1, and process them in time order; a segment of length L with c active users contributes c*L. If the threshold falls inside a segment, a ceiling division tells how many more seconds into that segment are needed.",
       "After sorting the events, keep active, total, and previous: for each event time t, compute contribution = active * (t - previous); if active > 0 and total + contribution >= target, print previous + ceil((target - total)/active) - 1 and stop; otherwise add to total and update active and previous; if all events pass without reaching it, print -1. The target can reach 10^14, so use 64-bit integers."
+    ],
+    "ja": [
+      "各秒の使用量は、その時点でのアクティブなユーザー数に等しく、その数が変わるのは、あるユーザーが開始または終了したときだけです。したがって時間軸は、アクティブなユーザー数が一定の区間に分割されます。",
+      "各ユーザーを 2 つのイベントに変えます。start で +1、end+1 で -1 です。それらを時刻順に処理します。長さ L の区間でアクティブなユーザーが c 人なら、c*L を寄与します。閾値がある区間の途中にあるときは、切り上げ除算で、その区間のあと何秒目まで必要かが分かります。",
+      "イベントをソートしたあと、active、total、previous を保持します。各イベント時刻 t について contribution = active * (t - previous) を計算します。active > 0 かつ total + contribution >= target なら、previous + ceil((target - total)/active) - 1 を出力して終了します。そうでなければ total に加え、active と previous を更新します。すべてのイベントを処理しても達しなければ -1 を出力します。target は 10^14 に達しうるので、64 ビット整数を使います。"
+    ],
+    "ko": [
+      "각 초의 사용량은 그 순간의 활성 사용자 수와 같고, 이 수는 어떤 사용자가 시작하거나 끝날 때만 바뀌므로 타임라인은 활성 사용자 수가 일정한 구간들로 나뉩니다.",
+      "각 사용자를 두 이벤트, 즉 start에서의 +1과 end+1에서의 -1로 바꾸고 시간순으로 처리합니다. 길이 L이고 활성 사용자가 c명인 구간은 c*L을 기여합니다. 임계값이 어떤 구간 안에 있으면 올림 나눗셈으로 그 구간에서 몇 초가 더 필요한지 알 수 있습니다.",
+      "이벤트를 정렬한 뒤 active, total, previous를 유지합니다. 각 이벤트 시각 t마다 contribution = active * (t - previous)를 계산합니다. active > 0이고 total + contribution >= target이면 previous + ceil((target - total)/active) - 1을 출력하고 종료합니다. 아니면 total에 더하고 active와 previous를 갱신합니다. 모든 이벤트를 지나도 도달하지 못하면 -1을 출력합니다. target이 10^14까지 커지므로 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Lượng sử dụng trong mỗi giây bằng số người dùng đang hoạt động lúc đó, và số này chỉ thay đổi khi có người dùng bắt đầu hoặc kết thúc, nên trục thời gian được chia thành các đoạn có số người hoạt động không đổi.",
+      "Biến mỗi người dùng thành hai sự kiện, +1 tại start và -1 tại end+1, và xử lý theo thứ tự thời gian; một đoạn dài L với c người hoạt động đóng góp c*L. Nếu ngưỡng rơi vào bên trong một đoạn, phép chia lấy trần cho biết cần thêm bao nhiêu giây trong đoạn đó.",
+      "Sau khi sắp xếp các sự kiện, giữ active, total và previous: với mỗi thời điểm sự kiện t, tính contribution = active * (t - previous); nếu active > 0 và total + contribution >= target thì in previous + ceil((target - total)/active) - 1 rồi dừng; ngược lại cộng vào total và cập nhật active và previous; nếu duyệt hết sự kiện mà chưa đạt thì in -1. Ngưỡng có thể lên tới 10^14 nên dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nRecord a +1 event at start and a -1 event at end+1, and sort them by time. Between consecutive events the number of active users is fixed, so accumulate segment by segment; when the threshold falls inside a segment, use a ceiling division to find the fewest seconds.\n\n## Proof of correctness\n\nThe events describe exactly whether each second is still inside each closed interval. A segment of L seconds with a fixed active count c contributes cL; if the target falls inside that segment, ceil(remaining amount / c) seconds are needed, which gives the earliest time it is reached. If no segment is enough, the only possible answer is -1.\n\n## Complexity\n\nO(n log n) time and O(n) space."

@@ -13,6 +13,21 @@
       "Every position between the first and last occurrence of a value must end up holding the same value as it, so all values at those positions have to be merged together.",
       "Treat each value's first-to-last range as a segment; overlapping segments chain into blocks, each block must end up as one value, and a block with d distinct values needs exactly d-1 operations.",
       "Record each value's last occurrence; scan left to right keeping the farthest last position the current block reaches, and close a block when the index equals it; the answer is the number of distinct values minus the number of blocks."
+    ],
+    "ja": [
+      "ある値の最初と最後の出現の間にあるすべての位置は、最終的にその値と同じ値を持たなければなりません。そのため、それらの位置にある値はすべて統合する必要があります。",
+      "各値の最初から最後までの範囲を線分とみなします。重なる線分は連鎖して 1 つのブロックになり、各ブロックは最終的に 1 つの値にならなければなりません。d 種類の異なる値を含むブロックには、ちょうど d-1 回の操作が必要です。",
+      "各値の最後の出現位置を記録します。左から右へ走査しながら、現在のブロックが届く最も遠い最後の位置を保持し、添字がそれに等しくなったらブロックを閉じます。答えは、異なる値の個数からブロック数を引いたものです。"
+    ],
+    "ko": [
+      "어떤 값의 첫 등장과 마지막 등장 사이의 모든 위치는 결국 그 값과 같은 값을 가져야 하므로, 그 위치들의 값은 모두 하나로 병합되어야 합니다.",
+      "각 값의 첫 등장에서 마지막 등장까지를 하나의 구간으로 봅니다. 겹치는 구간은 연쇄되어 블록을 이루고, 각 블록은 하나의 값이 되어야 하며, 서로 다른 값이 d개인 블록은 정확히 d-1번의 연산이 필요합니다.",
+      "각 값의 마지막 등장 위치를 기록합니다. 왼쪽에서 오른쪽으로 훑으며 현재 블록이 도달하는 가장 먼 마지막 위치를 유지하고, 인덱스가 그 위치와 같아지면 블록을 닫습니다. 정답은 서로 다른 값의 개수에서 블록의 수를 뺀 값입니다."
+    ],
+    "vi": [
+      "Mọi vị trí giữa lần xuất hiện đầu tiên và cuối cùng của một giá trị đều phải kết thúc với cùng giá trị đó, nên mọi giá trị tại những vị trí ấy phải được gộp lại với nhau.",
+      "Coi khoảng từ lần xuất hiện đầu đến lần xuất hiện cuối của mỗi giá trị là một đoạn; các đoạn chồng nhau nối thành các khối, mỗi khối phải kết thúc thành một giá trị, và một khối có d giá trị phân biệt cần đúng d-1 phép toán.",
+      "Ghi lại lần xuất hiện cuối cùng của mỗi giá trị; duyệt từ trái sang phải giữ vị trí cuối xa nhất mà khối hiện tại với tới, và đóng khối khi chỉ số bằng nó; đáp án là số giá trị phân biệt trừ số khối."
     ]
   },
   "explanationEn": "## Approach\n\nRecord the last occurrence of each value and scan to get the maximum number of independent contiguous intervals; the answer is the original number of distinct values minus the number of independent intervals.\n\n## Proof of correctness\n\nAll positions between the first and last occurrence of a value must end up with the same value, so each connected block formed by mutually overlapping first-to-last intervals must be merged into one value. Scanning with the farthest last position finds exactly these blocks; a block containing d values needs at least d−1 merges, and replacing them one by one into the same value takes exactly d−1. Summing gives the number of distinct values minus the number of blocks.\n\n## Complexity\n\nTime O(n), space O(n)."

@@ -13,6 +13,21 @@
       "Bomb i directly detonates j when j is within i's radius, but not necessarily the other way round, so this is a directed graph; the number detonated from a chosen start is the number of nodes reachable from it.",
       "With n at most 1000, first build each node's directly reachable set (including itself), then take the transitive closure: represent reachable sets as bitsets, and for each intermediate node k, every start that reaches k merges in k's reachable set.",
       "Build bitset reach[i] by testing (xi-xj)^2 + (yi-yj)^2 <= ri^2 with integer squared distances (64 bits); for k from 0 to n-1, go over every i and if reach[i] contains k, do reach[i] |= reach[k]; print the maximum number of set bits over all reach[i]."
+    ],
+    "ja": [
+      "爆弾 i は、j が i の半径内にあれば j を直接起爆しますが、逆は成り立つとは限りません。したがってこれは有向グラフで、選んだ起点から起爆される個数は、そこから到達できるノードの数です。",
+      "n は高々 1000 なので、まず各ノードが直接到達できる集合 (自分自身を含む) を作り、次に推移閉包を取ります。到達集合をビットセットで表し、各中間ノード k について、k に到達できるすべての起点に k の到達集合を併合します。",
+      "整数の距離の 2 乗 (64 ビット) による (xi-xj)^2 + (yi-yj)^2 <= ri^2 の判定でビットセット reach[i] を作ります。k を 0 から n-1 まで動かし、すべての i について reach[i] が k を含むなら reach[i] |= reach[k] とします。すべての reach[i] のうち立っているビット数の最大値を出力します。"
+    ],
+    "ko": [
+      "폭탄 i는 j가 i의 반지름 안에 있을 때 j를 직접 폭발시키지만, 그 반대는 성립하지 않을 수 있으므로 이는 방향 그래프입니다. 선택한 시작점에서 폭발하는 개수는 거기서 도달할 수 있는 노드의 수입니다.",
+      "n이 최대 1000이므로, 먼저 각 노드가 직접 도달하는 집합(자기 자신 포함)을 만든 뒤 추이적 폐포를 구합니다. 도달 집합을 비트셋으로 표현하고, 각 중간 노드 k에 대해 k에 도달하는 모든 시작점이 k의 도달 집합을 병합합니다.",
+      "정수 제곱 거리 (xi-xj)^2 + (yi-yj)^2 <= ri^2 (64비트)로 검사하여 비트셋 reach[i]를 만듭니다. k를 0부터 n-1까지 돌면서 모든 i에 대해 reach[i]에 k가 포함되어 있으면 reach[i] |= reach[k]를 수행합니다. 모든 reach[i] 중 켜진 비트 수의 최댓값을 출력합니다."
+    ],
+    "vi": [
+      "Quả bom i kích nổ trực tiếp j khi j nằm trong bán kính của i, nhưng chiều ngược lại thì chưa chắc, nên đây là đồ thị có hướng; số bom bị kích nổ từ một điểm xuất phát được chọn là số nút có thể đến được từ nó.",
+      "Với n tối đa 1000, trước hết dựng tập các nút đến được trực tiếp của mỗi nút (bao gồm chính nó), rồi lấy bao đóng bắc cầu: biểu diễn các tập đến được bằng bitset, và với mỗi nút trung gian k, mọi điểm xuất phát đến được k sẽ gộp thêm tập đến được của k.",
+      "Dựng bitset reach[i] bằng cách kiểm tra (xi-xj)^2 + (yi-yj)^2 <= ri^2 với bình phương khoảng cách là số nguyên (64 bit); với k từ 0 đến n-1, duyệt mọi i và nếu reach[i] chứa k thì thực hiện reach[i] |= reach[k]; in số bit được bật lớn nhất trong tất cả reach[i]."
     ]
   },
   "explanationEn": "## Approach\n\nFirst compute the directed adjacency bitsets (including the node itself), then use the bitset version of the transitive closure to merge everything reachable through each intermediate node, and finally take the maximum number of set bits.\n\n## Correctness\n\nThe initial bitsets contain the nodes reachable in zero or one step. When intermediate node k is processed, merging k's reachable set into every start that can reach k adds exactly the paths that use k as a new intermediate node. After all intermediate nodes have been covered, each row is the complete chain-reaction set.\n\n## Complexity\n\nBuilding the graph from distances takes O(n²); the closure takes O(n³/W) bit operations, where W is the machine word size; O(n²/W) space."

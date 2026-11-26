@@ -13,6 +13,21 @@
       "All times are on the same day, so after converting HH:MM into minutes since midnight, comparing times is just comparing integers.",
       "You want the latest bus strictly earlier than the current time; the timetable may be unsorted and contain duplicates, so one scan taking the maximum is enough and no sorting is needed. A bus exactly at the current time has not left yet.",
       "Convert the current time on the last line and every departure time to minutes; among the departures smaller than the current minute value take the maximum, and print the difference if one exists, otherwise -1. Note that n can be 0."
+    ],
+    "ja": [
+      "すべての時刻は同じ日のものなので、HH:MM を午前 0 時からの分数に変換すれば、時刻の比較は整数の比較になります。",
+      "求めるのは、現在時刻より厳密に前の最新のバスです。時刻表はソートされておらず重複もありえますが、最大値を取る 1 回の走査で十分で、ソートは不要です。現在時刻ちょうどのバスはまだ出発していません。",
+      "最終行の現在時刻とすべての出発時刻を分に変換します。現在の分数より小さい出発時刻のうち最大のものを取り、存在すれば差を、存在しなければ -1 を出力します。n が 0 になりうる点に注意してください。"
+    ],
+    "ko": [
+      "모든 시각이 같은 날이므로 HH:MM을 자정 이후의 분으로 바꾸면 시각 비교는 정수 비교와 같습니다.",
+      "현재 시각보다 엄격하게 이른 가장 늦은 버스가 필요합니다. 시간표는 정렬되어 있지 않고 중복이 있을 수 있으므로 최댓값을 취하는 한 번의 순회로 충분하며 정렬은 필요 없습니다. 정확히 현재 시각의 버스는 아직 출발하지 않았습니다.",
+      "마지막 줄의 현재 시각과 모든 출발 시각을 분으로 변환합니다. 현재 분 값보다 작은 출발 시각 중 최댓값을 구하여 존재하면 차이를 출력하고, 없으면 -1을 출력합니다. n이 0일 수 있다는 점에 유의하세요."
+    ],
+    "vi": [
+      "Mọi mốc thời gian đều trong cùng một ngày, nên sau khi đổi HH:MM thành số phút kể từ nửa đêm, việc so sánh thời gian chỉ là so sánh các số nguyên.",
+      "Bạn cần chuyến xe muộn nhất mà vẫn sớm hơn thời gian hiện tại một cách chặt chẽ; lịch xe có thể chưa sắp xếp và chứa giá trị trùng, nên một lượt quét lấy giá trị lớn nhất là đủ và không cần sắp xếp. Chuyến xe đúng bằng thời gian hiện tại thì chưa rời bến.",
+      "Đổi thời gian hiện tại ở dòng cuối và mọi giờ xuất bến sang số phút; trong các giờ xuất bến nhỏ hơn số phút hiện tại, lấy giá trị lớn nhất, và in hiệu số nếu có, nếu không thì in -1. Lưu ý n có thể bằng 0."
     ]
   },
   "explanationEn": "## Approach\n\nConvert times to minutes since midnight and scan for the largest departure time strictly earlier than the current time.\n\n## Proof of correctness\n\nThe conversion preserves the order of times within the same day. The largest departure minute is the last bus that has already left, and the difference between the two is the elapsed minutes; if there is no candidate, no bus has left.\n\n## Complexity\n\nTime O(n), space O(1) excluding the input."

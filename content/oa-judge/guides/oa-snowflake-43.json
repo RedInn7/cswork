@@ -13,6 +13,21 @@
       "An edge whose endpoint frequencies differ by 2 (a 1 next to a 3) can never be used, so delete it. Every remaining connected component is still a tree, and the valid paths are exactly the paths in this forest.",
       "The answer is the largest diameter among the trees of the forest. The diameter of a tree takes two traversals: from any node find the farthest node, then the largest distance from that farthest node is the diameter.",
       "Keep only edges with |f[a] - f[b]| <= 1. For each unvisited node, run a BFS to find the farthest node end of its component (marking the whole component visited), then BFS from end and use the largest distance to update the answer. Use iterative BFS so a chain of 100,000 nodes cannot overflow the recursion stack; a single-node component contributes 0."
+    ],
+    "ja": [
+      "端点の周波数が 2 違う辺(1 と 3 が隣り合う辺)は使えないので削除します。残った各連結成分は木のままで、有効な経路はこの森の経路とちょうど一致します。",
+      "答えは森の木のうち最大の直径です。木の直径は 2 回の探索で求められます。任意のノードから最も遠いノードを見つけ、そのノードからの最大距離が直径です。",
+      "|f[a] - f[b]| <= 1 の辺だけを残します。未訪問の各ノードについて、BFS で成分の最も遠いノード end を求め(成分全体を訪問済みにします)、次に end から BFS して最大距離で答えを更新します。100,000 ノードの鎖でも再帰スタックがあふれないよう、反復的な BFS を使ってください。ノード 1 つだけの成分は 0 に寄与します。"
+    ],
+    "ko": [
+      "끝점 주파수의 차이가 2인 간선(1과 3이 인접)은 절대 사용할 수 없으므로 삭제합니다. 남은 각 연결 컴포넌트는 여전히 트리이며, 유효한 경로는 이 포레스트 안의 경로와 정확히 같습니다.",
+      "답은 포레스트의 트리들 중 가장 큰 지름입니다. 트리의 지름은 두 번의 순회로 구합니다. 임의의 노드에서 가장 먼 노드를 찾고, 그 가장 먼 노드에서의 최대 거리가 지름입니다.",
+      "|f[a] - f[b]| <= 1인 간선만 남깁니다. 방문하지 않은 각 노드에서 BFS로 그 컴포넌트에서 가장 먼 노드 end를 찾고(컴포넌트 전체를 방문 처리), end에서 다시 BFS를 하여 최대 거리로 답을 갱신합니다. 100,000개 노드의 체인에서도 재귀 스택이 넘치지 않도록 반복형 BFS를 사용하며, 노드 하나짜리 컴포넌트는 0을 기여합니다."
+    ],
+    "vi": [
+      "Cạnh có hiệu tần số hai đầu mút bằng 2 (một số 1 kề một số 3) không bao giờ dùng được, nên xóa nó. Mỗi thành phần liên thông còn lại vẫn là một cây, và các đường đi hợp lệ chính là các đường đi trong rừng này.",
+      "Đáp án là đường kính lớn nhất trong các cây của rừng. Đường kính của một cây cần hai lần duyệt: từ một nút bất kỳ tìm nút xa nhất, rồi khoảng cách lớn nhất từ nút xa nhất đó chính là đường kính.",
+      "Chỉ giữ các cạnh có |f[a] - f[b]| <= 1. Với mỗi nút chưa thăm, chạy một BFS để tìm nút xa nhất end của thành phần của nó (đánh dấu cả thành phần là đã thăm), rồi chạy BFS từ end và dùng khoảng cách lớn nhất để cập nhật đáp án. Dùng BFS lặp để một chuỗi 100,000 nút không làm tràn ngăn xếp đệ quy; thành phần một nút đóng góp 0."
     ]
   },
   "explanationEn": "## Approach\n\nDelete the edges whose frequency difference is 2 to get a forest. For each unvisited component, first traverse to its farthest endpoint, then traverse from that endpoint to get the component's diameter, and take the maximum.\n\n## Correctness\n\nValid paths are exactly the paths in the forest left after the deletion. In a tree, the farthest node from any node can serve as an endpoint of some diameter, and the largest distance from it is the component's diameter. Each component is handled independently, and the largest component diameter is the global answer; a single-node component contributes 0.\n\n## Complexity\n\nO(n) time and O(n) space; the iterative traversal does not overflow on a chain of one hundred thousand nodes."

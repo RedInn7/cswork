@@ -13,6 +13,21 @@
       "If both ends of the reversed range hold the same character, dropping those two ends gives exactly the same result; shrinking this way ends either with different end characters or with an operation that changes nothing.",
       "For a range whose end characters differ, the first and last positions where the result differs from the original are exactly its two ends, so distinct ranges of this kind give distinct strings. The answer is 1 (the original string) plus the number of index pairs whose characters differ.",
       "Scan left to right with 26 counters for the letters seen so far; position i (0-based) contributes i minus the number of earlier characters equal to s[i]. Add 1 to the total and print it. It is on the order of n^2/2, so use 64-bit integers."
+    ],
+    "ja": [
+      "反転する範囲の両端が同じ文字なら、その 2 つの端を取り除いても結果はまったく同じです。この縮小を続けると、最終的には両端の文字が異なるか、何も変えない操作になります。",
+      "両端の文字が異なる範囲では、結果が元と異なる最初と最後の位置はちょうどその 2 つの端なので、この種類の異なる範囲は異なる文字列を生みます。答えは 1（元の文字列）に、文字が異なるインデックスの組の個数を足したものです。",
+      "左から右へ、これまでに見た文字を数える 26 個のカウンタを使って走査します。位置 i（0 始まり）は、i から、それ以前の s[i] に等しい文字の個数を引いた値を加えます。最後に合計に 1 を足して出力します。値はおよそ n^2/2 のオーダーなので、64 ビット整数を使ってください。"
+    ],
+    "ko": [
+      "뒤집는 구간의 양 끝 문자가 같다면 그 두 끝을 빼고 뒤집은 결과와 완전히 같습니다. 이렇게 줄이면 양 끝 문자가 다르거나, 아무것도 바뀌지 않는 연산이 됩니다.",
+      "양 끝 문자가 다른 구간에서는 결과가 원본과 처음과 마지막으로 달라지는 위치가 정확히 그 두 끝이므로, 서로 다른 구간은 서로 다른 문자열을 만듭니다. 답은 1(원래 문자열)에 문자가 다른 인덱스 쌍의 개수를 더한 값입니다.",
+      "왼쪽에서 오른쪽으로 스캔하면서 지금까지 본 문자에 대한 26개의 카운터를 둡니다. 위치 i(0부터 시작)는 i에서 s[i]와 같은 앞쪽 문자의 개수를 뺀 값을 더합니다. 합계에 1을 더해 출력합니다. 값이 대략 n^2/2 수준이므로 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Nếu hai đầu của đoạn bị đảo ngược chứa cùng một ký tự, bỏ hai đầu đó đi cho kết quả hoàn toàn giống nhau; thu hẹp như vậy kết thúc ở đoạn có hai đầu khác ký tự, hoặc ở một thao tác không làm thay đổi gì.",
+      "Với đoạn có hai ký tự đầu cuối khác nhau, vị trí đầu tiên và cuối cùng mà kết quả khác bản gốc chính là hai đầu của nó, nên các đoạn khác nhau thuộc loại này cho các xâu khác nhau. Đáp án là 1 (xâu ban đầu) cộng số cặp chỉ số có ký tự khác nhau.",
+      "Quét từ trái sang phải với 26 bộ đếm cho các chữ cái đã thấy; vị trí i (tính từ 0) đóng góp i trừ đi số ký tự trước đó bằng s[i]. Cộng thêm 1 vào tổng và in ra. Giá trị cỡ n^2/2, nên dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nThe answer is 1 plus the number of index pairs whose end characters differ. Scan each character and accumulate the number of earlier positions minus the number of earlier equal characters.\n\n## Proof of correctness\n\nIf the two ends of the reversed range are equal, these two endpoints can be removed without changing the result, until the ends differ or the operation leaves the string unchanged. For a range whose ends differ, the first and last positions where the result differs from the original string are exactly these two endpoints, so different ranges cannot produce the same result. Every operation that changes nothing corresponds only to the original string, so the conclusion holds.\n\n## Complexity\n\nTime O(n), auxiliary space O(26)."

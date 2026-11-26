@@ -13,6 +13,21 @@
       "Positions are non-decreasing and cars only move right, so each car stops at the nearest station to its right (including its own position). With the two added stations the cars split into three segments, each going to one station.",
       "The distance of a segment is (number of cars) * (station position) - (sum of their positions), which prefix sums give in O(1). Cars at the same position as a station refuel in place, so first extend each index to the last car sharing its coordinate.",
       "Precompute prefix sums and end[j]: one past the index of the last car with the same coordinate as car j; for each query let A = end[a-1] and B = end[b-1]; the answer is A*p[A-1] + (B-A)*p[B-1] + (n-B)*p[n-1] - (sum of all positions). Results can reach about 2 * 10^14, so use 64-bit integers; print the answers in query order."
+    ],
+    "ja": [
+      "位置は非減少で車は右にしか進まないので、各車は自分の位置を含めて、右側で最も近い給油所で止まります。追加した 2 つの給油所によって、車は 3 つの区間に分かれ、それぞれが 1 つの給油所に向かいます。",
+      "区間の距離は (車の台数) * (給油所の位置) - (その位置の和) で、累積和で O(1) で求まります。給油所と同じ位置にいる車はその場で給油するので、まず各インデックスを、同じ座標を共有する最後の車まで延長します。",
+      "累積和と end[j] を事前に計算します。end[j] は、車 j と同じ座標を持つ最後の車のインデックスの 1 つ先です。各クエリで A = end[a-1]、B = end[b-1] とすると、答えは A*p[A-1] + (B-A)*p[B-1] + (n-B)*p[n-1] - (すべての位置の和) です。結果は約 2 * 10^14 に達しうるので、64 ビット整数を使い、答えはクエリの順に出力してください。"
+    ],
+    "ko": [
+      "위치가 비내림차순이고 차량은 오른쪽으로만 이동하므로, 각 차량은 자기 위치를 포함하여 오른쪽에서 가장 가까운 주유소에서 멈춥니다. 추가된 두 주유소에 따라 차량은 세 구간으로 나뉘고, 각 구간은 하나의 주유소로 갑니다.",
+      "한 구간의 거리는 (차량 수) * (주유소 위치) - (그 차량들의 위치의 합)이며, 접두 합으로 O(1)에 구할 수 있습니다. 주유소와 같은 위치에 있는 차량은 제자리에서 주유하므로, 먼저 각 인덱스를 같은 좌표를 공유하는 마지막 차량까지 확장하세요.",
+      "접두 합과 end[j]를 미리 계산합니다. end[j]는 차량 j와 같은 좌표를 가진 마지막 차량의 인덱스보다 하나 큰 값입니다. 각 질의에서 A = end[a-1], B = end[b-1]로 두면 답은 A*p[A-1] + (B-A)*p[B-1] + (n-B)*p[n-1] - (모든 위치의 합)입니다. 결과는 약 2 * 10^14까지 될 수 있으므로 64비트 정수를 사용하고, 답은 질의 순서대로 출력하세요."
+    ],
+    "vi": [
+      "Các vị trí không giảm và xe chỉ di chuyển sang phải, nên mỗi xe dừng ở trạm gần nhất bên phải của nó (kể cả vị trí của chính nó). Với hai trạm được thêm, các xe chia thành ba đoạn, mỗi đoạn đi tới một trạm.",
+      "Quãng đường của một đoạn là (số xe) * (vị trí trạm) - (tổng vị trí của chúng), mà tổng tiền tố cho trong O(1). Các xe ở cùng vị trí với một trạm thì đổ xăng tại chỗ, nên trước tiên hãy mở rộng mỗi chỉ số tới xe cuối cùng có cùng tọa độ.",
+      "Tiền xử lý tổng tiền tố và end[j]: một đơn vị sau chỉ số của xe cuối cùng có cùng tọa độ với xe j; với mỗi truy vấn đặt A = end[a-1] và B = end[b-1]; đáp án là A*p[A-1] + (B-A)*p[B-1] + (n-B)*p[n-1] - (tổng mọi vị trí). Kết quả có thể lên tới khoảng 2 * 10^14, nên hãy dùng số nguyên 64 bit; in các đáp án theo thứ tự truy vấn."
     ]
   },
   "explanationEn": "## Approach\n\nPrecompute, for each position, the rightmost end A, B of equal coordinates, and use prefix sums to split the cars into [0, A), [A, B) and [B, n), which go to the two added stations and the last station respectively; each segment's distance is count * station position - sum of positions in the range.\n\n## Proof of correctness\n\nExtending to the rightmost car with the same coordinate first guarantees that all cars at that coordinate refuel in place and are not wrongly sent to the next station. Sorted order guarantees that, after extension, each segment's assigned station is the nearest station ahead of it. The three segments cover all cars without overlap, and prefix sums give the totals exactly.\n\n## Complexity\n\nPreprocessing O(n), O(1) per query, space O(n + q)."

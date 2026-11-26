@@ -13,6 +13,21 @@
       "Do not simulate the cutting order; think about the last cut instead. The rod cut last has exactly one uncut mark left, so it consists of exactly two adjacent final segments.",
       "So having two adjacent segments whose total length is at least minLength is necessary. It is also sufficient: cut off the other final segments one by one from both ends of the original rod; the remaining rod always contains that adjacent pair and stays at or above the threshold, and the pair is cut last.",
       "Read n, the segment lengths, and minLength (up to 10^18, so use 64 bits). Check every adjacent pair: if some a[i]+a[i+1] >= minLength, print Possible; otherwise print Impossible."
+    ],
+    "ja": [
+      "切断順序をシミュレートするのではなく、最後の切断を考えます。最後に切る棒には未切断の印がちょうど 1 つ残っており、したがって最終的な隣接 2 区間でちょうど構成されています。",
+      "よって、合計が minLength 以上になる隣接 2 区間が存在することは必要条件です。十分条件でもあります。元の棒の両端から、それ以外の最終区間を 1 つずつ切り落としていけば、残る棒は常にその隣接ペアを含み、しきい値以上の長さを保ちます。そのペアを最後に切ればよいのです。",
+      "n、各区間の長さ、minLength を読み込みます(minLength は最大 10^18 なので 64 ビットを使います)。すべての隣接ペアを調べ、a[i]+a[i+1] >= minLength となるものがあれば Possible、なければ Impossible を出力します。"
+    ],
+    "ko": [
+      "절단 순서를 시뮬레이션하지 말고 마지막 절단을 생각하세요. 마지막에 자르는 막대에는 자르지 않은 표시가 정확히 하나 남아 있으므로, 인접한 두 최종 조각으로만 이루어져 있습니다.",
+      "따라서 길이의 합이 minLength 이상인 인접한 두 조각이 존재하는 것은 필요조건입니다. 충분조건이기도 합니다. 원래 막대의 양 끝에서 다른 최종 조각들을 하나씩 잘라내면, 남은 막대는 항상 그 인접한 쌍을 포함하고 기준 이상을 유지하며, 그 쌍은 마지막에 잘립니다.",
+      "n, 조각 길이, minLength(최대 10^18이므로 64비트 사용)를 읽습니다. 모든 인접 쌍을 확인하여 a[i]+a[i+1] >= minLength인 쌍이 있으면 Possible, 없으면 Impossible을 출력합니다."
+    ],
+    "vi": [
+      "Đừng mô phỏng thứ tự cắt; hãy nghĩ về lần cắt cuối cùng. Thanh được cắt sau cùng chỉ còn đúng một dấu chưa cắt, nên nó gồm đúng hai đoạn cuối cùng kề nhau.",
+      "Vì vậy, tồn tại hai đoạn kề nhau có tổng độ dài ít nhất là minLength là điều kiện cần. Nó cũng là điều kiện đủ: cắt bỏ lần lượt các đoạn cuối cùng khác từ hai đầu của thanh gốc; thanh còn lại luôn chứa cặp kề nhau đó và vẫn không dưới ngưỡng, và cặp đó được cắt cuối cùng.",
+      "Đọc n, các độ dài đoạn và minLength (tới 10^18, nên dùng 64 bit). Kiểm tra mọi cặp kề nhau: nếu có a[i]+a[i+1] >= minLength thì in Possible; ngược lại in Impossible."
     ]
   },
   "explanationEn": "## Approach\n\nCheck whether there are two adjacent segments whose total length is at least minLength.\n\n## Proof of correctness\n\nThe rod cut by the last cut must consist of two adjacent final segments, so the condition is necessary. If an adjacent pair satisfies it, cut off the other final segments one by one from both ends of the original rod; the remaining rod always contains this pair and its length is not below the threshold; finally cut this pair apart, which constructs a valid order, so the condition is sufficient.\n\n## Complexity\n\nTime O(n), space O(1) apart from the input; segment sums and the threshold use 64 bits."

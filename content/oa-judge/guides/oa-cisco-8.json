@@ -13,6 +13,21 @@
       "The digits are stored least significant first, which is exactly the order of column addition from low to high digits.",
       "Add digit by digit with a carry: each result digit is (carry + both digits) mod 10 and the new carry is the quotient by 10; a missing digit of the shorter list counts as 0.",
       "For i from 0 to max(n, m) - 1 add the i-th digits of both numbers and the carry, recording the digit and the new carry; afterwards append the carry if one is left; then drop surplus zeros at the end (the high digits) but keep at least one digit; print the digits least significant first, separated by spaces."
+    ],
+    "ja": [
+      "桁は下位から順に格納されているので、筆算で下の桁から上の桁へ足していく順序とちょうど一致します。",
+      "繰り上がりを持ちながら桁ごとに加算します。結果の各桁は (繰り上がり + 2 つの桁) を 10 で割った余り、新しい繰り上がりは 10 で割った商です。短いほうのリストの足りない桁は 0 として扱います。",
+      "i を 0 から max(n, m) - 1 まで動かし、両方の数の i 番目の桁と繰り上がりを足して、その桁と新しい繰り上がりを記録します。その後、繰り上がりが残っていれば末尾に追加し、末尾（上位桁）の余分な 0 を、最低 1 桁は残して取り除きます。最後に下位桁から順に空白区切りで出力します。"
+    ],
+    "ko": [
+      "자릿수가 최하위 자리부터 저장되어 있으므로, 낮은 자리에서 높은 자리로 진행하는 세로셈 순서와 정확히 일치합니다.",
+      "올림수를 가지고 자리별로 더합니다. 결과 자릿수는 (올림수 + 두 자릿수) mod 10, 새 올림수는 10으로 나눈 몫입니다. 더 짧은 리스트의 없는 자릿수는 0으로 취급합니다.",
+      "i를 0부터 max(n, m) - 1까지 돌며 두 수의 i번째 자릿수와 올림수를 더해 자릿수와 새 올림수를 기록합니다. 끝난 뒤 올림수가 남아 있으면 추가합니다. 그다음 끝(상위 자리)의 불필요한 0을 제거하되 최소 1자리는 남깁니다. 자릿수를 최하위 자리부터 공백으로 구분하여 출력합니다."
+    ],
+    "vi": [
+      "Các chữ số được lưu từ hàng thấp nhất trước, đúng với thứ tự của phép cộng theo cột từ chữ số thấp đến chữ số cao.",
+      "Cộng từng chữ số kèm số nhớ: mỗi chữ số của kết quả là (carry + hai chữ số) mod 10, còn số nhớ mới là thương của phép chia cho 10; chữ số còn thiếu của danh sách ngắn hơn được tính là 0.",
+      "Với i từ 0 đến max(n, m) - 1, cộng chữ số thứ i của hai số với số nhớ, ghi lại chữ số kết quả và số nhớ mới; sau đó nếu còn số nhớ thì thêm vào cuối; rồi bỏ các số 0 thừa ở cuối (tức các chữ số cao) nhưng giữ lại ít nhất một chữ số; in các chữ số từ thấp đến cao, cách nhau bởi dấu cách."
     ]
   },
   "explanationEn": "## Approach\n\nAdd digit by digit while keeping the carry, and finally remove the surplus high-order zeros.\n\n## Proof of correctness\n\nBefore position i is processed, the digits below i already equal the corresponding digits of the true sum, and carry is the carry into the part not yet written. Taking the quotient and remainder by 10 gives the next carry and the current digit, which preserves the invariant. After both lists are processed and the final carry is written, the result is the complete sum, and removing high-order zeros does not change the value.\n\n## Complexity\n\nO(n+m) time and O(n+m) space; the long lists are never converted into big integers."

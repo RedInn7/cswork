@@ -13,6 +13,21 @@
       "Read the array left to right: whatever a position rises above the previous one cannot be covered by operations that pass through the previous position, so new operations must start there.",
       "Let arr[−1]=0. Each rise arr[i]−arr[i−1]>0 needs at least that many new operations, which gives a lower bound; starting intervals at rises and ending enough of them at drops reaches it exactly.",
       "Scan left to right and add max(0, arr[i]−arr[i−1]) to the answer (the first element is compared with 0). Values reach 10^9 over 10^5 positions, so use a 64-bit answer."
+    ],
+    "ja": [
+      "配列を左から右へ読みます。ある位置が直前の位置より高い分は、直前の位置を通る操作では賄えないので、そこから新しい操作を開始する必要があります。",
+      "arr[−1]=0 とします。増分 arr[i]−arr[i−1]>0 のたびに少なくともその数の新しい操作が必要で、これが下界になります。増加位置で区間を開始し、減少位置で必要な数だけ終了させれば、ちょうどこの下界に達します。",
+      "左から右に走査し、max(0, arr[i]−arr[i−1]) を答えに加えます (先頭要素は 0 と比べます)。値は 10^9、位置は 10^5 個に達するので、答えには 64 ビット整数を使います。"
+    ],
+    "ko": [
+      "배열을 왼쪽에서 오른쪽으로 읽습니다. 어떤 위치가 이전 위치보다 높아진 만큼은 이전 위치를 지나는 연산으로는 채울 수 없으므로, 그 위치에서 새 연산이 시작되어야 합니다.",
+      "arr[−1]=0이라고 합시다. 각 상승분 arr[i]−arr[i−1]>0에는 적어도 그만큼의 새 연산이 필요하며, 이것이 하한이 됩니다. 상승하는 곳에서 구간을 시작하고 하강하는 곳에서 충분한 수의 구간을 끝내면 정확히 그 하한에 도달합니다.",
+      "왼쪽에서 오른쪽으로 스캔하면서 답에 max(0, arr[i]−arr[i−1])을 더합니다 (첫 번째 원소는 0과 비교합니다). 값이 10^9까지, 위치가 10^5개이므로 답에는 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Đọc mảng từ trái sang phải: phần mà một vị trí cao hơn vị trí trước không thể được che phủ bởi các thao tác đi qua vị trí trước, nên các thao tác mới phải bắt đầu tại đó.",
+      "Đặt arr[−1]=0. Mỗi mức tăng arr[i]−arr[i−1]>0 cần ít nhất chừng đó thao tác mới, cho ta một cận dưới; bắt đầu các đoạn tại những chỗ tăng và kết thúc đủ số đoạn tại những chỗ giảm thì đạt đúng cận này.",
+      "Duyệt từ trái sang phải và cộng max(0, arr[i]−arr[i−1]) vào đáp án (phần tử đầu tiên được so với 0). Giá trị lên tới 10^9 trên 10^5 vị trí, nên hãy dùng đáp án 64 bit."
     ]
   },
   "explanationEn": "## Idea\n\nThe first position needs arr[0] operations. Each later position needs arr[i]−arr[i−1] newly started operations only when it is higher than the previous position. Add up all the positive increases.\n\n## Why it is correct\n\nLet arr[−1]=0. At every rise at least that many new intervals must start, because at most arr[i−1] operations can pass through the previous position. This gives a lower bound. Scanning the array, starting new intervals at rises and ending enough intervals at drops reaches the target with exactly this many operations, so it is optimal.\n\n## Complexity\n\nO(n) time and O(1) extra space apart from the input. Store the answer in a 64-bit integer."

@@ -13,6 +13,21 @@
       "The number of transactions in which two products appear together is the size of the intersection of their transaction sets; any pair with positive frequency appears together in some transaction, so you only need to enumerate pairs inside each transaction.",
       "Give every product a T-bit bitset (bit t means it appears in transaction t); the frequency of a pair is the popcount of the bitwise AND of the two bitsets, so you never need a count table for all pairs.",
       "While reading, de-duplicate each transaction's names, sort them lexicographically and set each product's bitset; then for every transaction enumerate name pairs i < j, compute the frequency with AND plus popcount, and update the answer when the frequency is larger, or equal with a lexicographically smaller (a, b); print -1 if there is no pair of distinct products."
+    ],
+    "ja": [
+      "2つの商品が同時に現れる取引の数は、それぞれが現れる取引の集合の共通部分の大きさです。頻度が正のペアはどれかの取引で同時に現れているので、各取引の内部でペアを列挙するだけで十分です。",
+      "各商品に T ビットのビット集合(t ビット目がその商品が取引 t に現れることを表す)を持たせます。ペアの頻度は2つのビット集合のビット AND の popcount なので、すべてのペアの回数表は不要です。",
+      "読み込みながら、各取引の名前の重複を除いて辞書順にソートし、各商品のビット集合を設定します。そのうえで各取引について名前のペア i < j を列挙し、AND と popcount で頻度を計算します。頻度が大きいとき、または頻度が同じで辞書順に小さい (a, b) のときに答えを更新します。異なる商品のペアがなければ -1 を出力します。"
+    ],
+    "ko": [
+      "두 상품이 함께 등장하는 거래의 수는 두 상품의 거래 집합의 교집합 크기입니다. 빈도가 양수인 쌍은 어떤 거래에서 함께 등장하므로 각 거래 안의 쌍만 열거하면 됩니다.",
+      "모든 상품에 T비트 비트셋을 부여합니다(t번째 비트는 거래 t에 등장함을 뜻합니다). 쌍의 빈도는 두 비트셋의 비트 AND의 popcount이므로 모든 쌍에 대한 카운트 표가 필요 없습니다.",
+      "입력을 읽으면서 각 거래의 이름을 중복 제거하고 사전순으로 정렬한 뒤 각 상품의 비트셋을 설정합니다. 그다음 모든 거래에서 이름 쌍 i < j를 열거하며 AND와 popcount로 빈도를 계산하고, 빈도가 더 크거나 빈도가 같고 사전순으로 더 작은 (a, b)이면 답을 갱신합니다. 서로 다른 상품의 쌍이 없으면 -1을 출력합니다."
+    ],
+    "vi": [
+      "Số giao dịch mà hai sản phẩm cùng xuất hiện bằng kích thước giao của hai tập giao dịch của chúng; mọi cặp có tần suất dương đều xuất hiện cùng nhau trong một giao dịch nào đó, nên chỉ cần duyệt các cặp bên trong từng giao dịch.",
+      "Gán cho mỗi sản phẩm một bitset T bit (bit t nghĩa là nó xuất hiện trong giao dịch t); tần suất của một cặp là popcount của phép AND bit hai bitset, nên không bao giờ cần bảng đếm cho mọi cặp.",
+      "Trong lúc đọc, loại trùng các tên trong mỗi giao dịch, sắp xếp chúng theo thứ tự từ điển và đặt bitset của từng sản phẩm; sau đó với mỗi giao dịch, duyệt các cặp tên i < j, tính tần suất bằng AND cộng popcount, và cập nhật đáp án khi tần suất lớn hơn, hoặc bằng nhau nhưng (a, b) nhỏ hơn theo từ điển; in -1 nếu không có cặp hai sản phẩm khác nhau nào."
     ]
   },
   "explanationEn": "## Approach\n\nFor each product build a bitmask of at most T bits marking the transactions it appears in. De-duplicate each transaction and enumerate its pairs of distinct products, using the bit_count of the bitwise AND of the two masks as the exact frequency; keep only the current highest frequency and the lexicographically smallest pair, without storing a table of all pairs.\n\n## Proof of correctness\n\nThe transactions in which a pair of products appears together are exactly the intersection of the two occurrence sets, so the number of bits in the intersection is the frequency defined by the problem. Every product pair with positive frequency is enumerated in at least one transaction, so the candidates cover every valid answer. Enumerating the same pair repeatedly does not change the maximum or the tie-breaking result. Because each transaction is de-duplicated first, repeated names neither form a pair with themselves nor add extra weight to a single transaction.\n\n## Complexity\n\nAt most T·100·99/2=4950000 candidate evaluations, each a bit operation on at most 1000 bits; space O(U·T/word size + input), without storing up to 4.95 million pair objects."

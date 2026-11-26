@@ -13,6 +13,21 @@
       "Similarity only depends on which letters appear, and there are just 26 letters, so each letter set compresses into a 26-bit number; two strings are similar exactly when these numbers are equal.",
       "Use a hash map to count how many times each mask has appeared so far; when a string is processed, it forms a pair with every earlier string that has the same mask.",
       "Read line by line (an empty line is an empty string with mask 0) and set the bit of each character; first add the count already stored for this mask to the answer, then increase that count by 1. The answer can be about 5×10^9, so use 64-bit integers."
+    ],
+    "ja": [
+      "似ているかどうかは、どの文字が現れるかだけで決まります。文字は 26 種類なので、文字集合は 26 ビットの数に圧縮できます。2 つの文字列が似ていることと、この数が等しいことは同値です。",
+      "ハッシュマップで、各マスクがこれまでに何回現れたかを数えます。文字列を処理するとき、同じマスクを持つ過去のすべての文字列とペアになります。",
+      "入力を 1 行ずつ読み(空行はマスク 0 の空文字列)、各文字に対応するビットを立てます。まずこのマスクについて保存されているカウントを答えに加え、その後でそのカウントを 1 増やします。答えは約 5×10^9 になり得るので、64 ビット整数を使ってください。"
+    ],
+    "ko": [
+      "유사 여부는 어떤 알파벳이 나타나는지에만 달려 있고 알파벳은 26개뿐이므로, 각 알파벳 집합은 26비트 수로 압축됩니다. 두 문자열이 유사할 필요충분조건은 이 수가 같은 것입니다.",
+      "해시 맵으로 각 마스크가 지금까지 몇 번 나왔는지 셉니다. 문자열을 처리할 때, 같은 마스크를 가진 앞선 모든 문자열과 한 쌍씩 이룹니다.",
+      "입력을 줄 단위로 읽고(빈 줄은 마스크 0의 빈 문자열), 각 문자의 비트를 설정합니다. 먼저 이 마스크에 저장된 개수를 답에 더한 다음 그 개수를 1 증가시킵니다. 답은 약 5×10^9까지 될 수 있으므로 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Sự tương tự chỉ phụ thuộc vào những chữ cái nào xuất hiện, và chỉ có 26 chữ cái, nên mỗi tập chữ cái nén được thành một số 26 bit; hai xâu tương tự đúng khi hai số này bằng nhau.",
+      "Dùng một bảng băm để đếm mỗi mặt nạ đã xuất hiện bao nhiêu lần; khi xử lý một xâu, nó tạo thành cặp với mọi xâu trước đó có cùng mặt nạ.",
+      "Đọc từng dòng (dòng trống là xâu rỗng với mặt nạ 0) và bật bit của mỗi ký tự; trước hết cộng vào đáp án số đếm đang lưu cho mặt nạ này, rồi tăng số đếm đó thêm 1. Đáp án có thể khoảng 5×10^9, nên hãy dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nRepresent each letter set as a 26-bit mask, and for each string add the number of earlier strings with the same mask.\n\n## Proof of correctness\n\nEach bit records exactly whether its letter occurs, so two masks are equal if and only if the sets are the same; each index pair is counted once, when the later of the two strings is scanned.\n\n## Complexity\n\nTime O(total length + n), space O(n)."

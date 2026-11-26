@@ -13,6 +13,21 @@
       "The answer has a unique first position i where it differs from s; the first i characters are kept as they are, so that prefix itself must have no adjacent repeats, and the further right i is, the smaller the result.",
       "Enumerate i from right to left, considering only positions with a valid prefix; at i put the smallest letter greater than s[i] that differs from the previous character, then fill each later position with the smallest letter different from its predecessor, which alternates a and b.",
       "Compute valid[i], whether the prefix of length i is valid; go from i=n-1 down to 0, skipping invalid ones; try letters from s[i]+1 to z, skipping one equal to s[i-1]; on success print the prefix, that letter and the alternating a/b suffix; if every attempt fails, print -1."
+    ],
+    "ja": [
+      "答えが s と最初に異なる位置 i は一意に決まります。先頭 i 文字はそのまま残るので、その接頭辞自体に隣接する同一文字があってはいけません。また、i が右にあるほど結果は小さくなります。",
+      "i を右から左へ列挙し、接頭辞が有効な位置だけを考えます。位置 i には、s[i] より大きく、直前の文字と異なる最小の文字を置きます。以降の各位置には、直前の文字と異なる最小の文字を置いていくので、a と b が交互に並びます。",
+      "valid[i]（長さ i の接頭辞が有効かどうか）を前計算します。i=n-1 から 0 へ進み、有効でないものは飛ばします。s[i]+1 から z までの文字を試し、s[i-1] と等しいものは飛ばします。成功したら、接頭辞、その文字、a/b を交互に並べた接尾辞を出力します。すべて失敗したら -1 を出力します。"
+    ],
+    "ko": [
+      "정답은 s와 처음으로 달라지는 위치 i가 유일하게 정해집니다. 앞의 i개 문자는 그대로 유지되므로 그 접두사 자체에 인접한 같은 문자가 없어야 하며, i가 오른쪽일수록 결과가 더 작습니다.",
+      "i를 오른쪽에서 왼쪽으로 열거하되 접두사가 유효한 위치만 고려합니다. i에는 s[i]보다 크면서 바로 앞 문자와 다른 가장 작은 문자를 넣고, 이후 각 위치에는 앞 문자와 다른 가장 작은 문자를 채웁니다. 결과는 a와 b가 번갈아 나옵니다.",
+      "길이 i인 접두사가 유효한지를 나타내는 valid[i]를 계산합니다. i=n-1에서 0까지 내려가며 유효하지 않은 위치는 건너뛰고, s[i]+1부터 z까지 문자를 시도하되 s[i-1]과 같은 문자는 건너뜁니다. 성공하면 접두사, 그 문자, a/b가 번갈아 나오는 접미사를 출력하고, 모두 실패하면 -1을 출력합니다."
+    ],
+    "vi": [
+      "Đáp án có đúng một vị trí i đầu tiên khác s; i ký tự đầu được giữ nguyên nên tiền tố đó phải không có ký tự kề nhau giống nhau, và i càng nằm về bên phải thì kết quả càng nhỏ.",
+      "Duyệt i từ phải sang trái, chỉ xét các vị trí có tiền tố hợp lệ; tại i đặt chữ cái nhỏ nhất lớn hơn s[i] và khác ký tự đứng trước, rồi mỗi vị trí sau đó điền chữ cái nhỏ nhất khác ký tự đứng ngay trước nó, tức là xen kẽ a và b.",
+      "Tính valid[i], cho biết tiền tố độ dài i có hợp lệ hay không; đi từ i=n-1 xuống 0, bỏ qua các vị trí không hợp lệ; thử các chữ cái từ s[i]+1 đến z, bỏ qua chữ bằng s[i-1]; khi thành công thì in tiền tố, chữ cái đó và hậu tố a/b xen kẽ; nếu mọi lần thử đều thất bại thì in -1."
     ]
   },
   "explanationEn": "## Approach\n\nPrecompute whether each prefix is free of adjacent repeats. Enumerate the first changed position from right to left, try the smallest valid larger character there, then greedily fill the smallest suffix with a or b.\n\n## Proof of correctness\n\nEvery strictly greater result has a unique first position where it differs, and the prefix it keeps must be valid; the further right that position is, the smaller the result. At that position choose the smallest usable larger character; after that, choosing at each position the smallest letter different from the previous one completes the string. The traversal order follows exactly the priority of the possible optima, so the first result found is the answer.\n\n## Complexity\n\nTime O(26n), space O(n)."

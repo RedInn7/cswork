@@ -13,6 +13,21 @@
       "Choosing k digits is the same as deleting n-k of them. To make the result largest, the leading digits must be as large as possible: if a smaller digit is followed by a larger one and you can still delete, deleting the smaller one is always better.",
       "Process the digits left to right with a monotonic stack: while the new digit is larger than the top and deletions remain, pop the top and spend one deletion; then push the new digit.",
       "Set remove = n - k; for each digit: while remove > 0, the stack is non-empty and its top is smaller than the current digit, pop and decrement remove, then push the digit; after the scan keep only the first k digits of the stack (the remaining deletions come off the end); strip leading zeros and print, or print 0 if all are zero."
+    ],
+    "ja": [
+      "k 個を選ぶことは、n-k 個を削除することと同じです。結果を最大にするには、先頭側の数字をできるだけ大きくする必要があります。小さい数字の直後に大きい数字があり、まだ削除できるなら、小さいほうを削除するのが常に得です。",
+      "数字を左から右へ、単調スタックで処理します。新しい数字がスタックの先頭より大きく、削除回数が残っている間、先頭を pop して削除を 1 回消費し、そのあとで新しい数字を push します。",
+      "remove = n - k とします。各数字について、remove > 0 かつスタックが空でなく先頭が現在の数字より小さい間は pop して remove を減らし、その後に数字を push します。走査後はスタックの先頭 k 個だけを残し (残りの削除は末尾から行います)、先頭の 0 を取り除いて出力します。すべて 0 なら 0 を出力します。"
+    ],
+    "ko": [
+      "k개의 숫자를 고르는 것은 n-k개를 지우는 것과 같습니다. 결과를 가장 크게 하려면 앞자리 숫자가 최대한 커야 합니다. 작은 숫자 뒤에 더 큰 숫자가 오고 아직 지울 수 있다면, 작은 숫자를 지우는 편이 항상 낫습니다.",
+      "숫자를 왼쪽에서 오른쪽으로 처리하면서 단조 스택을 사용합니다. 새 숫자가 top보다 크고 지울 횟수가 남아 있는 동안 top을 pop하고 지울 횟수를 하나 소모한 뒤, 새 숫자를 push합니다.",
+      "remove = n - k로 두고, 각 숫자에 대해 remove > 0이고 스택이 비어 있지 않으며 top이 현재 숫자보다 작은 동안 pop하고 remove를 1 줄인 뒤 숫자를 push합니다. 스캔이 끝나면 스택의 처음 k개만 남깁니다 (남은 삭제는 끝에서 이루어집니다). 앞자리 0을 제거하고 출력하며, 모두 0이면 0을 출력합니다."
+    ],
+    "vi": [
+      "Chọn k chữ số tương đương với xóa n-k chữ số. Để kết quả lớn nhất, các chữ số đứng đầu phải càng lớn càng tốt: nếu một chữ số nhỏ được theo sau bởi một chữ số lớn hơn và vẫn còn có thể xóa, thì xóa chữ số nhỏ luôn tốt hơn.",
+      "Xử lý các chữ số từ trái sang phải với một ngăn xếp đơn điệu: trong khi chữ số mới lớn hơn phần tử trên cùng và còn lượt xóa, lấy phần tử trên cùng ra và tốn một lượt xóa; sau đó đẩy chữ số mới vào.",
+      "Đặt remove = n - k; với mỗi chữ số: trong khi remove > 0, ngăn xếp không rỗng và phần tử trên cùng nhỏ hơn chữ số hiện tại, thì lấy ra và giảm remove, rồi đẩy chữ số vào; sau khi duyệt xong chỉ giữ k chữ số đầu tiên của ngăn xếp (các lượt xóa còn lại cắt từ cuối); bỏ các chữ số 0 ở đầu rồi in, hoặc in 0 nếu tất cả đều bằng 0."
     ]
   },
   "explanationEn": "## Approach\n\nn−k digits may be deleted. Maintain a monotonic stack: when the new digit is larger, pop the smaller digits at the end as long as deletions remain. Finally take the first k digits.\n\n## Why it is correct\n\nIf deletions remain, keeping a smaller digit that comes before a larger digit makes the first differing position smaller; deleting it can only improve the result. When nothing more can be popped, keep the current prefix and remove the remaining deletions from the tail. So step by step we obtain the lexicographically largest subsequence of k digits.\n\n## Complexity\n\nO(n) time, O(n) extra space."

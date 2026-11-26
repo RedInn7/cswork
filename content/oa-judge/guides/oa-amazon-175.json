@@ -13,6 +13,21 @@
       "The most frequent task type sets the skeleton: two of its runs must be at least minGap units apart no matter how the other tasks are arranged.",
       "Let f be the highest count and c the number of types reaching it: the most frequent tasks form f-1 rounds of length minGap+1, and the last round holds c tasks, giving the lower bound (f-1)(minGap+1)+c; the number of tasks is the other lower bound. The answer is the larger of the two.",
       "Count the 26 letters, find the maximum count f and the number c of letters with that count, and print the larger of the string length and (f-1)*(minGap+1)+c. minGap can be 10^9, so compute the product in 64-bit integers."
+    ],
+    "ja": [
+      "最も頻出するタスクの種類が全体の骨格を決めます。他のタスクをどう並べても、その種類の 2 つのタスクは少なくとも minGap 単位時間離す必要があります。",
+      "最大の出現回数を f、その回数に達する種類の数を c とします。最頻出のタスクは長さ minGap+1 のラウンドを f-1 個作り、最後のラウンドには c 個のタスクが入るので、下限 (f-1)(minGap+1)+c が得られます。タスクの個数がもう 1 つの下限で、答えは 2 つのうち大きいほうです。",
+      "26 個の文字を数えて最大の出現回数 f と、その回数をもつ文字の数 c を求め、文字列の長さと (f-1)*(minGap+1)+c のうち大きいほうを出力します。minGap は 10^9 になりうるので、積は 64 ビット整数で計算してください。"
+    ],
+    "ko": [
+      "가장 자주 나오는 작업 종류가 뼈대를 결정합니다. 다른 작업을 어떻게 배치하든 그 종류의 두 작업은 최소 minGap 단위 시간 떨어져 있어야 합니다.",
+      "f를 최대 개수, c를 그 개수에 도달한 종류의 수라고 하면, 가장 빈번한 작업들은 길이 minGap+1인 라운드 f-1개를 이루고 마지막 라운드에는 c개의 작업이 들어가므로 하한은 (f-1)(minGap+1)+c입니다. 작업 개수 자체가 또 다른 하한이며, 답은 두 값 중 큰 쪽입니다.",
+      "26개 알파벳의 개수를 세어 최대 개수 f와 그 개수를 가진 문자의 수 c를 구한 뒤, 문자열 길이와 (f-1)*(minGap+1)+c 중 큰 값을 출력합니다. minGap이 10^9까지 커질 수 있으므로 곱셈은 64비트 정수로 계산하세요."
+    ],
+    "vi": [
+      "Loại tác vụ xuất hiện nhiều nhất tạo thành khung xương: hai lần chạy của nó phải cách nhau ít nhất minGap đơn vị dù các tác vụ khác được sắp xếp thế nào.",
+      "Gọi f là số lần xuất hiện cao nhất và c là số loại đạt mức đó: các tác vụ xuất hiện nhiều nhất tạo thành f-1 vòng, mỗi vòng dài minGap+1, và vòng cuối chứa c tác vụ, cho cận dưới (f-1)(minGap+1)+c; số tác vụ là cận dưới còn lại. Đáp án là giá trị lớn hơn trong hai cận.",
+      "Đếm 26 chữ cái, tìm số lần xuất hiện lớn nhất f và số chữ cái c đạt mức đó, rồi in giá trị lớn hơn giữa độ dài chuỗi và (f-1)*(minGap+1)+c. minGap có thể là 10^9, nên hãy tính tích bằng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nLet the highest occurrence count be f and the number of task types reaching it be c; the answer is max(total number of tasks, (f-1)(minGap+1)+c).\n\n## Proof of correctness\n\nThe total number of tasks is a necessary lower bound on the time. The first f-1 rounds of the most frequent task are each at least minGap+1 apart, and the last round contains c types, which gives the second lower bound. Placing the tasks by frequency into the f-1 spaced rounds, the other tasks fill the empty slots first; if there are not enough of them, idle time fills the rest, and if they exceed the capacity, the rounds are widened with more tasks between them; this reaches exactly the maximum of the two lower bounds.\n\n## Complexity\n\nTime O(n), auxiliary space O(26)."

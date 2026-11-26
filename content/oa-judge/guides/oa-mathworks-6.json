@@ -13,6 +13,21 @@
       "A valid subarray cannot contain any value below min_price or above max_price, so those out-of-range values cut the array into independent pieces; the subarray must also contain at least one min_price and at least one max_price.",
       "For a fixed right end i, the valid left ends form a contiguous range: from the start of the current piece up to the earlier of the latest positions of min_price and max_price.",
       "Scan left to right, tracking the start of the current piece and the latest index of each target value; an out-of-range value moves the start to the next position and clears both indices. When both indices are at or after the start, add (the smaller index - start + 1) to the answer. If min_price equals max_price one position updates both; keep the answer in 64 bits."
+    ],
+    "ja": [
+      "有効な部分配列は、min_price より小さい値も max_price より大きい値も含められないので、範囲外の値によって配列は独立した断片に分けられます。また、部分配列は min_price を少なくとも 1 つ、max_price を少なくとも 1 つ含まなければなりません。",
+      "右端 i を固定すると、有効な左端は連続した範囲になります。現在の断片の開始位置から、min_price と max_price の最新の位置のうち早いほうまでです。",
+      "左から右へ走査し、現在の断片の開始位置と、各目標値の最新の添字を管理します。範囲外の値が来たら、開始位置を次の位置に動かし、2 つの添字をクリアします。2 つの添字がどちらも開始位置以降にあるとき、(小さいほうの添字 - 開始位置 + 1) を答えに加えます。min_price と max_price が等しいときは、1 つの位置が両方を更新します。答えは 64 ビットで保持してください。"
+    ],
+    "ko": [
+      "유효한 부분 배열은 min_price보다 작은 값이나 max_price보다 큰 값을 포함할 수 없으므로 그런 범위 밖의 값이 배열을 서로 독립적인 조각으로 자릅니다. 또한 부분 배열에는 min_price가 적어도 하나, max_price가 적어도 하나 있어야 합니다.",
+      "오른쪽 끝 i를 고정하면 유효한 왼쪽 끝은 연속된 범위를 이룹니다. 현재 조각의 시작부터 min_price와 max_price의 최근 위치 중 더 앞선 쪽까지입니다.",
+      "왼쪽에서 오른쪽으로 훑으며 현재 조각의 시작과 각 목표 값의 최근 인덱스를 추적합니다. 범위 밖의 값을 만나면 시작을 다음 위치로 옮기고 두 인덱스를 지웁니다. 두 인덱스가 모두 시작 이상이면 (작은 쪽 인덱스 - 시작 + 1)을 답에 더합니다. min_price가 max_price와 같으면 한 위치가 두 인덱스를 모두 갱신하며, 답은 64비트로 유지합니다."
+    ],
+    "vi": [
+      "Một mảng con hợp lệ không được chứa giá trị nào nhỏ hơn min_price hoặc lớn hơn max_price, nên các giá trị ngoài khoảng đó cắt mảng thành các đoạn độc lập; mảng con cũng phải chứa ít nhất một min_price và ít nhất một max_price.",
+      "Với đầu mút phải i cố định, các đầu mút trái hợp lệ tạo thành một khoảng liên tục: từ đầu của đoạn hiện tại đến vị trí nhỏ hơn trong hai vị trí gần nhất của min_price và max_price.",
+      "Quét từ trái sang phải, theo dõi đầu của đoạn hiện tại và chỉ số gần nhất của mỗi giá trị mục tiêu; một giá trị ngoài khoảng sẽ dời đầu đoạn sang vị trí kế tiếp và xóa cả hai chỉ số. Khi cả hai chỉ số đều ở vị trí bằng hoặc sau đầu đoạn, cộng (chỉ số nhỏ hơn - đầu đoạn + 1) vào đáp án. Nếu min_price bằng max_price thì một vị trí cập nhật cả hai; giữ đáp án trong 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nThe source's three examples can be checked directly; this local problem counts closed-range subarrays, and the maximum and the minimum must equal their targets exactly.\n\n## Proof of correctness\n\nFor a fixed right end, a valid left end must lie in the contiguous run that has not gone out of range, and must be no later than the earlier of the most recent occurrences of the two endpoint values. Such left ends include both endpoint values, while any later start misses at least one of them; adding up the contributions counts everything exactly once.\n\n## Complexity\n\nTime O(n), space O(n)."

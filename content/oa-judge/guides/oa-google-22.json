@@ -13,6 +13,21 @@
       "After repeating the string K times the length can reach one million. Simulation is possible but unnecessary: each round removes half of the characters, and the surviving original indices always form an arithmetic progression.",
       "Keep only the first term head, the common difference step and the remaining count. Each round doubles the step and halves the count; the key question is whether this round removes the first term.",
       "Set count = |S| * K, head = 0, step = 1, starting from the left; while count > 1: if this round deletes from the left, or deletes from the right and count is odd, add step to head; then halve count, double step and switch direction; finally print S[head mod |S|]."
+    ],
+    "ja": [
+      "文字列を K 回繰り返すと、長さは 100 万に達しえます。シミュレーションも可能ですが不要です。各ラウンドで文字の半分が取り除かれ、残る元の添字は常に等差数列になります。",
+      "初項 head、公差 step、残りの個数 count だけを保持します。各ラウンドで step は 2 倍になり、count は半分になります。重要なのは、このラウンドで初項が削除されるかどうかです。",
+      "count = |S| * K、head = 0、step = 1 として、左から始めます。count > 1 の間、このラウンドが左からの削除である場合、または右からの削除で count が奇数の場合は head に step を足します。その後 count を半分にし、step を 2 倍にして方向を切り替えます。最後に S[head mod |S|] を出力します。"
+    ],
+    "ko": [
+      "문자열을 K번 반복하면 길이가 100만에 이를 수 있습니다. 시뮬레이션도 가능하지만 불필요합니다. 각 라운드가 문자의 절반을 지우고, 남아 있는 원래 인덱스는 항상 등차수열을 이룹니다.",
+      "첫 항 head, 공차 step, 남은 개수 count만 유지합니다. 각 라운드에서 step은 두 배가 되고 count는 절반이 됩니다. 핵심은 이번 라운드가 첫 항을 지우는지 여부입니다.",
+      "count = |S| * K, head = 0, step = 1로 두고 왼쪽부터 시작합니다. count > 1인 동안, 이번 라운드가 왼쪽에서의 삭제이거나, 오른쪽에서의 삭제이면서 count가 홀수이면 head에 step을 더합니다. 그다음 count를 절반으로 줄이고 step을 두 배로 하며 방향을 바꿉니다. 마지막에 S[head mod |S|]를 출력합니다."
+    ],
+    "vi": [
+      "Sau khi lặp xâu K lần, độ dài có thể tới một triệu. Có thể mô phỏng nhưng không cần thiết: mỗi vòng xóa một nửa số ký tự, và các chỉ số gốc còn sống luôn tạo thành một cấp số cộng.",
+      "Chỉ giữ số hạng đầu head, công sai step và số lượng còn lại count. Mỗi vòng nhân đôi step và giảm một nửa count; câu hỏi then chốt là vòng này có xóa số hạng đầu hay không.",
+      "Đặt count = |S| * K, head = 0, step = 1, bắt đầu từ bên trái; trong khi count > 1: nếu vòng này xóa từ trái, hoặc xóa từ phải và count lẻ, cộng step vào head; sau đó giảm một nửa count, nhân đôi step và đổi hướng; cuối cùng in S[head mod |S|]."
     ]
   },
   "explanationEn": "## Approach\n\nThe surviving original indices always form an arithmetic progression. Maintain the first term head, the step and the remaining count. A deletion from the left always moves the first term; a deletion from the right moves it only when the count is odd.\n\n## Correctness\n\nEach round keeps half of the terms of the arithmetic progression, so the new step doubles. A deletion from the left removes the original first term; a deletion from the right removes the original first term if and only if the number of terms is odd. Update this way until only one term is left; its original index modulo |S| gives the corresponding character.\n\n## Complexity\n\nTime O(log(|S| K)), extra space O(1)."

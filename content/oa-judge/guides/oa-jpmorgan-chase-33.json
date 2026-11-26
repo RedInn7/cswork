@@ -13,6 +13,21 @@
       "The input is a permutation of 1..n, so in descending order the position of value v is fixed: 0-based index n − v.",
       "Treat \"where the value at position i must go\" as a permutation; it splits into cycles. One swap splits at most one cycle into two, so a cycle of length L needs at least L − 1 swaps, and that many always suffice.",
       "Use visited flags; from each unvisited position follow i → n − a[i] around its cycle, measure its length L, and add L − 1 to the answer; the sum over all cycles is the minimum number of swaps."
+    ],
+    "ja": [
+      "入力は 1..n の順列なので、降順では値 v の位置が一意に決まります。0 始まりのインデックスで n − v です。",
+      "「位置 i にある値が行くべき位置」を順列とみなすと、サイクルに分解できます。1 回のスワップで分割できるサイクルは高々 1 つで、しかも 2 つに分かれるだけなので、長さ L のサイクルには少なくとも L − 1 回が必要で、L − 1 回あれば必ず足ります。",
+      "訪問済みフラグを使い、未訪問の位置から i → n − a[i] をサイクルに沿ってたどって長さ L を測り、答えに L − 1 を加えます。全サイクルの合計が最小スワップ回数です。"
+    ],
+    "ko": [
+      "입력은 1..n의 순열이므로 내림차순에서 값 v의 위치는 고정됩니다. 0 기반 인덱스로 n − v입니다.",
+      "\"위치 i의 값이 가야 할 곳\"을 순열로 보면 사이클들로 분해됩니다. 한 번의 교환은 사이클 하나를 최대 둘로 나눌 수 있으므로, 길이 L인 사이클에는 최소 L − 1번의 교환이 필요하고 그만큼이면 항상 충분합니다.",
+      "방문 표시를 사용하여, 방문하지 않은 각 위치에서 i → n − a[i]를 따라 사이클을 한 바퀴 돌며 길이 L을 재고 답에 L − 1을 더합니다. 모든 사이클의 합이 최소 교환 횟수입니다."
+    ],
+    "vi": [
+      "Đầu vào là một hoán vị của 1..n, nên khi sắp giảm dần, vị trí của giá trị v là cố định: chỉ số tính từ 0 là n − v.",
+      "Hãy coi \"giá trị tại vị trí i phải đi đến đâu\" là một hoán vị; nó tách thành các chu trình. Một lần hoán đổi chỉ tách được tối đa một chu trình thành hai, nên chu trình độ dài L cần ít nhất L − 1 lần hoán đổi, và chừng đó luôn đủ.",
+      "Dùng cờ visited; từ mỗi vị trí chưa thăm, đi theo i → n − a[i] quanh chu trình, đo độ dài L và cộng L − 1 vào đáp án; tổng trên mọi chu trình là số lần hoán đổi tối thiểu."
     ]
   },
   "explanationEn": "## Approach\n\nThe target position of value v is n−v. Walk every cycle of this position mapping; each cycle of length L contributes L−1.\n\n## Proof of correctness\n\nOne swap splits at most one permutation cycle into two, and in the end every position is on its own, so a cycle of length L needs at least L−1 swaps; fixing one position in the cycle and swapping it with the others in turn achieves this. All cycles are independent, so the total is optimal.\n\n## Complexity\n\nO(n) time and O(n) space."

@@ -13,6 +13,21 @@
       "Instead of enumerating subarrays, ask which subarrays each element owns as the maximum; equal maxima need a unique owner, for example the rightmost one.",
       "A monotonic stack gives, for each element, the first strictly greater element to its left and the first greater-or-equal element to its right, i.e. how far it extends: L and R. The total length of those subarrays has a closed form.",
       "The left end has L choices and the right end R choices, with length l+r−1; summing gives L·R·(L+R)/2. Multiply by the element's value and accumulate. Totals reach about 10^24, so use 128-bit or big integers; print 0 when n=0."
+    ],
+    "ja": [
+      "部分配列を列挙する代わりに、各要素が最大値として「所有」する部分配列を考えます。最大値が等しい場合に所有者を一意にするため、たとえば最も右にあるものを所有者とします。",
+      "単調スタックを使うと、各要素について左側で最初の真に大きい要素と、右側で最初の以上の要素、つまりどこまで広がるか(L と R)が求まります。それらの部分配列の長さの合計には閉じた式があります。",
+      "左端の選び方は L 通り、右端は R 通りで、長さは l+r−1 です。合計すると L·R·(L+R)/2 になります。これに要素の値を掛けて累積します。合計は約 10^24 に達するので、128ビット整数または多倍長整数を使ってください。n=0 のときは 0 を出力します。"
+    ],
+    "ko": [
+      "부분 배열을 나열하는 대신, 각 원소가 최댓값으로서 담당하는 부분 배열이 무엇인지 생각해 보십시오. 최댓값이 같은 경우에는 담당자가 하나로 정해져야 하며, 예를 들어 가장 오른쪽 원소로 정할 수 있습니다.",
+      "단조 스택으로 각 원소에 대해 왼쪽의 첫 번째 엄격하게 큰 원소와 오른쪽의 첫 번째 크거나 같은 원소를 구하면 그 원소가 뻗을 수 있는 범위 L과 R를 얻습니다. 이 부분 배열들의 길이 합은 닫힌 식으로 구할 수 있습니다.",
+      "왼쪽 끝은 L가지, 오른쪽 끝은 R가지이고 길이는 l+r−1이므로, 합하면 L·R·(L+R)/2입니다. 여기에 원소 값을 곱해 누적합니다. 총합이 약 10^24까지 커지므로 128비트 또는 큰 정수를 사용하고, n=0이면 0을 출력합니다."
+    ],
+    "vi": [
+      "Thay vì liệt kê các mảng con, hãy hỏi mỗi phần tử sở hữu những mảng con nào với tư cách là giá trị lớn nhất; các giá trị lớn nhất bằng nhau cần một chủ sở hữu duy nhất, ví dụ phần tử ngoài cùng bên phải.",
+      "Ngăn xếp đơn điệu cho biết, với mỗi phần tử, phần tử đầu tiên lớn hơn hẳn ở bên trái và phần tử đầu tiên lớn hơn hoặc bằng ở bên phải, tức là nó mở rộng được bao xa: L và R. Tổng độ dài của các mảng con đó có công thức đóng.",
+      "Đầu trái có L cách chọn và đầu phải có R cách chọn, với độ dài l+r−1; cộng lại được L·R·(L+R)/2. Nhân với giá trị của phần tử rồi cộng dồn. Tổng có thể đạt khoảng 10^24, nên dùng số nguyên 128 bit hoặc số nguyên lớn; in 0 khi n=0."
     ]
   },
   "explanationEn": "## Approach\n\nUse a monotonic stack to find, for each element, the nearest strictly greater element on the left and the nearest greater-or-equal element on the right; let the distances to these boundaries be L and R. The element is responsible for L·R subarrays whose total length is L·R·(L+R)/2; multiply this by the element and accumulate.\n\n## Proof of correctness\n\nEach subarray is assigned to its rightmost maximum. The left end cannot cross a strictly greater element, and the right end cannot include the next equal or greater element, which gives exactly one owner per subarray, so nothing is missed or counted twice. With a left extension of 1..L and a right extension of 1..R, the length is l+r−1, and the double sum equals LR(L+R)/2. In the monotonic stack each position is pushed and popped only once.\n\n## Complexity\n\nO(n) time and O(n) space; the total may exceed 64 bits."

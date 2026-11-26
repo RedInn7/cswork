@@ -13,6 +13,21 @@
       "In each round the split into runs of equal digits is unique, and a run of len copies of digit d has digit sum d * len. So one round of replacement is a single linear scan.",
       "Simulate the rules directly: in each round replace every run with the decimal string of d * len. If every run in a round has length 1, no two adjacent digits are equal, so stop. The number of rounds stays small: the length never grows, and the length plus the digit sum strictly decreases every round.",
       "Loop: use two pointers to find each run [i, j) of equal characters, append str(digit * (j - i)) to a new string, and remember whether any run was longer than 1. If none was, output the current string; otherwise replace the old string with the new one and continue. Several 0s merge into a single 0, and leading 0s are kept as they are."
+    ],
+    "ja": [
+      "各ラウンドで、同じ数字の連への分割は一意に決まり、数字 d が len 個並ぶ連の数字の合計は d * len です。したがって 1 ラウンドの置換は 1 回の線形走査で済みます。",
+      "規則をそのままシミュレートします。各ラウンドですべての連を d * len の 10 進文字列で置き換えます。あるラウンドですべての連の長さが 1 なら、隣り合う同じ数字はないので止めます。ラウンド数は少なく抑えられます。長さは決して増えず、長さと数字の合計の和は毎ラウンド厳密に減るからです。",
+      "ループします。2 つのポインタで同じ文字の連 [i, j) を順に見つけ、str(digit * (j - i)) を新しい文字列に追加し、長さ 1 を超える連があったかどうかを記憶します。なければ現在の文字列を出力し、あれば古い文字列を新しいものに置き換えて続けます。複数の 0 は 1 つの 0 にまとまり、先頭の 0 はそのまま保持されます。"
+    ],
+    "ko": [
+      "각 라운드에서 같은 숫자의 연속 구간으로의 분할은 유일하며, 숫자 d가 len개 이어진 구간의 숫자 합은 d * len입니다. 따라서 한 라운드의 치환은 선형 스캔 한 번입니다.",
+      "규칙을 그대로 시뮬레이션합니다. 매 라운드마다 모든 구간을 d * len의 십진 문자열로 바꿉니다. 한 라운드에서 모든 구간의 길이가 1이면 인접한 두 숫자가 같은 경우가 없으므로 멈춥니다. 라운드 수는 적게 유지됩니다. 길이는 늘지 않고, 길이와 숫자 합의 합은 매 라운드 엄격하게 감소하기 때문입니다.",
+      "반복합니다. 두 포인터로 같은 문자의 구간 [i, j)를 찾고, 새 문자열에 str(digit * (j - i))를 덧붙이며, 길이가 1보다 큰 구간이 있었는지 기억합니다. 없었다면 현재 문자열을 출력하고, 있었다면 이전 문자열을 새 문자열로 교체하고 계속합니다. 여러 개의 0은 하나의 0으로 합쳐지고, 앞의 0은 그대로 유지됩니다."
+    ],
+    "vi": [
+      "Trong mỗi vòng, cách chia thành các đoạn chữ số bằng nhau là duy nhất, và một đoạn gồm len bản sao của chữ số d có tổng chữ số là d * len. Vì vậy một vòng thay thế chỉ là một lần quét tuyến tính.",
+      "Mô phỏng trực tiếp theo luật: mỗi vòng thay mỗi đoạn bằng xâu thập phân của d * len. Nếu mọi đoạn trong một vòng có độ dài 1 thì không có hai chữ số liền kề nào bằng nhau, nên dừng. Số vòng vẫn nhỏ: độ dài không bao giờ tăng, và độ dài cộng tổng chữ số giảm ngặt sau mỗi vòng.",
+      "Lặp: dùng hai con trỏ để tìm mỗi đoạn [i, j) gồm các ký tự bằng nhau, nối str(digit * (j - i)) vào xâu mới, và nhớ xem có đoạn nào dài hơn 1 không. Nếu không có thì in ra xâu hiện tại; ngược lại thay xâu cũ bằng xâu mới và tiếp tục. Nhiều số 0 gộp thành một số 0, và các số 0 đứng đầu được giữ nguyên."
     ]
   },
   "explanationEn": "## Approach\n\nScan the runs of identical characters round by round, computing each replacement string as the digit value times the run length. Stop when every run has length 1.\n\n## Correctness\n\nThe split into runs in each round is unique, and the scan-and-replace matches the simultaneous rule. The length never increases; if a repeated run's replacement does not shorten the string, its digit sum decreases because of decimal carrying. Therefore \"string length + digit sum\" strictly decreases, and the process ends after at most O(n) rounds.\n\n## Complexity\n\nTime is bounded by O(n²), space O(n); the initial digit sum is at most 9n."

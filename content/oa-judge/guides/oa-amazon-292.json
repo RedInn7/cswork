@@ -13,6 +13,21 @@
       "A replacement only changes a value into another value already in the array and never creates new values; since divisibility is transitive, an original value can only end up as some value of the original array that divides it.",
       "So each original value is bounded below by the smallest value of the original array that divides it. Those smallest divisors are not divisible by any smaller original value, otherwise that value would also divide the original, so they can stay fixed as pivots while every other element is replaced directly by its smallest divisor, reaching every bound at once.",
       "Count how many times each value occurs; for d from small to large, and only for values d present in the array, walk its multiples and record d as the smallest divisor of any multiple that has none yet; finally, for every present value v, add its count times its smallest divisor, and print the sum as a 64-bit integer."
+    ],
+    "ja": [
+      "置き換えは、値を配列にすでにある別の値に変えるだけで、新しい値は作られません。また、約数の関係は推移的なので、元の値が最終的になりうるのは、元の配列の値のうちそれを割り切るものだけです。",
+      "したがって、各元の値の下限は、元の配列でそれを割り切る最小の値です。その最小の約数自身は、より小さい元の値で割り切れません(割り切れるなら、その値も元の値を割り切ってしまうからです)。そのため基準として固定したまま、他のすべての要素を最小の約数に直接置き換えることで、すべての下限を同時に達成できます。",
+      "各値の出現回数を数えます。d を小さい順に、配列に存在する値 d についてだけ、その倍数を順に見て、まだ約数が決まっていない倍数の最小の約数を d と記録します。最後に、存在する各値 v について、出現回数に最小の約数を掛けたものを加え、合計を 64 ビット整数として出力します。"
+    ],
+    "ko": [
+      "치환은 값을 이미 배열에 있는 다른 값으로 바꿀 뿐 새로운 값을 만들지 않습니다. 나누어떨어짐은 추이적이므로, 원래 값은 자신을 나누는 원래 배열의 어떤 값으로만 끝날 수 있습니다.",
+      "따라서 각 원래 값의 하한은 자신을 나누는 원래 배열의 가장 작은 값입니다. 이 최소 약수들은 더 작은 원래 값으로 나누어떨어지지 않습니다(그렇다면 그 값이 원래 값도 나눌 것입니다). 그러므로 피벗으로 고정해 둘 수 있고, 나머지 원소는 모두 자신의 최소 약수로 직접 치환되어 모든 하한을 동시에 달성합니다.",
+      "각 값의 등장 횟수를 셉니다. d를 작은 것부터 순회하며 배열에 있는 d에 대해서만 배수를 훑으면서, 아직 약수가 없는 배수의 최소 약수를 d로 기록합니다. 마지막으로 배열에 있는 모든 값 v에 대해 개수와 최소 약수의 곱을 더하고, 합을 64비트 정수로 출력합니다."
+    ],
+    "vi": [
+      "Một phép thay chỉ đổi một giá trị thành giá trị khác đã có trong mảng và không bao giờ tạo giá trị mới; vì tính chia hết có tính bắc cầu, một giá trị gốc chỉ có thể kết thúc ở một giá trị của mảng gốc chia hết nó.",
+      "Vì vậy mỗi giá trị gốc bị chặn dưới bởi giá trị nhỏ nhất của mảng gốc chia hết nó. Các ước nhỏ nhất đó không chia hết cho giá trị gốc nhỏ hơn nào, nếu không giá trị ấy cũng sẽ chia hết giá trị gốc, nên chúng có thể được giữ cố định làm điểm tựa trong khi mọi phần tử khác được thay thẳng bằng ước nhỏ nhất của nó, đạt mọi cận cùng lúc.",
+      "Đếm số lần xuất hiện của mỗi giá trị; với d từ nhỏ đến lớn, chỉ với các giá trị d có trong mảng, duyệt các bội của nó và ghi d làm ước nhỏ nhất của bội nào chưa có; cuối cùng, với mỗi giá trị v có mặt, cộng số lần xuất hiện nhân với ước nhỏ nhất của nó, và in tổng dưới dạng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nRecord the frequencies. Enumerate the numbers d present in the original array from smallest to largest, and mark with d every multiple of d that has not yet been assigned a smallest divisor; finally, sum each original value's frequency times its smallest present divisor.\n\n## Proof of correctness\n\nThe copy operation never produces a value that was not in the original array; divisibility is transitive, so an original value can finally become only some value of the original array that divides it, and the smallest one gives a lower bound. Each such smallest divisor has no smaller divisor in the original array, since that divisor would also divide the original value, contradicting minimality. So these pivots can be kept and every other element replaced directly by its smallest divisor, reaching every per-element lower bound at the same time.\n\n## Complexity\n\nTime O(n+V log V), space O(V), where V is the maximum value ≤200000; the sum uses 64 bits."

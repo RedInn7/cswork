@@ -13,6 +13,21 @@
       "Convert HH:MM into minutes since midnight, and the task becomes finding the largest value strictly below the current minute. A bus leaving exactly at the current time has not departed yet, and there is no wrap-around to the previous day.",
       "After converting all departures, scan them once and consider only those strictly earlier than the current minute; the largest of them is the most recent bus, and the elapsed time is the difference.",
       "Convert the current time and every departure to hours * 60 + minutes. Start with last = -1 and, for every departure strictly smaller than the current minute, update last with the maximum. If last is still -1, print -1; otherwise print the current minute minus last."
+    ],
+    "ja": [
+      "HH:MM を 0 時からの分に変換すると、現在の分より真に小さい最大の値を探す問題になります。ちょうど現在時刻に出るバスはまだ出発していません。前日にさかのぼることもありません。",
+      "すべての出発を変換したあと、1 回走査して、現在の分より真に早いものだけを考えます。その最大値が最新のバスで、経過時間はその差です。",
+      "現在時刻とすべての出発を hours * 60 + minutes に変換します。last = -1 から始め、現在の分より真に小さい各出発について、last を最大値で更新します。last が -1 のままなら -1 を出力し、そうでなければ現在の分から last を引いた値を出力します。"
+    ],
+    "ko": [
+      "HH:MM을 자정 이후의 분으로 바꾸면 문제는 현재 분보다 엄격히 작은 값 중 최댓값을 찾는 일이 됩니다. 현재 시각에 정확히 출발하는 버스는 아직 출발하지 않은 것이며, 전날로 넘어가는 경우는 없습니다.",
+      "모든 출발 시각을 변환한 뒤 한 번 스캔하며 현재 분보다 엄격히 이른 것만 고려합니다. 그중 가장 큰 것이 가장 최근의 버스이며 경과 시간은 그 차이입니다.",
+      "현재 시각과 모든 출발 시각을 hours * 60 + minutes로 변환합니다. last = -1에서 시작해, 현재 분보다 엄격히 작은 출발 시각마다 last를 최댓값으로 갱신합니다. last가 여전히 -1이면 -1을 출력하고, 아니면 현재 분에서 last를 뺀 값을 출력합니다."
+    ],
+    "vi": [
+      "Chuyển HH:MM thành số phút kể từ nửa đêm, và bài toán trở thành tìm giá trị lớn nhất nhỏ hơn hẳn phút hiện tại. Xe buýt rời đi đúng vào thời điểm hiện tại chưa khởi hành, và không quay vòng sang ngày hôm trước.",
+      "Sau khi chuyển tất cả giờ khởi hành, quét một lần và chỉ xét những giờ sớm hơn hẳn phút hiện tại; giờ lớn nhất trong số đó là chuyến xe gần nhất, và thời gian đã trôi qua là hiệu số.",
+      "Chuyển thời điểm hiện tại và mọi giờ khởi hành thành hours * 60 + minutes. Bắt đầu với last = -1 và, với mỗi giờ khởi hành nhỏ hơn hẳn phút hiện tại, cập nhật last bằng giá trị lớn nhất. Nếu last vẫn là -1 thì in -1; ngược lại in phút hiện tại trừ last."
     ]
   },
   "explanationEn": "## Approach\n\nConvert to minutes since midnight, take the largest departure minute strictly less than the current minute, and subtract.\n\n## Correctness\n\nThe strict less-than condition exactly excludes buses that have not departed yet. Among the departed buses, the largest departure time gives the smallest elapsed time, which is the most recent bus.\n\n## Complexity\n\nTime O(n), extra space O(1) apart from the input."

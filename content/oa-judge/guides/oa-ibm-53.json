@@ -13,6 +13,21 @@
       "Each step takes either the largest or the smallest remaining element; once the array is sorted, these two always sit at the two ends of the remaining range.",
       "After sorting, keep the unused range between a left and a right pointer and alternately take the largest from the right end and the smallest from the left end; every element is used exactly once, and duplicates are kept as many times as they occur.",
       "Sort the array in ascending order with l at the start and r at the end; while l≤r, output a[r] and move r left, then if still l≤r output a[l] and move l right, until the pointers cross."
+    ],
+    "ja": [
+      "各ステップでは、残りの要素の最大か最小のどちらかを取ります。配列をソートしておけば、この 2 つは常に残りの範囲の両端にあります。",
+      "ソートしたあと、使っていない範囲を左右のポインタで保持し、右端から最大を、左端から最小を交互に取ります。どの要素もちょうど 1 回ずつ使われ、重複は出現した回数だけ残ります。",
+      "配列を昇順にソートし、l を先頭、r を末尾に置きます。l≤r の間、a[r] を出力して r を左へ動かし、まだ l≤r なら a[l] を出力して l を右へ動かします。ポインタが交差するまで続けます。"
+    ],
+    "ko": [
+      "매 단계에서 남은 원소 중 가장 큰 값이나 가장 작은 값을 가져오는데, 배열이 정렬되어 있으면 이 둘은 항상 남은 구간의 양 끝에 있습니다.",
+      "정렬한 뒤 왼쪽 포인터와 오른쪽 포인터 사이에 아직 쓰지 않은 구간을 유지하고, 오른쪽 끝에서 가장 큰 값을, 왼쪽 끝에서 가장 작은 값을 번갈아 가져옵니다. 모든 원소는 정확히 한 번씩 사용되고 중복은 나온 횟수만큼 유지됩니다.",
+      "배열을 오름차순으로 정렬하고 l은 처음, r은 끝에 둡니다. l≤r인 동안 a[r]을 출력하고 r을 왼쪽으로 옮긴 뒤, 여전히 l≤r이면 a[l]을 출력하고 l을 오른쪽으로 옮기기를 포인터가 교차할 때까지 반복합니다."
+    ],
+    "vi": [
+      "Mỗi bước lấy phần tử lớn nhất hoặc nhỏ nhất còn lại; khi mảng đã được sắp xếp, hai phần tử này luôn nằm ở hai đầu của đoạn còn lại.",
+      "Sau khi sắp xếp, giữ đoạn chưa dùng giữa con trỏ trái và con trỏ phải, và luân phiên lấy giá trị lớn nhất từ đầu phải và nhỏ nhất từ đầu trái; mọi phần tử được dùng đúng một lần, và các giá trị trùng lặp được giữ đủ số lần xuất hiện.",
+      "Sắp xếp mảng tăng dần với l ở đầu và r ở cuối; khi l≤r, in a[r] và dịch r sang trái, rồi nếu vẫn l≤r thì in a[l] và dịch l sang phải, cho đến khi hai con trỏ vượt nhau."
     ]
   },
   "explanationEn": "## Approach\n\nAfter sorting, use two pointers to alternately take the largest at the right end and the smallest at the left end until they meet.\n\n## Proof of correctness\n\nThe two ends of the sorted range are exactly the largest and smallest of all unused elements; after each step removes the required end, the remaining range is still sorted, so by induction every position follows the required order and no element is used twice.\n\n## Complexity\n\nTime O(n log n), output space O(n)."

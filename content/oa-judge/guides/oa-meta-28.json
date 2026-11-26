@@ -13,6 +13,21 @@
       "Once the two lists are combined, the fact that each list was non-overlapping on its own no longer helps; this is plain interval merging, and touching endpoints count as overlapping.",
       "Put all n+m intervals together, sort them by start, and sweep left to right while keeping the segment currently being merged: an interval whose start does not exceed that segment's right end joins it.",
       "Take the sorted intervals one by one: if the result is empty or the start is greater than the right end of the last segment, open a new segment; otherwise set the last segment's right end to the larger of the two right ends. Print the number of segments, then each segment's ends on its own line; with both lists empty, print just 0."
+    ],
+    "ja": [
+      "2 つのリストを合わせると、各リストが単独で重ならないという性質はもう役に立ちません。通常の区間マージの問題であり、端点が接している場合も重なりとみなします。",
+      "n+m 個の区間をすべてまとめて開始位置でソートし、左から右へ走査しながら、現在マージ中の区間を保持します。開始位置がその区間の右端以下の区間は、そこに加わります。",
+      "ソート済みの区間を 1 つずつ取り、結果が空であるか開始位置が最後の区間の右端より大きければ新しい区間を始め、そうでなければ最後の区間の右端を、2 つの右端の大きい方にします。区間の個数を出力し、続けて各区間の両端を 1 行ずつ出力します。両方のリストが空なら 0 だけを出力します。"
+    ],
+    "ko": [
+      "두 리스트를 합친 뒤에는 각 리스트가 따로 겹치지 않는다는 사실이 더 이상 도움이 되지 않습니다. 이는 평범한 구간 병합 문제이며 끝점이 맞닿는 것도 겹침으로 봅니다.",
+      "n+m개의 구간을 모두 모아 시작점으로 정렬한 뒤 왼쪽에서 오른쪽으로 훑으면서 현재 병합 중인 구간을 유지합니다. 시작점이 그 구간의 오른쪽 끝을 넘지 않는 구간은 거기에 합류합니다.",
+      "정렬된 구간을 하나씩 보면서, 결과가 비어 있거나 시작점이 마지막 구간의 오른쪽 끝보다 크면 새 구간을 엽니다. 그렇지 않으면 마지막 구간의 오른쪽 끝을 두 오른쪽 끝 중 큰 값으로 설정합니다. 구간의 개수를 출력한 뒤 각 구간의 양 끝을 한 줄씩 출력합니다. 두 리스트가 모두 비어 있으면 0만 출력합니다."
+    ],
+    "vi": [
+      "Sau khi kết hợp hai danh sách, việc mỗi danh sách riêng lẻ không chồng lấn không còn giúp ích nữa; đây chỉ là bài toán gộp khoảng thông thường, và các đầu mút chạm nhau được coi là chồng lấn.",
+      "Đặt cả n+m khoảng lại với nhau, sắp xếp theo điểm đầu, và quét từ trái sang phải trong khi giữ đoạn đang được gộp: khoảng nào có điểm đầu không vượt quá đầu mút phải của đoạn đó thì được nhập vào.",
+      "Lấy từng khoảng đã sắp xếp: nếu kết quả rỗng hoặc điểm đầu lớn hơn đầu mút phải của đoạn cuối cùng, mở một đoạn mới; ngược lại đặt đầu mút phải của đoạn cuối bằng giá trị lớn hơn trong hai đầu mút phải. In số đoạn, rồi in hai đầu mút của mỗi đoạn trên một dòng riêng; nếu cả hai danh sách đều rỗng, chỉ in 0."
     ]
   },
   "explanationEn": "## Approach\n\nSort all intervals by start and maintain the current merged segment: when the new start does not exceed the current right end, extend the right end; otherwise start a new segment.\n\n## Proof of correctness\n\nAfter sorting, if the new start is greater than the current right end, no later interval can fill that gap either, so the current segment can be output as final. Otherwise the two segments intersect, and their union runs from the leftmost start to the larger right end, so merging neither loses nor adds covered positions.\n\n## Complexity\n\nTime O((n+m)log(n+m)), space O(n+m)."

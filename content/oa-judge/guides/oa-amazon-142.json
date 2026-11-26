@@ -13,6 +13,21 @@
       "Sort each player's three values as a < b < c. To win two rounds, the best arrangement is to put your two largest values against the opponent's two smallest.",
       "So X beats Y exactly when X's b is greater than Y's a and X's c is greater than Y's b. To beat everyone else, compare against the maximum a and the maximum b over all players; including yourself does not matter, because your own b > a and c > b always hold.",
       "Read each row of three values and sort it, tracking maxA, the largest a over all rows, and maxB, the largest b; then count the rows with b > maxA and c > maxB and print the count."
+    ],
+    "ja": [
+      "各プレイヤーの 3 つの値を a < b < c にソートします。2 ラウンドに勝つ最良の並べ方は、自分の大きいほうの 2 つの値を、相手の小さいほうの 2 つの値にぶつけることです。",
+      "したがって、X が Y に勝つのは、X の b が Y の a より大きく、X の c が Y の b より大きいときに限ります。全員に勝つには、全プレイヤーの a の最大値と b の最大値と比べればよく、自分自身を含めても問題ありません。自分の b > a と c > b は常に成り立つからです。",
+      "3 つの値の各行を読んでソートし、すべての行の a の最大値 maxA と b の最大値 maxB を記録します。その後、b > maxA かつ c > maxB の行を数えて出力します。"
+    ],
+    "ko": [
+      "각 선수의 세 값을 a < b < c로 정렬합니다. 두 라운드를 이기려면 자신의 가장 큰 두 값을 상대의 가장 작은 두 값과 맞붙이는 배치가 최선입니다.",
+      "따라서 X가 Y를 이기는 것은 X의 b가 Y의 a보다 크고 X의 c가 Y의 b보다 큰 경우, 그리고 그 경우에만입니다. 다른 모든 선수를 이기려면 모든 선수의 a의 최댓값과 b의 최댓값과 비교하면 됩니다. 자기 자신이 포함되어도 상관없는데, 자신의 b > a와 c > b는 항상 성립하기 때문입니다.",
+      "세 값으로 된 각 행을 읽어 정렬하면서, 모든 행에서 가장 큰 a인 maxA와 가장 큰 b인 maxB를 추적합니다. 그런 다음 b > maxA이고 c > maxB인 행의 개수를 세어 출력합니다."
+    ],
+    "vi": [
+      "Sắp xếp ba giá trị của mỗi người chơi thành a < b < c. Để thắng hai vòng, cách sắp xếp tốt nhất là đặt hai giá trị lớn nhất của bạn đối đầu với hai giá trị nhỏ nhất của đối thủ.",
+      "Vì vậy X thắng Y chính xác khi b của X lớn hơn a của Y và c của X lớn hơn b của Y. Để thắng mọi người khác, hãy so với giá trị a lớn nhất và b lớn nhất trên mọi người chơi; việc tính cả chính mình không ảnh hưởng, vì b > a và c > b của bản thân luôn đúng.",
+      "Đọc từng hàng ba giá trị và sắp xếp nó, theo dõi maxA, a lớn nhất trên mọi hàng, và maxB, b lớn nhất; sau đó đếm các hàng có b > maxA và c > maxB rồi in số đếm."
     ]
   },
   "explanationEn": "## Approach\n\nSort each player's values as a < b < c; a player can beat another if their own b is greater than the other's a and their own c is greater than the other's b. So precompute the maximum of all a and of all b, then filter.\n\n## Correctness\n\nTo win two rounds, the most favorable plan is to match your two largest values against the opponent's two smallest; the sorted greedy condition is exactly bX > aY and cX > bY, and no other pairing can relax it. To beat every opponent, take the maximum of the opponents' thresholds. Including your own thresholds changes nothing, because your own b > a and c > b hold automatically.\n\n## Complexity\n\nTime O(n), space O(n)."

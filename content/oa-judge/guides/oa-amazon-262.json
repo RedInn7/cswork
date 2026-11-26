@@ -13,6 +13,21 @@
       "How high the last element can go is limited in two ways: starting from 1 it can rise by at most 1 per step, and each value can only be decreased, never increased. Since the order is free, first decide how the values should be arranged.",
       "Sort the array in ascending order and process it from left to right, keeping the largest value the current position can take: it cannot exceed its own original value, and it cannot be more than 1 above the previous position. Pushing this greedy through gives the answer at the last position.",
       "Sort; set the current value to 0; for each value v, set the current value to the smaller of v and the current value plus 1; after the loop, print the current value. Since v ≥ 1, the first element automatically becomes 1, and a single-element array gives 1."
+    ],
+    "ja": [
+      "末尾要素がどこまで大きくなれるかは 2 つの制約で決まります。1 から始めて 1 ステップにつき高々 1 しか増えないことと、各値は減らすことしかできず増やせないことです。順序は自由なので、まず値をどう並べるかを決めます。",
+      "配列を昇順にソートして左から順に処理し、現在の位置が取れる最大値を保ちます。それは元の値を超えず、直前の位置より 1 を超えて大きくなることもありません。この貪欲法を最後まで進めると、末尾の位置での答えが得られます。",
+      "ソートし、現在値を 0 とします。各値 v について、現在値を v と現在値+1 の小さい方に更新し、ループ後に現在値を出力します。v ≥ 1 なので先頭要素は自動的に 1 になり、要素が 1 つの配列では 1 になります。"
+    ],
+    "ko": [
+      "마지막 원소가 얼마나 커질 수 있는지는 두 가지로 제한됩니다. 1에서 시작해 한 칸마다 최대 1씩만 오를 수 있고, 각 값은 줄이기만 할 수 있고 늘릴 수는 없습니다. 순서는 자유이므로 먼저 값들을 어떻게 배치할지 정해야 합니다.",
+      "배열을 오름차순으로 정렬하고 왼쪽에서 오른쪽으로 처리하면서 현재 위치가 가질 수 있는 가장 큰 값을 유지합니다. 그 값은 자신의 원래 값을 넘을 수 없고, 이전 위치보다 1을 초과해 클 수 없습니다. 이 탐욕을 끝까지 적용하면 마지막 위치의 답이 나옵니다.",
+      "정렬하고, 현재 값을 0으로 둔 뒤, 각 값 v마다 현재 값을 v와 (현재 값 + 1) 중 작은 쪽으로 바꿉니다. 반복이 끝나면 현재 값을 출력합니다. v ≥ 1이므로 첫 원소는 자동으로 1이 되며, 원소가 하나뿐인 배열의 답은 1입니다."
+    ],
+    "vi": [
+      "Phần tử cuối có thể cao đến đâu bị giới hạn theo hai cách: xuất phát từ 1 thì mỗi bước tăng tối đa 1, và mỗi giá trị chỉ có thể giảm chứ không thể tăng. Vì thứ tự là tự do, trước hết hãy quyết định cách sắp xếp các giá trị.",
+      "Sắp xếp mảng tăng dần và xử lý từ trái sang phải, giữ giá trị lớn nhất mà vị trí hiện tại có thể nhận: nó không được vượt giá trị gốc của chính nó, và không được lớn hơn vị trí trước quá 1. Áp dụng tham lam này đến hết sẽ cho đáp án tại vị trí cuối.",
+      "Sắp xếp; đặt giá trị hiện tại bằng 0; với mỗi giá trị v, đặt giá trị hiện tại bằng min của v và giá trị hiện tại cộng 1; sau vòng lặp, in ra giá trị hiện tại. Vì v ≥ 1, phần tử đầu tự động thành 1, và mảng một phần tử cho kết quả 1."
     ]
   },
   "explanationEn": "## Approach\n\nAfter sorting, start from current=0 and update current=min(v,current+1) for each value v; the final current is the answer.\n\n## Proof of correctness\n\nA first element of 1 with each step rising by at most 1 gives a final value h≤n. For the sorted value a[i], for the final value to reach h>a[i], working backwards the last h−a[i] items must all be greater than a[i], but the original array has at most n−1−i items greater than a[i], so h≤a[i]+n−1−i. Unrolling the greedy recurrence shows the final value is exactly the minimum of n and all of these upper bounds; the construction never exceeds any original value, starts at 1, and has differences ≤1, so reaching this common upper bound makes it optimal.\n\n## Complexity\n\nTime O(n log n), space O(n)."

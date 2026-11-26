@@ -13,6 +13,21 @@
       "The later the day, the more roses are open, and the number of bouquets never decreases, so whether n bouquets can be made by day d is monotone in d and the answer can be binary searched.",
       "For a fixed day d, check greedily: count consecutive open roses from left to right, make a bouquet and reset whenever k are collected, and reset at every rose that is not open yet. A run of L consecutive open roses gives at most floor(L/k) bouquets, which the greedy achieves.",
       "If N < n * k print -1; otherwise binary search on [min(roses), max(roses)]: if mid is feasible set high = mid, else low = mid + 1; the feasibility check counts bouquets greedily as above and returns true once n are made; print low. Note that n * k may exceed the 32-bit range."
+    ],
+    "ja": [
+      "日が遅いほど咲いているバラは増え、作れる花束の数は減りません。したがって日 d までに n 個の花束が作れるかどうかは d について単調で、答えを二分探索できます。",
+      "日 d を固定して、貪欲に判定します。左から右へ連続して咲いているバラを数え、k 本集まるたびに花束を作ってリセットし、まだ咲いていないバラのところでもリセットします。連続して咲いている L 本の区間からは高々 floor(L/k) 個の花束が作れ、貪欲法はそれを達成します。",
+      "N < n * k なら -1 を出力します。そうでなければ [min(roses), max(roses)] で二分探索します。mid が達成可能なら high = mid、そうでなければ low = mid + 1 とします。判定は上記のとおり貪欲に花束を数え、n 個作れた時点で true を返します。最後に low を出力します。n * k は 32 ビット整数の範囲を超えることがあるので注意してください。"
+    ],
+    "ko": [
+      "날이 늦어질수록 핀 장미가 늘어나고 만들 수 있는 부케 수는 줄어들지 않으므로, d일까지 n개의 부케를 만들 수 있는지는 d에 대해 단조입니다. 따라서 답을 이분 탐색할 수 있습니다.",
+      "고정된 날 d에 대해 탐욕적으로 확인합니다. 왼쪽에서 오른쪽으로 연속해서 핀 장미를 세고, k송이가 모일 때마다 부케를 만들고 초기화하며, 아직 피지 않은 장미를 만나면 초기화합니다. 연속한 L송이의 핀 장미는 최대 floor(L/k)개의 부케를 만들 수 있으며 탐욕 방식이 이를 달성합니다.",
+      "N < n * k이면 -1을 출력합니다. 그렇지 않으면 [min(roses), max(roses)]에서 이분 탐색합니다. mid가 가능하면 high = mid, 아니면 low = mid + 1로 둡니다. 가능 여부 판정은 위와 같이 탐욕적으로 부케를 세며 n개가 만들어지면 즉시 true를 반환합니다. low를 출력합니다. n * k가 32비트 범위를 넘을 수 있음에 유의하세요."
+    ],
+    "vi": [
+      "Ngày càng muộn thì càng nhiều bông hồng nở, số bó không bao giờ giảm, nên việc có thể làm n bó vào ngày d là đơn điệu theo d và có thể tìm kiếm nhị phân đáp án.",
+      "Với một ngày d cố định, kiểm tra bằng tham lam: đếm các bông hồng nở liên tiếp từ trái sang phải, làm một bó và đặt lại mỗi khi gom đủ k bông, và đặt lại tại mỗi bông chưa nở. Một đoạn L bông nở liên tiếp cho tối đa floor(L/k) bó, và tham lam đạt được giá trị đó.",
+      "Nếu N < n * k thì in -1; ngược lại tìm kiếm nhị phân trên [min(roses), max(roses)]: nếu mid khả thi thì đặt high = mid, ngược lại low = mid + 1; hàm kiểm tra khả thi đếm số bó bằng tham lam như trên và trả về true khi đủ n bó; in low. Lưu ý n * k có thể vượt quá phạm vi 32 bit."
     ]
   },
   "explanationEn": "## Approach\n\nBinary search the earliest day d. To check a day, count consecutive open roses from left to right; every time k are collected, make one bouquet and reset the current run, and reset the run at every unopened rose. If at least n bouquets can be made, d is feasible, otherwise it is not. Feasibility is monotone in the day, so binary search the answer.\n\n## Correctness\n\nFor a fixed day d, a run of consecutive open roses of length L yields at most floor(L/k) non-overlapping bouquets; making a bouquet as soon as k roses are collected in the scan reaches exactly this number. Therefore the scan's bouquet count is at least n if and only if the day is feasible. A later day only adds open roses and never reduces the number of feasible bouquets, so feasibility is monotone; the first feasible day found by binary search is the earliest one. If N < n*k, there are not enough roses in total and the answer is -1.\n\n## Complexity\n\nLet N be the number of roses and D the largest bloom day. Time O(N log D), extra space O(N) (storing the input).\n\n## Sources and site conventions\n\nThe problem code of the fixed OAMaster snapshot, in all three languages, treats k as the number of adjacent roses per bouquet and n as the number of bouquets, and returns -1 when N < n*k; the verifiable upstream page is https://oamaster.com/docs/companies/google#49-min-days-to-bloom. LeetCode's description of the same problem reproduces the complete definition and exactly the same original example: https://leetcode.com/discuss/post/334191/google-oa-min-days-to-bloom/. The upstream publishes no constraints; the numeric ranges listed in the statement and the stdin/stdout protocol are additions by this site."

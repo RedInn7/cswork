@@ -13,6 +13,21 @@
       "The top k regions are simply the k largest viewer counts, regardless of their original positions.",
       "All queries use the same array, so a single sort can serve all of them.",
       "Sort the counts in descending order, build prefix sums prefix[k], and answer each query with prefix[k]; sums reach about 10^14, so use 64 bits."
+    ],
+    "ja": [
+      "上位 k 地域とは、元の位置に関係なく、単に視聴者数の大きい方から k 個のことです。",
+      "すべてのクエリが同じ配列を使うので、ソート 1 回で全クエリに対応できます。",
+      "視聴者数を降順にソートして接頭辞和 prefix[k] を作り、各クエリには prefix[k] で答えます。合計は約 10^14 に達するので 64 ビットを使います。"
+    ],
+    "ko": [
+      "상위 k개 지역은 원래 위치와 관계없이 가장 큰 k개의 시청자 수입니다.",
+      "모든 질의가 같은 배열을 쓰므로 한 번의 정렬로 모두 처리할 수 있습니다.",
+      "시청자 수를 내림차순으로 정렬하고 누적 합 prefix[k]를 만든 뒤, 각 질의에 prefix[k]로 답합니다. 합은 약 10^14까지 커지므로 64비트를 씁니다."
+    ],
+    "vi": [
+      "k vùng đứng đầu đơn giản là k giá trị người xem lớn nhất, bất kể vị trí ban đầu của chúng.",
+      "Mọi truy vấn dùng chung một mảng, nên chỉ cần một lần sắp xếp là phục vụ được tất cả.",
+      "Sắp xếp các giá trị theo thứ tự giảm dần, xây tổng tiền tố prefix[k], và trả lời mỗi truy vấn bằng prefix[k]; tổng có thể đạt khoảng 10^14 nên dùng 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nSort the viewer counts in descending order and build prefix sums; the k-th prefix is the answer to query k.\n\n## Proof of correctness\n\nIf a chosen set misses a larger value, swapping it in does not decrease the sum; repeated swaps give the first k values in descending order. So their sum is the maximum, and the prefix sums store that sum exactly.\n\n## Complexity\n\nO(n log n+q) time and O(n+q) space; the largest answer is 10^14."

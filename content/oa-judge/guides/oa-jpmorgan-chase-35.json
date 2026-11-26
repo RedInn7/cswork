@@ -13,6 +13,21 @@
       "The endpoints can reach 10^18, so checking numbers one by one is impossible; instead compute F(x), the count of numbers in [0, x] whose digits are all different, and answer F(end) − F(start − 1).",
       "Compute F(x) with digit DP: fill digits from the most significant position, with a state made of the position, the set of digits used, whether the number has started (leading zeros use no digit), and whether it is still tight against the bound.",
       "Memoize on (position, mask, started, tight); at each position try digits from 0 to the current limit: a 0 before the number starts keeps it unstarted and uses no digit; any other choice needs a digit not yet in the mask and marks the number as started; reaching the end counts 1 (the path that never starts is the number 0). For start = 0, F(−1) = 0."
+    ],
+    "ja": [
+      "端点は 10^18 に達するので、1 つずつ調べることは不可能です。代わりに F(x)（[0, x] の範囲で各桁がすべて異なる数の個数）を計算し、F(end) − F(start − 1) を答えとします。",
+      "F(x) は桁 DP で求めます。最上位の桁から埋めていき、状態は桁位置、使用済みの数字の集合、数が始まっているか（先頭の 0 は数字を使わない）、まだ上限に張り付いているか、です。",
+      "(位置, mask, started, tight) でメモ化します。各位置で 0 から現在の上限までの数字を試します。数が始まる前の 0 は未開始のままで数字を使わず、それ以外の選択は mask にない数字が必要で、数が開始済みになります。末尾に到達したら 1 を数えます（一度も始まらない経路が数 0 です）。start = 0 のときは F(−1) = 0 です。"
+    ],
+    "ko": [
+      "끝점이 10^18까지 될 수 있어 수를 하나씩 검사할 수 없습니다. 대신 [0, x]에서 모든 자릿수가 서로 다른 수의 개수 F(x)를 구하고, 답을 F(end) − F(start − 1)로 계산합니다.",
+      "F(x)는 자릿수 DP로 구합니다. 가장 높은 자리부터 숫자를 채우며, 상태는 위치, 사용한 숫자의 집합, 수가 시작되었는지 여부(앞쪽의 0은 숫자를 쓰지 않음), 아직 상한에 붙어 있는지 여부로 구성합니다.",
+      "(위치, mask, started, tight)로 메모이제이션합니다. 각 위치에서 0부터 현재 상한까지의 숫자를 시도합니다. 수가 시작되기 전의 0은 시작하지 않은 상태를 유지하고 숫자를 쓰지 않으며, 그 외의 선택은 mask에 아직 없는 숫자여야 하고 수를 시작된 상태로 표시합니다. 끝에 도달하면 1을 셉니다(한 번도 시작하지 않은 경로가 수 0입니다). start = 0이면 F(−1) = 0입니다."
+    ],
+    "vi": [
+      "Các đầu mút có thể lên tới 10^18 nên không thể kiểm tra từng số; thay vào đó hãy tính F(x), số lượng các số trong [0, x] có mọi chữ số khác nhau, và đáp án là F(end) − F(start − 1).",
+      "Tính F(x) bằng quy hoạch động theo chữ số: điền các chữ số từ vị trí cao nhất, với trạng thái gồm vị trí, tập các chữ số đã dùng, số đã bắt đầu hay chưa (các số 0 đứng đầu không dùng chữ số) và còn sát cận hay không.",
+      "Ghi nhớ theo (position, mask, started, tight); tại mỗi vị trí thử các chữ số từ 0 đến giới hạn hiện tại: chữ số 0 trước khi số bắt đầu giữ trạng thái chưa bắt đầu và không dùng chữ số; mọi lựa chọn khác cần một chữ số chưa có trong mask và đánh dấu số đã bắt đầu; đến cuối thì tính 1 (đường đi không bao giờ bắt đầu chính là số 0). Với start = 0, F(−1) = 0."
     ]
   },
   "explanationEn": "## Approach\n\nUse digit DP to count the valid numbers not exceeding a bound, then compute F(end)−F(start−1). The state is the position, the mask of used digits, whether the number has started, and whether it is tight against the bound; leading zeros do not use up a digit.\n\n## Proof of correctness\n\nEvery non-negative integer corresponds to a unique zero-padded representation of the same length. Zeros before the number starts are only placeholders; after it starts, every digit must not already appear in the mask, so the transitions generate exactly all representations with distinct digits, each exactly once. The path that never starts represents 0. The tight state guarantees the bound is not exceeded; each path that reaches the end is counted, and subtracting prefix counts gives the answer for the closed range.\n\n## Complexity\n\nO(log U·1024·10) time and O(log U·1024) space, without scanning the range number by number."

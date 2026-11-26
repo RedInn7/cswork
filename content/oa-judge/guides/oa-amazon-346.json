@@ -13,6 +13,21 @@
       "As the cut moves from left to right, only one character moves from the right part to the left part each time and every other letter stays the same, so there is no need to recount from scratch.",
       "Keep the 26 letter frequencies on each side and common, the number of letters present on both sides. When character c moves, only whether letter c appears on both sides can change.",
       "First count the whole string into the right frequencies. Then for each of the first n−1 characters c: if c was present on both sides, decrease common; add 1 on the left and subtract 1 on the right; if c is now present on both sides, increase common; if common>k, add 1 to the answer. Output the answer."
+    ],
+    "ja": [
+      "切れ目を左から右へ動かすとき、毎回右の部分から左の部分へ移るのは1文字だけで、ほかの文字は変わらないので、最初から数え直す必要はありません。",
+      "両側の 26 文字の頻度と、両側に存在する文字の数 common を保持します。文字 c が移るとき、変わりうるのは、文字 c が両側に存在するかどうかだけです。",
+      "まず文字列全体を右側の頻度に数えます。次に、最初の n−1 文字の各 c について、c が両側に存在していたなら common を減らし、左に 1 を加え、右から 1 を引きます。c がいま両側に存在するなら common を増やし、common>k なら答えに 1 を加えます。答えを出力します。"
+    ],
+    "ko": [
+      "분할 위치가 왼쪽에서 오른쪽으로 움직일 때마다 문자 하나만 오른쪽 부분에서 왼쪽 부분으로 옮겨가고 다른 문자는 모두 그대로이므로, 처음부터 다시 셀 필요가 없습니다.",
+      "양쪽의 26개 문자 빈도와, 양쪽에 모두 나타나는 문자의 수 common을 유지합니다. 문자 c가 옮겨질 때는 문자 c가 양쪽에 나타나는지 여부만 바뀔 수 있습니다.",
+      "먼저 전체 문자열을 오른쪽 빈도에 셉니다. 그다음 처음 n−1개의 문자 c에 대해: c가 양쪽에 있었다면 common을 줄이고, 왼쪽에 1을 더하고 오른쪽에서 1을 빼며, c가 이제 양쪽에 있으면 common을 늘리고, common>k이면 정답에 1을 더합니다. 정답을 출력합니다."
+    ],
+    "vi": [
+      "Khi điểm cắt dịch từ trái sang phải, mỗi lần chỉ có một ký tự chuyển từ phần phải sang phần trái và mọi chữ cái khác giữ nguyên, nên không cần đếm lại từ đầu.",
+      "Giữ 26 tần suất chữ cái ở mỗi phía và common, số chữ cái có mặt ở cả hai phía. Khi ký tự c được chuyển, chỉ việc chữ cái c có xuất hiện ở cả hai phía hay không là có thể thay đổi.",
+      "Trước hết đếm toàn bộ xâu vào các tần suất bên phải. Sau đó với mỗi ký tự c trong n−1 ký tự đầu tiên: nếu c từng có mặt ở cả hai phía thì giảm common; cộng 1 ở bên trái và trừ 1 ở bên phải; nếu giờ c có mặt ở cả hai phía thì tăng common; nếu common>k thì cộng 1 vào đáp án. In đáp án."
     ]
   },
   "explanationEn": "## Approach\n\nMaintain the 26 left and 26 right frequencies and the number of letters present on both sides. Each time a character moves from the right part to the left part, first subtract its old contribution to the intersection, then add its new contribution; only check the first n−1 cuts.\n\n## Proof of correctness\n\nMoving one character only changes whether that letter appears on the left and on the right; the intersection contributions of the other letters stay the same, so the maintained value always equals the size of the intersection of the two parts' character sets. Every cut with two non-empty parts is checked exactly once, and the strict comparison >k gives the exact count.\n\n## Complexity\n\nTime O(n), space O(26)."

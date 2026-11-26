@@ -13,6 +13,21 @@
       "A processor's profit depends only on how many neighbors were deployed before it. Orient every adjacent edge from the earlier deployment to the later one, and the profit depends only on each node's in-degree.",
       "No orientation of a chain has a cycle, so every orientation corresponds to some deployment order; the task becomes choosing a direction for each of the n - 1 edges to maximize the sum of no/one/both chosen by in-degree.",
       "DP from left to right with the state being the direction of the edge between the current node and its right neighbor: dp0 means the right neighbor goes first (adding 1 to the current node's in-degree), dp1 means the current node goes first. When node i is settled, its in-degree is the part from the left (1 if the previous state was dp1) plus the part from the right; the last node has no right neighbor, so take the better of the two states. For n = 1 the answer is no[0]."
+    ],
+    "ja": [
+      "プロセッサの利益は、それより前に配備された隣接プロセッサの数だけで決まります。隣り合う辺を、配備の早いほうから遅いほうへ向きづけると、利益は各ノードの入次数だけで決まります。",
+      "鎖のどの向きづけにも閉路はないので、どの向きづけも何らかの配備順に対応します。したがって課題は、n - 1 本の辺それぞれの向きを選んで、入次数に応じた no/one/both の合計を最大にすることになります。",
+      "左から右へ DP します。状態は、現在のノードと右隣の間の辺の向きです。dp0 は右隣が先（現在のノードの入次数に 1 を加える）、dp1 は現在のノードが先を意味します。ノード i が確定するとき、入次数は左からの分（直前の状態が dp1 なら 1）と右からの分の和です。最後のノードには右隣がないので、2 つの状態のうち良いほうを取ります。n = 1 の答えは no[0] です。"
+    ],
+    "ko": [
+      "프로세서의 이익은 그보다 먼저 배치된 이웃이 몇 개인지에만 달려 있습니다. 인접한 모든 간선을 먼저 배치된 쪽에서 나중에 배치된 쪽으로 향하게 하면, 이익은 각 노드의 진입 차수에만 달려 있습니다.",
+      "사슬에는 어떤 방향 부여에도 사이클이 없으므로 모든 방향 부여는 어떤 배치 순서에 대응합니다. 따라서 문제는 n - 1개의 간선 각각의 방향을 정해 진입 차수에 따라 선택되는 no/one/both의 합을 최대화하는 것이 됩니다.",
+      "왼쪽에서 오른쪽으로 DP를 하며 상태는 현재 노드와 오른쪽 이웃 사이 간선의 방향입니다. dp0은 오른쪽 이웃이 먼저(현재 노드의 진입 차수에 1을 더함), dp1은 현재 노드가 먼저를 뜻합니다. 노드 i가 확정되면 그 진입 차수는 왼쪽에서 오는 부분(이전 상태가 dp1이면 1)과 오른쪽에서 오는 부분의 합입니다. 마지막 노드는 오른쪽 이웃이 없으므로 두 상태 중 더 좋은 것을 취합니다. n = 1이면 답은 no[0]입니다."
+    ],
+    "vi": [
+      "Lợi nhuận của một bộ xử lý chỉ phụ thuộc vào số hàng xóm đã được triển khai trước nó. Định hướng mỗi cạnh liền kề từ lần triển khai sớm hơn đến lần muộn hơn, và lợi nhuận chỉ phụ thuộc vào bậc vào của mỗi nút.",
+      "Không cách định hướng nào của một chuỗi có chu trình, nên mỗi cách định hướng ứng với một thứ tự triển khai nào đó; bài toán trở thành chọn hướng cho mỗi trong n - 1 cạnh để cực đại hóa tổng no/one/both được chọn theo bậc vào.",
+      "DP từ trái sang phải với trạng thái là hướng của cạnh giữa nút hiện tại và hàng xóm bên phải: dp0 nghĩa là hàng xóm bên phải đi trước (cộng 1 vào bậc vào của nút hiện tại), dp1 nghĩa là nút hiện tại đi trước. Khi nút i được chốt, bậc vào của nó là phần từ bên trái (1 nếu trạng thái trước là dp1) cộng phần từ bên phải; nút cuối không có hàng xóm bên phải, nên lấy trạng thái tốt hơn trong hai trạng thái. Với n = 1 đáp án là no[0]."
     ]
   },
   "explanationEn": "## Approach\n\nOrient each adjacent edge from earlier to later (earlier->later); any orientation of a chain is acyclic and can be realized topologically. Run a two-state DP over edge directions, and once the current node is complete, collect its profit according to its number of incoming edges.\n\n## Correctness\n\nEach deployment order produces a unique edge orientation, and the profit depends only on the in-degree of each node. Conversely, no orientation of an undirected chain has a directed cycle, so every orientation has a topological deployment order. Enumerating the two directions of the left and right edges covers all achievable profits; the DP fixes the direction of the right edge and takes the best prefix, and after the last node is settled the result is optimal.\n\n## Complexity\n\nTime O(n), extra space O(1) not counting the input."

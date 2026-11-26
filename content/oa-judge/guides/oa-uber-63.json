@@ -13,6 +13,21 @@
       "The winner of each match is the player with the smaller rank number in that pair, so each round's new list depends only on the previous list, and direct simulation is enough.",
       "In each round pair up the list, take the smaller value of each pair, and let the last player advance automatically when the count is odd, keeping the original order for the next round. The count roughly halves every round, so the total work over all rounds is linear.",
       "While the list has more than one player: for indices 0, 2, 4, ... take min(a[i], a[i+1]), keeping a[i] alone if i + 1 is out of range, and record a line with the new list's size and members. After the loop, print the number of rounds R and then each recorded line. For n = 1, R is 0."
+    ],
+    "ja": [
+      "各試合の勝者はそのペアの中で順位の番号が小さい方です。したがって各ラウンドの新しいリストは前のリストだけで決まり、直接シミュレートすれば十分です。",
+      "各ラウンドでリストを 2 つずつ組にし、各ペアの小さい方を取ります。人数が奇数なら最後の選手が自動的に勝ち上がり、元の順序は次のラウンドでも保たれます。人数は毎ラウンドほぼ半分になるので、全ラウンドの合計の作業は線形です。",
+      "リストの人数が 1 を超える間、添字 0, 2, 4, ... について min(a[i], a[i+1]) を取り、i + 1 が範囲外なら a[i] だけを残します。そして新しいリストの大きさとメンバーを 1 行として記録します。ループの後、ラウンド数 R を出力し、続いて記録した各行を出力します。n = 1 のとき R は 0 です。"
+    ],
+    "ko": [
+      "각 경기의 승자는 그 쌍에서 순위 번호가 더 작은 선수이므로, 각 라운드의 새 목록은 이전 목록에만 의존하며 직접 시뮬레이션으로 충분합니다.",
+      "매 라운드 목록을 쌍으로 묶어 각 쌍의 작은 값을 취하고, 선수 수가 홀수이면 마지막 선수가 자동으로 진출하며, 다음 라운드를 위해 원래 순서를 유지합니다. 선수 수는 매 라운드 대략 절반이 되므로 모든 라운드의 총 작업량은 선형입니다.",
+      "목록에 선수가 둘 이상인 동안 인덱스 0, 2, 4, ...에 대해 min(a[i], a[i+1])을 취하고, i + 1이 범위를 벗어나면 a[i]만 둡니다. 그리고 새 목록의 크기와 구성원을 한 줄로 기록합니다. 반복이 끝나면 라운드 수 R을 출력한 뒤 기록한 줄을 각각 출력합니다. n = 1이면 R은 0입니다."
+    ],
+    "vi": [
+      "Người thắng mỗi trận là người chơi có số hạng nhỏ hơn trong cặp đó, nên danh sách mới của mỗi vòng chỉ phụ thuộc vào danh sách trước, và mô phỏng trực tiếp là đủ.",
+      "Ở mỗi vòng ghép cặp danh sách, lấy giá trị nhỏ hơn của mỗi cặp, và để người chơi cuối cùng tự động đi tiếp khi số lượng lẻ, giữ nguyên thứ tự ban đầu cho vòng sau. Số lượng giảm xấp xỉ một nửa mỗi vòng, nên tổng công việc qua mọi vòng là tuyến tính.",
+      "Khi danh sách còn hơn một người chơi: với các chỉ số 0, 2, 4, ... lấy min(a[i], a[i+1]), giữ riêng a[i] nếu i + 1 nằm ngoài biên, và ghi lại một dòng gồm kích thước và các thành viên của danh sách mới. Sau vòng lặp, in số vòng R rồi từng dòng đã ghi. Với n = 1, R là 0."
     ]
   },
   "explanationEn": "## Approach\n\nIn each round take the minimum of each pair, keep a leftover element as is, record the new list, and continue.\n\n## Correctness\n\nThe smallest rank in each pair is the winner of that match, and producing them in the original order matches the arrangement of the next round. Applying the rule round by round gives every correct list by induction; the number of players roughly halves each round, so the total work is linear.\n\n## Complexity\n\nTime O(n), space O(n), including all the output lists."

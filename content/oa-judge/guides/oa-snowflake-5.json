@@ -13,6 +13,21 @@
       "Count substrings by their right end: a valid substring ending at position i cannot start at or before the latest consonant, and its start must be far enough left that all five vowels appear at least once.",
       "Track the latest position of each of the five vowels and the latest consonant. For a right end i, the valid starts are exactly the positions after the latest consonant and no later than the minimum of the five latest vowel positions.",
       "Initialize last[a, e, i, o, u] = -1, bad = -1, answer = 0. For each character, update its last entry if it is a vowel, otherwise set bad = i; then add max(0, min(last) - bad) to answer. The answer can be large, so use a 64-bit integer."
+    ],
+    "ja": [
+      "部分文字列を右端で数えます。位置 i で終わる有効な部分文字列は、直近の子音以前から始まることはできず、5 つの母音がすべて少なくとも 1 回現れるよう、十分左から始まる必要があります。",
+      "5 つの母音それぞれの直近の位置と、直近の子音を保持します。右端 i に対して、有効な開始位置は、直近の子音より後ろで、かつ 5 つの母音の直近位置の最小値以前の位置にちょうど一致します。",
+      "last[a, e, i, o, u] = -1、bad = -1、answer = 0 で初期化します。各文字について、母音なら対応する last を更新し、そうでなければ bad = i とします。その後 max(0, min(last) - bad) を answer に加えます。答えは大きくなりうるので、64 ビット整数を使ってください。"
+    ],
+    "ko": [
+      "오른쪽 끝을 기준으로 부분 문자열을 셉니다. 위치 i에서 끝나는 유효한 부분 문자열은 가장 최근 자음의 위치 이전이나 그 위치에서 시작할 수 없고, 다섯 모음이 모두 한 번 이상 나타나도록 충분히 왼쪽에서 시작해야 합니다.",
+      "다섯 모음 각각의 가장 최근 위치와 가장 최근 자음을 추적합니다. 오른쪽 끝 i에 대해 유효한 시작 위치는 정확히 가장 최근 자음 뒤이면서 다섯 모음의 가장 최근 위치의 최솟값 이하인 위치들입니다.",
+      "last[a, e, i, o, u] = -1, bad = -1, answer = 0으로 초기화합니다. 각 문자에 대해 모음이면 해당 last 항목을 갱신하고, 아니면 bad = i로 둡니다. 그런 다음 max(0, min(last) - bad)를 answer에 더합니다. 답이 커질 수 있으므로 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Đếm các xâu con theo đầu mút phải: một xâu con hợp lệ kết thúc tại vị trí i không thể bắt đầu tại hoặc trước phụ âm gần nhất, và điểm bắt đầu của nó phải đủ xa về bên trái để cả năm nguyên âm xuất hiện ít nhất một lần.",
+      "Theo dõi vị trí gần nhất của từng nguyên âm trong năm nguyên âm và phụ âm gần nhất. Với đầu mút phải i, các điểm bắt đầu hợp lệ chính xác là các vị trí sau phụ âm gần nhất và không muộn hơn giá trị nhỏ nhất trong năm vị trí nguyên âm gần nhất.",
+      "Khởi tạo last[a, e, i, o, u] = -1, bad = -1, answer = 0. Với mỗi ký tự, cập nhật mục last của nó nếu là nguyên âm, ngược lại đặt bad = i; sau đó cộng max(0, min(last) - bad) vào answer. Đáp án có thể lớn, nên dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nTrack the latest position of each of the five vowels and of the latest consonant. For each right end, the number of valid starts is min(latest vowel positions) - latest consonant position, or 0 if that is negative.\n\n## Correctness\n\nA valid start must come after the latest consonant and be no later than the latest position of every vowel; these two conditions give exactly one closed interval. After counting it, every substring is classified uniquely by its right end.\n\n## Complexity\n\nO(n) time and O(1) space."

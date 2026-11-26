@@ -13,6 +13,21 @@
       "The number of mutual friends of u and w is exactly the number of paths u - v - w through a middle person v. Everyone has at most 15 friends, so enumerating friends of friends is cheap.",
       "For each u, walk every two-hop path and count the endpoints w that are neither u nor a friend of u; if there is a positive-score candidate, take the highest score and then the smallest ID. If there is none, every non-friend has 0 mutual friends, so take the smallest non-friend ID.",
       "Store the graph as adjacency lists. For u, mark its friends, count two-hop hits while remembering which nodes were touched, choose the best, and reset only those nodes. The fallback scan starts at 0 and skips u and its friends, checking at most 17 IDs; if it reaches n, print -1."
+    ],
+    "ja": [
+      "u と w の共通の友達の数は、中間の人 v を経由する u - v - w という経路の本数にちょうど等しくなります。全員の友達は最大 15 人なので、友達の友達を列挙しても負荷は小さくて済みます。",
+      "各 u について、2 ホップの経路をすべてたどり、u 本人でも u の友達でもない終点 w の回数を数えます。スコアが正の候補があれば、スコアが最大のもの、同点なら ID が最小のものを選びます。なければ、友達以外のすべての人の共通の友達は 0 人なので、友達以外で ID が最小の人を選びます。",
+      "グラフは隣接リストで保持します。u について、友達に印を付け、2 ホップで到達した回数を数えながら、触れたノードを記録し、最良の候補を選んで、触れたノードだけをリセットします。フォールバックの走査は 0 から始め、u とその友達を飛ばし、確認する ID は多くても 17 個です。n に達したら -1 を出力します。"
+    ],
+    "ko": [
+      "u와 w의 공통 친구 수는 중간 사람 v를 거치는 경로 u - v - w의 개수와 정확히 같습니다. 모든 사람의 친구가 최대 15명이므로 친구의 친구를 나열하는 것은 비용이 작습니다.",
+      "각 u에 대해 두 단계 경로를 모두 따라가며, u도 u의 친구도 아닌 끝점 w의 횟수를 셉니다. 점수가 양수인 후보가 있으면 가장 높은 점수, 그다음 가장 작은 ID를 고릅니다. 없다면 모든 비친구의 공통 친구 수가 0이므로 가장 작은 비친구 ID를 고릅니다.",
+      "그래프를 인접 리스트로 저장합니다. u에 대해 친구를 표시하고, 방문한 노드를 기억하면서 두 단계 도달 횟수를 센 뒤 최선을 고르고, 방문했던 노드만 초기화합니다. 대체 탐색은 0부터 시작해 u와 u의 친구를 건너뛰며 최대 17개의 ID만 확인하고, n에 도달하면 -1을 출력합니다."
+    ],
+    "vi": [
+      "Số bạn chung của u và w đúng bằng số đường đi u - v - w qua một người trung gian v. Mỗi người có tối đa 15 bạn, nên việc liệt kê bạn của bạn rất rẻ.",
+      "Với mỗi u, đi qua mọi đường hai bước và đếm các điểm cuối w không phải u và không phải bạn của u; nếu có ứng viên điểm dương thì chọn điểm cao nhất, rồi ID nhỏ nhất. Nếu không có, mọi người chưa là bạn đều có 0 bạn chung, nên chọn ID nhỏ nhất trong số người chưa là bạn.",
+      "Lưu đồ thị dưới dạng danh sách kề. Với u, đánh dấu các bạn của nó, đếm số lần chạm qua hai bước đồng thời nhớ những nút đã chạm, chọn kết quả tốt nhất, rồi chỉ đặt lại những nút đó. Lượt quét dự phòng bắt đầu từ 0 và bỏ qua u cùng các bạn của nó, kiểm tra tối đa 17 ID; nếu chạm tới n thì in -1."
     ]
   },
   "explanationEn": "## Approach\n\nEnumerate the friends of each person's friends to count two-hop occurrences, excluding the person and their direct friends; if there is no candidate with a positive score, scan for the smallest ID not in the set formed by the person and their friends.\n\n## Proof of correctness\n\nEach path u-v-w corresponds to exactly one mutual friend v, and the absence of multi-edges guarantees that the count equals the number of mutual friends. Every positive-score candidate appears, so choosing by score and then by ID is exact; a non-friend that never appears has 0 mutual friends and can only be optimal when there is no positive-score candidate, in which case the smallest such ID is chosen directly.\n\n## Complexity\n\nO(n*15^2) time and O(n+m) space; the zero-score fallback checks at most 17 IDs."

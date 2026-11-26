@@ -13,6 +13,21 @@
       "A rook can only capture rooks in its row or column. Treat each row and each column as a vertex and each rook as an edge joining its row and column; rooks that can affect each other end up in the same connected component.",
       "Captures never merge two components, and the rooks of a component can never all be eaten, so every component that contains rooks keeps at least 1; conversely, each component can be captured down to exactly 1. The answer is the number of components that contain rooks.",
       "Build a union-find of size n+m (row i is i, column j is n+j). While reading the board, for every 1 merge row i with column n+j and mark that the row has a rook. Finally count the distinct roots among the rows that have rooks (an empty board gives 0)."
+    ],
+    "ja": [
+      "ルークが取れるのは、自分の行または列にあるルークだけです。各行と各列を頂点、各ルークをその行と列を結ぶ辺とみなすと、互いに影響しうるルークは同じ連結成分に属します。",
+      "取る操作で2つの成分が合流することはなく、成分内のルークがすべて取られてしまうこともありません。したがって、ルークを含む各成分には少なくとも 1 個が残ります。逆に、各成分はちょうど 1 個まで減らせます。答えは、ルークを含む成分の数です。",
+      "大きさ n+m の union-find を作ります(行 i は i、列 j は n+j)。盤面を読みながら、1 のたびに行 i と列 n+j を併合し、その行にルークがあることを記録します。最後に、ルークのある行の中で異なる根の数を数えます(空の盤面なら 0 です)。"
+    ],
+    "ko": [
+      "룩은 자신의 행이나 열에 있는 룩만 잡을 수 있습니다. 각 행과 각 열을 정점으로, 각 룩을 그 행과 열을 잇는 간선으로 보면, 서로 영향을 줄 수 있는 룩들은 같은 연결 요소에 속합니다.",
+      "잡기는 두 요소를 합치지 않으며, 한 요소의 룩이 모두 잡힐 수는 없으므로 룩이 있는 요소는 각각 최소 1개가 남습니다. 반대로 각 요소는 정확히 1개까지 줄일 수 있습니다. 정답은 룩을 포함한 요소의 개수입니다.",
+      "크기 n+m의 유니온 파인드를 만듭니다(행 i는 i, 열 j는 n+j). 보드를 읽으면서 1마다 행 i와 열 n+j를 합치고 그 행에 룩이 있음을 표시합니다. 마지막으로 룩이 있는 행들 중 서로 다른 루트의 수를 셉니다(빈 보드는 0입니다)."
+    ],
+    "vi": [
+      "Một quân xe chỉ có thể ăn các quân xe cùng hàng hoặc cùng cột. Coi mỗi hàng và mỗi cột là một đỉnh, mỗi quân xe là một cạnh nối hàng và cột của nó; các quân xe có thể tác động lẫn nhau sẽ nằm trong cùng một thành phần liên thông.",
+      "Việc ăn quân không bao giờ gộp hai thành phần, và các quân xe của một thành phần không bao giờ bị ăn hết, nên mọi thành phần có quân xe đều giữ lại ít nhất 1; ngược lại, mỗi thành phần có thể bị ăn xuống đúng 1. Đáp án là số thành phần có chứa quân xe.",
+      "Dựng union-find kích thước n+m (hàng i là i, cột j là n+j). Khi đọc bàn cờ, với mỗi ô 1 hãy gộp hàng i với cột n+j và đánh dấu hàng đó có quân xe. Cuối cùng đếm số gốc khác nhau trong các hàng có quân xe (bàn cờ trống cho 0)."
     ]
   },
   "explanationEn": "## Approach\n\nTreat rows and columns as the vertices of a bipartite graph, with each rook as an edge joining its row and its column. Merge all occupied positions with a union-find and count the connected components that contain edges.\n\n## Proof of correctness\n\nA capture is equivalent to deleting the edge of the moving rook while the captured rook's position remains; an original connected component never merges with another one, and a non-empty component can never be deleted entirely, so each keeps at least one rook. The reverse construction: if there is a cycle, deleting one edge of the cycle keeps it connected; if a tree has several edges, deleting a leaf edge keeps the remaining edges connected. Every deleted edge shares a row or column with some kept edge, so that rook can capture the nearest rook in that direction, which removes exactly its starting position from the board and obeys the no-jumping rule. Therefore each component can be reduced step by step to a single rook, reaching the lower bound.\n\n## Complexity\n\nTime O(nm·α(n+m)), extra space O(n+m); the reference reads row by row and does not store all rook coordinates."

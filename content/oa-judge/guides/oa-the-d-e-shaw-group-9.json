@@ -13,6 +13,21 @@
       "The cost of an empty plot is its distance to the nearest police station; buying capacity plots of least total cost means picking the nearest non-station integer coordinates in increasing order of distance.",
       "Treat all stations as sources and run a multi-source shortest path on the number line: each station's neighbouring cells have distance 1, and expanding from a cell to either side adds one. A min-heap always yields the cell with the smallest distance first.",
       "Push s - 1 and s + 1 of every station with distance 1 and put the station coordinates into an occupied set. Repeatedly pop (d, pos): if pos is occupied (a station or already bought), skip it; otherwise buy it, add d to the answer, count it, and push pos - 1 and pos + 1 with distance d + 1, until capacity plots are bought. Use 64-bit integers for coordinates."
+    ],
+    "ja": [
+      "空き区画のコストは最も近い警察署までの距離です。合計コスト最小で capacity 個の区画を買うには、署でない整数座標を距離の小さい順に選べばよいことになります。",
+      "すべての署を始点として、数直線上で多始点最短経路を考えます。各署の隣のマスの距離は 1 で、マスから左右どちらかに広げると距離が 1 増えます。最小ヒープを使えば、距離が最小のマスを常に先に取り出せます。",
+      "すべての署について s - 1 と s + 1 を距離 1 で push し、署の座標を使用済み集合に入れます。(d, pos) を繰り返し pop し、pos が使用済み(署または購入済み)ならスキップし、そうでなければ購入して d を答えに加え、個数を数え、pos - 1 と pos + 1 を距離 d + 1 で push します。これを capacity 個購入するまで続けます。座標には 64 ビット整数を使ってください。"
+    ],
+    "ko": [
+      "빈 땅의 비용은 가장 가까운 경찰서까지의 거리입니다. 총비용이 최소가 되도록 capacity개의 땅을 사려면, 경찰서가 아닌 정수 좌표를 거리가 가까운 순서대로 고르면 됩니다.",
+      "모든 경찰서를 시작점으로 하여 수직선 위에서 다중 시작점 최단 경로를 실행합니다. 각 경찰서의 이웃 칸은 거리 1이고, 한 칸에서 양옆으로 확장할 때마다 1씩 늘어납니다. 최소 힙은 항상 거리가 가장 작은 칸을 먼저 꺼내 줍니다.",
+      "모든 경찰서의 s - 1과 s + 1을 거리 1로 push하고, 경찰서 좌표를 점유 집합에 넣습니다. (d, pos)를 반복해서 pop하되, pos가 점유되어 있으면(경찰서이거나 이미 구매함) 건너뜁니다. 그렇지 않으면 구매하여 d를 답에 더하고 개수를 세며, pos - 1과 pos + 1을 거리 d + 1로 push합니다. 이를 capacity개를 살 때까지 반복합니다. 좌표에는 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Chi phí của một mảnh đất trống là khoảng cách đến đồn gần nhất; mua capacity mảnh với tổng chi phí nhỏ nhất nghĩa là chọn các tọa độ nguyên không phải đồn theo thứ tự khoảng cách tăng dần.",
+      "Xem tất cả các đồn là nguồn và chạy đường đi ngắn nhất đa nguồn trên trục số: các ô kề mỗi đồn có khoảng cách 1, và mở rộng từ một ô sang một bên cộng thêm một. Min-heap luôn trả về ô có khoảng cách nhỏ nhất trước.",
+      "Push s - 1 và s + 1 của mọi đồn với khoảng cách 1 và đưa tọa độ các đồn vào một tập occupied. Lặp lại việc pop (d, pos): nếu pos đã bị chiếm (là đồn hoặc đã mua) thì bỏ qua; ngược lại mua nó, cộng d vào đáp án, tăng biến đếm, và push pos - 1, pos + 1 với khoảng cách d + 1, cho đến khi mua đủ capacity mảnh. Dùng số nguyên 64 bit cho tọa độ."
     ]
   },
   "explanationEn": "## Approach\n\nStart from the integer coordinates immediately left and right of every police station and push them into a min-heap with distance 1. Each time, pop the nearest coordinate that is neither a police station nor already bought, add its cost to the answer, and push its left and right neighbours with distance `d+1`. A set deduplicates bought coordinates. The min-heap guarantees plots are chosen in increasing order of distance until capacity plots are chosen.\n\n## Correctness\n\nThe two neighbouring coordinates of each police station have distance 1 and serve as search sources. For any non-station integer coordinate, move cell by cell along the number line from its nearest police station toward it; if another police station lies in between, that station has also been expanded as a source with its neighbouring coordinates. So the coordinate is generated from a closer, unblocked coordinate, and when it is first popped by distance, that distance is its distance to the nearest police station. The min-heap always chooses the smallest cost among all currently reachable plots not yet bought, so repeating this capacity times selects exactly the capacity distinct legal coordinates of least cost.\n\n## Complexity\n\nLet n be the number of police stations and k the number of plots bought. Initially 2n positions are pushed, and each purchase pushes at most two neighbours; each valid coordinate is bought only once, so the total number of heap operations is O(n + k), with O((n + k) log(n + k)) time and O(n + k) space. This site has k <= 50000, and the worst-case answer is 625025000, which fits in an int."

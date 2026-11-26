@@ -13,6 +13,21 @@
       "First merge the intervals into disjoint segments; the minimum gap can only occur between two adjacent segments. Intervals sharing an endpoint also count as intersecting.",
       "Sort by start and scan from left to right, keeping the end of the current merged segment. If the next interval starts no later than that end, merge it; otherwise the current segment is finished, and start minus end is one gap.",
       "Sort; set end to the first interval's end and the answer to \"none\". For each later interval: if its start ≤ end, set end to the larger of the two ends; otherwise update the minimum gap with start − end and set end to this interval's end. If no gap ever appeared, output −1."
+    ],
+    "ja": [
+      "まず区間を互いに素な線分に併合します。最小の隙間が生じるのは隣り合う2つの線分の間だけです。端点を共有する区間も交差とみなします。",
+      "開始位置でソートして左から右へ走査し、現在の併合済み線分の終了位置を保持します。次の区間の開始位置がその終了位置以下なら併合し、そうでなければ現在の線分は完成していて、開始位置 − 終了位置 が1つの隙間になります。",
+      "ソートし、end を最初の区間の終了位置に、答えを「なし」にします。以降の各区間について、開始位置 ≤ end なら end を2つの終了位置の大きい方にします。そうでなければ最小の隙間を 開始位置 − end で更新し、end をこの区間の終了位置にします。隙間が一度も現れなければ -1 を出力します。"
+    ],
+    "ko": [
+      "먼저 구간을 서로소인 구간들로 병합합니다. 최소 간격은 인접한 두 구간 사이에서만 나올 수 있습니다. 끝점을 공유하는 구간도 겹치는 것으로 봅니다.",
+      "시작 기준으로 정렬하고 왼쪽에서 오른쪽으로 훑으며 현재 병합된 구간의 끝을 유지합니다. 다음 구간의 시작이 그 끝보다 늦지 않으면 병합하고, 그렇지 않으면 현재 구간이 끝난 것이며 시작 − 끝이 하나의 간격입니다.",
+      "정렬한 뒤 end를 첫 구간의 끝으로, 답을 \"없음\"으로 둡니다. 이후 각 구간에 대해 시작 ≤ end이면 end를 두 끝 중 큰 값으로 두고, 그렇지 않으면 최소 간격을 시작 − end로 갱신하고 end를 이 구간의 끝으로 둡니다. 간격이 한 번도 나오지 않았으면 −1을 출력합니다."
+    ],
+    "vi": [
+      "Trước tiên gộp các khoảng thành các đoạn rời nhau; khoảng trống nhỏ nhất chỉ có thể xuất hiện giữa hai đoạn kề nhau. Các khoảng chung một điểm đầu mút cũng được tính là giao nhau.",
+      "Sắp xếp theo điểm đầu và quét từ trái sang phải, giữ điểm cuối của đoạn gộp hiện tại. Nếu khoảng tiếp theo bắt đầu không muộn hơn điểm cuối đó thì gộp nó; ngược lại đoạn hiện tại đã kết thúc, và start trừ end là một khoảng trống.",
+      "Sắp xếp; đặt end bằng điểm cuối của khoảng đầu tiên và đáp án là \"chưa có\". Với mỗi khoảng sau đó: nếu start ≤ end thì đặt end bằng giá trị lớn hơn trong hai điểm cuối; ngược lại cập nhật khoảng trống nhỏ nhất bằng start − end và đặt end bằng điểm cuối của khoảng này. Nếu chưa từng xuất hiện khoảng trống nào, in −1."
     ]
   },
   "explanationEn": "## Approach\n\nSort by start and scan, maintaining the end of the current merged segment; when a start is greater than it, record the gap and begin a new segment.\n\n## Proof of correctness\n\nAfter sorting, if the next interval's start is ≤ the current end, it intersects the current segment and merging creates no gap; otherwise every later start is even larger and cannot connect back to the current segment, so the gap found is exactly the distance between two adjacent final segments. The distance between non-adjacent segments is never smaller, so taking the minimum over adjacent segments during the scan gives the minimum gap over all segments.\n\n## Complexity\n\nTime O(n log n), space O(n)."

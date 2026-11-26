@@ -13,6 +13,21 @@
       "A group's median needs another member at least as large as itself; so the j-th largest group median needs at least 2j values that are not smaller than it.",
       "Hence the j-th largest median cannot exceed the 2j-th largest value overall, and a construction reaching all these bounds at once is optimal. Throughputs are positive, so more groups are better: use floor(n/3) groups.",
       "Sort descending; group i (from 0) uses a[2i] as its maximum and a[2i+1] as its median, and gets one of the smallest remaining values; the answer is the sum of a[2i+1] for i = 0..floor(n/3)-1, in 64-bit."
+    ],
+    "ja": [
+      "組の中央値には、それ以上の大きさを持つ別のメンバーが必要です。したがって、j 番目に大きい組の中央値には、それより小さくない値が少なくとも 2j 個必要です。",
+      "よって j 番目に大きい中央値は、全体で 2j 番目に大きい値を超えられず、これらの上界をすべて同時に達成する構成が最適です。スループットは正なので、組は多い方がよく、floor(n/3) 組を使います。",
+      "降順にソートします。（0 から数えて）組 i は a[2i] を最大値、a[2i+1] を中央値とし、残りの最も小さい値の 1 つを 3 人目とします。答えは i = 0..floor(n/3)-1 についての a[2i+1] の和で、64 ビットで計算します。"
+    ],
+    "ko": [
+      "그룹의 중앙값에는 그 자신 이상인 다른 구성원이 하나 필요합니다. 따라서 j번째로 큰 그룹 중앙값에는 그보다 작지 않은 값이 최소 2j개 필요합니다.",
+      "따라서 j번째로 큰 중앙값은 전체에서 2j번째로 큰 값을 넘을 수 없고, 이 모든 상한을 동시에 달성하는 구성이 최적입니다. 처리량은 양수이므로 그룹이 많을수록 좋으니 floor(n/3)개의 그룹을 씁니다.",
+      "내림차순으로 정렬합니다. 그룹 i(0부터)는 a[2i]를 최댓값으로, a[2i+1]을 중앙값으로 쓰고, 남은 가장 작은 값 중 하나를 얻습니다. 답은 i = 0..floor(n/3)-1에 대한 a[2i+1]의 합이며 64비트로 계산합니다."
+    ],
+    "vi": [
+      "Trung vị của một nhóm cần một thành viên khác lớn ít nhất bằng nó; vì vậy trung vị nhóm lớn thứ j cần ít nhất 2j giá trị không nhỏ hơn nó.",
+      "Do đó trung vị lớn thứ j không thể vượt quá giá trị lớn thứ 2j trong toàn bộ, và một cách xây dựng đạt tất cả các cận này cùng lúc là tối ưu. Các thông lượng đều dương, nên nhiều nhóm hơn thì tốt hơn: dùng floor(n/3) nhóm.",
+      "Sắp xếp giảm dần; nhóm i (từ 0) dùng a[2i] làm giá trị lớn nhất và a[2i+1] làm trung vị, và nhận một trong các giá trị nhỏ nhất còn lại; đáp án là tổng của a[2i+1] với i = 0..floor(n/3)-1, dùng 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nSort in descending order. Take floor(n/3) groups, choosing the 2nd, 4th, 6th, ... largest values as the medians, each with the larger value paired with it as the maximum, and use the remaining small values as the third members.\n\n## Proof of correctness\n\nThe j-th largest group median needs at least 2j values not smaller than it (each group's median and maximum), so it is at most the 2j-th largest value overall. The construction attains all of these upper bounds at once, and enough values remain to give every group a minimum.\n\n## Complexity\n\nTime O(n log n), space O(n)."

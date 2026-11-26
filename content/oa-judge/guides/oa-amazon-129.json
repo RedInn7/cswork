@@ -13,6 +13,21 @@
       "Which positions are available in each round is fully determined by the initial 01 string and the number of rounds passed, not by what you pick; so picking the largest available value at every step never hurts later picks.",
       "A position unlocks in the round equal to its distance from the nearest initial 1 on its left; positions left of the first 1 are never available. Record the largest newly unlocked value per round, then for each round take the maximum unlocked so far.",
       "Scan left to right: reset the distance to 0 at a 1, otherwise add one (positions before the first 1 count as infinitely far), and when the distance is below n update unlock[distance] with a[i]. If unlock[0] is 0 (everything starts at 0) print -1; otherwise at each step (while step < n) first raise the running maximum with unlock[step], then output the running maximum, m values in total."
+    ],
+    "ja": [
+      "各ラウンドでどの位置が使えるかは、最初の 01 文字列と経過したラウンド数だけで完全に決まり、何を選ぶかには依存しません。したがって、毎ステップで使える最大値を選んでも、後の選択に悪影響はありません。",
+      "位置は、その左にある最も近い元の 1 までの距離に等しいラウンドで解除されます。最初の 1 より左の位置は決して使えません。ラウンドごとに新たに解除された最大値を記録し、各ラウンドで、そこまでに解除された最大値を取ります。",
+      "左から右へ走査します。1 のところで距離を 0 にリセットし、そうでなければ 1 加えます（最初の 1 より前の位置は無限に遠いものとして扱います）。距離が n 未満のときは unlock[distance] を a[i] で更新します。unlock[0] が 0 なら（すべてが 0 から始まる場合）-1 を出力します。そうでなければ、各ステップで（step < n の間）まず unlock[step] で現在の最大値を更新し、その最大値を出力します。これを m 個出力します。"
+    ],
+    "ko": [
+      "각 라운드에서 어느 위치를 사용할 수 있는지는 초기 01 문자열과 지난 라운드 수로만 정해지고 무엇을 골랐는지와 무관합니다. 따라서 매 단계에서 사용할 수 있는 가장 큰 값을 고르는 것이 이후 선택에 해가 되지 않습니다.",
+      "위치가 풀리는 라운드는 왼쪽에서 가장 가까운 초기 1까지의 거리와 같고, 첫 번째 1의 왼쪽 위치는 영원히 사용할 수 없습니다. 라운드마다 새로 풀린 가장 큰 값을 기록한 뒤, 각 라운드에서 그때까지 풀린 값의 최댓값을 취합니다.",
+      "왼쪽에서 오른쪽으로 훑으며 1을 만나면 거리를 0으로 초기화하고 아니면 1을 더합니다(첫 번째 1 이전의 위치는 무한히 먼 것으로 봅니다). 거리가 n 미만이면 unlock[distance]를 a[i]로 갱신합니다. unlock[0]이 0이면(모두 0으로 시작) -1을 출력하고, 그렇지 않으면 각 단계에서(step < n인 동안) 먼저 unlock[step]으로 누적 최댓값을 갱신한 뒤 그 누적 최댓값을 출력하여 총 m개의 값을 출력합니다."
+    ],
+    "vi": [
+      "Những vị trí nào khả dụng ở mỗi vòng hoàn toàn được xác định bởi xâu 01 ban đầu và số vòng đã trôi qua, không phụ thuộc vào thứ bạn chọn; vì vậy chọn giá trị khả dụng lớn nhất ở mỗi bước không bao giờ gây hại cho các lần chọn sau.",
+      "Một vị trí được mở khóa ở vòng bằng khoảng cách của nó đến số 1 ban đầu gần nhất bên trái; các vị trí bên trái số 1 đầu tiên không bao giờ khả dụng. Ghi lại giá trị lớn nhất mới được mở khóa theo từng vòng, rồi với mỗi vòng lấy giá trị lớn nhất đã mở khóa cho đến giờ.",
+      "Quét từ trái sang phải: đặt lại khoảng cách về 0 tại số 1, ngược lại cộng một (các vị trí trước số 1 đầu tiên coi như cách vô hạn), và khi khoảng cách nhỏ hơn n thì cập nhật unlock[distance] bằng a[i]. Nếu unlock[0] bằng 0 (mọi thứ bắt đầu bằng 0) thì in -1; ngược lại ở mỗi bước (khi step < n) trước tiên nâng giá trị lớn nhất đang chạy bằng unlock[step], rồi in giá trị lớn nhất đang chạy, tổng cộng m giá trị."
     ]
   },
   "explanationEn": "## Approach\n\nScan to compute, for each element, its distance to the nearest initial 1 on its left, which is the round in which it unlocks; record the maximum per round, then for each round keep the maximum of the values unlocked so far.\n\n## Correctness\n\nHow the available set changes in each round is fully determined by the initial state and the time, and is not affected by the picks. So choosing the current maximum never harms any later choice, and the position-by-position greedy is optimal lexicographically. The distance is exactly the number of rounds the synchronous rightward spread needs, and positions to the left of the first initial 1 are never available.\n\n## Complexity\n\nTime O(n+m), space O(n+m)."

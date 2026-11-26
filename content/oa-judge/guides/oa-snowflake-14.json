@@ -13,6 +13,21 @@
       "Which jumps are possible next depends only on the current cell and whether the direction is locked, and to which direction: a previous jump longer than 1 locks its direction, a jump of length 1 frees it. Reaching E also requires the last jump to have length 1, i.e., landing on E in the free state.",
       "Treat (row, column, lock state) as graph nodes, n*m*5 states in total; every jump costs 1, so a plain BFS gives the minimum number of steps.",
       "BFS from the free state at S; for each popped state try the allowed directions (all four when free, only one when locked), walk along that direction cell by cell (walls may be jumped over), and every non-wall cell is a landing spot: distance 1 gives the free state, longer distances lock that direction. Print the step count the first time E is popped in the free state, or -1 if the queue runs out."
+    ],
+    "ja": [
+      "次にどのジャンプが可能かは、現在のマスと、方向が固定されているか、固定されているならどの方向かだけで決まります。直前のジャンプが 1 より長ければその方向に固定され、長さ 1 のジャンプで解除されます。E への到達には、最後のジャンプの長さが 1 であること、つまり固定なしの状態で E に着地することも必要です。",
+      "(行, 列, 固定の状態) をグラフの頂点とすると、状態は全部で n*m*5 個です。どのジャンプも コスト 1 なので、単純な BFS で最小のステップ数が得られます。",
+      "S の固定なしの状態から BFS します。取り出した状態ごとに、許される方向（固定なしなら 4 方向すべて、固定されていればその 1 方向）を試し、その方向に 1 マスずつ進みます（壁は飛び越えられます）。壁でないマスはすべて着地先になり、距離 1 なら固定なしの状態、それより長ければその方向に固定された状態になります。E が固定なしの状態で最初に取り出されたときのステップ数を出力し、キューが尽きたら -1 を出力してください。"
+    ],
+    "ko": [
+      "다음에 가능한 점프는 현재 칸과 방향이 고정되어 있는지, 고정되어 있다면 어느 방향인지에만 달려 있습니다. 직전 점프가 1보다 길면 그 방향이 고정되고, 길이 1의 점프는 이를 해제합니다. E에 도달하려면 마지막 점프의 길이도 1이어야 하므로, 자유 상태에서 E에 착지해야 합니다.",
+      "(행, 열, 고정 상태)를 그래프의 노드로 보면 상태는 총 n*m*5개입니다. 모든 점프의 비용이 1이므로 단순 BFS로 최소 이동 횟수를 구할 수 있습니다.",
+      "S의 자유 상태에서 BFS를 시작합니다. 꺼낸 상태마다 허용되는 방향(자유일 때는 네 방향 모두, 고정일 때는 한 방향)으로 칸을 하나씩 따라가며(벽은 넘을 수 있음), 벽이 아닌 모든 칸이 착지 후보가 됩니다. 거리가 1이면 자유 상태, 더 길면 그 방향으로 고정된 상태가 됩니다. E가 자유 상태로 처음 꺼내졌을 때의 이동 횟수를 출력하고, 큐가 비면 -1을 출력합니다."
+    ],
+    "vi": [
+      "Các bước nhảy có thể thực hiện tiếp theo chỉ phụ thuộc vào ô hiện tại và việc hướng có bị khóa hay không, cũng như khóa theo hướng nào: bước nhảy trước dài hơn 1 khóa hướng của nó, bước nhảy độ dài 1 giải phóng nó. Đến E còn đòi hỏi bước nhảy cuối có độ dài 1, tức là đáp xuống E ở trạng thái tự do.",
+      "Coi (hàng, cột, trạng thái khóa) là các nút của đồ thị, tổng cộng n*m*5 trạng thái; mỗi bước nhảy tốn 1, nên BFS thông thường cho số bước tối thiểu.",
+      "BFS từ trạng thái tự do tại S; với mỗi trạng thái được lấy ra, thử các hướng được phép (cả bốn khi tự do, chỉ một khi bị khóa), đi dọc theo hướng đó từng ô một (có thể nhảy qua tường), và mọi ô không phải tường đều là điểm đáp: khoảng cách 1 cho trạng thái tự do, khoảng cách dài hơn khóa hướng đó. In số bước ở lần đầu tiên E được lấy ra ở trạng thái tự do, hoặc -1 nếu hàng đợi cạn."
     ]
   },
   "explanationEn": "## Approach\n\nRun BFS on states made of the coordinates and the locked direction (plus a free state), enumerating the allowed directions and all valid landing cells; a long jump locks the direction, and a short jump makes the state free.\n\n## Correctness\n\nThe state contains exactly all the history that affects future legal moves. Each edge corresponds to one legal jump, and conversely every legal move is enumerated. All edge weights are 1, so the first time BFS visits the target in the free state gives the minimum number of steps. Accepting only the free state ensures that the last step has length 1.\n\n## Complexity\n\nTime O(nm(n+m)), space O(nm)."

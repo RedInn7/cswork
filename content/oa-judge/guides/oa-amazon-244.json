@@ -13,6 +13,21 @@
       "Damaged substrings = all n(n+1)/2 substrings minus the all-good substrings without *; every all-good substring lies inside one contiguous good segment, and the damaged count only grows as attacks proceed.",
       "Splitting good segments forward is awkward, so undo the attacks in reverse: each undo turns a position good and merges it with the good segments on both sides; the new all-good substrings all pass through that position, and there are (L+1)(R+1) of them.",
       "If m=0 output 1; start from the all-damaged state with n(n+1)/2 damaged substrings; for t from n down to 1 undo attackOrder[t]: read the lengths L and R of the good segments next to it, write the new length L+R+1 at both ends of the merged segment, and subtract (L+1)(R+1); as soon as the count drops below m, output t. Use 64-bit integers."
+    ],
+    "ja": [
+      "破損した部分文字列 = n(n+1)/2 個の全部分文字列から、* を含まない、すべて良い文字の部分文字列を引いたものです。すべて良い部分文字列は 1 つの連続した良い区間の内側にあり、破損数は攻撃が進むにつれて増える一方です。",
+      "良い区間を順方向に分割していくのは面倒です。そこで攻撃を逆順に取り消します。取り消すたびに 1 つの位置が良くなり、両側の良い区間と結合します。新たなすべて良い部分文字列はすべてその位置を通り、その個数は (L+1)(R+1) です。",
+      "m=0 なら 1 を出力します。破損が n(n+1)/2 個のすべて破損した状態から始め、t を n から 1 まで動かして attackOrder[t] を取り消します。隣接する良い区間の長さ L と R を読み、結合した区間の両端に新しい長さ L+R+1 を書き込み、(L+1)(R+1) を引きます。個数が m を下回ったらすぐに t を出力します。64 ビット整数を使ってください。"
+    ],
+    "ko": [
+      "손상된 부분 문자열 = 전체 n(n+1)/2개의 부분 문자열 − *가 없는 전부 정상인 부분 문자열입니다. 전부 정상인 부분 문자열은 모두 하나의 연속 정상 구간 안에 있으며, 공격이 진행될수록 손상된 수는 늘어나기만 합니다.",
+      "정상 구간을 정방향으로 쪼개는 것은 번거로우므로 공격을 역순으로 되돌립니다. 되돌릴 때마다 한 위치가 정상이 되어 양쪽의 정상 구간과 합쳐지며, 새로 생기는 전부 정상인 부분 문자열은 모두 그 위치를 지나고 개수는 (L+1)(R+1)입니다.",
+      "m=0이면 1을 출력합니다. 손상된 부분 문자열이 n(n+1)/2개인 전부 손상 상태에서 시작해, t를 n에서 1까지 내려가며 attackOrder[t]를 되돌립니다. 이웃한 정상 구간의 길이 L과 R을 읽고, 합쳐진 구간 양 끝에 새 길이 L+R+1을 기록하며 (L+1)(R+1)을 뺍니다. 개수가 m 미만으로 떨어지는 즉시 t를 출력합니다. 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Xâu con bị hỏng = tất cả n(n+1)/2 xâu con trừ đi các xâu con hoàn toàn tốt không chứa *; mỗi xâu con hoàn toàn tốt nằm gọn trong một đoạn tốt liên tiếp, và số xâu con bị hỏng chỉ tăng khi các cuộc tấn công diễn ra.",
+      "Tách các đoạn tốt theo chiều xuôi khá rắc rối, nên hoàn tác các cuộc tấn công theo chiều ngược: mỗi lần hoàn tác đưa một vị trí về tốt và gộp nó với các đoạn tốt ở hai bên; các xâu con hoàn toàn tốt mới đều đi qua vị trí đó, và có (L+1)(R+1) xâu như vậy.",
+      "Nếu m=0 thì in 1; bắt đầu từ trạng thái hỏng toàn bộ với n(n+1)/2 xâu con bị hỏng; với t từ n xuống 1 hoàn tác attackOrder[t]: đọc độ dài L và R của các đoạn tốt kề nó, ghi độ dài mới L+R+1 tại hai đầu của đoạn đã gộp, và trừ đi (L+1)(R+1); ngay khi số đếm tụt xuống dưới m thì in t. Dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nUndo the attacks in reverse order, turning every position from bad back to good. Maintain the length of each good contiguous segment at its two ends; when a position is activated, read the left and right lengths L and R, and the newly created all-good substrings number exactly (L+1)(R+1). When the damaged count drops from ≥m to <m, the time before that undo is the answer.\n\n## Proof of correctness\n\nEvery all-good substring belongs to exactly one all-good segment, and the number of damaged substrings equals the total number of substrings minus the number of all-good substrings. A substring newly created by activating a position must pass through that position, with L+1 and R+1 choices of extension on the left and right, so the increment formula is exact. If a left or right neighbor is good, it must be a segment boundary, so the boundary lengths can be merged and updated directly. In forward time the damaged count increases monotonically, so in reverse time the state just before it first drops below the threshold is exactly the earliest time that meets it.\n\n## Complexity\n\nTime O(n), space O(n); substring counts use 64-bit integers."

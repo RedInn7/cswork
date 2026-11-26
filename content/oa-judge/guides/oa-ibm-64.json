@@ -13,6 +13,21 @@
       "For each log only the users involved matter, not the amount; one log involves at most two different users, and a self-transfer counts only once.",
       "Use a hash map to count how many logs each user is involved in: add one for the sender, and add one for the recipient if it differs from the sender. Filter the users that reach the threshold after counting.",
       "Read n and threshold; for every log add one to the sender's count and, if the recipient differs from the sender, one to the recipient's count; take the users whose count is at least threshold, sort them by the integer value of the ID; print the count, then one ID per line."
+    ],
+    "ja": [
+      "各ログで重要なのは関与したユーザーだけで、金額は関係ありません。1つのログに関与する異なるユーザーは最大2人で、自分自身への送金は1回しか数えません。",
+      "ハッシュマップで各ユーザーが関与したログの件数を数えます。送信者に 1 を加え、受信者が送信者と異なれば受信者にも 1 を加えます。数え終わったら threshold に達したユーザーを絞り込みます。",
+      "n と threshold を読み込み、各ログについて送信者の件数に 1 を加え、受信者が送信者と異なれば受信者の件数にも 1 を加えます。件数が threshold 以上のユーザーを取り出し、ID の整数値でソートして、個数を出力し、続けて ID を1行に1つずつ出力します。"
+    ],
+    "ko": [
+      "각 로그에서는 금액이 아니라 관여한 사용자만 중요합니다. 한 로그에 관여하는 서로 다른 사용자는 최대 두 명이며, 자기 자신에게 보낸 경우는 한 번만 셉니다.",
+      "해시 맵으로 각 사용자가 관여한 로그 수를 셉니다. 보낸 사용자에게 1을 더하고, 받은 사용자가 보낸 사용자와 다르면 받은 사용자에게도 1을 더합니다. 센 뒤에 threshold에 도달한 사용자를 거릅니다.",
+      "n과 threshold를 읽습니다. 로그마다 보낸 사용자의 횟수에 1을 더하고, 받은 사용자가 다르면 받은 사용자의 횟수에도 1을 더합니다. 횟수가 threshold 이상인 사용자를 골라 ID의 정수 값으로 정렬한 뒤, 개수를 출력하고 한 줄에 ID 하나씩 출력합니다."
+    ],
+    "vi": [
+      "Với mỗi bản ghi chỉ quan tâm những người dùng liên quan chứ không phải số tiền; một bản ghi liên quan tới nhiều nhất hai người dùng khác nhau, và tự chuyển khoản chỉ tính một lần.",
+      "Dùng bảng băm đếm mỗi người dùng liên quan đến bao nhiêu bản ghi: cộng một cho người gửi, và cộng một cho người nhận nếu khác người gửi. Sau khi đếm xong, lọc những người dùng đạt ngưỡng.",
+      "Đọc n và threshold; với mỗi bản ghi cộng một vào số đếm của người gửi và, nếu người nhận khác người gửi, cộng một vào số đếm của người nhận; lấy những người dùng có số đếm ít nhất threshold, sắp xếp theo giá trị số nguyên của ID; in số lượng, rồi mỗi dòng một ID."
     ]
   },
   "explanationEn": "## Approach\n\nFor each log, add one for each distinct user involved, keep the IDs whose count reaches the threshold, and sort them as integers.\n\n## Proof of correctness\n\nEach user is incremented exactly once for every log that involves them; for a self-transfer, the equality check avoids counting twice. So the count equals the number of logs involved, the threshold filter is exact, and integer sorting gives the required output order.\n\n## Complexity\n\nTime O(n + u log u), space O(u), where u ≤ 2n."

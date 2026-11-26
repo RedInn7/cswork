@@ -13,6 +13,21 @@
       "Requests at different locations can never share a group, so each location can be solved on its own and the group counts added up. At one location, the earliest request must share a group with something, and the best choice is to take the requests right after it that are within 10 minutes.",
       "Sort each location's requests by time. Starting from the earliest ungrouped request, take at most two more requests after it whose time differs from it by at most 10 minutes, form a group, and continue from the next ungrouped request. Arrange the output order at the end.",
       "Convert each time to minutes and group requests by the full location string, keeping the input index and the ID. Sort each location by (minute, index); open a group at a pointer start and extend it until it has 3 requests or the time gap exceeds 10. Sort the IDs inside each group, and key each group by its smallest input index. Print the number of groups, then the groups in ascending key order, each as its size followed by its IDs."
+    ],
+    "ja": [
+      "場所が異なるリクエストは同じグループに入れないので、場所ごとに独立に解いてグループ数を足し合わせれば十分です。1 つの場所では、最も早いリクエストは何かと同じグループになる必要があり、最善の選び方は、その直後で 10 分以内のリクエストを取ることです。",
+      "各場所のリクエストを時刻でソートします。まだグループになっていない最も早いリクエストから始めて、その時刻との差が 10 分以内の後続のリクエストを最大 2 件取ってグループにし、次のグループ未所属のリクエストから続けます。出力の順序は最後に整えます。",
+      "各時刻を分に変換し、場所の完全な文字列ごとにリクエストをまとめ、入力添字と ID を保持します。場所ごとに (分, 添字) でソートし、ポインタ start でグループを開いて、3 件になるか時刻差が 10 を超えるまで伸ばします。グループ内の ID をソートし、各グループを入力添字の最小値をキーにします。グループ数を出力し、続いてキーの昇順にグループを、サイズと ID の順で出力します。"
+    ],
+    "ko": [
+      "장소가 다른 요청은 절대 같은 그룹이 될 수 없으므로, 장소마다 따로 풀고 그룹 수를 더하면 됩니다. 한 장소에서 가장 이른 요청은 무언가와 같은 그룹이어야 하고, 가장 좋은 선택은 그 바로 뒤에서 10분 이내에 있는 요청들을 가져가는 것입니다.",
+      "각 장소의 요청을 시각순으로 정렬합니다. 아직 묶이지 않은 가장 이른 요청에서 시작해, 시각 차이가 10분 이하인 뒤따르는 요청을 최대 2개까지 더해 그룹을 만들고, 다음 미분류 요청에서 계속합니다. 출력 순서는 마지막에 정리합니다.",
+      "각 시각을 분 단위로 바꾸고, 장소 문자열 전체를 키로 요청을 묶으면서 입력 인덱스와 ID를 함께 보관합니다. 장소마다 (분, 인덱스) 순으로 정렬하고, 포인터 start에서 그룹을 열어 요청이 3개가 되거나 시각 차이가 10을 넘기 전까지 확장합니다. 각 그룹 안의 ID를 정렬하고, 그룹은 가장 작은 입력 인덱스를 키로 삼습니다. 그룹 수를 출력한 뒤 키의 오름차순으로 각 그룹을 크기와 ID 순으로 출력합니다."
+    ],
+    "vi": [
+      "Các yêu cầu ở những địa điểm khác nhau không bao giờ chung nhóm được, nên mỗi địa điểm có thể giải riêng và cộng số nhóm lại. Tại một địa điểm, yêu cầu sớm nhất phải chung nhóm với một số yêu cầu, và lựa chọn tốt nhất là lấy các yêu cầu ngay sau nó trong vòng 10 phút.",
+      "Sắp xếp các yêu cầu của mỗi địa điểm theo thời gian. Bắt đầu từ yêu cầu sớm nhất chưa vào nhóm, lấy tối đa hai yêu cầu nữa phía sau có thời gian chênh lệch với nó không quá 10 phút, lập thành một nhóm, rồi tiếp tục từ yêu cầu chưa vào nhóm kế tiếp. Sắp xếp thứ tự đầu ra ở bước cuối.",
+      "Đổi mỗi thời gian ra phút và nhóm các yêu cầu theo xâu địa điểm đầy đủ, giữ lại chỉ số đầu vào và ID. Sắp xếp mỗi địa điểm theo (phút, chỉ số); mở một nhóm tại con trỏ start và mở rộng cho đến khi nhóm có 3 yêu cầu hoặc khoảng cách thời gian vượt quá 10. Sắp xếp các ID trong mỗi nhóm, và lấy chỉ số đầu vào nhỏ nhất của nhóm làm khóa. In số nhóm, rồi các nhóm theo thứ tự khóa tăng dần, mỗi nhóm gồm kích thước và các ID."
     ]
   },
   "explanationEn": "## Approach\n\nSplit by location, and sort each location's requests by time. Each time, start from the earliest request not yet grouped and take at most two following requests whose time difference is ≤10. Finally arrange the IDs inside each group and the groups by original index.\n\n## Correctness\n\nAt any location, the group of the earliest request can be swapped into one containing the earliest at most 3 compatible requests: putting earlier requests into the earliest group does not exceed the window, and putting a swapped-out later request back into a later group does not break that group's existing time span. If the earliest group is not full and a compatible request exists, moving it in does not increase the number of groups. Hence there is an optimal solution that starts with this greedy group, and induction applies to the remaining requests; different locations cannot share groups, so their optima add up.\n\n## Complexity\n\nTime O(n log n), space O(n)."

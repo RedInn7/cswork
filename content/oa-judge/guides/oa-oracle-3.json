@@ -13,6 +13,21 @@
       "The order has two levels: first the number of 1 bits in the binary form, then the value itself for equal counts, and duplicates are all kept.",
       "Map each number to the pair key (number of 1 bits, value); an ordinary ascending sort by this key gives exactly the required priority.",
       "Read the array and sort with a comparator that compares the popcount first and the value second (or pack the popcount into the high bits and the value into the low bits of one integer and sort those), then print all n numbers in order, separated by spaces."
+    ],
+    "ja": [
+      "順序は2段階です。まず2進表記の 1 のビット数、同数なら値そのもので比べ、重複はすべて保持します。",
+      "各数を (1 のビット数, 値) のペアのキーに対応させます。このキーによる通常の昇順ソートで、求められる優先順位がそのまま得られます。",
+      "配列を読み込み、まず popcount、次に値を比較する比較関数でソートします（または、popcount を上位ビット、値を下位ビットに詰めて1つの整数にし、それをソートします）。その後、n 個すべての数を順にスペース区切りで出力します。"
+    ],
+    "ko": [
+      "순서는 두 단계입니다. 먼저 이진 표기에서 1 비트의 개수, 같으면 값 자체로 정렬하며 중복은 모두 유지합니다.",
+      "각 수를 (1 비트의 개수, 값)이라는 쌍 키로 바꿉니다. 이 키로 일반적인 오름차순 정렬을 하면 필요한 우선순위가 정확히 나옵니다.",
+      "배열을 읽고 popcount를 먼저, 값을 그다음으로 비교하는 비교 함수로 정렬합니다(또는 popcount를 상위 비트에, 값을 하위 비트에 담은 정수 하나로 만들어 정렬해도 됩니다). 그런 다음 n개의 수를 순서대로 공백으로 구분해 출력합니다."
+    ],
+    "vi": [
+      "Thứ tự có hai cấp: trước hết là số bit 1 trong dạng nhị phân, rồi với số bit bằng nhau thì theo chính giá trị, và mọi phần tử trùng đều được giữ lại.",
+      "Ánh xạ mỗi số thành cặp khóa (số bit 1, giá trị); một phép sắp xếp tăng dần thông thường theo khóa này cho đúng thứ tự ưu tiên cần có.",
+      "Đọc mảng và sắp xếp bằng một hàm so sánh xét popcount trước và giá trị sau (hoặc đóng gói popcount vào các bit cao và giá trị vào các bit thấp của một số nguyên rồi sắp xếp các số đó), sau đó in cả n số theo thứ tự, cách nhau bằng dấu cách."
     ]
   },
   "explanationEn": "## Approach\n\nUse (number of 1 bits, integer value) as the sort key.\n\n## Proof of correctness\n\nThis pair key compares exactly by the problem's priority. Sorting keeps every input element, including duplicates, so the output is the unique required order.\n\n## Complexity\n\nO(n log n) time, O(n) space."

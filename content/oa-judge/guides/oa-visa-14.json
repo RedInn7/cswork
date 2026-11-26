@@ -13,6 +13,21 @@
       "The numbers 1..16 sum to 136, so the missing value of each 4×4 square is 136 minus the sum of its other 15 cells.",
       "Squares move as whole units and keep their internal layout: compute each square's missing value, then sort by (missing value, original square index) so equal missing values keep their original left-to-right order.",
       "Square b occupies columns 4b..4b+3; sum its cells other than −1 to get the missing value and fill the −1 with it; stable-sort the square indices, then print the 4 rows, each concatenating the 4 numbers of every square in the new order."
+    ],
+    "ja": [
+      "1..16 の合計は 136 なので、各 4×4 の正方形の欠損値は 136 から他の 15 マスの合計を引いたものです。",
+      "正方形は内部のレイアウトを保ったまま丸ごと移動します。各正方形の欠損値を求め、(欠損値, 元の正方形の番号) でソートすれば、欠損値が等しいものは元の左右の順序を保ちます。",
+      "正方形 b は列 4b..4b+3 を占めます。-1 以外のマスを合計して欠損値を求め、-1 をその値で置き換えます。正方形の番号を安定ソートし、4 行それぞれについて新しい順に各正方形の 4 つの数を連結して出力します。"
+    ],
+    "ko": [
+      "1..16의 합은 136이므로, 각 4×4 정사각형의 빠진 값은 136에서 나머지 15개 칸의 합을 뺀 값입니다.",
+      "정사각형은 내부 배치를 유지한 채 통째로 이동합니다. 각 정사각형의 빠진 값을 구한 뒤 (빠진 값, 원래 정사각형 인덱스)로 정렬하면 빠진 값이 같은 경우 원래의 왼쪽에서 오른쪽 순서가 유지됩니다.",
+      "정사각형 b는 4b..4b+3열을 차지합니다. −1이 아닌 칸의 합으로 빠진 값을 구해 −1 자리에 채웁니다. 정사각형 인덱스를 안정 정렬한 뒤, 새 순서의 각 정사각형에서 4개씩의 수를 이어 붙여 4개의 행을 출력합니다."
+    ],
+    "vi": [
+      "Các số 1..16 có tổng bằng 136, nên giá trị bị thiếu của mỗi ô vuông 4×4 bằng 136 trừ đi tổng của 15 ô còn lại.",
+      "Các ô vuông được di chuyển nguyên khối và giữ nguyên bố cục bên trong: tính giá trị bị thiếu của từng ô vuông, rồi sắp xếp theo (giá trị bị thiếu, chỉ số ô vuông ban đầu) để các giá trị bị thiếu bằng nhau giữ nguyên thứ tự trái sang phải ban đầu.",
+      "Ô vuông b chiếm các cột 4b..4b+3; cộng các ô khác −1 để được giá trị bị thiếu và điền giá trị đó vào chỗ −1; sắp xếp ổn định các chỉ số ô vuông, rồi in 4 hàng, mỗi hàng nối 4 số của từng ô vuông theo thứ tự mới."
     ]
   },
   "explanationEn": "## Approach\n\nFor each square compute the missing value and build the filled 4×4 square; sort by (missing value, original column index) and write the complete squares into the output column groups.\n\n## Correctness\n\nEvery output square is still one complete square from the input. The sort key makes the missing values non-decreasing, and the secondary key only preserves the original order among equal missing values; this satisfies the statement and determines a unique output.\n\n## Complexity\n\nComputing the missing values takes O(n), sorting O(n log n), and copying the grid O(n), for a total time of O(n log n) and space O(n)."

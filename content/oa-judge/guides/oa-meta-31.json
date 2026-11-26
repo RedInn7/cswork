@@ -13,6 +13,21 @@
       "Whether a window of length m+1 matches is decided only by its m adjacent comparisons, not by the actual values.",
       "Turn the array into its comparison sequence (1 when the next value is larger, 0 when equal, −1 when smaller). The task becomes counting possibly overlapping occurrences of the pattern in that sequence, which KMP does in linear time.",
       "Compute the pattern's prefix function. While scanning the comparison sequence, fall back along the prefix function on a mismatch and extend the match length on equality; when the match length equals m, add one to the answer and fall back to the prefix function value at m−1 before continuing."
+    ],
+    "ja": [
+      "長さ m+1 の窓が一致するかどうかは、実際の値ではなく、その m 個の隣接する比較だけで決まります。",
+      "配列を比較の列に変換します (次の値が大きければ 1、等しければ 0、小さければ −1)。すると問題は、その列の中でパターンが重なりを許して何回現れるかを数えることになり、KMP なら線形時間で解けます。",
+      "パターンの接頭辞関数 (prefix function) を計算します。比較の列を走査するとき、不一致なら接頭辞関数に沿って戻り、等しければ一致の長さを伸ばします。一致の長さが m に等しくなったら、答えに 1 を加え、m−1 での接頭辞関数の値まで戻ってから続けます。"
+    ],
+    "ko": [
+      "길이 m+1의 윈도가 일치하는지는 실제 값이 아니라 그 m개의 인접 비교만으로 결정됩니다.",
+      "배열을 비교 수열(다음 값이 크면 1, 같으면 0, 작으면 −1)로 바꾸면, 문제는 그 수열에서 패턴이 (겹칠 수 있는) 몇 번 나타나는지 세는 것이 되며 KMP로 선형 시간에 해결됩니다.",
+      "패턴의 접두사 함수(prefix function)를 계산합니다. 비교 수열을 훑으면서 불일치 시 접두사 함수를 따라 되돌아가고 일치하면 매칭 길이를 늘립니다. 매칭 길이가 m이 되면 답에 1을 더하고 접두사 함수의 m−1 위치 값으로 되돌아간 뒤 계속합니다."
+    ],
+    "vi": [
+      "Một cửa sổ độ dài m+1 có khớp hay không chỉ do m phép so sánh kề nhau của nó quyết định, không phụ thuộc giá trị thực.",
+      "Chuyển mảng thành dãy so sánh của nó (1 khi giá trị kế tiếp lớn hơn, 0 khi bằng nhau, −1 khi nhỏ hơn). Bài toán trở thành đếm các lần xuất hiện, có thể chồng lấn, của mẫu trong dãy đó, việc KMP làm được trong thời gian tuyến tính.",
+      "Tính hàm tiền tố của mẫu. Trong khi quét dãy so sánh, lùi theo hàm tiền tố khi không khớp và kéo dài độ dài khớp khi bằng nhau; khi độ dài khớp bằng m, cộng một vào đáp án và lùi về giá trị hàm tiền tố tại m−1 trước khi tiếp tục."
     ]
   },
   "explanationEn": "## Approach\n\nConvert the array into its sequence of adjacent comparisons and match the pattern with KMP. After a successful match, fall back to the longest proper prefix that is also a suffix, so overlapping matches are counted too.\n\n## Proof of correctness\n\nEach window of the original array corresponds uniquely to its sequence of adjacent comparisons. At every position KMP keeps the longest pattern prefix that can still match, falling back on a mismatch loses no possible match, and each complete match corresponds to one valid window.\n\n## Complexity\n\nTime O(n+m), space O(n+m)."

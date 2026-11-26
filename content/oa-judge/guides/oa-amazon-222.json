@@ -13,6 +13,21 @@
       "Once you decide to keep a category, keep all of its products; the deletions are exactly the products of the categories you do not keep.",
       "Deleting the fewest means keeping the most: among sets of at most k categories, the one with the most products is simply the k most frequent categories.",
       "Count how often each category appears, sort the counts descending, keep the sum of the first k (all of them if there are fewer than k categories), and print n minus that sum."
+    ],
+    "ja": [
+      "あるカテゴリを残すと決めたら、そのカテゴリの商品はすべて残します。削除されるのは、残さないカテゴリの商品ちょうどです。",
+      "削除を最小にするとは、残す商品を最大にすることです。高々 k カテゴリからなる集合のうち商品数が最大のものは、単に頻度の高い上位 k カテゴリです。",
+      "各カテゴリの出現回数を数え、降順にソートして、先頭 k 個の和を求め（カテゴリが k 個未満ならすべて）、n からその和を引いた値を出力します。"
+    ],
+    "ko": [
+      "어떤 카테고리를 남기기로 했다면 그 카테고리의 상품은 전부 남깁니다. 삭제되는 상품은 남기지 않는 카테고리의 상품들입니다.",
+      "가장 적게 삭제한다는 것은 가장 많이 남긴다는 뜻입니다. 최대 k개 카테고리의 집합 중 상품 수가 가장 많은 것은 빈도가 높은 상위 k개 카테고리입니다.",
+      "카테고리별 등장 횟수를 세어 내림차순으로 정렬하고, 앞의 k개의 합(카테고리가 k개보다 적으면 전체)을 구한 뒤 n에서 그 합을 뺀 값을 출력합니다."
+    ],
+    "vi": [
+      "Một khi đã quyết định giữ một danh mục thì giữ toàn bộ sản phẩm của nó; số sản phẩm bị xóa chính là các sản phẩm thuộc những danh mục không được giữ.",
+      "Xóa ít nhất nghĩa là giữ nhiều nhất: trong các tập có tối đa k danh mục, tập có nhiều sản phẩm nhất đơn giản là k danh mục xuất hiện nhiều nhất.",
+      "Đếm số lần mỗi danh mục xuất hiện, sắp xếp các số đếm giảm dần, lấy tổng k số đầu (tất cả nếu có ít hơn k danh mục), và in n trừ tổng đó."
     ]
   },
   "explanationEn": "## Approach\n\nSort the category frequencies in descending order, keep the k most frequent categories and delete everything else.\n\n## Proof of correctness\n\nFor a fixed set of kept categories, keeping every product of those categories is never worse. If a lower-frequency category is kept while a higher-frequency one is dropped, swapping them increases the number kept, so the optimum keeps the at most k most frequent categories.\n\n## Complexity\n\nTime O(n log n), space O(n)."

@@ -13,6 +13,21 @@
       "One scan over the line is enough: keep the number of consonants seen, and only the consonants whose count is a multiple of n need to change.",
       "The consonant list is the 21 letters bcdfghjklmnpqrstvwxyz (the alphabet without vowels); stepping forward one place modulo its length makes z wrap to b. Only ASCII A-Z/a-z take part; look the letter up in lowercase and restore its case.",
       "Read n from the first line and the entire second line as message (keep spaces, strip only the line break). For each character: if it is an ASCII letter and not a vowel, increment the count, and when count % n == 0, replace it with the next letter in the consonant list, keeping its case; output all other characters unchanged. n can be up to 10^9, so use a 64-bit count."
+    ],
+    "ja": [
+      "1行を1回走査すれば十分です。見た子音の数を保持し、その数が n の倍数になる子音だけを変更します。",
+      "子音の一覧は bcdfghjklmnpqrstvwxyz の 21 文字（アルファベットから母音を除いたもの）です。この長さで法をとって1つ進めれば z は b に戻ります。ASCII の A-Z/a-z だけが対象です。文字は小文字で引き、大文字・小文字を元に戻します。",
+      "1行目から n を、2行目全体を message として読み込みます（スペースは保持し、改行だけを取り除きます）。各文字について、ASCII の英字で母音でなければカウントを増やし、count % n == 0 なら子音一覧の次の文字に置き換えます（大文字・小文字は保持）。それ以外の文字はそのまま出力します。n は 10^9 まであるので、カウントは 64 ビットにしてください。"
+    ],
+    "ko": [
+      "줄을 한 번 훑는 것으로 충분합니다. 지금까지 본 자음의 수를 유지하고, 그 수가 n의 배수인 자음만 바꾸면 됩니다.",
+      "자음 목록은 모음을 뺀 알파벳 21글자 bcdfghjklmnpqrstvwxyz입니다. 이 목록의 길이로 나눈 나머지로 한 칸 앞으로 가면 z가 b로 돌아갑니다. ASCII A-Z/a-z만 대상이며, 글자를 소문자로 찾아본 뒤 원래 대소문자를 복원합니다.",
+      "첫 줄에서 n을, 둘째 줄 전체를 message로 읽습니다(공백은 유지하고 줄바꿈만 제거). 각 문자에 대해 ASCII 영문자이고 모음이 아니면 카운트를 증가시키고, count % n == 0일 때 자음 목록의 다음 글자로 대소문자를 유지한 채 바꿉니다. 나머지 문자는 그대로 출력합니다. n은 최대 10^9이므로 카운트는 64비트로 두세요."
+    ],
+    "vi": [
+      "Chỉ cần một lần quét dòng: giữ số phụ âm đã gặp, và chỉ những phụ âm có số thứ tự là bội của n mới cần đổi.",
+      "Danh sách phụ âm gồm 21 chữ cái bcdfghjklmnpqrstvwxyz (bảng chữ cái bỏ nguyên âm); tiến lên một vị trí theo modulo độ dài của nó thì z quay về b. Chỉ các chữ ASCII A-Z/a-z tham gia; tra chữ cái ở dạng chữ thường rồi khôi phục dạng hoa/thường.",
+      "Đọc n từ dòng đầu và toàn bộ dòng thứ hai làm message (giữ dấu cách, chỉ bỏ ký tự xuống dòng). Với mỗi ký tự: nếu nó là chữ cái ASCII và không phải nguyên âm thì tăng bộ đếm, và khi count % n == 0 thì thay bằng chữ cái kế tiếp trong danh sách phụ âm, giữ nguyên dạng hoa/thường; các ký tự khác in ra không đổi. n có thể lên tới 10^9, nên hãy dùng bộ đếm 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nMaintain the index of the consonants seen; only when it is a multiple of n, advance one position in the fixed consonant alphabet.\n\n## Correctness\n\nThe consonant alphabet is the English alphabet in order with the vowels removed, and taking the index modulo its length implements the wraparound. The scan only counts ASCII letter consonants, so spaces, digits, punctuation, and non-ASCII characters are output unchanged.\n\n## Complexity\n\nO(|message|) time and output space."

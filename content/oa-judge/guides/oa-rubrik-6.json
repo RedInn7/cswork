@@ -13,6 +13,21 @@
       "The answer is always some contiguous substring of y that can be found in x in order (with skips allowed). Both |x| and |y| are at most 2000, so an O(|x|*|y|) enumeration is affordable.",
       "Once the start of the substring in y is fixed, the question becomes: how long can the prefix starting there be while still being a subsequence of x? For that question, greedily taking the earliest matching position in x from left to right is optimal.",
       "For each start in y, scan x with a pointer i and keep matched, the length matched so far: whenever x[i]==y[start+matched], increase matched, until x runs out or y ends. Print the maximum matched over all starts (0 if nothing matches)."
+    ],
+    "ja": [
+      "答えは常に、x の中に順番どおり(途中を飛ばしてもよい)見つかる y の連続部分文字列のどれかです。|x| と |y| はどちらも 2000 以下なので、O(|x|*|y|) の列挙で間に合います。",
+      "y の中での部分文字列の開始位置を固定すると、問題は、そこから始まる接頭辞が x の部分列であり続けられる最大の長さを求めることになります。そのためには、x の中で最も早い一致位置を左から右へ貪欲に取るのが最適です。",
+      "y の各開始位置について、ポインタ i で x を走査し、これまでの一致長 matched を保持します。x[i]==y[start+matched] のたびに matched を増やし、x を使い切るか y が終わるまで続けます。すべての開始位置での matched の最大値を出力します(何も一致しなければ 0)。"
+    ],
+    "ko": [
+      "답은 항상 y의 어떤 연속 부분 문자열이며, 그 문자열이 x에서 순서대로(건너뛰기 허용) 발견되어야 합니다. |x|와 |y|가 모두 최대 2000이므로 O(|x|*|y|) 열거가 가능합니다.",
+      "y에서 부분 문자열의 시작 위치를 고정하면, 그 위치에서 시작하는 접두사가 x의 부분 수열인 채로 얼마나 길어질 수 있는지를 묻는 문제가 됩니다. 이 질문에는 x를 왼쪽에서 오른쪽으로 보며 가장 이른 일치 위치를 탐욕적으로 택하는 것이 최적입니다.",
+      "y의 각 시작 위치에 대해 포인터 i로 x를 스캔하면서 지금까지 일치한 길이 matched를 유지합니다. x[i]==y[start+matched]일 때마다 matched를 늘리고, x가 끝나거나 y가 끝날 때까지 진행합니다. 모든 시작 위치에 대한 matched의 최댓값을 출력합니다(아무것도 일치하지 않으면 0)."
+    ],
+    "vi": [
+      "Đáp án luôn là một xâu con liên tiếp nào đó của y mà có thể tìm thấy trong x theo đúng thứ tự (cho phép bỏ qua ký tự). Vì cả |x| và |y| đều không quá 2000, việc liệt kê O(|x|*|y|) là chấp nhận được.",
+      "Khi đã cố định điểm bắt đầu của xâu con trong y, câu hỏi trở thành: tiền tố bắt đầu từ đó có thể dài bao nhiêu mà vẫn là dãy con của x? Với câu hỏi này, tham lam lấy vị trí khớp sớm nhất trong x từ trái sang phải là tối ưu.",
+      "Với mỗi điểm bắt đầu trong y, duyệt x bằng con trỏ i và giữ matched, độ dài đã khớp cho đến lúc này: mỗi khi x[i]==y[start+matched], tăng matched, cho đến khi x hết hoặc y kết thúc. In ra giá trị matched lớn nhất trên mọi điểm bắt đầu (0 nếu không khớp gì)."
     ]
   },
   "explanationEn": "## Approach\n\nEnumerate the start of the substring in y, and greedily match that suffix against x; for each start, the longest matchable prefix is the best substring length starting there.\n\n## Correctness\n\nFor a fixed substring start, taking the earliest matchable position in x for each character from left to right never reduces the characters that can be matched later, so the greedy obtains the longest substring for that start. Enumerating all starts covers every candidate substring.\n\n## Complexity\n\nWith n=|x| and m=|y|, time O(nm), extra space O(1)."

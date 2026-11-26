@@ -13,6 +13,21 @@
       "An array whose adjacent elements all differ in parity follows one of only two patterns, even-odd-even... or odd-even-odd...; once the pattern is fixed, positions do not affect each other.",
       "For each pattern, halve every element independently until its parity matches the target for its position and add up the counts; take the smaller of the two totals. A positive number that keeps halving passes through 1 and 0, so either parity is always reachable.",
       "Let first ∈ {0, 1}; the target parity at position i is first xor (i mod 2). For each element, keep halving and counting while its parity is wrong; the sum is that pattern's cost, and the answer is the smaller of the two costs."
+    ],
+    "ja": [
+      "隣り合う要素の偶奇がすべて異なる配列は、偶-奇-偶... か 奇-偶-奇... の2つのパターンのどちらかです。パターンが決まれば、位置どうしは互いに影響しません。",
+      "各パターンについて、各要素を独立に、その位置の目標の偶奇に一致するまで半分にし、回数を合計します。2つの合計の小さいほうを取ります。正の数を半分にし続けると 1 と 0 を通るので、どちらの偶奇にも必ず到達できます。",
+      "first ∈ {0, 1} とすると、位置 i の目標の偶奇は first xor (i mod 2) です。各要素について、偶奇が違う間は半分にして数えます。その合計がそのパターンのコストで、答えは2つのコストの小さいほうです。"
+    ],
+    "ko": [
+      "인접한 원소가 모두 홀짝이 다른 배열은 짝-홀-짝... 또는 홀-짝-홀... 두 패턴 중 하나입니다. 패턴이 정해지면 각 위치는 서로 영향을 주지 않습니다.",
+      "각 패턴에 대해 모든 원소를 독립적으로 그 위치의 목표 홀짝과 맞을 때까지 반으로 나누고 횟수를 합합니다. 두 합계 중 작은 값을 택합니다. 양수를 계속 반으로 나누면 1과 0을 지나므로 어느 홀짝이든 항상 도달할 수 있습니다.",
+      "first ∈ {0, 1}이라 하면 위치 i의 목표 홀짝은 first xor (i mod 2)입니다. 각 원소에서 홀짝이 틀린 동안 반으로 나누며 횟수를 세고, 그 합이 해당 패턴의 비용입니다. 답은 두 비용 중 작은 값입니다."
+    ],
+    "vi": [
+      "Một mảng có các phần tử liền kề đều khác tính chẵn lẻ chỉ theo một trong hai mẫu, chẵn-lẻ-chẵn... hoặc lẻ-chẵn-lẻ...; khi mẫu đã cố định, các vị trí không ảnh hưởng lẫn nhau.",
+      "Với mỗi mẫu, chia đôi từng phần tử độc lập cho đến khi tính chẵn lẻ của nó khớp với đích của vị trí và cộng các số lần; lấy tổng nhỏ hơn trong hai tổng. Một số dương cứ chia đôi mãi sẽ đi qua 1 và 0, nên luôn đạt được cả hai tính chẵn lẻ.",
+      "Cho first ∈ {0, 1}; tính chẵn lẻ đích tại vị trí i là first xor (i mod 2). Với mỗi phần tử, tiếp tục chia đôi và đếm khi tính chẵn lẻ còn sai; tổng là chi phí của mẫu đó, và đáp án là chi phí nhỏ hơn trong hai chi phí."
     ]
   },
   "explanationEn": "## Approach\n\nThe final parities can only alternate starting from even or starting from odd. For each case, compute the minimum number of right shifts each item needs to reach its required parity, then take the smaller of the two totals.\n\n## Proof of correctness\n\nOnce an alternating pattern is fixed, operations on different positions do not affect each other, so the minimum cost equals the sum, over all items, of the number of steps until each first reaches its target parity. Repeatedly halving a positive number must pass through 1 and 0, so both parities are reachable. Every valid final array follows one of these two patterns, so taking the minimum covers all plans.\n\n## Complexity\n\nO(n log V) time and O(1) space apart from the input."

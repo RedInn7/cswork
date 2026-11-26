@@ -13,6 +13,21 @@
       "The lowest prefix balance of s fixes how many left brackets must be added, and the final balance then fixes how many right brackets must be added; putting all new left brackets first and all new right ones last repairs the string. Any extra brackets beyond that must come in equal numbers of left and right.",
       "For a fixed number of brackets of one type, the highest-scoring ones are best. So sort each type's scores in descending order and take the required count from the top; then look at the rest pair by pair, taking the next left and the next right, and insert the pair only if its sum is positive.",
       "Scan s for the balance and the lowest prefix, giving L = −(lowest prefix) and R = L + final balance; sort the scores of the left and right brackets in kit in descending order; add the first L left scores and the first R right scores; then walk both remaining parts together, adding max(0, left + right) for each pair, and stop when either side runs out. Required brackets count even when their scores are negative."
+    ],
+    "ja": [
+      "s の接頭辞バランスの最小値によって追加が必須の左括弧の個数が決まり、最終バランスによって追加が必須の右括弧の個数が決まります。新しい左括弧をすべて先頭に、新しい右括弧をすべて末尾に置けば文字列は修復できます。それ以上の余分な括弧は、左右が同数でなければなりません。",
+      "ある種類の括弧の個数を固定したとき、スコアの高いものが最良です。そこで各種類のスコアを降順にソートし、必要な個数を上から取ります。残りはペアごとに、次の左と次の右を取って見ていき、その和が正のときだけペアを挿入します。",
+      "s を走査してバランスと接頭辞の最小値を求め、L = −(接頭辞の最小値)、R = L + 最終バランス とします。kit の左括弧と右括弧のスコアをそれぞれ降順にソートし、先頭 L 個の左のスコアと先頭 R 個の右のスコアを加えます。その後、残りの両方を一緒に走査し、ペアごとに max(0, left + right) を加え、どちらかが尽きたら止めます。必須の括弧はスコアが負でも数えます。"
+    ],
+    "ko": [
+      "s의 접두사 균형 최솟값이 추가해야 할 왼쪽 괄호 수를 정하고, 최종 균형이 추가해야 할 오른쪽 괄호 수를 정합니다. 새 왼쪽 괄호를 모두 맨 앞에, 새 오른쪽 괄호를 모두 맨 뒤에 두면 문자열이 고쳐집니다. 그 이상의 추가 괄호는 왼쪽과 오른쪽이 같은 개수로 짝을 이뤄야 합니다.",
+      "한 종류의 괄호 개수가 정해져 있으면 점수가 높은 것이 가장 좋습니다. 따라서 종류별 점수를 내림차순으로 정렬해 위에서부터 필요한 개수만큼 취하고, 나머지는 다음 왼쪽과 다음 오른쪽을 한 쌍씩 살펴 합이 양수일 때만 그 쌍을 삽입합니다.",
+      "s를 훑어 균형과 접두사 최솟값을 구하면 L = −(접두사 최솟값), R = L + 최종 균형입니다. kit의 왼쪽/오른쪽 괄호 점수를 각각 내림차순으로 정렬하고, 앞의 L개 왼쪽 점수와 앞의 R개 오른쪽 점수를 더합니다. 이후 남은 두 부분을 함께 훑으며 쌍마다 max(0, left + right)를 더하고, 어느 한쪽이 바닥나면 멈춥니다. 필요한 괄호는 점수가 음수여도 반드시 포함합니다."
+    ],
+    "vi": [
+      "Số dư tiền tố thấp nhất của s quyết định cần thêm bao nhiêu ngoặc mở, và số dư cuối cùng quyết định cần thêm bao nhiêu ngoặc đóng; đặt mọi ngoặc mở mới ở đầu và mọi ngoặc đóng mới ở cuối là sửa được chuỗi. Mọi ngoặc thêm ngoài mức đó phải có số mở bằng số đóng.",
+      "Với số ngoặc cố định của một loại, những ngoặc điểm cao nhất là tốt nhất. Vì vậy hãy sắp xếp điểm của từng loại giảm dần và lấy số lượng cần thiết từ đầu; sau đó xét phần còn lại theo từng cặp, lấy ngoặc mở tiếp theo và ngoặc đóng tiếp theo, và chỉ chèn cặp đó nếu tổng của chúng dương.",
+      "Quét s để tính số dư và tiền tố thấp nhất, được L = −(tiền tố thấp nhất) và R = L + số dư cuối; sắp xếp điểm của các ngoặc mở và ngoặc đóng trong kit giảm dần; cộng L điểm mở đầu tiên và R điểm đóng đầu tiên; rồi duyệt đồng thời hai phần còn lại, cộng max(0, mở + đóng) cho mỗi cặp, và dừng khi một bên hết. Các ngoặc bắt buộc vẫn được tính dù điểm âm."
     ]
   },
   "explanationEn": "## Approach\n\nFind the minimum numbers of left brackets L and right brackets R that are needed. Sort the scores of each type in descending order, take the required L/R first, then take the remaining left-right pairs one by one whenever the pair's sum is positive.\n\n## Proof of correctness\n\nThe minimum prefix balance means at least L left brackets must be added, and the final total balance means at least R=L+(original balance) right brackets must be added; putting all new left brackets at the front and all new right brackets at the end achieves this. Extra brackets must come in equal numbers of left and right. For a fixed count, taking the highest scores of each type is optimal, and after sorting the gains of successive pairs are non-increasing, so taking every positive pair and nothing else reaches the maximum.\n\n## Complexity\n\nTime O(|s|+|kit| log |kit|), space O(|kit|)."

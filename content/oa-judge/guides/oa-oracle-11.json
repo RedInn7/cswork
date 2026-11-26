@@ -13,6 +13,11 @@
       "Draw the merging process as a binary tree: each initial value contributes its value times the depth of its leaf to the total cost, so smaller values should take part in more merges.",
       "This is the Huffman coding structure: some optimal plan merges the two smallest numbers first, and after that merge the problem keeps the same form with one fewer element, so always merging the two smallest works.",
       "Put all numbers in a min-heap. While it holds more than one number, pop the two smallest, add their sum to the answer, and push the sum back. The answer can exceed 32 bits, so use a 64-bit integer; zero values work the same way."
+    ],
+    "vi": [
+      "Hãy vẽ quá trình gộp thành một cây nhị phân: mỗi giá trị ban đầu đóng góp vào tổng chi phí bằng giá trị đó nhân với độ sâu của lá tương ứng, nên các giá trị nhỏ hơn nên tham gia vào nhiều lần gộp hơn.",
+      "Đây chính là cấu trúc của mã hóa Huffman: tồn tại một phương án tối ưu gộp hai số nhỏ nhất trước, sau lần gộp đó bài toán giữ nguyên dạng nhưng ít hơn một phần tử, nên luôn gộp hai số nhỏ nhất là đúng.",
+      "Đưa tất cả các số vào một min-heap. Khi heap còn nhiều hơn một số, lấy ra hai số nhỏ nhất, cộng tổng của chúng vào đáp án rồi đẩy tổng đó trở lại. Đáp án có thể vượt quá 32 bit nên dùng số nguyên 64 bit; các giá trị 0 được xử lý như bình thường."
     ]
   },
   "explanationEn": "## Approach\n\nWith a min-heap, repeatedly pop the two smallest numbers, merge them, add the merged value to the total, and push it back into the heap.\n\n## Proof of correctness\n\nView the merging process as a binary tree: each initial value's total cost is its value times its leaf depth. The deepest sibling leaves can be swapped for the two smallest weights without increasing the total cost; contracting them gives a problem of the same kind with one fewer element. So some optimal solution merges the two smallest items first, and by induction the greedy is optimal; zero weights also satisfy the exchange inequality.\n\n## Complexity\n\nO(n log n) time, O(n) space."

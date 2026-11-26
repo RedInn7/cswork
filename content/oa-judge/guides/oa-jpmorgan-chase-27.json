@@ -13,6 +13,21 @@
       "Whether a character appears only once depends on its count in the whole string, so you must see the entire string before deciding.",
       "Make two passes: the first counts the 26 letters, the second goes left to right looking for the first character whose count is 1.",
       "Count with 26 counters; then check positions in order and print the 1-based index (index plus 1) of the first character whose count is 1; if there is none, print −1."
+    ],
+    "ja": [
+      "ある文字が1回だけ現れるかどうかは文字列全体での出現回数で決まるので、判定する前に文字列全体を見る必要があります。",
+      "2パスで行います。1回目で 26 文字を数え、2回目で左から右へ、出現回数が 1 である最初の文字を探します。",
+      "26 個のカウンタで数えます。そのあと位置を順に調べ、出現回数が 1 である最初の文字の1始まりの添字(添字 + 1)を出力します。なければ −1 を出力します。"
+    ],
+    "ko": [
+      "문자가 한 번만 나타나는지는 문자열 전체에서의 개수에 달려 있으므로 결정하기 전에 문자열 전체를 봐야 합니다.",
+      "두 번 훑습니다. 첫 번째는 26개 글자를 세고, 두 번째는 왼쪽에서 오른쪽으로 개수가 1인 첫 문자를 찾습니다.",
+      "26개의 카운터로 센 다음 위치를 순서대로 확인하여 개수가 1인 첫 문자의 1부터 시작하는 인덱스(인덱스 + 1)를 출력합니다. 없으면 −1을 출력합니다."
+    ],
+    "vi": [
+      "Việc một ký tự chỉ xuất hiện một lần phụ thuộc vào số lần của nó trong toàn bộ xâu, nên bạn phải xem hết xâu trước khi quyết định.",
+      "Làm hai lượt: lượt đầu đếm 26 chữ cái, lượt hai đi từ trái sang phải tìm ký tự đầu tiên có số đếm bằng 1.",
+      "Đếm bằng 26 bộ đếm; sau đó kiểm tra các vị trí theo thứ tự và in chỉ số tính từ 1 (chỉ số cộng 1) của ký tự đầu tiên có số đếm bằng 1; nếu không có thì in −1."
     ]
   },
   "explanationEn": "## Approach\n\nFirst count the frequencies of the 26 letters, then scan from left to right for the first position whose frequency is 1.\n\n## Proof of correctness\n\nThe count gives each character's exact number of occurrences in the whole string, and a frequency of 1 is exactly equivalent to being unique. The second pass goes in increasing position order, so the first position that qualifies is the earliest unique character; if none is found after the full pass, there is no answer.\n\n## Complexity\n\nO(n) time and O(26) extra space."

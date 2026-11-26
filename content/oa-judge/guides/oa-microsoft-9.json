@@ -13,6 +13,21 @@
       "Adding up the endpoint sums of all edges counts each vertex's value exactly as many times as its degree, so the total is the sum of value times degree over all vertices.",
       "To maximize the sum of value times degree, give larger values to vertices with larger degrees (the rearrangement inequality); the rest of the graph structure does not matter.",
       "Count every vertex's degree, sort the degrees in ascending order, multiply the i-th smallest degree (counting from 1) by i, and print the sum. The total may exceed 32-bit range."
+    ],
+    "ja": [
+      "すべての辺について両端の和を足し合わせると、各頂点の値はちょうど次数と同じ回数だけ数えられるので、合計はすべての頂点についての「値×次数」の和になります。",
+      "「値×次数」の和を最大にするには、次数の大きい頂点にはより大きな値を与えます（再配置不等式）。グラフのそれ以外の構造は関係ありません。",
+      "各頂点の次数を数え、次数を昇順に並べ、小さいほうから i 番目（1 から数える）の次数に i を掛けて、その和を出力します。合計は32ビットの範囲を超えることがあります。"
+    ],
+    "ko": [
+      "모든 간선의 끝점 합을 더하면 각 정점의 값이 정확히 그 차수만큼 세어지므로, 총합은 모든 정점에 대한 (값 × 차수)의 합입니다.",
+      "값×차수의 합을 최대화하려면 차수가 큰 정점에 큰 값을 줍니다(재배열 부등식). 그래프의 나머지 구조는 상관없습니다.",
+      "모든 정점의 차수를 센 뒤 오름차순으로 정렬하고, i번째로 작은 차수(1부터 셈)에 i를 곱해 합을 출력합니다. 총합은 32비트 범위를 넘을 수 있습니다."
+    ],
+    "vi": [
+      "Cộng tổng hai đầu mút của mọi cạnh sẽ tính giá trị của mỗi đỉnh đúng bằng bậc của nó, nên tổng bằng tổng của (giá trị nhân bậc) trên mọi đỉnh.",
+      "Để tối đa hóa tổng giá trị nhân bậc, hãy gán giá trị lớn hơn cho đỉnh có bậc lớn hơn (bất đẳng thức hoán vị); phần cấu trúc còn lại của đồ thị không quan trọng.",
+      "Đếm bậc của mọi đỉnh, sắp xếp các bậc tăng dần, nhân bậc nhỏ thứ i (đếm từ 1) với i rồi in tổng. Tổng có thể vượt quá phạm vi 32 bit."
     ]
   },
   "explanationEn": "## Approach\n\nEach node's value appears in the total as many times as its degree, so assign the larger values to the nodes with larger degrees.\n\n## Proof of correctness\n\nIf degrees d1<d2 but the former gets the larger value v1>v2, swapping increases the total by (d2−d1)(v1−v2)≥0. Repeated swaps lead to pairing degrees and values in the same order, which is optimal.\n\n## Complexity\n\nTime O(N log N+M), space O(N)."

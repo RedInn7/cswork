@@ -13,6 +13,21 @@
       "Once an item is appended, its relative position in the cart never changes; a removal only invalidates one position. So give each append an increasing number and, at the end, output the surviving items in that order.",
       "Removing \"the first occurrence of x\" means removing the copy of x with the smallest number among those still present. Keep a chain per item in insertion order; the head of the chain is the next position to remove.",
       "Use arrays for each number's value, whether it was removed, and the next number with the same value, plus a dictionary holding each value's chain head and tail. An append links onto the tail; a removal marks the head and moves the head to the next one in the chain. Finally output the number of surviving items, then those items in order of their numbers."
+    ],
+    "ja": [
+      "商品を追加すると、カート内での相対位置は二度と変わらず、削除はある 1 つの位置を無効にするだけです。そこで追加ごとに増加する番号を付け、最後に生き残った商品をその番号順に出力します。",
+      "「x の最初の出現」を削除するとは、まだ残っている x のうち番号が最小のものを削除することです。商品ごとに挿入順の連鎖を持てば、連鎖の先頭が次に削除する位置になります。",
+      "各番号について、値、削除済みかどうか、同じ値の次の番号を配列に持ち、辞書に各値の連鎖の先頭と末尾を持たせます。追加では末尾につなぎ、削除では先頭に印を付けて先頭を連鎖の次に進めます。最後に、残った商品の個数を出力し、続いて番号順にその商品を出力します。"
+    ],
+    "ko": [
+      "상품이 추가되면 장바구니 안에서의 상대적인 위치는 바뀌지 않으며, 제거는 위치 하나를 무효화할 뿐입니다. 따라서 추가마다 증가하는 번호를 부여하고, 마지막에 남은 상품을 그 번호 순서대로 출력하세요.",
+      "\"x의 첫 번째 등장을 제거한다\"는 것은 아직 남아 있는 x 중 번호가 가장 작은 것을 제거한다는 뜻입니다. 상품별로 삽입 순서의 체인을 유지하면, 체인의 head가 다음에 제거할 위치입니다.",
+      "각 번호의 값, 제거 여부, 같은 값을 가진 다음 번호를 저장하는 배열과, 각 값의 체인 head와 tail을 저장하는 딕셔너리를 사용하세요. 추가는 tail 뒤에 연결하고, 제거는 head에 표시한 뒤 head를 체인의 다음 원소로 옮깁니다. 마지막으로 남은 상품의 개수를 출력하고, 이어서 번호 순서대로 그 상품들을 출력합니다."
+    ],
+    "vi": [
+      "Một khi mặt hàng đã được thêm, vị trí tương đối của nó trong giỏ không bao giờ đổi; một lần xóa chỉ làm vô hiệu một vị trí. Vì vậy hãy gán mỗi lần thêm một số tăng dần và cuối cùng xuất các mặt hàng còn lại theo thứ tự đó.",
+      "Xóa “lần xuất hiện đầu tiên của x” nghĩa là xóa bản sao của x có số nhỏ nhất trong những bản còn lại. Giữ một chuỗi cho mỗi mặt hàng theo thứ tự chèn; đầu của chuỗi là vị trí tiếp theo cần xóa.",
+      "Dùng các mảng cho giá trị của mỗi số, việc nó đã bị xóa hay chưa, và số kế tiếp có cùng giá trị, cùng một từ điển giữ đầu và đuôi chuỗi của mỗi giá trị. Một lần thêm nối vào đuôi; một lần xóa đánh dấu đầu và chuyển đầu sang phần tử kế tiếp trong chuỗi. Cuối cùng xuất số lượng mặt hàng còn lại, rồi các mặt hàng đó theo thứ tự số của chúng."
     ]
   },
   "explanationEn": "## Approach\n\nGive each append a unique increasing position. A shared next array links the positions of the same item, and a dictionary stores only the head and tail index of each item; on removal, advance the head index and mark the position. Finally, output the positions that were not removed, in order.\n\n## Proof of correctness\n\nThe index chain of each item is ordered by insertion time, so removing the head of the chain removes exactly the first current occurrence. Global positions increase, which preserves the cart order, and filtering out the removal marks gives the final result. All items share the index arrays; no separate deque is created for each distinct value.\n\n## Complexity\n\nTime O(n+q), space O(n+q)."

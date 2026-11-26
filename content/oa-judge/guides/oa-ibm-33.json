@@ -13,6 +13,21 @@
       "Scanning left to right, the first window of m consecutive 0s must have at least one position covered by some operation, or the string would still contain m consecutive 0s.",
       "The operation responsible for that window should be placed as far right as possible while still covering the window's last 0, which covers the most of what comes next; near the end, where a length-k interval does not fit, align it with the right boundary.",
       "While scanning, count the current run of 0s; when it reaches m, add one operation, treat the k positions starting at the current one (or starting at n−k if that would run past the end) as set to 1, jump the pointer past that interval, and reset the zero count; otherwise advance the pointer by one."
+    ],
+    "ja": [
+      "左から走査したとき、最初に現れる 0 が m 個連続する窓は、少なくとも 1 か所がいずれかの操作で覆われなければなりません。そうでないと、文字列に 0 が m 個連続する部分が残ります。",
+      "その窓を担当する操作は、窓の最後の 0 を覆う範囲でできるだけ右に置きます。そうすると後続のより多くの部分を覆えます。末尾付近で長さ k の区間が収まらない場合は、右端に揃えます。",
+      "走査しながら現在の 0 の連続数を数え、m に達したら操作を 1 回加えます。現在位置から始まる k 個の位置 (末尾をはみ出す場合は n−k から始まる k 個の位置) を 1 にしたものとみなし、ポインタをその区間の後ろへ飛ばして 0 の数をリセットします。達していなければポインタを 1 つ進めます。"
+    ],
+    "ko": [
+      "왼쪽에서 오른쪽으로 스캔할 때 처음 나타나는 m개의 연속한 0 구간은, 어떤 연산이 그중 적어도 한 위치를 덮어야 합니다. 그렇지 않으면 문자열에 여전히 m개의 연속한 0이 남습니다.",
+      "그 구간을 담당하는 연산은 구간의 마지막 0을 덮는 범위 안에서 가능한 한 오른쪽에 놓아야 뒤쪽을 가장 많이 덮을 수 있습니다. 길이 k의 구간이 들어가지 않는 끝부분에서는 오른쪽 경계에 맞춥니다.",
+      "스캔하면서 현재 0의 연속 길이를 셉니다. 이 값이 m에 도달하면 연산 횟수를 1 늘리고, 현재 위치에서 시작하는 k개 위치(끝을 넘어가면 n−k에서 시작하는 k개 위치)를 1로 바뀐 것으로 간주하여 포인터를 그 구간 뒤로 옮기고 0의 개수를 초기화합니다. 그렇지 않으면 포인터를 한 칸 전진합니다."
+    ],
+    "vi": [
+      "Quét từ trái sang phải, cửa sổ m số 0 liên tiếp đầu tiên phải có ít nhất một vị trí được một thao tác phủ, nếu không xâu vẫn còn m số 0 liên tiếp.",
+      "Thao tác chịu trách nhiệm cho cửa sổ đó nên đặt lệch phải nhất có thể mà vẫn phủ số 0 cuối cùng của cửa sổ, như vậy nó phủ được nhiều phần phía sau nhất; ở gần cuối, nơi đoạn độ dài k không vừa, hãy căn nó sát biên phải.",
+      "Trong khi quét, đếm dãy số 0 hiện tại; khi nó đạt m, cộng thêm một thao tác, coi k vị trí bắt đầu từ vị trí hiện tại (hoặc bắt đầu từ n−k nếu đoạn đó vượt quá cuối xâu) là đã được đặt thành 1, nhảy con trỏ qua đoạn đó và đặt lại bộ đếm số 0; ngược lại tăng con trỏ thêm một."
     ]
   },
   "explanationEn": "## Approach\n\nAccumulate the zero run from left to right; the first time m 0s have accumulated, place the length-k interval covering that position as far right as possible and set it to 1, skip that interval, and reset the zero count.\n\n## Proof of correctness\n\nWhen the first all-zero window of length m appears, any feasible plan must apply an operation that covers at least one of its positions. Moving the operation responsible for this window as far right as possible while still covering the window does not break the validity of the processed prefix and does not reduce future coverage. Near the end, where fewer than k positions remain, the interval is aligned with the right boundary. After this exchange the optimal plan can be assumed to contain the greedy operation, and recursively handling the part to its right gives the optimum.\n\n## Complexity\n\nTime O(n), space O(1)."

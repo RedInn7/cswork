@@ -13,6 +13,21 @@
       "First parse each factor into an exponent-to-coefficient map. The sign after ^ belongs to the exponent, not to the next term; an omitted coefficient is 1, an omitted exponent is 1, and a term without the variable is a constant (exponent 0).",
       "In the product, the coefficient of exponent e is the sum of products of coefficient pairs whose exponents add up to e, so multiply all pairs, add exponents and accumulate coefficients; coefficients reach 4×10^22, so use 128-bit or big integers.",
       "Print terms by descending exponent and skip zero coefficients: no sign before a positive first term, then + or -; exponent 0 prints only the coefficient; omit a coefficient of absolute value 1 when the exponent is non-zero; omit ^1; print 0 if everything cancels. The variable letter is the first letter in the input."
+    ],
+    "ja": [
+      "まず各因数を、指数から係数への写像にパースします。^ の後ろの符号は次の項ではなく指数に属します。係数の省略は 1、指数の省略は 1 を意味し、変数を含まない項は定数 (指数 0) です。",
+      "積では、指数 e の係数は、指数の和が e になる係数ペアの積の総和です。そこで、すべてのペアについて掛け、指数を足し、係数を累積します。係数は 4×10^22 に達するので、128 ビットまたは多倍長整数を使います。",
+      "指数の降順に項を出力し、係数が 0 のものは飛ばします。正の先頭項の前には符号を付けず、以降は + または - を付けます。指数 0 は係数だけを出力し、指数が 0 以外なら絶対値 1 の係数を省略し、^1 を省略します。すべて打ち消し合ったら 0 を出力します。変数の文字は入力の最初の文字です。"
+    ],
+    "ko": [
+      "먼저 각 인수를 지수 → 계수 맵으로 파싱합니다. ^ 뒤의 부호는 다음 항이 아니라 지수에 속합니다. 생략된 계수는 1, 생략된 지수는 1이며, 변수가 없는 항은 상수(지수 0)입니다.",
+      "곱에서 지수 e의 계수는 지수의 합이 e인 계수 쌍의 곱의 합이므로, 모든 쌍을 곱해 지수를 더하고 계수를 누적합니다. 계수는 4×10^22까지 커지므로 128비트 정수나 big integer를 씁니다.",
+      "항을 지수 내림차순으로 출력하며 계수가 0인 항은 건너뜁니다. 양수인 첫 항 앞에는 부호가 없고 그 이후에는 + 또는 -를 붙입니다. 지수 0이면 계수만 출력하고, 지수가 0이 아니면 절댓값 1인 계수를 생략하며, ^1을 생략하고, 모두 상쇄되면 0을 출력합니다. 변수 문자는 입력의 첫 번째 문자입니다."
+    ],
+    "vi": [
+      "Trước hết phân tích mỗi thừa số thành một ánh xạ từ số mũ sang hệ số. Dấu sau ^ thuộc về số mũ, không thuộc về số hạng kế tiếp; hệ số bị bỏ là 1, số mũ bị bỏ là 1, và số hạng không có biến là hằng số (số mũ 0).",
+      "Trong tích, hệ số của số mũ e là tổng các tích của các cặp hệ số có số mũ cộng lại bằng e, nên hãy nhân mọi cặp, cộng các số mũ và cộng dồn các hệ số; hệ số đạt 4×10^22, nên dùng số nguyên 128 bit hoặc big integer.",
+      "In các số hạng theo số mũ giảm dần và bỏ qua các hệ số bằng không: không có dấu trước số hạng đầu dương, sau đó dùng + hoặc -; số mũ 0 chỉ in hệ số; bỏ hệ số có giá trị tuyệt đối 1 khi số mũ khác không; bỏ ^1; in 0 nếu mọi thứ triệt tiêu. Chữ cái biến là chữ cái đầu tiên trong đầu vào."
     ]
   },
   "explanationEn": "## Approach\n\nWhile scanning terms, keep the sign inside an exponent separate from the sign of the term, and combine each factor by exponent; multiply the terms pairwise, multiplying coefficients and adding exponents, and accumulate into the corresponding exponent. Finally format in descending order and drop zero terms.\n\n## Proof of correctness\n\nEach original monomial is parsed uniquely into a coefficient and an exponent; the sign of a negative exponent is consumed after ^ and does not become the sign of the next term. By the distributive law, the coefficient of exponent e in the product is exactly the sum of the products of coefficients whose exponents add up to e, and accumulating over all pairs covers exactly those terms. Removing zero coefficients, the prescribed descending order and the omitted signs only change the representation, not the polynomial, so the output is the unique canonical expansion.\n\n## Complexity\n\nWith T and U original terms, the number of distinct output powers is K≤TU≤40000; time O(TU+K log K) and space O(T+U+K). Coefficients use arbitrary-precision integers, with absolute values up to 4×10^22, and exponents can reach ±2×10^9."

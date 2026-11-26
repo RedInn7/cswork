@@ -13,6 +13,21 @@
       "Each line's content is decided greedily: fit as many whole entries as possible, with one space between entries. Once a line's text is fixed, pad the leftover width on the right or on the left according to the alignment, then add the border.",
       "Process paragraph by paragraph and keep the current line as a string. Try appending the next entry with one space; if that exceeds the width, output the current line first and start a new line with this entry. Entries may contain spaces, so read them as whole lines.",
       "Read the input line by line. The first line gives width and the number of paragraphs. For each paragraph read the alignment tag and entry count, then the entries one per line. The candidate is the entry itself when the current line is empty, otherwise current line + space + entry. If the candidate is longer than width, output the current line and start over with the entry; otherwise accept the candidate. Output the current line at the end of the paragraph. LEFT pads spaces on the right, RIGHT pads on the left, each content line gets a star at both ends, and a line of width + 2 stars goes at the top and bottom."
+    ],
+    "ja": [
+      "各行の内容は貪欲に決まります。エントリを分割せず、間に空白を 1 つ入れて、入るだけ詰めます。行の文字列が確定したら、揃えに応じて余った幅を右または左に空白で埋め、枠を付けます。",
+      "段落ごとに処理し、現在の行を文字列として保持します。次のエントリを空白 1 つを挟んで追加してみて、幅を超えるなら、先に現在の行を出力し、そのエントリで新しい行を始めます。エントリには空白が含まれることがあるので、1 行をそのまま 1 つのエントリとして読みます。",
+      "入力を 1 行ずつ読みます。1 行目に width と段落数があります。各段落では、揃えのタグとエントリ数を読み、続けてエントリを 1 行に 1 つずつ読みます。現在の行が空なら候補はエントリそのもの、そうでなければ 現在の行 + 空白 + エントリ です。候補が width より長ければ、現在の行を出力してエントリからやり直し、そうでなければ候補を採用します。段落の終わりで現在の行を出力します。LEFT は右に空白を詰め、RIGHT は左に詰め、各内容行の両端に星を付け、上下に width + 2 個の星の行を置きます。"
+    ],
+    "ko": [
+      "각 줄의 내용은 탐욕적으로 정해집니다. 항목 사이를 공백 하나로 이으면서 온전한 항목을 가능한 한 많이 담습니다. 줄의 텍스트가 정해지면 정렬에 따라 남는 너비를 오른쪽 또는 왼쪽에 공백으로 채운 뒤 테두리를 붙입니다.",
+      "문단 단위로 처리하며 현재 줄을 문자열로 유지합니다. 다음 항목을 공백 하나와 함께 붙여 보고, 너비를 넘으면 현재 줄을 먼저 출력한 뒤 그 항목으로 새 줄을 시작합니다. 항목에 공백이 들어 있을 수 있으므로 한 줄 전체를 하나의 항목으로 읽습니다.",
+      "입력을 줄 단위로 읽습니다. 첫 줄에는 width와 문단 수가 있습니다. 각 문단에 대해 정렬 태그와 항목 수를 읽고, 이어서 항목을 한 줄에 하나씩 읽습니다. 현재 줄이 비어 있으면 후보는 항목 자체이고, 아니면 현재 줄 + 공백 + 항목입니다. 후보의 길이가 width보다 길면 현재 줄을 출력하고 그 항목으로 다시 시작하며, 아니면 후보를 채택합니다. 문단이 끝나면 현재 줄을 출력합니다. LEFT는 오른쪽에, RIGHT는 왼쪽에 공백을 채우고, 각 내용 줄 양 끝에 별을 붙이며, 맨 위와 맨 아래에 별 width + 2개로 된 줄을 둡니다."
+    ],
+    "vi": [
+      "Nội dung của mỗi dòng được quyết định tham lam: xếp vừa càng nhiều mục nguyên vẹn càng tốt, giữa các mục có một khoảng trắng. Khi văn bản của dòng đã cố định, đệm phần độ rộng còn lại ở bên phải hoặc bên trái tùy theo căn lề, rồi thêm viền.",
+      "Xử lý từng đoạn một và giữ dòng hiện tại dưới dạng một chuỗi. Thử nối mục kế tiếp cùng một khoảng trắng; nếu vượt quá độ rộng thì in dòng hiện tại trước và bắt đầu dòng mới với mục này. Các mục có thể chứa khoảng trắng, nên hãy đọc chúng nguyên cả dòng.",
+      "Đọc đầu vào theo từng dòng. Dòng đầu cho width và số đoạn. Với mỗi đoạn đọc thẻ căn lề và số mục, rồi đọc các mục, mỗi mục một dòng. Ứng viên là chính mục đó khi dòng hiện tại rỗng, ngược lại là dòng hiện tại + khoảng trắng + mục. Nếu ứng viên dài hơn width thì in dòng hiện tại và bắt đầu lại với mục đó; ngược lại chấp nhận ứng viên. In dòng hiện tại khi kết thúc đoạn. LEFT đệm khoảng trắng bên phải, RIGHT đệm bên trái, mỗi dòng nội dung có một dấu sao ở hai đầu, và một dòng gồm width + 2 dấu sao ở trên cùng và dưới cùng."
     ]
   },
   "explanationEn": "## Approach\n\nAccumulate the current line string paragraph by paragraph; when the next entry does not fit, output the current line and start a new one. Pad spaces on one side according to the tag and add the border.\n\n## Correctness\n\nA line break happens only when adding the next entry would exceed the width, so the lines are exactly the required greedy split; the original order of characters in every line is unchanged, and all missing spaces go to the specified side, giving the unique layout.\n\n## Complexity\n\nTime O(number of input and output characters), space O(number of input and output characters)."

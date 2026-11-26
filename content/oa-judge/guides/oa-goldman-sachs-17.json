@@ -13,6 +13,21 @@
       "The number of cores needed is the maximum number of processes running at the same moment. Both ends are inclusive: a process is still running at time end.",
       "Split each process into two events: +1 at start and -1 at end+1. After sorting by time and scanning from left to right, the running total is the number of processes active at that moment.",
       "Create events (start, +1) and (end+1, -1) for each process; sort by time, putting -1 before +1 at equal times (so a core released at end+1 can be reused right away); accumulate while scanning, track the maximum, and print it."
+    ],
+    "ja": [
+      "必要なコア数は、同時に実行されているプロセス数の最大値です。両端は含まれるので、プロセスは時刻 end でもまだ実行中です。",
+      "各プロセスを 2 つのイベントに分けます。start で +1、end+1 で -1 です。時刻順にソートして左から右へ走査すると、累積和がその時点で実行中のプロセス数になります。",
+      "各プロセスについてイベント (start, +1) と (end+1, -1) を作ります。時刻でソートし、同じ時刻では -1 を +1 より前に置きます（end+1 で解放されたコアをすぐ再利用できるようにするためです）。走査しながら累積して最大値を追跡し、出力します。"
+    ],
+    "ko": [
+      "필요한 코어 수는 같은 순간에 실행 중인 프로세스의 최대 개수입니다. 양 끝이 모두 포함되므로 프로세스는 시각 end에도 여전히 실행 중입니다.",
+      "각 프로세스를 두 이벤트로 나눕니다. start에서 +1, end+1에서 -1입니다. 시간순으로 정렬해 왼쪽에서 오른쪽으로 스캔하면 누적 합이 그 순간 실행 중인 프로세스의 수입니다.",
+      "각 프로세스에 대해 이벤트 (start, +1)과 (end+1, -1)을 만듭니다. 시간순으로 정렬하되 시각이 같으면 -1을 +1보다 앞에 둡니다(end+1에서 해제된 코어를 바로 재사용할 수 있도록). 스캔하면서 누적하고 최댓값을 추적하여 출력합니다."
+    ],
+    "vi": [
+      "Số lõi cần thiết là số tiến trình lớn nhất chạy cùng một thời điểm. Cả hai đầu mút đều tính: một tiến trình vẫn đang chạy tại thời điểm end.",
+      "Tách mỗi tiến trình thành hai sự kiện: +1 tại start và -1 tại end+1. Sau khi sắp xếp theo thời gian và quét từ trái sang phải, tổng đang chạy là số tiến trình đang hoạt động tại thời điểm đó.",
+      "Tạo các sự kiện (start, +1) và (end+1, -1) cho mỗi tiến trình; sắp xếp theo thời gian, đặt -1 trước +1 khi cùng thời điểm (để lõi được giải phóng tại end+1 có thể dùng lại ngay); cộng dồn khi quét, theo dõi giá trị lớn nhất và in nó."
     ]
   },
   "explanationEn": "## Approach\n\nCreate a +1 event at each start and a −1 event one moment after each end, sort by time, scan while keeping the current concurrency, and take the maximum.\n\n## Proof of correctness\n\nBecause the interval endpoints are inclusive, a process is still running at time end, so its core is released only at end+1. After scanning past any event, the current count is exactly the number of processes running at that moment; its maximum is a lower bound on the cores needed over all moments, and that many cores suffice for a schedule.\n\n## Complexity\n\nO(n log n) time, O(n) space."

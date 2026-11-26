@@ -13,6 +13,21 @@
       "Jumps only move to larger indices, so processing reached positions in increasing index order is a topological propagation. The landing spots from index i are i plus some prime not exceeding the jump length, which is the set of primes shifted by i and then truncated.",
       "Sieve the primes below n into a bitset and keep the reached positions in another bitset. For each reachable index i, take the part of the prime bitset up to min(nums[i], n - 1 - i), shift it by i and OR it into the reached set, handling 64 landing spots per machine word.",
       "Build the prime bitset with a sieve; the reach bitset starts with only bit 0. Scan i upward, skipping whole empty words; if i is reachable and i = n - 1 the answer is 1. Otherwise let bound = min(nums[i], n - 1 - i); when bound >= 2, shift primes bits 0..bound word by word and OR them into reach starting at i, then test bit n - 1. If the scan ends without reaching it, output 0. For n = 1 output 1 directly."
+    ],
+    "ja": [
+      "ジャンプはより大きな添字にしか進まないので、到達した位置を添字の昇順に処理することは、トポロジカル順序での伝播になります。添字 i からの着地点は、i に、ジャンプ長を超えない素数を足したもので、それは素数の集合を i だけシフトして切り詰めたものです。",
+      "n 未満の素数をビットセットにふるい、到達した位置を別のビットセットで保持します。到達可能な各添字 i について、素数ビットセットの min(nums[i], n - 1 - i) までの部分を取り、i だけシフトして到達集合に OR します。これを 1 機械語あたり 64 個の着地点ずつ処理します。",
+      "ふるいで素数のビットセットを作り、到達ビットセットはビット 0 だけから始めます。i を上へ走査し、空のワード全体を飛ばします。i が到達可能で i = n - 1 なら答えは 1 です。そうでなければ bound = min(nums[i], n - 1 - i) とし、bound >= 2 のとき、素数のビット 0..bound をワードごとにシフトして i から reach に OR し、ビット n - 1 を調べます。到達しないまま走査が終わったら 0 を出力します。n = 1 のときは直接 1 を出力します。"
+    ],
+    "ko": [
+      "점프는 더 큰 인덱스로만 가므로, 도달한 위치를 인덱스 오름차순으로 처리하는 것은 위상 정렬 방식의 전파입니다. 인덱스 i에서 착지 가능한 곳은 i에 점프 길이를 넘지 않는 어떤 소수를 더한 위치이며, 이는 소수 집합을 i만큼 이동한 뒤 잘라 낸 것입니다.",
+      "n 미만의 소수를 비트셋에 체로 담고, 도달한 위치를 다른 비트셋에 보관합니다. 도달 가능한 각 인덱스 i에 대해 소수 비트셋에서 min(nums[i], n - 1 - i)까지의 부분을 취해 i만큼 시프트하고 도달 집합에 OR로 합치며, 기계 워드당 64개의 착지 위치를 한꺼번에 처리합니다.",
+      "체로 소수 비트셋을 만들고, 도달 비트셋은 비트 0만 켠 채로 시작합니다. i를 위로 훑으며 완전히 빈 워드는 건너뜁니다. i에 도달 가능하고 i = n - 1이면 답은 1입니다. 그렇지 않으면 bound = min(nums[i], n - 1 - i)로 두고, bound >= 2일 때 소수 비트 0..bound를 워드 단위로 시프트해 i부터 시작하도록 reach에 OR로 합친 뒤 비트 n - 1을 검사합니다. 도달하지 못한 채 훑기가 끝나면 0을 출력합니다. n = 1이면 바로 1을 출력합니다."
+    ],
+    "vi": [
+      "Các bước nhảy chỉ đi tới chỉ số lớn hơn, nên xử lý các vị trí đã đạt được theo thứ tự chỉ số tăng dần là một lan truyền theo thứ tự tô-pô. Các điểm hạ cánh từ chỉ số i là i cộng một số nguyên tố nào đó không vượt quá độ dài nhảy, tức là tập số nguyên tố được dịch đi i rồi cắt bớt.",
+      "Sàng các số nguyên tố nhỏ hơn n vào một bitset và giữ các vị trí đã đạt được trong một bitset khác. Với mỗi chỉ số i có thể tới, lấy phần của bitset nguyên tố đến min(nums[i], n - 1 - i), dịch nó đi i rồi OR vào tập đã đạt được, xử lý 64 điểm hạ cánh trong mỗi từ máy.",
+      "Xây bitset nguyên tố bằng một cái sàng; bitset reach ban đầu chỉ có bit 0. Quét i tăng dần, bỏ qua cả các từ rỗng; nếu i có thể tới và i = n - 1 thì đáp án là 1. Ngược lại đặt bound = min(nums[i], n - 1 - i); khi bound >= 2, dịch các bit 0..bound của primes từng từ một và OR chúng vào reach bắt đầu từ i, rồi kiểm tra bit n - 1. Nếu quét xong mà chưa tới được, in 0. Với n = 1 in 1 trực tiếp."
     ]
   },
   "explanationEn": "## Approach\n\nSieve the primes below n and store them as a big-integer bitset. The pending positions are kept in a bitset relative to the current index: take the prime bits that do not exceed the jump length and merge them in, then shift right to skip positions already processed. This avoids shifting the whole prime set left to absolute indices on every step.\n\n## Correctness\n\nOnly allowed prime step lengths create new positions, so nothing is reported falsely. Every edge points strictly forward, so processing reached positions in increasing order is a topological propagation; by induction on path length, every position reachable from 0 is eventually marked.\n\n## Complexity\n\nThe sieve is O(n log log n); bitset propagation takes O(n²/W) machine-word operations in the worst case, with O(n) space, where W is the word size used internally by the big integer."

@@ -13,6 +13,21 @@
       "First find only the best total memory: for a fixed foreground app, the best background app is the one with the largest memory not exceeding capacity minus the foreground memory.",
       "Group the background apps by memory and sort the memory values; then for each foreground app a binary search finds the largest memory it can pair with, giving the global best sum. Note that one memory value may belong to several background IDs, and all of them must be output.",
       "First pass: for each foreground app, find in the sorted memory list the largest value ≤ capacity − its memory and update best. Second pass: for each foreground app, take the group of background IDs whose memory is exactly best − its memory, and produce every (foreground ID, background ID). Sort by the two IDs lexicographically and print compact JSON; if there are none, print [[]]."
+    ],
+    "ja": [
+      "まず最良の合計メモリだけを求めます。フォアグラウンドアプリを固定すると、最良のバックグラウンドアプリは、容量からフォアグラウンドのメモリを引いた値を超えない最大のメモリを持つものです。",
+      "バックグラウンドアプリをメモリごとにグループ化してメモリの値をソートすると、各フォアグラウンドアプリについて二分探索でペアにできる最大のメモリが求まり、全体で最良の合計が得られます。1つのメモリ値が複数のバックグラウンド ID に対応することがあり、そのすべてを出力しなければならない点に注意してください。",
+      "1回目の走査: 各フォアグラウンドアプリについて、ソート済みのメモリ一覧から 容量 − そのメモリ 以下の最大の値を探し、best を更新します。2回目の走査: 各フォアグラウンドアプリについて、メモリがちょうど best − そのメモリ であるバックグラウンド ID のグループを取り出し、すべての (フォアグラウンド ID, バックグラウンド ID) を作ります。2つの ID で辞書順にソートして空白を含まない JSON を出力し、1つもなければ [[]] を出力します。"
+    ],
+    "ko": [
+      "먼저 최적의 총 메모리만 찾습니다. 포그라운드 앱이 고정되면 최적의 백그라운드 앱은 용량에서 포그라운드 메모리를 뺀 값을 넘지 않는 가장 큰 메모리를 가진 앱입니다.",
+      "백그라운드 앱을 메모리별로 묶고 메모리 값을 정렬합니다. 그러면 각 포그라운드 앱에 대해 이분 탐색으로 짝지을 수 있는 가장 큰 메모리를 찾아 전체 최적 합을 얻습니다. 하나의 메모리 값에 여러 백그라운드 ID가 속할 수 있으며 그 ID를 모두 출력해야 합니다.",
+      "첫 번째 패스: 각 포그라운드 앱에 대해 정렬된 메모리 목록에서 ≤ capacity − 그 메모리인 가장 큰 값을 찾아 best를 갱신합니다. 두 번째 패스: 각 포그라운드 앱에 대해 메모리가 정확히 best − 그 메모리인 백그라운드 ID 그룹을 가져와 모든 (포그라운드 ID, 백그라운드 ID)를 만듭니다. 두 ID에 대해 사전순으로 정렬하고 간결한 JSON으로 출력하며, 없으면 [[]]을 출력합니다."
+    ],
+    "vi": [
+      "Trước tiên chỉ tìm tổng bộ nhớ tốt nhất: với một ứng dụng nền trước cố định, ứng dụng nền sau tốt nhất là cái có bộ nhớ lớn nhất không vượt quá dung lượng trừ bộ nhớ nền trước.",
+      "Nhóm các ứng dụng nền sau theo bộ nhớ và sắp xếp các giá trị bộ nhớ; sau đó với mỗi ứng dụng nền trước, một lần tìm kiếm nhị phân cho ra bộ nhớ lớn nhất mà nó có thể ghép, từ đó có tổng tốt nhất toàn cục. Lưu ý một giá trị bộ nhớ có thể thuộc nhiều ID nền sau, và tất cả chúng đều phải được in ra.",
+      "Lượt đầu: với mỗi ứng dụng nền trước, tìm trong danh sách bộ nhớ đã sắp xếp giá trị lớn nhất ≤ dung lượng − bộ nhớ của nó và cập nhật best. Lượt hai: với mỗi ứng dụng nền trước, lấy nhóm các ID nền sau có bộ nhớ đúng bằng best − bộ nhớ của nó, và sinh mọi (ID nền trước, ID nền sau). Sắp xếp theo hai ID theo thứ tự từ điển và in JSON gọn; nếu không có thì in [[]]."
     ]
   },
   "explanationEn": "## Approach\n\nGroup the background apps by memory and sort the memories. In the first pass, binary search for each foreground app the largest background memory it can pair with, and find the optimal sum; in the second pass, take all background IDs that reach exactly that sum, enumerate every pair, and sort by the two IDs lexicographically.\n\n## Proof of correctness\n\nFor a fixed foreground app, the best background app must have the largest memory the capacity allows; otherwise switching to a larger one would improve the sum. Enumerating the foreground apps gives the global optimum. Once that sum is reached, the background memory is uniquely determined, but every ID with that memory gives a different valid answer, so enumerating all of them covers exactly the optimal pairs. Sorting only normalizes the output and loses no result.\n\n## Complexity\n\nTime O((n+m)log m+K log K), space O(n+m+K), where K is at most nm=250000."

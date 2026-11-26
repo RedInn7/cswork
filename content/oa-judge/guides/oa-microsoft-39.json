@@ -13,6 +13,21 @@
       "Adding the two segment sums counts the overlap twice, while the rules want it counted once with its sign flipped, that is, −1 times.",
       "So the score is first sum + second sum − 3 × overlap sum; with N only up to 2000, both starts can be enumerated directly.",
       "Build prefix sums. For every start i of the length-K segment and start j of the length-L segment, the overlap is [max(i,j), min(i+K,j+L)); when it is non-empty take its sum from the prefix sums, otherwise use 0. The score is the two sums minus three times the overlap sum; take the maximum. The answer can be negative, so start very low and use 64-bit integers."
+    ],
+    "ja": [
+      "2 つの区間の和を足すと、重なり部分は 2 回数えられますが、ルールでは符号を反転して 1 回、つまり −1 倍で数えたいのです。",
+      "よってスコアは、1 つ目の和 + 2 つ目の和 − 3 × 重なり部分の和です。N は高々 2000 なので、2 つの開始位置を直接全列挙できます。",
+      "累積和を作ります。長さ K の区間の開始位置 i と、長さ L の区間の開始位置 j のすべての組について、重なりは [max(i,j), min(i+K,j+L)) です。空でなければ累積和から和を取り、そうでなければ 0 とします。スコアは 2 つの和から重なり部分の和の 3 倍を引いたもので、その最大値を取ります。答えは負になり得るので、非常に小さい値から始め、64 ビット整数を使います。"
+    ],
+    "ko": [
+      "두 구간의 합을 더하면 겹치는 부분이 두 번 계산되지만, 규칙은 부호를 뒤집어 한 번, 즉 −1배로 계산하라고 합니다.",
+      "따라서 점수는 첫 번째 합 + 두 번째 합 − 3 × 겹치는 부분의 합입니다. N이 최대 2000이므로 두 시작점을 직접 열거할 수 있습니다.",
+      "누적합을 만듭니다. 길이 K 구간의 시작점 i와 길이 L 구간의 시작점 j에 대해 겹치는 구간은 [max(i,j), min(i+K,j+L))이며, 비어 있지 않으면 누적합으로 그 합을 구하고 비어 있으면 0을 사용합니다. 점수는 두 합에서 겹치는 부분 합의 3배를 뺀 값이며 그 최댓값을 취합니다. 정답은 음수일 수 있으므로 매우 낮은 값에서 시작하고 64비트 정수를 사용합니다."
+    ],
+    "vi": [
+      "Cộng hai tổng đoạn tính phần giao hai lần, trong khi quy tắc muốn tính nó một lần với dấu bị đổi, tức là nhân với −1.",
+      "Vì vậy điểm số là tổng thứ nhất + tổng thứ hai − 3 × tổng phần giao; với N chỉ tới 2000, có thể liệt kê trực tiếp cả hai điểm bắt đầu.",
+      "Xây tổng tiền tố. Với mỗi điểm bắt đầu i của đoạn độ dài K và điểm bắt đầu j của đoạn độ dài L, phần giao là [max(i,j), min(i+K,j+L)); khi nó khác rỗng thì lấy tổng của nó từ tổng tiền tố, ngược lại dùng 0. Điểm số là hai tổng trừ ba lần tổng phần giao; lấy giá trị lớn nhất. Đáp án có thể âm, nên hãy khởi tạo rất thấp và dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nUse prefix sums to compute the sums of both segments, then subtract 3 times the sum of the overlap; enumerate both starts and take the maximum.\n\n## Proof of correctness\n\nWhen the two segment sums are simply added, overlapping elements are counted twice, while the target needs them counted −1 times, so subtracting 3 times the overlap sum corrects this exactly. All start combinations are enumerated, and taking the maximum is optimal, including when scores are negative.\n\n## Complexity\n\nTime O((N−K+1)(N−L+1)), space O(N)."

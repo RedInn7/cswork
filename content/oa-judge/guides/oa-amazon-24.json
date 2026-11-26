@@ -13,6 +13,21 @@
       "If a row takes a smaller number while leaving a larger one, swapping to the larger one keeps the row limit and never lowers the total.",
       "So each row only needs its factor[i] largest numbers as candidates; any subset of the candidates respects every row limit, and the task becomes picking the x largest candidates.",
       "Sort each row and add its top factor[i] values to the candidates; if there are fewer than x candidates, output -1; otherwise sort the candidates in descending order and sum the first x (0 when x=0). The sum can reach 10^15, so use 64-bit integers."
+    ],
+    "ja": [
+      "ある行で小さい数を取り、より大きい数を残している場合、大きい数に取り替えても行の上限は保たれ、合計が減ることはありません。",
+      "したがって、各行では大きいほうの factor[i] 個だけが候補になります。候補の任意の部分集合はどの行の上限も満たすので、問題は候補から大きいほうの x 個を選ぶことに帰着します。",
+      "各行をソートし、上位 factor[i] 個の値を候補に加えます。候補が x 個未満なら -1 を出力します。そうでなければ候補を降順にソートし、先頭の x 個の和を出力します（x=0 なら 0）。和は 10^15 に達し得るので、64 ビット整数を使ってください。"
+    ],
+    "ko": [
+      "어떤 행에서 더 작은 수를 고르고 더 큰 수를 남겨 두었다면, 더 큰 수로 바꾸어도 행 제한은 유지되고 총합은 줄어들지 않습니다.",
+      "따라서 각 행에서는 가장 큰 factor[i]개의 수만 후보로 삼으면 되고, 후보의 어떤 부분집합이든 모든 행의 제한을 지킵니다. 그러면 문제는 후보 중 가장 큰 x개를 고르는 것으로 바뀝니다.",
+      "각 행을 정렬하여 상위 factor[i]개의 값을 후보에 넣습니다. 후보가 x개보다 적으면 -1을 출력하고, 그렇지 않으면 후보를 내림차순으로 정렬하여 앞의 x개의 합을 구합니다(x=0이면 0). 합이 10^15까지 될 수 있으므로 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Nếu một hàng lấy số nhỏ hơn mà bỏ lại số lớn hơn, đổi sang số lớn hơn vẫn giữ giới hạn của hàng và không bao giờ làm giảm tổng.",
+      "Vì vậy mỗi hàng chỉ cần factor[i] số lớn nhất làm ứng viên; mọi tập con của các ứng viên đều thỏa giới hạn của từng hàng, và bài toán trở thành chọn x ứng viên lớn nhất.",
+      "Sắp xếp từng hàng và thêm factor[i] giá trị đầu vào danh sách ứng viên; nếu số ứng viên ít hơn x thì xuất -1; ngược lại sắp xếp ứng viên giảm dần và cộng x giá trị đầu (0 khi x=0). Tổng có thể đạt 10^15, nên dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nKeep only the factor[i] largest elements of each row, then take the x largest among all candidates.\n\n## Proof of correctness\n\nIf some row selects a smaller element without selecting a larger one, swapping them keeps the row count unchanged and does not decrease the total. Therefore some optimal solution uses only the top factor[i] items of each row. The candidate set already respects every row's limit, so any subset of it is valid, and choosing the global x largest is optimal.\n\n## Complexity\n\nTime O(n² log(n²)), space O(n²)."

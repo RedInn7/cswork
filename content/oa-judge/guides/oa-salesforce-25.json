@@ -13,6 +13,21 @@
       "The target string may skip characters in X (a subsequence) but must be contiguous in Y (a substring), so use its end position in Y as the state and process X one character at a time. Compare Unicode characters (code points), not bytes or UTF-16 units.",
       "Let dp[j] be the length of the longest contiguous string ending at the j-th character of Y that can be a subsequence of the processed prefix of X. When a character c of X equals the j-th character of Y, it can extend dp[j-1] by one; otherwise c is not used and dp[j] keeps its value.",
       "First parse the JSON into two sequences of code points (a \\u escape pair forming a surrogate pair is one character). Start with dp all zero; for each character of X loop j from |Y| down to 1 and, on a match, set dp[j]=max(dp[j], dp[j-1]+1). The descending order prevents reusing one character of X. Print the maximum of dp (0 for empty strings)."
+    ],
+    "ja": [
+      "目的の文字列は、X では文字を飛ばせます (部分列) が、Y では連続していなければなりません (部分文字列)。そこで Y 上の終了位置を状態とし、X の文字を 1 つずつ処理します。バイトや UTF-16 単位ではなく、Unicode の文字 (コードポイント) で比較してください。",
+      "dp[j] を、Y の j 番目の文字で終わる最長の連続文字列のうち、X の処理済みの接頭辞の部分列として作れるものの長さとします。X の文字 c が Y の j 番目の文字に等しければ、dp[j-1] に 1 を足して伸ばせます。そうでなければ c は使われず、dp[j] はそのままです。",
+      "まず JSON を、コードポイントの 2 つの列にパースします (サロゲートペアをなす \\u エスケープの組は 1 文字です)。dp をすべて 0 で初期化し、X の各文字について j を |Y| から 1 まで降順に回し、一致したら dp[j]=max(dp[j], dp[j-1]+1) とします。降順にすることで、X の 1 文字が再利用されることを防ぎます。dp の最大値を出力します (空文字列なら 0)。"
+    ],
+    "ko": [
+      "목표 문자열은 X에서는 문자를 건너뛸 수 있지만(부분 수열) Y에서는 연속이어야 하므로(부분 문자열), Y에서 끝나는 위치를 상태로 삼고 X를 한 문자씩 처리합니다. 바이트나 UTF-16 단위가 아니라 유니코드 문자(코드 포인트)를 비교하세요.",
+      "dp[j]를 처리한 X의 접두사의 부분 수열이 될 수 있는, Y의 j번째 문자로 끝나는 가장 긴 연속 문자열의 길이라 하겠습니다. X의 문자 c가 Y의 j번째 문자와 같으면 dp[j-1]을 1 늘릴 수 있고, 아니면 c는 사용되지 않으며 dp[j]는 값을 유지합니다.",
+      "먼저 JSON을 코드 포인트의 두 시퀀스로 파싱합니다(서로게이트 쌍을 이루는 \\u 이스케이프 쌍은 한 문자입니다). dp를 모두 0으로 시작하고, X의 각 문자에 대해 j를 |Y|부터 1까지 내려가며 일치하면 dp[j]=max(dp[j], dp[j-1]+1)로 설정합니다. 내림차순이므로 X의 한 문자를 재사용하지 않습니다. dp의 최댓값을 출력합니다(빈 문자열이면 0)."
+    ],
+    "vi": [
+      "Xâu đích có thể bỏ qua các ký tự trong X (dãy con) nhưng phải liên tiếp trong Y (xâu con), nên dùng vị trí kết thúc của nó trong Y làm trạng thái và xử lý X từng ký tự một. So sánh các ký tự Unicode (code point), không phải byte hay đơn vị UTF-16.",
+      "Gọi dp[j] là độ dài của xâu liên tiếp dài nhất kết thúc tại ký tự thứ j của Y mà có thể là dãy con của tiền tố đã xử lý của X. Khi một ký tự c của X bằng ký tự thứ j của Y, nó có thể mở rộng dp[j-1] thêm một; ngược lại c không được dùng và dp[j] giữ nguyên giá trị.",
+      "Trước tiên phân tích JSON thành hai dãy code point (một cặp thoát \\u tạo thành cặp surrogate là một ký tự). Bắt đầu với dp toàn 0; với mỗi ký tự của X lặp j từ |Y| xuống 1 và, khi khớp, đặt dp[j]=max(dp[j], dp[j-1]+1). Thứ tự giảm dần ngăn việc dùng lại một ký tự của X. In giá trị lớn nhất của dp (0 với các xâu rỗng)."
     ]
   },
   "explanationEn": "## Approach\n\ndp[j] stores the longest contiguous string ending at the j-th character of Y that can be a subsequence of the processed prefix of X. For each character of X read, update the matching positions in decreasing order of j to max(old value, dp[j-1]+1).\n\n## Proof of correctness\n\nWhen the current character of X is not used, the old state is kept; when it is used, it must match the current position of Y, and the previous match must end contiguously at the previous position of Y. The decreasing order guarantees that the previous round's state is read and the same character of X is not reused; the two kinds of transitions exhaust all valid matches.\n\n## Complexity\n\nTime O(|X||Y|), space O(|Y|)."

@@ -13,6 +13,21 @@
       "Count characters as Unicode code points: a non-BMP character such as an emoji may be written in JSON as two \\u escapes (a surrogate pair), but it is a single character.",
       "Decode the input JSON string completely into code points, build the new string from the last code point, a space, and the second-to-last code point, then encode it in the canonical ASCII JSON form the problem specifies.",
       "When decoding, handle \\\" \\\\ \\/ \\b \\f \\n \\r \\t and \\uXXXX, merging a high surrogate immediately followed by a low surrogate into one code point. When encoding, escape double quotes and backslashes with a backslash, use the short escapes for the five common control characters, output other printable ASCII as is, write every other character as a lowercase four-digit \\uXXXX, split non-BMP characters into a lowercase surrogate pair, and keep the surrounding double quotes."
+    ],
+    "ja": [
+      "文字は Unicode コードポイントで数えます。絵文字のような BMP 外の文字は、JSON では2つの \\u エスケープ（サロゲートペア）として書かれることがありますが、1文字です。",
+      "入力の JSON 文字列を完全にコードポイントへデコードし、最後のコードポイント、スペース、後ろから2番目のコードポイントから新しい文字列を作って、問題が指定する正規の ASCII JSON 形式でエンコードします。",
+      "デコードでは \\\" \\\\ \\/ \\b \\f \\n \\r \\t と \\uXXXX を処理し、上位サロゲートの直後に下位サロゲートが続く場合は1つのコードポイントに統合します。エンコードでは、二重引用符とバックスラッシュをバックスラッシュでエスケープし、よく使う5つの制御文字には短いエスケープを使い、その他の印字可能な ASCII はそのまま出力し、それ以外のすべての文字は小文字の4桁の \\uXXXX で書き、BMP 外の文字は小文字のサロゲートペアに分け、両端の二重引用符を保持します。"
+    ],
+    "ko": [
+      "문자를 유니코드 코드 포인트 단위로 세세요. 이모지처럼 BMP 밖의 문자는 JSON에서 \\u 이스케이프 두 개(서로게이트 쌍)로 쓰일 수 있지만 하나의 문자입니다.",
+      "입력 JSON 문자열을 코드 포인트로 완전히 디코딩하고, 마지막 코드 포인트, 공백, 끝에서 두 번째 코드 포인트로 새 문자열을 만든 뒤, 문제에서 정한 정규 ASCII JSON 형태로 인코딩합니다.",
+      "디코딩할 때는 \\\" \\\\ \\/ \\b \\f \\n \\r \\t 및 \\uXXXX를 처리하고, 상위 서로게이트 바로 뒤에 하위 서로게이트가 오면 하나의 코드 포인트로 합칩니다. 인코딩할 때는 큰따옴표와 역슬래시를 역슬래시로 이스케이프하고, 자주 쓰는 다섯 제어 문자에는 짧은 이스케이프를 쓰며, 그 밖의 출력 가능한 ASCII는 그대로 두고, 나머지 모든 문자는 소문자 네 자리 \\uXXXX로 쓰고, BMP 밖의 문자는 소문자 서로게이트 쌍으로 나누며, 바깥의 큰따옴표를 유지합니다."
+    ],
+    "vi": [
+      "Đếm ký tự theo điểm mã Unicode: một ký tự ngoài BMP như emoji có thể được viết trong JSON bằng hai escape \\u (một cặp surrogate), nhưng nó là một ký tự duy nhất.",
+      "Giải mã hoàn toàn xâu JSON đầu vào thành các điểm mã, dựng xâu mới từ điểm mã cuối, một dấu cách, và điểm mã thứ hai từ cuối, rồi mã hóa nó theo dạng JSON ASCII chính tắc mà đề bài chỉ định.",
+      "Khi giải mã, xử lý \\\" \\\\ \\/ \\b \\f \\n \\r \\t và \\uXXXX, gộp một surrogate cao ngay sau là surrogate thấp thành một điểm mã. Khi mã hóa, thoát dấu nháy kép và dấu gạch chéo ngược bằng một dấu gạch chéo ngược, dùng các escape ngắn cho năm ký tự điều khiển thông dụng, in nguyên các ký tự ASCII in được khác, viết mọi ký tự còn lại dưới dạng \\uXXXX bốn chữ số viết thường, tách ký tự ngoài BMP thành một cặp surrogate viết thường, và giữ các dấu nháy kép bao quanh."
     ]
   },
   "explanationEn": "## Approach\n\nTake the last character and the second-to-last character, join them with a space, and output the unique ASCII JSON encoding.\n\n## Proof of correctness\n\nPython string indexing counts Unicode code points, so -1 and -2 are exactly the two required characters. After inserting one space, JSON escaping changes only the representation, not the resulting string.\n\n## Complexity\n\nO(n) input time and space, output length O(1)."

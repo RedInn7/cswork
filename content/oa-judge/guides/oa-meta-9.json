@@ -13,6 +13,21 @@
       "The matrix is at most 100×100 with at most 100 commands, so applying each command to the whole matrix costs only about a million operations; simulate the definitions directly.",
       "Swapping rows or columns and reversing a row or column are all in-place element swaps; only the clockwise rotation changes the dimensions, so it needs a new matrix with the old column count as its row count.",
       "For a rotation, put old cell (i,j) at new cell (j,R−1−i), where R is the old row count; to reverse a column, swap that column's entries in rows i and R−1−i. After all commands, print the current row and column counts, then the matrix row by row."
+    ],
+    "ja": [
+      "行列は最大 100×100、コマンドは最大 100 個なので、各コマンドを行列全体に適用しても約 100 万回の操作で済みます。定義どおり直接シミュレートします。",
+      "行や列の入れ替えと、行や列の反転は、いずれもその場での要素のスワップです。寸法が変わるのは時計回りの回転だけなので、旧列数を行数とする新しい行列が必要です。",
+      "回転では、旧セル (i,j) を新セル (j,R−1−i) に置きます。ここで R は旧行数です。列を反転するには、その列の行 i と行 R−1−i の要素を入れ替えます。すべてのコマンドの後、現在の行数と列数を出力し、続けて行列を 1 行ずつ出力します。"
+    ],
+    "ko": [
+      "행렬은 최대 100×100이고 명령은 최대 100개이므로 각 명령을 행렬 전체에 적용해도 약 백만 번의 연산이면 충분합니다. 정의 그대로 시뮬레이션하세요.",
+      "행이나 열의 교환과 뒤집기는 모두 제자리에서의 원소 교환입니다. 시계 방향 회전만 크기를 바꾸므로, 기존 열 수를 행 수로 하는 새 행렬이 필요합니다.",
+      "회전에서는 기존 칸 (i,j)를 새 칸 (j,R−1−i)에 놓습니다(R은 기존 행 수). 열을 뒤집으려면 그 열의 i행과 R−1−i행의 원소를 맞바꿉니다. 모든 명령이 끝나면 현재의 행 수와 열 수를 출력하고 행렬을 행 단위로 출력합니다."
+    ],
+    "vi": [
+      "Ma trận có kích thước tối đa 100×100 với tối đa 100 lệnh, nên áp dụng mỗi lệnh lên toàn bộ ma trận chỉ tốn khoảng một triệu phép toán; hãy mô phỏng trực tiếp theo định nghĩa.",
+      "Hoán đổi hàng hoặc cột và đảo ngược một hàng hoặc cột đều là các phép hoán đổi phần tử tại chỗ; chỉ phép xoay theo chiều kim đồng hồ làm thay đổi kích thước, nên cần một ma trận mới có số hàng bằng số cột cũ.",
+      "Với phép xoay, đặt ô cũ (i,j) vào ô mới (j,R−1−i), trong đó R là số hàng cũ; để đảo một cột, hoán đổi các phần tử của cột đó ở hàng i và R−1−i. Sau khi thực hiện mọi lệnh, in số hàng và số cột hiện tại, rồi in ma trận theo từng hàng."
     ]
   },
   "explanationEn": "## Approach\n\nA swap exchanges the corresponding elements, a reversal reverses the corresponding row or column, and a rotation turns column j, read from bottom to top, into the new row j.\n\n## Why it works\n\nEach operation applies the coordinate permutation it defines. A clockwise rotation maps the old (i,j) to (j,R−1−i), so reading a column from bottom to top gives exactly the new row. Composing all the permutations in order yields the final matrix.\n\n## Complexity\n\nTime O(qRC), extra space O(RC)."

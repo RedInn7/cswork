@@ -13,6 +13,21 @@
       "The number of lamps lighting a point only changes at interval endpoints. On integer coordinates, the closed interval [x - r, x + r] starts counting at x - r and stops counting only at x + r + 1.",
       "Turn each lamp into two events: +1 at x - r and -1 at x + r + 1. After sorting by coordinate, sweep from left to right; the leftmost point of the most-covered stretch is always an event coordinate, so only event points need checking.",
       "Collect the 2n events and sort them by coordinate, merging all events at the same coordinate before checking. Maintain the current coverage count during the sweep, and update the best value and the answer only when count is strictly greater than the best so far, which keeps the leftmost coordinate on ties. Coordinates reach about ±2 * 10^9, so use 64-bit integers."
+    ],
+    "ja": [
+      "ある点を照らすランプの数は、区間の端点でだけ変化します。整数座標では、閉区間 [x - r, x + r] は x - r からカウントが始まり、x + r + 1 でようやくカウントが止まります。",
+      "各ランプを 2 つのイベントに変換します。x - r での +1 と、x + r + 1 での -1 です。座標で並べ替えた後、左から右へ掃引します。最も多く覆われる範囲の最左の点は必ずイベントの座標なので、イベント点だけを調べれば十分です。",
+      "2n 個のイベントを集めて座標で並べ替え、同じ座標のイベントはすべてまとめてから判定します。掃引中は現在の被覆数を保持し、count がこれまでの最大値を厳密に超えたときにだけ、最大値と答えを更新します。こうすると、同点のときに最左の座標が保たれます。座標は約 ±2 * 10^9 に達するので、64 ビット整数を使ってください。"
+    ],
+    "ko": [
+      "한 점을 비추는 전등의 수는 구간의 끝점에서만 변합니다. 정수 좌표에서 닫힌 구간 [x - r, x + r]은 x - r에서 세기 시작하고, x + r + 1에서야 세기를 멈춥니다.",
+      "각 전등을 두 개의 이벤트로 바꿉니다. x - r에서 +1, x + r + 1에서 -1입니다. 좌표순으로 정렬한 뒤 왼쪽에서 오른쪽으로 스윕하면, 가장 많이 덮인 구간의 가장 왼쪽 점은 항상 이벤트 좌표이므로 이벤트 점만 확인하면 됩니다.",
+      "2n개의 이벤트를 모아 좌표별로 정렬하고, 확인하기 전에 같은 좌표의 이벤트를 모두 합칩니다. 스윕하는 동안 현재 덮인 횟수를 유지하며, count가 지금까지의 최댓값보다 엄격하게 클 때만 최댓값과 답을 갱신하여 동률이면 가장 왼쪽 좌표가 남도록 합니다. 좌표는 약 ±2 * 10^9까지 가므로 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Số đèn chiếu sáng một điểm chỉ thay đổi tại các đầu mút của đoạn. Trên tọa độ nguyên, đoạn đóng [x - r, x + r] bắt đầu được tính từ x - r và chỉ ngừng được tính tại x + r + 1.",
+      "Biến mỗi đèn thành hai sự kiện: +1 tại x - r và -1 tại x + r + 1. Sau khi sắp xếp theo tọa độ, quét từ trái sang phải; điểm ngoài cùng bên trái của đoạn được phủ nhiều nhất luôn là tọa độ của một sự kiện, nên chỉ cần kiểm tra các điểm sự kiện.",
+      "Thu thập 2n sự kiện và sắp xếp theo tọa độ, gộp mọi sự kiện cùng tọa độ trước khi kiểm tra. Duy trì số lượng phủ hiện tại trong lúc quét, và chỉ cập nhật giá trị tốt nhất và đáp án khi count lớn hơn ngặt giá trị tốt nhất hiện có, nhờ đó giữ được tọa độ ngoài cùng bên trái khi bằng nhau. Tọa độ đạt khoảng ±2 * 10^9, nên dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nFor integer coordinates, add 1 at the left end and subtract 1 at the right end plus 1. Merge the events by coordinate and sweep the coverage count, recording the coordinate only when the maximum coverage strictly improves.\n\n## Correctness\n\nThese closed-interval events keep the right endpoint counted. The coverage only changes at these boundaries, so the leftmost point of the most-covered stretch is always an integer event point. Sweeping in increasing order and updating only on a strict increase keeps exactly the leftmost point among ties.\n\n## Complexity\n\nTime O(n log n), space O(n)."

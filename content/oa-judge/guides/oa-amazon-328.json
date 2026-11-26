@@ -13,6 +13,21 @@
       "The relative order of the queue never changes; removals only make elements disappear. So \"the current head\" is the smallest index not yet removed, which a pointer that only moves forward can find.",
       "Each second must remove every remaining element whose deadline is ≤t, and t only increases: sort the indices by deadline and use a second forward-only pointer to handle newly expired items in bulk, skipping those already removed.",
       "Sort the indices by wait; set alive to all true, remaining=n and t=0. Loop until remaining is 0: move head forward past removed elements and remove head; then advance the pointer over every index with wait≤t, removing it and decrementing the count if it is still alive; record remaining and increase t by 1. Output all records separated by spaces (the last one is always 0)."
+    ],
+    "ja": [
+      "キューの相対順序は変わらず、削除は要素を消すだけです。したがって「現在の先頭」は未削除の最小インデックスであり、前にしか進まないポインタで見つけられます。",
+      "毎秒、期限が ≤t の残りの要素をすべて取り除く必要があり、t は増える一方です。インデックスを期限でソートし、前にしか進まない2つ目のポインタを使って、新たに期限切れになった要素をまとめて処理し、すでに削除済みのものは飛ばします。",
+      "インデックスを wait でソートし、alive をすべて true、remaining=n、t=0 とします。remaining が 0 になるまでループします。head を削除済みの要素の先まで進めてから head を取り除き、次にポインタを wait≤t のすべてのインデックスにわたって進め、まだ alive なら取り除いて個数を減らします。その後 remaining を記録し、t を 1 増やします。記録をすべて空白区切りで出力します(最後は必ず 0 です)。"
+    ],
+    "ko": [
+      "큐의 상대적인 순서는 변하지 않으며 제거는 원소를 없앨 뿐입니다. 따라서 \"현재 맨 앞\"은 아직 제거되지 않은 가장 작은 인덱스이고, 앞으로만 움직이는 포인터로 찾을 수 있습니다.",
+      "매초 마감 시각이 ≤t인 남은 원소를 모두 제거해야 하며 t는 증가하기만 합니다. 인덱스를 마감 시각순으로 정렬하고, 앞으로만 움직이는 두 번째 포인터로 새로 만료된 항목을 한꺼번에 처리하되 이미 제거된 항목은 건너뜁니다.",
+      "wait 기준으로 인덱스를 정렬하고, alive는 모두 true, remaining=n, t=0으로 둡니다. remaining이 0이 될 때까지 반복합니다. head를 제거된 원소 너머로 옮긴 뒤 head를 제거하고, 이어서 포인터를 wait≤t인 모든 인덱스 위로 전진시키며 아직 alive이면 제거하고 개수를 줄입니다. 그다음 remaining을 기록하고 t를 1 증가시킵니다. 기록한 값을 모두 공백으로 구분하여 출력합니다(마지막 값은 항상 0입니다)."
+    ],
+    "vi": [
+      "Thứ tự tương đối của hàng đợi không bao giờ thay đổi; việc loại bỏ chỉ làm các phần tử biến mất. Vì vậy \"phần tử đầu hiện tại\" là chỉ số nhỏ nhất chưa bị loại, có thể tìm bằng một con trỏ chỉ tiến về phía trước.",
+      "Mỗi giây phải loại mọi phần tử còn lại có hạn chót ≤t, mà t chỉ tăng: hãy sắp xếp các chỉ số theo hạn chót và dùng con trỏ thứ hai chỉ tiến tới để xử lý hàng loạt các phần tử vừa hết hạn, bỏ qua những phần tử đã bị loại.",
+      "Sắp xếp các chỉ số theo wait; đặt alive toàn true, remaining=n và t=0. Lặp đến khi remaining bằng 0: dịch head qua các phần tử đã bị loại rồi loại head; sau đó cho con trỏ chạy qua mọi chỉ số có wait≤t, loại nó và giảm bộ đếm nếu nó vẫn còn sống; ghi lại remaining rồi tăng t thêm 1. In tất cả các giá trị đã ghi, cách nhau bởi dấu cách (giá trị cuối luôn là 0)."
     ]
   },
   "explanationEn": "## Approach\n\nSort the indices by deadline, mark the processes still in the queue with an alive array, and only move head forward to find the first item not yet removed. Each second, remove head first, then advance a pointer through the deadline-sorted order to remove, in bulk, the remaining items with wait≤t.\n\n## Proof of correctness\n\nalive represents exactly the items still in the queue after all earlier processing and expiry actions; the original relative order never changes, so the smallest alive index is the head of the queue. The pointer over the deadline-sorted order finds exactly the items that newly expire this second, and alive excludes those already processed so they are not subtracted twice. Neither pointer ever moves back; each item is removed by processing at most once and checked for expiry once, so the printed count is the true queue length at each specified moment.\n\n## Complexity\n\nTime O(n log n), space O(n), and the output length is ≤n."

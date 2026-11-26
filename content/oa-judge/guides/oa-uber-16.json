@@ -13,6 +13,21 @@
       "Letters can be rearranged into a palindrome exactly when at most one letter has an odd count. Keep a 26-bit parity mask; the condition becomes: the mask is 0 or has exactly one bit set. The mask of the path from q to an ancestor v equals the root-to-q prefix mask XOR the root-to-parent(v) prefix mask.",
       "Do one depth-first traversal and keep counts of the parent prefix masks for the nodes on the current root path. At node q, compute its prefix mask and look up how many stored masks are identical to it or differ in exactly one bit; their sum is the answer. Undo the change when backtracking.",
       "Start the count table with mask 0 once, standing for the root's parent prefix. Traverse with an explicit stack: on entering a node, XOR its letter bit into the mask; its answer is the count of that mask plus the counts of the 26 masks that differ in one bit; then increase the count of the mask by 1 and push an exit marker followed by all children. When an exit marker is popped, decrease that mask's count by 1. Finally print the answers of the queried nodes in order."
+    ],
+    "ja": [
+      "文字を並べ替えて回文にできるのは、奇数回現れる文字が高々 1 種類のときです。26 ビットのパリティマスクを保持すると、条件は「マスクが 0 か、ちょうど 1 ビットだけ立っている」になります。q から祖先 v までのパスのマスクは、根から q までの接頭辞マスクと、根から parent(v) までの接頭辞マスクの XOR に等しくなります。",
+      "深さ優先探索を 1 回行い、現在の根からのパス上のノードについて、親の接頭辞マスクの出現回数を保持します。ノード q では、その接頭辞マスクを計算し、保存されているマスクのうち、それと同一か、ちょうど 1 ビットだけ異なるものの個数を調べます。その合計が答えです。バックトラックのときに変更を元に戻します。",
+      "個数テーブルを、根の親の接頭辞に対応するマスク 0 を 1 回だけ入れて始めます。明示的なスタックで走査します。ノードに入るときに、その文字のビットをマスクに XOR し、そのノードの答えを、そのマスクの個数と、1 ビットだけ異なる 26 個のマスクの個数の合計とします。続いて、そのマスクの個数を 1 増やし、終了マーカーを積んでから、すべての子を積みます。終了マーカーを取り出したら、そのマスクの個数を 1 減らします。最後に、クエリのノードの答えを順に出力します。"
+    ],
+    "ko": [
+      "글자를 회문으로 재배열할 수 있는 것은 홀수 개인 글자가 많아야 하나일 때와 정확히 같습니다. 26비트 홀짝 마스크를 유지하면 조건은 마스크가 0이거나 비트가 정확히 하나만 켜져 있는 것이 됩니다. q에서 조상 v까지 경로의 마스크는 루트에서 q까지의 접두 마스크와 루트에서 parent(v)까지의 접두 마스크의 XOR과 같습니다.",
+      "깊이 우선 탐색을 한 번 하면서, 현재 루트 경로에 있는 노드들의 부모 접두 마스크 개수를 유지합니다. 노드 q에서 접두 마스크를 계산하고, 그와 같거나 정확히 한 비트만 다른 저장된 마스크가 몇 개인지 조회한 합이 답입니다. 되돌아올 때 변경을 취소합니다.",
+      "개수 표는 루트의 부모 접두를 나타내는 마스크 0으로 한 번 초기화합니다. 명시적 스택으로 순회하며, 노드에 진입할 때 그 글자 비트를 마스크에 XOR합니다. 그 노드의 답은 해당 마스크의 개수와 한 비트만 다른 26개 마스크의 개수의 합입니다. 그런 다음 마스크의 개수를 1 늘리고, 종료 마커를 넣은 뒤 모든 자식을 넣습니다. 종료 마커를 꺼내면 그 마스크의 개수를 1 줄입니다. 마지막으로 질의된 노드의 답을 순서대로 출력합니다."
+    ],
+    "vi": [
+      "Các chữ cái có thể sắp xếp thành palindrome khi và chỉ khi có nhiều nhất một chữ cái có số lần xuất hiện lẻ. Giữ một mặt nạ chẵn lẻ 26 bit; điều kiện trở thành: mặt nạ bằng 0 hoặc có đúng một bit được đặt. Mặt nạ của đường từ q đến tổ tiên v bằng mặt nạ tiền tố từ gốc đến q XOR mặt nạ tiền tố từ gốc đến parent(v).",
+      "Duyệt theo chiều sâu một lần và giữ số đếm của các mặt nạ tiền tố của nút cha đối với các nút trên đường đi từ gốc hiện tại. Tại nút q, tính mặt nạ tiền tố của nó và tra xem có bao nhiêu mặt nạ đã lưu giống hệt nó hoặc khác đúng một bit; tổng của chúng là đáp án. Hoàn tác thay đổi khi quay lui.",
+      "Khởi tạo bảng đếm với mặt nạ 0 đúng một lần, đại diện cho tiền tố của nút cha của gốc. Duyệt bằng ngăn xếp tường minh: khi vào một nút, XOR bit chữ cái của nó vào mặt nạ; đáp án của nó là số đếm của mặt nạ đó cộng với số đếm của 26 mặt nạ khác một bit; sau đó tăng số đếm của mặt nạ thêm 1 và đẩy một dấu thoát rồi đến tất cả các nút con. Khi lấy dấu thoát ra, giảm số đếm của mặt nạ đó đi 1. Cuối cùng in đáp án của các nút được truy vấn theo thứ tự."
     ]
   },
   "explanationEn": "## Approach\n\nDuring DFS, maintain the XOR mask of the letters on the root path, together with the frequencies of the parents' prefix masks for the ancestors on the current path. Count the cases where the current prefix XOR a candidate mask is 0 or a single bit, which means checking 27 masks; remove the current mask when backtracking.\n\n## Correctness\n\nThe letter parity mask from q to v is exactly the root-to-q prefix XOR the root-to-parent(v) prefix. The frequency table contains only these parent prefixes along the current ancestor chain, and checking 0 and the 26 single-bit differences enumerates exactly all paths that can be rearranged into a palindrome. Removing on backtrack guarantees that sibling subtrees never get mixed in.\n\n## Complexity\n\nTime O(26n+m), space O(n+m)."

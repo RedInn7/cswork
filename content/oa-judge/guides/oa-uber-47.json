@@ -13,6 +13,21 @@
       "If the chosen group has k people, then every member sees exactly k - 1 others. Feasibility depends only on whether k - 1 lies in each member's range, not on who else is chosen.",
       "A group size k is feasible exactly when at least k intervals cover k - 1: that is clearly necessary, and conversely any k of the people covering k - 1 work. So you only need to know how many intervals cover each integer.",
       "Use a difference array: for each interval [low, high], add 1 at low and subtract 1 at high + 1. Take prefix sums for others = 0..n - 1 to get the coverage cnt, and whenever cnt >= others + 1 set the answer to others + 1. If no size works, the answer is 0 (the empty set)."
+    ],
+    "ja": [
+      "選んだグループが k 人なら、各メンバーから見た他の人数はちょうど k - 1 です。可能かどうかは、k - 1 が各メンバーの範囲に入っているかどうかだけで決まり、他に誰が選ばれているかには依存しません。",
+      "グループサイズ k が可能であることと、k - 1 をカバーする区間が少なくとも k 個あることは同値です。必要性は明らかで、逆に k - 1 をカバーする k 人はどれでも条件を満たします。したがって、各整数をカバーする区間の個数だけがわかれば十分です。",
+      "差分配列を使います。各区間 [low, high] について、low に 1 を足し、high + 1 から 1 を引きます。others = 0..n - 1 について累積和を取ってカバー数 cnt を求め、cnt >= others + 1 なら答えを others + 1 にします。可能なサイズがなければ、答えは 0(空集合)です。"
+    ],
+    "ko": [
+      "선택한 그룹이 k명이면 모든 구성원은 정확히 k - 1명의 다른 사람을 봅니다. 가능한지는 k - 1이 각 구성원의 범위 안에 있는지에만 달려 있고, 누가 함께 선택되었는지와는 무관합니다.",
+      "그룹 크기 k가 가능한 것은 정확히 k - 1을 포함하는 구간이 k개 이상일 때입니다. 이것은 명백히 필요조건이고, 역으로 k - 1을 포함하는 사람들 중 아무 k명을 골라도 됩니다. 따라서 각 정수를 포함하는 구간이 몇 개인지만 알면 됩니다.",
+      "차분 배열을 씁니다. 각 구간 [low, high]에 대해 low에 1을 더하고 high + 1에서 1을 뺍니다. others = 0..n - 1에 대해 누적 합을 구해 포함 횟수 cnt를 얻고, cnt >= others + 1일 때마다 답을 others + 1로 설정합니다. 가능한 크기가 하나도 없으면 답은 0(공집합)입니다."
+    ],
+    "vi": [
+      "Nếu nhóm được chọn có k người, thì mỗi thành viên thấy đúng k - 1 người khác. Tính khả thi chỉ phụ thuộc vào việc k - 1 có nằm trong khoảng của từng thành viên hay không, không phụ thuộc vào những ai khác được chọn.",
+      "Kích thước nhóm k khả thi chính xác khi có ít nhất k khoảng phủ k - 1: điều này rõ ràng là cần thiết, và ngược lại bất kỳ k người nào có khoảng phủ k - 1 đều dùng được. Vì vậy bạn chỉ cần biết có bao nhiêu khoảng phủ mỗi số nguyên.",
+      "Dùng mảng hiệu: với mỗi khoảng [low, high], cộng 1 tại low và trừ 1 tại high + 1. Lấy tổng tiền tố cho others = 0..n - 1 để có độ phủ cnt, và mỗi khi cnt >= others + 1 thì đặt đáp án là others + 1. Nếu không kích thước nào dùng được, đáp án là 0 (tập rỗng)."
     ]
   },
   "explanationEn": "## Approach\n\nA group size k is feasible if and only if at least k intervals cover k-1. Use a difference array to count how many intervals cover each possible number of other passengers, then take the largest feasible k.\n\n## Correctness\n\nEvery member of the group must have k-1 inside their range, so the condition is necessary. If at least k people cover k-1, choosing any k of them makes everyone comfortable, so it is also sufficient. The difference array counts closed-interval coverage exactly, and trying every group size gives the maximum.\n\n## Complexity\n\nTime O(n), space O(n)."

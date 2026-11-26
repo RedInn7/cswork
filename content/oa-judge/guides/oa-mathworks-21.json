@@ -13,6 +13,21 @@
       "In every round the non-main tasks still advance by y and the chosen main task advances by x; so after T rounds every task has at least T*y, and each time it is the main task it gains an extra x - y.",
       "More rounds only make finishing easier, so feasibility is monotone in T and you can binary search on T. For a fixed T, task i still needs to be the main task ceil(max(0, executionTime[i] - T*y) / (x - y)) times; T is feasible when these counts add up to at most T.",
       "Use 0 as the lower bound and ceil(max(executionTime) / y) as the upper bound, since that many rounds finish everything with y alone; when testing a midpoint, add up the main-task picks every task still needs, shrink the upper bound if the total is at most the midpoint, otherwise raise the lower bound. T*y can reach 10^18, so use 64-bit integers."
+    ],
+    "ja": [
+      "どのラウンドでも、メインでないタスクは y だけ進み、選ばれたメインタスクは x だけ進みます。したがって T ラウンド後には、すべてのタスクが少なくとも T*y を得ており、メインタスクになるたびに x - y の追加分を得ます。",
+      "ラウンドが増えるほど完了しやすくなるので、実現可能性は T について単調で、T で二分探索できます。T を固定したとき、タスク i はなお ceil(max(0, executionTime[i] - T*y) / (x - y)) 回メインタスクになる必要があります。これらの回数の合計が T 以下なら T は実現可能です。",
+      "下限は 0、上限は ceil(max(executionTime) / y) とします（その回数あれば y だけですべて完了するため）。中点を試すときは、各タスクがなお必要とするメインタスクの回数を合計し、合計が中点以下なら上限を縮め、そうでなければ下限を上げます。T*y は 10^18 に達しうるので、64 ビット整数を使います。"
+    ],
+    "ko": [
+      "매 라운드에서 주 작업이 아닌 작업은 y만큼, 선택된 주 작업은 x만큼 진행합니다. 따라서 T 라운드 후 모든 작업은 최소 T*y를 얻고, 주 작업이 될 때마다 x - y를 추가로 얻습니다.",
+      "라운드가 많을수록 끝내기 쉬우므로 가능 여부는 T에 대해 단조이며, T에 대해 이분 탐색할 수 있습니다. T를 고정하면 작업 i는 ceil(max(0, executionTime[i] - T*y) / (x - y))번 주 작업이 되어야 하고, 이 횟수들의 합이 T 이하이면 T는 가능합니다.",
+      "하한은 0, 상한은 ceil(max(executionTime) / y)로 둡니다. y만으로도 그만큼의 라운드면 모두 끝나기 때문입니다. 중간값을 검사할 때 모든 작업이 더 필요로 하는 주 작업 횟수를 합산해, 합이 중간값 이하이면 상한을 줄이고 아니면 하한을 올립니다. T*y는 10^18까지 갈 수 있으므로 64비트 정수를 사용합니다."
+    ],
+    "vi": [
+      "Trong mỗi vòng, các tác vụ không phải tác vụ chính vẫn tiến thêm y và tác vụ chính được chọn tiến thêm x; vì vậy sau T vòng mọi tác vụ có ít nhất T*y, và mỗi lần nó là tác vụ chính nó được thêm x - y.",
+      "Càng nhiều vòng thì càng dễ hoàn thành, nên tính khả thi đơn điệu theo T và bạn có thể tìm kiếm nhị phân trên T. Với T cố định, tác vụ i vẫn cần làm tác vụ chính ceil(max(0, executionTime[i] - T*y) / (x - y)) lần; T khả thi khi các số lần này cộng lại không quá T.",
+      "Dùng 0 làm cận dưới và ceil(max(executionTime) / y) làm cận trên, vì chừng đó vòng đã hoàn thành mọi thứ chỉ với y; khi thử một điểm giữa, cộng số lần chọn làm tác vụ chính mà mỗi tác vụ còn cần, thu hẹp cận trên nếu tổng không quá điểm giữa, ngược lại nâng cận dưới. T*y có thể lên tới 10^18, nên dùng số nguyên 64-bit."
     ]
   },
   "explanationEn": "## Approach\n\nBinary search on the number of operations T. With T rounds, every task gets at least T*y of base execution; for the remaining demand, each main-task operation adds an extra x-y, so task i still needs to be chosen as the main task ceil(max(0, executionTime[i]-T*y)/(x-y)) times. T is feasible when the total of these counts does not exceed T.\n\n## Proof of correctness\n\nFor a fixed T, every task first receives T*y of execution; each time it is chosen as the main task it gains another x-y. So each task needs at least the ceiling count above, and the total not exceeding T is a necessary condition. If the total does not exceed T, scheduling main tasks with these counts finishes everything; feasibility is monotone in T, so binary search finds the minimum.\n\n## Complexity\n\nTime O(n log(max executionTime)); storing the execution-time array needs O(n) extra space."

@@ -13,6 +13,21 @@
       "For every earlier element a[j], whether it is larger or smaller than a[i], the rule contributes exactly a[i] - a[j], which is 0 when they are equal.",
       "So counter[i] = Σ over j < i of (a[i] - a[j]) = i * a[i] - (sum of the first i elements), and a running prefix sum gives each position in O(1).",
       "Scan from left to right keeping prefix as the sum of the elements seen so far; for position i (0-based) output i * a[i] - prefix, then add a[i] to prefix. Values can reach about 2 * 10^14, so use 64-bit integers; print the results space-separated in the original order."
+    ],
+    "ja": [
+      "それより前のどの要素 a[j] についても、a[i] より大きくても小さくても、規則による寄与はちょうど a[i] - a[j] で、等しいときは 0 です。",
+      "したがって counter[i] = j < i についての (a[i] - a[j]) の総和 = i * a[i] - (sum of the first i elements) となり、接頭辞和を更新し続ければ各位置を O(1) で求められます。",
+      "左から右へ走査し、prefix をこれまでに見た要素の和として保持します。位置 i (0 始まり) では i * a[i] - prefix を出力し、その後 a[i] を prefix に加えます。値は約 2 * 10^14 に達しうるため、64 ビット整数を使い、結果は元の順序でスペース区切りで出力してください。"
+    ],
+    "ko": [
+      "앞쪽의 각 원소 a[j]는 a[i]보다 크든 작든 규칙에 따라 정확히 a[i] - a[j]를 기여하며, 같을 때는 0입니다.",
+      "따라서 counter[i] = Σ (j < i) (a[i] - a[j]) = i * a[i] - (앞의 i개 원소의 합)이고, 접두사 합을 누적하면 각 위치를 O(1)에 구할 수 있습니다.",
+      "왼쪽에서 오른쪽으로 스캔하며 지금까지 본 원소의 합을 prefix로 유지합니다. 위치 i (0-기반)에서 i * a[i] - prefix를 출력한 뒤 prefix에 a[i]를 더합니다. 값이 약 2 * 10^14까지 갈 수 있으므로 64비트 정수를 사용하고, 결과는 원래 순서대로 공백으로 구분해 출력하세요."
+    ],
+    "vi": [
+      "Với mọi phần tử đứng trước a[j], dù nó lớn hơn hay nhỏ hơn a[i], quy tắc đều đóng góp đúng a[i] - a[j], và bằng 0 khi chúng bằng nhau.",
+      "Vậy counter[i] = Σ over j < i of (a[i] - a[j]) = i * a[i] - (tổng của i phần tử đầu), và một tổng tiền tố chạy cho ra mỗi vị trí trong O(1).",
+      "Quét từ trái sang phải, giữ prefix là tổng các phần tử đã thấy; với vị trí i (đánh số từ 0) in i * a[i] - prefix, rồi cộng a[i] vào prefix. Giá trị có thể đạt khoảng 2 * 10^14 nên hãy dùng số nguyên 64-bit; in các kết quả cách nhau bằng dấu cách theo thứ tự gốc."
     ]
   },
   "explanationEn": "## Approach\n\nFor any earlier element a[j], its contribution is exactly a[i] - a[j] (0 when equal). Therefore counter[i] = i * a[i] - prefix sum.\n\n## Correctness\n\nIf a[j] > a[i], the rule contributes -|a[j] - a[i]| = a[i] - a[j]; if a[j] < a[i], it contributes |a[j] - a[i]| = a[i] - a[j]; when they are equal both are 0. Summing over j = 0..i-1 gives i * a[i] - Σa[j], and a running prefix sum outputs it exactly.\n\n## Complexity\n\nTime O(n), space O(n) (counting the output)."

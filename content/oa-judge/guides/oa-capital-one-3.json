@@ -13,6 +13,21 @@
       "Each command depends only on the matrix at the moment it runs, so applying the commands one by one in input order, exactly as defined, is all it takes.",
       "Store the matrix as a 2D array: a row swap exchanges two rows, a column swap or column reversal does the matching work in every row, a row reversal reverses that row; a clockwise rotation needs a new matrix.",
       "For a 90-degree clockwise rotation, entry (i, j) of the new matrix is entry (rows - 1 - j, i) of the old one; reversing a column swaps its entries in row i and in row rows - 1 - i for i up to half the rows; after all commands print the matrix row by row with values separated by spaces."
+    ],
+    "ja": [
+      "各コマンドは実行時点の行列だけに依存するので、入力順にコマンドを定義どおり1つずつ適用すれば十分です。",
+      "行列を2次元配列で持ちます。行の入れ替えは2つの行を交換し、列の入れ替えや列の反転はすべての行で対応する処理を行い、行の反転はその行を逆順にします。時計回りの回転では新しい行列が必要です。",
+      "時計回りに90度回転するとき、新しい行列の (i, j) 成分は元の行列の (rows - 1 - j, i) 成分です。列の反転は、行数の半分までの i について、行 i と行 rows - 1 - i のその列の要素を交換します。すべてのコマンドの後、行列を1行ずつ空白区切りで出力します。"
+    ],
+    "ko": [
+      "각 명령은 실행되는 시점의 행렬에만 의존하므로, 입력 순서대로 정의 그대로 하나씩 적용하면 됩니다.",
+      "행렬을 2차원 배열로 저장합니다. 행 교환은 두 행을 맞바꾸고, 열 교환이나 열 뒤집기는 모든 행에서 대응하는 작업을 하며, 행 뒤집기는 해당 행을 뒤집습니다. 시계 방향 회전에는 새 행렬이 필요합니다.",
+      "시계 방향 90도 회전에서 새 행렬의 (i, j) 원소는 이전 행렬의 (rows - 1 - j, i) 원소입니다. 열 뒤집기는 행 수의 절반까지의 i에 대해 i행과 rows - 1 - i행의 원소를 맞바꿉니다. 모든 명령을 처리한 뒤 행렬을 한 행씩 값을 공백으로 구분하여 출력합니다."
+    ],
+    "vi": [
+      "Mỗi lệnh chỉ phụ thuộc vào ma trận tại thời điểm nó chạy, nên chỉ cần áp dụng lần lượt các lệnh theo thứ tự đầu vào, đúng như định nghĩa.",
+      "Lưu ma trận dưới dạng mảng 2 chiều: hoán đổi hàng là đổi chỗ hai hàng, hoán đổi cột hoặc đảo ngược cột thì làm việc tương ứng trên mọi hàng, đảo ngược hàng là đảo ngược hàng đó; phép xoay theo chiều kim đồng hồ cần một ma trận mới.",
+      "Với phép xoay 90 độ theo chiều kim đồng hồ, phần tử (i, j) của ma trận mới là phần tử (rows - 1 - j, i) của ma trận cũ; đảo ngược một cột là đổi chỗ các phần tử của nó ở hàng i và hàng rows - 1 - i với i chạy đến nửa số hàng; sau khi chạy hết các lệnh, in ma trận từng hàng, các giá trị cách nhau bởi dấu cách."
     ]
   },
   "explanationEn": "## Approach\n\nApply the matrix operations directly in input order.\n\n## Proof of correctness\n\nEach operation is applied, by its definition, to the matrix as it is at that moment, so the state after executing them in order is the result of all the commands.\n\n## Complexity\n\nO(rc) per operation, O(rc) space.\n\n## Source notes\n\nThe original problem gives neither a stdin/stdout format nor the indexing base; this problem adds a 0-based serialization protocol and specifies that only square matrices can be rotated."

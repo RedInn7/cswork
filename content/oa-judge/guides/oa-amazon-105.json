@@ -13,6 +13,21 @@
       "A packet alone in a channel has itself as the median, so to maximize the total the largest packets should get channels of their own.",
       "An optimal plan can be shown to have at most one channel with several packets: give each of the k-1 largest packets its own channel and put all the remaining smaller packets in the last channel, taking its median.",
       "Sort; the remaining = n - k + 1 smallest packets form one group; with j = remaining / 2, twice the median is 2*a[j] for an odd count and a[j-1] + a[j] for an even count; the answer is the sum of the k-1 largest packets plus (twice the median + 1) / 2, which rounds .5 up. Use 64-bit integers and integer arithmetic only, no floating point."
+    ],
+    "ja": [
+      "チャネルに 1 つだけ入ったパケットは、それ自身が中央値になるので、合計を最大化するには、大きいパケットに専用のチャネルを与えるべきです。",
+      "最適な分け方では、複数のパケットを持つチャネルは高々 1 つにできることが示せます。大きいほうから k-1 個のパケットにそれぞれ専用のチャネルを与え、残りの小さいパケットをすべて最後のチャネルに入れて、その中央値を取ります。",
+      "ソートします。小さいほうから remaining = n - k + 1 個のパケットが 1 つのグループになります。j = remaining / 2 とすると、中央値の 2 倍は、奇数個なら 2*a[j]、偶数個なら a[j-1] + a[j] です。答えは、大きいほうから k-1 個のパケットの和に (中央値の 2 倍 + 1) / 2（.5 は切り上げ）を足したものです。64 ビット整数を使い、浮動小数点は使わず整数演算だけで行ってください。"
+    ],
+    "ko": [
+      "채널에 혼자 있는 패킷은 자기 자신이 중앙값이므로, 합을 최대화하려면 가장 큰 패킷들이 각자 채널을 가져야 합니다.",
+      "최적 계획에서 패킷이 여러 개인 채널이 최대 하나뿐임을 보일 수 있습니다. 가장 큰 k-1개의 패킷에 각각 자기 채널을 주고, 남은 작은 패킷을 모두 마지막 채널에 넣어 그 중앙값을 취합니다.",
+      "정렬합니다. 남은 개수 = n - k + 1개의 가장 작은 패킷이 한 그룹을 이룹니다. j = remaining / 2일 때 중앙값의 두 배는 개수가 홀수이면 2*a[j], 짝수이면 a[j-1] + a[j]입니다. 답은 가장 큰 k-1개 패킷의 합에 (중앙값의 두 배 + 1) / 2를 더한 값이며, 이것이 .5를 올림합니다. 64비트 정수와 정수 연산만 사용하고 부동소수점은 쓰지 마세요."
+    ],
+    "vi": [
+      "Một gói tin đứng riêng trong một kênh thì chính nó là trung vị, vì vậy để tối đa hóa tổng, các gói tin lớn nhất nên có kênh riêng.",
+      "Có thể chứng minh rằng một phương án tối ưu có nhiều nhất một kênh chứa nhiều gói tin: cho mỗi gói trong k-1 gói lớn nhất một kênh riêng và đặt mọi gói nhỏ hơn còn lại vào kênh cuối, lấy trung vị của nó.",
+      "Sắp xếp; remaining = n - k + 1 gói nhỏ nhất tạo thành một nhóm; với j = remaining / 2, hai lần trung vị là 2*a[j] khi số phần tử lẻ và a[j-1] + a[j] khi chẵn; đáp án là tổng của k-1 gói lớn nhất cộng (hai lần trung vị + 1) / 2, làm tròn .5 lên. Dùng số nguyên 64 bit và chỉ số học nguyên, không dùng dấu phẩy động."
     ]
   },
   "explanationEn": "## Approach\n\nGive each of the k-1 largest items its own channel and put the remaining smaller items together in the last channel. Add the solo values and the median of the last group, using twice-the-value integers to avoid floating point.\n\n## Proof of correctness\n\nIf there are two multi-item groups, the larger element behind the higher of their medians can be promoted to a solo group and the remaining elements merged into the other group; comparing the medians by ordered pairing shows the total does not decrease. Repeating this leaves at most one multi-item group; taking the largest k-1 items as solos is optimal, and the remaining group contributes its median.\n\n## Complexity\n\nTime O(n log n), space O(n)."

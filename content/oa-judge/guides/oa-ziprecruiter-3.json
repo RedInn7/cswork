@@ -13,6 +13,21 @@
       "An average depends only on each student's total score and number of appearances, and both can be accumulated while reading; names are case-sensitive, so use the raw string as the key.",
       "Keep (total, count) per name in a hash map. To compare averages s1/c1 and s2/c2, since counts are positive you can compare s1*c2 with s2*c1 instead, staying in integer arithmetic and avoiding floating-point error.",
       "Read the n records and accumulate them in the hash map; then iterate over all students, keeping the (total, count) of the best one so far and replacing it whenever total * bestCount > bestTotal * count; averages are guaranteed distinct, so finally print the best student's name."
+    ],
+    "ja": [
+      "平均は、各学生の合計点と出現回数だけに依存し、どちらも読み込みながら累積できます。名前は大文字と小文字を区別するので、元の文字列をキーとして使ってください。",
+      "名前ごとに (total, count) をハッシュマップで保持します。平均 s1/c1 と s2/c2 を比較するには、回数が正なので、代わりに s1*c2 と s2*c1 を比較できます。整数演算のままで、浮動小数点誤差を避けられます。",
+      "n 個のレコードを読み込み、ハッシュマップに累積します。その後、すべての学生を走査し、これまでで最良の学生の (total, count) を保持して、total * bestCount > bestTotal * count のときに置き換えます。平均は互いに異なることが保証されているので、最後に最良の学生の名前を出力します。"
+    ],
+    "ko": [
+      "평균은 각 학생의 총점과 등장 횟수에만 의존하며, 둘 다 읽으면서 누적할 수 있습니다. 이름은 대소문자를 구분하므로 원래 문자열을 키로 사용하세요.",
+      "이름마다 (total, count)를 해시 맵에 유지합니다. 평균 s1/c1과 s2/c2를 비교할 때 횟수가 양수이므로 s1*c2와 s2*c1을 비교하면 정수 연산만으로 부동소수점 오차 없이 비교할 수 있습니다.",
+      "n개의 기록을 읽어 해시 맵에 누적한 다음, 모든 학생을 순회하며 지금까지 최선인 학생의 (total, count)를 유지하고 total * bestCount > bestTotal * count이면 교체합니다. 평균은 서로 다르다고 보장되므로 마지막에 최선인 학생의 이름을 출력합니다."
+    ],
+    "vi": [
+      "Điểm trung bình chỉ phụ thuộc vào tổng điểm và số lần xuất hiện của mỗi học sinh, và cả hai đều có thể cộng dồn khi đọc; tên phân biệt hoa thường, nên dùng chuỗi gốc làm khóa.",
+      "Giữ (total, count) theo từng tên trong một bảng băm. Để so sánh các trung bình s1/c1 và s2/c2, vì các số đếm dương nên có thể so sánh s1*c2 với s2*c1, giữ nguyên trong số học số nguyên và tránh sai số dấu phẩy động.",
+      "Đọc n bản ghi và cộng dồn vào bảng băm; rồi duyệt mọi học sinh, giữ (total, count) của học sinh tốt nhất cho đến lúc đó và thay thế mỗi khi total * bestCount > bestTotal * count; các trung bình được đảm bảo khác nhau, nên cuối cùng in tên của học sinh tốt nhất."
     ]
   },
   "explanationEn": "## Approach\n\nAccumulate the total score and the count for each name. Compare averages by cross-multiplication to avoid floating-point error.\n\n## Proof of correctness\n\nThe accumulated values give each student's average as a numerator and a denominator; with positive denominators, cross-multiplication is equivalent to comparing the averages. Traversing all students and keeping the largest one finds the maximum, and uniqueness guarantees that the result is unique.\n\n## Complexity\n\nTime O(n+k), space O(k), where k is the number of distinct students.\n\n## Source notes\n\nThis site supplied a deterministic standard input/output protocol. In upstream problem 9, the dense-arrival example omitted the completion time of one admitted guest; this site corrected it to 3301 according to the explicit 300-second service and queue rules, and states this truthfully in the source evidence."

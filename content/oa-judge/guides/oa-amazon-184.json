@@ -13,6 +13,21 @@
       "Whether the final minimum can be at least T is monotone in T: smaller T is easier. So binary search T and only write a feasibility test.",
       "With T fixed, an inventory a below T must receive at least (T - a)/incVal rounded up times, and an inventory above T can give at most (a - T)/decVal rounded down times without dropping below T. Each operation is exactly one give and one receive, so T is feasible when the total supply is at least the total demand.",
       "Search between the smallest original inventory and the total divided by n. For mid, add up need, the rounded-up receptions required by every inventory below mid, and supply, the rounded-down gives available from every inventory at or above mid; if supply >= need move the lower bound to mid, otherwise set the upper bound to mid - 1. Use the upper middle to avoid an endless loop and print the lower bound at the end. Count in 64-bit integers."
+    ],
+    "ja": [
+      "最終的な最小値を T 以上にできるかどうかは T に関して単調です。T が小さいほど簡単になります。したがって T を二分探索し、実現可能性の判定だけを書けばよいことになります。",
+      "T を固定すると、T を下回る在庫 a は少なくとも (T - a)/incVal を切り上げた回数だけ受け取る必要があり、T を上回る在庫 a は T を下回らずに最大で (a - T)/decVal を切り捨てた回数だけ与えられます。各操作はちょうど 1 回の供給と 1 回の受け取りなので、供給の合計が需要の合計以上なら T は実現可能です。",
+      "探索範囲は元の在庫の最小値から、合計を n で割った値までです。mid について、mid を下回るすべての在庫に必要な切り上げの受け取り回数の合計 need と、mid 以上のすべての在庫から得られる切り捨ての供給回数の合計 supply を求めます。supply >= need なら下限を mid に動かし、そうでなければ上限を mid - 1 にします。無限ループを避けるため上側の中点を使い、最後に下限を出力します。計数には 64 ビット整数を使ってください。"
+    ],
+    "ko": [
+      "최종 최솟값이 T 이상이 될 수 있는지는 T에 대해 단조입니다. T가 작을수록 쉽습니다. 따라서 T를 이분 탐색하고 실현 가능성 검사만 작성하면 됩니다.",
+      "T를 고정하면, T보다 작은 재고 a는 최소 (T - a)/incVal을 올림한 횟수만큼 받아야 하고, T보다 큰 재고 a는 T 아래로 내려가지 않고 최대 (a - T)/decVal을 내림한 횟수만큼 줄 수 있습니다. 한 번의 연산은 정확히 주는 쪽 하나와 받는 쪽 하나이므로, 공급 총합이 수요 총합 이상이면 T는 달성 가능합니다.",
+      "탐색 범위는 원래 재고의 최솟값부터 총합을 n으로 나눈 값까지입니다. mid에 대해, need는 mid보다 작은 모든 재고가 필요로 하는 올림한 받기 횟수의 합, supply는 mid 이상인 모든 재고가 줄 수 있는 내림한 주기 횟수의 합으로 계산합니다. supply >= need이면 하한을 mid로 올리고, 아니면 상한을 mid - 1로 둡니다. 무한 루프를 피하려면 위쪽 중간값을 쓰고, 마지막에 하한을 출력합니다. 계산에는 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Việc mức tối thiểu cuối cùng có thể đạt ít nhất T hay không là đơn điệu theo T: T càng nhỏ càng dễ. Vì vậy hãy tìm kiếm nhị phân T và chỉ cần viết phép kiểm tra tính khả thi.",
+      "Với T cố định, một tồn kho a dưới T phải nhận ít nhất (T - a)/incVal làm tròn lên lần, và một tồn kho a trên T có thể cho đi nhiều nhất (a - T)/decVal làm tròn xuống lần mà không tụt xuống dưới T. Mỗi thao tác gồm đúng một lần cho và một lần nhận, nên T khả thi khi tổng lượng cho đi không nhỏ hơn tổng nhu cầu.",
+      "Tìm kiếm trong khoảng từ tồn kho ban đầu nhỏ nhất đến tổng chia cho n. Với mid, cộng need, số lần nhận làm tròn lên mà mọi tồn kho dưới mid yêu cầu, và supply, số lần cho làm tròn xuống mà mọi tồn kho từ mid trở lên có thể cung cấp; nếu supply >= need thì chuyển cận dưới lên mid, ngược lại đặt cận trên thành mid - 1. Dùng điểm giữa lấy cận trên để tránh vòng lặp vô hạn và in cận dưới ở cuối. Đếm bằng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nBinary search the target minimum inventory T. An item below T needs ceil((T-a)/inc) receptions; an item above T can provide floor((a-T)/dec) times; T is feasible if the total supply is no less than the demand.\n\n## Proof of correctness\n\nIn any final plan, if some item both receives and provides, canceling one such pair does not lower that item's final value, because dec>=inc, and it reduces the global numbers of receptions and provisions together. So mixed roles can be eliminated, and it suffices for items above T to give directly to the items that are short. Rounding the demand up and the supply down are both necessary bounds, and any sufficient supply can be handed directly to the short items to build a plan. Feasibility is monotone in T, so binary search finds the maximum.\n\n## Complexity\n\nTime O(n log 10^9), space O(n)."

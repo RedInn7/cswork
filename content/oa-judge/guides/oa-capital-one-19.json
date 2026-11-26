@@ -13,6 +13,21 @@
       "The single digit left after repeatedly summing digits is the digital root; it depends only on the digit sum modulo 9, so there is no need to sum round after round.",
       "Scan each string once to get its digit sum S: the root is 0 when S = 0 and 1 + (S - 1) mod 9 otherwise; count how often each of the 10 possible roots appears.",
       "Read the N strings, add up the digits of each one to get S and increment the counter of its root; then go over roots 0..9 to find the highest frequency, preferring the larger root on ties (scanning upwards and updating with \">=\" does that); print that root."
+    ],
+    "ja": [
+      "桁の和を繰り返して最後に残る1桁がデジタルルートで、それは桁和を 9 で割った余りだけで決まるので、何度も繰り返して足す必要はありません。",
+      "各文字列を1回走査して桁和 S を求めます。ルートは S = 0 のとき 0、そうでなければ 1 + (S - 1) mod 9 です。10 通りのルートが現れる回数を数えます。",
+      "N 個の文字列を読み込み、それぞれの桁を足して S を求め、そのルートのカウンタを増やします。その後、ルート 0..9 を調べて最高頻度を求め、同数の場合は大きい方のルートを優先します(昇順に走査して \">=\" で更新するとそうなる)。そのルートを出力します。"
+    ],
+    "ko": [
+      "자릿수를 반복해서 더하고 남는 한 자리 수가 디지털 루트입니다. 이는 자릿수 합을 9로 나눈 나머지에만 의존하므로 라운드마다 반복해서 더할 필요가 없습니다.",
+      "각 문자열을 한 번 훑어 자릿수 합 S를 구합니다. S = 0이면 루트는 0이고, 아니면 1 + (S - 1) mod 9입니다. 가능한 10개의 루트가 각각 몇 번 나타나는지 셉니다.",
+      "N개의 문자열을 읽고, 각각의 자릿수를 더해 S를 구한 뒤 그 루트의 카운터를 증가시킵니다. 그다음 루트 0..9를 훑으며 최고 빈도를 찾되, 동률이면 더 큰 루트를 선호합니다(위로 훑으며 \">=\"로 갱신하면 됩니다). 그 루트를 출력합니다."
+    ],
+    "vi": [
+      "Chữ số duy nhất còn lại sau khi lặp lại việc cộng các chữ số là căn số (digital root); nó chỉ phụ thuộc vào tổng các chữ số theo modulo 9, nên không cần cộng hết vòng này đến vòng khác.",
+      "Quét mỗi xâu một lần để lấy tổng các chữ số S: căn số là 0 khi S = 0 và 1 + (S - 1) mod 9 trong trường hợp còn lại; đếm số lần mỗi căn số trong 10 giá trị có thể xuất hiện.",
+      "Đọc N xâu, cộng các chữ số của mỗi xâu để được S và tăng bộ đếm của căn số của nó; sau đó duyệt các căn số 0..9 để tìm tần suất cao nhất, ưu tiên căn số lớn hơn khi hòa (quét tăng dần và cập nhật bằng \">=\" làm được việc đó); in căn số đó."
     ]
   },
   "explanationEn": "## Approach\n\nFor each digit string, repeatedly sum its digits until a single digit remains. The digital root of a non-negative integer can be computed in one linear scan: if the sum of all digits is 0 the result is 0; otherwise the result is 1 + (digit sum - 1) mod 9. Count how often each result occurs and take the digital root with the highest count.\n\n## Ties and input convention\n\nThe statement does not define which root to return when several roots tie as the mode. The explanation and implementation attached to the fixed source pick the larger root; this site adopts that as an explicit rule. The parameters are digit strings and the fixed explanation calls the inputs positive integers; this site supports non-negative decimal digit strings, allows leading zeros, and forbids minus signs or any other sign. The input/output format and the size limits are also supplements by this site.\n\n## Why it is correct\n\nFor a non-zero decimal number the digital root is determined only by its digit sum modulo 9, so the formula is equivalent to summing repeatedly; an all-zero string has digital root 0. The frequency table counts the final single digit of every input number, and taking the largest value among those tied at the maximum frequency matches this site's definition of the mode. Time is O(D) in the total number of digits, with O(10) extra space."

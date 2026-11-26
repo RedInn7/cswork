@@ -13,6 +13,21 @@
       "A strictly greater string has a first position where it differs (upwards); everything before it is kept as is, so that prefix must itself have no equal neighbours. The later that position, the smaller the result.",
       "Try the changed position i from right to left (the prefix s[0..i-1] must be valid), put at i the smallest letter above s[i] that differs from s[i-1], and fill every later position with the smallest letter different from its predecessor, which alternates a and b and always works. The first candidate found is the answer.",
       "Precompute valid[i]: the prefix of length i has no equal neighbours. For i from n-1 down to 0, skip positions where valid[i] is false; among the letters above s[i], take the first c that differs from s[i-1]; if one exists, print s[0..i-1] followed by c and then fill each remaining position with a unless the previous character is a, in which case use b. If every position fails, print -1."
+    ],
+    "ja": [
+      "真に大きい文字列には、最初に（大きい方へ）異なる位置があり、それより前はそのまま保たれるので、その接頭辞自体に隣接する同じ文字があってはいけません。その位置が後ろにあるほど結果は小さくなります。",
+      "変更位置 i を右から左へ試します（接頭辞 s[0..i-1] は有効であること）。i には s[i] より大きく s[i-1] と異なる最小の文字を置き、それ以降の各位置には直前の文字と異なる最小の文字を入れます。これは a と b を交互に並べればよく、常にうまくいきます。最初に見つかった候補が答えです。",
+      "valid[i]（長さ i の接頭辞に隣接する同じ文字がないか）を前計算します。i を n-1 から 0 へ動かし、valid[i] が偽の位置は飛ばします。s[i] より大きい文字のうち、s[i-1] と異なる最初の c を取り、あれば s[0..i-1] に c を続けて出力し、残りの各位置は a で埋め、直前の文字が a のときだけ b にします。どの位置でも失敗したら -1 を出力します。"
+    ],
+    "ko": [
+      "사전순으로 엄격하게 더 큰 문자열에는 (위쪽으로) 처음 달라지는 위치가 있고, 그 앞은 그대로 유지되므로 그 접두사 자체에 이웃한 같은 문자가 없어야 합니다. 그 위치가 뒤쪽일수록 결과는 더 작아집니다.",
+      "바뀌는 위치 i를 오른쪽에서 왼쪽으로 시도합니다(접두사 s[0..i-1]은 유효해야 합니다). i에는 s[i]보다 큰 문자 중 s[i-1]과 다른 가장 작은 문자를 놓고, 이후의 모든 위치는 앞 문자와 다른 가장 작은 문자로 채웁니다. 이는 a와 b가 번갈아 나오며 항상 가능합니다. 처음 찾은 후보가 답입니다.",
+      "valid[i]를 미리 계산합니다. 길이 i인 접두사에 이웃한 같은 문자가 없으면 참입니다. i를 n-1부터 0까지 내려가면서 valid[i]가 거짓인 위치는 건너뜁니다. s[i]보다 큰 문자 중 s[i-1]과 다른 첫 번째 c를 고르고, 있으면 s[0..i-1] 뒤에 c를 붙인 다음 남은 각 위치를 a로 채웁니다. 단, 앞 문자가 a이면 b를 사용합니다. 모든 위치에서 실패하면 -1을 출력합니다."
+    ],
+    "vi": [
+      "Một xâu lớn hơn thực sự có vị trí khác đầu tiên (khác theo hướng tăng); mọi thứ trước đó giữ nguyên, nên tiền tố đó tự nó không được có hai ký tự kề nhau bằng nhau. Vị trí này càng muộn thì kết quả càng nhỏ.",
+      "Thử vị trí thay đổi i từ phải sang trái (tiền tố s[0..i-1] phải hợp lệ), đặt tại i chữ cái nhỏ nhất lớn hơn s[i] và khác s[i-1], rồi điền mọi vị trí sau đó bằng chữ cái nhỏ nhất khác ký tự đứng trước nó, tức là xen kẽ a và b và luôn thực hiện được. Ứng viên đầu tiên tìm được chính là đáp án.",
+      "Tính trước valid[i]: tiền tố độ dài i không có hai ký tự kề nhau bằng nhau. Với i từ n-1 xuống 0, bỏ qua các vị trí mà valid[i] sai; trong các chữ cái lớn hơn s[i], lấy chữ c đầu tiên khác s[i-1]; nếu tồn tại thì in s[0..i-1] rồi c, sau đó điền mỗi vị trí còn lại bằng a, trừ khi ký tự trước đó là a thì dùng b. Nếu mọi vị trí đều thất bại, in -1."
     ]
   },
   "explanationEn": "## Approach\n\nRecord whether each prefix is valid (no equal adjacent characters). Enumerate the first changed position from right to left, try the smallest valid character larger than the original one, then greedily fill the suffix with a or b.\n\n## Proof of correctness\n\nA strictly greater string has a unique first changed position, and the prefix before it must be kept and must be valid; the later the change, the smaller the string lexicographically. With the position fixed, choose the smallest usable character; then for every remaining position the smallest character different from the previous one suffices, and with 26 letters the suffix can always be completed. Therefore the first candidate found is optimal.\n\n## Complexity\n\nTime O(26n), space O(n)."

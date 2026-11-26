@@ -13,6 +13,21 @@
       "To match n characters the expression has at most n classes; to be as long as possible every position should hold all 26 letters, removing letters only where it is unavoidable.",
       "To exclude z it is enough that one position's class lacks z[i], and that letter must be neither x[i] nor y[i]; so removing a single letter suffices, and since a full class is lexicographically smaller than a class with a missing letter, the removal should be as far right as possible.",
       "Scan for the last index with z[i] != x[i] and z[i] != y[i]; if none exists print -1. Otherwise print the full class [A..Z] at every position, except at that index where you print the class without z[i], keeping letters in ascending order."
+    ],
+    "ja": [
+      "n 文字にマッチさせるには、式のクラスは高々 n 個です。できるだけ長くするには、各位置が 26 文字すべてを持つようにし、避けられない場合にのみ文字を取り除きます。",
+      "z を除外するには、ある 1 つの位置のクラスから z[i] が欠けていれば十分で、その文字は x[i] でも y[i] でもない必要があります。したがって 1 文字を取り除けば十分です。完全なクラスは、文字が欠けたクラスより辞書順で小さいので、取り除く位置はできるだけ右にします。",
+      "z[i] != x[i] かつ z[i] != y[i] となる最後のインデックスを探します。なければ -1 を出力します。あれば、すべての位置で完全なクラス [A..Z] を出力し、そのインデックスでだけ z[i] を除いたクラスを出力します。文字は昇順に保ちます。"
+    ],
+    "ko": [
+      "n개의 문자에 일치시키려면 표현식에는 최대 n개의 클래스가 있어야 합니다. 가능한 한 길게 하려면 모든 위치가 26개 문자를 전부 가져야 하고, 피할 수 없는 곳에서만 문자를 제거합니다.",
+      "z를 제외하려면 한 위치의 클래스에 z[i]가 없으면 충분하며, 그 문자는 x[i]도 y[i]도 아니어야 합니다. 따라서 문자 하나만 제거하면 충분하고, 전체 클래스가 문자가 빠진 클래스보다 사전순으로 작으므로 제거는 가능한 한 오른쪽에서 해야 합니다.",
+      "z[i] != x[i]이고 z[i] != y[i]인 마지막 인덱스를 찾습니다. 없으면 -1을 출력합니다. 있으면 모든 위치에서 전체 클래스 [A..Z]를 출력하되, 그 인덱스에서는 z[i]를 뺀 클래스를 출력하고 문자는 오름차순으로 유지합니다."
+    ],
+    "vi": [
+      "Để khớp n ký tự, biểu thức có tối đa n lớp; để dài nhất, mọi vị trí nên chứa đủ 26 chữ cái, chỉ loại bớt chữ cái ở nơi không thể tránh.",
+      "Để loại z, chỉ cần lớp của một vị trí thiếu z[i], và chữ cái đó không được là x[i] hay y[i]; vì vậy loại bỏ một chữ cái là đủ, và vì một lớp đầy đủ nhỏ hơn theo thứ tự từ điển so với một lớp bị thiếu chữ cái, nên việc loại bỏ nên đặt càng xa về bên phải càng tốt.",
+      "Quét tìm chỉ số cuối cùng có z[i] != x[i] và z[i] != y[i]; nếu không có thì in -1. Ngược lại, in lớp đầy đủ [A..Z] ở mọi vị trí, trừ chỉ số đó, nơi bạn in lớp không có z[i], giữ các chữ cái theo thứ tự tăng dần."
     ]
   },
   "explanationEn": "## Approach\n\nFind the rightmost position where z[i] differs from both x[i] and y[i]. Output the full 26-letter class at every position, and remove z[i] only at the chosen position.\n\n## Correctness\n\nMatching n characters takes at most n classes, and each class holds at most 26 letters plus its brackets. To exclude z, at least one position must not contain z[i], and that character cannot be x[i] or y[i]. Removing just one letter reaches the maximum length. Letters in ascending order inside a class give the lexicographically smallest class, and a full class is lexicographically smaller than a class with a letter removed (including removing Z, since Z is smaller than the closing bracket), so the single missing letter should be placed as far right as possible.\n\n## Complexity\n\nTime and output space O(26n)."

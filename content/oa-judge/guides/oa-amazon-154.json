@@ -13,6 +13,21 @@
       "Changing an element to 1 is the best possible change: every segment containing it gets GCD 1, and no new bad segment appears. So the question becomes how few positions must be changed to break every bad segment that is too long.",
       "The answer is monotone, so binary search the largest allowed length L: every window of length L+1 whose original GCD exceeds 1 must contain a changed position. The fewest changes come from a greedy: moving left to right, at the first bad window not yet hit, change its rightmost element. A GCD sparse table answers each window in O(1).",
       "Build the GCD sparse table. To test L, let len = L+1; if len > n it is feasible. Otherwise scan from i = 0 and use the GCD of two overlapping power-of-two blocks to decide whether window [i, i+len) is bad: if so, count one change (more than maxChange means infeasible) and jump i forward by len, since the changed right end covers every window starting in i..i+len-1; otherwise move i by one. Binary search the smallest feasible L in 0..n."
+    ],
+    "ja": [
+      "要素を 1 に変更するのは最良の変更です。それを含むすべての区間の GCD が 1 になり、新しい悪い区間は現れません。したがって問題は、長すぎるすべての悪い区間を壊すのに、最小で何か所を変更する必要があるか、ということになります。",
+      "答えは単調なので、許容する最大の長さ L を二分探索します。元の GCD が 1 を超える長さ L+1 のすべての窓は、変更した位置を含む必要があります。最小の変更回数は貪欲法で得られます。左から右へ進み、まだ当たっていない最初の悪い窓の、右端の要素を変更します。GCD のスパーステーブルで、各窓を O(1) で答えられます。",
+      "GCD のスパーステーブルを作ります。L を判定するには len = L+1 とし、len > n なら実行可能です。そうでなければ i = 0 から走査し、2 のべき乗の長さの 2 つの重なるブロックの GCD を使って、窓 [i, i+len) が悪いかどうかを判定します。悪ければ変更を 1 回数え（maxChange を超えたら実行不可能）、変更した右端が i..i+len-1 から始まるすべての窓を覆うので、i を len だけ前に進めます。そうでなければ i を 1 進めます。0..n の範囲で、実行可能な最小の L を二分探索します。"
+    ],
+    "ko": [
+      "원소를 1로 바꾸는 것이 가능한 최선의 변경입니다. 그 원소를 포함하는 모든 구간의 GCD가 1이 되고, 새로운 취약 구간은 생기지 않습니다. 따라서 문제는 너무 긴 취약 구간을 모두 끊기 위해 최소 몇 개의 위치를 바꿔야 하는지가 됩니다.",
+      "답은 단조이므로 허용되는 가장 큰 길이 L을 이분 탐색합니다. 원래 GCD가 1보다 큰 길이 L+1의 모든 창에는 바뀐 위치가 하나 이상 있어야 합니다. 최소 변경 횟수는 탐욕법으로 얻습니다. 왼쪽에서 오른쪽으로 가며, 아직 걸리지 않은 첫 번째 취약한 창에서 가장 오른쪽 원소를 바꿉니다. GCD 희소 테이블이 각 창을 O(1)에 답합니다.",
+      "GCD 희소 테이블을 만듭니다. L을 검사하려면 len = L+1로 두고, len > n이면 가능합니다. 그렇지 않으면 i = 0에서 시작해, 겹치는 2의 거듭제곱 길이 블록 두 개의 GCD로 창 [i, i+len)이 취약한지 판단합니다. 취약하면 변경을 하나 세고(maxChange를 넘으면 불가능), 바뀐 오른쪽 끝이 i..i+len-1에서 시작하는 모든 창을 덮으므로 i를 len만큼 앞으로 건너뜁니다. 그렇지 않으면 i를 1 증가시킵니다. 0..n에서 가능한 가장 작은 L을 이분 탐색합니다."
+    ],
+    "vi": [
+      "Đổi một phần tử thành 1 là phép đổi tốt nhất có thể: mọi đoạn chứa nó đều có GCD 1, và không xuất hiện đoạn xấu mới nào. Vì vậy câu hỏi trở thành cần đổi ít vị trí nhất là bao nhiêu để phá mọi đoạn xấu quá dài.",
+      "Đáp án đơn điệu, nên tìm kiếm nhị phân độ dài cho phép lớn nhất L: mọi cửa sổ độ dài L+1 có GCD gốc lớn hơn 1 đều phải chứa một vị trí đã đổi. Số lần đổi ít nhất đến từ một thuật toán tham lam: đi từ trái sang phải, ở cửa sổ xấu đầu tiên chưa bị chạm, đổi phần tử ngoài cùng bên phải của nó. Bảng thưa GCD trả lời mỗi cửa sổ trong O(1).",
+      "Xây bảng thưa GCD. Để kiểm tra L, đặt len = L+1; nếu len > n thì khả thi. Ngược lại quét từ i = 0 và dùng GCD của hai khối lũy thừa của hai chồng nhau để quyết định cửa sổ [i, i+len) có xấu không: nếu xấu thì tính một lần đổi (nhiều hơn maxChange nghĩa là không khả thi) và nhảy i tới trước len, vì đầu mút phải đã đổi phủ mọi cửa sổ bắt đầu trong i..i+len-1; nếu không thì dịch i một bước. Tìm kiếm nhị phân L khả thi nhỏ nhất trong 0..n."
     ]
   },
   "explanationEn": "## Approach\n\nChanging a value to 1 is the most beneficial change. Binary search the allowed length L: every window of length L+1 whose original GCD is > 1 must be hit by a changed position; greedily, from left to right, change the right end of the first bad window not yet hit. A GCD sparse table answers each window query in O(1).\n\n## Proof of correctness\n\nChanging an element to 1 eliminates every bad segment containing that position and creates no new bad segment, so it is no worse than any other value. A bad segment longer than L exists if and only if there is a bad window of length L+1. For intervals ordered by right end, choosing the rightmost point of the first interval not yet hit is the standard optimal covering greedy; length L is feasible when the number of changes needed is <= the budget, and feasibility is monotone.\n\n## Complexity\n\nTime O(n log n), space O(n log n)."

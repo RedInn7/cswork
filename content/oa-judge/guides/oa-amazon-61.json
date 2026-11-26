@@ -13,6 +13,21 @@
       "Within one round the numbers processed must appear at increasing positions; whether v+1 can be processed in the same round as v depends only on whether v+1 lies to the right of v.",
       "So whenever v+1 sits to the left of v, a new round must start, and nothing else forces one; the answer is the number of such position drops plus 1.",
       "While reading the permutation, record position[value] = index; then count v = 1..n-1 with position[v+1] < position[v] and print that count plus 1. n can reach 10^6, so use fast input and a compact integer array."
+    ],
+    "ja": [
+      "1 ラウンドの中で処理される数は、位置が増加する順に現れなければなりません。v+1 を v と同じラウンドで処理できるかどうかは、v+1 が v の右にあるかどうかだけで決まります。",
+      "したがって、v+1 が v の左にあるたびに新しいラウンドが必要で、他に必要になる理由はありません。答えは、そのような位置の下降の回数に 1 を加えたものです。",
+      "順列を読みながら、position[value] = index を記録します。次に position[v+1] < position[v] となる v = 1..n-1 を数え、その数に 1 を加えて出力します。n は 10^6 に達しうるので、高速な入力とコンパクトな整数配列を使います。"
+    ],
+    "ko": [
+      "한 라운드 안에서 처리되는 번호들은 위치가 증가하는 순서로 나타나야 합니다. v+1을 v와 같은 라운드에서 처리할 수 있는지는 v+1이 v의 오른쪽에 있는지에만 달려 있습니다.",
+      "따라서 v+1이 v의 왼쪽에 있을 때마다 새 라운드가 시작되어야 하고, 그 외에는 새 라운드를 강제하는 것이 없습니다. 답은 이러한 위치 하강의 횟수에 1을 더한 값입니다.",
+      "순열을 읽으면서 position[value] = index를 기록하고, v = 1..n-1 중 position[v+1] < position[v]인 것의 개수를 센 뒤 그 개수에 1을 더해 출력합니다. n이 10^6에 이를 수 있으므로 빠른 입력과 컴팩트한 정수 배열을 사용하세요."
+    ],
+    "vi": [
+      "Trong một vòng, các số được xử lý phải xuất hiện ở các vị trí tăng dần; việc v+1 có thể được xử lý cùng vòng với v hay không chỉ phụ thuộc vào việc v+1 có nằm bên phải v hay không.",
+      "Vì vậy mỗi khi v+1 nằm bên trái v, một vòng mới phải bắt đầu, và không có gì khác buộc phải làm vậy; đáp án là số lần vị trí giảm như thế cộng 1.",
+      "Khi đọc hoán vị, ghi position[value] = index; sau đó đếm các v = 1..n-1 với position[v+1] < position[v] và in số đếm đó cộng 1. n có thể lên tới 10^6, vì vậy hãy dùng đầu vào nhanh và một mảng số nguyên gọn."
     ]
   },
   "explanationEn": "## Approach\n\nRecord the position of each number. One round is needed to start; every time pos[v+1] < pos[v], a new scan is required, adding a round.\n\n## Proof of correctness\n\nWithin one round, only numbers at increasing positions can be visited. When the positions of consecutive numbers drop, the current round cannot continue, and a next round must be started and is sufficient, so the answer is the number of position drops plus 1.\n\n## Complexity\n\nO(n) time and O(n) auxiliary space, with positions stored in a compact integer array."

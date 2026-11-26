@@ -13,6 +13,21 @@
       "n is at most 1000, so there are only about half a million subarrays, few enough to enumerate.",
       "The mean equals an integer x exactly when sum = length × x, so a divisibility check avoids floating-point error.",
       "Loop over the left end and extend the right end while accumulating the sum; whenever sum % length == 0, increment the count for sum/length. Finally print the counts for x=1..n."
+    ],
+    "ja": [
+      "n は高々 1000 なので部分配列は約 50 万個しかなく、全列挙できます。",
+      "平均が整数 x になるのは sum = length × x のときに限られるので、割り切れるかどうかで判定すれば浮動小数点誤差を避けられます。",
+      "左端を固定して右端を伸ばしながら和を累積し、sum % length == 0 になるたびに sum/length の個数を 1 増やします。最後に x=1..n の個数を出力します。"
+    ],
+    "ko": [
+      "n은 최대 1000이므로 부분 배열은 약 50만 개뿐이라 모두 순회할 수 있습니다.",
+      "평균이 정수 x라는 것은 sum = length × x와 같으므로, 나머지 검사로 부동소수점 오차를 피할 수 있습니다.",
+      "왼쪽 끝을 고정하고 오른쪽 끝을 늘려 가며 합을 누적합니다. sum % length == 0일 때마다 sum/length번째 카운트를 1 증가시킵니다. 마지막으로 x=1..n의 카운트를 출력합니다."
+    ],
+    "vi": [
+      "n tối đa là 1000 nên chỉ có khoảng nửa triệu mảng con, đủ ít để liệt kê hết.",
+      "Trung bình bằng số nguyên x khi và chỉ khi sum = length × x, nên kiểm tra tính chia hết giúp tránh sai số số thực.",
+      "Lặp theo đầu trái và mở rộng đầu phải trong khi cộng dồn tổng; mỗi khi sum % length == 0 thì tăng bộ đếm của sum/length. Cuối cùng in các bộ đếm cho x=1..n."
     ]
   },
   "explanationEn": "## Approach\n\nEnumerate the left and right ends, accumulating the range sum incrementally; when the sum is divisible by the length, add 1 to the count of the corresponding mean.\n\n## Proof of correctness\n\nEnumerating all right ends for each left end produces every non-empty contiguous range exactly once, and the maintained sum is exact because it is accumulated term by term. The mean is an integer x if and only if sum = length × x, and the divisibility check has no floating-point error; since the permutation values lie in 1..n, the mean lies in that range too.\n\n## Complexity\n\nO(n²) time and O(n) space."

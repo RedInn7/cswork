@@ -13,6 +13,21 @@
       "All initially infected cells start spreading at the same time, one step per second to healthy neighbours up, down, left and right; this is a multi-source shortest path, and each healthy cell's infection time is its distance to the nearest initially infected cell.",
       "Put every cell with value 2 into layer 0 of a BFS and infect healthy cells layer by layer; the layer number is the number of seconds, and the layer at which the last healthy cell gets infected is the answer. Healthy cells cut off by 0 cells and never reached must be detected separately.",
       "First count the healthy cells as left and put all infected cells into the current layer; while the current layer is non-empty and left > 0: for every cell in it, turn each healthy neighbour into 2, decrease left and add it to the next layer, then increase the time by one; afterwards print the time if left is 0, otherwise -1; when there are no healthy cells at all the answer is 0."
+    ],
+    "ja": [
+      "最初に感染しているセルはすべて同時に広がり始め、1 秒ごとに上下左右の健康な隣接セルへ 1 歩進みます。これは多始点の最短経路問題で、各健康なセルが感染する時刻は、最も近い最初の感染セルまでの距離です。",
+      "値が 2 のセルをすべて BFS の層 0 に入れ、層ごとに健康なセルを感染させます。層の番号が秒数で、最後の健康なセルが感染する層が答えです。0 のセルで遮られて到達されない健康なセルは、別に検出しなければなりません。",
+      "まず健康なセルの個数を left として数え、感染したセルをすべて現在の層に入れます。現在の層が空でなく、かつ left > 0 の間：その層の各セルについて、健康な隣接セルを 2 にし、left を減らして次の層に追加し、その後で時間を 1 増やします。終わったら、left が 0 なら時間を、そうでなければ -1 を出力します。健康なセルがまったくない場合の答えは 0 です。"
+    ],
+    "ko": [
+      "처음 감염된 모든 세포가 같은 시각에 퍼지기 시작하며, 매초 상하좌우의 건강한 이웃으로 한 칸씩 퍼집니다. 이는 다중 시작점 최단 경로 문제이고, 각 건강한 세포의 감염 시간은 처음 감염된 가장 가까운 세포까지의 거리입니다.",
+      "값이 2인 모든 세포를 BFS의 층 0에 넣고 건강한 세포를 층별로 감염시킵니다. 층 번호가 곧 초이며, 마지막 건강한 세포가 감염되는 층이 답입니다. 0인 칸에 가로막혀 끝내 도달하지 못하는 건강한 세포는 따로 검출해야 합니다.",
+      "먼저 건강한 세포의 수를 left로 세고 감염된 모든 세포를 현재 층에 넣습니다. 현재 층이 비어 있지 않고 left > 0인 동안 층의 각 세포에 대해 건강한 이웃을 2로 바꾸고 left를 줄이며 다음 층에 추가한 뒤 시간을 1 늘립니다. 이후 left가 0이면 시간을, 아니면 -1을 출력합니다. 건강한 세포가 아예 없으면 답은 0입니다."
+    ],
+    "vi": [
+      "Mọi ô nhiễm ban đầu bắt đầu lan cùng lúc, mỗi giây một bước sang các ô khỏe mạnh kề trên, dưới, trái, phải; đây là đường đi ngắn nhất đa nguồn, và thời gian bị nhiễm của mỗi ô khỏe mạnh là khoảng cách của nó đến ô nhiễm ban đầu gần nhất.",
+      "Đưa mọi ô có giá trị 2 vào lớp 0 của một BFS và lây nhiễm các ô khỏe mạnh theo từng lớp; số thứ tự lớp là số giây, và lớp mà ô khỏe mạnh cuối cùng bị nhiễm là đáp án. Các ô khỏe mạnh bị cô lập bởi các ô 0 và không bao giờ bị chạm tới phải được phát hiện riêng.",
+      "Trước hết đếm các ô khỏe mạnh là left và đưa mọi ô nhiễm vào lớp hiện tại; trong khi lớp hiện tại không rỗng và left > 0: với mỗi ô trong đó, biến từng ô khỏe mạnh kề thành 2, giảm left và thêm nó vào lớp kế tiếp, rồi tăng thời gian lên một; sau đó in thời gian nếu left bằng 0, ngược lại in -1; khi hoàn toàn không có ô khỏe mạnh thì đáp án là 0."
     ]
   },
   "explanationEn": "## Approach\n\nUse all initially infected cells as BFS sources at the same time and infect healthy cells layer by layer.\n\n## Proof of correctness\n\nLayer t of the multi-source BFS is exactly the set of cells whose minimum time to be reached is t seconds. The layer of the last infected healthy cell is the completion time; if healthy cells remain afterwards, they are not connected to any infected cell, and -1 should be returned. When there are no healthy cells, the answer is 0.\n\n## Complexity\n\nTime O(NM), space O(NM)."

@@ -13,6 +13,21 @@
       "The list is strictly increasing, so two neighbours belong to the same run exactly when the second is one more than the first.",
       "Scan while keeping the first and last value of the current run; extend it when the next value equals the last plus 1, otherwise emit the run and start a new one at that value.",
       "An empty list prints nothing; otherwise start = end = a[0]; for each following value v, if v == end + 1 set end = v, otherwise emit the run (just start when start == end, else \"start to end\") and set start = end = v; after the scan emit the last run too; one run per line."
+    ],
+    "ja": [
+      "リストは狭義単調増加なので、隣り合う 2 つが同じ区間に属するのは、後ろが前より 1 大きいときに限られます。",
+      "現在の区間の最初と最後の値を保持しながら走査します。次の値が最後の値 + 1 に等しければ区間を延ばし、そうでなければ区間を出力してその値から新しい区間を始めます。",
+      "空のリストは何も出力しません。それ以外は start = end = a[0] とし、後続の各値 v について v == end + 1 なら end = v とし、そうでなければ区間を出力して（start == end なら start のみ、そうでなければ \"start to end\"）start = end = v とします。走査後に最後の区間も出力します。1 区間 1 行です。"
+    ],
+    "ko": [
+      "리스트가 엄격하게 증가하므로, 이웃한 두 값이 같은 구간에 속하는 것은 두 번째 값이 첫 번째 값보다 정확히 1 큰 경우뿐입니다.",
+      "현재 구간의 첫 값과 마지막 값을 유지하며 스캔합니다. 다음 값이 마지막 값 + 1과 같으면 확장하고, 아니면 구간을 출력한 뒤 그 값에서 새 구간을 시작합니다.",
+      "빈 리스트는 아무것도 출력하지 않습니다. 그렇지 않으면 start = end = a[0]으로 시작합니다. 이어지는 각 값 v에 대해 v == end + 1이면 end = v로 설정하고, 아니면 구간을 출력(start == end이면 start만, 아니면 \"start to end\")한 뒤 start = end = v로 설정합니다. 스캔이 끝나면 마지막 구간도 출력합니다. 구간 하나당 한 줄입니다."
+    ],
+    "vi": [
+      "Danh sách tăng ngặt, nên hai phần tử kề nhau thuộc cùng một dải đúng khi phần tử sau lớn hơn phần tử trước đúng 1 đơn vị.",
+      "Duyệt và giữ giá trị đầu và cuối của dải hiện tại; mở rộng dải khi giá trị tiếp theo bằng giá trị cuối cộng 1, ngược lại in dải đó ra và bắt đầu dải mới tại giá trị này.",
+      "Danh sách rỗng thì không in gì; ngược lại đặt start = end = a[0]; với mỗi giá trị v tiếp theo, nếu v == end + 1 thì gán end = v, nếu không thì in dải (chỉ start khi start == end, còn lại là \"start to end\") rồi gán start = end = v; sau khi duyệt xong nhớ in cả dải cuối; mỗi dải một dòng."
     ]
   },
   "explanationEn": "## Approach\n\nKeep the first and last value of the current run; when the next value equals the last value + 1, extend the run, otherwise close the current run and start a new one.\n\n## Proof of correctness\n\nBecause the list is strictly increasing, an adjacent difference of 1 means exactly that both values belong to the same consecutive run, and a difference greater than 1 means no run can span the missing integers. The run is closed each time at the only legal split point, which produces all maximal consecutive runs with no overlap and nothing missing.\n\n## Complexity\n\nO(n) time, O(n) space counting the output."

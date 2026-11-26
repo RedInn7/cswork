@@ -13,6 +13,21 @@
       "The ranking uses only two keys: points 3 * wins + draws, and on equal points the goal difference (goals scored minus goals conceded), both from high to low. When both are equal, the statement fixes no order, and any order is accepted.",
       "Sort the teams by (points descending, goal difference descending) and take the first two; the index only picks one valid order among teams that are completely tied.",
       "Read the four lines and compute each team's points and goal difference. Sort the indices by points descending, then goal difference descending, then index ascending. Print the first two indices, keeping in mind that points can exceed the 32-bit range."
+    ],
+    "ja": [
+      "順位は 2 つのキーだけで決まります。勝ち点 3 * 勝ち数 + 引き分け数と、勝ち点が同じ場合の得失点差(得点から失点を引いた値)で、どちらも高い方が上位です。両方とも等しいとき、問題文は順序を定めず、どの順序でも受理されます。",
+      "チームを (勝ち点の降順, 得失点差の降順) でソートして先頭の 2 つを取ります。添字は、完全に同順位のチームの中から有効な順序を 1 つ選ぶためにだけ使います。",
+      "4 行を読み込み、各チームの勝ち点と得失点差を計算します。添字を、勝ち点の降順、次に得失点差の降順、次に添字の昇順でソートします。先頭の 2 つの添字を出力します。勝ち点は 32 ビットの範囲を超えることがある点に注意してください。"
+    ],
+    "ko": [
+      "순위 기준은 두 가지뿐입니다. 승점 3 * 승 + 무, 그리고 승점이 같을 때 골 득실차(득점 − 실점)이며 둘 다 큰 쪽이 앞섭니다. 둘 다 같으면 문제가 순서를 정하지 않으며 어떤 순서든 인정됩니다.",
+      "팀을 (승점 내림차순, 골 득실차 내림차순)으로 정렬하고 앞의 두 팀을 취합니다. 인덱스는 완전히 동률인 팀 사이에서 유효한 순서 하나를 고르는 데만 쓰입니다.",
+      "네 줄을 읽고 각 팀의 승점과 골 득실차를 계산합니다. 인덱스를 승점 내림차순, 골 득실차 내림차순, 인덱스 오름차순으로 정렬합니다. 앞의 두 인덱스를 출력하되, 승점이 32비트 범위를 넘을 수 있다는 점에 유의합니다."
+    ],
+    "vi": [
+      "Bảng xếp hạng chỉ dùng hai khóa: điểm 3 * wins + draws, và khi bằng điểm thì xét hiệu số bàn thắng (số bàn ghi được trừ số bàn thua), cả hai từ cao xuống thấp. Khi cả hai bằng nhau, đề bài không cố định thứ tự, và mọi thứ tự đều được chấp nhận.",
+      "Sắp xếp các đội theo (điểm giảm dần, hiệu số bàn thắng giảm dần) và lấy hai đội đầu; chỉ số chỉ để chọn một thứ tự hợp lệ giữa các đội hòa hoàn toàn.",
+      "Đọc bốn dòng và tính điểm cùng hiệu số bàn thắng của từng đội. Sắp xếp các chỉ số theo điểm giảm dần, rồi hiệu số bàn thắng giảm dần, rồi chỉ số tăng dần. In hai chỉ số đầu, lưu ý rằng điểm có thể vượt quá phạm vi 32 bit."
     ]
   },
   "explanationEn": "## Approach\n\nSort the teams by points and goal difference in descending order, use the index only to pick one deterministic valid representative among ties, and take the first two.\n\n## Correctness\n\nThe sort keys are exactly the ranking rules of the problem, so the first and second teams are each no worse than every team not yet chosen; any order among identical keys conforms to the problem.\n\n## Complexity\n\nTime O(n log n), space O(n)."

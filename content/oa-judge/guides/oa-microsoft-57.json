@@ -13,6 +13,21 @@
       "Closed merchants take no part in the ranking, so filter them out first.",
       "Sort the rest by three keys: rating descending, then distance ascending on equal ratings, then original index ascending. This makes the ranking unique.",
       "Collect the indices of the open merchants, sort them with a custom comparison, and print the first min(K, number open) indices separated by spaces; print an empty line when there is nothing to output."
+    ],
+    "ja": [
+      "閉店している店舗は順位付けの対象外なので、先に取り除きます。",
+      "残りを 3 つのキーでソートします。評価の降順、評価が同じなら距離の昇順、さらに同じなら元の添字の昇順です。これで順位は一意に決まります。",
+      "営業中の店舗の添字を集め、独自の比較関数でソートし、先頭の min(K, 営業中の店舗数) 個の添字をスペース区切りで出力します。出力するものがなければ空行を出力します。"
+    ],
+    "ko": [
+      "영업하지 않는 상점은 순위에 참여하지 않으므로 먼저 걸러 냅니다.",
+      "나머지를 세 가지 키로 정렬합니다. 평점 내림차순, 평점이 같으면 거리 오름차순, 그다음 원래 인덱스 오름차순입니다. 이렇게 하면 순위가 유일하게 정해집니다.",
+      "영업 중인 상점의 인덱스를 모아 사용자 정의 비교로 정렬한 뒤, 앞에서 min(K, 영업 중인 상점 수)개의 인덱스를 공백으로 구분해 출력합니다. 출력할 것이 없으면 빈 줄을 출력합니다."
+    ],
+    "vi": [
+      "Các cửa hàng đã đóng cửa không tham gia xếp hạng, nên hãy lọc chúng ra trước.",
+      "Sắp xếp phần còn lại theo ba khóa: điểm đánh giá giảm dần, rồi khoảng cách tăng dần khi điểm bằng nhau, rồi chỉ số ban đầu tăng dần. Cách này làm cho thứ hạng là duy nhất.",
+      "Thu thập các chỉ số của những cửa hàng đang mở, sắp xếp chúng bằng một hàm so sánh tùy chỉnh, và in min(K, số cửa hàng đang mở) chỉ số đầu tiên, cách nhau bởi dấu cách; in một dòng trống khi không có gì để xuất."
     ]
   },
   "explanationEn": "## Approach\n\nFilter out the closed merchants, sort by the three ranking keys, and take the first K indices.\n\n## Correctness\n\nFiltering removes exactly the options that cannot be chosen; the sort applies the comparison priorities required by the problem level by level, so the resulting prefix is the unique valid top K.\n\n## Complexity\n\nTime O(N log N), space O(N)."

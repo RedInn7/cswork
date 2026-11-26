@@ -13,6 +13,21 @@
       "The users someone can see are exactly the users in their connected component, so the answer to each query is the size of that user's connected component, regardless of edge order.",
       "Process all edges once with a union-find structure, merging connected users into the same set and keeping the set size at the root. Duplicate edges and self-loops are naturally ignored when merging.",
       "Initialize parent[i]=i and size[i]=1. For each edge, find the roots of both ends; if they differ, attach the smaller set under the larger one and add the sizes (with path compression). Finally, for each queried user find the root and print size[root] in query order."
+    ],
+    "ja": [
+      "あるユーザーが閲覧できるのは、ちょうど自分の連結成分内のユーザーなので、各クエリの答えは辺の順序によらず、そのユーザーの連結成分のサイズです。",
+      "Union-Find ですべての辺を 1 回ずつ処理し、つながったユーザーを同じ集合に併合して、集合のサイズを根に保持します。重複辺と自己ループは、併合の際に自然に無視されます。",
+      "parent[i]=i、size[i]=1 で初期化します。各辺について両端の根を求め、異なれば小さい集合を大きい集合の下につなぎ、サイズを足します(経路圧縮付き)。最後に、各クエリのユーザーの根を求め、クエリの順に size[root] を出力します。"
+    ],
+    "ko": [
+      "어떤 사용자가 볼 수 있는 사용자는 정확히 그 사용자의 연결 요소에 속한 사용자들이므로, 각 쿼리의 답은 간선의 순서와 무관하게 그 사용자가 속한 연결 요소의 크기입니다.",
+      "유니온 파인드로 모든 간선을 한 번씩 처리하면서 연결된 사용자들을 같은 집합으로 합치고 루트에 집합 크기를 유지합니다. 중복 간선과 자기 루프는 합치는 과정에서 자연스럽게 무시됩니다.",
+      "parent[i]=i, size[i]=1로 초기화합니다. 각 간선에 대해 양 끝의 루트를 찾고, 서로 다르면 작은 집합을 큰 집합 아래에 붙이고 크기를 더합니다(경로 압축 포함). 마지막으로 각 조회 사용자에 대해 루트를 찾아 쿼리 순서대로 size[root]를 출력합니다."
+    ],
+    "vi": [
+      "Những người dùng mà một người có thể thấy chính là những người dùng trong thành phần liên thông của họ, nên đáp án của mỗi truy vấn là kích thước thành phần liên thông của người dùng đó, bất kể thứ tự các cạnh.",
+      "Xử lý mọi cạnh một lần với cấu trúc union-find, gộp các người dùng liên thông vào cùng một tập và giữ kích thước tập tại gốc. Các cạnh trùng lặp và khuyên tự nhiên bị bỏ qua khi gộp.",
+      "Khởi tạo parent[i]=i và size[i]=1. Với mỗi cạnh, tìm gốc của hai đầu; nếu khác nhau, gắn tập nhỏ hơn dưới tập lớn hơn và cộng các kích thước (kèm nén đường đi). Cuối cùng, với mỗi người dùng được truy vấn, tìm gốc và in size[root] theo thứ tự truy vấn."
     ]
   },
   "explanationEn": "## Approach\n\nProcess all edges with a union-find structure using path compression and union by size; for each query, read the set size recorded at the root.\n\n## Correctness\n\nAfter processing each undirected edge, the union-find structure has merged together exactly the vertices that are reachable through edges: by induction over the edges, each set contains exactly its connected component and nothing else. Union by size maintains the set size at the root, so each query outputs exactly the number of people in the user's component.\n\n## Complexity\n\nTime O((N+E+Q) α(N)), space O(N+E)."

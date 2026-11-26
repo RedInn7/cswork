@@ -13,6 +13,21 @@
       "Servers do not affect each other, so you only need to track, for each server separately, how many errors it has had in a row since its last success.",
       "An error increases the streak by one and a success resets it to zero; when the streak reaches 3, the server is replaced, which counts as one replacement, and counting restarts from 0.",
       "Keep an array streak of length n; process the log entries (server, result) in order: on error increment streak, otherwise set it to 0; if streak equals 3, add one to the answer and reset streak to 0. Print the answer."
+    ],
+    "ja": [
+      "サーバー同士は互いに影響しないので、各サーバーについて、直近の成功以降に連続して起きたエラーの回数を別々に追跡すれば十分です。",
+      "エラーなら連続数を 1 増やし、成功なら 0 に戻します。連続数が 3 に達したらサーバーを交換し、交換 1 回として数え、カウントを 0 から再開します。",
+      "長さ n の配列 streak を持ちます。ログ (server, result) を順に処理し、エラーなら streak を 1 増やし、そうでなければ 0 にします。streak が 3 になったら、答えに 1 を加えて streak を 0 に戻します。最後に答えを出力します。"
+    ],
+    "ko": [
+      "서버들은 서로 영향을 주지 않으므로 서버별로 마지막 성공 이후 연속 오류가 몇 번인지만 따로 추적하면 됩니다.",
+      "오류가 나면 연속 횟수가 1 늘고 성공하면 0으로 돌아갑니다. 연속 횟수가 3에 이르면 서버를 교체하여 교체 횟수를 하나 세고, 다시 0부터 셉니다.",
+      "길이 n인 배열 streak를 두고 로그 (서버, 결과)를 순서대로 처리합니다. 오류이면 streak를 증가시키고 아니면 0으로 둡니다. streak가 3이 되면 답에 1을 더하고 streak를 0으로 초기화합니다. 답을 출력합니다."
+    ],
+    "vi": [
+      "Các máy chủ không ảnh hưởng lẫn nhau, nên chỉ cần theo dõi riêng cho từng máy chủ xem nó đã gặp bao nhiêu lỗi liên tiếp kể từ lần thành công gần nhất.",
+      "Một lỗi tăng chuỗi lên một và một lần thành công đặt lại về 0; khi chuỗi đạt 3, máy chủ được thay, tính là một lần thay, và việc đếm bắt đầu lại từ 0.",
+      "Giữ một mảng streak độ dài n; xử lý các mục nhật ký (server, result) theo thứ tự: nếu là lỗi thì tăng streak, ngược lại đặt về 0; nếu streak bằng 3 thì cộng một vào đáp án và đặt streak về 0. In đáp án."
     ]
   },
   "explanationEn": "## Approach\n\nStore the consecutive error count for each server; success resets it to zero, and an error adds one, replacing the server and resetting the count when it reaches 3.\n\n## Correctness\n\nThe invariant is that the count equals the number of consecutive failures of the current (new) server since its most recent success. After a replacement a brand new server is in use, so the count also starts from zero. A replacement is counted exactly at the third error, so all replacements are simulated completely.\n\n## Complexity\n\nTime O(n+m), space O(n+m) including the input."
