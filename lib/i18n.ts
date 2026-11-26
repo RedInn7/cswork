@@ -27,7 +27,7 @@ let current: Language | null = null;
 const ServerLanguage = createContext<Language>('zh');
 
 /** The language in the address (/en/oa): on those pages it is the language, whatever was chosen before. */
-const pathLanguage = () => (typeof location === 'undefined' ? null : splitLanguagePath(location.pathname).language);
+const pathLanguage = () => (typeof location === 'undefined' ? null : splitLanguagePath(location.pathname || '').language);
 
 export function readLanguage(): Language {
   if (current) return current;
