@@ -8,7 +8,7 @@ import { PostsPreview } from '../../posts-preview';
 import { MemberQuestions, ReportExperience } from '@/components/experience-report';
 import { EMPLOYMENT, oaLine, prepLine, RESULTS, ROUND_LABELS, seasonLabel, SENTIMENTS, SOURCES } from '@/lib/experience';
 import { companyHubPath } from '@/lib/oa-company-brands';
-import { seoMetadata } from '@/lib/seo';
+import { pageMetadata } from '@/lib/server/seo';
 import { person } from '@/lib/server/auth';
 import { origin } from '@/lib/server/env';
 import { memberExperiencePath, readMember, titleQuestions } from '@/lib/server/experience-submissions';
@@ -36,7 +36,7 @@ export async function generateMetadata({ params }: Props) {
   const { id } = await params;
   const { item, zh } = await load(id);
   return {
-    ...seoMetadata({
+    ...await pageMetadata({
       title: zh ? `${item.title} · ${item.company.name} 面经` : `${item.title} · ${item.company.name} interview experience`,
       description: item.summary || item.title,
       path: memberExperiencePath(id),

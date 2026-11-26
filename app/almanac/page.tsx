@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import './almanac.css';
 import { InterviewAlmanac } from '@/components/interview-almanac';
-import { seoMetadata } from '@/lib/seo';
+import { pageMetadata } from '@/lib/server/seo';
 import { requestLocale } from '@/lib/server/locale';
 
 const copy = {
@@ -23,7 +23,7 @@ const copy = {
 
 export async function generateMetadata(): Promise<Metadata> {
   const c = copy[await requestLocale()];
-  return seoMetadata({
+  return await pageMetadata({
     title: c.title,
     description: c.description,
     path: '/almanac',

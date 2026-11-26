@@ -1,6 +1,6 @@
 import { headers } from 'next/headers';
 import { notFound } from 'next/navigation';
-import { seoMetadata } from '@/lib/seo';
+import { pageMetadata } from '@/lib/server/seo';
 import { person } from '@/lib/server/auth';
 import { origin } from '@/lib/server/env';
 import { requestLocale } from '@/lib/server/locale';
@@ -25,7 +25,7 @@ async function viewerId() {
 export async function generateMetadata({ params }: Props) {
   const { stop, zh } = await load(params);
   const { pageTitle, description } = topicCopy(stop, zh);
-  return seoMetadata({ title: pageTitle, description, path: topicPath(stop.slug) });
+  return await pageMetadata({ title: pageTitle, description, path: topicPath(stop.slug) });
 }
 
 export default async function TopicPage({ params }: Props) {

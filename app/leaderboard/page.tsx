@@ -2,7 +2,7 @@ import { headers } from 'next/headers';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { LANGUAGE_IDS } from '@/lib/problems';
-import { seoMetadata } from '@/lib/seo';
+import { pageMetadata } from '@/lib/server/seo';
 import { person } from '@/lib/server/auth';
 import { origin } from '@/lib/server/env';
 import { publicCatalogue, schoolKey } from '@/lib/server/learner-cloud';
@@ -15,7 +15,7 @@ type Props = { searchParams: Promise<Record<string, string | string[] | undefine
 export async function generateMetadata(): Promise<Metadata> {
   const zh = (await requestLocale()) === 'zh';
   return {
-    ...seoMetadata({
+    ...await pageMetadata({
       title: zh ? '练习积分排行榜 · cswork' : 'Practice leaderboard · cswork',
       description: zh
         ? 'CSWork 练习排行榜：按通过题目的难度积分、通过题数和连续打卡天数排名，可按学校和语言筛选。'

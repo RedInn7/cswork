@@ -2,7 +2,8 @@ import Link from 'next/link';
 import { ProjectState } from '@/components/project-progress';
 import { ROLES, isRole } from '@/lib/content/role-paths';
 import { LEVEL_NAMES, PROJECT_LEVELS } from '@/lib/resume-projects';
-import { SITE_NAME, breadcrumbJsonLd, seoMetadata } from '@/lib/seo';
+import { SITE_NAME, breadcrumbJsonLd } from '@/lib/seo';
+import { pageMetadata } from '@/lib/server/seo';
 import { requestLocale } from '@/lib/server/locale';
 import { resumeProjects } from '@/lib/server/resume-projects';
 
@@ -32,7 +33,7 @@ const LEVEL_LEADS: Record<string, [string, string]> = {
 
 export async function generateMetadata() {
   const c = COPY[await requestLocale()];
-  return seoMetadata({ title: c.title, description: c.description, path: '/projects' });
+  return await pageMetadata({ title: c.title, description: c.description, path: '/projects' });
 }
 
 /** /projects: the resume projects by level, filtered by role with ?role=; progress badges once signed in. */

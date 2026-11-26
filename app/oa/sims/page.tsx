@@ -2,7 +2,8 @@ import '../../algorithm-demo.css';
 import Link from 'next/link';
 import { AlgorithmDemo } from '@/components/algorithm-demo';
 import { simKinds, type SimKind } from '@/lib/cs-sims';
-import { breadcrumbJsonLd, seoMetadata } from '@/lib/seo';
+import { breadcrumbJsonLd } from '@/lib/seo';
+import { pageMetadata } from '@/lib/server/seo';
 import { requestLocale } from '@/lib/server/locale';
 
 const SECTIONS: Record<SimKind, { zh: [string, string]; en: [string, string] }> = {
@@ -82,7 +83,7 @@ function copy(zh: boolean) {
 
 export async function generateMetadata() {
   const { title, lead } = copy((await requestLocale()) === 'zh');
-  return seoMetadata({ title, description: lead, path: '/oa/sims' });
+  return await pageMetadata({ title, description: lead, path: '/oa/sims' });
 }
 
 export default async function OaSimsPage() {

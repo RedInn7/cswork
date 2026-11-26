@@ -8,7 +8,8 @@ import {
   oaCompanyPath,
   oaProblemPath,
 } from '@/lib/oa-company-brands';
-import { breadcrumbJsonLd, oaPageTitle, seoMetadata } from '@/lib/seo';
+import { breadcrumbJsonLd, oaPageTitle } from '@/lib/seo';
+import { pageMetadata } from '@/lib/server/seo';
 import { requestLocale } from '@/lib/server/locale';
 import { oaReadyProblems } from '@/lib/server/oa-judge';
 import { oaLibrary } from '@/lib/server/oa-library';
@@ -35,7 +36,7 @@ const load = cache(async (slug: string) => {
 
 export async function generateMetadata({ params }: Props) {
   const { company, locale, name, lead } = await load((await params).company);
-  return seoMetadata({
+  return await pageMetadata({
     title: oaPageTitle(locale, name),
     description: lead,
     path: oaCompanyPath(company.slug),

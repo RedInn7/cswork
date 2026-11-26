@@ -8,7 +8,8 @@ import mcqBank from '@/lib/content/oa-mcq.json';
 import { CS_NODES } from '@/lib/cs-track';
 import { ROLE_KEYS, ROLES, ROUTE_ID, isRole } from '@/lib/content/role-paths';
 import { curatedEntries } from '@/lib/ling-curated';
-import { SITE_NAME, breadcrumbJsonLd, seoMetadata } from '@/lib/seo';
+import { SITE_NAME, breadcrumbJsonLd } from '@/lib/seo';
+import { pageMetadata } from '@/lib/server/seo';
 import { beginnerCourse, learnKey } from '@/lib/server/beginner-courses';
 import { requestLocale } from '@/lib/server/locale';
 import { resolveRolePath, routeCatalog } from '@/lib/server/role-paths';
@@ -39,7 +40,7 @@ const BEHAVIORAL = ['phone-screen', 'onsite'];
 
 export async function generateMetadata() {
   const c = COPY[await requestLocale()];
-  return seoMetadata({ title: c.title, description: c.description, path: '/roadmap' });
+  return await pageMetadata({ title: c.title, description: c.description, path: '/roadmap' });
 }
 
 type Props = { searchParams: Promise<Record<string, string | string[] | undefined>> };

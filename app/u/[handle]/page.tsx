@@ -2,7 +2,7 @@ import { headers } from 'next/headers';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { cache } from 'react';
-import { seoMetadata } from '@/lib/seo';
+import { pageMetadata } from '@/lib/server/seo';
 import { person } from '@/lib/server/auth';
 import { origin } from '@/lib/server/env';
 import { ownerHandle, publicCatalogue, publicProfile, publicYear } from '@/lib/server/learner-cloud';
@@ -25,7 +25,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { profile, zh } = await load((await params).handle);
   const { total } = profile.solved;
   return {
-    ...seoMetadata({
+    ...await pageMetadata({
       title: zh ? `@${profile.handle} 的刷题主页 · CSWork` : `@${profile.handle} on CSWork`,
       description: zh
         ? `@${profile.handle} 在 CSWork 通过了 ${total} 道题。${profile.bio}`

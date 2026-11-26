@@ -5,7 +5,7 @@ import '../lc-rating.css';
 import '../daily-month.css';
 import { Suspense } from 'react';
 import { oaStatementMarkdown } from '@/lib/oa-verified-statement';
-import { seoMetadata } from '@/lib/seo';
+import { pageMetadata } from '@/lib/server/seo';
 import { HttpError } from '@/lib/server/http';
 import { dailyProblem } from '@/lib/server/daily-problem';
 import { withFeed } from '@/lib/server/feeds';
@@ -17,7 +17,7 @@ import { DailyView } from './view';
 
 export async function generateMetadata() {
   const zh = (await requestLocale()) === 'zh';
-  const metadata = seoMetadata({
+  const metadata = await pageMetadata({
     title: zh ? '每日一题 · cswork' : 'Daily problem · cswork',
     description: zh
       ? '每天一道题，所有人同一道：单号日练 500 路算法题，双号日练热门公司的 OA 真题。'

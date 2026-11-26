@@ -3,13 +3,14 @@ import './interview-platforms.css';
 import Link from 'next/link';
 import { Fragment, Suspense } from 'react';
 import { CHECKED, PLATFORMS, ROWS, type Cell } from '@/lib/content/interview-platforms';
-import { breadcrumbJsonLd, seoMetadata } from '@/lib/seo';
+import { breadcrumbJsonLd } from '@/lib/seo';
+import { pageMetadata } from '@/lib/server/seo';
 import { requestLocale } from '@/lib/server/locale';
 import { LibraryPageView } from '../library/page-view';
 
 export async function generateMetadata() {
   const zh = (await requestLocale()) === 'zh';
-  return seoMetadata({
+  return await pageMetadata({
     title: zh
       ? `面试平台规则对照：${PLATFORMS.map((p) => p.name).join('、')} · cswork`
       : `Interview platform rules: ${PLATFORMS.map((p) => p.name).join(', ')} · cswork`,

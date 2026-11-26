@@ -4,7 +4,7 @@ import '@/app/code-review.css';
 import '@/app/resume-review-link.css';
 import { headers } from 'next/headers';
 import type { Metadata } from 'next';
-import { seoMetadata } from '@/lib/seo';
+import { pageMetadata } from '@/lib/server/seo';
 import { aiEnabled } from '@/lib/server/ai-tutor';
 import { person } from '@/lib/server/auth';
 import { origin } from '@/lib/server/env';
@@ -39,7 +39,7 @@ const copy = {
 
 export async function generateMetadata(): Promise<Metadata> {
   const c = copy[await requestLocale()];
-  return seoMetadata({ title: c.title, description: c.description, path: '/career/resume/builder' });
+  return await pageMetadata({ title: c.title, description: c.description, path: '/career/resume/builder' });
 }
 
 /** /career/resume/builder (components/resume-builder.tsx); signed-in learners can pull in their CSWork record. */

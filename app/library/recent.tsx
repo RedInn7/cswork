@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { oaProblemPath } from '@/lib/oa-company-brands';
-import { seoMetadata, SITE_NAME } from '@/lib/seo';
+import { SITE_NAME } from '@/lib/seo';
+import { pageMetadata } from '@/lib/server/seo';
 import { recentAdditions } from '@/lib/server/company-insights';
 import { memberExperiencePath, memberIdOf } from '@/lib/server/experience-submissions';
 import { requestLocale } from '@/lib/server/locale';
@@ -24,7 +25,7 @@ const title = (zh: boolean) => (zh ? `最近 ${DAYS} 天新增` : `Added in the 
 export async function recentMetadata() {
   const zh = (await requestLocale()) === 'zh';
   return {
-    ...seoMetadata({
+    ...await pageMetadata({
       title: `${title(zh)} | ${SITE_NAME}`,
       description: zh
         ? '最近新增的面经、面试题、学员投稿和可在线评测的 OA 真题。'

@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import { SkillTests } from '@/components/skill-test';
-import { seoMetadata } from '@/lib/seo';
+import { pageMetadata } from '@/lib/server/seo';
 import { person } from '@/lib/server/auth';
 import { origin } from '@/lib/server/env';
 import { requestLocale } from '@/lib/server/locale';
@@ -14,7 +14,7 @@ import { LibraryPageView } from '../library/page-view';
 
 export async function generateMetadata(): Promise<Metadata> {
   const zh = (await requestLocale()) === 'zh';
-  return seoMetadata({
+  return await pageMetadata({
     title: zh ? '技能认证：算法、SQL 与 Python 限时考试 · cswork' : 'Skill certification: timed algorithms, SQL and Python exams · cswork',
     description: zh
       ? '四项限时认证考试：算法基础、算法进阶、SQL 和 Python。题目由服务器从你没做过的题里抽取，按测试点计分，通过后获得可在线验证的站内证书。'

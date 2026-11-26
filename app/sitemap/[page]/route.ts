@@ -1,4 +1,6 @@
 import {
+  hasEveryPage,
+  LOCALIZED_ENTRIES,
   sitemapChunks,
   sitemapLibraryRange,
   sitemapPageCount,
@@ -16,24 +18,31 @@ import {
   publicLibraryPath,
 } from '@/lib/server/public-library';
 import { sitemapStatics } from '@/lib/server/sitemap';
+import { urlLanguage } from '@/lib/server/locale';
 
 export async function GET(
   _request: Request,
   context: { params: Promise<{ page: string }> },
 ) {
   const { page: rawPage } = await context.params;
+  // /en/sitemap/1 lists the English URLs of the same pages (proxy.ts).
+  const language = (await urlLanguage()) ?? 'zh';
+  if (!hasEveryPage(language))
+    return rawPage === '1'
+      ? xmlResponse(sitemapXml(sitemapChunks(LOCALIZED_ENTRIES, language)[0]))
+      : new Response('Not found', { status: 404 });
   // OA pages: well under one shard (about 1,700 URLs), lastmod from the live judge versions.
   if (rawPage === 'oa')
     return xmlResponse(
       sitemapXml(
-        sitemapChunks(oaLibrary().sitemapEntries(await oaReadyProblems()))[0],
+        sitemapChunks(oaLibrary().sitemapEntries(await oaReadyProblems()), language)[0],
       ),
     );
   // Company pages: a few hundred URLs.
   if (rawPage === 'company')
-    return xmlResponse(sitemapXml(sitemapChunks(companyHubPaths(library()))[0]));
+    return xmlResponse(sitemapXml(sitemapChunks(companyHubPaths(library()), language)[0]));
   // Role and category landing pages with enough items (lib/server/seo-facets.ts): about a thousand.
-  if (rawPage === 'facets') return xmlResponse(sitemapXml(sitemapChunks(facetPaths(library()))[0] ?? []));
+  if (rawPage === 'facets') return xmlResponse(sitemapXml(sitemapChunks(facetPaths(library()), language)[0] ?? []));
   if (!/^[1-9]\d{0,6}$/.test(rawPage))
     return new Response('Not found', { status: 404 });
   const page = Number(rawPage);
@@ -45,10 +54,7 @@ export async function GET(
     path: publicLibraryPath(entry.type, entry.slug),
     updatedAt: entry.updatedAt,
   }));
-  const chunks = sitemapChunks([
-    ...(page === 1 ? statics : []),
-    ...entries,
-  ]);
+  const chunks = sitemapChunks([...(page === 1 ? statics : []), ...entries], language);
   // Public slugs are ASCII and limited to 300 characters. A 45,000-item batch
   // therefore fits below both sitemap limits; fail loudly if that contract changes.
   if (chunks.length !== 1)

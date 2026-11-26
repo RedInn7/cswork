@@ -2,7 +2,7 @@ import { headers } from 'next/headers';
 import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import { CONTEST_KINDS, weeklyTitle } from '@/lib/contest';
-import { seoMetadata } from '@/lib/seo';
+import { pageMetadata } from '@/lib/server/seo';
 import { person } from '@/lib/server/auth';
 import { duelRecord } from '@/lib/server/contest-ratings';
 import { contestLobby } from '@/lib/server/contests';
@@ -16,7 +16,7 @@ type Props = { searchParams: Promise<Record<string, string | string[] | undefine
 
 export async function generateMetadata(): Promise<Metadata> {
   const zh = (await requestLocale()) === 'zh';
-  return seoMetadata({
+  return await pageMetadata({
     title: zh ? 'CSWork 周赛、入门赛与比赛房间 · cswork' : 'CSWork weekly contest, starter and rooms · cswork',
     description: zh
       ? '每周日北京时间 09:00 的 90 分钟周赛，4 道按难度分排好的题；每周三 20:00 的 60 分钟入门赛，3 道更简单的题。赛后按 Elo 结算 rating；也可以快速匹配 1v1 排位，或和朋友开自选赛。'

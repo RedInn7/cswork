@@ -2,7 +2,8 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { problemAppHref } from '@/lib/classic-lists';
 import { keyPoints } from '@/lib/recall';
-import { SITE_NAME, breadcrumbJsonLd, seoMetadata } from '@/lib/seo';
+import { SITE_NAME, breadcrumbJsonLd } from '@/lib/seo';
+import { pageMetadata } from '@/lib/server/seo';
 import { beginnerCourse, learnKey, learnPath } from '@/lib/server/beginner-courses';
 import { requestLocale } from '@/lib/server/locale';
 import { sdSummary } from '@/lib/server/system-design-course';
@@ -22,7 +23,7 @@ async function load(params: Props['params']) {
 
 export async function generateMetadata({ params }: Props) {
   const { course, chapter, zh } = await load(params);
-  return seoMetadata({
+  return await pageMetadata({
     title: `${zh ? chapter.titleZh : chapter.titleEn} · ${zh ? course.titleZh : course.titleEn} | ${SITE_NAME}`,
     description: sdSummary(zh ? chapter.bodyZh : chapter.bodyEn, 160),
     path: learnPath(course.slug, chapter.slug),

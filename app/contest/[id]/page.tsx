@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { cache } from 'react';
 import { weeklyTitle } from '@/lib/contest';
-import { seoMetadata } from '@/lib/seo';
+import { pageMetadata } from '@/lib/server/seo';
 import { person } from '@/lib/server/auth';
 import { roomView } from '@/lib/server/contests';
 import { origin } from '@/lib/server/env';
@@ -28,7 +28,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { view, zh } = await load((await params).id);
   const title = view.week ? weeklyTitle(view.week, zh, view.kind) : view.ranked ? (zh ? '1v1 排位赛' : 'Ranked duel') : view.title;
   return {
-    ...seoMetadata({
+    ...await pageMetadata({
       title: `${title} · cswork`,
       description: zh ? `${title}：题目、计分板与赛后补题。` : `${title}: questions, scoreboard and upsolving.`,
       path: `/contest/${view.id}`,

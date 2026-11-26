@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { NewsletterToggle } from '@/components/newsletter-toggle';
-import { seoMetadata } from '@/lib/seo';
+import { pageMetadata } from '@/lib/server/seo';
 import { feedPath, withFeed } from '@/lib/server/feeds';
 import { requestLocale } from '@/lib/server/locale';
 import { issueList } from '@/lib/server/newsletter';
@@ -10,7 +10,7 @@ type Props = { searchParams: Promise<Record<string, string | string[] | undefine
 
 export async function generateMetadata({ searchParams }: Props) {
   const zh = (await requestLocale()) === 'zh';
-  const metadata = seoMetadata({
+  const metadata = await pageMetadata({
     title: zh ? 'CSWork 周报 · 往期归档' : 'The CSWork weekly · Archive',
     description: zh
       ? '每周一封：新上线的 OA 题、学员面经和每日一题战报。往期全部公开。'

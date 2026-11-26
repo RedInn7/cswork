@@ -4,7 +4,8 @@ import Link from 'next/link';
 import { Suspense } from 'react';
 import { ACM_IO_TEMPLATES } from '@/lib/acm-io-templates';
 import type { CodeLanguage } from '@/lib/problems';
-import { SITE_URL, breadcrumbJsonLd, seoMetadata } from '@/lib/seo';
+import { SITE_URL, breadcrumbJsonLd } from '@/lib/seo';
+import { pageMetadata } from '@/lib/server/seo';
 import { LibraryPageView } from '../library/page-view';
 
 const title = 'ACM 模式输入输出模板';
@@ -20,8 +21,8 @@ const LANGUAGES: [CodeLanguage, string][] = [
   ['go', 'Go'],
 ];
 
-export function generateMetadata() {
-  return seoMetadata({
+export async function generateMetadata() {
+  return await pageMetadata({
     title: `${title} · ACM-style input/output templates`,
     description,
     path: '/acm-io',

@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { LocaleProvider } from '@/lib/i18n';
 import { htmlLang } from '@/lib/language';
-import { requestLanguage, requestLocale } from '@/lib/server/locale';
+import { requestLanguage } from '@/lib/server/locale';
 import './globals.css';
 import './theme.css';
 import { THEME_SCRIPT } from '@/lib/theme-script';
@@ -10,13 +10,23 @@ import { SwRegister } from '@/components/sw-register';
 import { CommandPalette } from '@/components/command-palette';
 import { aiEnabled } from '@/lib/server/ai-tutor';
 import { measurementId } from '@/lib/analytics';
-import { SEO_HOME, seoMetadata } from '@/lib/seo';
+import { homeCopy } from '@/lib/seo';
+import { pageMetadata } from '@/lib/server/seo';
 // In the reader's language from the first byte, so the tab title doesn't flash either.
 export async function generateMetadata(): Promise<Metadata> {
+  const { title, description } = homeCopy(await requestLanguage());
   return {
-    ...seoMetadata({ ...SEO_HOME[await requestLocale()], path: '/' }),
+    ...(await pageMetadata({ title, description, path: '/', localized: true })),
     // The home-screen icon on iOS; others read app/manifest.ts.
     icons: { apple: '/icons/apple-touch-icon.png' },
+    // Search console ownership: paste each console's code into the server environment.
+    verification: {
+      google: process.env.GOOGLE_SITE_VERIFICATION,
+      other: {
+        ...(process.env.BING_SITE_VERIFICATION && { 'msvalidate.01': process.env.BING_SITE_VERIFICATION }),
+        ...(process.env.BAIDU_SITE_VERIFICATION && { 'baidu-site-verification': process.env.BAIDU_SITE_VERIFICATION }),
+      },
+    },
   };
 }
 export default async function RootLayout({

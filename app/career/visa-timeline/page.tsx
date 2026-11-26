@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { seoMetadata } from '@/lib/seo';
+import { pageMetadata } from '@/lib/server/seo';
 import { guidePath } from '@/lib/career-guide';
 import { requestLocale } from '@/lib/server/locale';
 import { VisaTimeline } from '@/components/visa-timeline';
@@ -36,7 +36,7 @@ const copy = {
 
 export async function generateMetadata(): Promise<Metadata> {
   const c = copy[await requestLocale()];
-  return seoMetadata({ title: c.title, description: c.description, path: '/career/visa-timeline' });
+  return await pageMetadata({ title: c.title, description: c.description, path: '/career/visa-timeline' });
 }
 
 export default async function VisaTimelinePage() {

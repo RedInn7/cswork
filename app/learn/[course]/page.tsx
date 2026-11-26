@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { CourseRating } from '@/components/course-rating';
-import { SITE_NAME, breadcrumbJsonLd, itemListJsonLd, seoMetadata } from '@/lib/seo';
+import { SITE_NAME, breadcrumbJsonLd, itemListJsonLd } from '@/lib/seo';
+import { pageMetadata } from '@/lib/server/seo';
 import { beginnerCourse, learnKey, learnPath } from '@/lib/server/beginner-courses';
 import { requestLocale } from '@/lib/server/locale';
 import { chapterMinutes, minutesLabel, sdSummary, totalMinutes } from '@/lib/server/system-design-course';
@@ -16,7 +17,7 @@ async function load(params: Props['params']) {
 
 export async function generateMetadata({ params }: Props) {
   const { course, zh } = await load(params);
-  return seoMetadata({
+  return await pageMetadata({
     title: `${zh ? course.titleZh : course.titleEn} | ${SITE_NAME}`,
     description: zh ? course.summaryZh : course.summaryEn,
     path: learnPath(course.slug),

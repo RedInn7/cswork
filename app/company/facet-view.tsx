@@ -4,7 +4,8 @@ import { CATEGORIES } from '@/components/company-stats-card';
 import { PaletteButton } from '@/components/command-palette';
 import { ROUND_LABELS } from '@/lib/experience';
 import { companyHubPath } from '@/lib/oa-company-brands';
-import { breadcrumbJsonLd, facetPageTitle, itemListJsonLd, seoMetadata } from '@/lib/seo';
+import { breadcrumbJsonLd, facetPageTitle, itemListJsonLd } from '@/lib/seo';
+import { pageMetadata } from '@/lib/server/seo';
 import { requestLocale } from '@/lib/server/locale';
 import { publicLibraryPath } from '@/lib/server/public-library';
 import { facetPath, type FacetPage } from '@/lib/server/seo-facets';
@@ -45,7 +46,7 @@ export async function facetMetadata(page: FacetPage) {
   const zh = locale === 'zh';
   const { facet, company } = page;
   return {
-    ...seoMetadata({
+    ...await pageMetadata({
       title: facetPageTitle(locale, facet.kind, label(facet.kind, facet.value, zh), company?.name),
       description: describe(page, zh),
       path: facetPath(facet.kind, facet.slug, company?.slug),

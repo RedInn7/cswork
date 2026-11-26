@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { cache } from 'react';
-import { seoMetadata } from '@/lib/seo';
+import { pageMetadata } from '@/lib/server/seo';
 import { publicCatalogue, readList } from '@/lib/server/learner-cloud';
 import { requestLocale } from '@/lib/server/locale';
 import { PublicListView } from '../../views';
@@ -24,7 +24,7 @@ const load = cache(async (id: string) => {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { list, items, zh } = await load((await params).id);
   return {
-    ...seoMetadata({
+    ...await pageMetadata({
       title: zh ? `${list.title}：${items.length} 道题的题单 · CSWork` : `${list.title}: a ${items.length}-problem list · CSWork`,
       description: list.description || (zh ? `CSWork 学习者整理的题单，共 ${items.length} 题。` : `A ${items.length}-problem list made by a CSWork learner.`),
       path: `/u/lists/${list.id}`,

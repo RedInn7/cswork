@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import { cache } from 'react';
 import Link from 'next/link';
-import { seoMetadata } from '@/lib/seo';
+import { pageMetadata } from '@/lib/server/seo';
 import { RecentView, recentMetadata } from './recent';
 import {
   PUBLIC_LIBRARY_TYPES,
@@ -38,7 +38,7 @@ export async function generateMetadata({ searchParams }: Props) {
     ? PUBLIC_LIBRARY_TYPES[query.type]
     : 'Interview preparation library';
   return {
-    ...seoMetadata({
+    ...await pageMetadata({
       title: title + (query.page > 1 ? ` · Page ${query.page}` : ''),
       description: introduction,
       path: publicLibraryListPath(query),

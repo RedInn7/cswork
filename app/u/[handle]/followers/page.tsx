@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { cache } from 'react';
-import { seoMetadata } from '@/lib/seo';
+import { pageMetadata } from '@/lib/server/seo';
 import { followPeople } from '@/lib/server/follows';
 import { requestLocale } from '@/lib/server/locale';
 import { FollowListView } from '../../views';
@@ -18,7 +18,7 @@ const load = cache(async (handle: string) => {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { people, zh } = await load((await params).handle);
   return {
-    ...seoMetadata({
+    ...await pageMetadata({
       title: zh ? `@${people.handle} 的关注者 · CSWork` : `People following @${people.handle} · CSWork`,
       description: zh ? `@${people.handle} 在 CSWork 的关注者。` : `Who follows @${people.handle} on CSWork.`,
       path: `/u/${people.handle}/followers`,

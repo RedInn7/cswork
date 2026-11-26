@@ -1,7 +1,7 @@
 import './offers.css';
 import { headers } from 'next/headers';
 import type { Metadata } from 'next';
-import { seoMetadata } from '@/lib/seo';
+import { pageMetadata } from '@/lib/server/seo';
 import { guidePath } from '@/lib/career-guide';
 import rpp from '@/lib/content/rpp.json';
 import { person } from '@/lib/server/auth';
@@ -59,7 +59,7 @@ const copy = {
 
 export async function generateMetadata(): Promise<Metadata> {
   const c = copy[await requestLocale()];
-  return seoMetadata({ title: c.title, description: c.description, path: '/career/offers' });
+  return await pageMetadata({ title: c.title, description: c.description, path: '/career/offers' });
 }
 
 /** /career/offers: offers side by side (components/offer-compare.tsx), computed in the browser; H-1B records come from the server. */

@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import type { Metadata } from 'next';
-import { SITE_URL, seoMetadata } from '@/lib/seo';
+import { SITE_URL } from '@/lib/seo';
+import { pageMetadata } from '@/lib/server/seo';
 import { requestLocale } from '@/lib/server/locale';
 import { shownMockPresets } from '@/lib/server/mock-oa-presets';
 import { mockPoolSizes } from '@/lib/server/mock-oa';
@@ -25,7 +26,7 @@ const copy = {
 
 export async function generateMetadata(): Promise<Metadata> {
   const c = copy[await requestLocale()];
-  return seoMetadata({ title: c.title, description: c.description, path: '/mock-oa' });
+  return await pageMetadata({ title: c.title, description: c.description, path: '/mock-oa' });
 }
 
 export default async function MockOaIndex() {

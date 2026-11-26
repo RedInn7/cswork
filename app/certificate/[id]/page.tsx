@@ -4,7 +4,7 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { cache } from 'react';
-import { seoMetadata } from '@/lib/seo';
+import { pageMetadata } from '@/lib/server/seo';
 import { person } from '@/lib/server/auth';
 import { certificateById, certificateOwner } from '@/lib/server/certificates';
 import { origin } from '@/lib/server/env';
@@ -24,7 +24,7 @@ const load = cache(async (id: string) => {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { cert, zh } = await load((await params).id);
   return {
-    ...seoMetadata({
+    ...await pageMetadata({
       title: zh
         ? `${cert.skill ? '技能认证' : '结业证书'}：${cert.course} · CSWork`
         : `${cert.skill ? 'Skill certificate' : 'Certificate'}: ${cert.course} · CSWork`,

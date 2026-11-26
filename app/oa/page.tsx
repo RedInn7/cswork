@@ -1,15 +1,20 @@
 import Link from 'next/link';
 import { cache } from 'react';
 import { oaCompanyName, oaCompanyPath, oaProblemPath } from '@/lib/oa-company-brands';
-import { breadcrumbJsonLd, oaPageTitle, seoMetadata } from '@/lib/seo';
-import { requestLocale } from '@/lib/server/locale';
+import { breadcrumbJsonLd, OA_INDEX, oaPageTitle, SITE_NAME } from '@/lib/seo';
+import { pageMetadata } from '@/lib/server/seo';
+import { requestLanguage } from '@/lib/server/locale';
+import { localeOf } from '@/lib/language';
 import { oaReadyProblems } from '@/lib/server/oa-judge';
 import { oaLibrary } from '@/lib/server/oa-library';
 import { shownMockPresets } from '@/lib/server/mock-oa-presets';
 import { OaCompanyMark, oaExamTag } from './parts';
 
 const load = cache(async () => {
-  const locale = await requestLocale();
+  const language = await requestLanguage();
+  const locale = localeOf(language);
+  // Japanese, Korean and Vietnamese: their own title, heading and lead over the English page.
+  const own = OA_INDEX[language];
   const problems = await oaReadyProblems();
   const readySet = new Set(problems.keys());
   const companies = oaLibrary().companies(readySet);
@@ -20,24 +25,30 @@ const load = cache(async () => {
   const fresh = newest.items.slice(0, newest.newThisWeek || 8);
   const total = companies.reduce((sum, c) => sum + c.count, 0);
   const ready = companies.reduce((sum, c) => sum + c.ready, 0);
-  const lead =
-    locale === 'zh'
+  const lead = own
+    ? own.lead(total, companies.length, ready)
+    : locale === 'zh'
       ? `收录 ${companies.length} 家公司的 ${total} 道 OA 真题，其中 ${ready} 道可以在线运行样例、提交评测，支持 Python、Java、C++ 和 Go。`
       : `${total} online assessment questions from ${companies.length} companies. ${ready} of them run and judge online in Python, Java, C++ and Go.`;
   // A company's researched OA format, by its slug or an alias.
   const formats = new Map(
     shownMockPresets().flatMap((p) => [p.slug, ...p.aliases].map((slug) => [slug, p] as const)),
   );
-  return { locale, companies, total, ready, lead, fresh, week: newest.newThisWeek, formats };
+  return { locale, own, companies, total, ready, lead, fresh, week: newest.newThisWeek, formats };
 });
 
 export async function generateMetadata() {
-  const { locale, lead } = await load();
-  return seoMetadata({ title: oaPageTitle(locale), description: lead, path: '/oa' });
+  const { locale, own, lead } = await load();
+  return await pageMetadata({
+    title: own ? `${own.title} | ${SITE_NAME}` : oaPageTitle(locale),
+    description: lead,
+    path: '/oa',
+    localized: true,
+  });
 }
 
 export default async function OaIndex() {
-  const { locale, companies, total, ready, lead, fresh, week, formats } = await load();
+  const { locale, own, companies, total, ready, lead, fresh, week, formats } = await load();
   const zh = locale === 'zh';
   return (
     <>
@@ -54,7 +65,7 @@ export default async function OaIndex() {
         <p className="public-library-eyebrow">
           {zh ? 'OA 真题 · 在线判题' : 'ONLINE ASSESSMENTS · JUDGED ONLINE'}
         </p>
-        <h1>{zh ? '按公司刷 OA 真题。' : 'Real OA questions, company by company.'}</h1>
+        <h1>{own ? own.heading : zh ? '按公司刷 OA 真题。' : 'Real OA questions, company by company.'}</h1>
         <p>{lead}</p>
       </div>
       <dl className="oa-public-stats">

@@ -1,7 +1,8 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
-import { breadcrumbJsonLd, seoMetadata } from '@/lib/seo';
+import { breadcrumbJsonLd } from '@/lib/seo';
+import { pageMetadata } from '@/lib/server/seo';
 import { requestLocale } from '@/lib/server/locale';
 import {
   bookProblemUrl,
@@ -46,7 +47,7 @@ function text(
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const loaded = await load(params);
   const { title, description } = text(loaded, (await requestLocale()) === 'zh');
-  return seoMetadata({ title, description, path: `/lists/${loaded.list.slug}` });
+  return await pageMetadata({ title, description, path: `/lists/${loaded.list.slug}` });
 }
 
 export default async function ClassicListPage({ params }: Props) {

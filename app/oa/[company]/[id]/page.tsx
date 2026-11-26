@@ -8,7 +8,8 @@ import {
   oaProblemPath,
 } from '@/lib/oa-company-brands';
 import { oaStatementLang, oaStatementMarkdown } from '@/lib/oa-verified-statement';
-import { breadcrumbJsonLd, oaPageTitle, seoMetadata } from '@/lib/seo';
+import { breadcrumbJsonLd, oaPageTitle } from '@/lib/seo';
+import { pageMetadata } from '@/lib/server/seo';
 import { icaTask } from '@/lib/server/ai-tasks';
 import { HttpError } from '@/lib/server/http';
 import { mockPresetFor } from '@/lib/server/mock-oa-presets';
@@ -81,7 +82,7 @@ export async function generateMetadata({ params }: Props) {
   const { company, id } = await params;
   const page = await load(company, id);
   return {
-    ...seoMetadata({
+    ...await pageMetadata({
       title: oaPageTitle(page.locale, page.name, page.item.title),
       description: publicLibraryDescription({
         title: page.item.title,

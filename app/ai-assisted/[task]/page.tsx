@@ -3,7 +3,8 @@ import { headers } from 'next/headers';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ProjectWorkspace } from '@/components/project-workspace';
-import { SITE_NAME, seoMetadata } from '@/lib/seo';
+import { SITE_NAME } from '@/lib/seo';
+import { pageMetadata } from '@/lib/server/seo';
 import { aiEnabled, AI_DAILY_LIMITS } from '@/lib/server/ai-tutor';
 import { aiTask } from '@/lib/server/ai-tasks';
 import { person } from '@/lib/server/auth';
@@ -22,7 +23,7 @@ async function load(params: Props['params']) {
 
 export async function generateMetadata({ params }: Props) {
   const { task, zh } = await load(params);
-  return seoMetadata({
+  return await pageMetadata({
     title: `${task.title[zh ? 0 : 1]} · ${zh ? 'AI 辅助编程轮练习' : 'AI-assisted round practice'} | ${SITE_NAME}`,
     description: task.summary[zh ? 0 : 1],
     path: `/ai-assisted/${task.slug}`,

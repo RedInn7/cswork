@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { cache } from 'react';
 import { NewsletterToggle } from '@/components/newsletter-toggle';
-import { seoMetadata } from '@/lib/seo';
+import { pageMetadata } from '@/lib/server/seo';
 import { requestLocale } from '@/lib/server/locale';
 import { readIssue, weekStart } from '@/lib/server/newsletter';
 import { weekRange } from '../parts';
@@ -17,7 +17,7 @@ const load = cache(async (week: string) => {
 export async function generateMetadata({ params }: Props) {
   const { issue, zh } = await load((await params).week);
   const range = weekRange(issue.startsAt, zh);
-  return seoMetadata({
+  return await pageMetadata({
     title: zh ? `CSWork 周报 ${issue.id}（${range}）` : `The CSWork weekly ${issue.id} (${range})`,
     description: zh
       ? `${range}：${issue.problems.length} 道新 OA 题、${issue.experiences.length} 篇学员面经和每日一题战报。`

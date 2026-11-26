@@ -1,7 +1,8 @@
 import '../../ai-assisted/ai-assisted.css';
 import './ica.css';
 import Link from 'next/link';
-import { breadcrumbJsonLd, SITE_NAME, seoMetadata } from '@/lib/seo';
+import { breadcrumbJsonLd, SITE_NAME } from '@/lib/seo';
+import { pageMetadata } from '@/lib/server/seo';
 import { icaTasks } from '@/lib/server/ai-tasks';
 import { canSeeProblem } from '@/lib/server/oj-problems';
 import { requestLocale } from '@/lib/server/locale';
@@ -68,7 +69,7 @@ const icaCompanies = () => shownMockPresets().filter((p) => /industry coding/i.t
 
 export async function generateMetadata() {
   const c = copy[await requestLocale()];
-  return seoMetadata({ title: c.title, description: c.description, path: '/oa/ica' });
+  return await pageMetadata({ title: c.title, description: c.description, path: '/oa/ica' });
 }
 
 /** /oa/ica: the ICA format, how it differs from GCA, the practice sets and the companies that use it. */

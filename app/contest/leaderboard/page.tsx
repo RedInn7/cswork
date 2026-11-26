@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { CONTEST_BANDS } from '@/lib/contest';
-import { seoMetadata } from '@/lib/seo';
+import { pageMetadata } from '@/lib/server/seo';
 import { person } from '@/lib/server/auth';
 import { leaderboard, schoolBoards } from '@/lib/server/contests';
 import { origin } from '@/lib/server/env';
@@ -16,7 +16,7 @@ type Props = { searchParams: Promise<Record<string, string | string[] | undefine
 export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
   const zh = (await requestLocale()) === 'zh';
   return {
-    ...seoMetadata({
+    ...await pageMetadata({
       title: zh ? '周赛与入门赛 Rating 排行榜 · cswork' : 'Weekly and starter contest ratings · cswork',
       description: zh
         ? 'CSWork 周赛与入门赛共用的 Elo rating 排行榜与段位：车库、站站停、快车、直达、特快、高铁、磁浮。'

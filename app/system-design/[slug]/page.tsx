@@ -3,7 +3,8 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import coreSkills from '@/lib/content/core-skills.json';
 import { problemAppHref } from '@/lib/classic-lists';
-import { SITE_NAME, breadcrumbJsonLd, seoMetadata } from '@/lib/seo';
+import { SITE_NAME, breadcrumbJsonLd } from '@/lib/seo';
+import { pageMetadata } from '@/lib/server/seo';
 import { person } from '@/lib/server/auth';
 import { origin } from '@/lib/server/env';
 import { requestLocale } from '@/lib/server/locale';
@@ -43,7 +44,7 @@ async function load(params: Props['params']) {
 
 export async function generateMetadata({ params }: Props) {
   const { chapter, zh } = await load(params);
-  return seoMetadata({
+  return await pageMetadata({
     title: `${zh ? chapter.titleZh : chapter.titleEn} · ${zh ? '系统设计面试课' : 'System Design Course'} | ${SITE_NAME}`,
     description: sdSummary(zh ? chapter.bodyZh : chapter.bodyEn, 160),
     path: sdPath(chapter.slug),

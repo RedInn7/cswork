@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { seoMetadata } from '@/lib/seo';
+import { pageMetadata } from '@/lib/server/seo';
 import { aiEnabled, AI_DAILY_LIMITS } from '@/lib/server/ai-tutor';
 import { requestLocale } from '@/lib/server/locale';
 import { ResumeReview } from '@/components/resume-review';
@@ -53,7 +53,7 @@ const copy = {
 export async function generateMetadata(): Promise<Metadata> {
   const c = copy[await requestLocale()],
     ai = aiEnabled();
-  return seoMetadata({ title: ai ? c.title : c.offTitle, description: ai ? c.description : c.offDescription, path: '/career/resume' });
+  return await pageMetadata({ title: ai ? c.title : c.offTitle, description: ai ? c.description : c.offDescription, path: '/career/resume' });
 }
 
 export default async function ResumeReviewPage() {

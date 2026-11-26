@@ -1,7 +1,8 @@
 import '../library/library.css';
 import Link from 'next/link';
 import { Suspense } from 'react';
-import { breadcrumbJsonLd, seoMetadata } from '@/lib/seo';
+import { breadcrumbJsonLd } from '@/lib/seo';
+import { pageMetadata } from '@/lib/server/seo';
 import { requestLocale } from '@/lib/server/locale';
 import { ojStatus } from '@/lib/server/oj-submissions';
 import { LibraryPageView } from '../library/page-view';
@@ -11,7 +12,7 @@ const BASELINE: Record<string, string> = { cpp: 'g++ 14', java: 'OpenJDK 21', py
 
 export async function generateMetadata() {
   const zh = (await requestLocale()) === 'zh';
-  return seoMetadata({
+  return await pageMetadata({
     title: zh
       ? '判题环境：语言版本、编译命令与时间内存限制 · cswork'
       : 'Judge environment: language versions, compile commands and limits · cswork',

@@ -3,7 +3,7 @@ import '../guide/guide.css';
 import './review-sheet.css';
 import { headers } from 'next/headers';
 import type { Metadata } from 'next';
-import { seoMetadata } from '@/lib/seo';
+import { pageMetadata } from '@/lib/server/seo';
 import { person } from '@/lib/server/auth';
 import { origin } from '@/lib/server/env';
 import { requestLocale } from '@/lib/server/locale';
@@ -49,7 +49,7 @@ const one = (value: string | string[] | undefined) => (typeof value === 'string'
 export async function generateMetadata(): Promise<Metadata> {
   const c = copy[await requestLocale()];
   return {
-    ...seoMetadata({ title: c.title, description: c.description, path: '/review-sheet' }),
+    ...await pageMetadata({ title: c.title, description: c.description, path: '/review-sheet' }),
     // Private to each learner: not a landing page, and not in the sitemap.
     robots: { index: false, follow: false },
   };

@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { seoMetadata } from '@/lib/seo';
+import { pageMetadata } from '@/lib/server/seo';
 import { communityLists } from '@/lib/server/learner-cloud';
 import { requestLocale } from '@/lib/server/locale';
 import '../../u/u.css';
@@ -28,7 +28,7 @@ const href = (q: Record<string, string | number>) => {
 export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
   const { result, zh } = await load(searchParams);
   return {
-    ...seoMetadata({
+    ...await pageMetadata({
       title: zh ? '题单广场：学习者公开的题单 · CSWork' : 'Community lists: problem lists learners shared · CSWork',
       description: zh
         ? 'CSWork 学习者整理并公开的题单，按收藏和复制次数排序，可以一键复制到自己的题单。'
