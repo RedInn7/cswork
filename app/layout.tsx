@@ -17,8 +17,8 @@ export async function generateMetadata(): Promise<Metadata> {
   const { title, description } = homeCopy(await requestLanguage());
   return {
     ...(await pageMetadata({ title, description, path: '/', localized: true })),
-    // The home-screen icon on iOS; others read app/manifest.ts.
-    icons: { apple: '/icons/apple-touch-icon.png' },
+    // The tab icon, and the home-screen icon on iOS; others read app/manifest.ts.
+    icons: { icon: '/favicon.svg', apple: '/icons/apple-touch-icon.png' },
     // Search console ownership: paste each console's code into the server environment.
     verification: {
       google: process.env.GOOGLE_SITE_VERIFICATION,
