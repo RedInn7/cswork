@@ -70,5 +70,5 @@ void test('ja/ko/vi editorials are written in their own language and keep the En
   }
   assert.deepEqual(bad, []);
   assert.ok(translated > 0, 'the Japanese sample (oa-google-25) is read');
-  assert.equal(oaExplanationLocal(oaWrittenEditorial('oa-capital-one-2')), undefined);
+  assert.equal(oaExplanationLocal({ id: 'oa-x-1', explanation: '题解' }), undefined);
 });

@@ -61,7 +61,10 @@ for (const file of files) {
       if (script) problems.push(`${script} ${lang} text`);
       const ownNumbers = numbers(translated), ownWords = identifiers(translated);
       const lostNumbers = [...numbers(zh)].filter((n) => !ownNumbers.has(n));
-      const lostWords = [...identifiers(zh)].filter((w) => !ownWords.has(w));
+      // English keeps every Latin word of the source. ja/ko/vi translate loanwords ("1-based",
+      // "catalog"), so only names inside code spans must survive.
+      const named = lang === 'en' ? zh : (zh.match(/`[^`\n]+`|```[\s\S]*?```/g) || []).join(' ');
+      const lostWords = [...identifiers(named)].filter((w) => !ownWords.has(w));
       if (lostNumbers.length) problems.push(`${lang} numbers missing: ${lostNumbers.join(' ')}`);
       if (lostWords.length) problems.push(`${lang} identifiers missing: ${lostWords.join(' ')}`);
     }

@@ -46,6 +46,8 @@ const PLAIN = 'oa-capital-one-2';
 // Translated into Japanese: statement, hints and written editorial.
 const JA = 'oa-google-25';
 const guide = JSON.parse(readFileSync(`content/oa-judge/guides/${GUIDED}.json`, 'utf8'));
+// What a reader with no language of their own is sent.
+const ladder = { zh: guide.hints.zh, en: guide.hints.en };
 // Only GUIDED's sidecars, so PLAIN stays a problem without a guide however much content ships.
 const sidecars = join(dir, 'sidecars');
 for (const sub of ['guides', 'solutions', 'reports']) mkdirSync(join(sidecars, sub), { recursive: true });
@@ -84,7 +86,7 @@ const get = async (path: string[], p: Person | null, language?: string) => {
 
 void test('a guided OA problem serves its ladder to everyone and drops the package hints, English ones included', async () => {
   const problem = await get(['problems', GUIDED], null);
-  assert.deepEqual(problem.oaHints, guide.hints);
+  assert.deepEqual(problem.oaHints, ladder);
   assert.deepEqual(problem.hints, []);
   assert.deepEqual(problem.translations.en.hints, []);
   assert.ok(problem.translations.en.description, 'the English statement stays');
@@ -134,7 +136,7 @@ void test('the editorial adds the written write-up and the verified languages; a
   assert.deepEqual([live.hints, live.translations.en.hints], [[], []]);
   await assert.rejects(get(['oa-library', GUIDED, 'solution'], student), { status: 403 });
   // Another learner, or a visitor, is not in that exam.
-  assert.deepEqual((await get(['problems', GUIDED], null)).oaHints, guide.hints);
+  assert.deepEqual((await get(['problems', GUIDED], null)).oaHints, ladder);
 });
 
 void test('only programs whose latest report passed every case of that package count as verified', () => {
@@ -236,16 +238,17 @@ void test('a Japanese reader is served the Japanese statement, hints and editori
   assert.equal(problem.translations.ja.title, read('oa-judge/translations').ja.title);
   // The guide's ladder replaces the package hints in every language.
   assert.deepEqual(problem.translations.ja.hints, []);
-  assert.deepEqual(problem.oaHints, read('oa-judge/guides').hints);
+  const hints = read('oa-judge/guides').hints;
+  assert.deepEqual(problem.oaHints, { zh: hints.zh, en: hints.en, ja: hints.ja });
   assert.deepEqual((await get(['oa-library', JA, 'solution'], student, 'ja')).explanationLocal, { ja: read('oa-master/editorials').explanationJa });
-  for (const language of [undefined, 'en', 'ko', 'zh-Hant']) {
+  for (const language of [undefined, 'en', 'zh-Hant']) {
     const other = await get(['problems', JA], null, language);
     assert.deepEqual([Object.keys(other.translations), Object.keys(other.oaHints)], [['en'], ['zh', 'en']], String(language));
     assert.equal('explanationLocal' in (await get(['oa-library', JA, 'solution'], student, language)), false);
   }
-  // A problem with no Japanese text reads as before.
-  const guided = await get(['problems', GUIDED], null, 'ja');
-  assert.deepEqual([Object.keys(guided.translations), guided.oaHints], [['en'], guide.hints]);
+  // A Korean reader gets Korean, never the Japanese text.
+  const korean = await get(['problems', JA], null, 'ko');
+  assert.deepEqual([Object.keys(korean.translations), Object.keys(korean.oaHints)], [['en', 'ko'], ['zh', 'en', 'ko']]);
 });
 
 void test('the public OA page is Japanese on /ja when translated, its own canonical page and in the ja sitemap; otherwise English', async () => {
@@ -268,28 +271,20 @@ void test('the public OA page is Japanese on /ja when translated, its own canoni
     assert.equal(page.meta.title, `Google OA: ${ja.title} | CSWork`);
     assert.match(page.meta.description ?? '', /空でない整数配列/);
     assert.equal(page.meta.alternates?.canonical, `https://cswork.org/ja/oa/google/${JA}`);
-    assert.deepEqual(Object.keys(page.meta.alternates?.languages ?? {}), ['zh-Hans', 'zh-Hant', 'en', 'ja', 'x-default']);
-    // Korean is not translated: the English page, which is also the canonical one.
+    assert.deepEqual(Object.keys(page.meta.alternates?.languages ?? {}), ['zh-Hans', 'zh-Hant', 'en', 'ja', 'ko', 'vi', 'x-default']);
     const korean = await open('ko', 'google', JA);
-    assert.match(korean.html, /<div class="public-library-prose" lang="en">/);
-    assert.match(korean.html, /<h2[^>]*>Input<\/h2>/);
+    assert.match(korean.html, /<div class="public-library-prose" lang="ko">/);
+    assert.match(korean.html, /<h2[^>]*>입력<\/h2>/);
     assert.doesNotMatch(korean.html, /lang="ja"|入力/);
-    assert.equal(korean.meta.alternates?.canonical, `https://cswork.org/en/oa/google/${JA}`);
-    // A problem with no Japanese text, on its /ja URL: exactly the English page.
-    const plain = await open('ja', 'capital-one', PLAIN);
-    assert.match(plain.html, /<div class="public-library-prose" lang="en">/);
-    assert.doesNotMatch(plain.html, /lang="ja"/);
-    assert.equal(plain.meta.alternates?.canonical, `https://cswork.org/en/oa/capital-one/${PLAIN}`);
-    assert.deepEqual(Object.keys(plain.meta.alternates?.languages ?? {}), ['zh-Hans', 'zh-Hant', 'en', 'x-default']);
+    assert.equal(korean.meta.alternates?.canonical, `https://cswork.org/ko/oa/google/${JA}`);
   } finally {
     urlLanguage.current = undefined;
   }
-  // /ja/sitemap/1 adds the translated problems only (app/sitemap/[page]/route.ts).
+  // /ja/sitemap/1 lists the translated problems (app/sitemap/[page]/route.ts).
   const ready = await oaReadyProblems();
   const paths = (language: 'ja' | 'ko') =>
     oaLibrary()
       .sitemapEntries(ready, (id) => !!oaTranslations(id)?.[language])
       .map((entry) => entry.path);
-  assert.deepEqual(paths('ja'), [`/oa/google/${JA}`]);
-  assert.deepEqual(paths('ko'), []);
+  for (const language of ['ja', 'ko'] as const) assert.ok(paths(language).includes(`/oa/google/${JA}`), language);
 });
