@@ -12,8 +12,8 @@ export async function generateMetadata() {
   const zh = (await requestLocale()) === 'zh';
   return await pageMetadata({
     title: zh
-      ? `面试平台规则对照：${PLATFORMS.map((p) => p.name).join('、')} · cswork`
-      : `Interview platform rules: ${PLATFORMS.map((p) => p.name).join(', ')} · cswork`,
+      ? `面试平台规则对照：${PLATFORMS.map((p) => p.name).join('、')} · CSWork`
+      : `Interview platform rules: ${PLATFORMS.map((p) => p.name).join(', ')} · CSWork`,
     description: zh
       ? '常见 OA 和技术面平台的规则对照：计分和部分分、交卷前能看到什么、能不能重交、编辑器有没有补全和运行、能查什么资料、怎么监考。每条都附官方帮助页来源，并标明哪些由雇主设置。'
       : 'How common OA and technical interview platforms work: scoring and partial credit, what you see before handing in, resubmitting, editor completion and running, allowed resources and proctoring. Every rule links to the official help page and says which ones the employer sets.',

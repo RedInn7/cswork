@@ -10,7 +10,7 @@ import { McpView } from './view';
 export async function generateMetadata() {
   const zh = (await requestLocale()) === 'zh';
   return await pageMetadata({
-    title: zh ? '在 Claude Code / Cursor 里练题（MCP）· cswork' : 'Practice from Claude Code and Cursor (MCP) · cswork',
+    title: zh ? '在 Claude Code / Cursor 里练题（MCP）· CSWork' : 'Practice from Claude Code and Cursor (MCP) · CSWork',
     description: zh
       ? '装上 CSWork 的 MCP 服务器，在 AI 编辑器里读题、跑样例、提交并查看判题结果。'
       : 'Add the CSWork MCP server to read problems, run examples, submit and read verdicts from your AI editor.',

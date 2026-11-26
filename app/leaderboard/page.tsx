@@ -16,7 +16,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const zh = (await requestLocale()) === 'zh';
   return {
     ...await pageMetadata({
-      title: zh ? '练习积分排行榜 · cswork' : 'Practice leaderboard · cswork',
+      title: zh ? '练习积分排行榜 · CSWork' : 'Practice leaderboard · CSWork',
       description: zh
         ? 'CSWork 练习排行榜：按通过题目的难度积分、通过题数和连续打卡天数排名，可按学校和语言筛选。'
         : 'The CSWork practice leaderboard: points by the difficulty of solved problems, problems solved and daily streaks, by school and language.',

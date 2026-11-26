@@ -12,7 +12,7 @@ import { requestLocale } from '@/lib/server/locale';
 export async function generateMetadata() {
   const zh = (await requestLocale()) === 'zh';
   return await pageMetadata({
-    title: zh ? '题型识别定位测验：哪些算法专题可以跳过 · cswork' : 'Pattern placement quiz: which algorithm topics to skip · cswork',
+    title: zh ? '题型识别定位测验：哪些算法专题可以跳过 · CSWork' : 'Pattern placement quiz: which algorithm topics to skip · CSWork',
     description: zh
       ? '按 500 路的六组专题出题，答对升一档、答错降一档，认出每道题该用的方法。结果给出每组的估计水平和可以跳过的站，并直接用到冲刺计划里。'
       : 'Questions from the six groups of Line 500 on a ladder that climbs with each right answer. Name the technique each problem calls for and get a level per group, the stops you can skip, and a sprint plan that skips them.',

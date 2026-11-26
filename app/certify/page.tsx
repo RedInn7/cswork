@@ -15,7 +15,7 @@ import { LibraryPageView } from '../library/page-view';
 export async function generateMetadata(): Promise<Metadata> {
   const zh = (await requestLocale()) === 'zh';
   return await pageMetadata({
-    title: zh ? '技能认证：算法、SQL 与 Python 限时考试 · cswork' : 'Skill certification: timed algorithms, SQL and Python exams · cswork',
+    title: zh ? '技能认证：算法、SQL 与 Python 限时考试 · CSWork' : 'Skill certification: timed algorithms, SQL and Python exams · CSWork',
     description: zh
       ? '四项限时认证考试：算法基础、算法进阶、SQL 和 Python。题目由服务器从你没做过的题里抽取，按测试点计分，通过后获得可在线验证的站内证书。'
       : 'Four timed exams: problem solving (basic and intermediate), SQL and Python. The server draws problems you have not solved, scores by tests passed, and a pass earns a certificate anyone can verify online.',

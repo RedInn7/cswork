@@ -14,8 +14,8 @@ export async function generateMetadata() {
   const zh = (await requestLocale()) === 'zh';
   return await pageMetadata({
     title: zh
-      ? '判题环境：语言版本、编译命令与时间内存限制 · cswork'
-      : 'Judge environment: language versions, compile commands and limits · cswork',
+      ? '判题环境：语言版本、编译命令与时间内存限制 · CSWork'
+      : 'Judge environment: language versions, compile commands and limits · CSWork',
     description: zh
       ? 'CSWork 判题机上 C++、Java、Python、Go 的版本和编译运行命令，时间、内存与递归深度限制，ACM 与 LeetCode 两种模式的输入输出约定，以及和 HackerRank、CodeSignal、LeetCode 公开设置的对照。'
       : 'The C++, Java, Python and Go versions and commands on the CSWork judge, its time, memory and recursion limits, the input/output rules of ACM and LeetCode modes, and how they compare with what HackerRank, CodeSignal and LeetCode publish.',
