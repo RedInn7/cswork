@@ -281,8 +281,8 @@ export function Academy() {
       ? problemTitle(selectedProblem)
       : heading;
   useEffect(() => {
-    document.title = workspaceTitle(locale, pageName);
-  }, [locale, pageName]);
+    document.title = workspaceTitle(language, pageName);
+  }, [language, pageName]);
   function content() {
     if (loading) return <output className="page-loading">{t('正在加载…', 'Loading…')}</output>;
     if (error && !boot.courses.length)
