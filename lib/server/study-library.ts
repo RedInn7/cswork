@@ -2,11 +2,16 @@ import { sqlite } from '@/db/sqlite';
 import { companyTagIndex, type CompanyTag } from '@/lib/company-tags';
 import { inWindow, reportWindow, windowCounts } from '@/lib/report-windows';
 import hintFile from '@/lib/content/ling-hints.json';
+import hintFileJa from '@/lib/content/ling-hints.ja.json';
+import hintFileKo from '@/lib/content/ling-hints.ko.json';
+import hintFileVi from '@/lib/content/ling-hints.vi.json';
+import { CONTENT_LANGUAGES, type ContentLanguage } from '@/lib/language';
+import type { Hints } from '@/lib/oj-client';
 import { sourceDates } from './company-insights';
 import { hiddenCompanies } from './env';
 import { HttpError, rows } from './http';
 import { oaLibrary } from './oa-library';
-import { oaEnglishStatement, oaReadyProblems } from './oa-judge';
+import { oaTranslations, oaReadyProblems } from './oa-judge';
 import { oaDifficulty, oaTopic } from './oa-topics';
 import { oaRating } from './oa-rating';
 import { aidsByProblem } from './practice-aids';
@@ -562,7 +567,7 @@ export async function levelPicks(userId: string) {
     const found = rating && !oa.has(rating) && !done.has(id) ? oaLibrary().problem(id) : undefined;
     if (!found || !rating) continue;
     const titleZh = `${found.company.name} · ${found.item.title}`;
-    const titleEn = `${found.company.name} · ${oaEnglishStatement(id)?.title ?? found.item.title}`;
+    const titleEn = `${found.company.name} · ${oaTranslations(id)?.en.title ?? found.item.title}`;
     const difficulty = oaDifficulty(id, meta.difficulty).difficulty ?? '中等';
     oa.set(rating, { id, number: found.item.number, titleZh, titleEn, difficulty, rating, estimated: true });
   }
@@ -804,9 +809,20 @@ export function getStudyLibrary(id: string, userId?: string) {
 
 // Server-only: the three Line 500 hints never enter a client bundle.
 const lingHintFile = hintFile as Record<string, { zh: string[]; en: string[] }>;
+// The same three hints in ja/ko/vi, for the problems translated so far.
+const lingHintLocal: Record<ContentLanguage, Record<string, string[]>> = { ja: hintFileJa, ko: hintFileKo, vi: hintFileVi };
 /** The three progressive hints of a Line 500 problem: observation, invariant, steps. */
-export const lingHints = (problemId: string) =>
-  Object.hasOwn(lingHintFile, problemId) ? lingHintFile[problemId] : null;
+export const lingHints = (problemId: string): Hints | null =>
+  Object.hasOwn(lingHintFile, problemId)
+    ? {
+        ...lingHintFile[problemId],
+        ...Object.fromEntries(
+          CONTENT_LANGUAGES.flatMap((language) =>
+            Object.hasOwn(lingHintLocal[language], problemId) ? [[language, lingHintLocal[language][problemId]]] : [],
+          ),
+        ),
+      }
+    : null;
 
 export type SimilarProblem = {
   id: string;

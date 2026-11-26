@@ -1,4 +1,4 @@
-import { readLocale } from './i18n';
+import { readLanguage, readLocale } from './i18n';
 import { englishMessage } from './messages-en';
 import type { ProblemSummary } from './problems';
 import type { DailyProblem } from './daily-problem';
@@ -138,9 +138,11 @@ export async function api<T = unknown>(
 ): Promise<T> {
   const r = await fetch('/api/' + path, {
     method: data === undefined ? 'GET' : 'POST',
-    // The server answers errors in the site language (English unless zh).
+    // The server answers errors in the site language (English unless zh); X-Language is the full
+    // site language, for content translated into ja/ko/vi.
     headers: {
       'X-Locale': readLocale(),
+      'X-Language': readLanguage(),
       ...(data === undefined ? {} : { 'Content-Type': 'application/json' }),
     },
     body: data === undefined ? undefined : JSON.stringify(data),

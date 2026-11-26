@@ -10,7 +10,7 @@ import { HttpError } from '@/lib/server/http';
 import { dailyProblem } from '@/lib/server/daily-problem';
 import { withFeed } from '@/lib/server/feeds';
 import { requestLocale } from '@/lib/server/locale';
-import { oaEnglishStatement } from '@/lib/server/oa-judge';
+import { oaTranslations } from '@/lib/server/oa-judge';
 import { getPublicOaProblem } from '@/lib/server/oj-problems';
 import { LibraryPageView } from '../library/page-view';
 import { DailyView } from './view';
@@ -39,7 +39,7 @@ export default async function DailyPage() {
         })
       : null;
   // Statements are English whatever the site language.
-  const english = judged ? oaEnglishStatement(daily!.id) : undefined;
+  const english = judged ? oaTranslations(daily!.id)?.en : undefined;
   return (
     <>
       <DailyView

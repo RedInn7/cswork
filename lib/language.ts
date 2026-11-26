@@ -20,6 +20,20 @@ export const asLanguage = (value: string | null | undefined): Language => known(
 export const localeOf = (language: Language): Locale =>
   language === 'zh' || language === 'zh-Hant' ? 'zh' : 'en';
 export const htmlLang = (language: Language) => (language === 'zh' ? 'zh-CN' : language);
+/**
+ * Languages a problem's statement, hints and editorial may be translated into beside Chinese and
+ * English. Their readers keep the English interface (`localeOf`).
+ */
+export const CONTENT_LANGUAGES = ['ja', 'ko', 'vi'] as const;
+export type ContentLanguage = (typeof CONTENT_LANGUAGES)[number];
+export const contentLanguage = (value: string | null | undefined): ContentLanguage | null =>
+  CONTENT_LANGUAGES.find((language) => language === value) ?? null;
+/** Text kept per language, cut to what one reader can use: Chinese, English and their own language. */
+export function forReader<T extends object>(text: T, own: ContentLanguage | null): T {
+  return Object.fromEntries(
+    Object.entries(text).filter(([key]) => !contentLanguage(key) || key === own),
+  ) as T;
+}
 
 /**
  * Every language but Simplified Chinese has its own URLs under a prefix (/en/oa, /ja);

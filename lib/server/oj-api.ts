@@ -20,7 +20,8 @@ import { currentDrills, handleOaLibrary, oaLibrary } from './oa-library';
 import { handleMockOa } from './mock-oa';
 import { handleSkillTests } from './skill-tests';
 import { handleSpeedrun } from './speedrun';
-import { oaEnglishStatement, oaGuide } from './oa-judge';
+import { oaTranslations, oaGuide } from './oa-judge';
+import { contentLanguage, forReader } from '@/lib/language';
 import { handleLeetcodeSync } from './leetcode-sync';
 import { handleMyPractice, problemVote, readJson } from './my-practice';
 import { handleAiTutor, isAiRoute } from './ai-tutor';
@@ -73,7 +74,7 @@ import {
 import { lcRating } from './lc-ratings';
 import { oaRating } from './oa-rating';
 import { icaView } from './ica';
-import { lingEdges, lingEditorial, lingFollowUps } from './ling-editorials';
+import { lingEdges, lingEditorial, lingEditorialLocal, lingFollowUps } from './ling-editorials';
 import { trackEditorial } from './track-editorials';
 import { awardAccepted, handlePoints } from './points';
 import { classicList } from '@/lib/classic-lists';
@@ -171,9 +172,11 @@ export async function handleOj(
     const problem = oa
       ? await getPublicOaProblem(id)
       : await getPublishedProblem(p!, id);
-    // OA English statements live beside the verified package; merge for display only.
-    const english = oa && !problem.translations?.en ? oaEnglishStatement(id) : undefined;
-    if (english) problem.translations = { ...problem.translations, en: english };
+    // A ja/ko/vi reader's own language (X-Language): they get its text beside Chinese and English.
+    const own = contentLanguage(request.headers.get('x-language'));
+    // OA translations live beside the verified package; merge for display only.
+    const translated = oa ? oaTranslations(id) : undefined;
+    if (translated) problem.translations = { ...forReader(translated, own), ...problem.translations };
     const templates = leetcodeTemplates(id);
     const round =
       p && isSelectedProblem(id) ? practiceRoundState(p.id).currentRound : null;
@@ -184,6 +187,7 @@ export async function handleOj(
     // except inside the learner's running contest or exam. They replace the package's own hint.
     const guide = oa ? oaGuide(id) : undefined;
     const ladder = live ? null : (lingHints(id) ?? guide?.hints ?? null);
+    const hintsFor = <T extends object>(hints: T | null | undefined) => (live || !hints ? null : forReader(hints, own));
     const tags = companyTagIndex(hiddenCompanies());
     const dated = sourceDates();
     // Per round like Solved, over all history rather than the first page; failures open the ladder's hints.
@@ -217,9 +221,9 @@ export async function handleOj(
       // Ids, not a count: the client unions them with live verdicts so none counts twice.
       failedSubmissionIds: failed,
       // Observation, invariant, steps: the client opens them one at a time (components/hint-ladder.tsx).
-      lingHints: live ? null : lingHints(id),
+      lingHints: hintsFor(lingHints(id)),
       // An OA guide's ladder: observation, approach, steps (the same component as lingHints).
-      oaHints: live ? null : (guide?.hints ?? null),
+      oaHints: hintsFor(guide?.hints),
       // Whether a Line 500 editorial exists (null: none) and its code passed the judge. The editorial
       // itself is GET problems/<id>/editorial, fetched once the learner unlocks it.
       lingEditorialVerified: (lingEditorial(id) ?? trackEditorial(id))?.verified ?? null,
@@ -247,8 +251,10 @@ export async function handleOj(
     await getPublishedProblem(p, id);
     // Read before the first AC, the solve counts as assisted (lib/server/practice-aids.ts).
     recordAid(p.id, id, 'editorial');
+    const own = contentLanguage(request.headers.get('x-language'));
+    const local = own && lingEditorialLocal(id, own);
     // The takeaway and interview follow-ups ride along, behind the same gates.
-    return json({ ...editorial, ...lingFollowUps(id) });
+    return json({ ...editorial, ...lingFollowUps(id), ...(local && { local }) });
   }
   if (
     request.method === 'GET' &&

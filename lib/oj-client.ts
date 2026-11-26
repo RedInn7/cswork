@@ -3,7 +3,8 @@ import type { CodingMode } from './coding-mode';
 import type { CompanyChip } from './company-tags';
 import type { Constraint } from './testcase-fields';
 import type { CaseGroup } from './oj-case-groups';
-import { readLocale } from './i18n';
+import { readLanguage, readLocale } from './i18n';
+import type { ContentLanguage } from './language';
 
 export type OJProblem = Problem & {
   courseId?: string;
@@ -51,9 +52,9 @@ export type OJProblem = Problem & {
   /** Failed formal submissions this round, up to 2 ids. */
   failedSubmissionIds?: string[];
   /** Line 500's three progressive hints: observation, invariant, steps. */
-  lingHints?: { zh: string[]; en: string[] } | null;
+  lingHints?: Hints | null;
   /** An OA guide's three hints: observation, approach, steps (replacing the package's own hints). */
-  oaHints?: { zh: string[]; en: string[] } | null;
+  oaHints?: Hints | null;
   /**
    * Whether a Line 500 editorial exists (null: none) and its code passed the judge. The editorial
    * is GET problems/<id>/editorial (components/ling-editorial.tsx), once solved or after a confirm.
@@ -71,6 +72,8 @@ export type OJProblem = Problem & {
  * Approaches from brute force to best; `verified`: every approach's Python passed the judge's tests,
  * its C++, Java and Go the public samples (lib/content/leetcode-public-samples.json).
  */
+/** A hint ladder per language: Chinese, English, and the reader's own when it is translated. */
+export type Hints = { zh: string[]; en: string[] } & Partial<Record<ContentLanguage, string[]>>;
 export type LingEditorial = {
   approaches: {
     nameZh: string;
@@ -91,6 +94,8 @@ export type TrackEditorial = {
   approaches: (Pick<LingEditorial['approaches'][number], 'nameZh' | 'nameEn' | 'ideaZh' | 'ideaEn' | 'time' | 'space'> &
     Partial<Record<'python' | 'cpp' | 'java' | 'go' | 'sql' | 'pandas', string>>)[];
   verified: boolean;
+  /** Each approach's name and idea in the reader's own language (X-Language), when translated. */
+  local?: { language: ContentLanguage; approaches: { name: string; idea: string }[] };
 };
 /** One Line 500 edge case: what it tests, and its LeetCode-mode stdin (one JSON value per line). */
 export type LingEdge = { zh: string; en: string; input: string };
@@ -300,9 +305,11 @@ export async function ojRequest<T>(
   try {
     const response = await fetch(`/api/oj/${path}`, {
       method: data === undefined ? 'GET' : 'POST',
-      // The server answers errors in the site language (English unless zh).
+      // The server answers errors in the site language (English unless zh), and sends ja/ko/vi
+      // readers their own language's statement, hints and editorial where translated.
       headers: {
         'X-Locale': readLocale(),
+        'X-Language': readLanguage(),
         ...(data === undefined ? {} : { 'Content-Type': 'application/json' }),
       },
       body: data === undefined ? undefined : JSON.stringify(data),

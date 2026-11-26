@@ -1,3 +1,5 @@
+import type { ContentLanguage } from './language';
+
 /** General-purpose languages: ACM/LeetCode programs, templates and the language service. */
 export const CODE_LANGUAGES = ['python', 'go', 'java', 'cpp'] as const;
 export type CodeLanguage = (typeof CODE_LANGUAGES)[number];
@@ -52,20 +54,22 @@ export type ProblemStatement = {
   explanation: string;
   hints: string[];
 };
-export type ProblemLocale = 'zh' | 'en';
+export type ProblemLocale = 'zh' | 'en' | ContentLanguage;
+/** The statement in `locale`; a language without a translation reads English, then Chinese. */
 export function problemStatement(
   problem: Problem,
   locale: ProblemLocale,
 ): ProblemStatement {
-  return locale === 'en' && problem.translations?.en
-    ? problem.translations.en
-    : problem;
+  return (
+    (locale !== 'zh' && (problem.translations?.[locale] ?? problem.translations?.en)) ||
+    problem
+  );
 }
 export type Problem = {
   id: string;
   title: string;
   difficulty: '简单' | '中等' | '困难';
-  translations?: { en?: ProblemStatement };
+  translations?: Partial<Record<'en' | ContentLanguage, ProblemStatement>>;
   tags: string[];
   description: string;
   input: string;
