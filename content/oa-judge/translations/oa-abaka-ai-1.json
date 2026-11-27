@@ -11,5 +11,35 @@
     "hints": [
       "Group tasks by taskType. In each group, sort by memory and pair the smallest with the largest; if their sum does not exceed the limit, run the pair in parallel, otherwise the largest task can only run alone."
     ]
+  },
+  "ja": {
+    "title": "Task Scheduling (Parallel Same-Type with Memory Limit)",
+    "description": "各タスクの処理時間は 1 単位です。2 つのタスクを並列に処理できるのは、それらの種類が同じで、メモリの合計が maxMemory 以下である場合に限ります。それ以外のタスクは単独で処理されます。合計処理時間の最小値を求めてください。\n\nこのサイトでの明示的な標準入出力の形式と補足的な制約はオンライン版のものであり、元の出典の制約として示されているものではありません。",
+    "input": "入力には N、maxMemory、N 個の taskMemory の値、N 個の taskType の値が含まれます。1≤N≤200000、1≤taskMemory[i]≤maxMemory≤10^9、1≤taskType[i]≤10^9。このサイトでは、メモリの関係で他のタスクと並列に実行できなくても、どのタスクも単独で実行できるものとします。",
+    "output": "必要な時間単位の最小値を出力してください。",
+    "explanation": "taskType ごとにタスクをグループ化します。各グループ内でメモリでソートし、最小のものと最大のものをペアにします。その合計が上限を超えなければペアを並列に実行し、そうでなければ最大のタスクは単独で実行するしかありません。",
+    "hints": [
+      "taskType ごとにタスクをグループ化します。各グループ内でメモリでソートし、最小のものと最大のものをペアにします。その合計が上限を超えなければペアを並列に実行し、そうでなければ最大のタスクは単独で実行するしかありません。"
+    ]
+  },
+  "ko": {
+    "title": "Task Scheduling (Parallel Same-Type with Memory Limit)",
+    "description": "각 작업은 1 단위 시간이 걸립니다. 두 작업은 유형이 같고 메모리 합이 maxMemory 이하일 때에 한해 병렬로 처리할 수 있으며, 그 외의 작업은 단독으로 처리합니다. 총 처리 시간의 최솟값을 구하세요.\n\n이 사이트의 명시적인 표준 입출력 형식과 보충 제약 조건은 온라인 버전에 속하며, 원본 제약 조건으로 제시된 것이 아닙니다.",
+    "input": "입력은 N, maxMemory, N개의 taskMemory 값, N개의 taskType 값으로 구성됩니다. 1≤N≤200000, 1≤taskMemory[i]≤maxMemory≤10^9, 1≤taskType[i]≤10^9. 이 사이트에서는 다른 작업과 병렬로 실행할 수 없는 메모리 크기라도 모든 작업이 단독으로는 실행될 수 있다고 정합니다.",
+    "output": "최소 시간 단위 수를 출력합니다.",
+    "explanation": "작업을 taskType별로 묶습니다. 각 그룹에서 메모리 순으로 정렬한 뒤 가장 작은 것과 가장 큰 것을 짝지으며, 둘의 합이 제한을 넘지 않으면 병렬로 실행하고, 그렇지 않으면 가장 큰 작업은 단독으로만 실행할 수 있습니다.",
+    "hints": [
+      "작업을 taskType별로 묶습니다. 각 그룹에서 메모리 순으로 정렬한 뒤 가장 작은 것과 가장 큰 것을 짝지으며, 둘의 합이 제한을 넘지 않으면 병렬로 실행하고, 그렇지 않으면 가장 큰 작업은 단독으로만 실행할 수 있습니다."
+    ]
+  },
+  "vi": {
+    "title": "Task Scheduling (Parallel Same-Type with Memory Limit)",
+    "description": "Mỗi tác vụ mất 1 đơn vị thời gian. Hai tác vụ có thể được xử lý song song khi và chỉ khi chúng cùng loại và tổng bộ nhớ của chúng ≤maxMemory; mọi tác vụ khác được xử lý riêng lẻ. Tìm tổng thời gian xử lý tối thiểu.\n\nĐịnh dạng nhập/xuất chuẩn tường minh và các ràng buộc bổ sung của trang này thuộc phiên bản trực tuyến và không được trình bày như ràng buộc của nguồn gốc.",
+    "input": "Đầu vào gồm N, maxMemory, N giá trị taskMemory và N giá trị taskType. 1≤N≤200000, 1≤taskMemory[i]≤maxMemory≤10^9, 1≤taskType[i]≤10^9. Trang này quy định rằng mọi tác vụ đều có thể chạy riêng lẻ, kể cả khi bộ nhớ của nó không cho phép chạy song song với tác vụ khác.",
+    "output": "In ra số đơn vị thời gian tối thiểu.",
+    "explanation": "Nhóm các tác vụ theo taskType. Trong mỗi nhóm, sắp xếp theo bộ nhớ và ghép cặp tác vụ nhỏ nhất với tác vụ lớn nhất; nếu tổng của chúng không vượt quá giới hạn thì chạy cặp đó song song, ngược lại tác vụ lớn nhất chỉ có thể chạy riêng.",
+    "hints": [
+      "Nhóm các tác vụ theo taskType. Trong mỗi nhóm, sắp xếp theo bộ nhớ và ghép cặp tác vụ nhỏ nhất với tác vụ lớn nhất; nếu tổng của chúng không vượt quá giới hạn thì chạy cặp đó song song, ngược lại tác vụ lớn nhất chỉ có thể chạy riêng."
+    ]
   }
 }

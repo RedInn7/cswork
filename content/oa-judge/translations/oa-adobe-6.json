@@ -11,5 +11,35 @@
     "hints": [
       "Binary search the number of rounds t. Each task first gets t*y of baseline service, and the remainder needs ceil((time−t*y)/(x−y)) main-task turns; check whether the total is ≤t."
     ]
+  },
+  "ja": {
+    "title": "強化されたメインタスクで全タスクを終える最小ラウンド数",
+    "description": "各ラウンドで、未完了のタスクを 1 つ選んで x 秒実行し、他のすべての未完了タスクは y 秒実行します。ただし x>y です。タスクは必要な時間に達すると抜けます。最小のラウンド数を求めてください。\n\n当サイトは標準入出力と解法を独自に用意しました。原典で欠けている上下限の補足と例の訂正は、プロトコルに明記してあります。",
+    "input": "1 行目に n x y、2 行目に n 個の必要時間が与えられます。原典には x>y としか書かれておらず、数値の制約がありません。当サイトでは 1≤n≤100000、0≤time≤10^9、0≤y<x≤10^9 とします。time が 0 のタスクは最初から完了しています。",
+    "output": "答えを表す整数を 1 つ出力します。",
+    "explanation": "公開されている 3 つの例の出力は、順に 2、0、8 です。独立した全探索または直接のシミュレーションで検証済みです。",
+    "hints": [
+      "ラウンド数 t を二分探索します。各タスクはまず基本の t*y のサービスを受け、残りには ceil((time−t*y)/(x−y)) 回のメインタスクの番が必要です。その合計が t 以下かどうかを判定します。"
+    ]
+  },
+  "ko": {
+    "title": "강화된 주 작업이 있는 모든 작업을 끝내는 최소 라운드 수",
+    "description": "각 라운드에서 완료되지 않은 작업 하나를 골라 x초 동안 실행하고, 나머지 완료되지 않은 작업은 모두 y초씩 실행합니다. 여기서 x>y입니다. 작업은 필요한 시간에 도달하면 빠집니다. 최소 라운드 수를 구하십시오.\n\n본 사이트는 표준 입출력과 풀이를 독자적으로 작성했으며, 원문에 없는 범위의 보충과 예제의 정정은 프로토콜에 명시되어 있습니다.",
+    "input": "첫째 줄에 n x y가, 둘째 줄에 n개의 필요 시간이 주어집니다. 원문은 x>y만 밝히고 수치 범위가 없어, 본 사이트에서 1≤n≤100000, 0≤time≤10^9, 0≤y<x≤10^9로 정했습니다. 시간이 0인 작업은 처음부터 완료된 상태입니다.",
+    "output": "정수 답 하나를 출력합니다.",
+    "explanation": "공개된 세 예제의 출력은 차례로 2, 0, 8입니다. 독립적인 전수 조사 또는 직접 시뮬레이션으로 검증했습니다.",
+    "hints": [
+      "라운드 수 t를 이분 탐색합니다. 각 작업은 먼저 기본으로 t*y를 받고, 나머지는 ceil((time−t*y)/(x−y))번의 주 작업 차례가 필요합니다. 그 합이 ≤t인지 확인하십시오."
+    ]
+  },
+  "vi": {
+    "title": "Số vòng tối thiểu để hoàn thành mọi tác vụ với một tác vụ chính được tăng tốc",
+    "description": "Trong mỗi vòng, chọn một tác vụ chưa hoàn thành để chạy trong x giây, trong khi mọi tác vụ chưa hoàn thành khác chạy trong y giây, với x>y. Một tác vụ rời đi khi đạt đủ thời gian yêu cầu. Hãy tìm số vòng tối thiểu.\n\nTrang này tự biên soạn đầu vào/đầu ra chuẩn và lời giải; các phần bổ sung cho những giới hạn còn thiếu trong đề gốc và các chỉnh sửa cho ví dụ được nêu rõ trong giao thức.",
+    "input": "Dòng đầu tiên chứa n x y, dòng thứ hai chứa n thời gian yêu cầu. Đề gốc chỉ nêu x>y mà không có giới hạn số; trang này đặt 1≤n≤100000, 0≤time≤10^9, 0≤y<x≤10^9. Các tác vụ có time bằng 0 được coi là đã hoàn thành từ đầu.",
+    "output": "In ra một số nguyên duy nhất là đáp án.",
+    "explanation": "Đầu ra của ba ví dụ công khai lần lượt là: 2; 0; 8. Đã được kiểm chứng bằng liệt kê độc lập hoặc mô phỏng trực tiếp.",
+    "hints": [
+      "Tìm kiếm nhị phân số vòng t. Mỗi tác vụ trước hết nhận t*y dịch vụ nền, và phần còn lại cần ceil((time−t*y)/(x−y)) lượt làm tác vụ chính; kiểm tra xem tổng có ≤t không."
+    ]
   }
 }

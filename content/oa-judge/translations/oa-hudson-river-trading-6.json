@@ -11,5 +11,35 @@
     "hints": [
       "Strict increase makes the path graph a DAG. You can run DFS from each cell to count suffix paths, or sort by value and use dynamic programming."
     ]
+  },
+  "ja": {
+    "title": "増加パスの個数 (64 ビット)",
+    "description": "最大 15×15 のグリッドが与えられ、各セルの値は 0..65535 です。パスは 2 つ以上のセルの列で、連続するセルは上下左右に隣接し、各値は直前の値より真に大きくなければなりません。位置の並びが異なれば別のパスとして数えます。増加パスの総数を求めてください。Part 2 では答えが 20,000,000,000 を超えないことが保証されているため、64 ビット整数が必要です。\n\n元の例のグリッドは変わりませんが、元の出力 601079908 はルールと一致しません。独立した逆方向 DFS と、独立した昇順の動的計画法のどちらでも 600537344 になるため、本サイトでは公開する答えを 600537344 に訂正し、食い違いを元の根拠資料に記録しています。\n\n元の問題は関数形式で標準入出力の形式を持たないため、本サイトが以下の形式を追加しています。",
+    "input": "1 行目に行数 R (1..15) が与えられます。続く各行は、まず列数 Cᵢ (1..15) が与えられ、次にその行の Cᵢ 個の整数 (0..65535) が与えられます。行ごとに長さが異なる場合があり、与えられたセルだけが存在します。",
+    "output": "長さ 2 以上の真に増加するパスの総数を出力してください。",
+    "explanation": "元の問題の Part 2 は、パス数の上限を 20 billion (200億) に引き上げただけで、パスとグリッドのルールは Part 1 から引き継いでいます。元の例の答えは 2 つのアルゴリズムで照合したうえで訂正されています。",
+    "hints": [
+      "真に増加する条件から、パスのグラフは DAG になります。各セルから DFS して後続のパスを数えるか、値でソートして動的計画法を使えます。"
+    ]
+  },
+  "ko": {
+    "title": "증가하는 경로 개수 세기 (64비트 정수)",
+    "description": "최대 15×15 크기의 격자가 주어지며 각 칸의 값은 0..65535입니다. 경로는 두 개 이상의 칸으로 이루어진 열로, 연속한 칸은 상하좌우로 인접해야 하며 각 값은 이전 값보다 엄격하게 커야 합니다. 위치 순서가 다르면 다른 경로로 셉니다. 증가 경로의 총 개수를 구하세요. Part 2에서는 답이 20,000,000,000을 넘지 않음이 보장되므로 64비트 정수가 필요합니다.\n\n원문 예제의 격자는 그대로이지만, 원문의 출력 601079908은 규칙과 일치하지 않습니다. 독립적인 역방향 DFS와 독립적인 오름차순 동적 계획법이 모두 600537344를 내므로, 이 사이트는 공개 정답을 600537344로 바로잡고 그 불일치를 원문 근거에 기록해 두었습니다.\n\n원문은 표준 입출력 규약이 없는 함수형 문제이며, 이 사이트에서 아래의 규약을 추가했습니다.",
+    "input": "첫 번째 줄에 행의 수 R (1..15)이 주어집니다. 이어지는 각 줄에는 열의 수 Cᵢ (1..15)가 먼저 주어지고, 그 행의 정수 Cᵢ개 (0..65535)가 주어집니다. 행마다 길이가 다를 수 있으며, 주어진 칸만 존재합니다.",
+    "output": "길이가 2 이상인 엄격하게 증가하는 경로의 총 개수를 출력합니다.",
+    "explanation": "원문 문제의 Part 2는 경로 개수의 상한을 20 billion(200억)으로 올린 것일 뿐이며, 경로와 격자의 규칙은 Part 1에서 그대로 가져옵니다. 원문 예제의 정답은 두 가지 알고리즘으로 교차 검증한 뒤 바로잡았습니다.",
+    "hints": [
+      "엄격한 증가 때문에 경로 그래프는 DAG가 됩니다. 각 칸에서 DFS를 수행하여 접미 경로를 세거나, 값으로 정렬한 뒤 동적 계획법을 사용할 수 있습니다."
+    ]
+  },
+  "vi": {
+    "title": "Đếm đường đi tăng dần (kết quả 64 bit)",
+    "description": "Cho một lưới tối đa 15×15 ô, mỗi ô có giá trị trong khoảng 0..65535. Một đường đi là dãy ít nhất hai ô, trong đó các ô liên tiếp phải kề nhau theo hướng trên, dưới, trái hoặc phải, và mỗi giá trị lớn hơn nghiêm ngặt giá trị trước đó. Các dãy vị trí khác nhau được tính là các đường đi khác nhau. Đếm tổng số đường đi tăng dần; Phần 2 đảm bảo đáp án không vượt quá 20,000,000,000, do đó cần dùng số nguyên 64 bit.\n\nLưới trong ví dụ gốc được giữ nguyên, nhưng đầu ra gốc 601079908 không khớp với các quy tắc. Một phép DFS ngược độc lập và một phép quy hoạch động theo thứ tự tăng độc lập đều cho kết quả 600537344; trang này sửa đáp án công khai thành 600537344 và giữ lại sự sai khác trong bằng chứng nguồn.\n\nBài gốc là bài dạng hàm không có giao thức đầu vào/đầu ra chuẩn; trang này bổ sung giao thức bên dưới.",
+    "input": "Dòng đầu chứa số hàng R (1..15); mỗi dòng tiếp theo cho số cột Cᵢ (1..15), sau đó là Cᵢ số nguyên của hàng đó (0..65535). Các hàng có thể có độ dài khác nhau; chỉ các ô được cho mới tồn tại.",
+    "output": "In ra tổng số đường đi tăng nghiêm ngặt có độ dài ít nhất 2.",
+    "explanation": "Phần 2 của bài gốc chỉ nâng giới hạn số đường đi lên 20 tỷ; các quy tắc về đường đi và lưới được kế thừa từ Phần 1. Đáp án ví dụ gốc đã được sửa sau khi đối chiếu bằng hai thuật toán.",
+    "hints": [
+      "Tăng nghiêm ngặt làm cho đồ thị đường đi là một DAG. Bạn có thể chạy DFS từ mỗi ô để đếm các đường đi hậu tố, hoặc sắp xếp theo giá trị và dùng quy hoạch động."
+    ]
   }
 }

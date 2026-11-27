@@ -13,5 +13,41 @@
       "Choose at most three bits other than the highest to be 0.",
       "For a closed interval, use upper_bound at the right end and lower_bound at the left end, so that numbers equal to the endpoints are not dropped."
     ]
+  },
+  "ja": {
+    "title": "2 進表現に 0 を 1 個から 3 個含む数：立方和の区間クエリ",
+    "description": "正の整数について、先頭の 0 を除いた 2 進表現に 0 が 1 個以上 3 個以下含まれるとき、その数を「美しい数」と呼びます。各閉区間 [L,R] について、その中に含まれる美しい整数の立方和を 998244353 で割った余りを求めてください。クエリはそれぞれ独立です。",
+    "input": "1 行目に Q が与えられ、続く Q 行にそれぞれ 2 つの整数 L R が与えられます。元の問題の範囲は 1≤Q≤200000、1≤L≤R≤10^18 です。先頭の 0 は数えません。",
+    "output": "Q 個の整数を入力順に 1 行に 1 つずつ出力してください。各値は 0..998244352 の範囲です。元の問題文は Q 個の結果を出力することを明示的に求めており、雛形の long 1 つを返す戻り値の型では複数のクエリを表現できないため、本問題は問題文の出力形式に従います。",
+    "explanation": "元の例 1 は入力をそのままに、出力を 853 と 9000 に訂正しています。[5,8] には 5、6、8 が含まれ、元の説明は 6 を見落としていました。[10,15] には 10、11、12、13、14 が含まれます。元の 153/0 も、説明にある 637/0 も、明示された定義と矛盾します。残りの 2 つの公開例は本サイトが追加したもので、単独の値 1、2、7、8、16 の答えはそれぞれ 0、8、0、512、0 です。[1,10] では、2、4、5、6、8、9、10 の立方和が 2654 になります。",
+    "hints": [
+      "ビット長は高々 60 で、最上位ビットは 0 になりえません。",
+      "最上位以外のビットから、高々 3 つを 0 にします。",
+      "閉区間では、右端に upper_bound、左端に lower_bound を使い、端点と等しい数を取りこぼさないようにします。"
+    ]
+  },
+  "ko": {
+    "title": "이진수에 0이 1~3개인 수: 구간 세제곱합",
+    "description": "양의 정수의 앞자리 0을 제외한 이진 표현에 0이 최소 1개, 최대 3개 포함되어 있으면 그 수를 아름다운 수라고 합니다. 각 닫힌 구간 [L,R]에 대해, 구간에 속한 모든 아름다운 정수의 세제곱의 합을 998244353으로 나눈 나머지를 구하세요. 모든 질의는 서로 독립입니다.",
+    "input": "첫 번째 줄에 Q가 주어지고, 이어서 Q개의 줄에 각각 두 정수 L R이 주어집니다. 원래의 전체 범위: 1≤Q≤200000, 1≤L≤R≤10^18. 앞자리 0은 세지 않습니다.",
+    "output": "입력 순서대로 Q개의 정수를 한 줄에 하나씩 출력하며, 각 값은 0..998244352 범위입니다. 원문은 Q개의 결과를 명시적으로 요구하며, 시작 코드의 단일 long 반환형으로는 여러 질의를 표현할 수 없으므로, 이 문제는 문제 설명의 출력 형식을 따릅니다.",
+    "explanation": "원래의 첫 번째 예제는 입력을 그대로 유지하고 출력을 853과 9000으로 바로잡았습니다. [5,8]에는 5, 6, 8이 있는데 원래 설명에서는 6이 빠졌고, [10,15]에는 10, 11, 12, 13, 14가 있습니다. 원래의 153/0과 설명의 637/0은 모두 명시된 정의와 모순됩니다. 나머지 두 개의 공개 예제는 이 사이트에서 추가했습니다. 단일 값 1, 2, 7, 8, 16은 각각 0, 8, 0, 512, 0이고, [1,10]에서 2, 4, 5, 6, 8, 9, 10의 세제곱의 합은 2654입니다.",
+    "hints": [
+      "비트 길이는 최대 60이며, 최상위 비트는 0일 수 없습니다.",
+      "최상위 비트를 제외한 비트 중 최대 세 개를 0으로 선택합니다.",
+      "닫힌 구간에서는 오른쪽 끝에 upper_bound를, 왼쪽 끝에 lower_bound를 사용하여 끝점과 같은 수가 누락되지 않도록 합니다."
+    ]
+  },
+  "vi": {
+    "title": "Số có 1 đến 3 chữ số 0 nhị phân: tổng lập phương trên đoạn",
+    "description": "Một số nguyên dương được gọi là số đẹp nếu biểu diễn nhị phân của nó, không có chữ số 0 đứng đầu, chứa ít nhất 1 và nhiều nhất 3 chữ số 0. Với mỗi đoạn đóng [L,R], hãy tìm tổng lập phương của tất cả các số nguyên đẹp trong đoạn, theo modulo 998244353. Các truy vấn độc lập với nhau.",
+    "input": "Dòng đầu chứa Q, tiếp theo là Q dòng, mỗi dòng có hai số nguyên L R. Phạm vi gốc đầy đủ: 1≤Q≤200000, 1≤L≤R≤10^18. Các chữ số 0 đứng đầu không được tính.",
+    "output": "In ra Q số nguyên theo thứ tự đầu vào, mỗi số một dòng, mỗi số trong khoảng 0..998244352. Văn bản gốc yêu cầu rõ ràng Q kết quả, và kiểu trả về long đơn của mã khởi đầu không thể biểu diễn nhiều truy vấn, nên bài toán này theo định dạng đầu ra trong đề bài.",
+    "explanation": "Ví dụ đầu tiên của bản gốc giữ nguyên đầu vào, còn đầu ra được sửa thành 853 và 9000: [5,8] chứa 5, 6, 8, và phần giải thích gốc đã bỏ sót 6; [10,15] chứa 10, 11, 12, 13, 14. Cặp 153/0 của bản gốc và 637/0 trong phần giải thích đều mâu thuẫn với định nghĩa rõ ràng. Hai ví dụ công khai còn lại do trang này thêm vào: các giá trị đơn lẻ 1, 2, 7, 8, 16 lần lượt cho 0, 8, 0, 512, 0; trong [1,10], tổng lập phương của 2, 4, 5, 6, 8, 9, 10 là 2654.",
+    "hints": [
+      "Độ dài bit tối đa là 60, và bit cao nhất không thể là 0.",
+      "Chọn nhiều nhất ba bit khác bit cao nhất để đặt thành 0.",
+      "Với đoạn đóng, dùng upper_bound ở đầu phải và lower_bound ở đầu trái, để các số bằng hai đầu mút không bị bỏ sót."
+    ]
   }
 }

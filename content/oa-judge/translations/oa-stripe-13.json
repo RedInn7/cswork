@@ -11,5 +11,35 @@
     "hints": [
       "Collect records by sender, sort them with the triple key `(timestamp, recipient, subject)`, and finally output them ordered by the sender key."
     ]
+  },
+  "ja": {
+    "title": "メールログのグループ化とソート",
+    "description": "メールイベントのログが与えられます。イベントを送信者ごとにグループ化します。送信者のグループは辞書順に並べ、各グループ内では、タイムスタンプの昇順、次に受信者と件名の辞書順の昇順で並べます。件名にはスペースが含まれることがあり、空のこともあります。\n\n入力形式、例、テストデータは CSWork が作成しました。",
+    "input": "1 行目に n (1..200000) が与えられ、続く n 行は、非負整数のタイムスタンプ、送信者、受信者、件名です。送信者と受信者には空白が含まれません。件名は、その行の 4 番目のフィールドから行末までの生のテキストです。各行は高々 300 文字です。",
+    "output": "まず結果の行数を出力します。続いて規則に従って `sender: <sender>` を出力し、その後にそのグループの `<timestamp> <recipient> [subject]` の行を出力します。件名が空のときは、余分なスペースを出力しません。",
+    "explanation": "上記の規則に従って入力を処理します。解法、正当性の証明、計算量については付属の解説を参照してください。",
+    "hints": [
+      "レコードを送信者ごとに集め、3 つ組のキー `(timestamp, recipient, subject)` でソートし、最後に送信者のキーの順に出力します。"
+    ]
+  },
+  "ko": {
+    "title": "이메일 로그 그룹화 및 정렬",
+    "description": "이메일 이벤트 로그가 주어지면 발신자별로 이벤트를 묶으세요. 발신자 그룹은 사전순으로 정렬하고, 각 그룹 안에서는 타임스탬프 오름차순, 그다음 수신자와 제목의 사전순 오름차순으로 정렬합니다. 제목에는 공백이 포함될 수 있고 비어 있을 수도 있습니다.\n\n입력 형식, 예제, 테스트 데이터는 CSWork가 정리하여 작성했습니다.",
+    "input": "첫째 줄에 n(1..200000)이 주어지고, 이어서 n개의 줄에 음이 아닌 정수 타임스탬프, 발신자, 수신자, 제목이 주어집니다. 발신자와 수신자에는 공백이 없고, 제목은 줄의 4번째 필드부터 줄 끝까지의 원문 텍스트입니다. 각 줄은 최대 300자입니다.",
+    "output": "먼저 결과 줄의 수를 출력합니다. 그다음 규칙에 따라 `sender: <sender>`를 출력하고, 이어서 해당 그룹의 `<timestamp> <recipient> [subject]` 줄을 출력합니다. 제목이 비어 있으면 공백을 추가로 출력하지 않습니다.",
+    "explanation": "위의 규칙에 따라 입력을 처리하세요. 접근 방법, 정당성 증명, 복잡도는 함께 제공되는 풀이를 참고하세요.",
+    "hints": [
+      "발신자별로 기록을 모으고 세 요소로 이루어진 키 `(timestamp, recipient, subject)`로 정렬한 뒤, 마지막으로 발신자 키 순서대로 출력하세요."
+    ]
+  },
+  "vi": {
+    "title": "Nhóm và sắp xếp nhật ký email",
+    "description": "Cho nhật ký các sự kiện email, hãy nhóm các sự kiện theo người gửi. Các nhóm người gửi được sắp xếp theo thứ tự từ điển; trong mỗi nhóm, các sự kiện được sắp xếp theo timestamp tăng dần, rồi theo người nhận và tiêu đề tăng dần theo thứ tự từ điển. Tiêu đề có thể chứa dấu cách và cũng có thể rỗng.\n\nĐịnh dạng đầu vào, ví dụ và dữ liệu kiểm thử do CSWork biên soạn và viết.",
+    "input": "Dòng đầu chứa n (1..200000), tiếp theo là n dòng: một timestamp là số nguyên không âm, người gửi, người nhận và tiêu đề. Người gửi và người nhận không chứa khoảng trắng; tiêu đề là văn bản thô từ trường thứ 4 của dòng đến hết dòng. Mỗi dòng có tối đa 300 ký tự.",
+    "output": "Trước tiên xuất số dòng kết quả; sau đó, theo các quy tắc, xuất `sender: <sender>`, theo sau là các dòng `<timestamp> <recipient> [subject]` của nhóm đó. Khi tiêu đề rỗng, không xuất thêm dấu cách.",
+    "explanation": "Xử lý đầu vào theo các quy tắc trên; xem lời giải kèm theo để biết hướng tiếp cận, chứng minh tính đúng đắn và độ phức tạp.",
+    "hints": [
+      "Gom các bản ghi theo người gửi, sắp xếp chúng bằng khoá ba thành phần `(timestamp, recipient, subject)`, và cuối cùng xuất theo thứ tự khoá người gửi."
+    ]
   }
 }

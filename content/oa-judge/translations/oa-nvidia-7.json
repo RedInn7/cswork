@@ -11,5 +11,35 @@
     "hints": [
       "Starting from the root, look up the dictionary keys segment by segment; return null immediately on failure, and on success serialize the current value."
     ]
+  },
+  "ja": {
+    "title": "ドット区切りのパスでネストした辞書を読む",
+    "description": "JSON の辞書とドット区切りのパスが与えられ、キーを順にたどります。キーが存在しない場合や、途中で非オブジェクト (配列を含む) に到達した場合は null を返します。結果は、オブジェクト全体や配列の全体になることもあり、配列の添字によるアクセスはサポートされません。元のプラットフォームは辞書をサポートしていないため、本サイトは擬似配列の例を本物の JSON オブジェクトに変換しました。\n\n本サイトでは標準的な入出力プロトコルを用い、欠けていた数値の範囲は明示しています。",
+    "input": "1 行目に JSON オブジェクト、2 行目に空でないパスが与えられ、末尾に改行が付くこともあります。キーは [a-z][a-z0-9_]{0,31} に一致し、木全体で辞書のキーは 1..500 個、ノードは合計 ≤5000 個、コンテナの深さは ≤30 (ルートがレベル 1) です。値はオブジェクト、配列、≤1000 個の Unicode スカラー値からなる文字列、−10⁹..10⁹ の整数である JSON 数値、真偽値、または null のいずれかです。配列の長さは ≤5000 で、キーの重複や単独のサロゲート文字は認められません。path は、ドットでつないだ 1..31 個の有効なキーからなります。UTF-8 での入力全体のサイズは ≤4MiB です。元の問題の 500 という上限を除き、以上はすべて本サイトによるシリアライズと範囲のプロトコルです。",
+    "output": "JSON の値をちょうど 1 つ出力してください。オブジェクト内のキーの順序と JSON の空白は任意で、数値は値として比較され、真偽値は数値として扱われません。キーの重複や末尾の余分な内容は認められません。",
+    "explanation": "例 1: car、続いて gears で整数 5 になります。例 2: a のサブオブジェクト全体を、キーの順序は任意で、配列と false を保ったまま返します。例 3: a は配列で、配列の添字アクセスもキーアクセスもサポートされないので、null を返します。",
+    "hints": [
+      "ルートから、セグメントごとに辞書のキーを引いていきます。失敗したらすぐに null を返し、成功したら現在の値をシリアライズします。"
+    ]
+  },
+  "ko": {
+    "title": "점으로 구분된 경로로 중첩 딕셔너리 읽기",
+    "description": "JSON 딕셔너리와 점으로 구분된 경로가 주어지면 키를 순서대로 접근합니다. 키가 존재하지 않거나 도중에 객체가 아닌 값(배열 포함)에 도달하면 null을 반환합니다. 결과는 하위 객체 전체나 배열일 수 있으며, 배열 인덱스 접근은 지원하지 않습니다. 원본 플랫폼은 딕셔너리를 지원하지 않으므로, 이 사이트는 의사 배열 예제를 실제 JSON 객체로 변환했습니다.\n\n이 사이트는 표준 입출력 프로토콜을 사용하며, 빠진 수치 범위는 명시적으로 밝힙니다.",
+    "input": "첫째 줄에 JSON 객체, 둘째 줄에 비어 있지 않은 경로가 주어지며 끝에 개행이 올 수도 있습니다. 키는 [a-z][a-z0-9_]{0,31}에 일치합니다. 전체 트리는 딕셔너리 키 1..500개, 총 노드 ≤5000개, 컨테이너 깊이 ≤30(루트가 1단계)입니다. 값은 객체, 배열, 유니코드 스칼라 값 ≤1000개의 문자열, −10⁹..10⁹ 범위 정수인 JSON 숫자, 불리언, null 중 하나일 수 있습니다. 배열의 길이는 ≤5000이며, 중복 키와 짝이 없는 서로게이트 문자는 허용되지 않습니다. path는 점으로 연결된 유효한 키 1..31개로 이루어집니다. UTF-8 입력의 전체 크기는 ≤4MiB입니다. 원문의 제한 500을 제외하면 위의 모든 내용은 이 사이트의 직렬화 및 범위 프로토콜입니다.",
+    "output": "정확히 하나의 JSON 값을 출력합니다. 객체 안의 키 순서와 JSON 공백은 모두 허용되고, 숫자는 값으로 비교하며, 불리언은 숫자로 취급하지 않습니다. 중복 키와 뒤따르는 내용은 허용되지 않습니다.",
+    "explanation": "예제 1: car 다음 gears는 정수 5를 줍니다. 예제 2: a 하위 객체 전체를 키 순서와 무관하게 배열과 false를 유지한 채 반환합니다. 예제 3: a는 배열이며 배열 인덱싱도 키 접근도 지원하지 않으므로 null을 반환합니다.",
+    "hints": [
+      "루트에서 시작하여 경로의 키를 한 단계씩 딕셔너리에서 찾습니다. 실패하면 즉시 null을 반환하고, 성공하면 현재 값을 직렬화합니다."
+    ]
+  },
+  "vi": {
+    "title": "Đọc từ điển lồng nhau theo đường dẫn chấm",
+    "description": "Cho một từ điển JSON và một đường dẫn chấm, hãy truy cập các khóa theo thứ tự. Nếu một khóa không tồn tại hoặc trên đường đi gặp một giá trị không phải đối tượng (kể cả mảng), trả về null. Kết quả có thể là cả một đối tượng con hoặc mảng; không hỗ trợ truy cập chỉ số mảng. Nền tảng nguồn không hỗ trợ từ điển, nên trang này đã chuyển các ví dụ giả mảng thành các đối tượng JSON thực sự.\n\nTrang này dùng giao thức nhập/xuất chuẩn; các khoảng giá trị bị thiếu được nêu rõ.",
+    "input": "Dòng đầu tiên chứa một đối tượng JSON, dòng thứ hai chứa một đường dẫn khác rỗng, có thể theo sau là một ký tự xuống dòng. Các khóa khớp [a-z][a-z0-9_]{0,31}; cả cây có 1..500 khóa từ điển, tổng cộng ≤5000 nút, và độ sâu của các container ≤30 (gốc là mức 1). Một giá trị có thể là đối tượng, mảng, chuỗi gồm ≤1000 giá trị vô hướng Unicode, số JSON là số nguyên trong −10⁹..10⁹, boolean hoặc null. Mảng có độ dài ≤5000; không cho phép khóa trùng lặp và ký tự surrogate đơn lẻ. path gồm 1..31 khóa hợp lệ nối bằng dấu chấm. Tổng kích thước đầu vào UTF-8 ≤4MiB. Ngoài giới hạn 500 của nguồn, tất cả những điều trên là giao thức tuần tự hóa và khoảng giá trị của trang này.",
+    "output": "In ra đúng một giá trị JSON. Chấp nhận mọi thứ tự khóa trong đối tượng và mọi khoảng trắng JSON, các số được so sánh theo giá trị, và boolean không được coi là số. Cấm khóa trùng lặp và nội dung thừa ở cuối.",
+    "explanation": "Ví dụ 1: car rồi gears cho số nguyên 5. Ví dụ 2: trả về toàn bộ đối tượng con a, theo thứ tự khóa bất kỳ, giữ nguyên mảng và false. Ví dụ 3: a là một mảng, và không hỗ trợ cả truy cập chỉ số mảng lẫn truy cập khóa trên nó, nên trả về null.",
+    "hints": [
+      "Bắt đầu từ gốc, tra cứu từng đoạn khóa của từ điển; trả về null ngay khi thất bại, còn khi thành công thì tuần tự hóa giá trị hiện tại."
+    ]
   }
 }

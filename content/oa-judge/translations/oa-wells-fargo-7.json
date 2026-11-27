@@ -11,5 +11,35 @@
     "hints": [
       "Represent the array by the lengths L of its maximal runs of equal values. All subarrays within a single run contribute a total of L(L+1)(L+2)/6. A subarray spanning runs contributes the product of the suffix length in its first run, the prefix length in its last run, and the lengths of the full runs in between; maintaining the weights of earlier endpoints allows an O(1) update. Finally subtract all subarrays with no equal adjacent items, since they are already compressed and contribute 0."
     ]
+  },
+  "ja": {
+    "title": "Sum of Compressed Number for All Subarrays",
+    "description": "配列の各連続部分配列について、隣り合う等しい値は1つの代表にまとめられます。その部分配列の圧縮数とは、等しい値からなる極大な連続区間(ラン)ごとにちょうど1つの添字を残し、そのランの他の添字を削除することで、標準の圧縮配列が得られるような選び方の数です。部分配列がすでに圧縮済みなら 0 です。すべての部分配列の圧縮数の総和を 1,000,000,007 で割った余りで求めてください。\n\n問題の出典と、本サイトが追加した入力プロトコルについては、問題文とレビューノートを参照してください。",
+    "input": "1行目に t が与えられ、続いて各テストケースで n と n 個の整数 a[i] が与えられます。元の制約は 1≤t≤10、1≤n≤100000、1≤a[i]≤100000 です。本サイトでは、さらに n の合計 ≤200000 を追加しています。",
+    "output": "各テストケースについて、答えを 1,000,000,007 で割った余りとして1行に出力します。",
+    "explanation": "問題の規則に従って入力を処理します。詳しい考え方は付属のノートを参照してください。",
+    "hints": [
+      "配列を、等しい値の極大なランの長さ L で表します。1つのランの内側にあるすべての部分配列の寄与の合計は L(L+1)(L+2)/6 です。複数のランにまたがる部分配列の寄与は、最初のランでの接尾辞の長さ、最後のランでの接頭辞の長さ、その間にある完全なランの長さの積です。それ以前の端点の重みを保持しておけば、O(1) で更新できます。最後に、隣り合う等しい要素を持たないすべての部分配列を引きます。これらはすでに圧縮済みで寄与が 0 だからです。"
+    ]
+  },
+  "ko": {
+    "title": "Sum of Compressed Number for All Subarrays",
+    "description": "배열의 각 연속 부분 배열에 대해, 인접한 같은 값은 하나의 대표로 압축됩니다. 해당 부분 배열의 압축 수는 값이 같은 최대 연속 구간(run)마다 인덱스를 정확히 하나만 남기고 그 구간의 나머지 인덱스를 삭제하여 표준 압축 배열을 만드는 서로 다른 선택의 수이며, 부분 배열이 이미 압축되어 있다면 0입니다. 모든 부분 배열의 압축 수의 합을 1,000,000,007로 나눈 나머지로 구하십시오.\n\n문제의 출처와 이 사이트에서 추가한 입력 프로토콜은 문제 설명과 검토 노트를 참고하십시오.",
+    "input": "첫 번째 줄에 t가 주어지고, 이후 각 테스트 케이스마다 n과 n개의 정수 a[i]가 주어집니다. 원문 제약 조건은 1≤t≤10, 1≤n≤100000, 1≤a[i]≤100000입니다. 이 사이트는 추가로 전체 n≤200000을 둡니다.",
+    "output": "각 테스트 케이스마다 답을 1,000,000,007로 나눈 나머지를 한 줄에 출력합니다.",
+    "explanation": "문제 규칙에 따라 입력을 처리하십시오. 자세한 접근법은 함께 제공되는 노트를 참고하십시오.",
+    "hints": [
+      "배열을 값이 같은 최대 연속 구간의 길이 L로 표현합니다. 하나의 구간 안에 있는 모든 부분 배열의 기여 합은 L(L+1)(L+2)/6입니다. 여러 구간에 걸친 부분 배열의 기여는 첫 구간에서의 접미사 길이, 마지막 구간에서의 접두사 길이, 그 사이 완전한 구간들의 길이를 모두 곱한 값이며, 이전 끝점들의 가중치를 유지하면 O(1)에 갱신할 수 있습니다. 마지막으로 인접한 같은 항목이 없는 모든 부분 배열은 이미 압축되어 있어 기여가 0이므로 그 수를 뺍니다."
+    ]
+  },
+  "vi": {
+    "title": "Sum of Compressed Number for All Subarrays",
+    "description": "Với mỗi mảng con liên tiếp của mảng, các giá trị bằng nhau kề nhau được nén thành một đại diện duy nhất. Số nén của mảng con đó là số cách chọn khác nhau tạo ra mảng nén chuẩn bằng cách giữ đúng một chỉ số trong mỗi đoạn cực đại các giá trị bằng nhau và xóa các chỉ số còn lại của đoạn đó; nếu mảng con đã được nén sẵn thì số nén là 0. Tìm tổng số nén của mọi mảng con theo modulo 1,000,000,007.\n\nXem phần đề bài và ghi chú đánh giá để biết nguồn của bài toán và giao thức nhập mà trang này bổ sung.",
+    "input": "Dòng đầu chứa t; sau đó mỗi bộ test cho n rồi n số nguyên a[i]. Ràng buộc gốc: 1≤t≤10, 1≤n≤100000, 1≤a[i]≤100000. Trang này bổ sung thêm tổng n≤200000.",
+    "output": "Với mỗi bộ test, in một dòng chứa đáp án theo modulo 1,000,000,007.",
+    "explanation": "Xử lý đầu vào theo quy tắc của bài; xem các ghi chú đi kèm để biết cách tiếp cận chi tiết.",
+    "hints": [
+      "Biểu diễn mảng bằng các độ dài L của các đoạn cực đại gồm các giá trị bằng nhau. Mọi mảng con nằm trong một đoạn duy nhất đóng góp tổng cộng L(L+1)(L+2)/6. Một mảng con trải qua nhiều đoạn đóng góp tích của độ dài hậu tố trong đoạn đầu, độ dài tiền tố trong đoạn cuối, và độ dài của các đoạn đầy đủ ở giữa; duy trì trọng số của các điểm cuối trước đó cho phép cập nhật O(1). Cuối cùng trừ đi mọi mảng con không có hai phần tử kề nhau bằng nhau, vì chúng đã được nén sẵn và đóng góp 0."
+    ]
   }
 }

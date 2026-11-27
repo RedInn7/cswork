@@ -13,5 +13,41 @@
       "Alternatively, maintain the current number of consecutive qualifying elements and reset it at any non-qualifying value.",
       "Return as soon as three in a row are formed for the first time."
     ]
+  },
+  "ja": {
+    "title": "しきい値を真に超える 3 つの連続する数の最初の位置",
+    "description": "整数配列 numbers と整数 threshold が与えられます。numbers[i]、numbers[i+1]、numbers[i+2] がすべて threshold より真に大きくなるような、最小の 0 始まりのインデックス i を求めてください。そのような 3 つ組がなければ −1 を返します。3 つの位置は連続していなければならず、しきい値と等しい値は条件を満たしません。",
+    "input": "1 行目に n threshold、2 行目に n 個の配列の値が与えられます。3≤n≤1000、−1000≤numbers[i]≤1000、−1000≤threshold≤1000。元の TradeDesk の原文には数値の範囲がないため、本サイトでは、TikTok OCR060/061 の同じ問題に書かれた完全な範囲を採用しています。その問題は、課題、完全な元の例、区間ごとの説明が一致しており、この出典を明示します。",
+    "output": "最初の有効な開始位置 i を出力し、なければ −1 を出力してください。最後の開始位置や、条件を満たす開始位置の個数を返してはいけません。",
+    "explanation": "最初の例は TradeDesk の元の入力 [0,1,4,3,2,5]、threshold=1、答え 2 のままです。i=1 について、元の解説は 4 だけが 1 を超えるとしていて 3 を見落としていますが、正しい理由は、3 つ組 [1,4,3] では 1 が 1 より真に大きくないため、やはり選べないというものです。2 番目の例 [-9,95,94,4,5]、threshold=42 は TikTok OCR060 の同じ問題に由来し、出力は −1 です。3 番目の例は本サイトが追加したもので、3 つの −999 はいずれも −1000 より真に大きいので、出力は 0 です。",
+    "hints": [
+      "長さ 3 の区間を、開始位置の昇順に確認します。",
+      "別の方法として、現在の連続する条件を満たす要素数を保持し、条件を満たさない値でリセットします。",
+      "3 つ連続が初めて成立した時点で返します。"
+    ]
+  },
+  "ko": {
+    "title": "임계값을 엄격하게 넘는 연속 세 수의 첫 위치",
+    "description": "정수 배열 numbers와 정수 threshold가 주어집니다. numbers[i], numbers[i+1], numbers[i+2]가 모두 threshold보다 엄격하게 큰 가장 작은 0-based 인덱스 i를 구하세요. 그런 세 수가 없으면 −1을 반환합니다. 세 위치는 연속이어야 하며, threshold와 같은 값은 조건을 만족하지 않습니다.",
+    "input": "첫 번째 줄에 n threshold가, 두 번째 줄에 n개의 배열 값이 주어집니다. 3≤n≤1000, −1000≤numbers[i]≤1000, −1000≤threshold≤1000. 원래 TradeDesk의 원문에는 수치 범위가 없으며, 이 사이트는 동일한 문제를 다룬 TikTok OCR060/061의 완전한 범위를 채택했습니다. 두 문제는 과제, 완전한 원문 예제, 윈도별 설명이 일치하며, 이 출처를 명시적으로 밝혀 둡니다.",
+    "output": "유효한 첫 시작 위치 i를 출력하고, 없으면 −1을 출력합니다. 마지막 시작 위치나 조건을 만족하는 시작 위치의 개수를 반환하지 마세요.",
+    "explanation": "첫 번째 예제는 TradeDesk 원문의 입력 [0,1,4,3,2,5], threshold=1, 답 2를 그대로 유지합니다. i=1에 대해 원래 설명은 4만 1을 넘는다고 했지만 3을 간과했습니다. 올바른 이유는 세 수 [1,4,3]에서 1이 1보다 엄격하게 크지 않으므로 여전히 선택할 수 없다는 것입니다. 두 번째 예제 [-9,95,94,4,5], threshold=42는 TikTok OCR060의 같은 문제에서 가져온 것이며 −1을 출력합니다. 세 번째 예제는 이 사이트에서 추가한 것입니다. 세 개의 −999는 모두 −1000보다 엄격하게 크므로 출력은 0입니다.",
+    "hints": [
+      "길이 3인 윈도를 시작 위치가 증가하는 순서로 확인합니다.",
+      "또는 조건을 만족하는 연속 원소의 현재 개수를 유지하고, 조건을 만족하지 않는 값에서 초기화합니다.",
+      "처음으로 세 개가 연속되는 즉시 반환합니다."
+    ]
+  },
+  "vi": {
+    "title": "Vị trí đầu tiên của ba số liên tiếp đều lớn hơn ngưỡng nghiêm ngặt",
+    "description": "Cho một mảng số nguyên numbers và một số nguyên threshold, tìm chỉ số i nhỏ nhất (đánh số từ 0) sao cho numbers[i], numbers[i+1] và numbers[i+2] đều lớn hơn threshold nghiêm ngặt. Trả về −1 nếu không tồn tại bộ ba như vậy. Ba vị trí phải liên tiếp, và giá trị bằng ngưỡng không đủ điều kiện.",
+    "input": "Dòng đầu chứa n threshold, và dòng thứ hai chứa n giá trị của mảng. 3≤n≤1000, −1000≤numbers[i]≤1000, −1000≤threshold≤1000. Văn bản thô TradeDesk gốc không có khoảng giá trị số; trang này dùng các khoảng đầy đủ do cùng bài đó đưa ra trong TikTok OCR060/061, nơi nhiệm vụ, ví dụ gốc đầy đủ và phần giải thích theo từng cửa sổ đều nhất quán, và nêu rõ nguồn này.",
+    "output": "In ra vị trí bắt đầu hợp lệ đầu tiên i, hoặc −1 nếu không có. Không trả về vị trí bắt đầu cuối cùng hay số lượng các vị trí bắt đầu đủ điều kiện.",
+    "explanation": "Ví dụ đầu tiên giữ nguyên đầu vào gốc của TradeDesk [0,1,4,3,2,5], threshold=1, và đáp án 2. Với i=1, phần giải thích gốc nói chỉ có 4 vượt quá 1, bỏ sót 3; lý do đúng là trong bộ ba [1,4,3], 1 không lớn hơn 1 nghiêm ngặt, nên vẫn không thể chọn. Ví dụ thứ hai [-9,95,94,4,5] với threshold=42 đến từ cùng bài trong TikTok OCR060 và cho đầu ra −1. Ví dụ thứ ba do trang này bổ sung: ba giá trị −999 đều lớn hơn −1000 nghiêm ngặt, nên đầu ra là 0.",
+    "hints": [
+      "Kiểm tra các cửa sổ độ dài 3 theo thứ tự tăng dần của vị trí bắt đầu.",
+      "Hoặc, duy trì số phần tử liên tiếp đủ điều kiện hiện tại và đặt lại về 0 tại mọi giá trị không đủ điều kiện.",
+      "Trả về ngay khi lần đầu tiên có ba phần tử liên tiếp."
+    ]
   }
 }

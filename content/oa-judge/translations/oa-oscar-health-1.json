@@ -11,5 +11,35 @@
     "hints": [
       "Build a coordinate index of provider entries by specialty. For each member, check every required specialty for a provider whose squared distance does not exceed d². The time is O(P+M·R·P_s), where P_s is the number of provider entries for the relevant specialty."
     ]
+  },
+  "ja": {
+    "title": "Members Lacking Provider Network Access",
+    "description": "メンバーが必要とする専門分野のうち、最大ユークリッド距離以内にプロバイダーが 1 人もいないものが 1 つでもあれば、そのメンバーを報告してください。\n\n本サイトの標準入出力の形式と補足の範囲は、この問題文の定義のとおりです。",
+    "input": "1 行目にプロバイダー数 P、メンバー数 M（ともに ≤1000）、整数 maxDistance（≤10^9）が与えられます。続いて P 行の `providerId specialty x y`、そして M 行の `memberId x y specialty|specialty...` が与えられます。座標と ID は整数で、specialty に空白は含まれません。memberId は一意で、各メンバーが必要とする specialty は合計で ≤10 個です。",
+    "output": "十分なネットワークアクセスを得られないメンバーの memberId を昇順に 1 行に 1 つずつ出力してください。該当者がいなければ何も出力しません。",
+    "explanation": "プロバイダーの座標を専門分野ごとにインデックス化します。各メンバーについて、必要な各専門分野に、2 乗距離が d² を超えないプロバイダーがあるかを調べます。計算量は O(P+M·R·P_s) で、P_s は該当する専門分野のプロバイダー数です。",
+    "hints": [
+      "プロバイダーの座標を専門分野ごとにインデックス化します。各メンバーについて、必要な各専門分野に、2 乗距離が d² を超えないプロバイダーがあるかを調べます。計算量は O(P+M·R·P_s) で、P_s は該当する専門分野のプロバイダー数です。"
+    ]
+  },
+  "ko": {
+    "title": "Members Lacking Provider Network Access",
+    "description": "회원이 필요로 하는 전문 분야 중 하나라도 최대 유클리드 거리 이내에 제공자가 없으면 그 회원을 보고하세요.\n\n이 사이트의 표준 입출력 형식과 보충 제약 조건은 이 문제 설명에 정의된 대로입니다.",
+    "input": "첫 번째 줄에 제공자 수 P, 회원 수 M (둘 다 ≤1000), 정수 maxDistance (≤10^9)가 주어집니다. 이어서 P개의 줄에 `providerId specialty x y`가, 그 다음 M개의 줄에 `memberId x y specialty|specialty...`가 주어집니다. 좌표와 ID 값은 정수이고, specialty에는 공백이 없습니다. memberId는 유일하며, 각 회원이 필요로 하는 specialty 값은 총 ≤10개입니다.",
+    "output": "적절한 네트워크 접근을 받지 못하는 모든 회원의 memberId를 오름차순으로 한 줄에 하나씩 출력합니다. 해당하는 회원이 없으면 아무것도 출력하지 않습니다.",
+    "explanation": "전문 분야별로 제공자 항목의 좌표 인덱스를 만듭니다. 각 회원에 대해 필요한 모든 전문 분야를 확인하여 제곱 거리가 d²를 넘지 않는 제공자가 있는지 검사합니다. 시간은 O(P+M·R·P_s)이며, P_s는 해당 전문 분야의 제공자 항목 수입니다.",
+    "hints": [
+      "전문 분야별로 제공자 항목의 좌표 인덱스를 만듭니다. 각 회원에 대해 필요한 모든 전문 분야를 확인하여 제곱 거리가 d²를 넘지 않는 제공자가 있는지 검사합니다. 시간은 O(P+M·R·P_s)이며, P_s는 해당 전문 분야의 제공자 항목 수입니다."
+    ]
+  },
+  "vi": {
+    "title": "Members Lacking Provider Network Access",
+    "description": "Nếu bất kỳ chuyên khoa bắt buộc nào của một hội viên không có nhà cung cấp nào trong khoảng cách Euclid tối đa, hãy báo cáo hội viên đó.\n\nĐịnh dạng nhập/xuất chuẩn và các giới hạn bổ sung trên trang này được định nghĩa trong đề bài.",
+    "input": "Dòng đầu chứa số nhà cung cấp P, số hội viên M (cả hai ≤1000), và số nguyên maxDistance (≤10^9); tiếp theo là P dòng `providerId specialty x y`, rồi M dòng `memberId x y specialty|specialty...`. Tọa độ và các giá trị ID là số nguyên, và chuyên khoa không chứa dấu cách; memberId là duy nhất, và mỗi hội viên cần tổng cộng ≤10 giá trị chuyên khoa.",
+    "output": "In ra memberId của mọi hội viên không thể truy cập mạng lưới đầy đủ, theo thứ tự tăng dần, mỗi số một dòng; không in gì nếu không có.",
+    "explanation": "Xây dựng chỉ mục tọa độ của các nhà cung cấp theo chuyên khoa. Với mỗi hội viên, kiểm tra từng chuyên khoa bắt buộc xem có nhà cung cấp nào có bình phương khoảng cách không vượt quá d² hay không. Thời gian là O(P+M·R·P_s), trong đó P_s là số nhà cung cấp của chuyên khoa liên quan.",
+    "hints": [
+      "Xây dựng chỉ mục tọa độ của các nhà cung cấp theo chuyên khoa. Với mỗi hội viên, kiểm tra từng chuyên khoa bắt buộc xem có nhà cung cấp nào có bình phương khoảng cách không vượt quá d² hay không. Thời gian là O(P+M·R·P_s), trong đó P_s là số nhà cung cấp của chuyên khoa liên quan."
+    ]
   }
 }

@@ -11,5 +11,35 @@
     "hints": [
       "Working backward, compute the current lock holder's optimal payoff difference d relative to the other core with the recurrence d=|time−d|; combine it with the total to recover both cores' payoffs."
     ]
+  },
+  "ja": {
+    "title": "2 コアでのロック方式割り当ての最適利得",
+    "description": "プロセスを元の順序で割り当てていきます。ロックを持っているコアは、現在のプロセスを自分に割り当ててロックを渡すか、もう一方のコアに割り当ててロックを保持し続けるかを選べます。両方のコアが自分の最終的な合計時間を最大化しようとし、最初はコア 1 がロックを持っています。\n\n本サイトは標準入出力と解法を独自に整備しました。元の問題で欠けていた制約の補足と、例の修正はプロトコルに明記してあります。",
+    "input": "1 行目に n、2 行目に n 個の time の値が与えられます。元の制約 1≤n≤100000 と 1≤time[i]≤10^9 は、Millennium の同一問題 OCR001..004 から復元したものです。操作は現在の i 番目の要素に適用されます。元の Fastprep の i+1 は誤記です。出力は厳密な整数 2 つです。",
+    "output": "コア 1 とコア 2 の処理時間の合計を、それぞれ整数で出力します。",
+    "explanation": "3 つの公開例の出力は順に 41 31、20 20、7 0 です。独立した全探索または直接のシミュレーションで確認済みです。",
+    "hints": [
+      "後ろから順に、ロックを持つコアが他方のコアに対して得られる最適な利得差 d を漸化式 d=|time−d| で求めます。それを合計と組み合わせて、両コアの利得を復元します。"
+    ]
+  },
+  "ko": {
+    "title": "두 코어에서 락 기반 할당의 최적 보수",
+    "description": "프로세스를 원래 순서대로 하나씩 할당합니다. 락을 가진 코어는 현재 프로세스를 자신이 가져가고 락을 넘기거나, 상대 코어에게 주고 락을 유지할 수 있습니다. 두 코어 모두 자신의 최종 총 시간을 최대화하며, 처음에는 코어 1이 락을 가지고 있습니다.\n\n이 사이트는 표준 입출력과 풀이를 독자적으로 정리했으며, 원문에 없는 범위의 보충과 예제의 정정은 프로토콜에 명시했습니다.",
+    "input": "첫째 줄에 n, 둘째 줄에 n개의 time 값이 주어집니다. 원래의 범위 1≤n≤100000, 1≤time[i]≤10^9는 Millennium의 동일 문제 OCR001..004에서 복원했습니다. 연산은 현재 i번째 항목에 적용되며, 원래 Fastprep의 i+1은 오타입니다. 정확한 정수 두 개를 출력합니다.",
+    "output": "코어 1과 코어 2의 총 처리 시간을 각각 한 줄에 하나씩 출력합니다.",
+    "explanation": "공개 예제 세 개의 출력은 순서대로 41 31; 20 20; 7 0입니다. 독립적인 완전 탐색 또는 직접 시뮬레이션으로 검증했습니다.",
+    "hints": [
+      "뒤에서부터 계산하여, 락을 가진 쪽의 최적 보수 차이 d를 점화식 d=|time−d|로 구하고, 이를 총합과 결합해 두 코어의 보수를 복원하세요."
+    ]
+  },
+  "vi": {
+    "title": "Lợi ích tối ưu của phép gán dựa trên khoá trên hai lõi",
+    "description": "Gán từng tiến trình theo thứ tự ban đầu. Lõi đang giữ khoá có thể giao tiến trình hiện tại cho chính mình rồi chuyển khoá đi, hoặc giao cho lõi kia và giữ lại khoá; cả hai bên đều tối đa hoá tổng thời gian cuối cùng của mình, và lõi 1 giữ khoá lúc đầu.\n\nSite này tự biên soạn phần nhập xuất chuẩn và lời giải; các bổ sung cho giới hạn còn thiếu của nguồn và các sửa đổi ví dụ được nêu rõ trong giao thức.",
+    "input": "Dòng đầu chứa n, dòng thứ hai chứa n giá trị time. Các giới hạn gốc 1≤n≤100000 và 1≤time[i]≤10^9 được khôi phục từ các bài cùng đề OCR001..004 của Millennium; thao tác áp dụng cho phần tử thứ i hiện tại, còn i+1 trong Fastprep gốc là lỗi đánh máy. In ra hai số nguyên chính xác.",
+    "output": "In ra tổng thời gian xử lý của lõi 1 và lõi 2, mỗi số một dòng.",
+    "explanation": "Đầu ra của ba ví dụ công khai lần lượt là: 41 31; 20 20; 7 0. Đã kiểm tra bằng liệt kê độc lập hoặc mô phỏng trực tiếp.",
+    "hints": [
+      "Tính ngược từ cuối, dùng công thức truy hồi d=|time−d| để tính hiệu lợi ích tối ưu d của lõi đang giữ khoá so với lõi kia; kết hợp với tổng để suy ra lợi ích của cả hai lõi."
+    ]
   }
 }

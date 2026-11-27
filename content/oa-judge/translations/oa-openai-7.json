@@ -11,5 +11,35 @@
     "hints": [
       "Maintain the number of infected neighbors of each cell. First find the cells that become infected on day 1, then process the queue of new infections layer by layer: each newly infected cell notifies only its at most 8 neighbors, and the next layer is processed on the following day. When T=0, all healthy cells enter layer 1."
     ]
+  },
+  "ja": {
+    "title": "8近傍の同時感染が安定するまで",
+    "description": "毎日の終わりに、健康なセル `.` は、その日の開始時点で感染セル `X` の近傍が T 個以上あれば `X` になります。近傍は上下左右と 4 つの斜めを合わせた 8 方向です。感染したセルは回復しません。新たな感染が起きる最後の日を返してください。最初から安定している場合は 0 を返します。変化のない確認日は数えません。\n\n入力と出力は当サイトで整備したものです。",
+    "input": "1 行目に n m、2 行目に T、続いて m 文字が連続する行が n 行与えられます。1≤n,m≤200、0≤T≤8。各文字は X または . です。",
+    "output": "新たな感染が起きるラウンド数を表す非負整数を 1 つ出力します。",
+    "explanation": "例 1 では中央の感染セルが、免疫のない近傍すべてに同時に広がるため、答えは 1 です。例 2 では感染した近傍が 1 個しかなく、しきい値が 2 なので答えは 0 です。例 3 ではしきい値が 0 なので感染源は不要で、健康なセルすべてが 1 日目に感染します。",
+    "hints": [
+      "各セルの感染近傍の数を保持します。まず 1 日目に感染するセルを求め、新たな感染のキューを日ごとの層として処理します。新たに感染したセルは高々 8 個の近傍にだけ通知し、次の層は翌日に処理します。T=0 のときは、健康なセルすべてが第 1 層に入ります。"
+    ]
+  },
+  "ko": {
+    "title": "안정될 때까지 8방향 동시 감염",
+    "description": "매일 하루가 끝날 때, 건강한 칸 `.`은 그날 시작 시점에 감염된 이웃 `X`가 T개 이상이면 `X`가 됩니다. 이웃에는 상, 하, 좌, 우와 네 대각선을 포함해 총 8방향이 있습니다. 감염된 칸은 절대 회복되지 않습니다. 새로운 감염이 일어난 마지막 날을 반환하고, 격자가 처음부터 안정 상태라면 0을 반환하십시오. 변화가 없는 확인용 날은 세지 않습니다.\n\n입력과 출력은 본 사이트에서 정리한 것입니다.",
+    "input": "첫째 줄에 n m, 둘째 줄에 T가 주어지고, 이어서 길이 m인 문자열 n줄이 주어집니다. 1≤n,m≤200, 0≤T≤8. 각 문자는 X 또는 . 입니다.",
+    "output": "음이 아닌 정수 하나를 출력합니다. 새로운 감염이 일어난 라운드의 수입니다.",
+    "explanation": "예제 1에서는 가운데 감염 칸이 면역이 아닌 모든 이웃 칸에 한꺼번에 퍼지므로 답은 1입니다. 예제 2에서는 감염된 이웃이 1개뿐인데 임계값이 2이므로 답은 0입니다. 예제 3에서는 임계값이 0이라 감염원이 필요 없으며, 모든 건강한 칸이 1일째에 감염됩니다.",
+    "hints": [
+      "각 칸의 감염된 이웃 수를 유지합니다. 먼저 1일째에 감염되는 칸을 찾고, 새로 감염된 칸의 큐를 레이어 단위로 처리합니다. 새로 감염된 칸은 최대 8개의 이웃에게만 알리고, 다음 레이어는 다음 날 처리합니다. T=0이면 모든 건강한 칸이 레이어 1에 들어갑니다."
+    ]
+  },
+  "vi": {
+    "title": "Lây nhiễm đồng bộ theo tám hướng cho đến khi ổn định",
+    "description": "Vào cuối mỗi ngày, một ô khỏe mạnh . trở thành X nếu vào đầu ngày đó nó có ít nhất T ô lân cận bị nhiễm X. Ô lân cận gồm trên, dưới, trái, phải và bốn đường chéo, tổng cộng 8 hướng. Ô đã nhiễm không bao giờ hồi phục. Hãy trả về ngày cuối cùng có ca nhiễm mới; nếu lưới đã ổn định ngay từ đầu thì trả về 0. Ngày kiểm tra mà không có thay đổi thì không được tính.\n\nĐầu vào và đầu ra do trang này biên soạn.",
+    "input": "Dòng đầu tiên chứa n m, dòng thứ hai chứa T, tiếp theo là n dòng, mỗi dòng gồm m ký tự liền nhau. 1≤n,m≤200, 0≤T≤8. Mỗi ký tự là X hoặc .",
+    "output": "Một số nguyên không âm duy nhất, là số vòng có ca nhiễm mới.",
+    "explanation": "Ở Ví dụ 1, ca nhiễm ở giữa lây sang tất cả các ô lân cận không miễn dịch cùng một lúc, nên đáp án là 1. Ở Ví dụ 2, chỉ có 1 ô lân cận bị nhiễm trong khi ngưỡng là 2, nên đáp án là 0. Ở Ví dụ 3, ngưỡng bằng 0 nên không cần nguồn lây, và mọi ô khỏe mạnh đều bị nhiễm vào ngày 1.",
+    "hints": [
+      "Duy trì số ô lân cận bị nhiễm của mỗi ô. Trước hết tìm các ô bị nhiễm vào ngày 1, sau đó xử lý hàng đợi các ca nhiễm mới theo từng lớp: mỗi ô vừa bị nhiễm chỉ thông báo cho tối đa 8 ô lân cận của nó, và lớp tiếp theo được xử lý vào ngày kế tiếp. Khi T=0, mọi ô khỏe mạnh đều vào lớp 1."
+    ]
   }
 }

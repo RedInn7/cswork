@@ -12,5 +12,38 @@
       "A gcd greater than 1 is equivalent to sharing at least one prime factor.",
       "Linking each prime factor through one representative is enough to express the connected component induced by that prime factor."
     ]
+  },
+  "ja": {
+    "title": "Server Clusters via GCD Connectivity",
+    "description": "gcd(serverProp[i], serverProp[j])>1 のとき、サーバー i と j は直接つながっています。連結性は推移的で、クラスタを作ります。各サーバーについて、そのクラスタに含まれるサーバーの総数を返してください。元の問題には数値の範囲がありませんが、本サイトでは 1≤n≤100000 と 1≤serverProp[i]≤1000000 を明示的にサポートしています。これらは本サイトが追加した範囲です。",
+    "input": "1 行目に n(1≤n≤100000)が与えられます。2 行目に n 個の正の整数 serverProp[i](1≤serverProp[i]≤1000000)が与えられます。これらは本サイトがサポートする範囲です。",
+    "output": "長さ n の JSON 整数配列を出力します。i 番目の項目は、serverProp[i] が属するクラスタの大きさです。",
+    "explanation": "## 解法\n\n各プロパティを異なる素因数に分解します。素因数を共有する 2 台のサーバーの gcd は 1 より大きいので、各素因数について、その素因数が最初に現れたサーバーとの併合を行えば同じ連結成分が得られます。推移的な併合によりすべての経路が網羅されます。最後に、Union-Find の各根の大きさを数え、各位置に対応付けます。値が 1 のものは素因数を持たず、それだけでクラスタを作ります。\n\n## 正当性の証明\n\n元のグラフの任意の辺の 2 つの端点の gcd が 1 より大きいことは、それらが何らかの素因数を共有することと同値であり、その素因数の代表が 2 つの端点を併合します。逆に、すべての併合は、現在の素因数を本当に共有するサーバーを結ぶので、元のグラフの異なる連結成分が併合されることはありません。すべての異なる素因数について併合した後、Union-Find のグループはちょうど元のグラフの連結成分であり、根の個数が各サーバーのクラスタの大きさになります。値が 1 のものは素因数を共有せず、単一ノードの成分のままです。\n\n## 計算量\n\nV=1000000、配列の長さを M とします。最小素因数の篩に O(V loglogV)、素因数分解は全体で高々 O(M log V) の作業、Union-Find の併合に O(M α(M)) かかり、空間は O(V+M) です。",
+    "hints": [
+      "gcd が 1 より大きいことは、少なくとも 1 つの素因数を共有することと同値です。",
+      "各素因数を 1 つの代表を通してつなげれば、その素因数が作る連結成分を表すのに十分です。"
+    ]
+  },
+  "ko": {
+    "title": "Server Clusters via GCD Connectivity",
+    "description": "gcd(serverProp[i], serverProp[j])>1이면 서버 i와 j는 직접 연결되며, 연결성은 전이적이어서 클러스터를 이룹니다. 각 서버에 대해 그 서버가 속한 클러스터의 서버 총수를 반환하세요. 원 문제는 수치 범위를 주지 않았으며, 이 사이트는 1≤n≤100000, 1≤serverProp[i]≤1000000을 명시적으로 지원하고 이는 이 사이트가 추가한 범위입니다.",
+    "input": "첫째 줄에 n(1≤n≤100000)이 주어집니다. 둘째 줄에는 n개의 양의 정수 serverProp[i](1≤serverProp[i]≤1000000)가 주어집니다. 이는 이 사이트가 지원하는 범위입니다.",
+    "output": "길이 n인 JSON 정수 배열을 출력하며, i번째 항목은 serverProp[i]가 속한 클러스터의 크기입니다.",
+    "explanation": "## 접근\n\n각 속성값을 서로 다른 소인수로 분해합니다. 소인수를 공유하는 두 서버는 gcd가 1보다 크므로, 각각을 그 소인수가 처음 나타난 서버와 병합하면 같은 연결 요소가 만들어지고, 전이적 병합이 모든 경로를 포괄합니다. 마지막으로 각 유니온-파인드 루트의 크기를 세어 각 위치로 되돌려 매핑합니다. 값 1은 소인수가 없으므로 자기 혼자 클러스터를 이룹니다.\n\n## 정당성 증명\n\n원래 그래프의 어떤 간선의 두 끝점의 gcd가 1보다 큰 것은 어떤 소인수를 공유하는 것과 동치이며, 그 소인수의 대표가 두 끝점을 병합합니다. 반대로 모든 병합은 현재의 소인수를 실제로 공유하는 서버들을 잇기 때문에, 원래 그래프의 서로 다른 연결 요소가 병합되는 일은 없습니다. 모든 서로 다른 소인수에 대해 병합하고 나면 유니온-파인드 그룹은 원래 그래프의 연결 요소와 정확히 같고, 루트의 개수가 각 서버의 클러스터 크기입니다. 값 1은 소인수를 공유하지 않으므로 단일 노드 요소로 남습니다.\n\n## 복잡도\n\nV=1000000, M을 배열의 길이라고 하겠습니다. 최소 소인수 체는 O(V loglogV), 인수분해는 전체 O(M log V) 이내의 작업, 유니온-파인드 병합은 O(M α(M))이며 공간은 O(V+M)입니다.",
+    "hints": [
+      "gcd가 1보다 크다는 것은 소인수를 적어도 하나 공유한다는 것과 같습니다.",
+      "각 소인수를 하나의 대표를 통해 연결하는 것만으로 그 소인수가 만드는 연결 요소를 표현하기에 충분합니다."
+    ]
+  },
+  "vi": {
+    "title": "Server Clusters via GCD Connectivity",
+    "description": "Nếu gcd(serverProp[i], serverProp[j])>1 thì máy chủ i và j được nối trực tiếp; tính liên thông có tính bắc cầu và tạo thành các cụm. Với mỗi máy chủ, hãy trả về tổng số máy chủ trong cụm của nó. Đề gốc không cho miền giá trị số; trang này hỗ trợ rõ ràng 1≤n≤100000 và 1≤serverProp[i]≤1000000, là các miền do trang này bổ sung.",
+    "input": "Dòng đầu chứa n (1≤n≤100000). Dòng thứ hai chứa n số nguyên dương serverProp[i] (1≤serverProp[i]≤1000000). Đây là các miền giá trị mà trang này hỗ trợ.",
+    "output": "In ra một mảng số nguyên JSON độ dài n, phần tử thứ i là kích thước cụm mà serverProp[i] thuộc về.",
+    "explanation": "## Hướng tiếp cận\n\nPhân tích mỗi thuộc tính thành các thừa số nguyên tố phân biệt. Hai máy chủ có chung một thừa số nguyên tố thì gcd lớn hơn 1, nên hợp mỗi máy chủ với máy chủ đầu tiên có thừa số nguyên tố đó cho ra cùng thành phần liên thông; việc hợp bắc cầu bao phủ mọi đường đi. Cuối cùng, đếm kích thước của mỗi gốc union-find và ánh xạ ngược về từng vị trí. Giá trị 1 không có thừa số nguyên tố và tự thành một cụm riêng.\n\n## Chứng minh tính đúng đắn\n\nHai đầu mút của một cạnh bất kỳ trong đồ thị gốc có gcd lớn hơn 1 khi và chỉ khi chúng có chung một thừa số nguyên tố nào đó; đại diện của thừa số nguyên tố đó hợp hai đầu mút lại. Ngược lại, mỗi phép hợp nối các máy chủ thực sự chung thừa số nguyên tố hiện tại, nên các thành phần liên thông khác nhau của đồ thị gốc không bao giờ bị hợp nhầm. Sau khi hợp theo mọi thừa số nguyên tố phân biệt, các nhóm union-find chính xác là các thành phần liên thông của đồ thị gốc, và số lượng ở gốc là kích thước cụm của mỗi máy chủ. Giá trị 1 không chung thừa số nguyên tố nào và vẫn là thành phần một nút.\n\n## Độ phức tạp\n\nGọi V=1000000 và M là độ dài mảng. Sàng ước nguyên tố nhỏ nhất tốn O(V loglogV), phân tích thừa số tốn tổng cộng O(M log V) có chặn, và hợp union-find tốn O(M α(M)); bộ nhớ O(V+M).",
+    "hints": [
+      "gcd lớn hơn 1 tương đương với việc có chung ít nhất một thừa số nguyên tố.",
+      "Liên kết mỗi thừa số nguyên tố qua một đại diện là đủ để biểu diễn thành phần liên thông do thừa số nguyên tố đó sinh ra."
+    ]
   }
 }

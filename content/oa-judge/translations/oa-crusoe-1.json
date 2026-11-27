@@ -11,5 +11,35 @@
     "hints": [
       "For Usage, use a difference array to check whether the coverage count is greater than 0; each override directly overwrites its closed interval. A day-by-day simulation serves as an independent oracle. Time O(D+U+total covered override length), space O(D)."
     ]
+  },
+  "ja": {
+    "title": "Interval Usage with Non-Overlapping Overrides",
+    "description": "usage=1 の区間は和集合をとります。usage=0 は何も消しません。互いに重ならない上書き (override) 区間が使用状況の結果を上書きします。\n\n本サイトの標準入出力形式と補足の範囲は、この問題の記述に従います。",
+    "input": "入力は D と U で始まり、続く U 行が l r v です。次に O があり、続く O 行が l r v です。1≤D≤2×10^5、U,O≤2×10^5 です。区間は閉区間で [1,D] の範囲内にあり、v∈{0,1} です。上書き区間は互いに重なりません。",
+    "output": "長さ D の 0/1 文字列を出力してください。",
+    "explanation": "Usage については、差分配列で被覆数が 0 より大きいかを調べます。各 override は閉区間をそのまま上書きします。日ごとのシミュレーションが独立した検証用の基準 (オラクル) になります。時間は O(D+U+上書き区間の被覆長の合計)、空間は O(D) です。",
+    "hints": [
+      "Usage については、差分配列で被覆数が 0 より大きいかを調べます。各 override は閉区間をそのまま上書きします。日ごとのシミュレーションが独立した検証用の基準 (オラクル) になります。時間は O(D+U+上書き区間の被覆長の合計)、空間は O(D) です。"
+    ]
+  },
+  "ko": {
+    "title": "Interval Usage with Non-Overlapping Overrides",
+    "description": "usage=1인 구간들은 합집합으로 처리하고, usage=0은 아무것도 지우지 않으며, 서로 겹치지 않는 덮어쓰기(override) 구간은 사용량 결과를 덮어씁니다.\n\n이 사이트의 표준 입출력 형식과 보충 범위는 이 문제의 설명을 따릅니다.",
+    "input": "입력은 D와 U, 이어서 U개의 줄 l r v, 그다음 O, 이어서 O개의 줄 l r v입니다. 1≤D≤2×10^5, U,O≤2×10^5이며, 구간은 닫힌 구간으로 [1,D] 안에 있고, v∈{0,1}입니다. 덮어쓰기 구간은 서로 겹치지 않습니다.",
+    "output": "길이 D의 0/1 문자열을 출력합니다.",
+    "explanation": "사용량(Usage)은 차분 배열로 커버 횟수가 0보다 큰지 확인하고, 각 덮어쓰기는 닫힌 구간을 직접 덮어씁니다. 날짜별 시뮬레이션이 독립적인 검증 기준(oracle) 역할을 합니다. 시간 O(D+U+덮어쓰기 구간이 덮는 총 길이), 공간 O(D)입니다.",
+    "hints": [
+      "사용량(Usage)은 차분 배열로 커버 횟수가 0보다 큰지 확인하고, 각 덮어쓰기는 닫힌 구간을 직접 덮어씁니다. 날짜별 시뮬레이션이 독립적인 검증 기준(oracle) 역할을 합니다. 시간 O(D+U+덮어쓰기 구간이 덮는 총 길이), 공간 O(D)입니다."
+    ]
+  },
+  "vi": {
+    "title": "Interval Usage with Non-Overlapping Overrides",
+    "description": "Các khoảng có usage=1 được lấy hợp; usage=0 không xóa gì cả; các khoảng ghi đè không chồng lấn sẽ ghi đè kết quả sử dụng.\n\nĐịnh dạng vào/ra chuẩn và các giới hạn bổ sung của trang này bám theo mô tả của bài.",
+    "input": "Đầu vào là D và U, theo sau là U dòng l r v; rồi O, theo sau là O dòng l r v. 1≤D≤2×10^5, U,O≤2×10^5; các khoảng là đoạn đóng và nằm trong [1,D], v∈{0,1}; các khoảng ghi đè đôi một không chồng lấn.",
+    "output": "In ra một xâu 0/1 độ dài D.",
+    "explanation": "Với phần Usage, dùng mảng hiệu để kiểm tra số lần phủ có lớn hơn 0 hay không; mỗi ghi đè trực tiếp ghi lên đoạn đóng của nó. Mô phỏng từng ngày đóng vai trò đối chứng độc lập. Thời gian O(D+U+tổng độ dài ghi đè được phủ), bộ nhớ O(D).",
+    "hints": [
+      "Với phần Usage, dùng mảng hiệu để kiểm tra số lần phủ có lớn hơn 0 hay không; mỗi ghi đè trực tiếp ghi lên đoạn đóng của nó. Mô phỏng từng ngày đóng vai trò đối chứng độc lập. Thời gian O(D+U+tổng độ dài ghi đè được phủ), bộ nhớ O(D)."
+    ]
   }
 }

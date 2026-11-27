@@ -12,5 +12,38 @@
       "For a fixed number of left rotations, the minimum number of arbitrary swaps equals n minus the number of cycles in the permutation.",
       "All left rotations must happen before the first swap."
     ]
+  },
+  "ja": {
+    "title": "Minimum Operations to Convert Array",
+    "description": "1..n の順列が与えられます。操作 1 は配列を左に 1 つ回転させ、操作 2 は任意の 2 要素を交換します。ただし、操作 2 を一度行うと、操作 1 は二度と使えません。配列を [1,2,...,n] にするための最小の操作回数を求めてください。",
+    "input": "1 行目に n、2 行目に順列をなす n 個の整数 arr[i] が与えられます。本サイトの判定上の制約: 1 ≤ n ≤ 3000、arr は 1..n の順列。元の問題には n の数値的な制約がなく、この範囲は、本サイトが O(n²) の参照解法の実行時間を考慮して設けた上限です。",
+    "output": "最小の操作回数を 1 つの整数で出力してください。",
+    "explanation": "左回転の回数 k を全探索します。回転後の位置から目標位置への写像は順列になり、そのサイクル数が c なら、任意の交換の最小回数は n-c です。したがって操作の総数は k+n-c で、すべての k についての最小値を取ります。",
+    "hints": [
+      "左回転の回数を固定すると、任意の交換の最小回数は、n から順列のサイクル数を引いた値に等しくなります。",
+      "すべての左回転は、最初の交換より前に行わなければなりません。"
+    ]
+  },
+  "ko": {
+    "title": "Minimum Operations to Convert Array",
+    "description": "1..n의 순열이 주어집니다. 연산 1은 배열을 왼쪽으로 한 칸 회전시키고, 연산 2는 임의의 두 원소를 교환합니다. 연산 2를 한 번이라도 수행한 뒤에는 연산 1을 더 이상 사용할 수 없습니다. 배열을 [1,2,...,n]으로 만드는 데 필요한 최소 연산 횟수를 구하세요.",
+    "input": "첫 번째 줄에 n이 주어지고, 두 번째 줄에 순열을 이루는 n개의 정수 arr[i]가 주어집니다. 이 사이트의 채점 제약 조건: 1 ≤ n ≤ 3000; arr은 1..n의 순열입니다. 원래 문제는 n에 대한 수치 제약을 주지 않았으며, 이 범위는 이 사이트가 O(n²) 기준 알고리즘의 실행 시간에 맞춰 정한 한계입니다.",
+    "output": "최소 연산 횟수를 나타내는 정수 하나를 출력합니다.",
+    "explanation": "왼쪽 회전 횟수 k를 열거합니다. 회전 후의 위치에서 목표 위치로의 대응은 순열을 이루며, 사이클이 c개이면 임의 교환의 최소 횟수는 n-c입니다. 따라서 총 연산 횟수는 k+n-c이고, 모든 k에 대해 최솟값을 구합니다.",
+    "hints": [
+      "왼쪽 회전 횟수가 고정되어 있을 때, 임의 교환의 최소 횟수는 n에서 순열의 사이클 수를 뺀 값과 같습니다.",
+      "모든 왼쪽 회전은 첫 번째 교환보다 먼저 일어나야 합니다."
+    ]
+  },
+  "vi": {
+    "title": "Minimum Operations to Convert Array",
+    "description": "Cho một hoán vị của 1..n. Thao tác 1 xoay mảng sang trái một vị trí, và thao tác 2 hoán đổi hai phần tử bất kỳ; sau khi đã thực hiện thao tác 2 thì không thể dùng thao tác 1 nữa. Tìm số thao tác tối thiểu để biến mảng thành [1,2,...,n].",
+    "input": "Dòng đầu chứa n, và dòng thứ hai chứa n số nguyên arr[i] tạo thành hoán vị. Ràng buộc chấm bài của trang này: 1 ≤ n ≤ 3000; arr là một hoán vị của 1..n. Bài gốc không cho ràng buộc số nào về n; khoảng này là giới hạn thời gian chạy mà trang này đặt ra cho thuật toán tham chiếu O(n²).",
+    "output": "In ra một số nguyên duy nhất, số thao tác tối thiểu.",
+    "explanation": "Liệt kê k lần xoay trái. Ánh xạ từ các vị trí sau khi xoay đến các vị trí đích tạo thành một hoán vị; nếu nó có c chu trình thì số phép hoán đổi tùy ý tối thiểu là n-c. Do đó tổng số thao tác là k+n-c; lấy giá trị nhỏ nhất theo mọi k.",
+    "hints": [
+      "Với số lần xoay trái cố định, số phép hoán đổi tùy ý tối thiểu bằng n trừ đi số chu trình của hoán vị.",
+      "Mọi phép xoay trái phải xảy ra trước phép hoán đổi đầu tiên."
+    ]
   }
 }

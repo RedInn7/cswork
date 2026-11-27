@@ -11,5 +11,35 @@
     "hints": [
       "The total used amount does not change; sort the capacities in descending order and take the shortest prefix whose total capacity reaches the total usage."
     ]
+  },
+  "ja": {
+    "title": "データ再配置後に残す最小パーティション数",
+    "description": "各パーティションには容量と使用量があり、データは任意のチャンクに分割して他のパーティションへ移動できます。既存のデータをすべて収容するために残す必要がある最小のパーティション数を求めてください。元のパーティション内のデータをまとめて移動する必要はありません。\n\n本サイトでは標準入出力と解説を独自に作成しています。元の問題に欠けている範囲の補足や、例の修正はプロトコルに明記しています。",
+    "input": "1 行目に n、2 行目に n 個の容量、3 行目に n 個の使用量が与えられます。元の問題には数値の範囲がなかったため、本サイトで 1≤n≤200000、容量は 1..10^9、0≤used[i]≤capacity[i] を追加しています。使用量の合計が 0 の場合、本サイトでは明示的に 0 を出力します。",
+    "output": "答えを表す整数を 1 つ出力してください。",
+    "explanation": "3 つの公開例の出力は順に 2、0、1 です。独立した全探索または直接シミュレーションで検証済みです。",
+    "hints": [
+      "使用量の合計は変わりません。容量を降順に並べ、容量の合計が使用量の合計に達する最短の接頭辞を取ります。"
+    ]
+  },
+  "ko": {
+    "title": "데이터 재분배 후 유지해야 하는 최소 파티션 수",
+    "description": "각 파티션에는 용량과 사용량이 있으며, 데이터는 여러 조각으로 나누어 다른 파티션으로 옮길 수 있습니다. 기존의 모든 데이터를 담기 위해 유지해야 하는 파티션의 최소 개수를 구하세요. 원래 파티션의 데이터를 통째로 옮길 필요는 없습니다.\n\n이 사이트는 표준 입출력과 해설을 독자적으로 정리했으며, 원문에 빠진 범위의 보충과 예제의 정정은 프로토콜에 명시되어 있습니다.",
+    "input": "첫 번째 줄에 n, 두 번째 줄에 n개의 용량, 세 번째 줄에 n개의 사용량이 주어집니다. 원문에는 수치 범위가 없었으며, 이 사이트에서 1≤n≤200000, 용량 1..10^9, 0≤used[i]≤capacity[i]를 추가했습니다. 전체 사용량이 0이면 이 사이트에서는 명시적으로 0을 출력합니다.",
+    "output": "정답을 나타내는 정수 하나를 출력합니다.",
+    "explanation": "공개 예제 세 개의 출력은 순서대로 2; 0; 1입니다. 독립적인 완전 탐색 또는 직접 시뮬레이션으로 검증했습니다.",
+    "hints": [
+      "전체 사용량은 변하지 않습니다. 용량을 내림차순으로 정렬한 뒤, 용량의 합이 전체 사용량에 처음 도달하는 가장 짧은 접두사를 선택합니다."
+    ]
+  },
+  "vi": {
+    "title": "Số phân vùng tối thiểu cần giữ sau khi phân phối lại dữ liệu",
+    "description": "Mỗi phân vùng có một dung lượng và một lượng đã dùng, và dữ liệu có thể được chia thành các khối rồi chuyển sang phân vùng khác. Hãy tìm số phân vùng tối thiểu phải giữ lại để chứa toàn bộ dữ liệu hiện có; dữ liệu trong một phân vùng gốc không bắt buộc phải được chuyển nguyên khối.\n\nTrang này tự biên soạn phần vào/ra chuẩn và lời giải; các bổ sung cho giới hạn còn thiếu của đề gốc và các chỉnh sửa ví dụ được nêu rõ trong đặc tả.",
+    "input": "Dòng đầu tiên chứa n, dòng thứ hai chứa n dung lượng, dòng thứ ba chứa n lượng đã dùng. Đề gốc không có giới hạn số; trang này bổ sung 1≤n≤200000, dung lượng 1..10^9 và 0≤used[i]≤capacity[i]. Khi tổng lượng đã dùng bằng 0, trang này quy ước rõ ràng in ra 0.",
+    "output": "In ra một số nguyên duy nhất là đáp án.",
+    "explanation": "Đầu ra của ba ví dụ công khai lần lượt là: 2; 0; 1. Đã được kiểm chứng bằng liệt kê độc lập hoặc mô phỏng trực tiếp.",
+    "hints": [
+      "Tổng lượng đã dùng không đổi; hãy sắp xếp các dung lượng giảm dần và lấy tiền tố ngắn nhất có tổng dung lượng đạt tổng lượng đã dùng."
+    ]
   }
 }

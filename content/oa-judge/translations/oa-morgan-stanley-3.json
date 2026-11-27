@@ -13,5 +13,41 @@
       "When the target contains repeated characters, update the longer prefixes first.",
       "The count may exceed 32 bits and the range of integers that floating point can represent exactly."
     ]
+  },
+  "ja": {
+    "title": "3文字の文字列が部分列として現れる正確な回数",
+    "description": "文字列 s1 と s2 が与えられ、s1 の長さはちょうど 3 です。s2 の中で、狭義単調増加の添字 i<j<k を選び、s2[i], s2[j], s2[k] が s1 の3文字と順に等しくなる選び方の数を数えてください。文字は連続している必要はなく、同じ文字列になっても添字の選び方が異なれば別々に数えます。剰余は取らず、正確な整数を出力してください。元のスターターコードは int を宣言していますが、全範囲では 32 ビットをオーバーフローします。同じ固定ソースの Java/C++ の解法は 64 ビットを使っています。本サイトは全範囲を維持し、正確な整数の出力を明示的に要求します。",
+    "input": "1行目に s1 が与えられ、長さはちょうど 3 です。2行目に s2 が与えられ、1≤|s2|≤500000 です。どちらの行も英大文字 A から Z のみを含み、同じ文字の繰り返しも許されます。",
+    "output": "場合の数を、剰余や切り捨てなしの正確な非負の10進数で出力します。結果は最大 20833208333500000 に達することがあり、64 ビット整数が必要です。浮動小数点による近似は使えません。",
+    "explanation": "3つの公開例はすべて元の問題のものです。HERHRWS の中の HRW は、1-based の添字 (1,3,6)、(1,5,6)、(4,5,6) に一致し、3通りです。HELLOWORLD の中の ELO は4通り、ABCBABC の中の ABC は5通りです。",
+    "hints": [
+      "目標の先頭1文字、2文字、3文字にそれぞれ一致する個数を別々に保持します。",
+      "目標に同じ文字が繰り返し含まれる場合は、長い接頭辞から先に更新します。",
+      "個数は 32 ビットを超えることがあり、浮動小数点が正確に表せる整数の範囲も超えることがあります。"
+    ]
+  },
+  "ko": {
+    "title": "세 글자 문자열의 부분 수열 정확한 개수",
+    "description": "문자열 s1과 s2가 주어지며, s1의 길이는 정확히 3입니다. s2에서 엄격히 증가하는 세 인덱스 i<j<k를 골라 s2[i], s2[j], s2[k]가 순서대로 s1의 세 문자와 같게 만드는 방법의 수를 세세요. 문자들이 연속일 필요는 없으며, 같은 문자가 나오더라도 인덱스 선택이 다르면 별개로 셉니다. 나머지 연산 없이 정확한 정수를 출력하세요. 원래 시작 코드는 int를 선언하지만 전체 범위에서는 32비트를 넘치며, 같은 출처의 Java/C++ 풀이는 64비트를 사용합니다. 이 사이트는 전체 범위를 유지하며 정확한 정수 출력을 명시적으로 요구합니다.",
+    "input": "첫째 줄에 길이가 정확히 3인 s1이 주어집니다. 둘째 줄에 1≤|s2|≤500000인 s2가 주어집니다. 두 줄 모두 영문 대문자 A부터 Z로만 이루어져 있으며, 문자가 반복될 수 있습니다.",
+    "output": "방법의 수를 나머지 연산이나 잘림 없이 정확한 음이 아닌 십진수로 출력합니다. 결과는 최대 20833208333500000까지 커질 수 있어 64비트 정수가 필요하며, 부동소수점 근삿값을 사용해서는 안 됩니다.",
+    "explanation": "공개된 세 예제는 모두 원래 문제에서 가져온 것입니다. HERHRWS에서 HRW는 1-based 인덱스 (1,3,6), (1,5,6), (4,5,6)에 대응하여 3가지, HELLOWORLD에서 ELO는 4가지, ABCBABC에서 ABC는 5가지입니다.",
+    "hints": [
+      "목표 문자열의 앞 1개, 2개, 3개 문자와 일치하는 경우의 수를 각각 따로 유지하세요.",
+      "목표에 같은 문자가 반복될 때는 더 긴 접두사부터 먼저 갱신하세요.",
+      "개수는 32비트와, 부동소수점이 정확히 표현할 수 있는 정수 범위를 넘을 수 있습니다."
+    ]
+  },
+  "vi": {
+    "title": "Đếm chính xác số lần xuất hiện của xâu ba ký tự như một dãy con",
+    "description": "Cho hai xâu s1 và s2, trong đó s1 có độ dài đúng bằng 3. Hãy đếm số cách chọn ba chỉ số tăng ngặt i<j<k trong s2 sao cho s2[i], s2[j], s2[k] lần lượt bằng ba ký tự của s1. Các ký tự không cần liền kề; các cách chọn chỉ số khác nhau được đếm riêng, kể cả khi cho cùng các ký tự. In ra số nguyên chính xác, không lấy modulo. Mã khởi đầu gốc khai báo int, nhưng toàn bộ khoảng giá trị làm tràn 32 bit; các lời giải Java/C++ từ cùng nguồn cố định đều dùng 64 bit. Trang này giữ nguyên toàn bộ khoảng giá trị và yêu cầu rõ ràng in ra số nguyên chính xác.",
+    "input": "Dòng đầu chứa s1, có độ dài đúng bằng 3. Dòng thứ hai chứa s2, với 1≤|s2|≤500000. Cả hai dòng chỉ chứa chữ cái tiếng Anh in hoa từ A đến Z, và cho phép ký tự lặp lại.",
+    "output": "In ra số cách là số thập phân không âm chính xác, không lấy modulo và không cắt bớt. Kết quả có thể lớn tới 20833208333500000, cần số nguyên 64 bit; không được dùng xấp xỉ dấu phẩy động.",
+    "explanation": "Cả ba ví dụ công khai đều lấy từ bài gốc. HRW trong HERHRWS khớp với các chỉ số (đánh số từ 1) (1,3,6), (1,5,6), (4,5,6), tức 3 cách; ELO trong HELLOWORLD có 4 cách; ABC trong ABCBABC có 5 cách.",
+    "hints": [
+      "Hãy duy trì riêng số lần khớp của 1, 2 và 3 ký tự đầu của xâu đích.",
+      "Khi xâu đích có ký tự lặp lại, hãy cập nhật các tiền tố dài hơn trước.",
+      "Số lượng có thể vượt quá 32 bit và vượt quá phạm vi số nguyên mà dấu phẩy động biểu diễn chính xác được."
+    ]
   }
 }

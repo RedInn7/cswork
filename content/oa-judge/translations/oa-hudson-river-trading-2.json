@@ -11,5 +11,35 @@
     "hints": [
       "Generate a stream of non-zero directions from adjacent price changes, recording the original price index of each direction. Use KMP to match the buy and sell patterns separately, add each signal at its corresponding price index, then take prefix sums."
     ]
+  },
+  "ja": {
+    "title": "価格シグナルとポジションの変化",
+    "description": "価格変動のシグナルでポジションを更新します。上昇は +1、下落は -1 と数えます。価格が変わらない場合はシグナルを生じず、それ以前の 0 でない変化の並びを途切れさせません。直近の変化の並びが buyIndicator と一致するたびにポジションが 1 増え、sellIndicator と一致するたびに 1 減ります。同じ位置で両方のシグナルが一致した場合は、打ち消し合います。各価格の時点ごとのポジションを出力してください。\n\n元の例 51,56,56,58 は、2 回の上昇を連続したシグナルとして明確に扱っています。価格が変わらない場合は、シグナルを発生させず、0 でない変化の並びもリセットしません。上流のコンパイル済み MDX 版の方向 0 の扱いは、この元の例と矛盾します。本サイトは元の規則と例に従い、その食い違いを記録しています。\n\n本サイトの標準入出力プロトコルは CSWork が明示的に追加したもので、元の関数形式の問題が最初からこのプロトコルを持っていたことを意味しません。",
+    "input": "1 行目に n b s (1≤n≤200000, 1≤b,s≤n) が与えられ、続いて n 個の非負の価格 (≤10^9)、b 個の +1/-1 の値、s 個の +1/-1 の値が与えられます。",
+    "output": "n 個の整数をスペース区切りで出力します。初期のポジションは 0 です。",
+    "explanation": "規則に従って処理してください。解法、正当性の証明、計算量については付属の解説を参照してください。",
+    "hints": [
+      "隣り合う価格の変化から、0 でない方向のストリームを作り、各方向の元の価格の添字を記録します。KMP で買いと売りのパターンをそれぞれ照合し、各シグナルを対応する価格の添字に加算して、累積和を取ります。"
+    ]
+  },
+  "ko": {
+    "title": "가격 신호와 포지션 변화",
+    "description": "가격 변화 신호로 포지션을 갱신합니다. 상승은 +1, 하락은 -1로 세며, 가격이 변하지 않으면 신호가 없고 앞선 0이 아닌 변화 수열을 끊지도 않습니다. 가장 최근의 변화 수열이 buyIndicator와 일치할 때마다 포지션이 1 증가하고, sellIndicator와 일치할 때마다 1 감소합니다. 같은 위치에서 두 신호가 모두 일치하면 서로 상쇄됩니다. 각 가격 시점 이후의 포지션을 출력하세요.\n\n원래의 예제 51,56,56,58은 두 번의 상승을 연속된 신호로 취급함이 분명합니다. 가격이 변하지 않으면 신호를 일으키지도 않고 0이 아닌 변화 수열을 초기화하지도 않습니다. 상위의 컴파일된 MDX 버전이 방향 0을 다루는 방식은 이 원래 예제와 충돌하며, 이 사이트는 원래의 규칙과 예제를 따르고 그 불일치를 기록합니다.\n\n이 사이트의 표준 입출력 프로토콜은 CSWork가 명시적으로 추가한 것이며, 상위의 함수형 문제가 원래 이 프로토콜을 가지고 있었다는 뜻이 아닙니다.",
+    "input": "첫째 줄에 n b s(1≤n≤200000, 1≤b,s≤n)가 주어지고, 이어서 음이 아닌 가격 n개(≤10^9), +1/-1 값 b개, +1/-1 값 s개가 주어집니다.",
+    "output": "공백으로 구분된 정수 n개를 출력합니다. 초기 포지션은 0입니다.",
+    "explanation": "규칙에 따라 처리하세요. 접근 방법, 정당성 증명, 복잡도는 함께 제공되는 해설을 참고하세요.",
+    "hints": [
+      "인접한 가격 변화로부터 0이 아닌 방향의 스트림을 만들고, 각 방향의 원래 가격 인덱스를 기록하세요. KMP로 매수 패턴과 매도 패턴을 따로 매칭하고, 각 신호를 대응하는 가격 인덱스에 더한 뒤 누적 합을 구합니다."
+    ]
+  },
+  "vi": {
+    "title": "Tín hiệu giá và thay đổi vị thế",
+    "description": "Cập nhật một vị thế bằng các tín hiệu thay đổi giá. Giá tăng tính là +1 và giá giảm là -1; giá không đổi không tạo tín hiệu và không làm đứt chuỗi các thay đổi khác 0 trước đó. Mỗi khi chuỗi thay đổi gần nhất khớp với buyIndicator, vị thế tăng 1; mỗi khi khớp với sellIndicator, vị thế giảm 1. Khi cả hai tín hiệu khớp tại cùng một vị trí, chúng triệt tiêu nhau. Xuất vị thế sau mỗi thời điểm giá.\n\nVí dụ gốc 51,56,56,58 rõ ràng coi hai lần tăng là các tín hiệu liên tiếp; giá không đổi không kích hoạt tín hiệu cũng không đặt lại chuỗi thay đổi khác 0. Cách xử lý hướng 0 của phiên bản MDX đã biên soạn ở upstream mâu thuẫn với ví dụ gốc này; site này theo quy tắc và ví dụ gốc và ghi lại sự khác biệt đó.\n\nGiao thức nhập xuất chuẩn của site này do CSWork bổ sung tường minh và không có nghĩa là đề dạng hàm ở upstream ban đầu có giao thức này.",
+    "input": "Dòng đầu chứa n b s (1≤n≤200000, 1≤b,s≤n); tiếp theo là n giá không âm (≤10^9), b giá trị +1/-1 và s giá trị +1/-1.",
+    "output": "Xuất n số nguyên cách nhau bằng dấu cách; vị thế ban đầu là 0.",
+    "explanation": "Xử lý theo các quy tắc; xem bài giải kèm theo để biết hướng tiếp cận, chứng minh tính đúng đắn và độ phức tạp.",
+    "hints": [
+      "Sinh một luồng các hướng khác 0 từ các thay đổi giá liền kề, ghi lại chỉ số giá gốc của mỗi hướng. Dùng KMP để khớp riêng các mẫu mua và bán, cộng mỗi tín hiệu tại chỉ số giá tương ứng, rồi lấy tổng tiền tố."
+    ]
   }
 }

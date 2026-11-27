@@ -11,5 +11,35 @@
     "hints": [
       "Split the transactions into two halves and enumerate the subset sums of one half; enumerate the other half one by one and look up target−sum. A Gray code lets you update the sum between adjacent enumerations in constant time."
     ]
+  },
+  "ja": {
+    "title": "取引の部分集合で目標残高に到達できるか",
+    "description": "正の取引額と負の取引額を含む整数の集合が与えられます。ある部分集合（空集合も可）の総和がちょうど目標値になるか判定し、存在すれば 1、存在しなければ 0 を出力してください。",
+    "input": "1 行目に整数 n と target、続く行に n 個の整数が与えられます（n=0 のときこの行は空のことがあります）。本サイトの制約は 0≤n≤40、|target|≤10^12、|transaction[i]|≤10^9 です。各取引は最大 1 回まで選べます。",
+    "output": "整数を 1 つ出力してください。条件を満たす部分集合があれば 1、なければ 0 です。空集合の総和は 0 とします。",
+    "explanation": "部分和問題の定義どおりに判定します。絶対値の大きい取引額に対応するため、本サイトでは元の問題にないサイズの上限を n≤40 と定めており、半分全列挙（meet-in-the-middle）が使えます。",
+    "hints": [
+      "取引を 2 つの半分に分け、片方の部分和を列挙して保持します。もう片方を 1 つずつ列挙し、target−sum が存在するかを調べます。Gray コードを使えば、隣り合う列挙の間で和を定数時間で更新できます。"
+    ]
+  },
+  "ko": {
+    "title": "거래 부분집합으로 목표 잔액 만들기",
+    "description": "양수와 음수가 섞인 정수 거래 금액들이 주어질 때, 합이 정확히 목표값이 되는 부분집합(공집합 포함)이 존재하는지 판단합니다. 존재하면 1, 아니면 0을 출력합니다.",
+    "input": "첫 줄에 정수 n과 target이 주어지고, 이어서 n개의 정수가 한 줄로 주어집니다(n=0이면 이 줄은 비어 있을 수 있습니다). 사이트 제약 조건: 0≤n≤40, |target|≤10^12, |transaction[i]|≤10^9. 각 거래는 최대 한 번만 선택할 수 있습니다.",
+    "output": "정수 하나를 출력합니다. 조건을 만족하는 부분집합이 있으면 1, 없으면 0입니다. 공집합의 합은 0입니다.",
+    "explanation": "부분집합 합의 정의에 따라 판단합니다. 절댓값이 큰 거래 금액을 지원하기 위해 이 사이트는 빠져 있던 크기 제한을 n≤40으로 정했으며, 따라서 meet-in-the-middle을 사용할 수 있습니다.",
+    "hints": [
+      "거래를 두 절반으로 나누어 한쪽의 부분집합 합을 모두 열거해 두고, 다른 쪽을 하나씩 열거하면서 target−sum을 조회합니다. 그레이 코드를 쓰면 인접한 열거 사이에서 합을 상수 시간에 갱신할 수 있습니다."
+    ]
+  },
+  "vi": {
+    "title": "Tập con giao dịch có đạt được số dư mục tiêu không",
+    "description": "Cho một tập các số nguyên là số tiền giao dịch, có số dương và số âm; hãy xác định xem có tập con nào (có thể rỗng) có tổng đúng bằng target hay không; xuất 1 nếu có, ngược lại xuất 0.",
+    "input": "Dòng đầu chứa các số nguyên n và target, tiếp theo là một dòng gồm n số nguyên (dòng này có thể rỗng khi n=0). Ràng buộc của trang: 0≤n≤40, |target|≤10^12, |transaction[i]|≤10^9. Mỗi giao dịch được chọn tối đa một lần.",
+    "output": "Xuất một số nguyên duy nhất: 1 nếu tồn tại tập con thỏa mãn, ngược lại 0. Tổng của tập con rỗng là 0.",
+    "explanation": "Quyết định theo đúng định nghĩa của bài toán tổng tập con; để hỗ trợ các giá trị giao dịch có độ lớn tuyệt đối lớn, trang này bổ sung giới hạn còn thiếu là n≤40, nhờ đó có thể dùng meet-in-the-middle.",
+    "hints": [
+      "Chia các giao dịch thành hai nửa và liệt kê các tổng tập con của một nửa; sau đó duyệt từng tập con của nửa kia và tra cứu target−sum. Mã Gray cho phép cập nhật tổng giữa hai lần liệt kê liền kề trong thời gian hằng số."
+    ]
   }
 }

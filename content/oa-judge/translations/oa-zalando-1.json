@@ -13,5 +13,41 @@
       "Use the remaining counts of the three block types and the trailing characters as the state.",
       "Even with an optimal length, splitting blocks and rearranging characters may be invalid."
     ]
+  },
+  "ja": {
+    "title": "AAA も BBB も含まない最長のブロック連結文字列",
+    "description": "分割できない 2 文字のブロックが 3 種類あります。AA、AB、BB で、それぞれ a 個、b 個、c 個あります。ブロックをいくつか選び、分割せずにそのまま好きな順序で連結して、A が 3 つ連続せず B も 3 つ連続しない最長の文字列を作ってください。ブロックの分割や反転はできず、各ブロックは最大 1 回しか使えません。最長のものであればどれを返しても構いません。辞書順最小である必要はありません。",
+    "input": "1 行に 3 つの整数 a b c が与えられます。AA、AB、BB の各ブロックの個数をこの順に表します。0≤a,b,c≤10、a+b+c≥1。これは元の問題の 3 つのパラメータ AA、AB、BB と、結果が空にならない保証に対応しており、元の数値範囲をそのまま保持しています。",
+    "output": "A と B のみからなる空でない文字列を 1 行で出力してください。引用符、空白、ブロックの区切りは含めません。使用できるブロックをそのまま連結して作られ、AAA も BBB も含まず、長さが最大である必要があります。最適解が複数ある場合は、どれを出力しても正解となります。",
+    "explanation": "元の 4 つの入力は保持しています。例 1 では、元の文章の AA-BB-AA-BB-AA を連結すると正しくは AABBAABBAA となり、長さは 10 です。元の出力は A が 1 つ足りていませんでした。例 2 では、AA-BB-AB-AB で AABBABAB となり、長さは 8 で 4 個のブロックをすべて使います。元の長さ 7 の出力と、その説明にあった無効な候補は修正されています。例 3 では AB を 2 個使って ABAB とします。例 4 では BB を最大 1 個しか使えないため、BB となります。ルールと全範囲は単一の固定された MDX に従っており、別個の生バージョンはありません。",
+    "hints": [
+      "連結が有効かどうかを確認するには、末尾の 2 文字だけを覚えておけば十分です。",
+      "3 種類のブロックの残り個数と末尾の文字を状態として使います。",
+      "長さが最適でも、ブロックを分割して文字を並べ替えると無効になることがあります。"
+    ]
+  },
+  "ko": {
+    "title": "AAA나 BBB 없이 블록 통째로 만드는 가장 긴 문자열",
+    "description": "나눌 수 없는 두 글자 블록이 세 종류 있습니다. AA, AB, BB이며 개수는 각각 a, b, c입니다. 블록 중 일부를 골라 통째로 원하는 순서로 이어 붙여, A가 연속 세 번 나오거나 B가 연속 세 번 나오는 일이 없는 가장 긴 문자열을 만드세요. 블록은 쪼개거나 뒤집을 수 없고, 각 블록은 최대 한 번만 사용할 수 있습니다. 가장 긴 결과 중 아무거나 반환하면 되며, 사전순 최소일 필요는 없습니다.",
+    "input": "한 줄에 정수 세 개 a b c가 주어지며, 순서대로 AA, AB, BB 블록의 개수입니다. 0≤a,b,c≤10, a+b+c≥1. 이는 원 문제의 세 매개변수 AA, AB, BB와 결과가 비어 있지 않다는 보장에 대응하며, 원래의 수치 범위를 그대로 유지합니다.",
+    "output": "A와 B로만 이루어진 비어 있지 않은 문자열을 한 줄에 출력합니다. 따옴표, 공백, 블록 구분자는 쓰지 않습니다. 사용 가능한 블록을 통째로 이어서 만들어야 하고, AAA나 BBB를 포함하지 않아야 하며, 길이가 최대여야 합니다. 최적 결과가 여러 개이면 아무거나 허용됩니다.",
+    "explanation": "원래의 네 입력은 그대로 유지합니다. 예제 1에서 원문의 AA-BB-AA-BB-AA는 올바르게 이어 붙이면 AABBAABBAA, 길이 10이며, 원래 출력에는 A 하나가 빠져 있었습니다. 예제 2에서 AA-BB-AB-AB는 AABBABAB, 길이 8이며 블록 4개를 모두 사용합니다. 원래의 길이 7 출력과 그 설명에 있던 유효하지 않은 후보는 수정했습니다. 예제 3은 AB 블록 두 개로 ABAB를 만들고, 예제 4는 BB를 최대 하나만 쓸 수 있어 BB가 됩니다. 규칙과 전체 범위는 고정된 단일 MDX를 따르며, 별도의 원본 버전은 없습니다.",
+    "hints": [
+      "이어 붙인 결과가 유효한지 확인하려면 마지막 두 문자만 기억하면 됩니다.",
+      "세 종류 블록의 남은 개수와 끝 문자들을 상태로 사용합니다.",
+      "길이가 최적이더라도 블록을 쪼개 문자를 재배열하면 유효하지 않을 수 있습니다."
+    ]
+  },
+  "vi": {
+    "title": "Xâu dài nhất ghép từ nguyên khối, không có AAA hay BBB",
+    "description": "Có ba loại khối hai chữ cái không thể chia nhỏ là AA, AB và BB, với số lượng lần lượt là a, b và c. Bạn có thể chọn một số khối và nối nguyên khối theo thứ tự tùy ý để tạo xâu dài nhất không chứa ba chữ A liên tiếp và cũng không chứa ba chữ B liên tiếp. Không được tách hay đảo ngược khối, và mỗi khối được dùng tối đa một lần. Trả về một kết quả dài nhất bất kỳ; không yêu cầu nhỏ nhất theo thứ tự từ điển.",
+    "input": "Một dòng gồm ba số nguyên a b c, lần lượt là số khối AA, AB và BB. 0≤a,b,c≤10, a+b+c≥1. Điều này tương ứng với ba tham số AA, AB, BB của đề gốc và đảm bảo kết quả không rỗng, đồng thời giữ nguyên đầy đủ các khoảng giá trị gốc.",
+    "output": "In một dòng chứa xâu không rỗng chỉ gồm A và B, không có dấu nháy, dấu cách hay ký tự phân cách khối. Xâu phải được ghép từ các khối nguyên có sẵn, không chứa AAA hay BBB, và có độ dài lớn nhất. Chấp nhận bất kỳ kết quả tối ưu nào.",
+    "explanation": "Giữ nguyên bốn đầu vào gốc. Ở ví dụ 1, chuỗi AA-BB-AA-BB-AA của đề gốc ghép đúng thành AABBAABBAA, độ dài 10; đầu ra gốc bị thiếu một chữ A. Ở ví dụ 2, AA-BB-AB-AB cho AABBABAB, độ dài 8, dùng cả 4 khối; đầu ra độ dài 7 của đề gốc và ứng viên không hợp lệ trong phần giải thích của nó đã được sửa. Ví dụ 3 dùng hai khối AB để được ABAB; ở ví dụ 4 có thể dùng tối đa một khối BB, cho BB. Các quy tắc và khoảng giá trị đầy đủ theo một bản MDX cố định duy nhất; không có phiên bản thô riêng.",
+    "hints": [
+      "Để kiểm tra một phép nối có hợp lệ không, bạn chỉ cần nhớ hai ký tự cuối.",
+      "Dùng số lượng còn lại của ba loại khối và các ký tự cuối làm trạng thái.",
+      "Ngay cả khi độ dài là tối ưu, việc tách khối và sắp xếp lại ký tự có thể không hợp lệ."
+    ]
   }
 }

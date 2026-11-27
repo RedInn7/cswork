@@ -11,5 +11,35 @@
     "hints": [
       "Bucket same-length words by (deleted position, text after deletion), and expand each bucket only once during BFS; buckets use a structured key instead of treating some ordinary character as the unique wildcard."
     ]
+  },
+  "ja": {
+    "title": "単語リスト内での 1 文字置換の最小回数",
+    "description": "各操作で 1 文字を置換し、途中で通る単語はすべて単語リストに含まれていなければなりません (開始の単語は含まれていなくてもかまいません)。目標の単語が単語リストにない場合は解がありません。ただし、開始と目標が同一なら操作は不要です。置換の最小回数を求めてください。\n\n当サイトは標準入出力と解法を独自に用意しました。原典で欠けている上下限の補足と例の訂正は、プロトコルに明記してあります。",
+    "input": "入力は JSON 配列 [begin,end,wordList] です。原典には長さ、文字、個数の制約がありません。当サイトでは各単語を 1..20 個の Unicode スカラー値、単語リストを 0..10000 個とし、開始と目標の単語の長さは異なってもかまいません。コードポイントの合計は 200040 以下で、標準の JSON は空白と NUL を保持します。長さの異なる単語同士は置換で到達できません。解がない場合は −1 を出力します。",
+    "output": "答えを表す整数を 1 つ出力します。",
+    "explanation": "公開されている 3 つの例の出力は、順に 4、0、-1 です。独立した全探索または直接のシミュレーションで検証済みです。",
+    "hints": [
+      "同じ長さの単語を (削除した位置, 削除後のテキスト) でバケットに分け、BFS では各バケットを 1 回だけ展開します。バケットのキーには、ある通常の文字を唯一のワイルドカードとして扱うのではなく、構造化されたキーを使います。"
+    ]
+  },
+  "ko": {
+    "title": "단어 목록 안에서 한 글자씩 바꾸는 최소 횟수",
+    "description": "한 번의 연산은 한 글자를 바꾸는 것이며, 거치는 모든 단어는 단어 목록에 있어야 합니다(시작 단어는 목록에 없어도 됩니다). 목표 단어가 단어 목록에 없으면 해가 없지만, 시작 단어와 목표 단어가 같으면 연산이 필요 없습니다. 최소 교체 횟수를 구하십시오.\n\n본 사이트는 표준 입출력과 풀이를 독자적으로 작성했으며, 원문에 없는 범위의 보충과 예제의 정정은 프로토콜에 명시되어 있습니다.",
+    "input": "입력은 JSON 배열 [begin,end,wordList]입니다. 원문에는 길이, 문자, 개수에 대한 범위가 없어 본 사이트에서 각 단어는 유니코드 스칼라 1..20개, 단어 목록은 0..10000개 항목으로 정했으며, 시작 단어와 목표 단어의 길이가 다를 수도 있습니다. 모든 코드 포인트의 합은 ≤200040이고, 표준 JSON이 공백/NUL을 보존합니다. 길이가 다른 단어끼리는 글자 교체로 도달할 수 없으며, 해가 없으면 −1을 출력합니다.",
+    "output": "정수 답 하나를 출력합니다.",
+    "explanation": "공개된 세 예제의 출력은 차례로 4, 0, -1입니다. 독립적인 전수 조사 또는 직접 시뮬레이션으로 검증했습니다.",
+    "hints": [
+      "길이가 같은 단어를 (삭제한 위치, 삭제 후의 텍스트)로 버킷에 나누고, BFS 중 각 버킷은 한 번만 확장합니다. 버킷은 어떤 일반 문자를 유일한 와일드카드로 취급하는 대신 구조화된 키를 사용합니다."
+    ]
+  },
+  "vi": {
+    "title": "Số lần thay một ký tự tối thiểu trong danh sách từ",
+    "description": "Mỗi thao tác thay thế một ký tự, và mọi từ đi qua đều phải nằm trong danh sách từ (từ bắt đầu thì không cần). Nếu từ đích không có trong danh sách từ thì vô nghiệm, nhưng khi từ bắt đầu và từ đích giống hệt nhau thì không cần thao tác nào. Hãy tìm số lần thay thế tối thiểu.\n\nTrang này tự biên soạn đầu vào/đầu ra chuẩn và lời giải; các phần bổ sung cho những giới hạn còn thiếu trong đề gốc và các chỉnh sửa cho ví dụ được nêu rõ trong giao thức.",
+    "input": "Đầu vào là một mảng JSON [begin,end,wordList]. Đề gốc không nêu giới hạn về độ dài, ký tự hay số lượng; trang này đặt mỗi từ gồm 1..20 Unicode scalar và danh sách từ gồm 0..10000 phần tử, và từ bắt đầu và từ đích có thể khác độ dài. Tổng số code point ≤200040, và JSON chuẩn giữ nguyên khoảng trắng/NUL. Các từ khác độ dài không thể đến được nhau bằng phép thay thế; nếu vô nghiệm, in −1.",
+    "output": "In ra một số nguyên duy nhất là đáp án.",
+    "explanation": "Đầu ra của ba ví dụ công khai lần lượt là: 4; 0; -1. Đã được kiểm chứng bằng liệt kê độc lập hoặc mô phỏng trực tiếp.",
+    "hints": [
+      "Phân thùng các từ cùng độ dài theo (vị trí bị xóa, văn bản sau khi xóa), và chỉ mở rộng mỗi thùng một lần trong BFS; các thùng dùng khóa có cấu trúc thay vì coi một ký tự thông thường nào đó là ký tự đại diện duy nhất."
+    ]
   }
 }

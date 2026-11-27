@@ -11,5 +11,35 @@
     "hints": [
       "Scan from right to left while maintaining the minimum digit on the right. If the current digit is greater than that minimum, it must be moved and incremented by 1; the rest stay. Finally, sort the transformed digits."
     ]
+  },
+  "ja": {
+    "title": "箱 ID の最適化 (メインのアルゴリズムライブラリの Amazon #34 と同一)",
+    "description": "Amazon MERN #5 は、メインのアルゴリズムライブラリにすでに含まれている、交互に並ぶアルゴリズム問題で、Amazon #34「最小文字列の取得 (Box Lex-Smallest)」と同じ問題です。#5 のページが指している Amazon #13 は実際には別の区間カウント問題なので、このエントリはタイトルと問題の意味から #34 に対応づけています。\n\n1 回の操作では、任意の桁 d を取り出し、min(d+1,9) に変更して、任意の位置に挿入します。操作は何回でも (0 回を含む) 行えます。辞書順で最小となる最終的な文字列を求めてください。先頭の 0 は保持します。\n\n本サイトの標準入出力、例、判定は検証済みの Amazon #34 を再利用しており、操作を再定義するものではありません。",
+    "input": "長さ 1..200000 の数字列が 1 行で与えられます。",
+    "output": "辞書順で最小の数字列を出力してください。先頭の 0 は保持します。",
+    "explanation": "この問題は Amazon #34 と同じであり、検証済みの例、リファレンス実装、テストを再利用しています。元の #5 から Amazon #13 へのリンクはこの問題とは無関係です。",
+    "hints": [
+      "右から左へ走査しながら、右側の最小の桁を保持します。現在の桁がその最小値より大きければ、移動して 1 を加える必要があります。それ以外はそのままです。最後に、変換後の桁をソートします。"
+    ]
+  },
+  "ko": {
+    "title": "상자 ID 최적화 (메인 알고리즘 라이브러리의 Amazon #34와 동일)",
+    "description": "Amazon MERN #5는 메인 알고리즘 라이브러리에 이미 포함된 교차 출제 알고리즘 문제이며, Amazon #34 \"Get Minimum String (Box Lex-Smallest)\"와 같은 문제입니다. #5 페이지가 가리키는 Amazon #13은 실제로는 구간 개수 세기라는 다른 문제이므로, 이 항목은 제목과 문제의 의미에 따라 #34로 매핑했습니다.\n\n한 번의 연산으로 임의의 숫자 d를 꺼내 min(d+1,9)로 바꾼 뒤 임의의 위치에 삽입합니다. 연산은 0번을 포함해 몇 번이든 할 수 있으며, 앞자리 0을 유지한 채 사전순으로 가장 작은 최종 문자열을 구하세요.\n\n이 사이트의 표준 입출력, 예제, 채점은 검증된 Amazon #34를 재사용하며 연산을 새로 정의하지 않습니다.",
+    "input": "길이 1..200000의 숫자 문자열이 한 줄에 주어집니다.",
+    "output": "앞자리 0을 유지한 채 사전순으로 가장 작은 숫자 문자열을 출력합니다.",
+    "explanation": "이 문제는 Amazon #34와 같으며, 검증된 예제, 참조 구현, 테스트를 재사용합니다. 원래 #5가 연결한 Amazon #13은 이 문제와 무관합니다.",
+    "hints": [
+      "오른쪽에서 왼쪽으로 스캔하면서 오른쪽의 최소 숫자를 유지합니다. 현재 숫자가 그 최솟값보다 크면 반드시 옮겨야 하고 1이 증가하며, 나머지는 그대로 둡니다. 마지막에 변환된 숫자들을 정렬합니다."
+    ]
+  },
+  "vi": {
+    "title": "Tối ưu ID hộp (giống Amazon #34 trong thư viện thuật toán chính)",
+    "description": "Amazon MERN #5 là một bài thuật toán xen kẽ đã có trong thư viện thuật toán chính; đó là cùng bài với Amazon #34 \"Get Minimum String (Box Lex-Smallest)\". Amazon #13 mà trang #5 trỏ tới thực ra là một bài đếm khoảng khác, nên mục này được ánh xạ sang #34 theo tiêu đề và ý nghĩa bài toán.\n\nMột thao tác lấy ra một chữ số d bất kỳ, đổi thành min(d+1,9), và chèn vào vị trí bất kỳ. Có thể thực hiện số thao tác tùy ý (kể cả 0); tìm xâu cuối cùng nhỏ nhất theo thứ tự từ điển, giữ nguyên các số 0 đứng đầu.\n\nĐầu vào/đầu ra chuẩn, ví dụ và việc chấm điểm của trang này dùng lại Amazon #34 đã được kiểm chứng và không định nghĩa lại thao tác.",
+    "input": "Một dòng chứa xâu chữ số có độ dài 1..200000.",
+    "output": "In ra xâu chữ số nhỏ nhất theo thứ tự từ điển, giữ nguyên các số 0 đứng đầu.",
+    "explanation": "Bài này giống Amazon #34 và dùng lại các ví dụ, cài đặt tham chiếu và test đã được kiểm chứng của nó; liên kết gốc của #5 tới Amazon #13 không liên quan tới bài này.",
+    "hints": [
+      "Duyệt từ phải sang trái và duy trì chữ số nhỏ nhất ở bên phải. Nếu chữ số hiện tại lớn hơn giá trị nhỏ nhất đó, nó phải được di chuyển và tăng thêm 1; các chữ số còn lại giữ nguyên. Cuối cùng, sắp xếp các chữ số đã biến đổi."
+    ]
   }
 }

@@ -13,5 +13,41 @@
       "The new window keeps only the price contributions of its second half.",
       "Both window sums can be updated in constant time as the window slides."
     ]
+  },
+  "ja": {
+    "title": "任意で 1 回だけ行う「前半ホールド・後半売却」の取引戦略変更",
+    "description": "各日の価格は rates[i]>0 で、戦略は −1 が 1 単位の購入、0 が何もしない、1 が 1 単位の売却を表します。資金と保有量は常に十分であることが保証され、利益は Σrates[i]×strategy[i] で、負になることもあります。元の戦略をそのまま使うか、1 回だけ変更できます。変更では、長さがちょうど k の連続する区間を選び、その先頭 k/2 個を 0、後ろの k/2 個を 1 にし、区間の外は変えません。最大の利益を求めてください。",
+    "input": "1 行目に n k、2 行目に n 個の rates、3 行目に n 個の strategy の値が与えられます。SIG の元の範囲: 2≤n≤100000、1≤rates[i]≤1000、strategy[i]∈{−1,0,1}。k は偶数で 2≤k≤n です。これは、SIG の文章が途中で切れていた同一の問題 eBay023 から補ったもので、そのページの nums.length は共通の配列の長さ n に正規化しています。",
+    "output": "最大の利益を 1 つの整数で出力してください。戦略を変更しなくてもかまいませんが、負の利益を 0 として扱ってはならず、変更は 2 回以上行えません。",
+    "explanation": "元の例では、元の利益は −3 で、3 通りの変更区間の利益は −4、13、18 なので、答えは 18 です。2 番目の例は本サイトが追加したもので、[1,1] を変更せずにすべて売ると 2 になり、変更を強制すると 1 にしかなりません。3 番目に追加した例では、価格が [1,1000]、戦略が [0,0]、k=2 のとき、後半で売ると 1000 になります。元の文章の「変更してもよい」は、変更が任意で 1 回であることの根拠で、NOTE は在庫と資金の制約がないことを示しています。SIG 自身の価格の上限 1000 は、他社の同じ問題のバージョンにあるより大きな上限に置き換えず、そのまま保っています。",
+    "hints": [
+      "元の利益に、変更による最大の増分を足します。増分は 0 でもかまいません。",
+      "新しい区間では、後半の価格の寄与だけが残ります。",
+      "区間をスライドさせるとき、2 つの区間和は定数時間で更新できます。"
+    ]
+  },
+  "ko": {
+    "title": "전반은 보유, 후반은 매도로 바꾸는 선택적 1회 거래 전략 수정",
+    "description": "각 날의 가격은 rates[i]>0이고, 전략은 −1이면 1단위 매수, 0이면 아무것도 하지 않음, 1이면 1단위 매도를 뜻합니다. 자금과 보유량은 항상 충분함이 보장되며, 이익은 Σrates[i]×strategy[i]이고 음수일 수 있습니다. 원래 전략을 그대로 두거나 한 번 수정할 수 있습니다. 수정할 때는 길이가 정확히 k인 연속 구간을 골라 앞의 k/2개 항목을 0으로, 뒤의 k/2개 항목을 1로 바꾸고, 구간 밖은 그대로 둡니다. 최대 이익을 구하세요.",
+    "input": "첫 번째 줄에 n k가, 두 번째 줄에 n개의 rates가, 세 번째 줄에 n개의 strategy 값이 주어집니다. 원래 SIG의 범위: 2≤n≤100000, 1≤rates[i]≤1000, strategy[i]∈{−1,0,1}. k는 짝수이고 2≤k≤n이며, SIG의 원문이 잘려 있던 것을 동일한 문제인 eBay023에서 보충했고, 그 페이지의 nums.length는 공통 배열 길이 n으로 정규화했습니다.",
+    "output": "최대 이익을 정수 하나로 출력합니다. 전략을 그대로 둘 수 있지만 음수 이익을 0으로 취급해서는 안 되며, 한 번을 초과하여 수정할 수 없습니다.",
+    "explanation": "원문 예제에서 원래 이익은 −3이고, 세 개의 수정 구간은 각각 이익 −4, 13, 18을 주므로 답은 18입니다. 두 번째 예제는 이 사이트에서 추가한 것으로, [1,1]을 수정 없이 모두 매도하면 2이고 수정을 강제하면 1뿐입니다. 세 번째로 추가한 예제는 가격 [1,1000], 전략 [0,0], k=2일 때 후반에 매도하면 1000입니다. 원문의 \"may change\"는 선택적인 1회 수정을 뒷받침하며, 원문의 NOTE는 재고와 자금 제약이 없음을 보여 줍니다. SIG 자체의 가격 상한 1000은 같은 문제의 다른 회사 버전에 있는 더 큰 상한으로 바꾸지 않고 유지했습니다.",
+    "hints": [
+      "원래 이익에 수정으로 얻는 최대 이득을 더합니다. 이득은 0일 수도 있습니다.",
+      "새 구간은 후반부의 가격 기여만 남깁니다.",
+      "구간을 밀 때 두 구간 합을 모두 상수 시간에 갱신할 수 있습니다."
+    ]
+  },
+  "vi": {
+    "title": "Sửa đổi chiến lược giao dịch tùy chọn một lần: nửa giữ, nửa bán",
+    "description": "Giá ngày thứ i là rates[i]>0, và chiến lược là −1 để mua một đơn vị, 0 để không làm gì, và 1 để bán một đơn vị. Vốn và lượng nắm giữ được đảm bảo luôn đủ, và lợi nhuận là Σrates[i]×strategy[i], có thể âm. Bạn có thể giữ nguyên chiến lược ban đầu hoặc sửa đổi một lần: chọn một cửa sổ liên tiếp có độ dài đúng bằng k, đặt k/2 phần tử đầu của nó bằng 0 và k/2 phần tử cuối bằng 1, mọi thứ ngoài cửa sổ giữ nguyên. Tìm lợi nhuận lớn nhất.",
+    "input": "Dòng đầu chứa n k, dòng thứ hai chứa n giá trị rates, và dòng thứ ba chứa n giá trị strategy. Khoảng giá trị SIG gốc: 2≤n≤100000, 1≤rates[i]≤1000, strategy[i]∈{−1,0,1}. k là số chẵn và 2≤k≤n, được bổ sung từ bài giống hệt eBay023 nơi văn bản SIG bị cắt cụt; nums.length của trang đó được chuẩn hóa thành độ dài chung n của các mảng.",
+    "output": "In ra lợi nhuận lớn nhất dưới dạng một số nguyên; bạn có thể giữ nguyên chiến lược, nhưng không được coi lợi nhuận âm là 0, và không được sửa đổi quá một lần.",
+    "explanation": "Trong ví dụ gốc, lợi nhuận ban đầu là −3, và ba cửa sổ sửa đổi cho lợi nhuận −4, 13 và 18, nên đáp án là 18. Ví dụ thứ hai do trang này bổ sung: bán toàn bộ [1,1] mà không sửa đổi cho 2, còn sửa đổi bắt buộc chỉ cho 1. Trong ví dụ thứ ba được bổ sung, với giá [1,1000], chiến lược [0,0] và k=2, bán ở nửa sau cho 1000. Cụm \"may change\" của văn bản gốc ủng hộ việc sửa đổi tùy chọn một lần, và phần NOTE của nó loại trừ các ràng buộc về tồn kho và vốn. Cận trên giá 1000 của chính SIG được giữ nguyên thay vì thay bằng cận lớn hơn từ các phiên bản của cùng bài ở các công ty khác.",
+    "hints": [
+      "Cộng mức lợi tối đa từ việc sửa đổi vào lợi nhuận ban đầu; mức lợi cũng có thể bằng 0.",
+      "Cửa sổ mới chỉ giữ lại đóng góp giá của nửa sau.",
+      "Cả hai tổng của cửa sổ có thể được cập nhật trong thời gian hằng số khi cửa sổ trượt."
+    ]
   }
 }

@@ -11,5 +11,35 @@
     "hints": [
       "Convert the address to a 64-bit integer. At each step, take the largest aligned power-of-2 block at the current start that is not larger than the remaining length. The alignment limit for start 0 is 2³²; lowbit(0)=0 cannot be used."
     ]
+  },
+  "ja": {
+    "title": "連続する IPv4 アドレスの最小 CIDR 被覆",
+    "description": "開始 IPv4 アドレスと正の整数 count が与えられます。開始アドレスから始まる連続した count 個のアドレスを、最小個数の CIDR ブロックでちょうど覆ってください。過剰な被覆、抜け、重なり、重複は許されません。ブロックの順序は問いません。\n\n入力と出力は当サイトで整備したものです。",
+    "input": "1 行目に開始アドレス a.b.c.d、2 行目に count が与えられます。各部分は 0..255 で、先頭にゼロを付けない標準的な 10 進表記です。1≤count≤4294967296 で、開始アドレスの整数値と count の和は 4294967296 以下であることが保証されており、範囲は IPv4 アドレス空間に収まります。",
+    "output": "最初の整数 k はブロックの個数で、続いて a.b.c.d/prefix の形式の k 個の要素を出力します。順序は任意です。prefix は 0..32 で、各アドレスはそのブロックのネットワークアドレス (ホスト部が 0) とし、10 進数は先頭にゼロを付けません。被覆はちょうどでなければならず、ブロック数は最小でなければなりません。",
+    "explanation": "最初の 2 つの例の答えは、それぞれ 0.0.0.0/32 と 0.0.0.0/24 です。3 つ目は 255.0.0.7/32、255.0.0.8/29、255.0.0.16/32 の 3 ブロックに分けられ、順序は任意です。",
+    "hints": [
+      "アドレスを 64 ビット整数に変換します。各ステップで、現在の開始位置でアラインされた 2 のべき乗のブロックのうち、残りの長さを超えない最大のものを取ります。開始位置が 0 のときのアライメント上限は 2³² です。lowbit(0)=0 は使えません。"
+    ]
+  },
+  "ko": {
+    "title": "연속된 IPv4 주소의 최소 CIDR 블록 커버",
+    "description": "시작 IPv4 주소와 양의 정수 count가 주어집니다. 시작 주소부터 연속된 count개의 주소를 최소 개수의 CIDR 블록으로 정확히 덮으십시오. 초과 포함, 빈틈, 겹침, 중복은 허용되지 않습니다. 블록의 순서는 상관없습니다.\n\n입력과 출력은 본 사이트에서 정리한 것입니다.",
+    "input": "첫째 줄에 시작 주소 a.b.c.d가, 둘째 줄에 count가 주어집니다. 각 부분은 0..255이며 앞에 0이 없는 표준 십진수로 표기됩니다. 1≤count≤4294967296이고, 시작 주소의 정수값 + count ≤ 4294967296이 보장되므로 범위는 IPv4 주소 공간 안에 있습니다.",
+    "output": "먼저 블록 개수 k를 정수로 출력하고, 이어서 a.b.c.d/prefix 형식의 항목 k개를 출력합니다. 순서는 자유입니다. prefix는 0..32이고, 각 주소는 해당 블록의 네트워크 주소(호스트 비트가 0)여야 하며, 십진수에는 앞자리 0이 없어야 합니다. 커버는 정확해야 하고 블록 수가 최소여야 합니다.",
+    "explanation": "처음 두 예제의 답은 각각 0.0.0.0/32와 0.0.0.0/24입니다. 세 번째는 255.0.0.7/32, 255.0.0.8/29, 255.0.0.16/32의 3개 블록으로 나눌 수 있으며 순서는 상관없습니다.",
+    "hints": [
+      "주소를 64비트 정수로 변환합니다. 매 단계에서 현재 시작 위치에서 정렬 조건을 만족하면서 남은 길이를 넘지 않는 가장 큰 2의 거듭제곱 블록을 취합니다. 시작 주소가 0일 때의 정렬 한계는 2³²이며, lowbit(0)=0은 사용할 수 없습니다."
+    ]
+  },
+  "vi": {
+    "title": "Phủ tối thiểu các địa chỉ IPv4 liên tiếp bằng khối CIDR",
+    "description": "Cho một địa chỉ IPv4 bắt đầu và một số nguyên dương count, hãy dùng số khối CIDR ít nhất để phủ chính xác count địa chỉ liên tiếp bắt đầu từ địa chỉ đó. Không được phủ thừa, bỏ sót, chồng lấn hay trùng lặp. Các khối có thể ở thứ tự bất kỳ.\n\nĐầu vào và đầu ra do trang này biên soạn.",
+    "input": "Dòng đầu tiên chứa địa chỉ bắt đầu a.b.c.d, dòng thứ hai chứa count. Mỗi thành phần nằm trong 0..255, viết ở dạng thập phân chuẩn và không có số 0 đứng đầu. 1≤count≤4294967296, và giá trị nguyên của địa chỉ bắt đầu cộng với count được đảm bảo ≤4294967296, nên dải địa chỉ luôn nằm trong không gian địa chỉ IPv4.",
+    "output": "Số nguyên đầu tiên k là số khối, theo sau là k mục a.b.c.d/prefix, có thể in theo thứ tự bất kỳ. prefix nằm trong 0..32, mỗi địa chỉ là địa chỉ mạng của khối đó (các bit host bằng 0), và các số thập phân không có số 0 đứng đầu. Phép phủ phải chính xác và dùng số khối tối thiểu.",
+    "explanation": "Hai ví dụ đầu lần lượt cho ra 0.0.0.0/32 và 0.0.0.0/24. Ví dụ thứ ba có thể chia thành 255.0.0.7/32, 255.0.0.8/29, 255.0.0.16/32, tức 3 khối, theo thứ tự bất kỳ.",
+    "hints": [
+      "Chuyển địa chỉ sang số nguyên 64 bit. Ở mỗi bước, lấy khối lũy thừa của 2 được căn chỉnh lớn nhất tại điểm bắt đầu hiện tại mà không lớn hơn độ dài còn lại. Giới hạn căn chỉnh của điểm bắt đầu 0 là 2³²; không dùng được lowbit(0)=0."
+    ]
   }
 }

@@ -11,5 +11,35 @@
     "hints": [
       "Fix the left endpoint and extend the right endpoint step by step, maintaining a bitset of the values seen. When inserting a new value, find its predecessor and successor, and update the number of adjacent value pairs with a gap greater than 1; a single-element subarray counts an extra 1."
     ]
+  },
+  "ja": {
+    "title": "Newton's Beautiful Sequence",
+    "description": "元の配列のすべての空でない連続部分配列を、それぞれ独立にソートします。ソートした後、隣り合う要素の差が 1 より大きい組 1 つにつき、その部分配列の寄与が 1 増えます。長さ 1 の部分配列の寄与も 1 です。すべての部分配列の寄与の合計を 10^9+7 で割った余りを出力してください。\n\n本サイトの明示的な標準入出力形式と補足の制約はオンライン版の定義に属するものであり、元の出典の制約を装うものではありません。",
+    "input": "入力は N と、それに続く N 個の整数です。本サイトでは、問題文に別途記載の 1≤N≤1000 と 1≤sequence[i]≤N という制約を採用します。元の制約の行は文章が連結して読みにくくなっていたため、本サイトでは読みやすいこの制約に沿って整理しています。",
+    "output": "美しさの合計を 10^9+7 で割った余りを出力してください。",
+    "explanation": "左端を固定し、右端を 1 つずつ伸ばしながら、見た値のビットセットを管理します。新しい値を挿入するときは、その前の値と後の値を見つけ、差が 1 より大きい隣接する値の組の数を更新します。要素が 1 つの部分配列は追加で 1 を数えます。",
+    "hints": [
+      "左端を固定し、右端を 1 つずつ伸ばしながら、見た値のビットセットを管理します。新しい値を挿入するときは、その前の値と後の値を見つけ、差が 1 より大きい隣接する値の組の数を更新します。要素が 1 つの部分配列は追加で 1 を数えます。"
+    ]
+  },
+  "ko": {
+    "title": "Newton's Beautiful Sequence",
+    "description": "원래 배열의 비어 있지 않은 모든 연속 부분 배열을 각각 독립적으로 정렬합니다. 정렬한 뒤, 인접한 원소의 차가 1보다 큰 쌍마다 그 부분 배열의 기여도가 1씩 증가하며, 길이가 1인 부분 배열도 기여도 1을 가집니다. 모든 부분 배열의 기여도 총합을 10^9+7로 나눈 나머지를 출력하세요.\n\n본 사이트의 명시적인 표준 입출력 형식과 보충 제약 조건은 온라인 버전의 정의에 속하며, 원문의 제약 조건인 것처럼 제시하지 않습니다.",
+    "input": "입력은 N과 N개의 정수입니다. 본 사이트는 문제에 별도로 나열된 제약 조건 1≤N≤1000, 1≤sequence[i]≤N을 따릅니다. 주 제약 조건 줄의 텍스트가 붙어 있어서, 본 사이트가 읽을 수 있는 이 제약 조건에 맞게 정리했습니다.",
+    "output": "전체 아름다움을 10^9+7로 나눈 나머지를 출력합니다.",
+    "explanation": "왼쪽 끝점을 고정하고 오른쪽 끝점을 한 칸씩 늘리면서, 지금까지 나온 값의 비트셋을 유지합니다. 새 값을 삽입할 때 그 값의 선행 원소와 후행 원소를 찾아, 간격이 1보다 큰 인접 값 쌍의 수를 갱신합니다. 원소가 하나인 부분 배열은 추가로 1을 셉니다.",
+    "hints": [
+      "왼쪽 끝점을 고정하고 오른쪽 끝점을 한 칸씩 늘리면서, 지금까지 나온 값의 비트셋을 유지합니다. 새 값을 삽입할 때 그 값의 선행 원소와 후행 원소를 찾아, 간격이 1보다 큰 인접 값 쌍의 수를 갱신합니다. 원소가 하나인 부분 배열은 추가로 1을 셉니다."
+    ]
+  },
+  "vi": {
+    "title": "Newton's Beautiful Sequence",
+    "description": "Sắp xếp độc lập từng mảng con liên tiếp không rỗng của mảng ban đầu. Sau khi sắp xếp, đóng góp của mảng con tăng thêm 1 cho mỗi cặp phần tử kề nhau có hiệu lớn hơn 1; mảng con có độ dài 1 cũng đóng góp 1. In ra tổng đóng góp của mọi mảng con, lấy modulo 10^9+7.\n\nĐịnh dạng vào/ra chuẩn tường minh và các ràng buộc bổ sung của trang này thuộc về định nghĩa của phiên bản trực tuyến và không giả làm ràng buộc của nguồn gốc.",
+    "input": "Đầu vào là N theo sau là N số nguyên. Trang này dùng các ràng buộc được liệt kê riêng trong đề, 1≤N≤1000 và 1≤sequence[i]≤N; văn bản của dòng ràng buộc chính bị dính liền, nên trang này sắp xếp lại theo ràng buộc dễ đọc này.",
+    "output": "In ra tổng độ đẹp, lấy modulo 10^9+7.",
+    "explanation": "Cố định đầu mút trái và mở rộng dần đầu mút phải, duy trì một bitset các giá trị đã thấy. Khi chèn một giá trị mới, tìm phần tử đứng trước và đứng sau nó, rồi cập nhật số cặp giá trị kề nhau có khoảng cách lớn hơn 1; mảng con một phần tử được tính thêm 1.",
+    "hints": [
+      "Cố định đầu mút trái và mở rộng dần đầu mút phải, duy trì một bitset các giá trị đã thấy. Khi chèn một giá trị mới, tìm phần tử đứng trước và đứng sau nó, rồi cập nhật số cặp giá trị kề nhau có khoảng cách lớn hơn 1; mảng con một phần tử được tính thêm 1."
+    ]
   }
 }

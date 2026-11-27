@@ -12,5 +12,38 @@
       "A dependency means strict interval containment, not that the child process must start after the parent finishes.",
       "A directed cycle is always infeasible; propagate lower bounds on starts and upper bounds on ends in topological order."
     ]
+  },
+  "ja": {
+    "title": "依存関係のあるプロセスの最長実行スケジュール",
+    "description": "各プロセス i は整数の時刻 S_i 以降に開始でき、E_i 以前に終了しなければならず、少なくとも 1 時間単位は実行します。依存関係 u→v は、s_u<s_v かつ e_v<e_u を要求します。元の問題の要求どおり、プロセスをできるだけ長く実行させます。すべてのプロセスの実行区間を同時に最大化するスケジュールは一意に存在するので、プロセス間のトレードオフを考える必要はありません。この最も広いスケジュールを出力してください。有効なスケジュールが存在しない場合は IMPOSSIBLE を出力します。",
+    "input": "1 行目に N M が与えられ、続く N 行に PID1..N の S_i E_i、その後の M 行に u v が与えられます。元の範囲のすべて:1≤N≤1000000、0≤M≤1000000、1≤S_i≤E_i≤1000000、1≤u,v≤N かつ u≠v で、すべての有向辺は互いに異なります。元の文章には、テスト全体の N,M の合計が 100 万を超えないとも書かれています。本サイトは一度に 1 つのインスタンスを実行し、N と M はそれぞれ最大 100 万までサポートし、N+M に追加の制限は設けません。元の個々の範囲は縮小していません。",
+    "output": "実行不能な場合は IMPOSSIBLE のみを出力します。そうでなければ、PID の昇順にちょうど N 行の s_i e_i(すべて整数)を出力します。各プロセスは、同時に実現可能な最も早い開始と最も遅い終了を取ります。どの依存関係にも含まれないプロセスも省略してはいけません。",
+    "explanation": "最初の公開例は元の 4 プロセスの入力を残していますが、元の 3 行の出力は誤りです。1→2 によりプロセス 2 は ≤1 で終了しなければならない一方、開始は ≥100 なので、答えは IMPOSSIBLE になるはずです。2 つ目の例は、本サイトが明示的に述べる別個の 3 プロセスの補足例であり、元の入力からプロセスを取り除いたものを元のものとして通しているわけではありません。3 つ目の例は本サイトが追加したもので、S=E では少なくとも 1 単位実行することが許されません。出典と最適解が一意であることの証明については、解説を参照してください。",
+    "hints": [
+      "依存関係は厳密な区間の包含を意味し、子プロセスが親プロセスの終了後に開始しなければならないという意味ではありません。",
+      "有向閉路は常に実行不能です。トポロジカル順に、開始の下限と終了の上限を伝播させてください。"
+    ]
+  },
+  "ko": {
+    "title": "의존 관계가 있는 프로세스의 최장 실행 스케줄",
+    "description": "각 프로세스 i는 정수 시각 S_i 이후에 시작할 수 있고 E_i 이전에 끝나야 하며, 최소 한 시간 단위 동안 실행되어야 합니다. 의존 관계 u→v는 s_u<s_v이고 e_v<e_u일 것을 요구합니다. 원 문제의 요구대로 프로세스를 가능한 한 오래 실행하세요. 모든 프로세스의 실행 구간을 동시에 최대화하는 스케줄은 유일하므로 프로세스 간 트레이드오프는 필요 없습니다. 이 가장 넓은 스케줄을 출력하고, 유효한 스케줄이 없으면 IMPOSSIBLE을 출력하세요.",
+    "input": "첫째 줄에 N M이 주어지고, 이어서 PID1..N에 대한 S_i E_i가 N줄, 그다음 u v가 M줄 주어집니다. 원래의 전체 범위는 1≤N≤1000000, 0≤M≤1000000, 1≤S_i≤E_i≤1000000, u≠v인 1≤u,v≤N이며 모든 방향 간선은 서로 다릅니다. 원문에는 테스트 전체에서 N, M의 합이 100만을 넘지 않는다는 말도 있습니다. 이 사이트는 한 번에 하나의 인스턴스만 실행하고 N과 M 각각 최대 100만까지 지원하며 N+M에는 추가 제한을 두지 않습니다. 원래의 개별 범위는 하나도 줄이지 않았습니다.",
+    "output": "불가능하면 IMPOSSIBLE만 출력합니다. 그렇지 않으면 PID 오름차순으로 정확히 N줄의 s_i e_i(모두 정수)를 출력하며, 각 프로세스는 동시에 실현 가능한 가장 이른 시작과 가장 늦은 종료를 취합니다. 어떤 의존 관계에도 속하지 않는 프로세스도 생략해서는 안 됩니다.",
+    "explanation": "첫 번째 공개 예제는 원래의 4개 프로세스 입력을 유지하지만, 원래의 세 줄 출력은 틀렸습니다. 1→2는 프로세스 2가 ≤1에 끝나도록 강제하는데 그 시작은 ≥100이므로 답은 IMPOSSIBLE이어야 합니다. 두 번째 예제는 이 사이트가 명시적으로 밝힌 별도의 3개 프로세스 보충 예제이며, 원래 입력에서 프로세스를 빼고 원본인 것처럼 내놓은 것이 아닙니다. 세 번째 예제는 이 사이트가 추가한 것으로, S=E이면 최소 한 단위 실행을 만족할 수 없습니다. 출처와 최적해가 유일하다는 증명은 해설을 참고하세요.",
+    "hints": [
+      "의존 관계는 구간의 엄격한 포함을 뜻하며, 자식 프로세스가 부모가 끝난 뒤에 시작해야 한다는 뜻이 아닙니다.",
+      "방향 사이클은 항상 불가능합니다. 위상 정렬 순서로 시작 시각의 하한과 종료 시각의 상한을 전파하세요."
+    ]
+  },
+  "vi": {
+    "title": "Lịch chạy dài nhất cho các tiến trình phụ thuộc",
+    "description": "Mỗi tiến trình i có thể bắt đầu tại thời điểm nguyên S_i hoặc muộn hơn và phải kết thúc tại E_i hoặc sớm hơn, chạy ít nhất một đơn vị thời gian. Một phụ thuộc u→v yêu cầu s_u<s_v và e_v<e_u. Theo yêu cầu của đề gốc, hãy cho các tiến trình chạy lâu nhất có thể: tồn tại một lịch duy nhất đồng thời cực đại hóa khoảng chạy của mọi tiến trình, nên không cần đánh đổi giữa các tiến trình. In ra lịch rộng nhất này; nếu không có lịch hợp lệ nào, in IMPOSSIBLE.",
+    "input": "Dòng đầu chứa N M, tiếp theo là N dòng S_i E_i cho PID1..N, rồi M dòng u v. Miền giá trị gốc đầy đủ: 1≤N≤1000000, 0≤M≤1000000, 1≤S_i≤E_i≤1000000, 1≤u,v≤N với u≠v, và mọi cạnh có hướng đều phân biệt. Đề gốc cũng nói rằng tổng của N,M trên các bộ test không vượt quá một triệu; trang này chạy từng bộ một, hỗ trợ tới một triệu cho mỗi N và M, và không đặt thêm giới hạn nào lên N+M; không miền riêng lẻ nào của đề gốc bị thu hẹp.",
+    "output": "Nếu không khả thi, chỉ in IMPOSSIBLE; ngược lại in đúng N dòng s_i e_i theo thứ tự PID tăng dần, tất cả là số nguyên, trong đó mỗi tiến trình lấy thời điểm bắt đầu sớm nhất và thời điểm kết thúc muộn nhất mà đồng thời khả thi. Các tiến trình không thuộc phụ thuộc nào không được bỏ sót.",
+    "explanation": "Ví dụ công khai đầu tiên giữ nguyên đầu vào bốn tiến trình của đề gốc, nhưng đầu ra ba dòng của đề gốc là sai: 1→2 buộc tiến trình 2 phải kết thúc ở ≤1, trong khi thời điểm bắt đầu của nó ≥100, nên đáp án phải là IMPOSSIBLE. Ví dụ thứ hai là một ví dụ bổ sung riêng gồm ba tiến trình do trang này nêu rõ; nó không phải là đầu vào gốc bị bỏ bớt tiến trình rồi giả làm đầu vào gốc. Ví dụ thứ ba do trang này thêm vào: S=E không cho phép chạy ít nhất một đơn vị. Xem lời giải để biết nguồn và chứng minh rằng phương án tối ưu là duy nhất.",
+    "hints": [
+      "Một phụ thuộc có nghĩa là khoảng này nằm gọn ngặt trong khoảng kia, không phải tiến trình con phải bắt đầu sau khi tiến trình cha kết thúc.",
+      "Chu trình có hướng luôn không khả thi; hãy lan truyền các cận dưới của thời điểm bắt đầu và các cận trên của thời điểm kết thúc theo thứ tự tô-pô."
+    ]
   }
 }

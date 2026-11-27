@@ -11,5 +11,35 @@
     "hints": [
       "Parse the JSON with exact decimals, check segment by segment that the current value is an object and the key exists, and finally serialize the result as the unique canonical JSON."
     ]
+  },
+  "ja": {
+    "title": "ドット区切りパスによるネストした辞書の値の取得",
+    "description": "パスをドットで分割し、辞書のキーを 1 つずつ順にたどってアクセスします。キーが存在しない場合や、途中の値がオブジェクトでない場合は null を返します。配列はインデックスではアクセスしません。見つかった JSON 値はそのまま返し、null は文字列 \"null\" ではありません。\n\n当サイトは標準入出力と解法を独自に用意しました。原典で欠けている上下限の補足と例の訂正は、プロトコルに明記してあります。",
+    "input": "入力は 2 行で、JSON オブジェクトと JSON 文字列のパスです。パスは空でなく、長さは 200 コードポイント以下で、空のセグメントは空文字列のキーを検索します。原典の OCR 末尾にある n 個の文字列 / m 個のパスという制約は、単一オブジェクトを扱う関数には合わないため、当サイトで明示的なリソースプロトコルを定めました。木のノードは最大 5000、深さは 30 以下、各キーと各文字列は 200 コードポイント以下、すべてのキーと文字列の合計は 250000 コードポイント以下です。値は完全な JSON のスカラー / 配列 / オブジェクトで、キーは Unicode スカラー値の文字列であり、重複キーは不正です。数値は有限で、各トークンは 64 文字以下、指数の絶対値は 12 以下、絶対値は 10^9 以下で、すべての数値は 10^-6 の格子上にちょうど乗ります。入力全体のサイズは 4MiB 以下です。",
+    "output": "正規形の ASCII JSON を 1 行で出力します。オブジェクトのキーは Unicode コードポイントの昇順に並べ、余分な空白は入れません。文字列は ASCII の JSON エスケープを使います (BMP 外の文字は小文字 4 桁のサロゲートペア)。数値は指数を使わず、小数部の末尾のゼロと冗長な小数点を取り除き、−0 は 0 にします。true/false/null は小文字です。文字列内の空白は保持しなければなりません。文字列のエスケープは一意で、Python の json.dumps(value, ensure_ascii=True) と同等です。二重引用符とバックスラッシュ以外の印字可能な ASCII はそのまま保持し (/ も含む)、この 2 つはバックスラッシュでエスケープします。バックスペース、改ページ、改行、復帰、タブは短縮形のエスケープを使い、それ以外の制御文字と DEL / 非 ASCII は小文字 4 桁の Unicode エスケープを使います。BMP 外の文字はサロゲートペアにします。",
+    "explanation": "公開されている 3 つの例の出力は、順に 5、null、{\"b\":true,\"n\":null,\"z\":1.25} です。独立した全探索または直接のシミュレーションで検証済みです。",
+    "hints": [
+      "JSON を正確な 10 進数として解析し、セグメントごとに、現在の値がオブジェクトであることとキーが存在することを確認します。最後に結果を一意な正規形の JSON としてシリアライズします。"
+    ]
+  },
+  "ko": {
+    "title": "점 표기 경로로 중첩 딕셔너리의 값 읽기",
+    "description": "경로를 점(.)으로 나누어 딕셔너리를 한 단계씩 키로 접근합니다. 키가 없거나 중간 값이 객체가 아니면 null을 반환합니다. 배열은 인덱스로 접근하지 않습니다. 찾은 JSON 값은 그대로 반환하며, null은 문자열 \"null\"이 아닙니다.\n\n본 사이트는 표준 입출력과 풀이를 독자적으로 작성했으며, 원문에 없는 범위의 보충과 예제의 정정은 프로토콜에 명시되어 있습니다.",
+    "input": "입력은 두 줄입니다. JSON 객체 하나와 JSON 문자열 path입니다. 경로는 비어 있지 않으며 길이는 ≤200 코드 포인트이고, 빈 세그먼트는 빈 키를 조회합니다. 원문 OCR 끝의 n개 문자열/m개 경로 제약은 단일 객체 함수에 맞지 않아, 본 사이트가 명시적인 자원 프로토콜을 정의했습니다. 트리 노드는 최대 5000개, 깊이 ≤30, 각 키와 문자열은 ≤200 코드 포인트, 모든 키/문자열의 합은 ≤250000 코드 포인트입니다. 값은 완전한 JSON 스칼라/배열/객체이고, 키는 유니코드 스칼라 문자열이며, 중복 키는 유효하지 않습니다. 숫자는 유한하고, 토큰은 각각 ≤64자, 지수의 절댓값은 ≤12, 절댓값은 ≤10^9이며, 모든 수는 정확히 10^-6 격자 위에 있습니다. 전체 입력 크기는 ≤4MiB입니다.",
+    "output": "정규형 ASCII JSON 한 줄을 출력합니다. 객체 키는 유니코드 코드 포인트 오름차순으로 정렬하고 불필요한 공백은 넣지 않습니다. 문자열은 ASCII JSON 이스케이프를 사용하며(BMP 밖의 문자는 소문자 네 자리 서로게이트 쌍), 숫자는 지수를 쓰지 않고 소수부 끝의 0과 불필요한 소수점을 제거하며 −0은 0으로 씁니다. true/false/null은 소문자입니다. 문자열 안의 공백은 보존해야 합니다. 문자열 이스케이프는 Python의 json.dumps(value, ensure_ascii=True)와 동등하며 유일하게 정해집니다. 큰따옴표와 역슬래시를 제외한 출력 가능한 ASCII는 그대로 두고(/ 포함), 이 두 문자는 역슬래시로 이스케이프합니다. 백스페이스, 폼 피드, 줄바꿈, 캐리지 리턴, 탭은 짧은 이스케이프를 쓰고, 그 밖의 제어 문자와 DEL/비ASCII 문자는 소문자 네 자리 유니코드 이스케이프를 쓰며 BMP 밖의 문자는 서로게이트 쌍으로 씁니다.",
+    "explanation": "공개된 세 예제의 출력은 차례로 5, null, {\"b\":true,\"n\":null,\"z\":1.25}입니다. 독립적인 전수 조사 또는 직접 시뮬레이션으로 검증했습니다.",
+    "hints": [
+      "JSON을 정확한 십진수로 파싱하고, 세그먼트마다 현재 값이 객체이고 키가 존재하는지 확인한 뒤, 마지막에 결과를 유일한 정규형 JSON으로 직렬화합니다."
+    ]
+  },
+  "vi": {
+    "title": "Đọc giá trị trong từ điển lồng nhau theo đường dẫn có dấu chấm",
+    "description": "Tách đường dẫn theo dấu chấm và truy cập từ điển từng khóa một, từng cấp một. Nếu thiếu một khóa hoặc một giá trị trung gian không phải đối tượng thì trả về null; mảng không được truy cập theo chỉ số. Mọi giá trị JSON tìm thấy được trả về nguyên trạng, và null không phải chuỗi \"null\".\n\nTrang này tự biên soạn đầu vào/đầu ra chuẩn và lời giải; các phần bổ sung cho những giới hạn còn thiếu trong đề gốc và các chỉnh sửa cho ví dụ được nêu rõ trong giao thức.",
+    "input": "Đầu vào gồm hai dòng: một đối tượng JSON và một chuỗi JSON path. Đường dẫn không rỗng với độ dài ≤200 code point, và một đoạn rỗng tra cứu khóa rỗng. Ràng buộc n chuỗi/m đường dẫn ở cuối bản OCR gốc không phù hợp với hàm trên một đối tượng, nên trang này định nghĩa một giao thức tài nguyên tường minh: tối đa 5000 nút cây, độ sâu ≤30, mỗi khóa và mỗi chuỗi ≤200 code point, và tất cả khóa/chuỗi cộng lại ≤250000 code point. Giá trị là các vô hướng/mảng/đối tượng JSON đầy đủ, khóa là chuỗi các Unicode scalar, và khóa trùng lặp là không hợp lệ. Số là hữu hạn, mỗi token ≤64 ký tự, giá trị tuyệt đối của số mũ ≤12, giá trị tuyệt đối ≤10^9, và mọi số đều nằm chính xác trên lưới 10^-6. Tổng kích thước đầu vào ≤4MiB.",
+    "output": "In ra một dòng JSON ASCII chính tắc: các khóa của đối tượng được sắp xếp theo code point Unicode tăng dần, không có khoảng trắng thừa; chuỗi dùng escape JSON ASCII (ký tự ngoài BMP viết dưới dạng cặp surrogate bốn chữ số thường); số không dùng số mũ, các số 0 thừa ở cuối phần thập phân và dấu thập phân thừa bị loại bỏ, và −0 trở thành 0; true/false/null viết thường. Khoảng trắng bên trong chuỗi phải được giữ nguyên. Cách escape chuỗi duy nhất tương đương với Python json.dumps(value, ensure_ascii=True): các ký tự ASCII in được khác dấu nháy kép và dấu gạch chéo ngược được giữ nguyên (kể cả /), và hai ký tự đó được escape bằng dấu gạch chéo ngược; backspace, form feed, newline, carriage return và tab dùng escape ngắn, còn mọi ký tự điều khiển khác cũng như DEL/ký tự không phải ASCII dùng escape Unicode bốn chữ số thường, với ký tự ngoài BMP dưới dạng cặp surrogate.",
+    "explanation": "Đầu ra của ba ví dụ công khai lần lượt là: 5; null; {\"b\":true,\"n\":null,\"z\":1.25}. Đã được kiểm chứng bằng liệt kê độc lập hoặc mô phỏng trực tiếp.",
+    "hints": [
+      "Phân tích JSON với số thập phân chính xác, kiểm tra từng đoạn xem giá trị hiện tại có phải đối tượng và khóa có tồn tại không, rồi cuối cùng tuần tự hóa kết quả thành JSON chính tắc duy nhất."
+    ]
   }
 }

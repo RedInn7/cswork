@@ -11,5 +11,35 @@
     "hints": [
       "Use hash maps to store each merchant's balance/refund limit and each Intent's merchant, amount, state, refund flag, and success time. Scan the commands in time order and update only when the current state satisfies the transition condition; finally, sort the merchants and output them."
     ]
+  },
+  "ja": {
+    "title": "返金期限付き Payment Intent ステートマシン",
+    "description": "元の Stripe の問題のパート 1～4 にある、相互に関連する Payment Intent のコマンドを実行します。Intent の状態は REQUIRES_ACTION、PROCESSING、COMPLETED です。不正な状態遷移と、無効な作成・更新は無視します。コマンドのタイムスタンプは厳密に増加します。返金が成功するのは、完了していてまだ返金されていない Intent に限られ、加盟店の返金期限に対して判定されます。\n\n入力形式、例、テストデータは CSWork が作成しました。",
+    "input": "1 行目に q (1..200000) が与えられ、続く q 行がコマンドです。コマンドは `timestamp INIT merchant starting_balance [refund_limit]`、`timestamp CREATE intent merchant amount`、`timestamp ATTEMPT intent`、`timestamp SUCCEED intent`、`timestamp FAIL intent`、`timestamp UPDATE intent new_amount`、`timestamp REFUND intent` のいずれかです。ID は空白を含まない文字列です。残高、金額、返金期限は符号付き 64 ビット整数です。加盟店の最初の INIT だけが有効で、加盟店の重複、Intent ID の重複、未知の加盟店、負の作成金額は無視します。返金期限がない、または負の場合は期限なし、0 は返金不可、正の n は返金のタイムスタンプが成功のタイムスタンプ+n 以内でなければならないことを意味します。",
+    "output": "まず初期化された加盟店の数を出力します。続いて、加盟店 ID の辞書順に、1 行ずつ `merchant_id balance` を出力します。",
+    "explanation": "上記の規則に従って入力を処理します。解法、正当性の証明、計算量については付属の解説を参照してください。",
+    "hints": [
+      "ハッシュマップで、加盟店ごとの残高と返金期限、および Intent ごとの加盟店、金額、状態、返金済みフラグ、成功時刻を保持します。コマンドを時刻順に走査し、現在の状態が遷移条件を満たすときだけ更新します。最後に加盟店をソートして出力します。"
+    ]
+  },
+  "ko": {
+    "title": "시간 제한이 있는 환불을 지원하는 Payment Intent 상태 기계",
+    "description": "원래 Stripe 문제의 1~4부에 나오는 서로 연관된 Payment Intent 명령을 실행합니다. Intent의 상태는 REQUIRES_ACTION, PROCESSING, COMPLETED입니다. 잘못된 상태 전이와 유효하지 않은 생성/갱신은 무시합니다. 명령의 타임스탬프는 엄격히 증가합니다. 환불은 아직 환불되지 않은 완료된 Intent에 대해서만 성공할 수 있으며, 가맹점의 환불 시간 제한에 따라 판정합니다.\n\n입력 형식, 예제, 테스트 데이터는 CSWork가 정리하여 작성했습니다.",
+    "input": "첫째 줄에 q(1..200000)가 주어지고, 이어서 q개의 명령이 주어집니다. 명령은 `timestamp INIT merchant starting_balance [refund_limit]`, `timestamp CREATE intent merchant amount`, `timestamp ATTEMPT intent`, `timestamp SUCCEED intent`, `timestamp FAIL intent`, `timestamp UPDATE intent new_amount`, `timestamp REFUND intent` 중 하나입니다. ID는 공백이 없는 문자열입니다. 잔액, 금액, 환불 제한은 부호 있는 64비트 정수입니다. 가맹점의 첫 번째 INIT만 효력이 있으며, 중복된 가맹점, 중복된 Intent ID, 알 수 없는 가맹점, 음수 생성 금액은 무시합니다. 환불 제한이 없거나 음수이면 시간 제한이 없다는 뜻이고, 0이면 환불이 허용되지 않으며, 양수 n이면 환불 타임스탬프가 성공 타임스탬프+n 이하여야 합니다.",
+    "output": "먼저 초기화된 가맹점의 수를 출력합니다. 그다음 가맹점 ID의 사전순으로 한 줄에 하나씩 `merchant_id balance`를 출력합니다.",
+    "explanation": "위의 규칙에 따라 입력을 처리하세요. 접근 방법, 정당성 증명, 복잡도는 함께 제공되는 풀이를 참고하세요.",
+    "hints": [
+      "해시 맵으로 각 가맹점의 잔액과 환불 제한, 각 Intent의 가맹점, 금액, 상태, 환불 여부, 성공 시각을 저장하세요. 명령을 시간순으로 훑으면서 현재 상태가 전이 조건을 만족할 때만 갱신하고, 마지막에 가맹점을 정렬해 출력합니다."
+    ]
+  },
+  "vi": {
+    "title": "Máy trạng thái Payment Intent với hoàn tiền có giới hạn thời gian",
+    "description": "Thực thi các lệnh Payment Intent có liên quan lẫn nhau từ Phần 1–4 của bài Stripe gốc. Các trạng thái của một Intent là REQUIRES_ACTION, PROCESSING và COMPLETED; các chuyển trạng thái bất hợp lệ và các thao tác tạo/cập nhật không hợp lệ bị bỏ qua. Timestamp của các lệnh tăng chặt. Một lần hoàn tiền chỉ thành công với Intent đã hoàn tất mà chưa được hoàn tiền, và được xét theo giới hạn thời gian hoàn tiền của merchant.\n\nĐịnh dạng đầu vào, ví dụ và dữ liệu kiểm thử do CSWork biên soạn và viết.",
+    "input": "Dòng đầu chứa q (1..200000), tiếp theo là q dòng lệnh: `timestamp INIT merchant starting_balance [refund_limit]`, `timestamp CREATE intent merchant amount`, `timestamp ATTEMPT intent`, `timestamp SUCCEED intent`, `timestamp FAIL intent`, `timestamp UPDATE intent new_amount`, hoặc `timestamp REFUND intent`. ID là xâu không chứa khoảng trắng. Số dư, số tiền và giới hạn hoàn tiền là các số nguyên 64 bit có dấu. Chỉ INIT đầu tiên của mỗi merchant có hiệu lực; merchant trùng, ID Intent trùng, merchant không tồn tại và số tiền tạo âm đều bị bỏ qua. Giới hạn hoàn tiền bị thiếu hoặc âm nghĩa là không giới hạn thời gian, 0 nghĩa là không cho phép hoàn tiền, và n dương nghĩa là timestamp hoàn tiền không được muộn hơn timestamp thành công+n.",
+    "output": "Trước tiên xuất số merchant đã được khởi tạo; sau đó xuất từng dòng `merchant_id balance` theo thứ tự từ điển của ID merchant.",
+    "explanation": "Xử lý đầu vào theo các quy tắc trên; xem lời giải kèm theo để biết hướng tiếp cận, chứng minh tính đúng đắn và độ phức tạp.",
+    "hints": [
+      "Dùng các bảng băm để lưu số dư/giới hạn hoàn tiền của mỗi merchant và merchant, số tiền, trạng thái, cờ hoàn tiền và thời điểm thành công của mỗi Intent. Duyệt các lệnh theo thứ tự thời gian và chỉ cập nhật khi trạng thái hiện tại thoả điều kiện chuyển; cuối cùng sắp xếp các merchant và xuất ra."
+    ]
   }
 }

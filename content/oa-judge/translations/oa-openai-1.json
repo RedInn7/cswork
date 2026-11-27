@@ -11,5 +11,35 @@
     "hints": [
       "Use an iterative traversal to extract the set of cell IDs of each component, use the immutable set as a key, and count the keys of the second grid that also appear in the first grid."
     ]
+  },
+  "ja": {
+    "title": "2 つのグリッドで同一の連結領域",
+    "description": "2 つの 01 グリッドのそれぞれで、1 のセルを上下左右の隣接によって連結成分に分割します。2 つ目のグリッドの成分のうち、座標の集合全体が 1 つ目のグリッドのある成分の座標の集合全体とまったく同じであるものの個数を数えてください。これは部分島の判定でも、平行移動して同じ形になるかの判定でもありません。\n\n入出力は本サイトが整備したものです。",
+    "input": "1 行目に n m、続いて 1 つ目のグリッドの n 行、そして 2 つ目のグリッドの n 行が与えられます。各行は m 個の 0/1 の文字が連続したものです。元の問題には数値の上限がなく、本サイトでは 1≤n,m≤200 とします。",
+    "output": "完全に一致する成分の個数を、整数 1 つで出力してください。",
+    "explanation": "例 1 では大きい成分だけが一致するので、答えは 1 です。例 2 では 2 つ目のグリッドは 1 つ目の真部分集合にすぎないので、答えは 0 です。例 3 では斜めのセルは連結でないので、一致する成分は 2 つです。",
+    "hints": [
+      "反復的な走査で各成分のセル ID の集合を取り出し、変更不可能な集合をキーとして使い、2 つ目のグリッドのキーのうち 1 つ目のグリッドにも現れるものを数えます。"
+    ]
+  },
+  "ko": {
+    "title": "두 격자의 동일한 연결 영역",
+    "description": "두 개의 01 격자 각각에서, 1인 칸을 상하좌우 인접 관계로 연결 요소로 나눕니다. 두 번째 격자의 연결 요소 중 전체 좌표 집합이 첫 번째 격자의 어떤 전체 연결 요소와 정확히 같은 것의 개수를 세세요. 이것은 부분 섬 검사도, 평행 이동 후 같은 모양인지 확인하는 검사도 아닙니다.\n\n입출력은 이 사이트가 정리했습니다.",
+    "input": "첫째 줄에 n m, 이어서 첫 번째 격자 n줄, 그다음 두 번째 격자 n줄이 주어집니다. 각 줄은 m개의 연속된 0/1 문자로 이루어집니다. 원래 문제에는 수치 범위가 없으며 이 사이트는 1≤n,m≤200을 사용합니다.",
+    "output": "정확히 일치하는 연결 요소의 개수를 나타내는 정수 하나를 출력합니다.",
+    "explanation": "예제 1에서는 큰 연결 요소만 일치하므로 답은 1입니다. 예제 2에서는 두 번째 격자가 첫 번째의 진부분 집합일 뿐이므로 답은 0입니다. 예제 3에서는 대각선 칸이 연결되지 않으므로 일치하는 연결 요소가 두 개입니다.",
+    "hints": [
+      "반복 순회로 각 연결 요소의 칸 ID 집합을 추출하고, 불변 집합을 키로 사용하여 첫 번째 격자에도 나타나는 두 번째 격자의 키 수를 셉니다."
+    ]
+  },
+  "vi": {
+    "title": "Các vùng liên thông giống hệt nhau trong hai lưới",
+    "description": "Trong mỗi một trong hai lưới 01, chia các ô 1 thành các thành phần liên thông theo kề trên/dưới/trái/phải. Đếm xem có bao nhiêu thành phần trong lưới thứ hai mà tập tọa độ đầy đủ của nó bằng chính xác tập tọa độ đầy đủ của một thành phần nào đó trong lưới thứ nhất. Đây không phải là kiểm tra đảo con, cũng không phải kiểm tra cùng hình dạng sau khi tịnh tiến.\n\nĐầu vào và đầu ra do trang này biên soạn.",
+    "input": "Dòng đầu tiên chứa n m, tiếp theo là n dòng của lưới thứ nhất rồi n dòng của lưới thứ hai. Mỗi dòng có m ký tự 0/1 liên tiếp. Đề gốc không có giới hạn số; trang này dùng 1≤n,m≤200.",
+    "output": "Một số nguyên duy nhất, là số thành phần khớp chính xác.",
+    "explanation": "Trong Ví dụ 1 chỉ có thành phần lớn khớp, nên đáp án là 1. Trong Ví dụ 2, lưới thứ hai chỉ là một tập con thực sự của lưới thứ nhất, nên đáp án là 0. Trong Ví dụ 3, các ô chéo không liên thông, nên có hai thành phần khớp.",
+    "hints": [
+      "Dùng phép duyệt lặp để trích xuất tập ID ô của mỗi thành phần, dùng tập bất biến làm khóa, và đếm các khóa của lưới thứ hai cũng xuất hiện trong lưới thứ nhất."
+    ]
   }
 }

@@ -13,5 +13,41 @@
       "XORing the parity masks of the two root paths gives the mask of the path between the nodes.",
       "Query the nodes seen so far before inserting the current node, which excludes self-pairs and double counting."
     ]
+  },
+  "ja": {
+    "title": "木上で回文に並べ替えられるノード対の個数",
+    "description": "無向の木があり、辺の重み 1..26 は a..z に対応します。異なる2つのノードについて、その間の唯一のパス上のすべての辺の文字を、任意の順序に並べ替えて回文にできるとき、その順序なしのノード対を nice pair と呼びます。nice pair の個数を求めてください。パスの文字列がすでに回文である必要はなく、ノードを自分自身と組にすることはなく、2つの向きを二重に数えることもしません。",
+    "input": "1行目に n m、続く m 行に u v w が与えられます。元の制約は次のとおりです。1≤n≤100000、m=n−1、1≤u,v≤n、1≤w≤26。入力は、辺の本数で数えた直径が 1000 未満の木をなすことが保証されます。ノードは 1 始まりです。",
+    "output": "異なるノードの順序なしの nice pair の個数を、64ビット整数で出力します。ノードが1つだけの木では 0 を出力します。",
+    "explanation": "3つの公開例は、それぞれ 019 の 9、021/022 の 7、023/024 の 10 をそのまま使っています。019 では BAA を ABA に並べ替えられるので、これも数えます。5ノードすべて A の木には C(5,2)=10 組あります。018 はトポロジーが異なり、正しい答えは 8 です。本サイトでは別に扱っており、019 の 9 とは混同しません。",
+    "hints": [
+      "回文に並べ替えられるかは、出現回数の偶奇を確認するだけで判定できます。",
+      "根からの2本のパスの偶奇マスクを XOR すると、ノード間のパスのマスクが得られます。",
+      "現在のノードを挿入する前に、それまでに見たノードに対して問い合わせを行います。これにより、自分自身との組と二重カウントを除外できます。"
+    ]
+  },
+  "ko": {
+    "title": "팰린드롬으로 재배열할 수 있는 트리의 순서 없는 노드 쌍",
+    "description": "무방향 트리에서 가중치 1..26의 간선은 각각 a..z에 대응합니다. 서로 다른 두 노드 사이의 유일한 경로에 있는 모든 간선 문자를 임의의 순서로 재배열하여 팰린드롬을 만들 수 있다면, 그 순서 없는 노드 쌍은 좋은 쌍입니다. 좋은 쌍의 수를 구하십시오. 경로 문자열이 이미 팰린드롬일 필요는 없으며, 노드는 자기 자신과 쌍을 이루지 않고 두 방향을 중복해서 세지 않습니다.",
+    "input": "첫 번째 줄에 n m이 주어지고, 이어서 u v w가 적힌 m개의 줄이 주어집니다. 원문의 전체 제약 조건은 1≤n≤100000, m=n−1, 1≤u,v≤n, 1≤w≤26이며, 입력은 지름(간선 수 기준)이 1000 미만인 트리임이 보장됩니다. 노드는 1-based입니다.",
+    "output": "서로 다른 노드의 순서 없는 좋은 쌍의 수를 64비트 정수로 출력합니다. 노드가 하나뿐인 트리에서는 0을 출력합니다.",
+    "explanation": "세 공개 예제는 각각 019의 9, 021/022의 7, 023/024의 10을 유지합니다. 019에서 BAA는 ABA로 재배열할 수 있으므로 이것도 셉니다. 노드 다섯 개가 모두 A인 트리는 C(5,2)=10쌍입니다. 018은 토폴로지가 달라 정답이 8이며, 이 사이트에서는 따로 다루고 019의 9와 섞지 않습니다.",
+    "hints": [
+      "팰린드롬으로 재배열할 수 있는지는 각 문자 빈도의 홀짝만 확인하면 됩니다.",
+      "루트까지의 두 경로의 홀짝 마스크를 XOR하면 두 노드 사이 경로의 마스크가 됩니다.",
+      "현재 노드를 삽입하기 전에 지금까지 본 노드를 질의하면 자기 자신과의 쌍과 중복 계산이 배제됩니다."
+    ]
+  },
+  "vi": {
+    "title": "Số cặp nút không có thứ tự trên cây có thể sắp xếp lại thành palindrome",
+    "description": "Trong một cây vô hướng, trọng số cạnh 1..26 tương ứng với a..z. Với hai nút phân biệt, lấy mọi chữ cái trên các cạnh của đường đi duy nhất giữa chúng; nếu các chữ cái này có thể được sắp xếp lại theo thứ tự bất kỳ thành một palindrome thì cặp nút không có thứ tự đó là một cặp tốt (nice pair). Tìm số cặp tốt. Xâu của đường đi không cần phải là palindrome sẵn; một nút không ghép với chính nó, và hai chiều không được đếm hai lần.",
+    "input": "Dòng đầu chứa n m, tiếp theo là m dòng u v w. Đầy đủ ràng buộc gốc: 1≤n≤100000, m=n−1, 1≤u,v≤n, 1≤w≤26; đầu vào đảm bảo tạo thành một cây có đường kính, tính theo số cạnh, nhỏ hơn hẳn 1000. Các nút được đánh số từ 1.",
+    "output": "In số cặp tốt không có thứ tự của các nút phân biệt, dùng số nguyên 64 bit; với cây một nút, in 0.",
+    "explanation": "Ba ví dụ công khai lần lượt giữ lại số 9 của 019, số 7 của 021/022, và số 10 của 023/024. Trong 019, BAA có thể sắp xếp lại thành ABA, nên cũng được tính; một cây năm nút toàn A có C(5,2)=10 cặp. 018 có cấu trúc khác với đáp án thật là 8; trang này xử lý riêng nó và không lẫn với số 9 của 019.",
+    "hints": [
+      "Việc sắp xếp lại thành palindrome chỉ cần kiểm tra tính chẵn lẻ của tần suất.",
+      "XOR các mặt nạ chẵn lẻ của hai đường đi từ gốc cho mặt nạ của đường đi giữa các nút.",
+      "Truy vấn các nút đã thấy trước khi chèn nút hiện tại, như vậy loại trừ các cặp với chính nó và việc đếm hai lần."
+    ]
   }
 }

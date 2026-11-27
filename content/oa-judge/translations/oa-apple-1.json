@@ -11,5 +11,35 @@
     "hints": [
       "Find the last 0 in the array. While scanning, a 1 before it enters the deleting state and a 0 exits it; any 1 after the last 0 can never be closed, so everything there is kept."
     ]
+  },
+  "ja": {
+    "title": "1 から 0 までの完全な区間を無視する",
+    "description": "左から右へ、1 で始まり、その後の最初の 0 で終わる完全な区間を、両端を含めてすべて削除します。区間の途中で別の 1 に出会っても、区間の開始は更新されません。閉じる 0 がない末尾の部分はすべて残し、それ以外の要素は元の順序のまま残します。残した要素の和も返してください。元の例 2 と例 4 の出力は問題文および説明と矛盾していたため、本サイトは明示された問題文に従って修正しています。\n\n入出力形式は本サイトが用意したものです。",
+    "input": "1 行目に n、2 行目に n 個の整数が与えられます。1≤n≤100000、−10⁹≤要素≤10⁹。",
+    "output": "1 行目は残った要素の数 m、2 行目は m 個の整数 (m=0 のときは空行)、3 行目は和で、64 ビット整数が必要です。",
+    "explanation": "例 1: 1, 7, 0 を削除し、6, 2, 5, 6, 1, 3 を残します。和は 23 です。例 2: 後ろの 2 つの 1 には、どちらもその後に 0 がないので、配列全体が残り、和は 24 です。元の出力では要素が欠けていました。例 3: 最初の 1 からその後の 0 までの区間を削除し、0, 6, 2 を残します。和は 8 です。元の出力では 6 が欠けていました。",
+    "hints": [
+      "配列の最後の 0 を見つけます。走査中、それより前にある 1 は削除状態に入り、0 で削除状態を抜けます。最後の 0 より後ろの 1 は決して閉じられないため、そこはすべて残します。"
+    ]
+  },
+  "ko": {
+    "title": "1에서 0까지 완결된 구간 무시하기",
+    "description": "왼쪽에서 오른쪽으로 보면서, 1로 시작하여 그 뒤의 첫 번째 0에서 끝나는 완결된 구간을 양 끝을 포함해 삭제합니다. 구간 안에서 다른 1을 만나도 시작점은 초기화되지 않습니다. 닫는 0이 없는 마지막 구간은 전부 유지하며, 나머지 원소는 원래 순서대로 유지합니다. 유지된 원소의 합도 함께 반환하세요. 원본 예시 2와 4의 출력은 문제 설명 및 해설과 모순되므로 이 사이트에서 명시된 문제 설명에 따라 수정했습니다.\n\n입출력 형식은 이 사이트에서 준비했습니다.",
+    "input": "첫째 줄에 n이 주어지고, 둘째 줄에 n개의 정수가 주어집니다. 1≤n≤100000, −10⁹≤원소≤10⁹.",
+    "output": "첫째 줄에는 유지된 원소의 개수 m, 둘째 줄에는 m개의 정수(m=0이면 빈 줄), 셋째 줄에는 합을 출력하며 합에는 64비트 정수가 필요합니다.",
+    "explanation": "예시 1: 1, 7, 0을 삭제하고 6, 2, 5, 6, 1, 3을 유지하며 합은 23입니다. 예시 2: 뒤쪽의 두 1 뒤에는 모두 0이 없으므로 배열 전체가 유지되고 합은 24입니다. 원래 출력은 원소를 빠뜨렸습니다. 예시 3: 첫 번째 1부터 그 뒤의 0까지의 구간을 삭제하여 0, 6, 2를 유지하며 합은 8입니다. 원래 출력은 6을 빠뜨렸습니다.",
+    "hints": [
+      "배열에서 마지막 0을 찾습니다. 스캔하는 동안 그 앞의 1은 삭제 상태에 들어가고 0은 삭제 상태를 벗어나게 합니다. 마지막 0 뒤의 1은 닫힐 수 없으므로 그 이후는 모두 유지합니다."
+    ]
+  },
+  "vi": {
+    "title": "Bỏ qua các khoảng 1-đến-0 hoàn chỉnh",
+    "description": "Từ trái sang phải, xóa mỗi khoảng hoàn chỉnh bắt đầu bằng một số 1 và kết thúc tại số 0 đầu tiên sau nó, bao gồm cả hai đầu. Gặp một số 1 khác bên trong khoảng không làm đặt lại điểm bắt đầu. Đoạn đuôi không có số 0 đóng được giữ nguyên toàn bộ, và mọi phần tử khác được giữ theo thứ tự ban đầu; đồng thời trả về tổng các phần tử được giữ. Đầu ra của các ví dụ gốc 2 và 4 mâu thuẫn với đề bài và phần giải thích; trang này sửa chúng theo đề bài tường minh.\n\nĐịnh dạng nhập và xuất do trang này chuẩn bị.",
+    "input": "Dòng đầu chứa n, dòng thứ hai chứa n số nguyên. 1≤n≤100000, −10⁹≤phần tử≤10⁹.",
+    "output": "Dòng đầu là số phần tử được giữ m; dòng thứ hai chứa m số nguyên (một dòng trống khi m=0); dòng thứ ba là tổng, cần số nguyên 64 bit.",
+    "explanation": "Ví dụ 1: xóa 1, 7, 0 và giữ 6, 2, 5, 6, 1, 3, tổng 23. Ví dụ 2: hai số 1 về sau đều không có số 0 theo sau, nên giữ cả mảng, tổng 24; đầu ra gốc đã bỏ sót phần tử. Ví dụ 3: xóa khoảng từ số 1 đầu tiên đến số 0 theo sau, giữ 0, 6, 2, tổng 8; đầu ra gốc bỏ sót số 6.",
+    "hints": [
+      "Tìm số 0 cuối cùng trong mảng. Khi quét, một số 1 đứng trước nó đưa vào trạng thái xóa và một số 0 thoát khỏi trạng thái đó; mọi số 1 đứng sau số 0 cuối cùng không bao giờ có thể được đóng, nên mọi thứ ở đó đều được giữ."
+    ]
   }
 }

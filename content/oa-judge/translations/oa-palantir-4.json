@@ -11,5 +11,35 @@
     "hints": [
       "Define the path state as the minimum possible maximum edge weight on reaching a node, not the path length."
     ]
+  },
+  "ja": {
+    "title": "Minimize Path Value",
+    "description": "重み付き無向グラフ、始点 source、終点 destination が与えられます。経路のストレスレベルは、その経路上の辺の重みの最大値です。ストレスレベルが最小の経路を求めてください。2 つのノードが連結でない場合は -1 を返します。source=destination の場合は 0 を返します。これは、固定された 3 つのソースの実装と一致しています。",
+    "input": "1 行目に N M が与えられ、続く M 行にそれぞれ u v w が与えられ、最後の行に source destination が与えられます。ノードには 1..N の番号が付いています。本サイトが追加した制約:1≤N≤5000、0≤M≤20000、1≤u,v,source,destination≤N、0≤w≤10^9。元の Constraints の節は壊れたプレースホルダだったため、上のサイズと非負の重みの範囲は、本サイトが明示した上限です。グラフが連結である必要はなく、多重辺と自己ループも許されます。",
+    "output": "整数を 1 つ出力します。経路上の辺の重みの最大値の最小値、または destination に到達できなければ -1 です。source=destination のときは 0 を出力します。",
+    "explanation": "source から、グラフ全体への最小のボトルネック値を管理します。u→v に延長するとき、新しい経路のストレスは max(現在のストレス, w) です。優先度付きキューを使い、現在のボトルネック値が最も小さいノードを毎回確定します。",
+    "hints": [
+      "経路の状態を、経路の長さではなく、そのノードに到達するまでの辺の重みの最大値としてありうる最小値と定義します。"
+    ]
+  },
+  "ko": {
+    "title": "Minimize Path Value",
+    "description": "가중치가 있는 무방향 그래프, 시작 노드 source, 끝 노드 destination이 주어집니다. 경로의 스트레스 수준은 경로 위의 간선 가중치 중 최댓값이며, 스트레스 수준이 최소인 경로를 찾으세요. 두 노드가 연결되어 있지 않으면 -1을 반환합니다. source=destination이면 세 가지 고정된 원본 구현과 마찬가지로 0을 반환합니다.",
+    "input": "첫째 줄에 N M이 주어지고, 다음 M개의 줄에 각각 u v w가 주어지며, 마지막 줄에 source destination이 주어집니다. 노드 번호는 1..N입니다. 이 사이트가 추가한 제약: 1≤N≤5000, 0≤M≤20000, 1≤u,v,source,destination≤N, 0≤w≤10^9. 원 출처의 제약 조건 절은 훼손된 자리 표시자이므로 위의 크기와 음이 아닌 가중치 범위는 이 사이트가 명시한 범위입니다. 그래프가 연결되어 있을 필요는 없으며 평행 간선과 자기 루프도 허용됩니다.",
+    "output": "정수 하나를 출력합니다. 경로 위 간선 가중치의 최댓값이 가능한 한 작은 값이며, destination에 도달할 수 없으면 -1입니다. source=destination이면 0을 출력합니다.",
+    "explanation": "source에서 그래프 전체까지의 최소 병목 값을 유지합니다. u→v로 확장할 때 새 경로의 스트레스는 max(현재 스트레스, w)입니다. 우선순위 큐를 사용하여 매번 현재 병목 값이 가장 작은 노드를 확정하세요.",
+    "hints": [
+      "경로 상태를 경로 길이가 아니라 노드에 도달할 때의 간선 가중치 최댓값의 가능한 최솟값으로 정의하세요."
+    ]
+  },
+  "vi": {
+    "title": "Minimize Path Value",
+    "description": "Cho một đồ thị vô hướng có trọng số, một nút bắt đầu source và một nút kết thúc destination. Mức căng thẳng của một đường đi là trọng số cạnh lớn nhất trên đường đi đó; hãy tìm đường đi có mức căng thẳng nhỏ nhất. Nếu hai nút không liên thông, trả về -1. Nếu source=destination, trả về 0, nhất quán với ba cài đặt nguồn cố định.",
+    "input": "Dòng đầu chứa N M; mỗi dòng trong M dòng tiếp theo chứa u v w; dòng cuối chứa source destination. Các nút được đánh số 1..N. Ràng buộc do trang này bổ sung: 1≤N≤5000, 0≤M≤20000, 1≤u,v,source,destination≤N, 0≤w≤10^9. Phần Constraints của nguồn là một chỗ giữ chỗ bị hỏng, nên các kích thước trên và miền trọng số không âm là các cận do trang này nêu rõ; đồ thị không bắt buộc liên thông, và cho phép cạnh song song cũng như khuyên.",
+    "output": "In ra một số nguyên: giá trị lớn nhất nhỏ nhất có thể của trọng số cạnh dọc theo một đường đi, hoặc -1 nếu không tới được destination. In 0 khi source=destination.",
+    "explanation": "Duy trì giá trị thắt cổ chai nhỏ nhất từ source đến mọi nút của đồ thị. Khi mở rộng u→v, mức căng thẳng của đường đi mới là max(mức căng thẳng hiện tại, w). Dùng hàng đợi ưu tiên và mỗi lần chốt nút có giá trị thắt cổ chai hiện tại nhỏ nhất.",
+    "hints": [
+      "Định nghĩa trạng thái đường đi là giá trị lớn nhất nhỏ nhất có thể của trọng số cạnh khi tới một nút, chứ không phải độ dài đường đi."
+    ]
   }
 }

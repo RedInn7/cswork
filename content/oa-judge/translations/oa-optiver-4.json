@@ -11,5 +11,35 @@
     "hints": [
       "Use an order-statistic treap sorted by (timestamp, receiving sequence number); prefix ranks give the number of logs in the window, and the last m entries can be taken by rank."
     ]
+  },
+  "ja": {
+    "title": "Record Log",
+    "description": "ロガーを実装してください。各ログは、整数の logId、タイムスタンプ、受信順を持ちます。ログは順不同に到着することがあり、logId の値は重複することがあります。ウィンドウの基準は、記録済みのログの最大のタイムスタンプです。基準より 3600 秒より前のログはウィンドウから除外されます。つまり、`timestamp > maximum timestamp - 3600` を満たす記録だけが数えられます。GET_LOGS はタイムスタンプの昇順にソートし、同じ場合は受信順の昇順で並べ、ウィンドウ内の最新の高々 m 個の logId の値を返します。getLogCount はウィンドウ内のログの総数を返します。",
+    "input": "1 行目に m と q が与えられます。続く q 行は操作で、`RECORD logId timestamp`、`GET_LOGS`、`COUNT` のいずれかです。各クエリは 1 行を出力します。GET_LOGS はカンマ区切りの logId の値を出力し(該当するものがなければ空行)、COUNT はウィンドウ内の記録の個数を出力します。本サイトが補足した制限:1≤m≤1000、1≤q≤1000000、|logId|≤10^9、|timestamp|≤10^12、すべてのクエリの出力の合計は 65536 バイト以下です。ウィンドウの基準とタイムスタンプが等しい場合の規則は、固定されたソースの実装に従って明示されています。",
+    "output": "GET_LOGS/COUNT の各クエリについて、結果を 1 行ずつ入力順に出力します。RECORD は何も出力しません。",
+    "explanation": "固定されたソースの参考解法は、最大のタイムスタンプを基準とし、timestamp−3600 より厳密に大きいウィンドウを使い、タイムスタンプが等しい場合は受信順で決めます。本サイトが追加したのは、コマンドラインの入出力と数値の範囲だけです。",
+    "hints": [
+      "(timestamp, 受信の通し番号)で並べた順序統計木の treap を使います。接頭辞のランクからウィンドウ内のログの個数が分かり、最後の m 個はランクで取り出せます。"
+    ]
+  },
+  "ko": {
+    "title": "Record Log",
+    "description": "로거를 구현하세요. 각 로그는 정수 logId, 타임스탬프, 수신 순서를 가지며, 로그는 순서가 뒤섞여 도착할 수 있고 logId 값은 중복될 수 있습니다. 윈도우 기준점은 기록된 로그 중 가장 큰 타임스탬프입니다. 기준점보다 3600초 이전보다 엄격히 이른 로그는 윈도우에서 제외되며, 즉 `timestamp > maximum timestamp - 3600`인 기록만 셉니다. GET_LOGS는 타임스탬프 오름차순으로 정렬하고 동률이면 수신 순서 오름차순으로 정렬하여, 윈도우 안의 가장 최근 로그 최대 m개의 logId 값을 반환합니다. getLogCount는 윈도우 안의 로그 총수를 반환합니다.",
+    "input": "첫째 줄에 m과 q가 주어집니다. 이어서 q줄의 연산이 주어지며, 각각 `RECORD logId timestamp`, `GET_LOGS`, `COUNT` 중 하나입니다. 각 질의는 한 줄을 출력합니다. GET_LOGS는 쉼표로 구분된 logId 값을 출력하고(해당하는 것이 없으면 빈 줄), COUNT는 윈도우 안의 기록 수를 출력합니다. 이 사이트의 보충 제한: 1≤m≤1000, 1≤q≤1000000, |logId|≤10^9, |timestamp|≤10^12이며, 모든 질의의 총 출력은 최대 65536바이트입니다. 윈도우 기준점과 타임스탬프가 같을 때의 규칙은 고정된 원본 구현에 따라 명시했습니다.",
+    "output": "각 GET_LOGS/COUNT 질의마다 입력 순서대로 결과를 한 줄씩 출력합니다. RECORD는 출력이 없습니다.",
+    "explanation": "고정된 원본의 참조 풀이는 최대 타임스탬프를 기준점으로 쓰고, timestamp−3600보다 엄격히 큰 윈도우를 사용하며, 타임스탬프가 같으면 수신 순서로 결정합니다. 이 사이트는 명령줄 입출력과 수치 범위만 추가했습니다.",
+    "hints": [
+      "(타임스탬프, 수신 순번)으로 정렬된 순서 통계 트립(treap)을 사용하세요. 접두사 순위로 윈도우 안의 로그 수를 구하고, 마지막 m개는 순위로 가져올 수 있습니다."
+    ]
+  },
+  "vi": {
+    "title": "Record Log",
+    "description": "Hãy cài đặt một bộ ghi nhật ký. Mỗi bản ghi có một logId nguyên, một timestamp, và thứ tự nhận của nó; các bản ghi có thể đến không theo thứ tự, và các giá trị logId có thể lặp lại. Mốc của cửa sổ là timestamp lớn nhất trong các bản ghi đã ghi. Các bản ghi sớm hơn ngặt 3600 giây so với mốc bị loại khỏi cửa sổ, tức là chỉ các bản ghi có `timestamp > maximum timestamp - 3600` mới được đếm. GET_LOGS sắp xếp theo timestamp tăng dần, phá hòa bằng thứ tự nhận tăng dần, và trả về nhiều nhất m giá trị logId mới nhất trong cửa sổ; getLogCount trả về tổng số bản ghi trong cửa sổ.",
+    "input": "Dòng đầu chứa m và q. Sau đó là q dòng thao tác: `RECORD logId timestamp`, `GET_LOGS`, hoặc `COUNT`. Mỗi truy vấn in một dòng: GET_LOGS in các giá trị logId cách nhau bằng dấu phẩy (một dòng trống nếu không có bản ghi nào thỏa), và COUNT in số bản ghi trong cửa sổ. Các giới hạn bổ sung của trang này: 1≤m≤1000, 1≤q≤1000000, |logId|≤10^9, |timestamp|≤10^12, và tổng đầu ra của mọi truy vấn không quá 65536 byte. Mốc cửa sổ và quy tắc khi timestamp bằng nhau được nêu rõ theo cài đặt nguồn đã sửa.",
+    "output": "Với mỗi truy vấn GET_LOGS/COUNT, in một dòng kết quả, theo thứ tự đầu vào; RECORD không có đầu ra.",
+    "explanation": "Lời giải tham chiếu của nguồn đã sửa dùng timestamp lớn nhất làm mốc, dùng cửa sổ lớn hơn ngặt timestamp−3600, và phá hòa timestamp bằng thứ tự nhận. Trang này chỉ thêm đầu vào/đầu ra qua dòng lệnh và các cận số.",
+    "hints": [
+      "Dùng một treap thống kê thứ tự sắp theo (timestamp, số thứ tự nhận); hạng của tiền tố cho biết số bản ghi trong cửa sổ, và m phần tử cuối có thể lấy theo hạng."
+    ]
   }
 }

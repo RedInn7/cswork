@@ -11,5 +11,35 @@
     "hints": [
       "Binary search on the target throughput T, compute for each service the minimum scale-up cost needed to reach T, and sum them; if any tp is 0, output 0 directly."
     ]
+  },
+  "ja": {
+    "title": "予算内での直列パイプラインの最大スループット",
+    "description": "サービス i を 1 回スケールアップするコストは cost[i] で、t 回スケールアップしたあとのスループットは tp[i]*(1+t) です。直列パイプラインのスループットは、すべてのサービスのうちの最小値です。総コストが予算 budget を超えない範囲で、スループットの最大値を求めてください。\n\n本サイトは標準入出力と解法を独自にまとめました。元の資料にない範囲の補足と例の訂正は、プロトコルに明記しています。",
+    "input": "1 行目に n budget、2 行目に n 個の tp の値、3 行目に n 個の cost の値が与えられます。元の OCR001/002 には数値の範囲がありません。本サイトでは 1≤n≤100000、0≤tp≤10^9、1≤cost≤10^9、0≤budget≤10^9 とします。コストが正であることで、無料の無制限なスケールアップを排除し、スループット 0 は決して増やせません。",
+    "output": "答えを整数 1 つで出力してください。",
+    "explanation": "3 つの公開例の出力は順に 10、2、0 です。これらは独立した全探索または直接のシミュレーションで確認済みです。",
+    "hints": [
+      "目標のスループット T を二分探索し、各サービスが T に達するための最小のスケールアップコストを計算して合計します。tp のどれかが 0 なら、直接 0 を出力します。"
+    ]
+  },
+  "ko": {
+    "title": "예산 내 직렬 파이프라인의 최대 처리량",
+    "description": "서비스 i를 한 번 확장하는 데 cost[i]가 들고, t번 확장한 뒤 그 처리량은 tp[i]*(1+t)입니다. 직렬 파이프라인의 처리량은 모든 서비스의 처리량 중 최솟값입니다. 총 비용이 budget을 넘지 않는 범위에서 최대 처리량을 구하세요.\n\n이 사이트는 표준 입출력과 풀이를 독자적으로 정리했으며, 원문에 없던 범위의 보충과 예제의 수정은 규약에 명시했습니다.",
+    "input": "첫 번째 줄에 n budget이, 두 번째 줄에 n개의 tp 값이, 세 번째 줄에 n개의 cost 값이 주어집니다. 원래 OCR001/002에는 수치 범위가 없으며, 이 사이트는 1≤n≤100000, 0≤tp≤10^9, 1≤cost≤10^9, 0≤budget≤10^9를 사용합니다. 비용이 양수라는 것은 무료 확장이 무한히 가능한 경우를 명시적으로 배제하며, 처리량 0은 결코 늘릴 수 없습니다.",
+    "output": "정수 답 하나를 출력합니다.",
+    "explanation": "세 개의 공개 예제의 출력은 순서대로 10; 2; 0입니다. 독립적인 완전 탐색이나 직접 시뮬레이션으로 검증했습니다.",
+    "hints": [
+      "목표 처리량 T에 대해 이분 탐색을 하고, 각 서비스가 T에 도달하는 데 필요한 최소 확장 비용을 계산하여 합산합니다. tp 중 하나라도 0이면 바로 0을 출력합니다."
+    ]
+  },
+  "vi": {
+    "title": "Thông lượng tối đa của pipeline nối tiếp trong giới hạn ngân sách",
+    "description": "Nâng cấp dịch vụ i một lần tốn cost[i], và sau t lần nâng cấp thông lượng của nó là tp[i]*(1+t). Thông lượng của pipeline nối tiếp là giá trị nhỏ nhất trên tất cả các dịch vụ; tìm thông lượng lớn nhất với tổng chi phí không vượt quá budget.\n\nTrang này tự biên soạn độc lập đầu vào/đầu ra chuẩn và lời giải; các bổ sung cho giới hạn còn thiếu trong nguồn và các sửa lỗi cho ví dụ được nêu rõ trong giao thức.",
+    "input": "Dòng đầu chứa n budget, dòng thứ hai chứa n giá trị tp, và dòng thứ ba chứa n giá trị cost. OCR001/002 gốc không đưa ra giới hạn số nào; trang này dùng 1≤n≤100000, 0≤tp≤10^9, 1≤cost≤10^9, và 0≤budget≤10^9. Chi phí dương loại trừ rõ ràng việc nâng cấp miễn phí không giới hạn, và thông lượng 0 không bao giờ có thể tăng lên.",
+    "output": "In ra một số nguyên answer.",
+    "explanation": "Đầu ra của ba ví dụ công khai lần lượt là: 10; 2; 0. Chúng đã được kiểm tra bằng liệt kê độc lập hoặc mô phỏng trực tiếp.",
+    "hints": [
+      "Tìm kiếm nhị phân trên thông lượng mục tiêu T, tính cho mỗi dịch vụ chi phí nâng cấp tối thiểu cần thiết để đạt T, và cộng chúng lại; nếu có tp nào bằng 0 thì in 0 ngay."
+    ]
   }
 }

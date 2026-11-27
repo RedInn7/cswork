@@ -11,5 +11,35 @@
     "hints": [
       "Each black cell belongs to at most four 2×2 windows, so only accumulate the windows touched by black cells; every other window has zero black cells."
     ]
+  },
+  "ja": {
+    "title": "黒いセルの個数で 2×2 部分行列を数える",
+    "description": "rows×cols のグリッドと、すべての黒いセルの座標が与えられます。各 2×2 部分行列を、含まれる黒いセルの個数 0..4 で分類し、各クラスの個数を数えて、5 つの個数を返してください。座標は 0 から始まり、重複はありません。\n\n問題文は明示されています。本サイトは、座標の範囲、黒いセルが互いに異なること、および入力プロトコルを追加しています。\n\n出典：https://oamaster.com/docs/companies/koddi#4-count-2x2-submatrices-by-black-cell-count（固定した問題文のフィンガープリント 48fdfc5f9bc2a2300bd5ec8a9550061d26633407e3f91b51a20f2ba5973a2ff8）。本サイトが追加した入出力プロトコルと範囲は問題文に従うものであり、元のサイトのルールであるとは主張しません。",
+    "input": "1 行目に rows cols k（1≤rows,cols≤10^9、0≤k≤min(rows×cols,200000)）、続く k 行に各黒いセルの 0 始まりの row col が与えられます。",
+    "output": "5 つの整数を出力します。黒いセルを 0、1、2、3、4 個含むウィンドウの個数を、この順に出力します。",
+    "explanation": "完全な解法、証明、計算量については付属の解説を参照してください。",
+    "hints": [
+      "各黒いセルは高々 4 つの 2×2 ウィンドウに属するので、黒いセルに触れるウィンドウだけを累積します。それ以外のウィンドウは、黒いセルの個数が 0 です。"
+    ]
+  },
+  "ko": {
+    "title": "검은 칸 수에 따른 2×2 부분 행렬 개수 세기",
+    "description": "rows×cols 격자에서 모든 검은 칸의 좌표가 주어집니다. 각 2×2 부분 행렬을 포함하는 검은 칸의 수 0..4에 따라 분류하고, 각 부류의 개수 다섯 개를 반환하세요. 좌표는 0부터 시작하며 중복이 없습니다.\n\n문제 지문은 명시적이며, 이 사이트는 좌표 범위, 검은 칸이 서로 다르다는 조건, 입력 규약을 추가했습니다.\n\n출처: https://oamaster.com/docs/companies/koddi#4-count-2x2-submatrices-by-black-cell-count (고정된 문제 지문 핑거프린트 48fdfc5f9bc2a2300bd5ec8a9550061d26633407e3f91b51a20f2ba5973a2ff8). 이 사이트가 추가한 입출력 형식과 범위는 문제 지문을 따르며 원본 사이트의 규칙이라고 주장하지 않습니다.",
+    "input": "첫 번째 줄에 rows cols k가 주어집니다(1≤rows,cols≤10^9, 0≤k≤min(rows×cols,200000)). 다음 k줄에는 각 검은 칸의 0 기반 row col이 주어집니다.",
+    "output": "정수 5개를 출력합니다. 검은 칸을 0, 1, 2, 3, 4개 포함하는 윈도우의 수를 이 순서대로 출력합니다.",
+    "explanation": "전체 접근, 증명, 복잡도는 함께 제공되는 해설을 참고하세요.",
+    "hints": [
+      "검은 칸 하나는 최대 네 개의 2×2 윈도우에 속하므로, 검은 칸이 닿는 윈도우만 누적하면 됩니다. 나머지 윈도우의 검은 칸 수는 0입니다."
+    ]
+  },
+  "vi": {
+    "title": "Đếm các ma trận con 2×2 theo số ô đen",
+    "description": "Cho tọa độ của mọi ô đen trong một lưới rows×cols. Phân loại mỗi ma trận con 2×2 theo số ô đen mà nó chứa, từ 0..4, đếm từng loại và trả về năm số đếm. Tọa độ bắt đầu từ 0 và không có trùng lặp.\n\nĐề bài tường minh; trang này bổ sung khoảng tọa độ, tính phân biệt của các ô đen và giao thức đầu vào.\n\nNguồn: https://oamaster.com/docs/companies/koddi#4-count-2x2-submatrices-by-black-cell-count (fixed statement fingerprint 48fdfc5f9bc2a2300bd5ec8a9550061d26633407e3f91b51a20f2ba5973a2ff8). Giao thức đầu vào/đầu ra và các cận do trang này bổ sung đi theo đề bài và không được xem là quy tắc của trang gốc.",
+    "input": "Dòng đầu chứa rows cols k (1≤rows,cols≤10^9, 0≤k≤min(rows×cols,200000)); k dòng tiếp theo cho row col (tính từ 0) của từng ô đen.",
+    "output": "In ra 5 số nguyên: số cửa sổ chứa 0, 1, 2, 3 và 4 ô đen, theo đúng thứ tự đó.",
+    "explanation": "Xem phần ghi chú đi kèm để biết đầy đủ cách tiếp cận, chứng minh và độ phức tạp.",
+    "hints": [
+      "Mỗi ô đen thuộc tối đa bốn cửa sổ 2×2, nên chỉ cần cộng dồn các cửa sổ mà ô đen chạm tới; mọi cửa sổ khác có 0 ô đen."
+    ]
   }
 }

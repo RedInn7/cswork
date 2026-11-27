@@ -11,5 +11,35 @@
     "hints": [
       "Multiply the inputs by 10^6 to convert them exactly to integers, sort by x, binary search the segment for each query, and compute the exact rational value. Use integer division to round the result to 6 decimal places without going through double."
     ]
+  },
+  "ja": {
+    "title": "両端を外挿する折れ線の区分線形補間",
+    "description": "点を x の昇順に並べ、隣り合う点を結びます。2点の間にあるクエリは線形補間で答えます。すべての点より左では最初の線分を延長し、右では最後の線分を延長します。ちょうど節点上のクエリは、その y を返します。解答は絶対誤差 ≤10^-6 で受理され、相対誤差ではありません。\n\n本サイトは標準入出力と解法を独自に作成しています。元の問題に欠けていた制約の補足と、例の訂正はプロトコルに明記しています。",
+    "input": "1行目に n q が与えられ、続く n 行に x y、その後に q 行でそれぞれクエリの x が与えられます。元の 2≤n≤200000 と 1≤q≤200000 はそのままです。点は整列されておらず、x の値は互いに異なります。元の問題には座標の数値範囲がないため、本サイトでは次を追加します。入力座標は指数表記や余分な先頭の 0 を含まない符号付き有限小数で、小数部は最大 6 桁、絶対値は ≤10^6 です。各出力トークンは ≤64 バイトで、通常の小数表記または科学的記数法、指数の絶対値は ≤30、有限値でなければならず、ちょうど q 個を個数の接頭辞なしで出力します。入力の数には整数部が必要で、小数点がある場合はその後に 1..6 桁が続かなければなりません。.5、1.、指数表記は受け付けません。+ または − の符号は許され、負のゼロも許されます。入力座標の厳密な文法は [+-]?(0|[1-9][0-9]*)([.][0-9]{1,6})? です。+ 符号、負のゼロ、末尾のゼロは許され、.5 や 1. は許されません。n/q は余分な先頭の 0 を含まない正の整数です。各物理行は上記のフィールド数を持ち、行内では空白またはタブで区切られます。改行は LF または CRLF で、最終改行は省略可能、余分な空行はありません。入力全体は ≤9600040 バイト、出力は ASCII 空白で区切られ ≤16MiB です。",
+    "output": "各クエリに対して有限の10進数を1行ずつ、合計 q 行出力します。個数のヘッダは付けず、科学的記数法も許されます。絶対誤差が 0.000001 以下であれば正解です。NaN、Infinity、答えの不足または過剰は拒否されます。最終改行は省略可能で、標準出力の合計は ≤16MiB です。",
+    "explanation": "3つの公開例の出力は順に 2.000000 / -2.000000 / 6.000000、1.000000 / 2.000000、0.000001 です。独立した全探索または直接シミュレーションで確認済みです。",
+    "hints": [
+      "入力を 10^6 倍して正確に整数へ変換し、x で整列します。各クエリについて二分探索で線分を見つけ、厳密な有理数の値を計算します。結果は整数除算で小数第6位に丸め、double を経由しないようにします。"
+    ]
+  },
+  "ko": {
+    "title": "양 끝을 외삽하는 꺾은선의 구간별 선형 보간",
+    "description": "점들을 x 오름차순으로 정렬하고 인접한 점끼리 이어 줍니다. 두 점 사이의 질의는 선형 보간으로 답하고, 모든 점의 왼쪽에서는 첫 번째 선분을 연장하며, 오른쪽에서는 마지막 선분을 연장합니다. 질의가 노드 위에 정확히 놓이면 그 노드의 y를 반환합니다. 답은 상대 오차가 아니라 절대 오차 ≤10^-6이면 정답으로 인정합니다.\n\n이 사이트는 표준 입출력과 풀이를 독자적으로 작성했으며, 원문에 없는 범위를 보충한 내용과 예제를 바로잡은 내용은 프로토콜에 명시되어 있습니다.",
+    "input": "첫 번째 줄에 n q가 주어지고, 이어서 x y가 적힌 n개의 줄, 그다음 질의 x가 하나씩 적힌 q개의 줄이 주어집니다. 원래의 2≤n≤200000, 1≤q≤200000을 유지하며, 점은 정렬되어 있지 않고 x 값은 서로 다릅니다. 원문에는 좌표의 수치 범위가 없으므로 이 사이트에서 다음을 추가합니다. 입력 좌표는 지수 표기나 불필요한 앞자리 0이 없는 부호 있는 유한 소수이고, 소수점 아래는 최대 6자리, 절댓값은 ≤10^6입니다. 출력의 각 토큰은 ≤64바이트의 일반 소수 또는 과학적 표기이며 지수의 절댓값은 ≤30이고 유한해야 합니다. 출력은 개수 접두어 없이 정확히 q개를 출력합니다. 입력 숫자에는 정수부가 반드시 있어야 하고, 소수점이 있으면 그 뒤에 1..6개의 숫자가 와야 합니다. .5, 1., 지수 형태는 허용되지 않으며, + 또는 − 부호와 음의 영(negative zero)은 허용됩니다. 입력 좌표의 엄격한 문법은 [+-]?(0|[1-9][0-9]*)([.][0-9]{1,6})? 입니다. + 부호, 음의 영, 끝자리 0은 허용되고 .5나 1.은 허용되지 않으며, n/q는 불필요한 앞자리 0이 없는 양의 정수입니다. 각 물리적 줄에는 위에서 설명한 개수의 필드가 한 줄 안에서 공백/탭으로 구분되어 있고, 줄 끝은 LF 또는 CRLF이며 마지막 줄바꿈은 생략할 수 있고 불필요한 빈 줄은 없습니다. 전체 입력은 ≤9600040바이트이고, 출력은 ASCII 공백으로 구분되며 ≤16MiB입니다.",
+    "output": "질의마다 유한한 소수 하나씩, 총 q줄을 출력하며 개수 헤더는 출력하지 않습니다. 과학적 표기도 허용됩니다. 절대 오차가 0.000001 이하이면 정답입니다. NaN, Infinity, 답의 누락이나 초과는 거부되며, 마지막 줄바꿈은 생략할 수 있고 전체 stdout은 ≤16MiB입니다.",
+    "explanation": "세 공개 예제의 출력은 순서대로 2.000000 / -2.000000 / 6.000000; 1.000000 / 2.000000; 0.000001 입니다. 독립적인 전수 조사 또는 직접 시뮬레이션으로 확인했습니다.",
+    "hints": [
+      "입력에 10^6을 곱해 정확한 정수로 바꾸고, x 기준으로 정렬한 뒤, 질의마다 이분 탐색으로 구간을 찾아 정확한 유리수 값을 계산합니다. 정수 나눗셈으로 소수점 6자리까지 반올림하여 double을 거치지 않도록 합니다."
+    ]
+  },
+  "vi": {
+    "title": "Nội suy tuyến tính từng đoạn trên đường gấp khúc với ngoại suy ở hai đầu",
+    "description": "Sắp xếp các điểm theo x tăng dần và nối các điểm kề nhau. Truy vấn nằm giữa hai điểm được trả lời bằng nội suy tuyến tính; ở bên trái mọi điểm thì kéo dài đoạn đầu tiên, ở bên phải thì kéo dài đoạn cuối cùng; truy vấn đúng tại một nút thì trả về y của nút đó. Đáp án được chấp nhận với sai số tuyệt đối ≤10^-6, không phải sai số tương đối.\n\nTrang này tự biên soạn phần nhập/xuất chuẩn và lời giải; các bổ sung cho những giới hạn thiếu trong nguồn và các hiệu chỉnh cho ví dụ đều được nêu rõ trong phần giao thức.",
+    "input": "Dòng đầu chứa n q, tiếp theo là n dòng x y, rồi q dòng, mỗi dòng một giá trị x của truy vấn. Giữ nguyên 2≤n≤200000 và 1≤q≤200000 của đề gốc; các điểm không có thứ tự và các giá trị x đôi một khác nhau. Đề gốc không nêu giới hạn số cho tọa độ; trang này bổ sung: tọa độ đầu vào là số thập phân hữu hạn có dấu thông thường, không có số mũ và không có chữ số 0 thừa ở đầu, có tối đa 6 chữ số thập phân và giá trị tuyệt đối ≤10^6. Mỗi token đầu ra dài ≤64 byte, ở dạng thập phân thường hoặc ký hiệu khoa học, với số mũ có giá trị tuyệt đối ≤30, và phải hữu hạn; in đúng q phần tử, không có số đếm ở đầu. Số đầu vào phải có phần nguyên; nếu có dấu thập phân thì sau đó phải có 1..6 chữ số, và các dạng .5, 1. hoặc dạng có số mũ không được chấp nhận; cho phép dấu + hoặc −, và cho phép cả số 0 âm. Văn phạm tọa độ đầu vào nghiêm ngặt: [+-]?(0|[1-9][0-9]*)([.][0-9]{1,6})?; cho phép dấu +, số 0 âm và các số 0 ở cuối, còn .5 hoặc 1. thì không; n/q là số nguyên dương không có chữ số 0 thừa ở đầu. Mỗi dòng vật lý có số trường như mô tả ở trên, ngăn cách bởi dấu cách/tab trong cùng dòng; kết thúc dòng là LF hoặc CRLF, ký tự xuống dòng cuối cùng là tùy chọn, và không có dòng trống thừa. Tổng đầu vào ≤9600040 byte, còn đầu ra được ngăn cách bằng khoảng trắng ASCII và ≤16MiB.",
+    "output": "In mỗi truy vấn một số thập phân hữu hạn, tổng cộng q dòng, không có dòng đếm ở đầu; cho phép ký hiệu khoa học. Sai số tuyệt đối không quá 0.000001 được tính là đúng. NaN, Infinity, và đáp án thiếu hoặc thừa đều bị từ chối; ký tự xuống dòng cuối cùng là tùy chọn, và tổng stdout ≤16MiB.",
+    "explanation": "Đầu ra của ba ví dụ công khai lần lượt là: 2.000000 / -2.000000 / 6.000000; 1.000000 / 2.000000; 0.000001. Các kết quả này đã được kiểm tra bằng liệt kê độc lập hoặc mô phỏng trực tiếp.",
+    "hints": [
+      "Nhân đầu vào với 10^6 để chuyển chính xác thành số nguyên, sắp xếp theo x, tìm kiếm nhị phân đoạn cho mỗi truy vấn, rồi tính chính xác giá trị hữu tỉ. Dùng phép chia nguyên để làm tròn kết quả đến 6 chữ số thập phân mà không đi qua double."
+    ]
   }
 }

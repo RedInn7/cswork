@@ -13,5 +13,41 @@
       "After sorting the events, pair them up by parity; duplicate events cannot simply be deduplicated.",
       "Promote r to a type that can represent 2147483648 before computing r+1."
     ]
+  },
+  "ja": {
+    "title": "Expedia OA #4: 区間トグル後の添字の和",
+    "description": "スイッチには 1 から連続した番号が付いており、すべて最初は OFF です。閉区間 [l,r] を順番に処理し、その区間内のすべてのスイッチを反転します。OFF は ON に、ON は OFF になります。最終的に ON になっているスイッチの添字の和を求めてください。個数ではありません。同じ操作を繰り返すと互いに打ち消し合うことがあります。",
+    "input": "入力は操作の回数 n と、続く n 組の左端と右端で、空白で区切られます。LF/CRLF と、直接の EOF に対応します。元の制約のセクションには数値がありません。元の Java の int/int[][] 型に基づき、本サイトは範囲を 1≤l≤r≤2147483647 に明示的に調整しています。n≥0 で、既存の 32MiB の標準入力の予算だけで制限され、操作回数にそれより小さい上限は加えません。n=0 は、操作がないことを意味する、数学的な明示的拡張です。",
+    "output": "最終的に ON になっているスイッチの添字の和を、剰余を取らない厳密な整数として出力します。元の int の戻り値型では狭すぎるので、本サイトは 64 ビットの結果を明示的に使い、最大値は 2305843008139952128 です。",
+    "explanation": "元の問題には例がなく、3 つの公開例はすべて本サイトが作成したものです。[1,3] と [2,4] のあと、ON になっているのは 1 と 4 だけで、和は 5 です。[2,5] を 2 回トグルすると 0 です。[INT_MAX,INT_MAX] を 1 回トグルすると 2147483647 になります。閉区間の右端は含めなければなりません。端点の範囲は、元の問題の数値制約ではなく、明示的な型の調整から来ています。",
+    "hints": [
+      "[l,r] を、l と r+1 の 2 つのトグルイベントに変換します。",
+      "イベントをソートしたあと、偶奇でペアにします。重複したイベントを単純に重複除去してはいけません。",
+      "r+1 を計算する前に、r を 2147483648 を表現できる型に昇格します。"
+    ]
+  },
+  "ko": {
+    "title": "Expedia OA #4: 구간 토글 후 인덱스의 합",
+    "description": "스위치에는 1부터 연속된 번호가 붙어 있고, 처음에는 모두 꺼져 있습니다. 주어진 닫힌 구간 [l,r]을 순서대로 하나씩 처리하며 그 안의 모든 스위치를 토글합니다. 꺼짐은 켜짐으로, 켜짐은 꺼짐으로 바뀝니다. 마지막에 켜져 있는 스위치들의 인덱스의 합을 구하세요. 개수가 아닙니다. 반복된 연산은 서로 상쇄될 수 있습니다.",
+    "input": "입력은 연산 수 n과 그에 이어지는 n개의 왼쪽, 오른쪽 끝점 쌍이며, 공백으로 구분됩니다. LF/CRLF와 바로 EOF가 오는 경우도 지원합니다. 원래의 제약 조건 절에는 숫자가 없었으며, 원래의 Java int/int[][] 타입에 근거하여 이 사이트는 범위를 1≤l≤r≤2147483647로 공개적으로 조정했습니다. n≥0이며, 기존 32MiB 표준 입력 예산으로만 제한되고 연산 수에 더 작은 상한은 추가하지 않습니다. n=0은 연산이 없음을 뜻하는 명시적인 수학적 확장입니다.",
+    "output": "마지막에 켜져 있는 스위치의 인덱스의 합을, 모듈로 없이 정확한 정수로 출력합니다. 원래의 int 반환 타입은 너무 좁으므로 이 사이트는 명시적으로 64비트 결과를 사용합니다. 최댓값은 2305843008139952128입니다.",
+    "explanation": "원문에는 예제가 없으며, 공개 예제 세 개는 모두 이 사이트가 구성했습니다. [1,3]과 [2,4] 이후에는 1과 4만 켜져 있어 합이 5입니다. [2,5]를 두 번 토글하면 0입니다. [INT_MAX,INT_MAX]를 한 번 토글하면 2147483647입니다. 닫힌 구간의 오른쪽 끝은 반드시 포함해야 하며, 끝점의 범위는 원문의 숫자 제약이 아니라 명시적인 타입 조정에서 나온 것입니다.",
+    "hints": [
+      "[l,r]을 l과 r+1에서의 두 번의 토글 이벤트로 바꾸세요.",
+      "이벤트를 정렬한 뒤 홀짝으로 짝을 지으세요. 중복된 이벤트를 단순히 제거하면 안 됩니다.",
+      "r+1을 계산하기 전에 r을 2147483648을 표현할 수 있는 타입으로 승격하세요."
+    ]
+  },
+  "vi": {
+    "title": "Expedia OA #4: Tổng chỉ số sau các lần đảo trạng thái theo đoạn",
+    "description": "Các công tắc được đánh số liên tiếp từ 1, và ban đầu tất cả đều tắt. Với mỗi đoạn đóng [l,r] theo thứ tự, đảo trạng thái mọi công tắc trong đó: tắt thành bật và bật thành tắt. Tìm tổng các chỉ số của những công tắc đang bật ở cuối, chứ không phải số lượng của chúng; các thao tác lặp lại có thể triệt tiêu nhau.",
+    "input": "Đầu vào chứa số thao tác n, theo sau là n cặp điểm đầu trái và phải, phân tách bằng khoảng trắng; hỗ trợ LF/CRLF và EOF trực tiếp. Phần ràng buộc gốc không có con số nào; dựa trên các kiểu Java int/int[][] của đề gốc, site này công khai điều chỉnh phạm vi thành 1≤l≤r≤2147483647. n≥0 và chỉ bị giới hạn bởi ngân sách đầu vào chuẩn 32MiB hiện có; không thêm giới hạn nhỏ hơn nào cho số thao tác. n=0 là phần mở rộng toán học tường minh, nghĩa là không có thao tác nào.",
+    "output": "Xuất tổng các chỉ số của những công tắc cuối cùng đang bật, dưới dạng một số nguyên chính xác, không lấy dư. Kiểu trả về int của đề gốc quá hẹp, nên site này dùng tường minh kết quả 64 bit; giá trị lớn nhất là 2305843008139952128.",
+    "explanation": "Đề gốc không có ví dụ; cả ba ví dụ công khai đều do site này tự dựng: sau [1,3] và [2,4], chỉ có 1 và 4 đang bật, tổng là 5; đảo [2,5] hai lần cho 0; đảo [INT_MAX,INT_MAX] một lần cho 2147483647. Đầu mút phải của đoạn đóng phải được tính vào, và phạm vi đầu mút xuất phát từ việc điều chỉnh kiểu tường minh chứ không phải từ các ràng buộc số trong đề gốc.",
+    "hints": [
+      "Biến [l,r] thành hai sự kiện đảo, tại l và tại r+1.",
+      "Sau khi sắp xếp các sự kiện, ghép chúng theo tính chẵn lẻ; các sự kiện trùng không thể đơn giản loại trùng.",
+      "Nâng r lên một kiểu biểu diễn được 2147483648 trước khi tính r+1."
+    ]
   }
 }

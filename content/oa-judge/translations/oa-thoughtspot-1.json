@@ -13,5 +13,41 @@
       "Fix a completion time; excess requests must be handed to services that have idle time.",
       "Each uncached request takes 2, so round each service's remaining time down accordingly."
     ]
+  },
+  "ja": {
+    "title": "キャッシュ有無のリクエスト割り当てにおける最短完了時間",
+    "description": "1 から n までの番号を持つサービスがあり、m 個のリクエストを処理します。リクエスト i はサービス cache[i] にキャッシュされています。各リクエストは任意の 1 つのサービスに割り当てられます。キャッシュのあるサービスに割り当てた場合は処理に 1、そうでない場合は 2 かかります。異なるサービスは並列に動作できますが、1 つのサービスが同時に処理できるリクエストは 1 つだけです。すべてのリクエストは時刻 0 から開始でき、到着時刻やタスク間の依存はありません。すべてのリクエストを処理し終えるまでの最短時間を求めてください。完全な動作ルールは固定された元の HTML から、完全な数値範囲は同じコミットの MDX から復元しています。コンパイル版にあった、キャッシュ頻度の最大値だけを数える誤ったアルゴリズムは採用していません。",
+    "input": "1 行目に n と m が与えられます。2 行目に m 個の整数 cache[i] が与えられます。1≤n,m≤100000、1≤cache[i]≤n です。標準入力形式は当サイトが整備したもので、数値範囲は固定コミットの Thoughtspot の MDX によるものです。元の Constraints セクションには数値の上下限が記載されていません。",
+    "output": "整数を 1 つ出力してください。すべてのリクエストを完了するまでの最短時間です。",
+    "explanation": "例 1 は元の入力と出力を保ち、元の解説にあったサービス番号の誤記を修正しています。サービス 1 がリクエスト 1、2、4 を時間 3 で処理し、サービス 3 がリクエスト 3 を時間 1 で処理し、サービス 2 がリクエスト 5 を時間 2 で処理します。すべて 3 以内に完了します。例 2 と例 3 は当サイトで追加したものです。リクエストが 1 つだけの場合、そのキャッシュサービスで 1 かかります。4 つのリクエストすべてがサービス 1 にキャッシュされている場合、サービス 1 が 3 つ、サービス 2 が 1 つを処理でき、合計時間は 3 です。",
+    "hints": [
+      "まず各サービスのキャッシュ済みリクエスト数を数えます。",
+      "完了時間を固定し、超過分のリクエストを空き時間のあるサービスに回します。",
+      "キャッシュのないリクエストは 2 かかるため、各サービスの残り時間をそれに応じて切り捨てます。"
+    ]
+  },
+  "ko": {
+    "title": "캐시된 요청과 캐시되지 않은 요청을 배정할 때의 최단 완료 시간",
+    "description": "시스템에는 1번부터 n번까지 번호가 붙은 서비스가 있으며, m개의 요청을 처리해야 합니다. 요청 i는 서비스 cache[i]에 캐시되어 있습니다. 각 요청은 임의의 서비스 하나에 배정할 수 있으며, 캐시된 서비스에 배정하면 처리에 1이 걸리고 그렇지 않으면 2가 걸립니다. 서로 다른 서비스는 병렬로 동작할 수 있지만, 한 서비스는 한 번에 요청 하나만 처리할 수 있습니다. 모든 요청은 시간 0부터 스케줄링할 수 있으며, 도착 시간이나 작업 간 의존 관계는 없습니다. 모든 요청을 처리하는 데 필요한 최단 시간을 구하십시오. 전체 동작 규칙은 수정된 원본 HTML에서 복원했고, 전체 수치 범위는 같은 커밋의 MDX에서 가져왔습니다. 캐시 빈도의 최댓값만 세는 컴파일된 버전의 잘못된 알고리즘은 채택하지 않았습니다.",
+    "input": "첫째 줄에 n과 m이 주어집니다. 둘째 줄에 m개의 정수 cache[i]가 주어집니다. 1≤n,m≤100000, 1≤cache[i]≤n. 표준 입력 형식은 본 사이트에서 구성한 것이며, 수치 범위는 고정된 커밋의 Thoughtspot MDX에서 가져왔습니다. 원본 Constraints 절에는 수치 범위가 주어져 있지 않습니다.",
+    "output": "모든 요청을 완료하는 최단 시간을 나타내는 정수 하나를 출력합니다.",
+    "explanation": "예제 1은 원본의 입력과 출력을 그대로 유지하고, 원본 설명의 서비스 번호 오타를 수정했습니다. 서비스 1이 요청 1, 2, 4를 시간 3에 처리하고, 서비스 3이 요청 3을 시간 1에 처리하며, 서비스 2가 요청 5를 시간 2에 처리하므로 모두 3 이내에 끝납니다. 예제 2와 3은 본 사이트에서 추가했습니다. 요청이 하나뿐이면 캐시된 서비스에서 1이 걸립니다. 요청 네 개가 모두 서비스 1에 캐시되어 있으면, 서비스 1이 그중 세 개를, 서비스 2가 하나를 처리하여 전체 시간은 3입니다.",
+    "hints": [
+      "먼저 각 서비스에 캐시된 요청의 수를 셉니다.",
+      "완료 시간을 하나로 고정하면, 넘치는 요청은 여유 시간이 있는 서비스에 넘겨야 합니다.",
+      "캐시되지 않은 요청은 각각 2가 걸리므로, 각 서비스의 남는 시간을 그에 맞게 내림하여 계산합니다."
+    ]
+  },
+  "vi": {
+    "title": "Thời gian hoàn thành ngắn nhất khi phân bổ yêu cầu có cache và không có cache",
+    "description": "Hệ thống có các dịch vụ được đánh số từ 1 đến n và phải xử lý m yêu cầu. Yêu cầu i được cache trên dịch vụ cache[i]. Mỗi yêu cầu có thể được giao cho một dịch vụ bất kỳ: nếu giao cho dịch vụ chứa cache của nó thì mất thời gian 1, ngược lại mất 2. Các dịch vụ có thể chạy song song, nhưng một dịch vụ chỉ xử lý được một yêu cầu tại một thời điểm. Mọi yêu cầu đều có thể được lên lịch bắt đầu từ thời điểm 0, không có thời điểm đến hay phụ thuộc giữa các tác vụ. Tìm thời gian ngắn nhất để xử lý xong tất cả yêu cầu. Toàn bộ quy tắc vận hành được khôi phục từ HTML gốc đã cố định, còn các khoảng giá trị đầy đủ lấy từ MDX của cùng commit; thuật toán sai của bản biên dịch, vốn chỉ đếm tần suất cache lớn nhất, không được sử dụng.",
+    "input": "Dòng đầu chứa n và m. Dòng thứ hai chứa m số nguyên cache[i]. 1≤n,m≤100000, 1≤cache[i]≤n. Định dạng đầu vào chuẩn do trang này biên soạn; các khoảng giá trị lấy từ MDX Thoughtspot của commit đã cố định, còn phần Constraints gốc không nêu giới hạn số.",
+    "output": "In ra một số nguyên: thời gian ngắn nhất để hoàn thành mọi yêu cầu.",
+    "explanation": "Ví dụ 1 giữ nguyên đầu vào và đầu ra gốc, đồng thời sửa lỗi gõ nhầm số hiệu dịch vụ trong phần giải thích gốc: dịch vụ 1 xử lý các yêu cầu 1, 2 và 4 trong thời gian 3; dịch vụ 3 xử lý yêu cầu 3 trong thời gian 1; dịch vụ 2 xử lý yêu cầu 5 trong thời gian 2; tất cả hoàn thành trong 3. Ví dụ 2 và 3 do trang này bổ sung: một yêu cầu đơn lẻ mất 1 trên dịch vụ cache của nó; khi cả bốn yêu cầu đều được cache trên dịch vụ 1, dịch vụ 1 có thể xử lý ba yêu cầu và dịch vụ 2 xử lý một yêu cầu, tổng thời gian là 3.",
+    "hints": [
+      "Trước hết hãy đếm số yêu cầu được cache của mỗi dịch vụ.",
+      "Cố định một thời gian hoàn thành; các yêu cầu dư phải được chuyển cho những dịch vụ còn thời gian rảnh.",
+      "Mỗi yêu cầu không có cache mất 2, nên hãy làm tròn xuống thời gian còn lại của mỗi dịch vụ tương ứng."
+    ]
   }
 }

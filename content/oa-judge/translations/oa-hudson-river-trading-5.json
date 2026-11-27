@@ -11,5 +11,35 @@
     "hints": [
       "Treat the cells as a directed acyclic graph in which a smaller value points to an adjacent larger value. Run DP in increasing order of value: the number of paths ending at a cell equals 1 (the cell alone) plus the path counts of all smaller neighbors; finally subtract all single-cell paths."
     ]
+  },
+  "ja": {
+    "title": "増加パスの個数 (パス数は最大 2000)",
+    "description": "グリッド上のパスは 2 つ以上のセルからなり、連続するセルは上下左右に隣接していなければならず、各ステップで値は真に増加しなければなりません。パスはセル位置の並びで区別します。増加パスをすべて数えてください。パスの数は 2000 を超えないことが保証されています。\n\n元の例の出力 4 は隣接パスの定義と一致しますが、列挙されていたパスの端点の説明が不正確でした。実際の 4 つのパスは 1→5、1→2、2→7、1→2→7 です。本サイトはルールと答えを維持したまま説明を訂正し、元の解説にある誤りを記録しています。\n\n本サイトの標準入出力形式は CSWork が明示的に追加したものであり、元の関数形式の問題がもともとこの形式だったことを意味するものではありません。",
+    "input": "1 行目に行数 R (1..15) が与えられます。続く R 行はそれぞれ、まずその行の列数 C_r (1..15) が与えられ、次に C_r 個の整数 (0..65535) が与えられます。行ごとに長さが異なる場合があり、存在するセルどうしだけが隣接します。",
+    "output": "長さ 2 以上の真に増加するパスの総数を出力してください。",
+    "explanation": "ルールに従って処理します。解法、正当性の証明、計算量は付属の解説を参照してください。",
+    "hints": [
+      "セルを、小さい値から隣接する大きい値へ辺を張った有向非巡回グラフとして扱います。値の昇順に DP を行います。セルで終わるパスの数は、1 (そのセル単体) と、より小さいすべての隣接セルのパス数の和です。最後に単一セルのパスの分をすべて引きます。"
+    ]
+  },
+  "ko": {
+    "title": "증가하는 경로 개수 세기 (경로 최대 2000개)",
+    "description": "격자에서 경로는 두 개 이상의 칸으로 이루어지며, 연속한 칸은 상하좌우로 인접해야 하고 각 단계에서 값이 엄격하게 증가해야 합니다. 경로는 칸 위치의 순서로 구분합니다. 모든 증가 경로의 개수를 세세요. 경로의 수는 2000을 넘지 않음이 보장됩니다.\n\n원문 예제의 출력 4는 인접 경로 정의와 일치하지만, 나열된 경로의 양 끝은 부정확하게 서술되어 있었습니다. 실제 네 경로는 1→5, 1→2, 2→7, 1→2→7입니다. 이 사이트는 규칙과 정답은 유지하고 설명을 바로잡았으며, 원래 설명의 오류는 기록해 두었습니다.\n\n이 사이트의 표준 입출력 규약은 CSWork에서 명시적으로 추가한 것이며, 원래의 함수형 문제에 이 규약이 있었다는 뜻은 아닙니다.",
+    "input": "첫 번째 줄에 행의 수 R (1..15)이 주어집니다. 다음 R개의 줄에는 각각 먼저 열의 수 C_r (1..15)이 주어지고, 이어서 그 행의 정수 C_r개 (0..65535)가 주어집니다. 행마다 길이가 다를 수 있으며, 존재하는 칸끼리만 인접할 수 있습니다.",
+    "output": "길이가 2 이상인 엄격하게 증가하는 경로의 총 개수를 출력합니다.",
+    "explanation": "규칙에 따라 처리합니다. 풀이 방법, 정당성 증명, 복잡도는 함께 제공되는 해설을 참고하세요.",
+    "hints": [
+      "칸들을 방향 비순환 그래프(DAG)로 생각합니다. 값이 작은 칸에서 인접한 값이 큰 칸으로 간선을 잇습니다. 값이 증가하는 순서로 DP를 수행합니다. 어떤 칸에서 끝나는 경로의 수는 1(그 칸 단독)에 더 작은 이웃들의 경로 수를 모두 더한 값과 같습니다. 마지막에 단일 칸 경로를 모두 뺍니다."
+    ]
+  },
+  "vi": {
+    "title": "Đếm đường đi tăng dần (tối đa 2000 đường)",
+    "description": "Một đường đi trong lưới gồm ít nhất hai ô; các ô liên tiếp phải kề nhau theo hướng trên, dưới, trái hoặc phải, và giá trị phải tăng nghiêm ngặt ở mỗi bước. Các đường đi được phân biệt bởi dãy vị trí ô. Đếm tất cả các đường đi tăng dần; số đường đi được đảm bảo không vượt quá 2000.\n\nĐáp án mẫu gốc là 4 khớp với định nghĩa đường đi theo kề cạnh, nhưng các điểm đầu cuối của đường đi được liệt kê trong bài gốc bị mô tả không chính xác: bốn đường đi thực tế là 1→5, 1→2, 2→7 và 1→2→7. Trang này giữ nguyên quy tắc và đáp án, sửa lại phần mô tả, và ghi nhận lỗi trong phần giải thích gốc.\n\nGiao thức đầu vào/đầu ra chuẩn của trang này do CSWork bổ sung, không có nghĩa là bài gốc dạng hàm ban đầu đã có giao thức này.",
+    "input": "Dòng đầu chứa số hàng R (1..15); mỗi dòng trong R dòng tiếp theo đầu tiên cho số cột C_r (1..15), sau đó là C_r số nguyên của hàng đó (0..65535). Các hàng có thể có độ dài khác nhau; chỉ các ô tồn tại mới có thể kề nhau.",
+    "output": "In ra tổng số đường đi tăng nghiêm ngặt có độ dài ít nhất 2.",
+    "explanation": "Xử lý theo các quy tắc; xem lời giải kèm theo để biết ý tưởng, chứng minh tính đúng đắn và độ phức tạp.",
+    "hints": [
+      "Coi các ô là một đồ thị có hướng không chu trình (DAG) trong đó ô giá trị nhỏ hơn trỏ tới ô kề có giá trị lớn hơn. Chạy quy hoạch động theo thứ tự giá trị tăng dần: số đường đi kết thúc tại một ô bằng 1 (chỉ riêng ô đó) cộng với số đường đi của tất cả các ô kề nhỏ hơn; cuối cùng trừ đi tất cả các đường đi chỉ gồm một ô."
+    ]
   }
 }

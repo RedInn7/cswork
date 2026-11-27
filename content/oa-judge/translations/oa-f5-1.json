@@ -11,5 +11,35 @@
     "hints": [
       "Scan only the text inside the time window, recognize and count tags character by character, then sort by `(-count, tag)`. The total scan is O(total text length), and sorting is O(H log H)."
     ]
+  },
+  "ja": {
+    "title": "Top 3 Trending Hashtags in a Time Window",
+    "description": "閉区間の時間枠に含まれるツイートの中で各ハッシュタグが何回現れるかを数え、回数の多い順、同数ならタグの辞書順の昇順で、上位 3 件を返します。\n\n本サイトの標準入出力形式と補足の範囲は、この問題の記述のとおりです。",
+    "input": "1 行目に n currentTime timeWindow (n≤2×10^5、テキストの合計長≤10^6、タイムスタンプと時間枠は非負で 10^9 以下) が与えられます。続く n 行はそれぞれ、タイムスタンプ、タブ文字、ツイートです。タグは # で始まり、ASCII の英数字とアンダースコアが続きます。",
+    "output": "1 行に 1 つずつ、先頭の # を残したままハッシュタグを出力してください。タグがなければ何も出力しません。",
+    "explanation": "時間枠内のテキストだけを走査し、文字ごとにタグを認識して数え、`(-count, tag)` でソートします。走査の合計は O(テキストの合計長)、ソートは O(H log H) です。",
+    "hints": [
+      "時間枠内のテキストだけを走査し、文字ごとにタグを認識して数え、`(-count, tag)` でソートします。走査の合計は O(テキストの合計長)、ソートは O(H log H) です。"
+    ]
+  },
+  "ko": {
+    "title": "Top 3 Trending Hashtags in a Time Window",
+    "description": "닫힌 시간 구간 안에 있는 트윗에서 각 해시태그가 몇 번 나타나는지 센 뒤, 개수 내림차순, 같으면 태그의 사전순 오름차순으로 정렬하여 상위 세 개를 반환합니다.\n\n본 사이트의 표준 입출력 형식과 보충 범위는 이 문제에 설명된 대로입니다.",
+    "input": "첫째 줄에 n currentTime timeWindow(n≤2×10^5, 전체 텍스트 길이 ≤10^6, 타임스탬프와 시간 구간은 음이 아니며 ≤10^9)가 주어집니다. 이어지는 n개의 줄에는 각각 타임스탬프, 탭 문자, 트윗이 주어집니다. 태그는 #으로 시작하고 그 뒤에 ASCII 문자/숫자/밑줄이 옵니다.",
+    "output": "해시태그를 한 줄에 하나씩 맨 앞의 #을 유지한 채 출력합니다. 태그가 없으면 아무것도 출력하지 않습니다.",
+    "explanation": "시간 구간 안의 텍스트만 훑으면서 태그를 한 글자씩 인식해 세고, `(-count, tag)`로 정렬합니다. 전체 훑기는 O(전체 텍스트 길이)이고 정렬은 O(H log H)입니다.",
+    "hints": [
+      "시간 구간 안의 텍스트만 훑으면서 태그를 한 글자씩 인식해 세고, `(-count, tag)`로 정렬합니다. 전체 훑기는 O(전체 텍스트 길이)이고 정렬은 O(H log H)입니다."
+    ]
+  },
+  "vi": {
+    "title": "Top 3 Trending Hashtags in a Time Window",
+    "description": "Đếm số lần mỗi hashtag xuất hiện trong các tweet nằm trong một cửa sổ thời gian đóng, và trả về ba hashtag đứng đầu, sắp xếp theo số lần giảm dần, rồi theo tag tăng dần theo thứ tự từ điển.\n\nĐịnh dạng vào/ra chuẩn và các giới hạn bổ sung của trang này được mô tả trong bài này.",
+    "input": "Dòng đầu tiên chứa n currentTime timeWindow (n≤2×10^5, tổng độ dài văn bản ≤10^6, timestamp và cửa sổ thời gian không âm và ≤10^9). Mỗi dòng trong n dòng tiếp theo chứa một timestamp, một ký tự tab và một tweet; tag bắt đầu bằng # theo sau là các chữ cái/chữ số/dấu gạch dưới ASCII.",
+    "output": "In mỗi hashtag trên một dòng, giữ nguyên dấu # ở đầu; không in gì nếu không có tag nào.",
+    "explanation": "Chỉ quét văn bản nằm trong cửa sổ thời gian, nhận diện và đếm tag từng ký tự một, rồi sắp xếp theo `(-count, tag)`. Tổng thời gian quét là O(tổng độ dài văn bản), và sắp xếp là O(H log H).",
+    "hints": [
+      "Chỉ quét văn bản nằm trong cửa sổ thời gian, nhận diện và đếm tag từng ký tự một, rồi sắp xếp theo `(-count, tag)`. Tổng thời gian quét là O(tổng độ dài văn bản), và sắp xếp là O(H log H)."
+    ]
   }
 }

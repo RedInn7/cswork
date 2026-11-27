@@ -11,5 +11,35 @@
     "hints": [
       "Use a min-heap ordered by (current height, column index). For each pin, pop the top, record its index, increase that column's height, and push it back."
     ]
+  },
+  "ja": {
+    "title": "Assign Pins to the Shortest Column",
+    "description": "k 本の列があり、どれも最初の高さは 0 です。pins[i] を元の順に処理し、各ピンを現在の合計の高さが最も低い列に置きます。高さが同じ場合は、インデックスが最小の列を選びます。各ピンの列のインデックスと、すべての列の最終的な高さを返してください。\n\nこの問題の入力形式と補足の制限は CSWork がまとめたものであり、元のソースがこのプロトコルを使っていることを意味するものではありません。",
+    "input": "1 行目に n k、2 行目に n 個の正の整数 pins[i] が与えられます。元の制約は 1≤k≤n≤200000、1≤pins[i]≤10⁹ です。",
+    "output": "1 行目に割り当てられた n 個のインデックス、2 行目に k 本の列の最終的な高さを出力します。列のインデックスは 0 から始まり、合計の高さには 64 ビット整数を使います。",
+    "explanation": "問題文の規則に従って入力を処理してください。方針、証明、計算量については付属の解説を参照してください。",
+    "hints": [
+      "(現在の高さ, 列のインデックス) の順序を持つ最小ヒープを使います。各ピンについて、先頭を取り出してそのインデックスを記録し、その列の高さを増やして戻します。"
+    ]
+  },
+  "ko": {
+    "title": "Assign Pins to the Shortest Column",
+    "description": "높이가 모두 0인 k개의 열이 있습니다. pins[i]를 원래 순서대로 처리하며, 각 핀을 현재 총 높이가 가장 낮은 열에 놓습니다. 높이가 같으면 인덱스가 가장 작은 열을 선택합니다. 각 핀이 놓인 열의 인덱스와 모든 열의 최종 높이를 반환하세요.\n\n이 문제의 입력 형식과 보충 제한은 CSWork가 정리한 것이며, 원 출처가 이 프로토콜을 사용한다는 뜻은 아닙니다.",
+    "input": "첫째 줄에 n k가 주어지고, 둘째 줄에 n개의 양의 정수 pins[i]가 주어집니다. 원 출처의 제약은 1≤k≤n≤200000, 1≤pins[i]≤10⁹입니다.",
+    "output": "첫째 줄에 배정된 n개의 인덱스를, 둘째 줄에 k개 열의 최종 높이를 출력합니다. 열 인덱스는 0부터 시작하며, 총 높이는 64비트 정수를 사용합니다.",
+    "explanation": "문제의 규칙에 따라 입력을 처리하세요. 접근 방법, 증명, 복잡도는 함께 제공되는 설명을 참고하세요.",
+    "hints": [
+      "(현재 높이, 열 인덱스) 순서의 최소 힙을 사용하세요. 각 핀마다 top을 꺼내 그 인덱스를 기록하고, 해당 열의 높이를 늘린 뒤 다시 넣습니다."
+    ]
+  },
+  "vi": {
+    "title": "Assign Pins to the Shortest Column",
+    "description": "Có k cột, mỗi cột ban đầu có chiều cao 0. Xử lý pins[i] theo thứ tự ban đầu: đặt mỗi ghim vào cột có tổng chiều cao hiện tại thấp nhất; nếu chiều cao bằng nhau, chọn cột có chỉ số nhỏ nhất. Trả về chỉ số cột của từng ghim và chiều cao cuối cùng của tất cả các cột.\n\nĐịnh dạng đầu vào và các giới hạn bổ sung nêu trong bài này do CSWork biên soạn; chúng không có nghĩa là nguồn gốc dùng giao thức này.",
+    "input": "Dòng đầu chứa n k; dòng thứ hai chứa n số nguyên dương pins[i]. Ràng buộc của đề gốc: 1≤k≤n≤200000, 1≤pins[i]≤10⁹.",
+    "output": "Dòng đầu chứa n chỉ số cột đã gán, dòng thứ hai chứa chiều cao cuối cùng của k cột. Chỉ số cột bắt đầu từ 0; tổng chiều cao dùng số nguyên 64 bit.",
+    "explanation": "Xử lý đầu vào theo các quy tắc trong đề bài; xem phần ghi chú đi kèm để biết hướng tiếp cận, chứng minh và độ phức tạp.",
+    "hints": [
+      "Dùng min-heap sắp theo (chiều cao hiện tại, chỉ số cột). Với mỗi ghim, lấy phần tử đầu heap ra, ghi lại chỉ số của nó, tăng chiều cao của cột đó rồi đẩy lại vào heap."
+    ]
   }
 }

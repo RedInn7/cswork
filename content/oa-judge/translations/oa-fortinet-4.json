@@ -13,5 +13,41 @@
       "The rightmost 0 has the most 1s before it.",
       "Maintain the cumulative count of 1s and the trailing all-1 suffix."
     ]
+  },
+  "ja": {
+    "title": "信号 ping ごとのバブルスキャン回数",
+    "description": "n 個の信号が最初はすべて 0 です。ping は位置 1..n の順列で、その順に対応する信号が 1 になります。各 ping の後、累積した信号ビットマップのコピーを取り、左から右へ走査して隣り合う 10 をその場で入れ替える操作を、1 回のパスで入れ替えが 1 つも起きなくなるまで繰り返します。各回に必要なパス数を、入れ替えのない最後の停止パスも含めて出力してください。このソートは、以降の ping が使う累積ビットマップには影響しません。",
+    "input": "1 行目に非負整数 n、続いて 1..n の n 個の整数が空白区切りで与えられ、各位置はちょうど 1 回ずつ現れます。元の問題では n の数値上の上限が与えられていません。本サイトは、既存の 1 ケースあたり 32MiB の入力予算に収まるすべての有効な順列を対象とし、n に小さな上限を勝手に設けることはしません。n=0 は空の順列で、本サイトが明示した数学的な拡張です。",
+    "output": "ping の順に n 個のパス数を空白区切りで出力します。すでにソート済みのビットマップでも、入れ替えのないパスが 1 回必要です。n=0 のときは空行を出力します。",
+    "explanation": "元の例 [1,2,4,3]→[2,3,3,1] を維持しています。累積ビットマップは順に 1000、1100、1101、1111 です。最後の 1 は、停止パスが数えられることを示しています。2 番目の値 3 は、各評価が、前回のソート結果を引き継ぐのではなく、累積ビットマップのコピーに対して行われることを示しています。この 2 点は、元の例から導かれた本サイトの明示的なプロトコルとして開示しています。その他の公開例は本サイトで作成したものです。",
+    "hints": [
+      "各パスで、左側にまだ 1 がある 0 は、ちょうど 1 マス左へ動きます。",
+      "最も右の 0 は、その左にある 1 の数が最大です。",
+      "累積した 1 の個数と、末尾の連続する 1 の接尾辞を管理します。"
+    ]
+  },
+  "ko": {
+    "title": "신호 ping마다의 버블 스캔 횟수",
+    "description": "n개의 신호가 모두 0에서 시작합니다. ping은 위치 1..n의 순열이며, 이 순서대로 해당 신호가 1로 설정됩니다. 각 ping 이후 누적된 신호 비트맵의 복사본을 만들어 왼쪽에서 오른쪽으로 훑으며 인접한 `10`을 제자리에서 모두 맞바꾸고, 한 번의 전체 패스에서 교환이 없을 때까지 반복합니다. 매번 필요한 패스 수를 출력하세요. 교환이 없는 마지막 종료 패스도 포함하며, 이 정렬은 이후 ping에서 사용하는 누적 비트맵을 바꾸지 않습니다.",
+    "input": "첫 줄에 음이 아닌 정수 n이 주어지고, 이어서 1..n 범위의 정수 n개가 공백으로 구분되어 주어지며 각 위치는 정확히 한 번씩 나타납니다. 원문에는 n의 수치 상한이 없으며, 이 사이트는 테스트 케이스당 입력 32MiB 예산 안에 들어가는 모든 유효한 순열을 다루고 임의로 작은 상한을 두지 않습니다. n=0은 빈 순열이며, 이 사이트가 명시적으로 밝힌 수학적 확장입니다.",
+    "output": "ping 순서대로 n개의 패스 횟수를 공백으로 구분해 출력합니다. 이미 정렬된 비트맵도 교환 없는 패스가 한 번 필요합니다. n=0이면 빈 줄을 출력합니다.",
+    "explanation": "원문 예시 [1,2,4,3]→[2,3,3,1]을 그대로 유지합니다. 누적 비트맵은 차례로 1000, 1100, 1101, 1111입니다. 마지막 값 1은 종료 패스를 센다는 것을 보여 주고, 두 번째 값 3은 매번 이전에 정렬된 결과를 이어 쓰지 않고 누적 비트맵의 복사본으로 계산한다는 것을 보여 줍니다. 이 두 가지는 원문 예시에서 도출한 이 사이트의 명시적 규약으로 공개합니다. 나머지 공개 예제는 이 사이트에서 만들었습니다.",
+    "hints": [
+      "한 번의 패스에서, 왼쪽에 1이 남아 있는 모든 0은 정확히 한 칸씩 왼쪽으로 이동합니다.",
+      "가장 오른쪽의 0이 앞에 가장 많은 1을 가집니다.",
+      "누적 1의 개수와 끝에 연속된 1의 접미사를 관리하세요."
+    ]
+  },
+  "vi": {
+    "title": "Số lượt quét bubble sau mỗi tín hiệu ping",
+    "description": "n tín hiệu ban đầu đều bằng 0. ping là một hoán vị của các vị trí 1..n, và các tín hiệu tương ứng được đặt thành 1 theo thứ tự đó. Sau mỗi ping, lấy một bản sao của bitmap tín hiệu tích lũy và quét từ trái sang phải, hoán đổi tại chỗ mọi cặp kề nhau có dạng 10, cho đến khi một lượt quét hoàn chỉnh không có hoán đổi nào. In ra số lượt quét cần thiết mỗi lần, tính cả lượt dừng cuối cùng không có hoán đổi; việc sắp xếp này không làm thay đổi bitmap tích lũy dùng cho các ping sau.",
+    "input": "Dòng đầu chứa một số nguyên không âm n, theo sau là n số nguyên trong khoảng 1..n phân tách bằng khoảng trắng, mỗi vị trí xuất hiện đúng một lần. Đề gốc không cho cận trên số học của n; trang này bao phủ mọi hoán vị hợp lệ nằm trong giới hạn đầu vào hiện có 32MiB mỗi test và không tự đặt ra giới hạn nhỏ cho n. n=0 là hoán vị rỗng, một mở rộng toán học do trang này nêu rõ.",
+    "output": "In ra n số lượt quét theo thứ tự ping, cách nhau bằng khoảng trắng. Một bitmap đã được sắp xếp vẫn cần một lượt quét không có hoán đổi; với n=0, in ra một dòng trống.",
+    "explanation": "Ví dụ gốc [1,2,4,3]→[2,3,3,1] được giữ nguyên. Các bitmap tích lũy lần lượt là 1000, 1100, 1101, 1111. Số 1 cuối cùng chứng tỏ lượt dừng cũng được tính; giá trị 3 thứ hai chứng tỏ mỗi lần tính được thực hiện trên một bản sao của bitmap tích lũy chứ không giữ lại kết quả đã sắp xếp trước đó. Hai điểm này là giao thức tường minh của trang này, suy ra từ ví dụ gốc. Các ví dụ công khai khác do trang này tự suy ra.",
+    "hints": [
+      "Trong mỗi lượt quét, mọi số 0 mà phía trước vẫn còn số 1 sẽ dịch sang trái đúng một ô.",
+      "Số 0 ngoài cùng bên phải có nhiều số 1 nhất đứng trước nó.",
+      "Duy trì số lượng số 1 tích lũy và hậu tố toàn số 1 ở cuối."
+    ]
   }
 }

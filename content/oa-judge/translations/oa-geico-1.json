@@ -11,5 +11,35 @@
     "hints": [
       "For each vehicle i, compute the longest safe subsequence ending at i: dp[i]=1+max(dp[j]), where j<i and weight[j]≤U−weight[i]. Coordinate-compress the weights and maintain prefix maxima with a Fenwick tree. If weight[i]>U, the vehicle cannot be kept."
     ]
+  },
+  "ja": {
+    "title": "Bridge Weight Limit — Minimum Drivers Turn Back",
+    "description": "元の車の列から部分列を残し、残った列で隣り合うすべての車のペアについて、重さの和が橋の制限 U を超えないようにします。立ち去らなければならないドライバーの最小人数を出力してください。自身の重さが U を超える車も、立ち去らなければなりません。\n\n本サイトが明示的に定義する標準入出力の形式と補足の制約は、オンライン版の定義に属するもので、元の問題の制約を装うものではありません。",
+    "input": "入力は U、N、そして N 台の車の重さです。1≤N≤100000、1≤weight[i],U≤10^9 です。",
+    "output": "立ち去らなければならないドライバーの最小人数を出力してください。",
+    "explanation": "各車 i について、i で終わる最長の安全な部分列を求めます。dp[i]=1+max(dp[j])（j<i かつ weight[j]≤U−weight[i]）です。重さを座標圧縮し、Fenwick 木で接頭辞の最大値を保持します。weight[i]>U の車は残せません。",
+    "hints": [
+      "各車 i について、i で終わる最長の安全な部分列を求めます。dp[i]=1+max(dp[j])（j<i かつ weight[j]≤U−weight[i]）です。重さを座標圧縮し、Fenwick 木で接頭辞の最大値を保持します。weight[i]>U の車は残せません。"
+    ]
+  },
+  "ko": {
+    "title": "Bridge Weight Limit — Minimum Drivers Turn Back",
+    "description": "원래 대기열의 부분 수열을 골라, 남겨진 수열에서 인접한 모든 차량 쌍의 무게 합이 다리의 하중 제한 U를 넘지 않도록 합니다. 떠나야 하는 운전자의 최소 수를 출력합니다. 자신의 무게만으로 U를 넘는 차량도 떠나야 합니다.\n\n이 사이트가 명시적으로 정의한 표준 입출력 형식과 추가 제약 조건은 온라인 버전의 정의에 속하며, 원문의 제약 조건인 것처럼 가장하지 않습니다.",
+    "input": "입력에는 U, N, 그리고 N개의 차량 무게가 주어집니다. 1≤N≤100000, 1≤weight[i],U≤10^9.",
+    "output": "떠나야 하는 운전자의 최소 수를 출력합니다.",
+    "explanation": "각 차량 i에 대해 i에서 끝나는 가장 긴 안전한 부분 수열을 구합니다. dp[i]=1+max(dp[j])이며, j<i이고 weight[j]≤U−weight[i]입니다. 무게를 좌표 압축하고 펜윅 트리로 접두사 최댓값을 유지합니다. weight[i]>U이면 그 차량은 남을 수 없습니다.",
+    "hints": [
+      "각 차량 i에 대해 i에서 끝나는 가장 긴 안전한 부분 수열을 구합니다. dp[i]=1+max(dp[j])이며, j<i이고 weight[j]≤U−weight[i]입니다. 무게를 좌표 압축하고 펜윅 트리로 접두사 최댓값을 유지합니다. weight[i]>U이면 그 차량은 남을 수 없습니다."
+    ]
+  },
+  "vi": {
+    "title": "Bridge Weight Limit — Minimum Drivers Turn Back",
+    "description": "Giữ lại một dãy con của hàng xe ban đầu sao cho với mọi cặp xe liền kề trong dãy được giữ, tổng trọng lượng của chúng không vượt quá giới hạn cầu U. Xuất số tài xế tối thiểu phải rời đi. Một xe có trọng lượng riêng vượt quá U cũng phải rời đi.\n\nĐịnh dạng vào/ra chuẩn và các ràng buộc bổ sung được trang này định nghĩa rõ ràng thuộc về định nghĩa của phiên bản trực tuyến và không được coi là ràng buộc gốc của nguồn.",
+    "input": "Đầu vào gồm U, N và N trọng lượng xe. 1≤N≤100000, 1≤weight[i],U≤10^9.",
+    "output": "Xuất số tài xế tối thiểu phải rời đi.",
+    "explanation": "Với mỗi xe i, tính dãy con an toàn dài nhất kết thúc tại i: dp[i]=1+max(dp[j]), trong đó j<i và weight[j]≤U−weight[i]. Nén tọa độ các trọng lượng và duy trì các giá trị lớn nhất tiền tố bằng cây Fenwick. Nếu weight[i]>U, xe đó không thể được giữ lại.",
+    "hints": [
+      "Với mỗi xe i, tính dãy con an toàn dài nhất kết thúc tại i: dp[i]=1+max(dp[j]), trong đó j<i và weight[j]≤U−weight[i]. Nén tọa độ các trọng lượng và duy trì các giá trị lớn nhất tiền tố bằng cây Fenwick. Nếu weight[i]>U, xe đó không thể được giữ lại."
+    ]
   }
 }

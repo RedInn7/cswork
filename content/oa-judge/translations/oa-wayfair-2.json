@@ -13,5 +13,41 @@
       "The possible integer averages are only 1 to 9.",
       "After fixing the average k, subtract k and count substrings with zero sum."
     ]
+  },
+  "ja": {
+    "title": "Wayfair OA #2: 割り切れる部分文字列の個数",
+    "description": "小文字のアルファベットを次の固定テーブルで数値に対応させます: ab→1, cde→2, fgh→3, ijk→4, lmn→5, opq→6, rst→7, uvw→8, xyz→9。対応後の値の合計が、その部分文字列の長さで割り切れるような、連続する空でない部分文字列の個数を数えてください。数えるのは位置ごとで、内容が同じでも位置が異なれば別々に数えます。修正済みの原文では対応表の画像のパスが壊れていたため、このサイトでは元の FastPrep ページに掲載されている Problem Source の原画像から復元しています。また元のスターターコードも LC2950 を明示的に参照しています。根拠と画像のハッシュは解説に記載しています。",
+    "input": "引用符なしの小文字英字の文字列 word。元の範囲全体は 1≤word.length≤2000 で、空文字列は入力されません。",
+    "output": "条件を満たす連続する空でない部分文字列の個数を、剰余を取らない正確な整数で出力してください。",
+    "explanation": "元の例をそのまま掲載します: asdf→6 (a, s, d, f, as, sdf に対応)、bdh→4 (b, d, h, bdh に対応)、abcd→6 (a, b, c, d, ab, cd に対応)。最初のグループ ab は 2文字しかないため、3文字ずつのグループや携帯電話のキーパッドのような対応にはなりません。",
+    "hints": [
+      "割り切れることは、その部分文字列の対応値の平均が整数であることと同値です。",
+      "整数になりうる平均は 1 から 9 のみです。",
+      "平均 k を固定したら、各値から k を引いて、合計が 0 になる部分文字列を数えます。"
+    ]
+  },
+  "ko": {
+    "title": "Wayfair OA #2: 나누어떨어지는 부분 문자열의 개수",
+    "description": "다음 고정된 표로 소문자를 값에 대응시킵니다: ab→1, cde→2, fgh→3, ijk→4, lmn→5, opq→6, rst→7, uvw→8, xyz→9. 대응된 값의 합이 부분 문자열의 길이로 나누어떨어지는, 연속된 비어 있지 않은 부분 문자열의 개수를 구하세요. 위치 기준으로 세므로, 내용이 같아도 위치가 다르면 각각 셉니다. 수정된 원문의 대응표 이미지는 로컬 경로가 깨져 있었으므로, 이 사이트에서 원본 FastPrep 페이지의 공개된 Problem Source 원본 이미지를 기준으로 복원했습니다. 또한 원본 스타터 코드도 LC2950을 명시적으로 참조하고 있으며, 근거와 이미지 해시는 해설에 있습니다.",
+    "input": "소문자 영어 문자열 word가 따옴표 없이 주어집니다. 원본 전체 범위는 1≤word.length≤2000이며, 빈 문자열은 주어지지 않습니다.",
+    "output": "조건을 만족하는 연속된 비어 있지 않은 부분 문자열의 개수를 모듈러 연산 없이 정확한 정수로 출력합니다.",
+    "explanation": "원본 예제를 그대로 유지합니다: asdf→6 (a, s, d, f, as, sdf에 해당), bdh→4 (b, d, h, bdh에 해당), abcd→6 (a, b, c, d, ab, cd에 해당). 첫 번째 그룹 ab는 두 글자뿐이므로, 세 글자씩 묶어 대응시키거나 휴대폰 키패드로 대응시킬 수 없습니다.",
+    "hints": [
+      "나누어떨어진다는 것은 부분 문자열의 대응 값 평균이 정수라는 것과 같습니다.",
+      "가능한 정수 평균은 1부터 9까지뿐입니다.",
+      "평균 k를 고정한 뒤 각 값에서 k를 빼면, 합이 0인 부분 문자열을 세는 문제가 됩니다."
+    ]
+  },
+  "vi": {
+    "title": "Wayfair OA #2: Số xâu con chia hết",
+    "description": "Ánh xạ các chữ cái thường theo bảng cố định sau: ab→1, cde→2, fgh→3, ijk→4, lmn→5, opq→6, rst→7, uvw→8, xyz→9. Đếm số xâu con liên tiếp, không rỗng, mà tổng các giá trị ánh xạ chia hết cho độ dài của xâu con. Đếm theo vị trí: nội dung giống nhau ở các vị trí khác nhau được đếm riêng. Ảnh bảng ánh xạ trong đề gốc đã sửa là một đường dẫn cục bộ bị hỏng; trang này đã khôi phục nó từ ảnh gốc công khai của Problem Source trên trang FastPrep gốc, và code mẫu gốc cũng tham chiếu rõ ràng tới LC2950; bằng chứng và mã băm của ảnh nằm trong phần editorial.",
+    "input": "Một xâu chữ cái tiếng Anh viết thường word, không có dấu nháy. Phạm vi gốc đầy đủ 1≤word.length≤2000; không chấp nhận xâu rỗng.",
+    "output": "In ra số xâu con liên tiếp không rỗng thỏa mãn, là một số nguyên chính xác, không lấy modulo.",
+    "explanation": "Giữ nguyên các ví dụ gốc: asdf→6, ứng với a, s, d, f, as, sdf; bdh→4, ứng với b, d, h, bdh; abcd→6, ứng với a, b, c, d, ab, cd. Nhóm đầu tiên ab chỉ có 2 chữ cái, nên không thể ánh xạ theo mỗi nhóm 3 chữ cái hay theo bàn phím điện thoại.",
+    "hints": [
+      "Chia hết tương đương với việc giá trị ánh xạ trung bình của xâu con là một số nguyên.",
+      "Các giá trị trung bình nguyên có thể chỉ từ 1 đến 9.",
+      "Sau khi cố định giá trị trung bình k, trừ k đi và đếm các xâu con có tổng bằng 0."
+    ]
   }
 }

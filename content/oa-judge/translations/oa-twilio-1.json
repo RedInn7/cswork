@@ -11,5 +11,35 @@
     "hints": [
       "When adding makes a label's frequency go from odd to even, the number of groups increases by one; when removing makes it go from even to odd, the number of groups decreases by one."
     ]
+  },
+  "ja": {
+    "title": "Count Groups",
+    "description": "各ケーブルには数値のラベルが付いています。独立した各クエリ区間の中で、同じラベルのケーブル2本だけがグループを作れ、各ケーブルは最大1回しか使えません。区間内で作れるグループの最大数を求めてください。問題と制約は固定された OAMaster の問題文に由来し、以下は本サイトの標準の入出力プロトコルです。",
+    "input": "1行目に n と q が与えられ、2行目に n 個のラベルが与えられます。続く q 行の各行に l と r が与えられ、1-based の閉区間です。クエリは互いに独立です。",
+    "output": "q 個の答えを入力順に、スペース区切りで出力します。各答えは、すべてのラベルについて、そのラベルの区間内での出現回数を 2 で割って切り捨てた値の和です。",
+    "explanation": "Mo のアルゴリズムで区間の両端を動かし、各ラベルの頻度と作られたグループ数を保持します。正当性の証明は付属のノートを参照してください。",
+    "hints": [
+      "追加によってラベルの頻度が奇数から偶数になるとグループ数が1増え、削除によって偶数から奇数になるとグループ数が1減ります。"
+    ]
+  },
+  "ko": {
+    "title": "Count Groups",
+    "description": "각 케이블의 숫자 라벨이 주어집니다. 서로 독립적인 각 쿼리 구간 안에서 같은 라벨의 케이블 두 개만 한 그룹을 만들 수 있고, 각 케이블은 최대 한 번만 사용할 수 있습니다. 구간 안에서 만들 수 있는 그룹의 최대 개수를 구하세요. 문제와 제약 조건은 고정된 OAMaster 설명에서 가져온 것이며, 이하의 입출력 규약은 이 사이트의 표준입니다.",
+    "input": "첫째 줄에 n과 q가 주어지고, 둘째 줄에 n개의 라벨이 주어집니다. 이어지는 q줄에는 각각 1-based 폐구간 l과 r이 주어집니다. 쿼리는 서로 독립입니다.",
+    "output": "q개의 답을 입력 순서대로 공백으로 구분하여 출력합니다. 각 답은 모든 라벨에 대해, 구간 안에서 그 라벨이 나타난 횟수를 2로 나눈 몫(내림)의 합입니다.",
+    "explanation": "Mo 알고리즘으로 구간의 양 끝을 이동하면서 각 라벨의 빈도와 만들어진 그룹 수를 유지하세요. 정당성 증명은 함께 제공되는 노트를 참고하세요.",
+    "hints": [
+      "추가로 인해 어떤 라벨의 빈도가 홀수에서 짝수가 되면 그룹 수가 1 늘어나고, 제거로 인해 짝수에서 홀수가 되면 그룹 수가 1 줄어듭니다."
+    ]
+  },
+  "vi": {
+    "title": "Count Groups",
+    "description": "Cho nhãn số của từng sợi cáp. Trong mỗi khoảng truy vấn độc lập, chỉ hai sợi cáp có cùng nhãn mới tạo thành một nhóm, và mỗi sợi cáp được dùng tối đa một lần. Hãy tìm số nhóm tối đa có thể tạo trong khoảng đó. Bài toán và các ràng buộc lấy từ đề OAMaster cố định; phần tiếp theo là giao thức nhập/xuất chuẩn của trang này.",
+    "input": "Dòng đầu chứa n và q; dòng thứ hai chứa n nhãn; mỗi dòng trong q dòng tiếp theo chứa l và r, một khoảng đóng đánh số từ 1. Các truy vấn độc lập với nhau.",
+    "output": "In q đáp án theo thứ tự đầu vào, cách nhau bằng dấu cách. Mỗi đáp án là tổng, trên mọi nhãn, của số lần xuất hiện của nhãn đó trong khoảng chia cho 2 và làm tròn xuống.",
+    "explanation": "Dùng thuật toán Mo để di chuyển các đầu mút của khoảng, duy trì tần suất của từng nhãn và số nhóm đã tạo. Xem ghi chú đi kèm để biết chứng minh tính đúng đắn.",
+    "hints": [
+      "Khi thêm làm tần suất của một nhãn đi từ lẻ sang chẵn, số nhóm tăng một; khi xóa làm nó đi từ chẵn sang lẻ, số nhóm giảm một."
+    ]
   }
 }

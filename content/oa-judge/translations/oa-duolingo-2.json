@@ -12,5 +12,38 @@
       "The difference of two congruent prefix sums is divisible by k.",
       "Maintain the earliest index where each remainder appears, so that later congruent positions give the longest interval."
     ]
+  },
+  "ja": {
+    "title": "Longest Stable Transaction Period",
+    "description": "日ごとの純取引額 transactions と正の整数 k が与えられます。合計が k で割り切れる最長の連続区間を求めてください。元の問題では k のサイズや範囲が与えられていないため、本サイトでは 1≤n≤100000、各取引額は符号付き int32、1≤k≤2147483647 と補足しています。",
+    "input": "1 行目に n と k(1≤n≤100000、1≤k≤2147483647)が与えられます。2 行目に n 個の符号付き int32 の取引額が与えられます。これらは本サイトがサポートする範囲です。",
+    "output": "合計が k で割り切れる最長の連続区間の長さを出力します。存在しない場合は 0 を出力します。",
+    "explanation": "## 解法\n\n2 つの接頭辞和の k で割った余りが等しいとき、その間の連続区間の合計は k で割り切れます。左から右へ走査し、各余りが最初に現れた位置を記録します。同じ余りが再び現れたら、現在の位置と最も早い位置の差で最長の長さを更新します。k は正であり、負の取引額は数学的な意味で k を法として約します。\n\n## 正当性の証明\n\n接頭辞和 P[j] を最初の j 個の項の合計とします。区間 (i,j] の合計が正の整数 k で割り切れることは、P[i] と P[j] が k を法として合同であることと同値です。右端 j を固定したとき、最も早い合同な接頭辞が最長の区間を作ります。アルゴリズムは各余りの最も早いインデックスを保存し、以降のすべての接頭辞を調べるので、最適な区間を見逃すことも、割り切れない区間を数えることもありません。\n\n## 計算量\n\nn 個の項を 1 回走査するので、期待時間は O(n) です。保存する余りの位置は高々 n+1 個で、空間は O(n) です。",
+    "hints": [
+      "2 つの合同な接頭辞和の差は k で割り切れます。",
+      "各余りが最初に現れるインデックスを保持しておくと、後で合同な位置が現れたときに最長の区間が得られます。"
+    ]
+  },
+  "ko": {
+    "title": "Longest Stable Transaction Period",
+    "description": "일별 순거래액 transactions와 양의 정수 k가 주어질 때, 합이 k로 나누어떨어지는 가장 긴 연속 구간을 구하세요. 원 문제는 k의 크기나 범위를 주지 않았으며, 이 사이트는 1≤n≤100000, 각 거래액은 부호 있는 int32, 1≤k≤2147483647을 추가했습니다.",
+    "input": "첫째 줄에 n과 k(1≤n≤100000, 1≤k≤2147483647)가 주어집니다. 둘째 줄에는 부호 있는 int32 거래액 n개가 주어집니다. 이는 이 사이트가 지원하는 범위입니다.",
+    "output": "합이 k로 나누어떨어지는 가장 긴 연속 구간의 길이를 출력합니다. 그런 구간이 없으면 0을 출력합니다.",
+    "explanation": "## 접근\n\n두 접두사 합의 k에 대한 나머지가 같으면, 그 사이의 연속 구간의 합은 k로 나누어떨어집니다. 왼쪽에서 오른쪽으로 스캔하며 각 나머지가 처음 나타난 위치를 기록하고, 같은 나머지가 다시 나타나면 현재 위치에서 가장 이른 위치를 뺀 값으로 최장 길이를 갱신합니다. k는 양수를 사용하고, 음수 거래액은 수학적 의미의 나머지로 환산하세요.\n\n## 정당성 증명\n\n접두사 합 P[j]를 앞의 j개 항의 합이라고 하겠습니다. 구간 (i,j]의 합이 양의 정수 k로 나누어떨어지는 것은 P[i]와 P[j]가 k에 대해 합동인 것과 동치입니다. 오른쪽 끝 j를 고정하면 합동인 가장 이른 접두사가 가장 긴 구간을 만듭니다. 알고리즘은 각 나머지의 가장 이른 인덱스를 저장하고 이후의 모든 접두사를 검사하므로 최적 구간을 놓치지 않으며, 나누어떨어지는 조건을 만족하지 않는 구간을 세는 일도 없습니다.\n\n## 복잡도\n\nn개의 항을 한 번 스캔하므로 기대 시간 O(n)이며, 최대 n+1개의 나머지 위치를 저장하므로 공간은 O(n)입니다.",
+    "hints": [
+      "합동인 두 접두사 합의 차는 k로 나누어떨어집니다.",
+      "각 나머지가 처음 나타난 인덱스를 유지하면, 이후 합동인 위치에서 가장 긴 구간을 얻을 수 있습니다."
+    ]
+  },
+  "vi": {
+    "title": "Longest Stable Transaction Period",
+    "description": "Cho số tiền giao dịch ròng mỗi ngày transactions và một số nguyên dương k, hãy tìm khoảng liên tiếp dài nhất có tổng chia hết cho k. Đề gốc không cho kích thước hay miền của k; trang này bổ sung 1≤n≤100000, mỗi số tiền giao dịch là int32 có dấu, và 1≤k≤2147483647.",
+    "input": "Dòng đầu chứa n và k (1≤n≤100000, 1≤k≤2147483647). Dòng thứ hai chứa n số tiền giao dịch int32 có dấu. Đây là các miền giá trị mà trang này hỗ trợ.",
+    "output": "In ra độ dài của khoảng liên tiếp dài nhất có tổng chia hết cho k; nếu không tồn tại, in 0.",
+    "explanation": "## Hướng tiếp cận\n\nKhi hai tổng tiền tố có cùng số dư theo modulo k, tổng của khoảng liên tiếp nằm giữa chúng chia hết cho k. Quét từ trái sang phải và ghi lại vị trí xuất hiện đầu tiên của mỗi số dư; khi một số dư xuất hiện lại, cập nhật độ dài lớn nhất bằng vị trí hiện tại trừ vị trí sớm nhất. Dùng k dương, và rút gọn các số tiền giao dịch âm theo modulo k theo nghĩa toán học.\n\n## Chứng minh tính đúng đắn\n\nGọi tổng tiền tố P[j] là tổng của j phần tử đầu. Tổng của khoảng (i,j] chia hết cho số nguyên dương k khi và chỉ khi P[i] và P[j] đồng dư theo modulo k. Với đầu phải j cố định, tiền tố đồng dư sớm nhất cho khoảng dài nhất; thuật toán lưu chỉ số sớm nhất của mỗi số dư và kiểm tra mọi tiền tố sau đó, nên không bao giờ bỏ sót khoảng tối ưu và không bao giờ tính một khoảng không thỏa điều kiện chia hết.\n\n## Độ phức tạp\n\nQuét n phần tử một lần, thời gian kỳ vọng O(n); lưu tối đa n+1 vị trí số dư, bộ nhớ O(n).",
+    "hints": [
+      "Hiệu của hai tổng tiền tố đồng dư thì chia hết cho k.",
+      "Duy trì chỉ số sớm nhất mà mỗi số dư xuất hiện, để các vị trí đồng dư về sau cho khoảng dài nhất."
+    ]
   }
 }

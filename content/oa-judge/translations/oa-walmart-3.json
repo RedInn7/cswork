@@ -13,5 +13,41 @@
       "In each step, any flavor decreases by at most one candy.",
       "Try building groups of three steps that keep one count unchanged and reduce another by three."
     ]
+  },
+  "ja": {
+    "title": "すべてのキャンディーを1つの味にする最小操作回数",
+    "description": "3種類の異なる味のキャンディーがあり、個数はそれぞれ A、B、C です。1回の操作で、異なる味のキャンディーを2つ選び、その両方を3つ目の味に変えます。つまり選んだ2つの個数はそれぞれ 1 減り、3つ目は 2 増え、合計は変わりません。現在キャンディーがある味しか選べません。すべてのキャンディーを同じ味にする最小の操作回数を求め、不可能なら −1 を出力してください。目標は、3つの個数がすべて等しくなることではなく、2つの味の個数が 0 になることです。",
+    "input": "1行に3つの整数 A、B、C が与えられます。1≤A,B,C≤100000000。最初は3つの味すべてにキャンディーがあり、途中で個数が 0 になることがあります。固定された元の問題の範囲はそのまま残しています。",
+    "output": "最小の操作回数を出力します。到達できなければ -1 を出力します。",
+    "explanation": "例1は固定された元の問題のものです: (1,2,3) は1つの味にできません。例2と例3は本サイトが追加したものです: (1,1,1) は1回で (0,0,3) になります。(4,1,2) は (3,3,1)、(2,2,3)、(1,1,5)、(0,0,7) と順に変えられ、最小は 4 回です。元のコンパイル版は、消す個数の和が3で割り切れることも追加で要求していましたが、これは誤った条件です。本サイトは元の操作を独立に解いています。",
+    "hints": [
+      "味の個数の各ペアの差を、3 を法として見てみましょう。",
+      "各ステップで、どの味も減るのは高々1個です。",
+      "1つの個数を変えず、別の個数を 3 減らす、3ステップのグループを作ることを考えてみましょう。"
+    ]
+  },
+  "ko": {
+    "title": "모든 사탕을 한 가지 맛으로 바꾸는 최소 연산 횟수",
+    "description": "세 가지 서로 다른 맛의 사탕이 있고 개수는 A, B, C입니다. 한 번의 연산에서 서로 다른 맛의 사탕 두 개를 골라 둘 다 세 번째 맛으로 바꾸므로, 고른 두 맛의 개수는 각각 1 줄고 세 번째 맛은 2 늘어나며 전체 합은 변하지 않습니다. 현재 사탕이 있는 맛만 고를 수 있습니다. 모든 사탕을 같은 맛으로 만드는 최소 연산 횟수를 구하세요. 불가능하면 −1을 출력하세요. 목표는 두 맛의 개수가 0이 되는 것이지, 세 개수가 모두 같아지는 것이 아닙니다.",
+    "input": "A, B, C가 한 줄로 주어집니다. 1≤A,B,C≤100000000. 처음에는 세 맛 모두 사탕이 있고, 과정 중에 개수가 0이 될 수 있습니다. 고정된 원래 문제의 범위는 그대로 유지됩니다.",
+    "output": "최소 연산 횟수를 출력하고, 도달할 수 없으면 -1을 출력합니다.",
+    "explanation": "예제 1은 고정된 원래 문제에서 가져온 것입니다: (1,2,3)은 한 가지 맛으로 만들 수 없습니다. 예제 2와 3은 이 사이트에서 추가했습니다: (1,1,1)은 한 번에 (0,0,3)이 되고, (4,1,2)는 차례로 (3,3,1), (2,2,3), (1,1,5), (0,0,7)이 될 수 있어 최소 4번입니다. 원래 정리본에서는 추가로 비워야 하는 개수의 합이 3으로 나누어떨어져야 한다는 조건을 요구했는데 이는 잘못된 조건입니다. 이 사이트는 원래의 연산을 독립적으로 풉니다.",
+    "hints": [
+      "두 맛의 개수의 모든 쌍에 대해 차이를 3으로 나눈 나머지를 살펴보세요.",
+      "한 번의 연산에서 어떤 맛이든 최대 사탕 한 개만 줄어듭니다.",
+      "한 개수는 그대로 두고 다른 개수를 3 줄이는 세 단계 묶음을 만들어 보세요."
+    ]
+  },
+  "vi": {
+    "title": "Số thao tác tối thiểu để biến mọi viên kẹo thành một vị",
+    "description": "Có kẹo của ba vị khác nhau, với số lượng A, B và C. Mỗi thao tác chọn hai viên kẹo khác vị và biến cả hai thành vị thứ ba, nên hai số lượng được chọn đều giảm 1 và số lượng thứ ba tăng 2, tổng giữ nguyên. Chỉ có thể chọn những vị hiện còn kẹo. Hãy tìm số thao tác tối thiểu để mọi viên kẹo cùng một vị; nếu không thể, in −1. Mục tiêu là hai số lượng vị bằng 0, không phải cả ba số lượng bằng nhau.",
+    "input": "Một dòng gồm ba số nguyên A, B, C, 1≤A,B,C≤100000000. Ban đầu cả ba vị đều có kẹo, và một số lượng có thể trở thành 0 trong quá trình. Các khoảng giá trị của bài gốc cố định được giữ nguyên đầy đủ.",
+    "output": "In ra số thao tác tối thiểu; nếu không thể đạt được, in -1.",
+    "explanation": "Ví dụ 1 lấy từ bài gốc cố định: (1,2,3) không thể trở thành một vị duy nhất. Các ví dụ 2 và 3 do trang này bổ sung: (1,1,1) trở thành (0,0,3) trong một bước; (4,1,2) lần lượt có thể trở thành (3,3,1), (2,2,3), (1,1,5), (0,0,7), tối thiểu 4 bước. Phiên bản biên soạn gốc còn yêu cầu tổng các số lượng cần xóa chia hết cho 3, đó là một điều kiện sai; trang này giải các thao tác gốc một cách độc lập.",
+    "hints": [
+      "Hãy xem hiệu giữa mỗi cặp số lượng các vị theo modulo 3.",
+      "Mỗi bước, bất kỳ vị nào cũng giảm tối đa một viên kẹo.",
+      "Hãy thử xây các nhóm ba bước giữ nguyên một số lượng và giảm một số lượng khác đi ba."
+    ]
   }
 }

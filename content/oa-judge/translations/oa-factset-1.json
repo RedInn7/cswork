@@ -13,5 +13,41 @@
       "A cell containing 1 must satisfy the conditions from above, from the left, and from the upper-left at the same time.",
       "A rolling array is enough to process each row as a stream."
     ]
+  },
+  "ja": {
+    "title": "すべて 1 の正方形の最大辺長",
+    "description": "n×n の 2 値行列が与えられます。1 は不良品、0 は良品を表します。要素がすべて 1 である連続した正方形の部分行列の、最大の辺の長さを求めてください。返すのは面積ではなく辺の長さです。1 が 1 つもなければ 0 を返します。",
+    "input": "1 行目に非負整数 n、続く n 行に、空白で区切られた 0 または 1 が n 個ずつ与えられます。元の問題は正方行列で行ごとの入力であることを明示していますが、n の数値上の上限は与えていません。本サイトでは、1 ケースあたり 32MiB という既存の標準入力の上限に収まるすべての有効な正方行列に対応し、n をそれ以上には制限しません。n=0 は空行列で、本サイトによる数学的な明示的拡張です。",
+    "output": "最大の辺の長さを整数 1 つで出力してください。空行列、またはすべて 0 の行列なら 0 を出力します。",
+    "explanation": "3 つの公開入力とその出力 3、2、1 は、元のソースのまま残しています。1 つ目の例には辺の長さ 3 の正方形があります。元の説明の end(3,3) は半開区間の端点ですが、本サイトでは閉区間の端点 (2,2) に正規化しています。他の 2 つの正方形の右下隅は (3,2) と (4,2) です。2 つ目の例では左上の 2×2 がすべて 1 です。3 つ目の例にはすべて 1 の 2×2 はありませんが、1 は含まれています。元の画像は筆者のローカルマシン上のパスなので、根拠としては使いません。",
+    "hints": [
+      "各セルを右下隅とする正方形の最大の辺の長さを考えます。",
+      "1 を含むセルは、真上、左、左上の 3 つの条件を同時に満たす必要があります。",
+      "ローリング配列を使えば、各行をストリームとして処理できます。"
+    ]
+  },
+  "ko": {
+    "title": "모두 1로 이루어진 정사각형의 최대 변 길이",
+    "description": "n×n 이진 행렬이 주어집니다. 1은 불량품, 0은 정상품을 뜻합니다. 모든 원소가 1인 연속된 정사각형 부분 행렬 중 변의 길이가 최대인 것을 찾아 넓이가 아니라 변의 길이를 반환합니다. 1이 없으면 0을 반환합니다.",
+    "input": "첫 줄에 음이 아닌 정수 n이 주어지고, 이어서 n개의 줄에 각각 공백으로 구분된 0 또는 1이 n개씩 주어집니다. 원문은 정사각 행렬과 행 단위 입력을 명시했지만 n의 수치 상한은 주지 않았습니다. 이 사이트는 기존의 테스트 케이스당 표준 입력 32MiB 예산 안에 들어가는 모든 유효한 정사각 행렬을 지원하며 n을 더 제한하지 않습니다. n=0은 빈 행렬이며, 이 사이트가 수학적으로 명시적으로 확장한 경우입니다.",
+    "output": "정수 하나, 즉 최대 변의 길이를 출력합니다. 빈 행렬이거나 모두 0인 행렬이면 0을 출력합니다.",
+    "explanation": "세 공개 입력과 그 출력 3, 2, 1은 원문 그대로 유지했습니다. 첫 번째 예제에는 변의 길이가 3인 정사각형이 있습니다. 원문 설명의 end(3,3)은 반개구간 끝점을 쓴 것이며, 이 사이트에서는 닫힌 끝점 (2,2)로 정규화했습니다. 나머지 두 정사각형의 오른쪽 아래 모서리는 (3,2)와 (4,2)입니다. 두 번째 예제에서는 왼쪽 위의 2×2가 모두 1이고, 세 번째 예제에는 모두 1인 2×2 정사각형은 없지만 1은 존재합니다. 원문의 이미지는 작성자의 로컬 컴퓨터 경로이므로 근거로 사용하지 않았습니다.",
+    "hints": [
+      "각 칸을 오른쪽 아래 모서리로 하는 정사각형의 최대 변 길이를 생각해 보세요.",
+      "1이 들어 있는 칸은 위쪽, 왼쪽, 왼쪽 위의 조건을 동시에 만족해야 합니다.",
+      "롤링 배열이면 각 행을 스트림으로 처리하기에 충분합니다."
+    ]
+  },
+  "vi": {
+    "title": "Cạnh lớn nhất của hình vuông toàn số 1",
+    "description": "Cho một ma trận nhị phân n×n, trong đó 1 biểu thị sản phẩm lỗi và 0 là sản phẩm không lỗi, hãy tìm độ dài cạnh lớn nhất của một ma trận con hình vuông liên tục mà mọi phần tử đều là 1. Trả về độ dài cạnh chứ không phải diện tích. Trả về 0 nếu không có số 1 nào.",
+    "input": "Dòng đầu chứa một số nguyên không âm n, tiếp theo là n dòng, mỗi dòng gồm n số 0 hoặc 1 cách nhau bởi khoảng trắng. Đề gốc nêu rõ ma trận vuông và nhập theo từng hàng nhưng không cho cận trên số học của n; trang này hỗ trợ mọi ma trận vuông hợp lệ vừa trong ngân sách đầu vào chuẩn hiện có là 32MiB cho mỗi test và không giới hạn n thêm nữa. n=0 là ma trận rỗng, một mở rộng toán học được trang này nêu rõ.",
+    "output": "Xuất một số nguyên là độ dài cạnh lớn nhất; xuất 0 cho ma trận rỗng hoặc ma trận toàn 0.",
+    "explanation": "Cả ba đầu vào công khai và đầu ra 3, 2, 1 của chúng được giữ nguyên từ nguồn gốc. Ví dụ đầu tiên có một hình vuông cạnh 3; end(3,3) trong lời giải thích gốc dùng điểm cuối nửa mở, mà trang này chuẩn hóa thành điểm cuối bao gồm (2,2); các góc dưới bên phải của hai hình vuông còn lại là (3,2) và (4,2). Trong ví dụ thứ hai, hình vuông 2×2 ở góc trên bên trái toàn là số 1; ví dụ thứ ba không có hình vuông 2×2 toàn 1 nhưng có chứa một số 1. Hình ảnh gốc là đường dẫn trên máy cục bộ của tác giả nên không được dùng làm bằng chứng.",
+    "hints": [
+      "Hãy xét độ dài cạnh lớn nhất của hình vuông có góc dưới bên phải là từng ô.",
+      "Một ô chứa 1 phải đồng thời thỏa mãn các điều kiện từ phía trên, từ bên trái và từ phía trên bên trái.",
+      "Một mảng cuốn chiếu (rolling array) là đủ để xử lý từng hàng dưới dạng luồng."
+    ]
   }
 }

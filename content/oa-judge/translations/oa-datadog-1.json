@@ -11,5 +11,35 @@
     "hints": [
       "Maintain the appended logs in order; each query scans the current logs and checks the time, service, level, and message conditions entry by entry. The time range is a closed interval. Each query is O(L), and the total complexity is O(q²), which fits the simplified version directly defined by this problem."
     ]
+  },
+  "ja": {
+    "title": "Log Ingestion and Query",
+    "description": "ログを順に追加し、閉区間のクエリを実行します。service と level は完全一致、keyword は message に対する部分文字列の一致で、`*` はフィルタなしを意味します。\n\n本サイトの標準入出力形式と補足の範囲は、この問題の記述に従います。",
+    "input": "1 行目に q (1≤q≤5000。直接クエリの時間を抑えるために本サイトが設定した上限) が与えられ、続く q 行はそれぞれ ADD timestamp service level message または QUERY start end service|* level|* keyword|* です。message には空白が含まれることがあります。",
+    "output": "各 QUERY について、一致した件数を 1 行に出力してください。",
+    "explanation": "追加されたログを順に保持し、各クエリで現在のログを走査して、時刻、service、level、message の条件をログごとに調べます。時間範囲は閉区間です。各クエリは O(L)、全体の計算量は O(q²) で、この問題が直接定義する簡略版に適しています。",
+    "hints": [
+      "追加されたログを順に保持し、各クエリで現在のログを走査して、時刻、service、level、message の条件をログごとに調べます。時間範囲は閉区間です。各クエリは O(L)、全体の計算量は O(q²) で、この問題が直接定義する簡略版に適しています。"
+    ]
+  },
+  "ko": {
+    "title": "Log Ingestion and Query",
+    "description": "로그를 순서대로 추가하고 닫힌 구간 조회를 수행합니다. service와 level은 정확히 일치해야 하고, keyword는 message에 대한 부분 문자열 일치이며, `*`는 필터 없음을 뜻합니다.\n\n이 사이트의 표준 입출력 형식과 보충 범위는 이 문제의 설명을 따릅니다.",
+    "input": "첫 번째 줄에 q(1≤q≤5000, 직접 조회의 시간을 제한하기 위해 이 사이트에서 정한 상한)가 주어지고, 이어지는 q개의 줄은 각각 ADD timestamp service level message 또는 QUERY start end service|* level|* keyword|* 입니다. message에는 공백이 포함될 수 있습니다.",
+    "output": "각 QUERY마다 일치하는 로그의 개수를 한 줄에 하나씩 출력합니다.",
+    "explanation": "추가된 로그를 순서대로 유지하고, 각 조회마다 현재 로그를 훑으면서 시간, service, level, message 조건을 항목별로 검사합니다. 시간 범위는 닫힌 구간입니다. 각 조회는 O(L)이고 전체 복잡도는 O(q²)로, 이 문제가 직접 정의한 단순화된 버전에 적합합니다.",
+    "hints": [
+      "추가된 로그를 순서대로 유지하고, 각 조회마다 현재 로그를 훑으면서 시간, service, level, message 조건을 항목별로 검사합니다. 시간 범위는 닫힌 구간입니다. 각 조회는 O(L)이고 전체 복잡도는 O(q²)로, 이 문제가 직접 정의한 단순화된 버전에 적합합니다."
+    ]
+  },
+  "vi": {
+    "title": "Log Ingestion and Query",
+    "description": "Thêm log theo thứ tự và chạy các truy vấn theo khoảng đóng; service/level khớp chính xác, keyword khớp xâu con trong message, và `*` nghĩa là không lọc.\n\nĐịnh dạng vào/ra chuẩn và các giới hạn bổ sung của trang này bám theo mô tả của bài.",
+    "input": "Dòng đầu tiên chứa q (1≤q≤5000, giới hạn do trang này đặt ra để chặn thời gian của các truy vấn trực tiếp), và mỗi dòng trong q dòng tiếp theo là ADD timestamp service level message hoặc QUERY start end service|* level|* keyword|*. message có thể chứa dấu cách.",
+    "output": "Với mỗi QUERY, in ra số lượng khớp trên một dòng.",
+    "explanation": "Duy trì các log đã thêm theo thứ tự; mỗi truy vấn quét các log hiện có và kiểm tra lần lượt từng mục theo điều kiện thời gian, service, level và message. Khoảng thời gian là đoạn đóng. Mỗi truy vấn tốn O(L), tổng độ phức tạp là O(q²), phù hợp với phiên bản đơn giản hóa do chính bài này định nghĩa.",
+    "hints": [
+      "Duy trì các log đã thêm theo thứ tự; mỗi truy vấn quét các log hiện có và kiểm tra lần lượt từng mục theo điều kiện thời gian, service, level và message. Khoảng thời gian là đoạn đóng. Mỗi truy vấn tốn O(L), tổng độ phức tạp là O(q²), phù hợp với phiên bản đơn giản hóa do chính bài này định nghĩa."
+    ]
   }
 }

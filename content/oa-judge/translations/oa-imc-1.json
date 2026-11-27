@@ -11,5 +11,35 @@
     "hints": [
       "Sort each container group first, then use lower_bound to find the smallest feasible capacity for each order."
     ]
+  },
+  "ja": {
+    "title": "Pharmaceutical Waste Reduction",
+    "description": "複数のコンテナグループと複数の注文が与えられます。各注文は 1 つのコンテナで完全に満たさなければなりません。現在のコンテナグループの中から、容量が注文の需要以上である最小のコンテナを選び、廃棄量は容量から需要を引いたものです。あるグループがいずれかの注文を満たせない場合、そのグループは実行不可能です。実行可能なグループのうち総廃棄量が最小のものを探し、その 1 始まりの番号を返してください。同点の場合は番号が最小のものを選びます。実行可能なグループがなければ、元の問題の 3 つの参照実装はすべて -1 を返しており、本サイトでも明示的に -1 を採用します。",
+    "input": "1 行目に注文の数 R とコンテナグループの数 S が与えられます。2 行目に R 個の需要が与えられます。続いて各グループについて、1 行でコンテナの数 C と、C 個の容量が与えられます。本サイトのリソース制約は、1≤R≤2000、1≤S≤100、1≤C≤2000、すべての需要と容量は 1..10^9、すべてのコンテナグループにわたる容量の総数は 100000 以下です。元の問題には数値の規模の指定がなく、ここではリソースの上限だけを追加しています。コンテナの選び方と廃棄量の定義は変更していません。",
+    "output": "最適なコンテナグループの 1 始まりの番号を出力してください。すべての注文を満たせるコンテナグループがなければ -1 を出力します（これは本サイトの規約で、固定されたソースの Python、Java、C++ の実装と一致しています）。",
+    "explanation": "各グループのコンテナをソートします。各注文について、容量が需要以上である最初のコンテナを二分探索し、見つかれば差を加え、見つからなければこのコンテナグループを諦めます。最後に、実行可能なすべてのグループの総廃棄量を比較します。",
+    "hints": [
+      "まず各コンテナグループをソートし、lower_bound を使って、各注文に対して実行可能な最小の容量を探します。"
+    ]
+  },
+  "ko": {
+    "title": "Pharmaceutical Waste Reduction",
+    "description": "여러 용기 그룹과 여러 주문이 주어집니다. 각 주문은 하나의 용기로 완전히 채워야 하며, 현재 용기 그룹 안에서 용량이 주문 요구량 이상인 용기 중 가장 작은 것을 선택하고, 낭비는 용량에서 요구량을 뺀 값입니다. 어떤 그룹이 어떤 주문을 충족하지 못하면 그 그룹은 실행 불가능합니다. 실행 가능한 용기 그룹 중 총 낭비가 가장 적은 그룹의 1-기반 인덱스를 반환하며, 동점이면 가장 작은 인덱스를 택합니다. 실행 가능한 그룹이 없으면 원래 문제의 세 가지 참조 구현은 모두 -1을 반환하며, 이 사이트도 명시적으로 -1을 채택합니다.",
+    "input": "첫 줄에 주문 수 R과 용기 그룹 수 S가 주어집니다. 둘째 줄에는 R개의 요구량이 주어집니다. 그다음 각 그룹마다 한 줄에 용기의 수 C와 C개의 용량이 주어집니다. 이 사이트의 자원 제한: 1≤R≤2000, 1≤S≤100, 1≤C≤2000, 모든 요구량과 용량은 1..10^9, 모든 용기 그룹에 걸친 용량의 총 개수는 ≤100000입니다. 원래 문제는 수치 규모를 주지 않았으며 여기서는 자원 제한만 추가했을 뿐 용기 선택과 낭비의 정의는 바뀌지 않았습니다.",
+    "output": "최적 용기 그룹의 1-기반 인덱스를 출력합니다. 어떤 용기 그룹도 모든 주문을 충족할 수 없으면 -1을 출력합니다(이 사이트의 규약이며, 고정된 원문의 Python, Java, C++ 구현과 일치합니다).",
+    "explanation": "각 그룹의 용기를 정렬합니다. 각 주문에 대해 용량이 요구량 이상인 첫 번째 용기를 이분 탐색으로 찾고, 있으면 차이를 더하고 없으면 이 용기 그룹을 포기합니다. 마지막으로 실행 가능한 모든 그룹의 총 낭비를 비교합니다.",
+    "hints": [
+      "먼저 각 용기 그룹을 정렬한 뒤, 각 주문마다 lower_bound로 가능한 가장 작은 용량을 찾습니다."
+    ]
+  },
+  "vi": {
+    "title": "Pharmaceutical Waste Reduction",
+    "description": "Bạn được cho nhiều nhóm container và nhiều đơn hàng. Mỗi đơn hàng phải được đáp ứng hoàn toàn bằng một container duy nhất; trong nhóm container hiện tại, chọn container nhỏ nhất có dung tích không nhỏ hơn nhu cầu của đơn hàng, và lượng lãng phí là dung tích trừ đi nhu cầu. Nếu một nhóm không thể đáp ứng một đơn hàng nào đó, nhóm đó không khả thi. Hãy tìm nhóm container khả thi có tổng lãng phí ít nhất và trả về chỉ số bắt đầu từ 1 của nó; nếu hòa thì chọn chỉ số nhỏ nhất. Nếu không có nhóm nào khả thi, cả ba bản cài đặt tham chiếu của bài toán gốc đều trả về -1, và trang này chính thức dùng -1.",
+    "input": "Dòng đầu chứa số đơn hàng R và số nhóm container S. Dòng thứ hai chứa R nhu cầu. Sau đó, với mỗi nhóm, một dòng cho số container C theo sau là C dung tích. Giới hạn tài nguyên của trang này: 1≤R≤2000, 1≤S≤100, 1≤C≤2000, mọi nhu cầu và dung tích đều trong 1..10^9, và tổng số dung tích trên mọi nhóm container ≤100000. Bài toán gốc không cho quy mô số học; ở đây chỉ bổ sung các giới hạn tài nguyên, còn cách chọn container và định nghĩa lãng phí không đổi.",
+    "output": "Xuất chỉ số bắt đầu từ 1 của nhóm container tối ưu; nếu không nhóm container nào đáp ứng được mọi đơn hàng thì xuất -1 (đây là quy ước của trang này, nhất quán với các bản cài đặt Python, Java và C++ của nguồn đã ghim).",
+    "explanation": "Sắp xếp các container của mỗi nhóm. Với mỗi đơn hàng, dùng tìm kiếm nhị phân để tìm container đầu tiên có dung tích không nhỏ hơn nhu cầu; nếu tìm được thì cộng phần chênh lệch, ngược lại bỏ nhóm container này. Cuối cùng so sánh tổng lượng lãng phí của mọi nhóm khả thi.",
+    "hints": [
+      "Hãy sắp xếp từng nhóm container trước, rồi dùng lower_bound để tìm dung tích khả thi nhỏ nhất cho mỗi đơn hàng."
+    ]
   }
 }

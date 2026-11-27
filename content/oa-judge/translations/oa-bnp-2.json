@@ -13,5 +13,41 @@
       "Each pile must pass through every distinct height lower than it, one by one.",
       "The answer may exceed 32 bits."
     ]
+  },
+  "ja": {
+    "title": "山を 1 つずつ次に高い高さまで下げる",
+    "description": "箱の山がいくつかあります。各ステップでは、現在最も高い山を 1 つ選び、現在の最大の高さより真に小さい次の高さまで下げることしかできません。すべての山を同じ高さにするために必要な最小のステップ数を求めてください。1 ステップで変わる山は 1 つだけです。レベル全体を一度に処理することはできず、次に高い高さを飛ばすこともできません。",
+    "input": "1 行目に非負整数 n、続いて空白区切りの n 個の高さが与えられます。元の Java の int[] と、非負の箱の個数という意味に従い、本サイトでは高さを 0..2147483647 と解釈します。0 は空の山を表す公開の慣例です。元の問題は n に数値の上限を示していません。本サイトは、1 テストケースあたりの標準入力 32MiB という全体の予算内で送信できる任意の有効な配列に対応しており、小さな n の制限を新たに設けてはいません。n=0 は空の集合で、本サイトによる数学的な拡張です。",
+    "output": "最小のステップ数を 64 ビット整数で出力してください。すべての高さがすでに等しい場合、山が 1 つしかない場合、または山がない場合は 0 を出力します。",
+    "explanation": "1 つ目の例は元の [5,2,1]→3 を保持しています。5 を 2 に 1 回下げ、その後 2 つの 2 をそれぞれ 1 回ずつ 1 に下げます。2 つ目と 3 つ目の公開例は本サイトが導いたものです: [5,5,2,1]→5、[0,2147483647]→1。箱の個数の差は操作回数ではありません。",
+    "hints": [
+      "ソートすると、同じ高さは同じ順位になります。",
+      "各山は、自分より低いすべての異なる高さを 1 つずつ通過しなければなりません。",
+      "答えは 32 ビットを超えることがあります。"
+    ]
+  },
+  "ko": {
+    "title": "한 번에 한 더미씩 다음으로 높은 높이로 낮추기",
+    "description": "여러 개의 상자 더미가 있습니다. 각 단계에서는 현재 가장 높은 더미 하나만 골라, 현재 최대 높이보다 엄격히 작은 다음 높이로 낮출 수 있습니다. 모든 더미의 높이를 같게 만드는 데 필요한 최소 단계 수를 구하세요. 한 단계에 하나의 더미만 바뀌며, 한 층 전체를 한꺼번에 처리하거나 다음으로 높은 높이를 건너뛸 수 없습니다.",
+    "input": "첫째 줄에 음이 아닌 정수 n이 주어지고, 이어서 공백으로 구분된 n개의 높이가 주어집니다. 원래의 Java int[]와 상자 수가 음이 아니라는 의미에 따라 이 사이트에서는 높이를 0..2147483647로 해석하며, 0은 빈 더미를 나타내는 공개된 관례입니다. 원본은 n의 수치 상한을 주지 않으므로, 이 사이트는 작은 n 제한을 임의로 만들지 않고 한 테스트 케이스당 전체 32MiB 표준 입력 한도 안에서 전달 가능한 유효한 배열이면 모두 지원합니다. n=0은 빈 집합이며 이 사이트에서 확장한 수학적 정의입니다.",
+    "output": "필요한 최소 단계 수를 64비트 정수로 출력합니다. 모든 높이가 이미 같거나, 더미가 하나뿐이거나, 더미가 없으면 0을 출력합니다.",
+    "explanation": "첫 번째 예시는 원래의 [5,2,1]→3을 유지합니다. 5를 2로 한 번 낮춘 뒤, 두 개의 2를 각각 1로 한 번씩 낮춥니다. 두 번째와 세 번째 공개 예시는 이 사이트에서 만들었습니다: [5,5,2,1]→5, [0,2147483647]→1. 상자 수의 차이는 이동 횟수가 아닙니다.",
+    "hints": [
+      "정렬하면 같은 높이는 같은 순위를 가집니다.",
+      "각 더미는 자신보다 낮은 서로 다른 높이를 하나씩 모두 거쳐야 합니다.",
+      "답이 32비트를 넘을 수 있습니다."
+    ]
+  },
+  "vi": {
+    "title": "Hạ từng cột xuống độ cao kế tiếp",
+    "description": "Bạn có nhiều cột hộp. Mỗi bước chỉ được chọn một cột đang cao nhất và hạ nó xuống độ cao kế tiếp nhỏ hơn hẳn độ cao lớn nhất hiện tại. Tìm số bước tối thiểu để làm cho mọi cột có cùng độ cao. Mỗi bước chỉ thay đổi một cột; không thể xử lý cả một tầng cùng lúc, và không được bỏ qua độ cao kế tiếp.",
+    "input": "Dòng đầu chứa một số nguyên không âm n, tiếp theo là n độ cao cách nhau bởi khoảng trắng. Theo int[] của Java gốc và ý nghĩa của số hộp không âm, trang này hiểu độ cao nằm trong 0..2147483647, với 0 là quy ước công khai cho một cột rỗng. Bản gốc không đưa ra cận số trên cho n; trang này hỗ trợ mọi mảng hợp lệ có thể truyền được trong toàn bộ ngân sách đầu vào chuẩn 32MiB của một test, mà không tự đặt ra giới hạn nhỏ cho n. n=0 là tập rỗng, một phần mở rộng toán học do trang này thêm.",
+    "output": "In ra số bước tối thiểu dưới dạng số nguyên 64 bit. In 0 khi mọi độ cao đã bằng nhau, chỉ có một cột, hoặc không có cột nào.",
+    "explanation": "Ví dụ đầu tiên giữ nguyên bản gốc [5,2,1]→3: hạ 5 xuống 2 một lần, rồi hạ mỗi trong hai cột 2 xuống 1 một lần. Ví dụ công khai thứ hai và thứ ba do trang này suy ra: [5,5,2,1]→5, [0,2147483647]→1; hiệu số hộp không phải là số lần di chuyển.",
+    "hints": [
+      "Sau khi sắp xếp, các độ cao bằng nhau có cùng hạng.",
+      "Mỗi cột phải đi qua từng độ cao khác nhau thấp hơn nó, lần lượt từng cái một.",
+      "Đáp án có thể vượt quá 32 bit."
+    ]
   }
 }

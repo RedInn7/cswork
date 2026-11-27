@@ -11,5 +11,35 @@
     "hints": [
       "First run BFS from start to get the shortest distance to every cell; then do DP in increasing order of distance, transitioning only from neighbors whose distance is 1 smaller, and record for each cell the maximum number of treasures over shortest paths that reach it."
     ]
+  },
+  "ja": {
+    "title": "Escape the Haunted Castle (Part 2)",
+    "description": "グリッドに、壁、スタート、出口、宝があります。移動は上下左右のみです。出口に到達する最小のステップ数を求め、最短経路が複数ある場合は、そのうち 1 本の上で集められる宝の最大数を返してください。出口に到達できない場合は -1 0 を返します。宝は到達したときに 1 回だけ拾われます。\n\n本サイトが明示する標準入出力の形式と補足の制約はオンライン版を定義するもので、元の問題の制約であると主張するものではありません。",
+    "input": "入力として rows cols、壁の座標、宝の座標、スタート、ゴールが与えられます。本サイトの規定では、座標は 0 始まりで、各座標は 1 行ずつ与えられ、グリッドの各辺の長さは 1..200、すべての座標は有効で、スタートとゴールは壁ではなく、宝の座標は互いに異なります。",
+    "output": "最小のステップ数と、最短経路上で拾える宝の最大数を出力してください。スタートのマスにある宝も数えます。",
+    "explanation": "まずスタートから BFS を行い、各マスへの最短距離を求めます。次に距離の小さい順に DP を行い、距離がちょうど 1 小さい隣接マスからのみ遷移して、各マスについて、そこへ至る最短経路上の宝の最大数を記録します。",
+    "hints": [
+      "まずスタートから BFS を行い、各マスへの最短距離を求めます。次に距離の小さい順に DP を行い、距離がちょうど 1 小さい隣接マスからのみ遷移して、各マスについて、そこへ至る最短経路上の宝の最大数を記録します。"
+    ]
+  },
+  "ko": {
+    "title": "Escape the Haunted Castle (Part 2)",
+    "description": "격자에 벽, 시작 지점, 출구, 보물이 있습니다. 상하좌우로만 이동할 수 있습니다. 출구에 도달하는 최소 걸음 수를 구하고, 최단 경로가 여러 개이면 그중 한 경로에서 모을 수 있는 보물의 최대 개수를 반환하세요. 출구에 도달할 수 없으면 -1 0을 반환합니다. 보물은 그 칸에 도착했을 때 한 번 줍습니다.\n\n명시된 표준 입출력 형식과 이 사이트의 보충 제약 조건은 온라인 버전을 정의하며, 원본의 제약 조건이라고 주장하는 것이 아닙니다.",
+    "input": "입력으로 rows cols, 벽 좌표, 보물 좌표, 시작, 끝이 주어집니다. 이 사이트는 좌표가 0부터 시작하고, 각 좌표가 한 줄에 하나씩 주어지며, 격자의 변 길이는 1..200이고, 모든 좌표는 유효하며, 시작/끝은 벽이 아니고, 보물 좌표는 서로 다르다고 규정합니다.",
+    "output": "최소 걸음 수와, 최단 경로에서 주울 수 있는 보물의 최대 개수를 출력합니다. 시작 칸에 있는 보물도 포함합니다.",
+    "explanation": "먼저 시작점에서 BFS를 수행해 모든 칸까지의 최단 거리를 구합니다. 그다음 거리가 증가하는 순서로 DP를 수행하되, 거리가 1 작은 이웃에서만 전이하며, 각 칸에 대해 그 칸에 도달하는 최단 경로들의 보물 수의 최댓값을 기록합니다.",
+    "hints": [
+      "먼저 시작점에서 BFS를 수행해 모든 칸까지의 최단 거리를 구합니다. 그다음 거리가 증가하는 순서로 DP를 수행하되, 거리가 1 작은 이웃에서만 전이하며, 각 칸에 대해 그 칸에 도달하는 최단 경로들의 보물 수의 최댓값을 기록합니다."
+    ]
+  },
+  "vi": {
+    "title": "Escape the Haunted Castle (Part 2)",
+    "description": "Một lưới chứa tường, một điểm xuất phát, một lối ra và các kho báu. Bạn chỉ có thể di chuyển lên, xuống, trái hoặc phải. Hãy tìm số bước tối thiểu để đến lối ra; nếu có nhiều đường đi ngắn nhất, trả về số kho báu tối đa có thể thu thập được trên một trong số đó. Nếu không thể đến lối ra, trả về -1 0. Mỗi kho báu chỉ được nhặt một lần khi bạn đến đó.\n\nĐịnh dạng nhập/xuất chuẩn rõ ràng và các ràng buộc bổ sung của trang này xác định phiên bản trực tuyến và không phải là ràng buộc gốc của nguồn.",
+    "input": "Đầu vào cho rows cols, tọa độ các bức tường, tọa độ các kho báu, điểm xuất phát và điểm kết thúc; trang này quy định rằng tọa độ tính từ 0, mỗi tọa độ nằm trên một dòng riêng, cạnh lưới dài 1..200, mọi tọa độ đều hợp lệ, điểm xuất phát/kết thúc không phải là tường, và tọa độ kho báu đôi một khác nhau.",
+    "output": "In ra số bước tối thiểu và số kho báu tối đa có thể nhặt trên một đường đi ngắn nhất. Kho báu nằm trên ô xuất phát cũng được tính.",
+    "explanation": "Trước hết chạy BFS từ điểm xuất phát để có khoảng cách ngắn nhất đến mọi ô; sau đó chạy quy hoạch động theo thứ tự khoảng cách tăng dần, chỉ chuyển từ các ô kề có khoảng cách nhỏ hơn 1, và ghi lại cho mỗi ô số kho báu tối đa trên các đường đi ngắn nhất đến nó.",
+    "hints": [
+      "Trước hết chạy BFS từ điểm xuất phát để có khoảng cách ngắn nhất đến mọi ô; sau đó chạy quy hoạch động theo thứ tự khoảng cách tăng dần, chỉ chuyển từ các ô kề có khoảng cách nhỏ hơn 1, và ghi lại cho mỗi ô số kho báu tối đa trên các đường đi ngắn nhất đến nó."
+    ]
   }
 }
