@@ -13,6 +13,21 @@
       "Deleting two equal letters never changes the parity of any letter's count, so a shortest result keeps exactly one copy of each letter with an odd count and none of the letters with an even count.",
       "The task becomes choosing one position for each odd-count letter so that the resulting subsequence is lexicographically smallest, which is the classic smallest subsequence of distinct letters, solved greedily with a monotonic stack.",
       "Count each letter to decide which letters are kept. Scan left to right while tracking each letter's remaining count: skip letters that are not kept or already on the stack; otherwise, while the top of the stack is larger than the current letter and appears again later, pop it and clear its on-stack mark; then push the current letter. Print the stack as a string, which may be an empty line."
+    ],
+    "ja": [
+      "同じ文字を2つ削除しても、各文字の出現回数の偶奇は変わらないので、最短の結果は、出現回数が奇数の文字をちょうど1つずつ残し、出現回数が偶数の文字はまったく残しません。",
+      "課題は、各奇数回出現する文字について1か所を選び、結果の部分列が辞書順で最小になるようにすることに変わります。これは重複のない文字の最小の部分列という古典的な問題で、単調スタックを使った貪欲法で解けます。",
+      "各文字を数えて、残す文字を決めます。左から右へ走査し、各文字の残りの出現回数を追跡します。残さない文字や、すでにスタックにある文字はスキップします。そうでなければ、スタックの先頭が現在の文字より大きく、かつ後ろにも現れるなら、それをポップしてスタック上の印を消します。その後、現在の文字をプッシュします。スタックを文字列として出力します。空行になることもあります。"
+    ],
+    "ko": [
+      "같은 글자 두 개를 지워도 어떤 글자의 개수의 홀짝성은 바뀌지 않으므로, 가장 짧은 결과는 개수가 홀수인 글자마다 정확히 하나씩만 남기고 짝수인 글자는 전혀 남기지 않습니다.",
+      "문제는 홀수 개수 글자마다 위치 하나씩을 골라 결과 부분 수열이 사전순으로 가장 작게 되도록 하는 것이며, 이는 고전적인 \"서로 다른 글자의 사전순 최소 부분 수열\" 문제로 단조 스택을 사용한 탐욕법으로 풉니다.",
+      "각 글자를 세어 남길 글자를 정합니다. 왼쪽에서 오른쪽으로 훑으며 각 글자의 남은 개수를 추적합니다. 남길 글자가 아니거나 이미 스택에 있는 글자는 건너뜁니다. 그렇지 않으면 스택의 맨 위가 현재 글자보다 크고 뒤에 다시 나온다면 pop하고 스택 표시를 해제합니다. 그런 다음 현재 글자를 push합니다. 스택을 문자열로 출력하며 빈 줄일 수 있습니다."
+    ],
+    "vi": [
+      "Xóa hai chữ cái giống nhau không bao giờ làm đổi tính chẵn lẻ của số đếm mỗi chữ cái, nên kết quả ngắn nhất giữ đúng một bản của mỗi chữ cái có số đếm lẻ và không giữ chữ cái nào có số đếm chẵn.",
+      "Bài toán trở thành chọn một vị trí cho mỗi chữ cái có số đếm lẻ sao cho dãy con thu được nhỏ nhất theo thứ tự từ điển, đó chính là bài kinh điển dãy con nhỏ nhất gồm các chữ cái phân biệt, giải tham lam bằng ngăn xếp đơn điệu.",
+      "Đếm mỗi chữ cái để xác định những chữ cái được giữ. Duyệt từ trái sang phải đồng thời theo dõi số lần còn lại của mỗi chữ cái: bỏ qua các chữ cái không được giữ hoặc đã có trên ngăn xếp; ngược lại, trong khi phần tử đỉnh ngăn xếp lớn hơn chữ cái hiện tại và còn xuất hiện ở phía sau thì lấy nó ra và xóa dấu đang có trên ngăn xếp; sau đó đẩy chữ cái hiện tại vào. In ngăn xếp dưới dạng xâu, có thể là một dòng trống."
     ]
   },
   "explanationEn": "## Approach\n\nOnly letters that appear an odd number of times need to keep one copy each. After filtering out the other letters, use a monotonic stack to pick the lexicographically smallest subsequence without repeats.\n\n## Proof of correctness\n\nDeleting a pair does not change the parity of a frequency, so in a shortest result each odd-frequency letter keeps exactly one copy and no even-frequency letter is kept. As long as a larger letter on top of the stack still appears later, the smaller letter may enter first and that letter can be postponed; greedily choosing the smallest feasible prefix gives the smallest lexicographic order.\n\n## Complexity\n\nTime O(N), auxiliary character space O(26)."

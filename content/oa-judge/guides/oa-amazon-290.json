@@ -13,6 +13,21 @@
       "Fix the number q of items in A first. The heaviest total that q items can reach is that of the q heaviest items; if even that does not strictly exceed the rest, no choice of q items works.",
       "So increase q from 1; the first q for which the q heaviest items strictly outweigh the rest is the minimum count, and those same q heaviest items also give the largest total weight for that count, satisfying both goals at once.",
       "Compute the total weight, sort the weights in descending order and add them to A one by one, checking after each whether the chosen weight exceeds total minus chosen, and stop as soon as it does; print the chosen weights in ascending order."
+    ],
+    "ja": [
+      "まず A の品物数 q を固定します。q 個の品物で達成できる最大の合計は、重いほうから q 個の合計です。それでも残りを厳密に上回らないなら、どの q 個を選んでも不可能です。",
+      "したがって、q を 1 から増やしていき、重いほうから q 個の合計が残りを厳密に上回る最初の q が最小の個数です。その同じ重いほうの q 個は、その個数での最大総重量でもあるため、2 つの目標を同時に満たします。",
+      "総重量を計算し、重さを降順にソートして 1 つずつ A に加えます。各ステップで、選んだ重さの合計が total から選んだ合計を引いた値より大きいかを確認し、大きくなったらすぐに止めます。選んだ重さを昇順に出力します。"
+    ],
+    "ko": [
+      "먼저 A의 항목 수 q를 고정합니다. q개로 만들 수 있는 가장 무거운 합은 가장 무거운 q개의 합입니다. 이것조차 나머지를 엄격하게 넘지 못하면 어떤 q개를 골라도 불가능합니다.",
+      "따라서 q를 1부터 늘려 가며, 가장 무거운 q개가 나머지를 처음으로 엄격하게 넘는 q가 최소 개수입니다. 같은 q개의 가장 무거운 항목은 그 개수에서의 최대 총 무게도 주므로 두 목표를 동시에 만족합니다.",
+      "전체 무게의 합을 구하고 무게를 내림차순으로 정렬해 하나씩 A에 추가하며, 매번 선택한 무게가 total에서 선택한 무게를 뺀 값을 넘는지 확인합니다. 넘는 즉시 멈추고, 선택한 무게를 오름차순으로 출력합니다."
+    ],
+    "vi": [
+      "Trước hết cố định số món q trong A. Tổng nặng nhất mà q món có thể đạt là tổng của q món nặng nhất; nếu ngay cả tổng đó cũng không lớn hơn thực sự phần còn lại, thì không có cách chọn q món nào thỏa.",
+      "Vì vậy tăng q từ 1; giá trị q đầu tiên mà q món nặng nhất lớn hơn thực sự phần còn lại là số lượng nhỏ nhất, và chính q món nặng nhất đó cũng cho tổng khối lượng lớn nhất ở số lượng này, thỏa cả hai mục tiêu cùng lúc.",
+      "Tính tổng khối lượng, sắp xếp các khối lượng giảm dần và thêm từng món vào A, sau mỗi lần kiểm tra khối lượng đã chọn có vượt quá tổng trừ đi khối lượng đã chọn không, và dừng ngay khi vượt; in các khối lượng đã chọn theo thứ tự tăng dần."
     ]
   },
   "explanationEn": "## Approach\n\nTake weights in descending order until the chosen weight is strictly greater than the unchosen weight; reverse the chosen prefix to output it in ascending order.\n\n## Proof of correctness\n\nFor a fixed count q, the largest possible total weight comes from the q largest items. If this upper bound still does not exceed the remaining weight, no choice of q items is valid; the first time it strictly exceeds, q is minimal, and this prefix also reaches the largest total for that q, satisfying the second objective. Printing in ascending order only changes the presentation.\n\n## Complexity\n\nTime O(n log n), space O(n)."

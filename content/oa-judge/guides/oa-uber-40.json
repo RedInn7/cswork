@@ -13,6 +13,21 @@
       "The unit of comparison is the whole log line: spaces inside a line are part of its content, so do not split into words or trim leading or trailing spaces, and an empty line is a valid log too. \"Appears only once\" depends on frequencies over the entire input, so you cannot decide whether an early log is the answer before reading all of them.",
       "Use two passes: in the first, count how many times each full log line occurs with a hash map; in the second, scan in the original order, and the first log whose count is exactly 1 is the answer. If there is no such log, output an empty line.",
       "Read the whole input at once and split it on newlines (removing only the single trailing newline). The first line is n, and the next n lines are the logs, including empty ones. After counting with a hash map, search from the first log for one with count 1 and print it unchanged followed by a newline; if there is none, print just a newline. n can be 1 million and the input up to 32MiB, so prefer slices that reference the original buffer over copying every line."
+    ],
+    "ja": [
+      "比較の単位はログの行全体です。行内の空白は内容の一部なので、単語に分割したり、先頭や末尾の空白を取り除いたりしてはいけません。空行も有効なログです。「1 回だけ現れる」は入力全体での度数に依存するので、すべてを読み終える前に、前のほうのログが答えかどうかは決められません。",
+      "2 パスで処理します。1 パス目で、ハッシュマップを使って各ログ行の出現回数を数えます。2 パス目で元の順序に走査し、回数がちょうど 1 の最初のログが答えです。そのようなログがなければ空行を出力します。",
+      "入力全体を一度に読み込み、改行で分割します(末尾の改行を 1 つだけ取り除きます)。1 行目は n で、続く n 行がログで、空行も含みます。ハッシュマップで数えたあと、最初のログから回数が 1 のものを探し、そのまま出力して改行を付けます。なければ改行だけを出力します。n は 100 万、入力は最大 32MiB になりうるので、すべての行をコピーするよりも、元のバッファを参照するスライスを使うほうが望ましいです。"
+    ],
+    "ko": [
+      "비교의 단위는 로그 한 줄 전체입니다. 줄 안의 공백도 내용의 일부이므로 단어로 나누거나 앞뒤 공백을 제거하지 말고, 빈 줄도 유효한 로그입니다. \"한 번만 나타난다\"는 것은 전체 입력의 빈도에 달려 있으므로, 모두 읽기 전에는 앞쪽 로그가 답인지 판단할 수 없습니다.",
+      "두 번 훑습니다. 첫 번째에서는 해시 맵으로 각 로그 줄 전체가 몇 번 나타나는지 세고, 두 번째에서는 원래 순서대로 훑어 횟수가 정확히 1인 첫 로그를 답으로 삼습니다. 그런 로그가 없으면 빈 줄을 출력합니다.",
+      "입력 전체를 한 번에 읽어 개행으로 나눕니다(마지막 개행 하나만 제거). 첫 줄이 n이고 그다음 n줄이 로그이며 빈 줄도 포함합니다. 해시 맵으로 센 뒤 첫 로그부터 횟수가 1인 것을 찾아 그대로 개행과 함께 출력하고, 없으면 개행만 출력합니다. n이 100만, 입력이 32MiB까지 될 수 있으므로 모든 줄을 복사하기보다 원본 버퍼를 참조하는 슬라이스를 쓰는 편이 좋습니다."
+    ],
+    "vi": [
+      "Đơn vị so sánh là toàn bộ dòng nhật ký: dấu cách bên trong dòng là một phần nội dung của nó, nên không tách thành các từ và không cắt dấu cách ở đầu hay cuối, và một dòng rỗng cũng là một nhật ký hợp lệ. \"Chỉ xuất hiện một lần\" phụ thuộc vào tần suất trên toàn bộ đầu vào, nên bạn không thể quyết định một nhật ký đứng sớm có phải đáp án hay không trước khi đọc hết.",
+      "Dùng hai lượt: lượt đầu đếm mỗi dòng nhật ký đầy đủ xuất hiện bao nhiêu lần bằng một bảng băm; lượt hai quét theo thứ tự ban đầu, và nhật ký đầu tiên có số đếm đúng bằng 1 là đáp án. Nếu không có nhật ký nào như vậy, in một dòng trống.",
+      "Đọc toàn bộ đầu vào một lần và tách theo ký tự xuống dòng (chỉ bỏ đúng một ký tự xuống dòng ở cuối). Dòng đầu tiên là n, và n dòng tiếp theo là các nhật ký, kể cả dòng rỗng. Sau khi đếm bằng bảng băm, tìm từ nhật ký đầu tiên một nhật ký có số đếm 1 và in nó nguyên vẹn kèm một ký tự xuống dòng; nếu không có, chỉ in một ký tự xuống dòng. n có thể là 1 triệu và đầu vào lên đến 32MiB, nên hãy ưu tiên các lát cắt tham chiếu đến bộ đệm gốc thay vì sao chép từng dòng."
     ]
   },
   "explanationEn": "## Approach\n\nFirst count the frequency of each full string, then find the first string with frequency 1 in the original order.\n\n## Correctness\n\nThe frequency count covers every entry, so a frequency of 1 means exactly that the string appears only once in the end. Checking again in the original order, the first matching string is the earliest position the problem asks for; if nothing matches, output an empty line.\n\n## Complexity\n\nTime O(total input bytes), space O(total input bytes+n)."

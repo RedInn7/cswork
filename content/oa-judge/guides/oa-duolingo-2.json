@@ -13,6 +13,21 @@
       "An interval sum is divisible by k exactly when the prefix sums at its two ends are congruent modulo k, so the task becomes finding two prefixes with the same remainder that are as far apart as possible.",
       "For a fixed right end, the earlier the left end, the longer the interval, so store only the first index of each remainder; give remainder 0 of the empty prefix index -1 so that intervals starting at the beginning are counted too.",
       "Scan left to right, adding to the prefix sum and reducing modulo k (amounts can be negative, so take the mathematical non-negative remainder, and use 64-bit arithmetic). If the remainder has been seen, update the answer with i minus its earliest index; otherwise record i. With no valid interval the answer is 0."
+    ],
+    "ja": [
+      "区間の合計が k で割り切れるのは、区間の両端の接頭辞和が k を法として合同であるときに限ります。したがって、問題は、余りが等しく、できるだけ離れた 2 つの接頭辞を見つけることになります。",
+      "右端を固定したとき、左端が早いほど区間は長くなります。そのため、各余りの最初のインデックスだけを保存します。空の接頭辞の余り 0 にはインデックス -1 を与え、先頭から始まる区間も数えられるようにします。",
+      "左から右へ走査し、接頭辞和に加えて k を法として約します(金額は負になりうるので、数学的な非負の余りを取り、64 ビット演算を使います)。その余りがすでに現れていれば、i から最も早いインデックスを引いた値で答えを更新し、そうでなければ i を記録します。有効な区間がなければ答えは 0 です。"
+    ],
+    "ko": [
+      "구간 합이 k로 나누어떨어지는 것은 양 끝의 접두사 합이 k에 대해 합동인 것과 정확히 같습니다. 따라서 문제는 나머지가 같으면서 서로 최대한 멀리 떨어진 두 접두사를 찾는 것이 됩니다.",
+      "오른쪽 끝을 고정하면 왼쪽 끝이 이를수록 구간이 깁니다. 따라서 각 나머지의 첫 인덱스만 저장하고, 빈 접두사의 나머지 0에는 인덱스 -1을 주어 처음부터 시작하는 구간도 세어지게 하세요.",
+      "왼쪽에서 오른쪽으로 스캔하며 접두사 합에 더하고 k로 나머지를 취합니다(금액이 음수일 수 있으므로 수학적인 음이 아닌 나머지를 취하고 64비트 연산을 사용하세요). 이미 나온 나머지이면 i에서 가장 이른 인덱스를 뺀 값으로 답을 갱신하고, 아니면 i를 기록합니다. 유효한 구간이 없으면 답은 0입니다."
+    ],
+    "vi": [
+      "Tổng của một khoảng chia hết cho k đúng khi các tổng tiền tố ở hai đầu đồng dư theo modulo k, nên bài toán trở thành tìm hai tiền tố có cùng số dư mà cách nhau xa nhất có thể.",
+      "Với đầu phải cố định, đầu trái càng sớm thì khoảng càng dài, nên chỉ cần lưu chỉ số đầu tiên của mỗi số dư; gán cho số dư 0 của tiền tố rỗng chỉ số -1 để các khoảng bắt đầu từ đầu mảng cũng được tính.",
+      "Quét từ trái sang phải, cộng vào tổng tiền tố và rút gọn theo modulo k (số tiền có thể âm, nên lấy số dư không âm theo nghĩa toán học, và dùng số học 64 bit). Nếu số dư đã từng xuất hiện, cập nhật đáp án bằng i trừ chỉ số sớm nhất của nó; nếu chưa, ghi lại i. Nếu không có khoảng hợp lệ nào thì đáp án là 0."
     ]
   },
   "explanationEn": "## Approach\n\nWhen two prefix sums have the same remainder modulo k, the sum of the contiguous interval between them is divisible by k. Scan from left to right and record the position where each remainder first appears; when it appears again, update the longest length with the current position minus the earliest position. Use a positive k, and reduce negative transaction amounts modulo k in the mathematical sense.\n\n## Proof of correctness\n\nLet the prefix sum P[j] be the sum of the first j items. The sum of the interval (i,j] is divisible by the positive integer k if and only if P[i] and P[j] are congruent modulo k. For a fixed right end j, the earliest congruent prefix produces the longest interval; the algorithm stores the earliest index of each remainder and checks every later prefix, so it never misses the optimal interval and never counts an interval that fails the divisibility condition.\n\n## Complexity\n\nThe n items are scanned once, for expected time O(n); at most n+1 remainder positions are stored, for O(n) space."

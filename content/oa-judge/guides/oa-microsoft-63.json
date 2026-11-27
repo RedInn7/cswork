@@ -13,6 +13,21 @@
       "With distinct heights you may assume a building with a larger limit gets a larger height: if not, swapping the two heights still respects both limits and keeps the sum.",
       "So sort the buildings by limit from largest to smallest; the heights are then strictly decreasing, and each should be as large as possible: at most its own limit and smaller than the previous one.",
       "Order the buildings by limit descending (ties by index) and start previous above every limit; give each building the smaller of its limit and previous−1, update previous, and store the height at the building's original index. Print all heights in the original order. A solution is guaranteed, so heights never drop below 1."
+    ],
+    "ja": [
+      "高さが互いに異なるなら、上限の大きいビルほど大きい高さを持つと仮定してかまいません。そうでなければ、2 つの高さを入れ替えても両方の上限を満たし、合計も変わりません。",
+      "そこで、ビルを上限の大きい順にソートします。すると高さは真に単調減少になり、それぞれできるだけ大きくします。つまり、自分の上限以下で、直前の高さより小さい値です。",
+      "ビルを上限の降順（同じなら添字順）に並べ、previous をすべての上限より大きい値から始めます。各ビルに、自分の上限と previous−1 のうち小さいほうを与え、previous を更新し、その高さをビルの元の添字に保存します。すべての高さを元の順序で出力します。解は保証されているので、高さが 1 を下回ることはありません。"
+    ],
+    "ko": [
+      "높이가 모두 달라야 하므로 상한이 큰 건물이 더 높은 높이를 갖는다고 가정해도 됩니다. 그렇지 않다면 두 높이를 맞바꿔도 두 상한을 모두 만족하고 합도 같습니다.",
+      "그러므로 건물을 상한이 큰 것부터 작은 것 순으로 정렬하세요. 그러면 높이는 엄격하게 감소하고, 각 높이는 가능한 한 커야 합니다. 즉 자신의 상한 이하이면서 직전 높이보다 작아야 합니다.",
+      "건물을 상한 내림차순(동률이면 인덱스 순)으로 정렬하고 previous를 모든 상한보다 크게 시작하세요. 각 건물에 자신의 상한과 previous−1 중 작은 값을 주고 previous를 갱신하며, 그 높이를 건물의 원래 인덱스에 저장합니다. 모든 높이를 원래 순서대로 출력하세요. 해가 존재함이 보장되므로 높이는 1 아래로 내려가지 않습니다."
+    ],
+    "vi": [
+      "Với các độ cao phân biệt, có thể giả sử tòa nhà có giới hạn lớn hơn nhận độ cao lớn hơn: nếu không, hoán đổi hai độ cao vẫn thỏa cả hai giới hạn và giữ nguyên tổng.",
+      "Vì vậy hãy sắp xếp các tòa nhà theo giới hạn từ lớn đến nhỏ; các độ cao khi đó giảm nghiêm ngặt, và mỗi độ cao nên lớn nhất có thể: không quá giới hạn của chính nó và nhỏ hơn độ cao trước.",
+      "Sắp xếp các tòa nhà theo giới hạn giảm dần (hòa thì theo chỉ số) và khởi tạo previous lớn hơn mọi giới hạn; gán cho mỗi tòa nhà giá trị nhỏ hơn trong giới hạn của nó và previous−1, cập nhật previous, và lưu độ cao tại chỉ số ban đầu của tòa nhà. In tất cả độ cao theo thứ tự ban đầu. Nghiệm được đảm bảo tồn tại, nên các độ cao không bao giờ xuống dưới 1."
     ]
   },
   "explanationEn": "## Approach\n\nAssign heights in decreasing order of limit, giving each building the largest integer that does not exceed its limit and is strictly less than the previously assigned height, then put the heights back at their original indices.\n\n## Correctness\n\nIf two limits are in descending order but their assigned heights are in the reverse order, swapping the two heights still respects the limits. Hence there is an optimal solution whose heights strictly decrease when the buildings are sorted by limit. Raising each item in order as high as min(limit, previous−1) never takes a height that is already chosen, and it dominates every feasible decreasing assignment item by item, so the total is optimal.\n\n## Complexity\n\nTime O(N log N), space O(N)."

@@ -13,6 +13,21 @@
       "Each item depends on just two words: the first letter of the current word and the last letter of the next word. For the last item the next word wraps around to the first word, and with a single word, the next word is the word itself.",
       "Iterate directly, using (i + 1) mod n as the index of the next word, and output the current word's first letter followed by the next word's last letter on one line.",
       "Read n and the n words. For i from 0 to n - 1, take the first character of words[i] and the last character of words[(i + 1) mod n], and output them together as one line. For speed, collect all lines in a buffer and write them out once."
+    ],
+    "ja": [
+      "各要素は 2 つの単語だけに依存します。現在の単語の最初の文字と、次の単語の最後の文字です。最後の要素では、次の単語は先頭の単語に戻ります。単語が 1 つしかない場合、次の単語は自分自身です。",
+      "直接反復し、次の単語の添字として (i + 1) mod n を使います。現在の単語の最初の文字と次の単語の最後の文字を、1 行に出力します。",
+      "n と n 個の単語を読み込みます。i を 0 から n - 1 まで動かし、words[i] の最初の文字と words[(i + 1) mod n] の最後の文字を取り、まとめて 1 行として出力します。高速化のため、すべての行をバッファに溜めて一度に書き出します。"
+    ],
+    "ko": [
+      "각 항목은 두 단어에만 의존합니다. 현재 단어의 첫 글자와 다음 단어의 마지막 글자입니다. 마지막 항목의 다음 단어는 첫 번째 단어로 돌아가고, 단어가 하나뿐이면 다음 단어는 그 단어 자신입니다.",
+      "그대로 순회하며 (i + 1) mod n을 다음 단어의 인덱스로 쓰고, 현재 단어의 첫 글자 다음에 다음 단어의 마지막 글자를 붙여 한 줄로 출력합니다.",
+      "n과 n개의 단어를 읽습니다. i를 0부터 n - 1까지 돌며 words[i]의 첫 문자와 words[(i + 1) mod n]의 마지막 문자를 취해 함께 한 줄로 출력합니다. 속도를 위해 모든 줄을 버퍼에 모아 한 번에 씁니다."
+    ],
+    "vi": [
+      "Mỗi phần tử chỉ phụ thuộc vào hai từ: chữ cái đầu của từ hiện tại và chữ cái cuối của từ kế tiếp. Với phần tử cuối cùng, từ kế tiếp quay vòng về từ đầu tiên, và với một từ duy nhất, từ kế tiếp chính là từ đó.",
+      "Duyệt trực tiếp, dùng (i + 1) mod n làm chỉ số của từ kế tiếp, và in chữ cái đầu của từ hiện tại theo sau là chữ cái cuối của từ kế tiếp trên một dòng.",
+      "Đọc n và n từ. Với i từ 0 đến n - 1, lấy ký tự đầu của words[i] và ký tự cuối của words[(i + 1) mod n], rồi in chúng ghép lại thành một dòng. Để nhanh, gom mọi dòng vào một bộ đệm và ghi ra một lần."
     ]
   },
   "explanationEn": "## Problem\n\nGiven an array words of n strings, output an array of the same length: item i is formed from the first letter of words[i] and the last letter of the next word words[i+1]; for the last item, the next word wraps around to words[0].\n\n## Approach\n\nIterate directly, taking (i+1) mod n as the index of the next word.\n\n## Correctness\n\nEach item is built by definition. In the example's last item \"bt\", the t can only come from the last letter of \"cat\", which shows that the last item wraps around to the first word; when n=1 the next word is the word itself.\n\n## Complexity\n\nO(n).\n\n## Independent verification\n\nThe oracle generates the answer in Python by rotating words left by one position and pairing it item by item with the original array, without using modulo indices. All arrays of length 1..5 made from 3 candidate words were enumerated exhaustively, and the reference program was actually run on each one. The wrong solutions cover not wrapping around, missing the last item, taking the first letter of the next word, and reversing the order of the two letters."

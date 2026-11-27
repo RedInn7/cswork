@@ -13,6 +13,21 @@
       "Swapping two balls of the same color is pointless, so the red balls keep their relative order and the i-th red ball ends at the i-th cell of the block; each useful swap moves one red ball by exactly one cell.",
       "If the i-th red ball starts at p[i] and ends at start+i, the total number of swaps is the sum of |p[i]−i−start|. With b[i]=p[i]−i, choose start to minimize the total distance to all b[i]: take the median.",
       "Scan the string and, for each R, record its index minus the number of red balls seen before it; this sequence is already non-decreasing. With no red ball the answer is 0. Take the median and sum the absolute differences from it; print −1 if the sum exceeds 10^9. The sum may exceed 32-bit range."
+    ],
+    "ja": [
+      "同じ色のボールを入れ替えても意味がないので、赤いボールは相対順序を保ち、i 番目の赤いボールはブロックの i 番目のセルに行き着きます。有効な入れ替え 1 回は、赤いボール 1 つをちょうど 1 セル動かします。",
+      "i 番目の赤いボールが p[i] から start+i へ動くなら、入れ替えの総数は |p[i]−i−start| の総和です。b[i]=p[i]−i とし、すべての b[i] への総距離が最小になるように start を選びます。これは中央値です。",
+      "文字列を走査し、R ごとに、その添字から、それより前の赤いボールの個数を引いた値を記録します。この列はすでに非減少です。赤いボールがなければ答えは 0 です。中央値を取り、それとの差の絶対値を合計します。合計が 10^9 を超えれば −1 を出力します。合計は 32 ビットの範囲を超え得ます。"
+    ],
+    "ko": [
+      "같은 색 공끼리의 교환은 쓸모가 없으므로 빨간 공들은 상대적 순서를 유지하며, i번째 빨간 공은 블록의 i번째 칸에 도착합니다. 쓸모 있는 교환은 빨간 공 하나를 정확히 한 칸 움직입니다.",
+      "i번째 빨간 공이 p[i]에서 시작해 start+i에 도착한다면 총 교환 횟수는 |p[i]−i−start|의 합입니다. b[i]=p[i]−i로 두고, 모든 b[i]까지의 거리 합이 최소가 되도록 start를 고릅니다. 중앙값을 취하면 됩니다.",
+      "문자열을 훑으면서 각 R마다 그 인덱스에서 그 앞에서 본 빨간 공의 수를 뺀 값을 기록합니다. 이 수열은 이미 비감소입니다. 빨간 공이 없으면 정답은 0입니다. 중앙값을 취해 그와의 절댓값 차이의 합을 구하고, 그 합이 10^9를 넘으면 −1을 출력합니다. 합은 32비트 범위를 넘을 수 있습니다."
+    ],
+    "vi": [
+      "Đổi chỗ hai quả bóng cùng màu là vô nghĩa, nên các bóng đỏ giữ nguyên thứ tự tương đối và quả đỏ thứ i kết thúc ở ô thứ i của khối; mỗi lần đổi chỗ có ích di chuyển một quả đỏ đúng một ô.",
+      "Nếu quả đỏ thứ i bắt đầu ở p[i] và kết thúc ở start+i, tổng số lần đổi chỗ là tổng |p[i]−i−start|. Với b[i]=p[i]−i, chọn start để cực tiểu hóa tổng khoảng cách đến mọi b[i]: lấy trung vị.",
+      "Duyệt xâu và, với mỗi R, ghi lại chỉ số của nó trừ đi số bóng đỏ đã gặp trước nó; dãy này vốn đã không giảm. Nếu không có bóng đỏ thì đáp án là 0. Lấy trung vị và cộng các hiệu tuyệt đối so với nó; in −1 nếu tổng vượt quá 10^9. Tổng có thể vượt phạm vi 32 bit."
     ]
   },
   "explanationEn": "## Approach\n\nThe original positions p[i] of the red balls keep their relative order and move to the consecutive positions start+i; let b[i]=p[i]−i, minimize the sum of absolute distances to a common start, and take the median.\n\n## Correctness\n\nBalls of the same color never need to be swapped with each other, and matching the target positions in the original order avoids crossings. Each adjacent red-white swap moves one red ball by one step, so the total cost is exactly the sum of displacements; the sum of absolute distances is minimized at the median. b is already non-decreasing, so the median can be read off directly.\n\n## Complexity\n\nTime O(N), space O(N)."

@@ -11,5 +11,35 @@
     "hints": [
       "Run dynamic programming over the number of segments. Enumerate the left boundary of the last segment; the transition is the previous optimal cost plus the maximum of the last segment, maintaining that maximum incrementally while extending to the left."
     ]
+  },
+  "ja": {
+    "title": "順序を保って ちょうど k 個の区間に分割し、各区間の最大値の和を最小にする",
+    "description": "入力の順序を保ったまま、配列をちょうど k 個の空でない連続区間に分割します。各区間のコストはその区間の最大要素で、全区間の合計コストの最小値を求めてください。各区間は 1 週間分の活動に対応します。本サイトでの追加仕様として、解がない場合は −1 を、空の配列を 0 個の区間に分割する場合は 0 を出力します。\n\n本サイトが欠けている範囲を補った点と、原文の誤記を訂正した点については、入力プロトコルに記載しています。",
+    "input": "入力は n k と、n 個の非負整数です。原文には数値の範囲がないため、本サイトでは 0≤n,k≤300、0≤a[i]≤10^9 を補っています。k>n、n=0、k=0 の場合も除外せず、上記のプロトコルに従って処理します。",
+    "output": "整数 1 つ(答え)を出力してください。",
+    "explanation": "3 つの公開サンプルの出力は順に 9500; 0; -1 です。独立した全探索または直接シミュレーションで確認済みです。",
+    "hints": [
+      "区間の個数に関する動的計画法を使います。最後の区間の左端を列挙し、遷移は「直前の最適コスト + 最後の区間の最大値」です。最大値は左へ伸ばしながら逐次更新します。"
+    ]
+  },
+  "ko": {
+    "title": "순서대로 정확히 k개 구간으로 나누어 구간 최댓값의 합 최소화",
+    "description": "입력 순서를 유지한 채 배열을 비어 있지 않은 연속 구간 정확히 k개로 나눕니다. 각 구간의 비용은 그 구간의 최댓값이며, 모든 구간의 비용 합이 최소가 되는 값을 구하세요. 각 구간은 한 주의 활동에 해당합니다. 이 사이트에서 추가한 규칙: 해가 없으면 −1을 출력하고, 빈 배열을 0개 구간으로 나누는 경우에는 0을 출력합니다.\n\n이 사이트가 누락된 범위를 보완한 내용과 원문 오타를 복구한 내용은 입력 규약에 설명되어 있습니다.",
+    "input": "입력으로 n k와 음이 아닌 정수 n개가 주어집니다. 원문에는 수치 범위가 없으며, 이 사이트가 0≤n,k≤300, 0≤a[i]≤10^9를 추가했습니다. k>n, n=0, k=0인 경우도 제외되지 않으며 위의 규약에 따라 처리합니다.",
+    "output": "정수 하나를 정답으로 출력합니다.",
+    "explanation": "공개 예제 3개의 출력은 순서대로 9500; 0; -1입니다. 독립적인 전수 조사 또는 직접 시뮬레이션으로 검증했습니다.",
+    "hints": [
+      "구간 수에 대해 동적 계획법을 수행합니다. 마지막 구간의 왼쪽 경계를 열거하고, 전이는 이전 최적 비용에 마지막 구간의 최댓값을 더한 것이며, 왼쪽으로 확장하면서 그 최댓값을 점진적으로 유지합니다."
+    ]
+  },
+  "vi": {
+    "title": "Chia theo thứ tự thành đúng k đoạn, cực tiểu hóa tổng các giá trị lớn nhất của đoạn",
+    "description": "Giữ nguyên thứ tự đầu vào, hãy chia mảng thành đúng k đoạn con liên tiếp không rỗng, trong đó chi phí của mỗi đoạn là phần tử lớn nhất của nó; tìm tổng chi phí nhỏ nhất trên tất cả các đoạn. Mỗi đoạn tương ứng với các hoạt động của một tuần. Phần trang này bổ sung: in −1 khi không có nghiệm, và in 0 khi mảng rỗng được chia thành 0 đoạn.\n\nCác khoảng giá trị mà trang này bổ sung cho những ràng buộc còn thiếu, cùng việc khôi phục lỗi đánh máy của đề gốc, được mô tả trong giao thức đầu vào.",
+    "input": "Đầu vào gồm n k và n số nguyên không âm. Đề gốc không có cận số; trang này bổ sung 0≤n,k≤300, 0≤a[i]≤10^9. Các trường hợp k>n, n=0 và k=0 không bị loại trừ và được xử lý theo giao thức nêu trên.",
+    "output": "In ra một số nguyên là đáp án.",
+    "explanation": "Đầu ra của ba ví dụ công khai lần lượt là: 9500; 0; -1. Các kết quả này đã được kiểm tra bằng liệt kê độc lập hoặc mô phỏng trực tiếp.",
+    "hints": [
+      "Chạy quy hoạch động theo số đoạn. Duyệt biên trái của đoạn cuối; chuyển trạng thái là chi phí tối ưu trước đó cộng phần tử lớn nhất của đoạn cuối, giá trị lớn nhất này được cập nhật dần khi mở rộng sang trái."
+    ]
   }
 }

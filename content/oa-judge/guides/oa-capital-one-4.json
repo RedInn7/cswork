@@ -13,6 +13,21 @@
       "Treat each photo as an undirected edge: all photos together form one simple path, whose two endpoints have degree 1 and whose inner nodes have degree 2.",
       "Build an adjacency list, start from the smaller-labelled of the two degree-1 endpoints, and keep stepping to the neighbour that is not the node you just came from until you cannot move.",
       "Read the n - 1 edges into an undirected adjacency list (labels may be large or negative, so compress them or use a hash map); start at the smallest-labelled node of degree 1 with prev empty; repeatedly output the current node and move to its neighbour that differs from prev, stopping when there is none; print the n labels in that order."
+    ],
+    "ja": [
+      "各写真を無向辺とみなします。すべての写真で1本の単純パスを成し、その2つの端点は次数1、内部のノードは次数2です。",
+      "隣接リストを作り、次数1の2つの端点のうちラベルが小さい方から出発します。直前に来たノードではない方の隣接ノードへ、進めなくなるまで進み続けます。",
+      "n - 1 本の辺を無向の隣接リストに読み込みます(ラベルは大きい値や負の値になり得るので、座標圧縮するかハッシュマップを使います)。次数1のノードのうち最小のラベルから、prev を空にして開始します。現在のノードを出力し、prev と異なる隣接ノードへ移動することを繰り返し、そのようなノードがなくなったら終了します。n 個のラベルをその順に出力します。"
+    ],
+    "ko": [
+      "각 사진을 무방향 간선으로 봅니다. 모든 사진이 하나의 단순 경로를 이루며, 경로의 두 끝점은 차수가 1이고 내부 노드는 차수가 2입니다.",
+      "인접 리스트를 만들고, 차수가 1인 두 끝점 중 레이블이 더 작은 쪽에서 시작합니다. 직전에 온 노드가 아닌 이웃으로 더 이상 갈 수 없을 때까지 계속 이동합니다.",
+      "n - 1개의 간선을 무방향 인접 리스트로 읽습니다(레이블이 크거나 음수일 수 있으므로 좌표 압축을 하거나 해시 맵을 사용합니다). 차수가 1인 노드 중 레이블이 가장 작은 노드에서 prev를 비운 채 시작합니다. 현재 노드를 출력하고 prev와 다른 이웃으로 이동하기를 반복하며, 이웃이 없으면 멈춥니다. n개의 레이블을 이 순서대로 출력합니다."
+    ],
+    "vi": [
+      "Coi mỗi bức ảnh là một cạnh vô hướng: tất cả các ảnh cùng tạo thành một đường đi đơn, hai đầu mút có bậc 1 và các nút bên trong có bậc 2.",
+      "Xây danh sách kề, bắt đầu từ đầu mút bậc 1 có nhãn nhỏ hơn trong hai đầu mút, rồi liên tục bước sang láng giềng không phải nút vừa đi qua cho đến khi không đi tiếp được nữa.",
+      "Đọc n - 1 cạnh vào một danh sách kề vô hướng (nhãn có thể lớn hoặc âm, nên hãy nén chúng hoặc dùng hash map); bắt đầu tại nút bậc 1 có nhãn nhỏ nhất với prev rỗng; liên tục in nút hiện tại và chuyển sang láng giềng khác prev, dừng khi không còn láng giềng nào; in n nhãn theo thứ tự đó."
     ]
   },
   "explanationEn": "## Approach\n\nFirst build an undirected adjacency list from the photo pairs. A simple path has exactly two endpoints of degree 1; starting from the endpoint with the smaller label, step each time to the neighbour that is not the previous node, which recovers the order.\n\n## Correctness\n\nApart from the start, every node on the path has exactly one neighbour that has not been visited yet. Moving along the edges without turning back visits every landmark exactly once; on reaching the other end there is no new neighbour, and the complete path has been produced.\n\n## Complexity\n\nO(n) time, O(n) space."

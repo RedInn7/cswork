@@ -11,5 +11,35 @@
     "hints": [
       "Add the new relations day by day and filter out the expired ones. Group that day's merchants by link_type and connect every two merchants in the same group; find components with DFS/BFS, count each vertex's distinct neighbors, choose the pin by the stated rule, and sort."
     ]
+  },
+  "ja": {
+    "title": "加盟店リンクの日次クラスタリング",
+    "description": "毎日、加盟店と link_type の新しい関連付けがいくつか追加され、それぞれ指定された日数だけ有効です。ある日に有効な同じ種類の関連付けは、関係する加盟店どうしを総当たりで結びます。各日のグラフの連結成分を求めます。成分の pin は次数が最大の加盟店で、同じ場合は merchant_id が辞書順で最小のものです。成分はサイズの降順、次に pin の辞書順の昇順で出力します。期限切れの関連付けを取り除いたあと、成分は再計算する必要があり、分裂することがあります。",
+    "input": "1 行目に D（常に 3）が与えられます。続いて 1 日目、2 日目、3 日目のバッチが順に与えられます。各バッチは整数 k で始まり、続く k 行が `merchant_id link_type duration` です。この行はその日に、duration 日間有効な関連付けを追加し、`add_day <= day < add_day + duration` を満たす日に有効です。merchant_id と link_type は英数字、アンダースコア、ハイフンからなる 1..16 文字です。duration は 0..3 の整数で、各バッチは高々 100 行、全体で高々 200 行です。1 つのバッチ内で `(merchant_id, link_type)` は重複しません。1 つの加盟店が複数の種類に関連付けられることも、1 つの種類が複数の加盟店に関連付けられることもあります。元のタプルにある明示的な日付フィールドの代わりにバッチの日番号を使うことは、本サイトの入力プロトコルでの補足です。",
+    "output": "3 つのセクションを出力します。各セクションは `Day 1`、`Day 2`、`Day 3` で始まり、続いて連結成分ごとに 1 行 `  cluster size=<count> pin=<merchant_id>` を出力します。グラフの頂点は、その日に有効な関連付けを少なくとも 1 つ持つ加盟店です。他のどの加盟店ともその日に有効な link_type を共有しない加盟店は、サイズ 1 の孤立した成分になります。成分はサイズの降順、次に pin の辞書順の昇順で並べ、有効な関連付けがない日はヘッダー行だけを出力します。行末は LF です。孤立頂点の扱いとテキストの出力形式は、本サイトでの明示的な補足です。",
+    "explanation": "固定された元の説明では、同じ `link_type` の有効な関係が辺を作り、クラスタは連結成分、pin は次数が最大の加盟店（同じなら ID が最小）、最終的な順序はサイズと pin で決まる、と定義されています。本サイトは、バッチ入力、出力テキスト、制約、および、有効な関係が 1 つだけで、その種類が他の加盟店と共有されていない加盟店は単独成分になるという規則を補足しました。",
+    "hints": [
+      "新しい関係を日ごとに追加し、期限切れのものを取り除きます。その日の加盟店を link_type ごとにグループ化し、同じグループ内の 2 者を全て結びます。DFS/BFS で連結成分を求め、各頂点の異なる隣接頂点の数を数え、規則に従って pin を選び、ソートします。"
+    ]
+  },
+  "ko": {
+    "title": "가맹점 연결의 일별 클러스터링",
+    "description": "매일 가맹점과 link_type의 새로운 연관이 추가되며, 각 연관은 정해진 일수 동안 유지됩니다. 어떤 날 아직 유효한 같은 유형의 연관은 관련된 가맹점들을 둘씩 서로 연결합니다. 매일의 그래프에서 연결 요소를 구하세요. 요소의 핀(pin)은 차수가 가장 높은 가맹점이며, 동점이면 사전순으로 가장 작은 merchant_id입니다. 요소는 크기의 내림차순, 같으면 핀의 사전순 오름차순으로 출력합니다. 만료된 연관이 제거되면 요소를 다시 계산해야 하며, 요소가 분리될 수 있습니다.",
+    "input": "첫째 줄에 D(항상 3)가 주어집니다. 이어서 1일, 2일, 3일의 배치가 순서대로 주어지며, 각 배치는 정수 k로 시작하고 `merchant_id link_type duration` 형식의 줄이 k개 이어집니다. 이러한 줄은 그날 duration일 동안 유지되는 연관을 추가하며, `add_day <= day < add_day + duration`인 날에 유효합니다. merchant_id와 link_type은 ASCII 문자, 숫자, 밑줄, 하이픈으로 이루어진 1..16자이고, duration은 0..3의 정수이며, 각 배치는 최대 100줄이고 전체로는 최대 200줄입니다. 한 배치 안에서 `(merchant_id, link_type)`은 중복되지 않습니다. 한 가맹점이 여러 유형과 연관될 수 있고, 한 유형이 여러 가맹점과 연관될 수도 있습니다. 상위 튜플의 명시적인 day 필드 대신 배치의 날짜 번호를 쓰는 것은 이 사이트의 입력 프로토콜에 추가한 것입니다.",
+    "output": "세 개의 섹션을 출력하며 각각 `Day 1`, `Day 2`, `Day 3`으로 시작하고, 이어서 연결 요소마다 한 줄씩 `  cluster size=<count> pin=<merchant_id>`를 출력합니다. 그래프의 정점은 그날 유효한 연관이 하나 이상 있는 가맹점입니다. 다른 어떤 가맹점과도 유효한 link_type을 공유하지 않는 가맹점은 크기 1의 고립된 요소가 됩니다. 요소는 크기의 내림차순, 같으면 핀의 사전순 오름차순으로 정렬합니다. 유효한 연관이 없는 날에는 헤더 줄만 출력합니다. 줄은 LF로 끝납니다. 고립 정점의 처리와 텍스트 직렬화는 이 사이트가 명시적으로 추가한 것입니다.",
+    "explanation": "고정된 상위 텍스트는 다음과 같이 정의합니다. 같은 `link_type`의 유효한 관계는 간선을 이루고, 클러스터는 연결 요소이며, 핀은 차수가 가장 높고 동점이면 ID가 가장 작은 가맹점이고, 최종 순서는 크기와 핀입니다. 이 사이트는 배치 입력, 출력 텍스트, 제한, 그리고 유효한 관계가 하나뿐이고 그 유형을 다른 가맹점과 공유하지 않는 가맹점은 단일 정점이라는 규칙을 추가했습니다.",
+    "hints": [
+      "새로운 관계를 날마다 추가하고 만료된 것은 걸러내세요. 그날의 가맹점을 link_type별로 묶고 같은 그룹의 모든 가맹점 쌍을 연결합니다. DFS/BFS로 요소를 찾고 각 정점의 서로 다른 이웃 수를 세어 명시된 규칙에 따라 핀을 정한 뒤 정렬하세요."
+    ]
+  },
+  "vi": {
+    "title": "Gom cụm hằng ngày các liên kết của merchant",
+    "description": "Mỗi ngày có thêm một số liên kết mới giữa merchant và một link_type, mỗi liên kết kéo dài một số ngày cho trước. Các liên kết cùng loại còn hiệu lực trong một ngày sẽ nối các merchant liên quan với nhau từng đôi một. Hãy tìm các thành phần liên thông của đồ thị mỗi ngày; pin của một thành phần là merchant có bậc cao nhất, nếu bằng nhau thì chọn merchant_id nhỏ nhất theo thứ tự từ điển. Xuất các thành phần theo kích thước giảm dần, rồi theo pin tăng dần theo thứ tự từ điển. Sau khi các liên kết hết hạn bị loại bỏ, các thành phần phải được tính lại và có thể bị tách ra.",
+    "input": "Dòng đầu chứa D (luôn bằng 3). Tiếp theo là các lô của ngày 1, 2 và 3 theo thứ tự: mỗi lô bắt đầu bằng một số nguyên k, theo sau là k dòng `merchant_id link_type duration`. Mỗi dòng như vậy thêm một liên kết vào ngày đó, kéo dài duration ngày; liên kết có hiệu lực vào các ngày thoả `add_day <= day < add_day + duration`. merchant_id và link_type gồm 1..16 ký tự ASCII là chữ cái, chữ số, dấu gạch dưới hoặc dấu gạch ngang; duration là số nguyên trong 0..3; mỗi lô có tối đa 100 dòng, và tổng cộng tối đa 200 dòng. Trong cùng một lô, `(merchant_id, link_type)` không lặp lại; một merchant có thể liên kết với nhiều loại, và một loại có thể liên kết với nhiều merchant. Việc dùng số thứ tự ngày của lô thay cho trường ngày tường minh trong bộ bốn (tuple) gốc là phần bổ sung vào giao thức đầu vào của site này.",
+    "output": "Xuất ba phần, mỗi phần bắt đầu bằng `Day 1`, `Day 2` hoặc `Day 3`, theo sau là mỗi dòng cho một thành phần liên thông: `  cluster size=<count> pin=<merchant_id>`. Các đỉnh của đồ thị là những merchant có ít nhất một liên kết còn hiệu lực trong ngày đó; một merchant không chung link_type còn hiệu lực với merchant nào khác tạo thành một thành phần cô lập có kích thước 1. Các thành phần được sắp xếp theo kích thước giảm dần, rồi theo pin tăng dần theo thứ tự từ điển; vào ngày không có liên kết nào còn hiệu lực, chỉ xuất dòng tiêu đề. Các dòng kết thúc bằng LF. Cách xử lý đỉnh cô lập và cách tuần tự hoá văn bản là phần bổ sung tường minh của site này.",
+    "explanation": "Văn bản gốc cố định quy định rằng các quan hệ còn hiệu lực có cùng `link_type` tạo thành các cạnh, một cluster là một thành phần liên thông, pin là merchant có bậc cao nhất và nếu bằng nhau thì lấy ID nhỏ nhất, và thứ tự cuối cùng là theo kích thước và pin. Site này bổ sung đầu vào theo lô, văn bản đầu ra, các giới hạn, và quy tắc rằng một merchant chỉ có một quan hệ còn hiệu lực mà loại của nó không chung với merchant nào khác là một thành phần đơn lẻ.",
+    "hints": [
+      "Thêm các quan hệ mới theo từng ngày và lọc bỏ các quan hệ đã hết hạn. Nhóm các merchant của ngày đó theo link_type và nối mỗi hai merchant trong cùng nhóm; tìm các thành phần bằng DFS/BFS, đếm số láng giềng phân biệt của mỗi đỉnh, chọn pin theo quy tắc đã nêu, rồi sắp xếp."
+    ]
   }
 }

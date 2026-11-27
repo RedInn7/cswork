@@ -13,6 +13,21 @@
       "However you split, the first and last elements of the whole array each contribute once; every extra cut makes the two elements on both sides of the cut contribute once more.",
       "Total cost = a[0]+a[n-1] plus the adjacent sums a[i]+a[i+1] of the p-1 chosen cuts. Cuts do not affect each other, so the minimum uses the p-1 smallest adjacent sums and the maximum the p-1 largest.",
       "Compute the n-1 adjacent sums and sort them; base = a[0]+a[n-1]; minimum = base + the first p-1 sums, maximum = base + the last p-1 sums; for p = 1 both equal base (for n = 1, base is exactly twice the element); use 64-bit integers."
+    ],
+    "ja": [
+      "どう分割しても、配列全体の最初と最後の要素はそれぞれ 1 回ずつ寄与します。切れ目を 1 つ増やすごとに、その両側の 2 つの要素がもう 1 回ずつ寄与します。",
+      "総コスト = a[0]+a[n-1] に、選んだ p-1 個の切れ目の隣り合う和 a[i]+a[i+1] を加えたものです。切れ目は互いに影響しないので、最小値には隣り合う和の小さいほうから p-1 個を、最大値には大きいほうから p-1 個を使います。",
+      "n-1 個の隣り合う和を計算してソートします。base = a[0]+a[n-1] とし、最小値 = base + 最初の p-1 個の和、最大値 = base + 最後の p-1 個の和です。p = 1 のときは両方とも base に等しくなります（n = 1 のとき、base はちょうどその要素の 2 倍です）。64 ビット整数を使ってください。"
+    ],
+    "ko": [
+      "어떻게 나누든 전체 배열의 첫 원소와 마지막 원소는 각각 한 번씩 기여하고, 추가로 절단이 하나 생길 때마다 절단 양쪽의 두 원소가 한 번씩 더 기여합니다.",
+      "총 비용 = a[0]+a[n-1]에 선택한 p-1개 절단의 인접 합 a[i]+a[i+1]을 더한 값입니다. 절단들은 서로 영향을 주지 않으므로, 최솟값은 가장 작은 p-1개의 인접 합을, 최댓값은 가장 큰 p-1개를 사용합니다.",
+      "n-1개의 인접 합을 계산해 정렬합니다. base = a[0]+a[n-1]이고, 최솟값 = base + 앞의 p-1개 합, 최댓값 = base + 뒤의 p-1개 합입니다. p = 1이면 둘 다 base와 같습니다(n = 1이면 base는 원소의 정확히 두 배). 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Dù chia thế nào, phần tử đầu và phần tử cuối của toàn mảng mỗi phần tử đóng góp một lần; mỗi vết cắt thêm làm hai phần tử ở hai bên vết cắt đóng góp thêm một lần.",
+      "Tổng chi phí = a[0]+a[n-1] cộng các tổng kề nhau a[i]+a[i+1] của p-1 vết cắt được chọn. Các vết cắt không ảnh hưởng lẫn nhau, nên giá trị nhỏ nhất dùng p-1 tổng kề nhỏ nhất và giá trị lớn nhất dùng p-1 tổng kề lớn nhất.",
+      "Tính n-1 tổng kề nhau và sắp xếp chúng; base = a[0]+a[n-1]; nhỏ nhất = base + p-1 tổng đầu tiên, lớn nhất = base + p-1 tổng cuối cùng; với p = 1 cả hai bằng base (với n = 1, base đúng bằng hai lần phần tử); dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nEvery split pays for the first and last elements; each cut between i and i+1 adds a[i]+a[i+1]. Choose the smallest or the largest p-1 adjacent sums.\n\n## Proof of correctness\n\nThe first-plus-last contributions of all segments decompose into the first and last elements of the whole array plus the elements on both sides of each cut; the cuts are chosen independently and there are exactly p-1 of them. Minimizing and maximizing this independent sum picks the smallest and the largest adjacent sums respectively, and the valid split built from those cuts attains the bound.\n\n## Complexity\n\nTime O(n log n), space O(n)."

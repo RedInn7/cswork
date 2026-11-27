@@ -13,6 +13,21 @@
       "Both vehicle types have an even number of wheels, so an odd total has no solution.",
       "For an even total, choose the number of four-wheelers first: it can be any integer from 0 to w/4, and the remaining wheel count is still even and non-negative, which uniquely determines the number of two-wheelers.",
       "For each w print 0 if w is odd, otherwise w/4 + 1 (integer division); output the results in input order separated by spaces."
+    ],
+    "ja": [
+      "どちらの車種も車輪の数が偶数なので、総数が奇数なら解はありません。",
+      "総数が偶数のとき、まず四輪車の台数を選びます。0 から w/4 までの任意の整数でよく、残りの車輪の数は偶数かつ非負のままなので、二輪車の台数が一意に決まります。",
+      "各 w について、w が奇数なら 0、偶数なら w/4 + 1（整数除算）を出力します。結果は入力の順序で、空白区切りで出力してください。"
+    ],
+    "ko": [
+      "두 차종 모두 바퀴 수가 짝수이므로 총합이 홀수이면 해가 없습니다.",
+      "총합이 짝수이면 먼저 사륜차의 수를 고릅니다. 0부터 w/4까지의 모든 정수가 가능하며, 남은 바퀴 수는 여전히 짝수이고 음수가 아니므로 이륜차의 수가 유일하게 정해집니다.",
+      "각 w에 대해 w가 홀수이면 0을, 짝수이면 w/4 + 1(정수 나눗셈)을 출력합니다. 결과는 입력 순서대로 공백으로 구분하여 출력합니다."
+    ],
+    "vi": [
+      "Cả hai loại xe đều có số bánh chẵn, nên tổng lẻ không có nghiệm.",
+      "Với tổng chẵn, hãy chọn số xe bốn bánh trước: nó có thể là bất kỳ số nguyên nào từ 0 đến w/4, và số bánh còn lại vẫn chẵn và không âm, xác định duy nhất số xe hai bánh.",
+      "Với mỗi w in ra 0 nếu w lẻ, ngược lại in w/4 + 1 (chia nguyên); in kết quả theo thứ tự đầu vào, cách nhau bởi dấu cách."
     ]
   },
   "explanationEn": "## Approach\n\nOdd totals have no solution; for even totals the number of four-wheelers can be 0 to w//4, and the remaining wheels uniquely determine the number of two-wheelers.\n\n## Correctness\n\nThe total number of wheels of the two vehicle types must be even. Once the number of four-wheelers is fixed, the number of two-wheelers is uniquely determined by the equation, and the range of values guarantees it is non-negative, so the answer for an even total is w//4 + 1.\n\n## Complexity\n\nTime O(n), space O(n) including the output."

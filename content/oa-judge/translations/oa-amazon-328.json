@@ -11,5 +11,35 @@
     "hints": [
       "Sort the indices by deadline, mark the processes still in the queue with an alive array, and only move head forward to find the first item not yet removed. Each second, remove head first, then advance a pointer through the deadline-sorted order to remove, in bulk, the remaining items with wait≤t."
     ]
+  },
+  "ja": {
+    "title": "先頭を処理し期限切れをすべて取り除いた後のキュー長",
+    "description": "すべてのプロセスが最初からキューに入っており、wait[i] はプロセス i が時刻 0 から数えて待てる期限です。時刻 t は 0 から始まります。毎秒、まずキューの先頭のプロセス1つを処理して取り除き、次に期限が ≤t である残りのプロセスを、キューの途中や末尾にあるものも含めてすべて取り除きます。その秒の終わりに残っている数を、キューが空になるまで記録します。処理前の最初の n は記録しません。\n\n標準入出力、例、解説は本サイトが独自に作成したものです。本サイト独自と明記した範囲は、出典の元の制約ではありません。",
+    "input": "1行目に n、2行目に wait が与えられます。元の問題文には値の範囲が示されていないため、本サイトでは 1≤n≤200000、0≤wait[i]≤10^9 とし、期限 0 も有効です。出力の最後の項目は必ず 0 になります。",
+    "output": "各秒の終わりのキュー長を、空白区切りで、最後の 0 まで出力してください。",
+    "explanation": "答えは 3 1 0、4 1 0、1 0 です。3つ目の例では、時刻 0 にまず先頭の 0 を取り除き、次にもう1つの期限切れの 0 を取り除き、残った 9 は時刻 1 に処理されます。出典は先頭の期限切れしか取り除かないため、途中や末尾の期限切れを見落としています。",
+    "hints": [
+      "インデックスを期限でソートし、まだキューにいるプロセスを alive 配列で管理して、head は前にしか進めずに未削除の最初の要素を探します。毎秒、まず head を取り除き、続いて期限でソートした順に沿ってポインタを進め、wait≤t の残りの要素をまとめて取り除きます。"
+    ]
+  },
+  "ko": {
+    "title": "큐의 맨 앞을 처리하고 만료된 항목을 모두 제거한 뒤의 큐 길이",
+    "description": "모든 프로세스가 큐에 들어 있고, wait[i]는 프로세스 i가 시간 0부터 센 기준으로 최대 기다릴 수 있는 마감 시각입니다. 시각 t는 0에서 시작합니다. 매초 먼저 큐의 맨 앞 프로세스 하나를 처리하여 제거하고, 그다음 마감 시각이 ≤t인 나머지 프로세스를 모두 제거합니다. 큐의 중간이나 끝에 있는 만료된 항목도 포함됩니다. 큐가 빌 때까지 매초가 끝났을 때 남은 개수를 기록하며, 처리 전의 초기값 n은 기록하지 않습니다.\n\n표준 입출력, 예제, 해설은 이 사이트에서 독자적으로 작성했습니다. 이 사이트가 직접 정했다고 표시된 범위는 원문의 제약 조건이 아닙니다.",
+    "input": "첫째 줄에 n이, 둘째 줄에 wait가 주어집니다. 원문에는 값의 범위가 없으며, 이 사이트에서 1≤n≤200000, 0≤wait[i]≤10^9로 정했고 마감 시각 0도 유효합니다. 출력의 마지막 값은 반드시 0입니다.",
+    "output": "매초가 끝났을 때의 큐 길이를 공백으로 구분하여 순서대로 출력하며, 마지막 값은 0입니다.",
+    "explanation": "정답은 각각 3 1 0, 4 1 0, 1 0입니다. 세 번째 예제에서는 시각 0에 맨 앞의 0이 먼저 제거되고 이어서 다른 만료된 0도 제거되며, 9가 남아 시각 1에 처리됩니다. 원문은 맨 앞의 만료 항목만 지우기 때문에 중간과 끝의 만료 항목을 놓칩니다.",
+    "hints": [
+      "마감 시각 기준으로 인덱스를 정렬하고, 큐에 남은 프로세스를 alive 배열로 표시하며, head는 아직 제거되지 않은 첫 항목을 찾기 위해 앞으로만 이동시킵니다. 매초 먼저 head를 제거한 뒤, 마감 시각 순서의 포인터를 전진시키면서 wait≤t인 나머지 항목을 한꺼번에 제거합니다."
+    ]
+  },
+  "vi": {
+    "title": "Độ dài hàng đợi sau khi xử lý phần tử đầu và loại mọi phần tử đã hết hạn",
+    "description": "Ban đầu mọi tiến trình đều nằm trong hàng đợi, wait[i] là hạn chót (tính từ thời điểm 0) mà tiến trình i có thể chờ. Thời gian t bắt đầu từ 0. Mỗi giây, trước hết xử lý và loại bỏ một tiến trình ở đầu hàng đợi, sau đó loại bỏ mọi tiến trình còn lại có hạn chót ≤t, kể cả những phần tử hết hạn nằm ở giữa hoặc cuối hàng đợi. Ghi lại số tiến trình còn lại vào cuối giây đó, cho đến khi hàng đợi rỗng; giá trị n ban đầu trước khi xử lý không được ghi.\n\nĐề bài, định dạng vào/ra, ví dụ và lời giải do trang này tự viết; các khoảng giá trị được ghi rõ là của trang này không phải ràng buộc gốc của nguồn.",
+    "input": "Dòng đầu chứa n, dòng thứ hai chứa wait. Đề gốc không nêu giới hạn giá trị; trên trang này 1≤n≤200000, 0≤wait[i]≤10^9, và hạn chót bằng 0 là hợp lệ. Phần tử cuối cùng của đầu ra luôn là 0.",
+    "output": "In ra độ dài hàng đợi vào cuối mỗi giây, cách nhau bởi dấu cách, kết thúc bằng 0.",
+    "explanation": "Đáp án lần lượt là 3 1 0; 4 1 0; và 1 0. Ở ví dụ thứ ba, tại thời điểm 0, số 0 đầu tiên ở đầu hàng đợi được loại trước, rồi số 0 hết hạn còn lại cũng bị loại, còn 9 sẽ được xử lý ở thời điểm 1. Đề gốc chỉ loại các phần tử hết hạn ở đầu hàng, nên bỏ sót những phần tử ở giữa và ở cuối.",
+    "hints": [
+      "Sắp xếp các chỉ số theo hạn chót, đánh dấu các tiến trình còn trong hàng đợi bằng mảng alive, và chỉ dịch head về phía trước để tìm phần tử đầu tiên chưa bị loại. Mỗi giây, loại head trước, rồi cho một con trỏ chạy qua thứ tự đã sắp theo hạn chót để loại hàng loạt các phần tử còn lại có wait≤t."
+    ]
   }
 }

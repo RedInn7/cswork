@@ -11,5 +11,35 @@
     "hints": [
       "Choose the largest feasible digit from the most significant position down. If the hour's tens digit can be 2, use 2, otherwise use 1; the hour's tens digit then determines the upper bound of its units digit. Use 5 for the minute's tens digit and 9 for its units digit."
     ]
+  },
+  "ja": {
+    "title": "最も遅い有効な時刻の穴埋め",
+    "description": "24 時間表記の時刻 hh:mm が与えられます。すべての ? を数字に置き換えて、時刻ができるだけ遅くなるようにしてください。すでにある数字は変更できません。有効な補完が少なくとも 1 つ存在することが保証されています。有効な時刻は 00:00 から 23:59 までです。元のサイトでは ?2:22 の結果が 23:22 となっていますが、これは固定された数字を書き換えているため、このサイトでは 22:22 に訂正しています。\n\n入力・出力と例は CSWork が整理したものです。このサイトのものと明記した数値範囲は、このサイトの判定上の取り決めです。",
+    "input": "長さ 5 のパターン hh:mm を含む 1 行。各数字の位置は数字または ? で、中央のコロンは固定です。",
+    "output": "問題で求められた答えを出力してください。",
+    "explanation": "例 1: 時の十の位は 2 にできません（24 は無効）。そのため 1 のみとなり、分の下 1 桁は 9 になって 14:59 です。例 2: 最後の 1 桁だけが ? なので 9 を入れて 23:59 です。例 3: 時の一の位は 2 に固定されているため、十の位に 2 を入れて 22:22 となります。23 に変更することはできません。",
+    "hints": [
+      "上位の桁から順に、選べる最大の数字を選びます。時の十の位が 2 にできるなら 2、そうでなければ 1 を使います。時の十の位によって、一の位の上限が決まります。分の十の位は 5、一の位は 9 を使います。"
+    ]
+  },
+  "ko": {
+    "title": "가능한 가장 늦은 시각 만들기",
+    "description": "24시간제 시각 hh:mm이 주어집니다. 모든 ?를 숫자로 바꾸어 시각이 가능한 한 늦도록 만드세요. 이미 있는 숫자는 바꿀 수 없으며, 유효한 완성 방법이 적어도 하나는 존재함이 보장됩니다. 유효한 시각의 범위는 00:00부터 23:59까지입니다. 원본 사이트는 ?2:22에 대해 결과 23:22를 제시했지만 이는 고정된 숫자를 바꾼 것이므로, 이 사이트에서는 22:22로 바로잡았습니다.\n\n입력/출력과 예제는 CSWork에서 정리한 것이며, 이 사이트의 것이라고 표시된 수치 범위는 이 사이트의 채점 기준입니다.",
+    "input": "길이가 5인 패턴 hh:mm이 한 줄로 주어집니다. 각 숫자 자리는 숫자 또는 ?이며, 가운데의 콜론은 고정되어 있습니다.",
+    "output": "문제에서 요구하는 답을 출력합니다.",
+    "explanation": "예제 1: 시의 십의 자리는 2가 될 수 없으므로(24는 유효하지 않음) 1만 가능하고, 분의 마지막 자리는 9가 되어 14:59가 됩니다. 예제 2: 마지막 자리만 채우면 되며 9를 넣어 23:59가 됩니다. 예제 3: 시의 일의 자리가 2로 고정되어 있으므로 십의 자리에 2를 넣어 22:22가 되며, 23으로 바꿀 수는 없습니다.",
+    "hints": [
+      "가장 높은 자리부터 가능한 가장 큰 숫자를 선택합니다. 시의 십의 자리가 2가 될 수 있으면 2를, 아니면 1을 사용합니다. 시의 십의 자리가 정해지면 일의 자리의 상한이 결정됩니다. 분의 십의 자리에는 5를, 일의 자리에는 9를 사용합니다."
+    ]
+  },
+  "vi": {
+    "title": "Điền thời gian hợp lệ muộn nhất",
+    "description": "Cho một thời gian theo định dạng 24 giờ hh:mm. Hãy thay mỗi dấu ? bằng một chữ số sao cho thời gian thu được muộn nhất có thể. Các chữ số đã có không được thay đổi, và đảm bảo luôn tồn tại ít nhất một cách điền hợp lệ. Thời gian hợp lệ nằm trong khoảng từ 00:00 đến 23:59. Kết quả 23:22 cho ?2:22 trên trang gốc đã thay đổi một chữ số cố định; trang này sửa lại thành 22:22.\n\nPhần đầu vào/đầu ra và các ví dụ do CSWork biên soạn; các khoảng giá trị được ghi là của trang này là quy ước chấm bài của trang này.",
+    "input": "Một dòng duy nhất chứa mẫu hh:mm có độ dài 5, mỗi vị trí chữ số là một chữ số hoặc ?, ở giữa là dấu hai chấm cố định.",
+    "output": "In ra đáp án theo yêu cầu của đề bài.",
+    "explanation": "Ví dụ 1: chữ số hàng chục của giờ không thể là 2 (24 không hợp lệ) nên chỉ có thể là 1, và chữ số cuối của phút trở thành 9, được 14:59. Ví dụ 2: chỉ cần điền chữ số cuối, bằng 9, được 23:59. Ví dụ 3: chữ số hàng đơn vị của giờ cố định là 2, nên điền chữ số hàng chục là 2 được 22:22; không thể đổi thành 23.",
+    "hints": [
+      "Chọn chữ số lớn nhất khả thi từ vị trí cao nhất trở xuống. Nếu chữ số hàng chục của giờ có thể là 2 thì dùng 2, nếu không thì dùng 1; chữ số hàng chục của giờ sau đó quyết định cận trên của chữ số hàng đơn vị. Dùng 5 cho chữ số hàng chục của phút và 9 cho chữ số hàng đơn vị của phút."
+    ]
   }
 }

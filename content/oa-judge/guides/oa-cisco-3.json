@@ -13,6 +13,21 @@
       "For any row i and column j, the minimum of column j <= a[i][j] <= the maximum of row i, so every column minimum is at most every row maximum.",
       "Only two numbers matter: R, the smallest of the row maxima, and C, the largest of the column minima; a valid element exists exactly when R = C, and then its value is R.",
       "Read row by row, take each row maximum and update R = min(R, row maximum), while an array of length M keeps every column minimum; at the end C = max(column minima); print the value if C == R, otherwise -1. The whole matrix never needs to be stored."
+    ],
+    "ja": [
+      "任意の行 i と列 j について、列 j の最小値 <= a[i][j] <= 行 i の最大値が成り立つので、すべての列の最小値は、すべての行の最大値以下です。",
+      "重要な数は 2 つだけです。行の最大値の最小値 R と、列の最小値の最大値 C です。有効な要素が存在するのはちょうど R = C のときで、その値は R です。",
+      "行ごとに読み、各行の最大値を取って R = min(R, 行の最大値) を更新します。同時に、長さ M の配列で各列の最小値を保持します。最後に C = 列の最小値の最大値とし、C == R なら値を、そうでなければ -1 を出力します。行列全体を保存する必要はありません。"
+    ],
+    "ko": [
+      "임의의 행 i와 열 j에 대해 열 j의 최솟값 <= a[i][j] <= 행 i의 최댓값이므로 모든 열 최솟값은 모든 행 최댓값 이하입니다.",
+      "중요한 수는 둘뿐입니다. 행 최댓값들 중 가장 작은 R과 열 최솟값들 중 가장 큰 C입니다. 유효한 원소가 존재하는 것은 정확히 R = C일 때이며, 그때의 값은 R입니다.",
+      "행 단위로 읽으며 각 행의 최댓값을 구해 R = min(R, 행 최댓값)으로 갱신하고, 길이 M의 배열로 열 최솟값을 유지합니다. 마지막에 C = max(열 최솟값들)를 구하여 C == R이면 그 값을, 아니면 -1을 출력합니다. 행렬 전체를 저장할 필요가 없습니다."
+    ],
+    "vi": [
+      "Với bất kỳ hàng i và cột j nào, giá trị nhỏ nhất của cột j <= a[i][j] <= giá trị lớn nhất của hàng i, nên mọi giá trị nhỏ nhất của cột đều không vượt quá mọi giá trị lớn nhất của hàng.",
+      "Chỉ hai số quan trọng: R, giá trị nhỏ nhất trong các giá trị lớn nhất của hàng, và C, giá trị lớn nhất trong các giá trị nhỏ nhất của cột; một phần tử hợp lệ tồn tại khi và chỉ khi R = C, và khi đó giá trị của nó là R.",
+      "Đọc từng hàng, lấy giá trị lớn nhất của hàng và cập nhật R = min(R, giá trị lớn nhất của hàng), trong khi một mảng độ dài M giữ mọi giá trị nhỏ nhất của cột; cuối cùng C = max(các giá trị nhỏ nhất của cột); in giá trị nếu C == R, ngược lại in -1. Không bao giờ cần lưu toàn bộ ma trận."
     ]
   },
   "explanationEn": "## Approach\n\nProcess the matrix row by row, recording the minimum of each column and R, the minimum of all row maxima. Let C be the maximum of the column minima; if R=C output that value, otherwise -1. Only M column values are kept; no copy of a million-integer matrix is built.\n\n## Proof of correctness\n\nFor any row i and column j, the minimum of column j <= a[i][j] <= the maximum of row i, hence C<=R. If R=C, take a row attaining R and a column attaining C; their intersection is squeezed between the same value on both sides, so it is exactly a valid element. Conversely, if some intersection is both a row maximum and a column minimum, then C>=that value and R<=that value, which together with C<=R makes all three equal; every valid intersection has the same value, so no rule for choosing among several positions needs to be invented.\n\n## Complexity\n\nO(NM) time and O(M) auxiliary space, not counting the input text; parsing row by row avoids keeping a million number objects."

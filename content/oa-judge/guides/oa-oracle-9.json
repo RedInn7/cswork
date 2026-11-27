@@ -13,6 +13,21 @@
       "Both arrays are already non-decreasing, so the first element of each array's not-yet-output part is the minimum of that part.",
       "Keep one pointer into each array and compare the two front elements each time; the smaller one is the minimum of all elements not yet output, so output it and advance that pointer.",
       "While neither pointer is at the end, output the smaller of a[i] and b[j] (either one on a tie) and advance it; once one side is exhausted, output the rest of the other side in order. All 2n numbers are kept, separated by spaces."
+    ],
+    "ja": [
+      "2つの配列はすでに非減少なので、各配列のまだ出力していない部分の先頭要素が、その部分の最小値です。",
+      "各配列に1つずつポインタを持ち、そのたびに2つの先頭要素を比べます。小さい方がまだ出力していないすべての要素の最小値なので、それを出力してそのポインタを進めます。",
+      "どちらのポインタも末尾に達していない間は、a[i] と b[j] の小さい方（同値ならどちらでも可）を出力して進めます。片方が尽きたら、もう一方の残りを順に出力します。2n 個の数すべてをスペース区切りで保持します。"
+    ],
+    "ko": [
+      "두 배열은 이미 비감소이므로, 각 배열에서 아직 출력하지 않은 부분의 첫 원소가 그 부분의 최솟값입니다.",
+      "각 배열에 포인터를 하나씩 두고 매번 두 앞쪽 원소를 비교합니다. 더 작은 쪽이 아직 출력하지 않은 모든 원소 중 최솟값이므로 출력하고 그 포인터를 전진시킵니다.",
+      "두 포인터 모두 끝에 있지 않은 동안 a[i]와 b[j] 중 작은 쪽(같으면 아무쪽)을 출력하고 전진시킵니다. 한쪽이 바닥나면 다른 쪽의 나머지를 순서대로 출력합니다. 2n개의 수를 모두 유지하며 공백으로 구분합니다."
+    ],
+    "vi": [
+      "Cả hai mảng đã không giảm, nên phần tử đầu của phần chưa in ở mỗi mảng là giá trị nhỏ nhất của phần đó.",
+      "Giữ một con trỏ vào mỗi mảng và mỗi lần so sánh hai phần tử đầu; phần tử nhỏ hơn là giá trị nhỏ nhất trong mọi phần tử chưa in, nên in nó và tiến con trỏ đó.",
+      "Khi cả hai con trỏ chưa tới cuối, in giá trị nhỏ hơn giữa a[i] và b[j] (chọn cái nào cũng được khi bằng nhau) và tiến con trỏ đó; khi một bên cạn, in phần còn lại của bên kia theo thứ tự. Giữ cả 2n số, cách nhau bằng dấu cách."
     ]
   },
   "explanationEn": "## Approach\n\nTwo pointers compare the smallest values not yet output and take the smaller one; once one side is exhausted, output the remaining items of the other side.\n\n## Proof of correctness\n\nThe first item of each array's not-yet-output part is the minimum of that part, so the smaller of the two first items is the minimum of all values not yet output. Outputting them one by one keeps the result sorted and outputs every item exactly once.\n\n## Complexity\n\nO(n) time, O(n) input and output space."

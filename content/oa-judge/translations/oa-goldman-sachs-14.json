@@ -13,5 +13,41 @@
       "The subset and the last value are enough to describe the transition boundary of a completed prefix.",
       "With N≤14, all subset states can be kept to find the exact optimum."
     ]
+  },
+  "ja": {
+    "title": "隣接する大小関係を保った分筆の差の最大和",
+    "description": "Ramu と Sonu は、どちらも互いに異なる長さの分筆（チョーク）を N 本ずつ持っています。Sonu は自分の分筆を並べ替えられますが、隣り合うすべての位置で、Ramu の分筆の対応する位置と同じ厳密な大小の向き（増加か減少か）を保たなければなりません。Sonu の隣り合う分筆の長さの差の絶対値の和の最大値を求めてください。",
+    "input": "1 行目に N が与えられます（本サイトの範囲: 1≤N≤14）。2 行目に Ramu の分筆の長さを表す N 個の正の整数、3 行目に Sonu の分筆の長さを表す N 個の正の整数が与えられます。各グループ内の長さは互いに異なります。",
+    "output": "隣接する大小のパターンを満たす、差の絶対値の和の最大値を出力します。",
+    "explanation": "すでに並べた分筆をビットマスクで表し、最後の分筆も状態に含めます。Ramu の大小関係を位置ごとに照合しながら、差の総和を最大化します。",
+    "hints": [
+      "各位置の向きは、Ramu の隣り合う長さの比較で決まります。",
+      "部分集合と最後の値があれば、完成した接頭辞の遷移の境界を記述できます。",
+      "N≤14 なので、すべての部分集合の状態を保持して、厳密な最適値を求められます。"
+    ]
+  },
+  "ko": {
+    "title": "인접한 오르내림 패턴을 유지하는 분필 차이 합의 최대화",
+    "description": "Ramu와 Sonu는 각자 길이가 서로 다른 분필 N개를 가지고 있습니다. Sonu는 분필을 재배열할 수 있지만, 모든 인접한 위치 쌍은 Ramu의 분필에서 대응되는 위치와 같은 엄격한 오름/내림 방향을 유지해야 합니다. Sonu의 인접한 분필 사이의 길이 차이의 절댓값 합의 최댓값을 구하세요.",
+    "input": "첫 번째 줄에 N이 주어집니다(이 사이트의 범위: 1≤N≤14). 두 번째 줄에는 Ramu의 분필 길이인 N개의 양의 정수가, 세 번째 줄에는 Sonu의 분필 길이인 N개의 양의 정수가 주어집니다. 각 그룹 안의 길이는 서로 다릅니다.",
+    "output": "인접한 오름/내림 패턴을 만족하는 절댓값 차이 합의 최댓값을 출력합니다.",
+    "explanation": "비트마스크로 이미 배치한 분필을 표현하고 마지막 분필을 상태에 포함하세요. Ramu의 오름/내림 관계를 위치별로 맞추면서 전체 차이를 최대화합니다.",
+    "hints": [
+      "각 위치의 방향은 Ramu의 인접한 길이를 비교한 결과로 결정됩니다.",
+      "완성된 접두사의 전이 경계는 부분집합과 마지막 값만으로 충분히 기술됩니다.",
+      "N≤14이므로 모든 부분집합 상태를 유지하여 정확한 최적해를 구할 수 있습니다."
+    ]
+  },
+  "vi": {
+    "title": "Tổng chênh lệch phấn lớn nhất giữ nguyên quy luật lên/xuống của các vị trí liền kề",
+    "description": "Ramu và Sonu mỗi người có N viên phấn với độ dài đôi một khác nhau. Sonu có thể sắp xếp lại các viên phấn của mình, nhưng mọi cặp vị trí liền kề phải giữ cùng chiều tăng/giảm chặt như các vị trí tương ứng của phấn của Ramu. Hãy tìm tổng lớn nhất của các chênh lệch độ dài tuyệt đối giữa các viên phấn liền kề của Sonu.",
+    "input": "Dòng đầu chứa N (khoảng của trang này: 1≤N≤14). Dòng thứ hai chứa N số nguyên dương, độ dài các viên phấn của Ramu; dòng thứ ba chứa N số nguyên dương, độ dài các viên phấn của Sonu. Các độ dài trong mỗi nhóm đôi một khác nhau.",
+    "output": "In ra tổng lớn nhất của các chênh lệch tuyệt đối thỏa quy luật lên/xuống của các vị trí liền kề.",
+    "explanation": "Dùng bitmask để biểu diễn các viên phấn đã đặt, với viên phấn cuối cùng là một phần của trạng thái; khớp quan hệ lên/xuống của Ramu theo từng vị trí và tối đa hóa tổng chênh lệch.",
+    "hints": [
+      "Chiều ở mỗi vị trí được xác định bởi cách so sánh các độ dài liền kề của Ramu.",
+      "Tập hợp cùng giá trị cuối là đủ để mô tả biên chuyển tiếp của một tiền tố đã hoàn thành.",
+      "Với N≤14, có thể giữ mọi trạng thái tập con để tìm đáp án tối ưu chính xác."
+    ]
   }
 }

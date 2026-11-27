@@ -11,5 +11,35 @@
     "hints": [
       "Group the background apps by memory and sort them. In the first pass, binary search for each foreground app the largest background memory it can pair with, and find the optimal sum; in the second pass, take all background IDs that reach exactly that sum, enumerate every pair, and sort by the two IDs lexicographically."
     ]
+  },
+  "ja": {
+    "title": "デバイス容量内の最適なフォアグラウンド/バックグラウンドアプリのペアをすべて求める",
+    "description": "デバイスは、フォアグラウンドアプリ1つとバックグラウンドアプリ1つを同時にちょうど1つずつ実行します。各アプリは正の量のメモリを使います。ID は同じ種類の中では重複せず、異なる種類のアプリは同じ ID を持つことがあります。合計メモリが容量を超えず、かつできるだけ大きくなるアプリ ID のペアをすべて求めてください。同じメモリを使う別々のアプリを漏らさないようにします。\n\n標準入出力、例、解説は本サイトが独自に作成したものです。本サイト独自と明記した範囲は、出典の元の制約ではありません。",
+    "input": "1行目に capacity n m、続く n 行にフォアグラウンドの ID と memory、その後の m 行にバックグラウンドの ID と memory が与えられます。元の問題文には値の範囲が示されておらず、本サイトでは 0≤n,m≤500、ID は −10^9..10^9 で各種類内では互いに異なり、1≤memory≤10^9、0≤capacity≤2×10^9 とします。",
+    "output": "ID のペアを辞書順の昇順に並べた、空白を含まない JSON の2次元配列を出力してください。実行可能なペアがない場合は、元の問題と同じく [[]] を出力します。",
+    "explanation": "出力は [[2,1]]、[[1,8],[1,9],[2,8],[2,9]]、[[]] です。2つ目の例では直積全体を残す必要があり、最適なペアを1つだけ返すことはできません。",
+    "hints": [
+      "バックグラウンドアプリをメモリごとにグループ化してソートします。1回目の走査では、各フォアグラウンドアプリについてペアにできる最大のバックグラウンドメモリを二分探索し、最適な合計を求めます。2回目の走査では、ちょうどその合計になるバックグラウンド ID をすべて取り出して全ペアを列挙し、2つの ID で辞書順にソートします。"
+    ]
+  },
+  "ko": {
+    "title": "기기 용량 내에서 최적인 포그라운드/백그라운드 앱 쌍 전부",
+    "description": "기기는 동시에 정확히 하나의 포그라운드 앱과 하나의 백그라운드 앱을 실행합니다. 각 앱은 양의 메모리를 사용하며, 같은 종류 안에서는 ID가 서로 다르지만 다른 종류의 앱은 ID가 같을 수 있습니다. 총 메모리가 용량을 넘지 않으면서 가능한 한 큰 앱 ID 쌍을 모두 구하세요. 메모리 사용량이 같은 서로 다른 앱도 빠뜨리면 안 됩니다.\n\n표준 입출력, 예제, 해설은 이 사이트에서 독자적으로 작성했습니다. 이 사이트가 직접 정했다고 표시된 범위는 원문의 제약 조건이 아닙니다.",
+    "input": "첫째 줄에 capacity n m이 주어지고, 이어서 n줄에 포그라운드 ID memory가, 그다음 m줄에 백그라운드 ID memory가 주어집니다. 원문에는 값의 범위가 없으며, 이 사이트에서는 0≤n,m≤500, ID는 −10^9..10^9이고 각 종류 안에서 서로 다르며, 1≤memory≤10^9, 0≤capacity≤2×10^9입니다.",
+    "output": "ID 쌍을 사전순 오름차순으로 나열한 간결한 JSON 이차원 배열을 출력합니다. 가능한 쌍이 없으면 원문과 같이 [[]]을 출력합니다.",
+    "explanation": "출력은 각각 [[2,1]], [[1,8],[1,9],[2,8],[2,9]], [[]]입니다. 두 번째 예제에서는 데카르트 곱 전체를 유지해야 하며, 최적인 쌍 중 하나만 반환해서는 안 됩니다.",
+    "hints": [
+      "백그라운드 앱을 메모리별로 묶어 정렬합니다. 첫 번째 패스에서는 각 포그라운드 앱에 대해 짝지을 수 있는 가장 큰 백그라운드 메모리를 이분 탐색하여 최적의 합을 구하고, 두 번째 패스에서는 정확히 그 합에 도달하는 모든 백그라운드 ID를 가져와 모든 쌍을 열거한 뒤 두 ID에 대해 사전순으로 정렬합니다."
+    ]
+  },
+  "vi": {
+    "title": "Mọi cặp ứng dụng nền trước/nền sau tối ưu trong dung lượng thiết bị",
+    "description": "Thiết bị chạy đúng một ứng dụng nền trước và một ứng dụng nền sau cùng lúc. Mỗi ứng dụng dùng một lượng bộ nhớ dương; ID là phân biệt trong cùng một loại, còn các ứng dụng khác loại có thể có cùng ID. Hãy tìm mọi cặp ID ứng dụng có tổng bộ nhớ không vượt quá dung lượng và lớn nhất có thể, không bỏ sót các ứng dụng khác nhau dùng cùng lượng bộ nhớ.\n\nĐầu vào/đầu ra chuẩn, các ví dụ và phần lời giải do trang này tự viết; các khoảng giá trị được đánh dấu rõ là của trang này không phải ràng buộc gốc của đề.",
+    "input": "Dòng đầu chứa dung lượng n m, tiếp theo là n dòng ID nền trước và bộ nhớ, rồi m dòng ID nền sau và bộ nhớ. Đề gốc không cho cận giá trị; trên trang này 0≤n,m≤500, ID nằm trong −10^9..10^9 và phân biệt trong mỗi loại, 1≤bộ nhớ≤10^9, 0≤dung lượng≤2×10^9.",
+    "output": "In ra một mảng JSON hai chiều gọn gồm các cặp ID theo thứ tự từ điển tăng dần; nếu không có cặp khả thi nào, in [[]] như đề gốc.",
+    "explanation": "Các đầu ra là [[2,1]]; [[1,8],[1,9],[2,8],[2,9]]; và [[]]. Ở ví dụ thứ hai phải giữ toàn bộ tích Descartes; không thể chỉ trả về một trong các cặp tối ưu.",
+    "hints": [
+      "Nhóm các ứng dụng nền sau theo bộ nhớ và sắp xếp chúng. Ở lượt đầu, với mỗi ứng dụng nền trước, tìm kiếm nhị phân bộ nhớ nền sau lớn nhất mà nó có thể ghép, và tìm tổng tối ưu; ở lượt thứ hai, lấy mọi ID nền sau đạt đúng tổng đó, liệt kê mọi cặp, và sắp xếp theo hai ID theo thứ tự từ điển."
+    ]
   }
 }

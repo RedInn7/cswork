@@ -13,6 +13,21 @@
       "Fix the final common size v first: teams smaller than v can never become v, teams already equal to v join for free, and every larger team costs one modification.",
       "The best v can always be taken as some existing team size: raising v to the smallest original size among the chosen teams never loses a team and may save modifications. So only values present in the array need to be tried.",
       "Sort and group equal sizes; for each group the candidate is the group size plus min(k, number of strictly larger teams), where the latter is n minus the index just past the group; take the maximum over all groups."
+    ],
+    "ja": [
+      "まず最終的に揃える人数 v を固定します。v より小さいチームは v にできません。すでに v に等しいチームは無料で加わり、v より大きいチームは 1 つにつき 1 回の変更が必要です。",
+      "最適な v は、既存のチームの人数のどれかに取れます。選ばれたチームのうち元の人数が最小のものまで v を引き上げても、チームは減らず、変更回数は減らせるからです。したがって、配列に現れる値だけを試せば十分です。",
+      "ソートして同じ人数をまとめ、各グループの候補を「グループの大きさ + min(k, 真に大きいチームの数)」とします。後者は n からグループの終端の次の添字を引いた値です。全グループでの最大値を取ります。"
+    ],
+    "ko": [
+      "최종 공통 크기 v를 먼저 고정합니다. v보다 작은 팀은 v가 될 수 없고, 이미 v인 팀은 공짜로 합류하며, v보다 큰 팀은 하나당 한 번의 수정이 듭니다.",
+      "최적의 v는 항상 기존 팀 크기 중 하나로 잡을 수 있습니다. v를 선택된 팀들의 원래 크기 중 가장 작은 값까지 올려도 팀을 잃지 않고 수정 횟수를 줄일 수 있기 때문입니다. 따라서 배열에 있는 값만 시도하면 됩니다.",
+      "정렬한 뒤 같은 크기끼리 묶습니다. 각 그룹의 후보 값은 그룹 크기에 min(k, 엄격히 더 큰 팀의 수)를 더한 것이며, 후자는 n에서 그룹 바로 뒤의 인덱스를 뺀 값입니다. 모든 그룹에 대한 최댓값을 취합니다."
+    ],
+    "vi": [
+      "Trước hết cố định kích thước chung cuối cùng v: các đội nhỏ hơn v không bao giờ trở thành v được, các đội đã bằng v tham gia miễn phí, và mỗi đội lớn hơn tốn một lần sửa.",
+      "v tốt nhất luôn có thể lấy là kích thước của một đội đang có: nâng v lên kích thước gốc nhỏ nhất trong các đội được chọn không làm mất đội nào và có thể tiết kiệm số lần sửa. Vì vậy chỉ cần thử các giá trị có mặt trong mảng.",
+      "Sắp xếp và nhóm các kích thước bằng nhau; với mỗi nhóm, ứng viên là kích thước nhóm cộng min(k, số đội lớn hơn hẳn), trong đó số sau bằng n trừ đi chỉ số ngay sau nhóm; lấy giá trị lớn nhất trên mọi nhóm."
     ]
   },
   "explanationEn": "## Approach\n\nSort and group teams by equal size v; the candidate is the frequency of that size plus min(k, number of strictly larger teams).\n\n## Proof of correctness\n\nWith a fixed target v, teams smaller than v cannot join, teams already equal to v join for free, and each larger team costs one modification. If the optimal target is not an existing value, raising it to the smallest original size among the chosen teams does not reduce the teams that can join and may save modifications, so only existing values v need to be enumerated.\n\n## Complexity\n\nTime O(n log n), space O(n)."

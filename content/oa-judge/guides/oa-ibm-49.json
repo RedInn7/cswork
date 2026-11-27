@@ -13,6 +13,21 @@
       "Three kinds of constraints must hold together: both a and b lie in [lo,hi], a<b, and a XOR b≤k, while the XOR is maximized. All of them are comparisons made bit by bit from the highest bit down, which suits a digit DP.",
       "Decide the current bit of a and b together from the highest bit to the lowest, with six flags in the state: whether a is still tight against lo and against hi, the same two flags for b, whether a is already known to be smaller than b, and whether the XOR is still tight against k. Each bit only needs the four combinations of a and b being 0 or 1.",
       "Define a function of the current bit and the six flags that returns the largest XOR obtainable from the remaining low bits, or −1 if infeasible: tight flags restrict which bits are allowed, and while the XOR is tight against k the current XOR bit may not exceed k's bit; after the last bit, a state is feasible only if a<b already holds. Memoize the states, start from the highest bit of max(hi,k), and print −1 if the result is −1."
+    ],
+    "ja": [
+      "3 種類の制約が同時に成り立つ必要があります。a と b がともに [lo,hi] に入ること、a<b であること、a XOR b≤k であること、そして XOR を最大化することです。これらはすべて上位ビットから 1 ビットずつ行う比較なので、桁 DP に向いています。",
+      "a と b の現在のビットを、上位ビットから下位ビットへ一緒に決めます。状態には 6 つのフラグを持ちます。a が lo と hi にまだ接しているか、b についての同じ 2 つのフラグ、a がすでに b より小さいと確定したか、XOR が k にまだ接しているかです。各ビットでは a と b がそれぞれ 0 か 1 かの 4 通りを試せば十分です。",
+      "現在のビットと 6 つのフラグを引数に取り、残りの下位ビットで得られる XOR の最大値 (実行不可能なら −1) を返す関数を定義します。接しているフラグは使えるビットを制限し、XOR が k に接している間は、現在の XOR のビットが k のビットを超えてはいけません。最後のビットのあとは、a<b がすでに成り立っている状態だけが実行可能です。状態をメモ化し、max(hi,k) の最上位ビットから始めて、結果が −1 なら −1 を出力します。"
+    ],
+    "ko": [
+      "세 가지 제약이 동시에 성립해야 합니다. a와 b는 모두 [lo,hi]에 있고, a<b이며, a XOR b≤k이면서 XOR은 최대여야 합니다. 이들은 모두 최상위 비트부터 한 비트씩 비교하는 방식이므로 자릿수 DP에 적합합니다.",
+      "최상위 비트부터 최하위 비트까지 a와 b의 현재 비트를 함께 결정하며, 상태에는 여섯 개의 플래그를 둡니다. a가 아직 lo 및 hi에 밀착되어 있는지, b에 대한 같은 두 플래그, a가 이미 b보다 작다고 정해졌는지, XOR이 아직 k에 밀착되어 있는지입니다. 각 비트에서는 a와 b가 각각 0 또는 1인 네 가지 조합만 보면 됩니다.",
+      "현재 비트와 여섯 개의 플래그를 입력으로 받아, 남은 하위 비트에서 얻을 수 있는 가장 큰 XOR을 반환하는(불가능하면 −1) 함수를 정의합니다. 밀착된 플래그는 허용되는 비트를 제한하고, XOR이 k에 밀착되어 있는 동안 현재 XOR 비트는 k의 비트를 넘을 수 없습니다. 마지막 비트 이후에는 a<b가 이미 성립한 상태만 가능합니다. 상태를 메모이제이션하고 max(hi,k)의 최상위 비트에서 시작하며, 결과가 −1이면 −1을 출력합니다."
+    ],
+    "vi": [
+      "Ba loại ràng buộc phải đồng thời thỏa: cả a và b thuộc [lo,hi], a<b, và a XOR b≤k, trong khi XOR được cực đại hóa. Tất cả đều là các phép so sánh theo từng bit từ bit cao nhất xuống, rất hợp với quy hoạch động chữ số.",
+      "Quyết định bit hiện tại của a và b cùng lúc từ bit cao nhất đến bit thấp nhất, với sáu cờ trong trạng thái: a còn sát lo và sát hi hay không, hai cờ tương tự cho b, a đã biết là nhỏ hơn b chưa, và XOR còn sát k hay không. Mỗi bit chỉ cần bốn tổ hợp a và b là 0 hoặc 1.",
+      "Định nghĩa một hàm theo bit hiện tại và sáu cờ, trả về XOR lớn nhất đạt được từ các bit thấp còn lại, hoặc −1 nếu không khả thi: các cờ sát hạn chế các bit được phép, và khi XOR còn sát k thì bit XOR hiện tại không được vượt bit của k; sau bit cuối cùng, một trạng thái chỉ khả thi nếu a<b đã đúng. Ghi nhớ các trạng thái, bắt đầu từ bit cao nhất của max(hi,k), và in -1 nếu kết quả là -1."
     ]
   },
   "explanationEn": "## Approach\n\nRun a two-number digit DP from the high bit to the low bit, tracking whether each number is still tight against its lower and upper bounds, whether a is already less than b, and whether the XOR is still tight against k, and enumerate the current pair of bits.\n\n## Proof of correctness\n\nEach constraint depends only on how the already fixed prefix compares with the bounds, so the state keeps all information needed later. Every bit enumerates all legal bit combinations, and leaves accept only strictly a<b, so exactly the feasible pairs are covered; taking the maximum XOR gives the optimum, and if no path is accepted the answer is -1.\n\n## Complexity\n\nTime O(2^6·4·log(max(hi,k))), space O(2^6·log(max(hi,k)))."

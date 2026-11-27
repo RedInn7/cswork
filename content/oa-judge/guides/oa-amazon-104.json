@@ -13,6 +13,21 @@
       "Whether a day's pay is added or subtracted depends only on the highest grade appearing after it; scanning from the right, the suffix affects the current position only through the highest grade to its right.",
       "Run a DP from right to left with state (highest grade to the right, whether the one change has been used). At each position try keeping the original letter or changing it to each of the five grades, and add or subtract its pay by comparing with the highest grade on the right.",
       "There are 6 x 2 states (the highest grade may be none); initially only (none, unchanged) = 0; for each position and reachable state try every letter c: a letter different from the original uses the change (skip if that makes two), add its pay when c is at least the highest grade on the right and subtract it otherwise, and the new highest grade is max(old highest, c); finally print the largest value over all states."
+    ],
+    "ja": [
+      "その日の給与が加えられるか引かれるかは、それより後に現れる最高のグレードだけで決まります。右から走査すると、後ろの部分は、その右側の最高グレードを通してのみ現在の位置に影響します。",
+      "状態 (右側の最高グレード, 1 回の変更を使ったか) で右から左へ DP を行います。各位置で、元の文字のままか、5 つのグレードのいずれかに変更するかを試し、右側の最高グレードとの比較で、その給与を加算または減算します。",
+      "状態は 6 x 2 通りです（最高グレードがない場合もあります）。初期状態は (なし, 未変更) = 0 だけです。各位置と到達可能な状態について、すべての文字 c を試します。元と異なる文字は変更を 1 回使います（2 回目になるならスキップ）。c が右側の最高グレード以上なら給与を加え、そうでなければ引き、新しい最高グレードは max(古い最高グレード, c) です。最後に、すべての状態の最大値を出力します。"
+    ],
+    "ko": [
+      "어떤 날의 급여가 더해지는지 빼지는지는 그 뒤에 나타나는 가장 높은 등급에만 달려 있습니다. 오른쪽에서 훑으면 접미사는 오른쪽의 최고 등급을 통해서만 현재 위치에 영향을 줍니다.",
+      "오른쪽에서 왼쪽으로 상태 (오른쪽의 최고 등급, 바꾸기를 이미 썼는지)로 DP를 수행합니다. 각 위치에서 원래 문자를 유지하거나 다섯 등급 각각으로 바꿔 보고, 오른쪽의 최고 등급과 비교하여 급여를 더하거나 뺍니다.",
+      "상태는 6 x 2개입니다(최고 등급이 없을 수도 있음). 처음에는 (없음, 바꾸지 않음) = 0뿐입니다. 각 위치와 도달 가능한 상태에서 모든 문자 c를 시도합니다. 원래와 다른 문자는 바꾸기를 사용하는 것이며(두 번이 되면 건너뜀), c가 오른쪽의 최고 등급 이상이면 급여를 더하고 아니면 빼며, 새로운 최고 등급은 max(기존 최고 등급, c)입니다. 마지막에 모든 상태의 값 중 가장 큰 것을 출력합니다."
+    ],
+    "vi": [
+      "Lương của một ngày được cộng hay trừ chỉ phụ thuộc vào cấp cao nhất xuất hiện sau nó; khi quét từ bên phải, phần hậu tố chỉ ảnh hưởng đến vị trí hiện tại thông qua cấp cao nhất ở bên phải nó.",
+      "Chạy DP từ phải sang trái với trạng thái (cấp cao nhất ở bên phải, đã dùng lần đổi duy nhất hay chưa). Tại mỗi vị trí, thử giữ nguyên chữ cái gốc hoặc đổi thành từng cấp trong năm cấp, và cộng hoặc trừ lương của nó bằng cách so sánh với cấp cao nhất bên phải.",
+      "Có 6 x 2 trạng thái (cấp cao nhất có thể là không có); ban đầu chỉ có (không có, chưa đổi) = 0; với mỗi vị trí và mỗi trạng thái đạt được, thử mọi chữ cái c: chữ cái khác với bản gốc sẽ dùng lần đổi (bỏ qua nếu như vậy thành hai lần), cộng lương của nó khi c ít nhất bằng cấp cao nhất bên phải và trừ nếu ngược lại, và cấp cao nhất mới là max(cấp cao nhất cũ, c); cuối cùng in giá trị lớn nhất trên mọi trạng thái."
     ]
   },
   "explanationEn": "## Approach\n\nRun a DP from right to left whose state is the highest grade to the right and whether the change has been used. At each position, try keeping the letter or changing it to each of the five grades, and decide the sign of the contribution by comparing with the highest grade to the right.\n\n## Proof of correctness\n\nThe processed suffix affects the current pay only through its highest grade, and the change budget needs only one boolean bit. Enumerating every legal letter choice at each position and accumulating the signed contributions covers all plans with at most one change.\n\n## Complexity\n\nTime O(25n), space O(1)."

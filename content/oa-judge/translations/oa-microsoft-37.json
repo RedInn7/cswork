@@ -11,5 +11,35 @@
     "hints": [
       "Sort by distance in ascending order, breaking ties by demand in ascending order, deduct the stock order by order, and stop at the first order that cannot be covered."
     ]
+  },
+  "ja": {
+    "title": "距離順に満たせる注文の最大数",
+    "description": "近い客の注文はすべて、より遠い客に対応する前に満たさなければならず、同じ距離の客は任意の順で対応できます。各注文は全量を配達するかしないかのどちらかです。在庫 P で満たせる注文の最大数を求めてください。\n\n標準入出力、例、解法、テストは本サイトが独自に作成しました。",
+    "input": "1 行目に N P（1≤N≤100000、0≤P≤10¹⁰）、2 行目に N 個の距離 D、3 行目に N 個の需要 C（いずれも 1..10⁹）が与えられます。",
+    "output": "答えを整数 1 つで出力します。",
+    "explanation": "例 1：まず距離 1 と 3 の注文を配達し、3+2=5 を使います。次の注文には 6 必要で足りないので、満たせる注文は 2 件です。\n\n例 2：まず最も近い需要 2 を配達して残りは 1 です。距離 10 の需要 10 は配達できず、飛ばして 15 に進むこともできないので、満たせる注文は 1 件です。\n\n例 3：同じ距離では、まず需要 1 を配達して残りは 1 で、需要 5 には足りません。よってそれより遠い注文には対応できず、満たせる注文は 1 件です。",
+    "hints": [
+      "距離の昇順に、同じ距離なら需要の昇順にソートし、注文ごとに在庫を引いていき、賄えない最初の注文で止めます。"
+    ]
+  },
+  "ko": {
+    "title": "거리 순서대로 처리하는 주문의 최대 이행 수",
+    "description": "가까운 고객의 주문을 모두 이행해야 더 먼 고객에게 배송할 수 있으며, 거리가 같은 고객은 어떤 순서로 처리해도 됩니다. 각 주문은 전량이 배송되어야만 이행으로 인정됩니다. 재고 P로 이행할 수 있는 주문의 최대 개수를 구하세요.\n\n이 사이트에서 표준 입출력, 예제, 풀이, 테스트를 독자적으로 작성했습니다.",
+    "input": "첫째 줄에 N P (1≤N≤100000, 0≤P≤10¹⁰)가 주어지고, 둘째 줄에 N개의 거리 D, 셋째 줄에 N개의 수요 C (모두 1..10⁹)가 주어집니다.",
+    "output": "정답을 나타내는 정수 하나를 출력합니다.",
+    "explanation": "예제 1: 먼저 거리 1과 3의 주문을 배송하여 3+2=5를 사용합니다. 다음 주문은 6이 필요해 부족하므로 2개를 이행합니다.\n\n예제 2: 가장 가까운 수요 2를 먼저 배송하면 1이 남습니다. 거리 10의 수요 10은 배송할 수 없고 15로 건너뛸 수도 없으므로 1개를 이행합니다.\n\n예제 3: 같은 거리에서 수요 1을 먼저 배송하면 1이 남아 수요 5에는 부족합니다. 따라서 더 먼 주문은 처리할 수 없고 1개를 이행합니다.",
+    "hints": [
+      "거리 오름차순, 거리가 같으면 수요 오름차순으로 정렬한 뒤 주문 순서대로 재고에서 차감하고, 처음으로 감당할 수 없는 주문에서 멈춥니다."
+    ]
+  },
+  "vi": {
+    "title": "Số đơn hàng tối đa được đáp ứng theo thứ tự khoảng cách",
+    "description": "Mọi đơn hàng của khách gần hơn phải được đáp ứng trước khi có thể phục vụ bất kỳ khách xa hơn nào, còn các khách cùng khoảng cách có thể được phục vụ theo thứ tự tùy ý. Mỗi đơn hàng chỉ có thể được giao trọn vẹn. Tìm số đơn hàng tối đa mà lượng hàng P có thể đáp ứng.\n\nTrang này tự viết độc lập đầu vào/đầu ra chuẩn, các ví dụ, lời giải và bộ test.",
+    "input": "Dòng đầu chứa N P (1≤N≤100000, 0≤P≤10¹⁰), dòng thứ hai chứa N khoảng cách D, dòng thứ ba chứa N nhu cầu C (đều thuộc 1..10⁹).",
+    "output": "In ra một số nguyên duy nhất, là đáp án.",
+    "explanation": "Ví dụ 1: trước tiên giao các đơn ở khoảng cách 1 và 3, dùng 3+2=5; đơn tiếp theo cần 6, không đủ, nên đáp ứng được 2 đơn.\n\nVí dụ 2: trước tiên giao đơn có nhu cầu nhỏ nhất là 2, còn lại 1; đơn có nhu cầu 10 ở khoảng cách 10 không giao được, và không thể nhảy sang 15, nên đáp ứng được 1 đơn.\n\nVí dụ 3: ở cùng một khoảng cách, giao đơn có nhu cầu 1 trước, còn lại 1, không đủ cho nhu cầu 5; do đó không thể phục vụ đơn nào xa hơn, và đáp ứng được 1 đơn.",
+    "hints": [
+      "Sắp xếp theo khoảng cách tăng dần, nếu bằng nhau thì theo nhu cầu tăng dần, trừ dần lượng hàng theo từng đơn, và dừng ở đơn đầu tiên không đáp ứng được."
+    ]
   }
 }

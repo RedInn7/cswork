@@ -13,6 +13,21 @@
       "To produce x units each metal only needs its shortfall covered, so the minimum cost is the sum of max(0, x * composition[i] - stock[i]) * cost[i], and that cost never decreases as x grows.",
       "Because the cost is monotone, whether x units fit in the budget is monotone in x, so you can binary search for the largest feasible output.",
       "Double from 1 until you find an infeasible upper bound, then binary search on [0, upper bound); while computing the cost, declare x infeasible as soon as a single shortfall or the running cost exceeds the budget, which saves time and also prevents 64-bit multiplication overflow."
+    ],
+    "ja": [
+      "x 単位を生産するには、各金属は不足分だけをまかなえばよいので、最小コストは max(0, x * composition[i] - stock[i]) * cost[i] の総和で、このコストは x が大きくなっても減りません。",
+      "コストが単調なので、x 単位が予算内に収まるかどうかも x について単調です。したがって、実現可能な最大の生産量を二分探索で求められます。",
+      "1 から倍々にして、実現不可能な上限が見つかるまで進め、その後 [0, 上限) で二分探索します。コストを計算する間、1 つの不足分または累積コストが予算を超えた時点で x を実現不可能と判定すると、時間が節約でき、64 ビット乗算のオーバーフローも防げます。"
+    ],
+    "ko": [
+      "x단위를 생산하려면 각 금속의 부족분만 채우면 되므로 최소 비용은 max(0, x * composition[i] - stock[i]) * cost[i]의 합이며, 이 비용은 x가 커질수록 줄어들지 않습니다.",
+      "비용이 단조이므로 x단위가 예산에 맞는지는 x에 대해 단조이며, 가능한 최대 생산량을 이분 탐색으로 구할 수 있습니다.",
+      "1부터 두 배씩 늘려 불가능한 상한을 찾은 뒤 [0, 상한)에서 이분 탐색합니다. 비용을 계산하는 동안 부족분 하나 또는 누적 비용이 예산을 넘으면 즉시 x를 불가능으로 판정하여 시간을 아끼고 64비트 곱셈 오버플로도 막습니다."
+    ],
+    "vi": [
+      "Để sản xuất x đơn vị, mỗi kim loại chỉ cần bù phần thiếu, nên chi phí tối thiểu là tổng của max(0, x * composition[i] - stock[i]) * cost[i], và chi phí đó không bao giờ giảm khi x tăng.",
+      "Vì chi phí đơn điệu, việc x đơn vị có nằm trong ngân sách hay không cũng đơn điệu theo x, nên bạn có thể tìm kiếm nhị phân sản lượng lớn nhất khả thi.",
+      "Nhân đôi từ 1 cho đến khi tìm được một cận trên không khả thi, rồi tìm kiếm nhị phân trên [0, cận trên); khi tính chi phí, tuyên bố x không khả thi ngay khi một phần thiếu riêng lẻ hoặc chi phí tích lũy vượt ngân sách, việc này tiết kiệm thời gian và cũng ngăn tràn số khi nhân 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nThe purchase cost for an output of x is the sum of max(0,x*composition[i]-stock[i])*cost[i], which is non-decreasing in x, so binary search for the largest feasible output. The source example's output of 1 is correct, but the cost formula in the original explanation is wrong; this site corrected it according to the rules.\n\n## Proof of correctness\n\nFor a given output, each metal only needs to make up the shortfall of the recipe, and the formula is exactly the minimum purchase cost to reach that output. The cost is non-decreasing in the output, so binary search finds the maximum output within the budget.\n\n## Complexity\n\nO(n log U), space O(n)."

@@ -13,5 +13,41 @@
       "When scanning in reverse, the global threshold only affects items not yet determined.",
       "The third placeholder field is neither an index nor a threshold."
     ]
+  },
+  "ja": {
+    "title": "点の代入とグローバルな価格下限",
+    "description": "商品の価格の配列が与えられ、3列からなるクエリを順に実行します。1 x v は商品 x の価格を直接 v に設定します(下がることもあります)。2 v r はすべての価格を max(price,v) に設定します。3列目の r は使われないプレースホルダです。すべてのクエリの後の価格を出力してください。",
+    "input": "入力は順に n、n 個の初期価格、q、そして整数3つからなる q 行のクエリです。元の範囲はすべて次のとおりです。1≤n,q≤200000、0≤初期価格および有効な v≤1000000000、点の添字 1≤x≤n。元のテキストには type2 の3番目のプレースホルダに対する個別の数値範囲がありませんでした。本サイトでは、元の Java の int[][] に従って −2147483648..2147483647 と解釈し、その値は無視し、しきい値と等しいことも要求しません。標準入力は、元の関数のパラメータを明示的に並べたものです。",
+    "output": "最終的な n 個の価格を、元の商品の順序で、空白区切りで出力します。",
+    "explanation": "001 の元の例は 8 9 8 のままです。006 の Sample0 では、元の出力の3番目の項目 3 は誤りです。元の5つのクエリでは 1 2 4 4 3 になるべきで、グローバルな下限 3 を適用した後の途中状態は 3 3 4 4 3 となり、その後の点の代入で値が再び下がることもあります。Sample1 の4つの 11 は正しいですが、元の説明の末尾で 1 を残すのは誤りで、type2 の3列目に 1 や 11 を書いても結果には影響しません。訂正の根拠の全体は解説にあります。",
+    "hints": [
+      "各商品について、最後の点の代入だけを考えれば十分です。",
+      "逆順に走査するとき、グローバルなしきい値はまだ決まっていない商品にだけ影響します。",
+      "3番目のプレースホルダの欄は、添字でもしきい値でもありません。"
+    ]
+  },
+  "ko": {
+    "title": "점 대입과 전역 가격 하한",
+    "description": "물품 가격 배열이 주어지고, 세 개의 열로 이루어진 질의를 순서대로 실행합니다. 1 x v: 물품 x의 가격을 v로 직접 설정하며 가격이 내려갈 수도 있습니다. 2 v r: 모든 가격을 max(price,v)로 설정하며, 세 번째 열 r은 사용하지 않는 자리 표시용 값입니다. 모든 질의를 마친 뒤의 가격을 출력하십시오.",
+    "input": "입력은 순서대로 n, n개의 초기 가격, q, 그리고 정수 세 개로 된 질의 q줄입니다. 원문의 전체 범위는 1≤n,q≤200000, 0≤초기 가격 및 유효한 v≤1000000000, 점 인덱스 1≤x≤n입니다. 원문은 type2의 세 번째 자리 표시 값에 대한 별도의 수치 범위를 주지 않았습니다. 이 사이트는 원문의 Java int[][]에 따라 −2147483648..2147483647로 해석하고 그 값은 무시하며, 임계값과 같을 필요도 없습니다. 표준 입력은 원문 함수 매개변수를 명시적으로 배열한 것입니다.",
+    "output": "최종 가격 n개를 원래 물품 순서대로 공백으로 구분해 출력합니다.",
+    "explanation": "001 원문 예제는 8 9 8을 유지합니다. 006 Sample0에서는 원문 출력의 세 번째 항목 3이 틀렸습니다. 원문의 질의 다섯 개로는 1 2 4 4 3이어야 하며, 전역 하한 3을 적용한 직후의 중간 상태는 3 3 4 4 3이어야 하고 이후의 점 대입으로 값이 다시 내려갈 수 있습니다. Sample1의 11 네 개는 맞지만 원문 설명 끝에 1을 남겨 둔 것은 틀렸습니다. type2의 세 번째 열에 1이나 11을 써도 결과에는 영향이 없습니다. 정정의 전체 근거는 해설에 있습니다.",
+    "hints": [
+      "각 물품에서 마지막 점 대입만 신경 쓰면 됩니다.",
+      "뒤에서부터 훑을 때 전역 임계값은 아직 결정되지 않은 물품에만 영향을 줍니다.",
+      "세 번째 자리 표시 필드는 인덱스도 임계값도 아닙니다."
+    ]
+  },
+  "vi": {
+    "title": "Gán điểm và sàn giá toàn cục",
+    "description": "Cho một mảng giá của các mặt hàng, thực hiện lần lượt các truy vấn gồm ba cột. 1 x v: đặt trực tiếp giá của mặt hàng x thành v, có thể làm giá giảm; 2 v r: đặt mọi giá thành max(price,v), trong đó cột thứ ba r là một giá trị giữ chỗ không dùng đến. In ra các giá sau khi thực hiện mọi truy vấn.",
+    "input": "Đầu vào theo thứ tự gồm n, n giá ban đầu, q, và q dòng truy vấn gồm ba số nguyên. Đầy đủ các phạm vi gốc: 1≤n,q≤200000, 0≤giá ban đầu và v hợp lệ≤1000000000, chỉ số điểm 1≤x≤n. Văn bản gốc không cho giới hạn số riêng cho giá trị giữ chỗ thứ ba của loại 2; trang này hiểu nó theo int[][] Java gốc là −2147483648..2147483647, bỏ qua giá trị của nó, và không yêu cầu nó bằng ngưỡng. Đầu vào chuẩn là một cách sắp xếp tường minh các tham số hàm gốc.",
+    "output": "In n giá cuối cùng theo thứ tự mặt hàng ban đầu, cách nhau bởi khoảng trắng.",
+    "explanation": "Ví dụ gốc 001 giữ nguyên 8 9 8. Trong Sample0 của 006, phần tử thứ ba của đầu ra gốc, 3, là sai; với năm truy vấn gốc thì phải là 1 2 4 4 3; trạng thái trung gian sau sàn toàn cục 3 phải là 3 3 4 4 3, và các phép gán điểm về sau có thể lại làm giảm giá trị. Bốn số 11 của Sample1 là đúng, nhưng việc giữ 1 ở cuối phần giải thích gốc là sai; viết 1 hoặc 11 vào cột thứ ba của loại 2 không ảnh hưởng đến kết quả. Toàn bộ cơ sở cho các hiệu chỉnh nằm trong bài phân tích (editorial).",
+    "hints": [
+      "Bạn chỉ cần quan tâm đến phép gán điểm cuối cùng của mỗi mặt hàng.",
+      "Khi quét ngược, ngưỡng toàn cục chỉ ảnh hưởng đến các mặt hàng chưa được xác định.",
+      "Trường giữ chỗ thứ ba không phải là chỉ số cũng không phải là ngưỡng."
+    ]
   }
 }

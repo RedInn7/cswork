@@ -13,6 +13,21 @@
       "Subjects already passed have a shortfall of 0 and count automatically; every other subject costs its shortfall needed−answered, while each passed subject is worth exactly 1.",
       "With equal value and different costs, the cheapest subjects should be satisfied first; an exchange argument shows an optimal plan can always be turned into the subjects with the smallest shortfalls.",
       "Compute each subject's non-negative shortfall max(0, needed[i]−answered[i]), sort ascending, and subtract them from the budget q in order, counting each one you can afford and stopping at the first you cannot; print the count. q can be up to 10^14, so use 64-bit integers."
+    ],
+    "ja": [
+      "すでに合格している科目は不足分が 0 で、自動的に数えられます。それ以外の科目は不足分 needed−answered だけかかり、合格した科目はどれもちょうど 1 の価値があります。",
+      "価値が同じでコストが異なるなら、最も安い科目から満たすべきです。交換論法により、最適な計画は常に不足分の最も小さい科目を選ぶものに変えられます。",
+      "各科目の非負の不足分 max(0, needed[i]−answered[i]) を計算して昇順にソートし、予算 q から順に引いていきます。払える科目を数え、最初に払えなくなったところで止めて、その個数を出力します。q は 10^14 まであるので、64 ビット整数を使ってください。"
+    ],
+    "ko": [
+      "이미 통과한 과목은 부족분이 0이므로 자동으로 포함됩니다. 나머지 과목은 부족분 needed−answered만큼의 비용이 들고, 통과한 과목 하나의 가치는 정확히 1입니다.",
+      "가치가 같고 비용이 다르다면 가장 저렴한 과목부터 충족시키는 것이 좋습니다. 교환 논증으로, 임의의 최적 계획은 항상 부족분이 가장 작은 과목들을 고른 계획으로 바꿀 수 있습니다.",
+      "각 과목의 음수가 아닌 부족분 max(0, needed[i]−answered[i])를 계산하여 오름차순으로 정렬한 뒤, 예산 q에서 차례로 빼면서 감당할 수 있는 과목을 세고 처음으로 감당할 수 없는 과목에서 멈춥니다. 센 개수를 출력합니다. q는 최대 10^14까지 가능하므로 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Các môn đã đạt có phần thiếu 0 và tự động được tính; mọi môn khác tốn phần thiếu needed−answered, trong khi mỗi môn đạt có giá trị đúng 1.",
+      "Khi giá trị bằng nhau mà chi phí khác nhau, nên thỏa mãn các môn rẻ nhất trước; lập luận hoán đổi cho thấy mọi phương án tối ưu đều có thể chuyển thành các môn có phần thiếu nhỏ nhất.",
+      "Tính phần thiếu không âm max(0, needed[i]−answered[i]) của mỗi môn, sắp xếp tăng dần, rồi lần lượt trừ khỏi ngân sách q, đếm mỗi môn mà bạn đủ khả năng chi trả và dừng ở môn đầu tiên không đủ; in số đếm. q có thể lên tới 10^14 nên hãy dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nCompute the non-negative shortfall of each subject, sort them in ascending order, and spend the budget on the smallest shortfalls first.\n\n## Proof of correctness\n\nEvery passed subject contributes exactly 1. If a plan picks a larger shortfall but leaves out a smaller one, swapping them keeps the number of subjects and does not increase the questions used; repeated swaps give a prefix of the smallest shortfalls. The longest prefix the budget can cover, taken greedily, is optimal.\n\n## Complexity\n\nTime O(n log n), space O(n)."

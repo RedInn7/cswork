@@ -13,6 +13,21 @@
       "You only need to count, for each number on its own, how many 0 digits its decimal representation has, and check whether that count is odd.",
       "Repeatedly taking the last digit (x % 10) and dividing by 10 visits every digit of a positive integer. The one special case is 0 itself: its representation is \"0\", but the loop never runs, so count it as containing one zero separately.",
       "Read the n numbers (up to 10^18, so use 64-bit integers). For each x: if x == 0 the zero count is 1, otherwise count how many times x % 10 == 0 while dividing by 10. Add one to the answer when the zero count is odd, and print the answer."
+    ],
+    "ja": [
+      "各数について、10進表記に含まれる 0 の個数を単独で数え、それが奇数かどうかを調べるだけで十分です。",
+      "最後の桁（x % 10）を取って 10 で割る操作を繰り返せば、正の整数のすべての桁を訪れられます。特別なのは 0 そのものです。表記は \"0\" ですが、ループが1度も回らないので、0 を1つ含むものとして別に数えます。",
+      "n 個の数を読み込みます（10^18 まであるので 64 ビット整数を使います）。各 x について、x == 0 なら 0 の個数は 1、そうでなければ 10 で割りながら x % 10 == 0 になる回数を数えます。0 の個数が奇数なら答えに 1 を足し、最後に答えを出力します。"
+    ],
+    "ko": [
+      "각 수에 대해 십진 표기에 0이 몇 개 있는지만 세고, 그 개수가 홀수인지 확인하면 됩니다.",
+      "x % 10으로 마지막 자릿수를 취하고 10으로 나누는 것을 반복하면 양의 정수의 모든 자릿수를 방문합니다. 유일한 특수한 경우는 0 자신입니다. 표기는 \"0\"이지만 루프가 한 번도 실행되지 않으므로, 0은 0이 하나 있는 것으로 따로 처리합니다.",
+      "n개의 수를 읽습니다(최대 10^18이므로 64비트 정수 사용). 각 x에 대해 x == 0이면 0의 개수는 1이고, 아니면 10으로 나누며 x % 10 == 0인 횟수를 셉니다. 0의 개수가 홀수이면 답에 1을 더하고, 마지막에 답을 출력합니다."
+    ],
+    "vi": [
+      "Với mỗi số, bạn chỉ cần đếm biểu diễn thập phân của nó có bao nhiêu chữ số 0, rồi kiểm tra số đó có lẻ hay không.",
+      "Liên tục lấy chữ số cuối (x % 10) và chia cho 10 sẽ duyệt qua mọi chữ số của một số nguyên dương. Trường hợp đặc biệt duy nhất là chính số 0: biểu diễn của nó là \"0\", nhưng vòng lặp không bao giờ chạy, nên hãy xử lý riêng và coi nó chứa một chữ số 0.",
+      "Đọc n số (tối đa 10^18, nên dùng số nguyên 64 bit). Với mỗi x: nếu x == 0 thì số chữ số 0 là 1, ngược lại đếm số lần x % 10 == 0 trong khi chia cho 10. Cộng thêm một vào đáp án khi số chữ số 0 là số lẻ, rồi in đáp án."
     ]
   },
   "explanationEn": "## Approach\n\nStrip off the decimal digits of each number one by one and count the zeros; the number 0 is counted separately as containing one zero.\n\n## Correctness\n\nEach decimal digit of an integer is visited exactly once by taking the last digit modulo 10; the special case for 0 matches its standard representation, and the parity test is directly equivalent to the statement.\n\n## Complexity\n\nO(N log V) time and O(1) extra space."

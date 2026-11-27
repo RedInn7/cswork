@@ -11,5 +11,35 @@
     "hints": [
       "For a candidate number of rounds T, compute how many extra main-task executions each task still needs; if the total is ≤T, everything can finish."
     ]
+  },
+  "ja": {
+    "title": "並列タスク実行の最小操作回数（MathWorks #21）",
+    "description": "各ラウンドで 1 つのタスクをメインタスクとして選んで x 秒実行し、それ以外のタスクはすべて y 秒実行します。タスクの累積実行時間が必要時間に達すると、そのタスクは完了して抜けます。すべてのタスクを完了するのに必要な最小のラウンド数を求めてください。元の MathWorks #21 の問題文は、OAMaster ページのスナップショットでは途中で切れています。固定された出典リポジトリの同じバージョンの元の Markdown には y < x が完全な形で書かれており、ルール、関数シグネチャ、制約は Snowflake #15 と同じです。以下の公開例と標準入力形式は CSWork が作成したもので、元の問題の例ではありません。",
+    "input": "1 行目に n x y、2 行目に n 個の正の整数 executionTime が与えられます。1≤n≤100000、1≤executionTime[i]≤10^9、1≤y<x≤10^9。",
+    "output": "すべてのタスクを完了するのに必要な最小の操作回数を出力してください。",
+    "explanation": "操作回数 T で二分探索します。T ラウンドあれば、すべてのタスクは少なくとも T·y の基本実行量を得ます。メインタスクとしての各操作は、残りの需要に対して x−y の追加分を与えるので、タスク i はなお ceil(max(0, executionTime[i]−T·y)/(x−y)) 回メインタスクに選ばれる必要があります。これらの回数の合計が T 以下なら、T は実現可能です。",
+    "hints": [
+      "ラウンド数の候補 T について、各タスクがなお何回メインタスクとして実行される必要があるかを計算します。その合計が ≤T なら、すべて完了できます。"
+    ]
+  },
+  "ko": {
+    "title": "병렬 작업 실행의 최소 연산 횟수 (MathWorks #21)",
+    "description": "각 라운드마다 작업 하나를 주 작업으로 골라 x초 동안 실행하고, 나머지 모든 작업은 y초 동안 실행합니다. 어떤 작업의 누적 실행 시간이 필요한 시간에 도달하면 그 작업은 끝나고 빠집니다. 모든 작업을 끝내는 데 필요한 최소 라운드 수를 구하세요. 원래 MathWorks #21의 문제 설명은 OAMaster 페이지 스냅샷에서 중간에 잘려 있으며, 고정된 원문 저장소의 같은 버전 원본 Markdown에는 y < x가 온전히 적혀 있고, 규칙, 함수 시그니처, 제약 조건은 Snowflake #15와 같습니다. 아래의 공개 예제와 표준 입력 형식은 CSWork가 정리한 것이며 원문의 예제가 아닙니다.",
+    "input": "첫 번째 줄에 n x y가 주어지고, 두 번째 줄에 양의 정수 n개 executionTime이 주어집니다. 1≤n≤100000, 1≤executionTime[i]≤10^9, 1≤y<x≤10^9입니다.",
+    "output": "모든 작업을 끝내는 데 필요한 최소 연산 횟수를 출력합니다.",
+    "explanation": "연산 횟수 T에 대해 이분 탐색합니다. T 라운드가 있으면 모든 작업은 최소 T·y만큼의 기본 실행을 얻고, 주 작업 연산은 남은 요구량에 대해 x−y만큼의 추가분을 제공하므로, 작업 i는 여전히 ceil(max(0, executionTime[i]−T·y)/(x−y))번 주 작업으로 선택되어야 합니다. 이 횟수들의 총합이 T를 넘지 않으면 T는 가능합니다.",
+    "hints": [
+      "후보 라운드 수 T에 대해 각 작업이 추가로 몇 번 주 작업으로 실행되어야 하는지 계산합니다. 총합이 ≤T이면 모든 작업을 끝낼 수 있습니다."
+    ]
+  },
+  "vi": {
+    "title": "Số thao tác tối thiểu để thực thi song song các tác vụ (MathWorks #21)",
+    "description": "Trong mỗi vòng, chọn một tác vụ làm tác vụ chính và chạy nó x giây, trong khi mọi tác vụ khác chạy y giây; khi thời gian chạy tích lũy của một tác vụ đạt thời gian yêu cầu của nó, tác vụ đó hoàn thành và rời đi. Hãy tìm số vòng tối thiểu để hoàn thành mọi tác vụ. Đề gốc MathWorks #21 bị cắt ngang giữa chừng trong bản chụp trang OAMaster; bản Markdown gốc cùng phiên bản trong kho mã nguồn cố định nêu đầy đủ y < x, và các quy tắc, chữ ký hàm cùng ràng buộc của nó giống với Snowflake #15. Các ví dụ công khai và định dạng đầu vào chuẩn bên dưới do CSWork biên soạn và không phải ví dụ của nguồn.",
+    "input": "Dòng đầu chứa n x y, dòng thứ hai chứa n số nguyên dương executionTime. 1≤n≤100000, 1≤executionTime[i]≤10^9, 1≤y<x≤10^9.",
+    "output": "In ra số thao tác tối thiểu cần để hoàn thành mọi tác vụ.",
+    "explanation": "Tìm kiếm nhị phân trên số thao tác T. Với T vòng, mọi tác vụ nhận được ít nhất T·y thời gian thực thi cơ bản; mỗi thao tác chọn tác vụ chính đóng góp thêm x−y cho phần nhu cầu còn lại, nên tác vụ i vẫn cần được chọn làm tác vụ chính ceil(max(0, executionTime[i]−T·y)/(x−y)) lần. T khả thi khi tổng các số lần này không vượt quá T.",
+    "hints": [
+      "Với một số vòng ứng viên T, tính mỗi tác vụ còn cần bao nhiêu lần thực thi làm tác vụ chính bổ sung; nếu tổng ≤T thì mọi thứ có thể hoàn thành."
+    ]
   }
 }

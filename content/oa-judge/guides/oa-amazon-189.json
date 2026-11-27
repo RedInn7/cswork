@@ -13,6 +13,21 @@
       "The remainder of a sum modulo k lies in 0..k-1, so the subarray length must be less than k; under that condition, remainder equals length can be rewritten as a congruence between prefix sums.",
       "With prefix sums S, the subarray (l, r] is valid if and only if r - l < k and (S[r] - r) mod k = (S[l] - l) mod k. Each prefix then has a single key, and the task becomes counting equal-key pairs whose indices are less than k apart.",
       "Maintain key = (key + a[r] - 1) mod k; the frequency table starts with key 0 for prefix 0; for r = 1..n: if r >= k, decrement the count of prefix r-k's key (it would give length k); add the current key's count to the answer, then increment it. Use a 64-bit answer."
+    ],
+    "ja": [
+      "和を k で割った剰余は 0..k-1 の範囲にあるので、部分配列の長さは k 未満でなければなりません。この条件のもとで、「剰余が長さに等しい」ことは、累積和の間の合同式に書き換えられます。",
+      "累積和 S について、部分配列 (l, r] が有効であることは、r - l < k かつ (S[r] - r) mod k = (S[l] - l) mod k であることと同値です。すると各累積和にキーが 1 つ決まり、問題はインデックスの差が k 未満である、キーの等しい組を数えることになります。",
+      "key = (key + a[r] - 1) mod k を保持します。頻度表は、累積和 0 のキー 0 から始めます。r = 1..n について、r >= k なら、累積和 r-k のキーのカウントを減らします（長さが k になってしまうため）。そして現在のキーのカウントを答えに加え、そのあとそれを 1 増やします。答えは 64 ビットで持ってください。"
+    ],
+    "ko": [
+      "합을 k로 나눈 나머지는 0..k-1 범위이므로 부분 배열의 길이는 k보다 작아야 합니다. 이 조건에서 나머지가 길이와 같다는 것은 누적 합 사이의 합동식으로 바꿔 쓸 수 있습니다.",
+      "누적 합 S에 대해 부분 배열 (l, r]이 유효한 것은 r - l < k이고 (S[r] - r) mod k = (S[l] - l) mod k일 때이며 그때에 한합니다. 그러면 각 누적 합에 키가 하나씩 생기고, 문제는 인덱스 차이가 k 미만인 같은 키의 쌍을 세는 것이 됩니다.",
+      "key = (key + a[r] - 1) mod k를 유지합니다. 빈도표는 누적 합 0의 키 0으로 시작합니다. r = 1..n에 대해: r >= k이면 누적 합 r-k의 키 개수를 감소시키고(길이 k가 되므로), 현재 키의 개수를 답에 더한 뒤 증가시킵니다. 답은 64비트로 계산하세요."
+    ],
+    "vi": [
+      "Số dư của một tổng modulo k nằm trong 0..k-1, nên độ dài mảng con phải nhỏ hơn k; với điều kiện đó, số dư bằng độ dài có thể viết lại thành một đồng dư giữa các tổng tiền tố.",
+      "Với tổng tiền tố S, mảng con (l, r] hợp lệ khi và chỉ khi r - l < k và (S[r] - r) mod k = (S[l] - l) mod k. Khi đó mỗi tiền tố có một khóa duy nhất, và bài toán trở thành đếm các cặp có khóa bằng nhau mà chỉ số cách nhau dưới k.",
+      "Duy trì key = (key + a[r] - 1) mod k; bảng tần suất bắt đầu với khóa 0 cho tiền tố 0; với r = 1..n: nếu r >= k, giảm số đếm khóa của tiền tố r-k (vì nó sẽ cho độ dài k); cộng số đếm của khóa hiện tại vào đáp án, rồi tăng nó. Dùng đáp án 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nDefine the key (S[i]-i) mod k from the prefix sums S. A valid subarray needs equal keys at its two ends and a length strictly less than k; count it with a frequency table of earlier prefixes restricted by length.\n\n## Proof of correctness\n\nThe subarray sum mod k equals its length if and only if the length is less than k and S[r]-r is congruent to S[l]-l modulo k. While scanning r, remove prefix r-k and earlier ones; querying the number of equal keys then counts exactly all valid left ends. Grouping by right end counts every subarray once, with nothing missed.\n\n## Complexity\n\nTime O(n), space O(n)."

@@ -13,6 +13,21 @@
       "Connectivity at time t is determined exactly by the log entries with time at most t, and connections are never removed. So if you add connections in time order, the first moment everyone is in one group is the answer.",
       "Map usernames to ids, sort the logs by time, and union the two endpoints of each entry with a disjoint set union. Every successful union of two different sets reduces the component count by one; when it first reaches 1, output the current time.",
       "If there is only one user, print 0. Otherwise map names to ids and set the component count to n. Process the logs in ascending time; find the roots of both endpoints, and if they differ, union by size and decrease the count by 1; the moment it reaches 1, print that entry's time. If the logs run out first, print -1."
+    ],
+    "ja": [
+      "時刻 t でのつながりは、時刻が t 以下のログ項目だけで正確に決まり、接続が取り除かれることはありません。したがって接続を時刻順に追加していくと、全員が初めて 1 つのグループになった瞬間が答えです。",
+      "ユーザー名を id に対応づけ、ログを時刻でソートして、素集合データ構造(Union-Find)で各項目の 2 つの端点を併合します。異なる集合の併合に成功するたびに連結成分数が 1 減り、それが初めて 1 になったときの現在の時刻を出力します。",
+      "ユーザーが 1 人だけなら 0 を出力します。そうでなければ名前を id に対応づけ、連結成分数を n とします。ログを時刻の昇順に処理し、両端点の根を求め、異なっていればサイズによる併合を行って個数を 1 減らします。それが 1 になった瞬間にその項目の time を出力します。それまでにログが尽きたら -1 を出力します。"
+    ],
+    "ko": [
+      "시각 t의 연결 상태는 time이 t 이하인 로그 항목만으로 정확히 결정되고, 연결은 끊어지지 않습니다. 따라서 연결을 시간순으로 추가하다가 처음으로 모두가 한 그룹이 되는 순간이 답입니다.",
+      "사용자 이름을 id로 바꾸고 로그를 시각순으로 정렬한 뒤, 각 항목의 두 끝점을 서로소 집합(DSU)으로 합칩니다. 서로 다른 집합을 합치는 데 성공할 때마다 연결 요소 수가 하나 줄고, 처음 1이 되는 순간의 시각을 출력합니다.",
+      "사용자가 한 명이면 0을 출력합니다. 그렇지 않으면 이름을 id로 매핑하고 연결 요소 수를 n으로 둡니다. 로그를 시각 오름차순으로 처리하며 두 끝점의 루트를 찾고, 서로 다르면 크기 기준으로 합친 뒤 개수를 1 줄입니다. 개수가 1이 되는 순간 그 항목의 시각을 출력합니다. 그 전에 로그가 끝나면 -1을 출력합니다."
+    ],
+    "vi": [
+      "Tính liên thông tại thời điểm t được quyết định chính xác bởi các bản ghi có thời gian không quá t, và các kết nối không bao giờ bị gỡ bỏ. Vì vậy nếu thêm các kết nối theo thứ tự thời gian, thời điểm đầu tiên mọi người ở trong một nhóm chính là đáp án.",
+      "Ánh xạ tên người dùng sang id, sắp xếp các bản ghi theo thời gian, và hợp hai đầu mút của mỗi bản ghi bằng disjoint set union. Mỗi lần hợp thành công hai tập khác nhau làm số thành phần giảm một; khi nó lần đầu bằng 1, in thời gian hiện tại.",
+      "Nếu chỉ có một người dùng, in 0. Ngược lại ánh xạ tên sang id và đặt số thành phần là n. Xử lý các bản ghi theo thời gian tăng dần; tìm gốc của cả hai đầu mút, nếu khác nhau thì hợp theo kích thước và giảm số thành phần đi 1; ngay khi nó bằng 1, in thời gian của bản ghi đó. Nếu hết bản ghi trước đó, in -1."
     ]
   },
   "explanationEn": "## Approach\n\nSort the logs by time and merge their two ends one by one with a disjoint set union; every successful merge reduces the number of components by one, and the time at which it first drops to 1 is the answer.\n\n## Correctness\n\nThe connections at time t are generated exactly by the logs no later than t, and the disjoint set union maintains the connectivity of these edges equivalently. Scanning in time order, the first moment of full connectivity is the earliest time; if multiple components remain after the scan, there is no solution.\n\n## Complexity\n\nTime O(m log m+(n+m)α(n)), space O(n+m)."

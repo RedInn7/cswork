@@ -13,6 +13,21 @@
       "Removing the highest and lowest remaining experience each round is the same as sorting and pairing from both ends inward; people with equal experience are still separate people, so keep every value when sorting.",
       "Two pairs have the same average if and only if they have the same sum, so just count the distinct end-pair sums, which also avoids floating-point error.",
       "After sorting, compute a[i] + a[n-1-i] for i < n/2, count the distinct values with a set or by sorting and deduplicating, and print the count; experience may be 0, which changes nothing."
+    ],
+    "ja": [
+      "各ラウンドで残っている最高と最低の経験値を取り除くことは、ソートして両端から内側へペアにすることと同じです。経験値が等しい人も別の人なので、ソートするときはすべての値を残してください。",
+      "2 つのペアの平均が等しいことは和が等しいことと同値なので、両端のペアの異なる和の個数を数えるだけでよく、浮動小数点の誤差も避けられます。",
+      "ソートしたあと、i < n/2 について a[i] + a[n-1-i] を計算し、集合を使うか、ソートして重複を取り除くことで異なる値の個数を数えて出力します。経験値は 0 でもかまいませんが、何も変わりません。"
+    ],
+    "ko": [
+      "매 라운드 남은 사람 중 경험치가 가장 높은 사람과 가장 낮은 사람을 제거하는 것은 정렬한 뒤 양 끝에서 안쪽으로 짝짓는 것과 같습니다. 경험치가 같은 사람들도 별개의 사람이므로 정렬할 때 모든 값을 유지하세요.",
+      "두 쌍의 평균이 같은 것은 합이 같은 것과 동치이므로, 양 끝 쌍의 서로 다른 합의 개수만 세면 되며 부동소수점 오차도 피할 수 있습니다.",
+      "정렬한 뒤 i < n/2에 대해 a[i] + a[n-1-i]를 계산하고, 집합이나 정렬 후 중복 제거로 서로 다른 값의 개수를 세어 출력합니다. 경험치가 0일 수 있지만 아무것도 달라지지 않습니다."
+    ],
+    "vi": [
+      "Việc mỗi vòng loại kinh nghiệm cao nhất và thấp nhất còn lại tương đương với việc sắp xếp rồi ghép từ hai đầu vào trong; những người có kinh nghiệm bằng nhau vẫn là những người riêng biệt, nên hãy giữ mọi giá trị khi sắp xếp.",
+      "Hai cặp có cùng giá trị trung bình khi và chỉ khi có cùng tổng, nên chỉ cần đếm các tổng cặp hai đầu phân biệt, điều này cũng tránh sai số dấu phẩy động.",
+      "Sau khi sắp xếp, tính a[i] + a[n-1-i] với i < n/2, đếm các giá trị phân biệt bằng tập hợp hoặc bằng cách sắp xếp rồi loại trùng, và in số đếm; kinh nghiệm có thể bằng 0, không làm thay đổi gì."
     ]
   },
   "explanationEn": "## Approach\n\nSort, pair the two ends, and count the distinct pair sums, without any floating-point division.\n\n## Proof of correctness\n\nAfter sorting, the two ends are exactly the extremes of each round, and removing them leaves the inner part sorted. Two averages are equal if and only if the two sums are equal, so the size of the set of sums is the answer.\n\n## Complexity\n\nTime O(n log n), space O(n)."

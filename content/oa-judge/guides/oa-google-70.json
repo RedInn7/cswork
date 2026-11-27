@@ -13,6 +13,21 @@
       "The minimum replacements for one substring depend only on odd, the number of letters with odd frequency: one replacement removes at most two odd frequencies, so the cost is floor(odd/2), and that is achievable.",
       "A letter's frequency parity in a substring is the XOR of its parities in the two bounding prefixes. For each letter the number of prefix pairs with different parity is (odd prefixes) × (even prefixes); summing over the 26 letters gives the total of odd over all substrings.",
       "The parity of odd equals the parity of the substring length, so the sum of floor(odd/2) is (sum of odd − number of odd-length substrings)/2. While scanning keep the 26 prefix parities and count, per letter, the prefixes with odd parity v (out of n+1 prefixes). Then sum of odd = Σ v·(n+1−v) and the odd-length substring count is ceil((n+1)/2)·floor((n+1)/2). Use 64-bit integers."
+    ],
+    "ja": [
+      "1 つの部分文字列の最小置換回数は、出現回数が奇数の文字の個数 odd だけで決まります。1 回の置換で奇数回の文字を最大 2 つ減らせるので、コストは floor(odd/2) で、これは達成可能です。",
+      "ある文字の部分文字列内での出現回数のパリティは、その両端を区切る 2 つの接頭辞でのパリティの XOR です。各文字について、パリティが異なる接頭辞ペアの個数は (奇数の接頭辞の数) × (偶数の接頭辞の数) で、26 文字分を合計すると全部分文字列にわたる odd の総和が得られます。",
+      "odd の偶奇は部分文字列の長さの偶奇と一致するので、floor(odd/2) の総和は (odd の総和 − 奇数長の部分文字列の個数)/2 です。走査しながら 26 文字分の接頭辞パリティを保持し、各文字について n+1 個の接頭辞のうちパリティが奇数のもの v 個を数えます。すると odd の総和は Σ v·(n+1−v)、奇数長の部分文字列の個数は ceil((n+1)/2)·floor((n+1)/2) です。64 ビット整数を使ってください。"
+    ],
+    "ko": [
+      "부분 문자열 하나의 최소 교체 횟수는 등장 횟수가 홀수인 문자의 개수 odd에만 의존합니다. 교체 한 번으로 홀수 횟수 문자를 최대 두 개까지 없앨 수 있으므로 비용은 floor(odd/2)이고, 이는 실제로 달성할 수 있습니다.",
+      "부분 문자열에서 어떤 문자의 홀짝은 양 끝 접두사에서의 홀짝을 XOR한 값입니다. 따라서 각 문자에 대해 홀짝이 다른 접두사 쌍의 수는 (홀수 접두사 수) × (짝수 접두사 수)이며, 26개 문자에 대해 합하면 모든 부분 문자열에 대한 odd의 총합이 됩니다.",
+      "odd의 홀짝은 부분 문자열 길이의 홀짝과 같으므로, floor(odd/2)의 합은 (odd의 총합 − 길이가 홀수인 부분 문자열의 수)/2입니다. 문자열을 훑으면서 26개 문자의 접두사 홀짝을 유지하고, 문자별로 홀짝이 홀수인 접두사의 수 v(전체 n+1개 중)를 셉니다. 그러면 odd의 총합은 Σ v·(n+1−v)이고, 길이가 홀수인 부분 문자열의 수는 ceil((n+1)/2)·floor((n+1)/2)입니다. 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Số lần thay thế tối thiểu của một xâu con chỉ phụ thuộc vào odd, số chữ cái có tần suất lẻ: một lần thay thế loại bỏ tối đa hai tần suất lẻ, nên chi phí là floor(odd/2) và con số này luôn đạt được.",
+      "Tính chẵn lẻ của tần suất một chữ cái trong xâu con là XOR của tính chẵn lẻ tại hai tiền tố biên. Với mỗi chữ cái, số cặp tiền tố có độ chẵn lẻ khác nhau là (số tiền tố lẻ) × (số tiền tố chẵn); cộng qua 26 chữ cái sẽ được tổng của odd trên mọi xâu con.",
+      "Tính chẵn lẻ của odd trùng với tính chẵn lẻ của độ dài xâu con, nên tổng floor(odd/2) bằng (tổng odd − số xâu con có độ dài lẻ)/2. Khi duyệt, giữ 26 giá trị chẵn lẻ của tiền tố và đếm, theo từng chữ cái, số tiền tố có độ chẵn lẻ lẻ v (trong n+1 tiền tố). Khi đó tổng odd = Σ v·(n+1−v) và số xâu con có độ dài lẻ là ceil((n+1)/2)·floor((n+1)/2). Dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Idea\n\nThe cost of one substring is the number of letters with odd frequency divided by 2, rounded down. For each letter, the number of prefix pairs with different parity is zero·one; summing gives the total number of odd-frequency letters over all substrings. Then subtract the number of odd-length substrings and finally divide by 2.\n\n## Correctness\n\nEach replacement removes at most two odd frequencies, so the cost is at least floor(odd/2), and changing one odd letter into another odd letter achieves it. The parity of a letter's frequency in a substring is the XOR of the parities of the two bounding prefixes. The parity of odd equals the parity of the substring length, so subtracting the number of odd-length substrings implements the rounding down for all substrings at once.\n\n## Complexity\n\nO(26n) time, O(26) space; the answer needs a 64-bit integer."

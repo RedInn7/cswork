@@ -13,6 +13,21 @@
       "There are n - k + 1 windows of fixed length k, and neighboring windows differ by one element entering and one leaving, so a sliding window can maintain the sum and the value counts.",
       "A window has distinct elements exactly when its number of distinct values equals k. Keep a frequency table from value to count, and always know how many distinct values it holds.",
       "Each new element is added to the sum and the frequency table; once the index is at least k, remove the oldest element and decrease the distinct count when its count drops to 0; whenever the window is full and the distinct count equals k, update the answer with the sum. The answer can be negative, so keep a separate found flag instead of starting from -1, and print -1 only if nothing was found (including n = 0 or k > n). Use 64-bit sums."
+    ],
+    "ja": [
+      "長さ k の固定ウィンドウは n - k + 1 個あり、隣り合うウィンドウは 1 要素が入って 1 要素が出るだけの違いなので、スライディングウィンドウで和と値ごとの個数を保持できます。",
+      "ウィンドウの要素がすべて異なることは、異なる値の個数がちょうど k であることと同値です。値から出現回数への頻度表を持ち、異なる値の個数を常に把握しておきます。",
+      "新しい要素を加えるたびに和と頻度表を更新します。添字が k 以上になったら最も古い要素を取り除き、その出現回数が 0 になったら異なる値の個数を減らします。ウィンドウが満たされていて異なる値の個数が k のときは、和で答えを更新します。答えは負になり得るので、-1 から始めるのではなく、「見つかった」ことを示す別のフラグを持ちます。何も見つからなかった場合（n = 0 や k > n を含む）にのみ -1 を出力します。和には 64 ビット整数を使います。"
+    ],
+    "ko": [
+      "길이가 k로 고정된 윈도우는 n - k + 1개이고, 인접한 윈도우는 원소 하나가 들어오고 하나가 나가는 차이뿐이므로 슬라이딩 윈도우로 합과 값별 개수를 유지할 수 있습니다.",
+      "윈도우의 원소가 모두 다른 것은 서로 다른 값의 개수가 k인 것과 동치입니다. 값에서 개수로 가는 빈도 테이블을 유지하고, 항상 서로 다른 값의 개수를 알고 있도록 합니다.",
+      "새 원소는 합과 빈도 테이블에 더합니다. 인덱스가 k 이상이 되면 가장 오래된 원소를 제거하고, 그 개수가 0이 되면 서로 다른 값의 개수를 줄입니다. 윈도우가 가득 차 있고 서로 다른 값의 개수가 k이면 합으로 정답을 갱신합니다. 정답이 음수일 수 있으므로 -1로 시작하지 말고 별도의 found 플래그를 사용하며, 아무것도 찾지 못했을 때만(n = 0이거나 k > n인 경우 포함) -1을 출력합니다. 합은 64비트로 계산하세요."
+    ],
+    "vi": [
+      "Có n - k + 1 cửa sổ độ dài cố định k, và hai cửa sổ kề nhau chỉ khác nhau một phần tử vào và một phần tử ra, nên cửa sổ trượt có thể duy trì tổng và số lần xuất hiện của từng giá trị.",
+      "Một cửa sổ có các phần tử phân biệt khi và chỉ khi số giá trị phân biệt của nó bằng k. Giữ một bảng tần suất từ giá trị sang số lần xuất hiện, và luôn biết nó đang chứa bao nhiêu giá trị phân biệt.",
+      "Mỗi phần tử mới được cộng vào tổng và bảng tần suất; khi chỉ số đạt ít nhất k, loại phần tử cũ nhất và giảm số giá trị phân biệt nếu số lần xuất hiện của nó về 0; mỗi khi cửa sổ đầy và số giá trị phân biệt bằng k thì cập nhật đáp án bằng tổng. Đáp án có thể âm, nên hãy giữ một cờ found riêng thay vì khởi tạo bằng -1, và chỉ in -1 nếu không tìm thấy gì (kể cả khi n = 0 hoặc k > n). Dùng tổng 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nMaintain the sum and the value frequencies of a sliding window of length k; when the frequency table has size k, the elements are distinct. Use a separate not-found flag when updating the maximum.\n\n## Proof of correctness\n\nAfter adding the new element and removing the oldest element beyond k, the frequency table and the total correspond exactly to the current window. The elements in the window are distinct if and only if the number of distinct values is k. Every window of length k is checked and the maximum sum is taken; a legitimate negative answer must not be mistaken for no solution.\n\n## Complexity\n\nO(n) expected time and O(min(n,k)) auxiliary space."

@@ -11,5 +11,35 @@
     "hints": [
       "Maintain prefix maxima of the top row and suffix maxima of the bottom row. Enumerate the single column where the path moves down; the path maximum there is the larger of the two, and the answer is the minimum over all columns."
     ]
+  },
+  "ja": {
+    "title": "2 行の経路における最大値の最小化",
+    "description": "上の行の最初のセルから下の行の最後のセルまで、右または下にだけ進み、経路上の数の最大値を最小化してください。\n\n本サイトでは標準入出力の形式を使い、元の問題で与えられていない範囲は明示します。",
+    "input": "1 行目に N が与えられ、続く 2 行がそれぞれ A と B です。元の問題には数値の範囲がなく、本サイトでは 1≤N≤200000、数値は −10⁹..10⁹ とします。",
+    "output": "答えを整数 1 つで出力します。",
+    "explanation": "例 1：中央の列で下に移動し、3、4、5、4 を通るので、最大値は 5 です。例 2：下の行の 3 の右側で下に移動し、上の行の 4 を避けるので、最大値は 2 です。例 3：経路は −3 と −5 を通らなければならないので、最大値は −3 です。",
+    "hints": [
+      "上の行の累積最大値と下の行の後ろからの累積最大値を持っておきます。下に移動する唯一の列を全探索し、その列での経路の最大値は 2 つのうち大きいほうで、答えはすべての列にわたるその最小値です。"
+    ]
+  },
+  "ko": {
+    "title": "두 행 경로에서 최댓값 최소화",
+    "description": "첫 번째 행의 첫 칸에서 두 번째 행의 마지막 칸까지 오른쪽 또는 아래로만 이동할 때, 경로 위 숫자의 최댓값을 최소화하세요.\n\n이 사이트는 표준 입출력 방식을 사용하며, 원문에 주어지지 않은 범위는 명시적으로 밝혀 둡니다.",
+    "input": "첫째 줄에 N이 주어지고, 이어서 A와 B를 나타내는 두 줄이 주어집니다. 원문에는 수의 범위가 없으며, 이 사이트에서는 1≤N≤200000, 수의 범위는 −10⁹..10⁹로 합니다.",
+    "output": "정답을 정수 하나로 출력합니다.",
+    "explanation": "예제 1: 가운데 열에서 아래로 내려가면 3, 4, 5, 4를 지나며 최댓값은 5입니다. 예제 2: 아래 행의 3 오른쪽에서 내려가 위 행의 4를 피하면 최댓값은 2입니다. 예제 3: 경로가 −3과 −5를 반드시 지나므로 최댓값은 −3입니다.",
+    "hints": [
+      "위 행의 prefix 최댓값과 아래 행의 suffix 최댓값을 유지합니다. 아래로 내려가는 열을 하나씩 열거하면 그 열에서의 경로 최댓값은 두 값 중 큰 쪽이며, 정답은 모든 열에 대한 최솟값입니다."
+    ]
+  },
+  "vi": {
+    "title": "Cực tiểu hóa giá trị lớn nhất trên đường đi hai hàng",
+    "description": "Đi từ ô đầu tiên của hàng trên đến ô cuối cùng của hàng dưới, chỉ được di chuyển sang phải hoặc xuống dưới, sao cho giá trị lớn nhất trên đường đi là nhỏ nhất.\n\nTrang này dùng giao thức đầu vào/đầu ra chuẩn; những khoảng giá trị mà đề gốc không nêu được ghi rõ ràng.",
+    "input": "Dòng đầu tiên chứa N, tiếp theo là hai dòng lần lượt chứa A và B. Đề gốc không cho giới hạn số; trang này dùng 1≤N≤200000 và các số trong khoảng −10⁹..10⁹.",
+    "output": "In ra một số nguyên duy nhất, là đáp án.",
+    "explanation": "Ví dụ 1: đi xuống ở cột giữa, qua các số 3, 4, 5, 4, giá trị lớn nhất là 5. Ví dụ 2: đi xuống ở bên phải số 3 ở hàng dưới, tránh số 4 ở hàng trên; giá trị lớn nhất là 2. Ví dụ 3: đường đi phải qua −3 và −5, nên giá trị lớn nhất là −3.",
+    "hints": [
+      "Duy trì giá trị lớn nhất theo tiền tố của hàng trên và theo hậu tố của hàng dưới. Duyệt cột duy nhất nơi đường đi chuyển xuống; giá trị lớn nhất của đường đi tại đó là số lớn hơn trong hai giá trị, và đáp án là giá trị nhỏ nhất trên tất cả các cột."
+    ]
   }
 }

@@ -11,5 +11,35 @@
     "hints": [
       "Use row-by-row dynamic programming. Each row is entered by descending from the previous row; do one left-to-right scan and one right-to-left scan, take the larger value at each position, and use it as the entry for the next row."
     ]
+  },
+  "ja": {
+    "title": "洞窟を引き返さずに通る最長経路",
+    "description": "グリッドの左上 (0,0) から出発し、右下の角に到達します。! は通行可能なマス、x は障害物です。1 回の移動でちょうど 1 マス、左・右・下のいずれかに動きます。上には動けず、訪れたマスに再び入ることもできません。出口に到達する経路のうち、通るマスの数 (始点と終点を含む) の最大値を求めてください。出口に到達できない場合は −1 を出力します。\n\n標準入力、本サイトの制約、サンプル、テストデータは CSWork が独自に作成・整理したものです。",
+    "input": "本サイトの入力: 1 行目に R C (1..200)、続く R 個の文字列は長さ C で ! と x のみからなります。入口や出口が塞がれていることもあります。",
+    "output": "訪れるマス数の最大値、または −1 を出力してください。",
+    "explanation": "サンプル 1: 空の 3×3 グリッドでは、行ごとに蛇行して 9 マスすべてを通り、右下の角で終えられます。\n\nサンプル 2: 入口の右と下のマスがどちらも障害物なので、出口に到達できず、出力は −1 です。\n\nサンプル 3: 始点が終点も兼ねていて通行可能なので、訪れるマス数は 1 です。",
+    "hints": [
+      "行ごとの動的計画法を使います。各行には前の行から下りて入ります。左から右への走査と右から左への走査を 1 回ずつ行い、各位置で大きい方の値を取って、次の行への入口とします。"
+    ]
+  },
+  "ko": {
+    "title": "동굴을 되돌아가지 않고 지나는 가장 긴 경로",
+    "description": "격자의 왼쪽 위 모서리 (0,0)에서 출발하여 오른쪽 아래 모서리에 도달하세요. !는 지나갈 수 있는 칸이고 x는 장애물입니다. 한 걸음에 정확히 한 칸씩 왼쪽, 오른쪽 또는 아래로만 이동할 수 있으며, 위로 올라가거나 이미 방문한 칸에 다시 들어갈 수 없습니다. 출구에 도달하는 경로에서 지나는 칸 수의 최댓값(출발점과 도착점 포함)을 구하고, 출구에 도달할 수 없으면 −1을 출력하세요.\n\n표준 입력, 이 사이트의 제약 조건, 예제, 테스트 데이터는 CSWork에서 독자적으로 정리하여 작성했습니다.",
+    "input": "이 사이트의 입력입니다. 첫 줄에 R C (1..200)가 주어지고, 이어서 !와 x로만 이루어진 길이 C의 문자열 R개가 주어집니다. 입구나 출구가 막혀 있을 수도 있습니다.",
+    "output": "방문한 칸 수의 최댓값을 출력하거나 −1을 출력합니다.",
+    "explanation": "예제 1: 비어 있는 3×3 격자에서는 행마다 지그재그로 9칸 모두를 지나 오른쪽 아래 모서리에서 끝날 수 있습니다.\n\n예제 2: 입구의 오른쪽과 아래 칸이 모두 장애물이므로 출구에 도달할 수 없어 출력은 −1입니다.\n\n예제 3: 출발점이 곧 도착점이고 지나갈 수 있으므로 방문한 칸 수는 1입니다.",
+    "hints": [
+      "행 단위 동적 계획법을 사용합니다. 각 행은 이전 행에서 내려오며 진입합니다. 왼쪽에서 오른쪽으로 한 번, 오른쪽에서 왼쪽으로 한 번 훑어 각 위치에서 더 큰 값을 취하고, 이를 다음 행의 진입 값으로 사용합니다."
+    ]
+  },
+  "vi": {
+    "title": "Lộ trình dài nhất không quay lui qua hang động",
+    "description": "Xuất phát từ góc trên bên trái (0,0) của lưới và đi tới góc dưới bên phải. ! là ô đi được và x là chướng ngại vật. Mỗi bước di chuyển đúng một ô sang trái, sang phải hoặc xuống dưới; không được đi lên hay đi vào lại ô đã thăm. Tìm số ô lớn nhất trên một đường đi tới lối ra (tính cả điểm đầu và điểm cuối); in −1 nếu không thể tới lối ra.\n\nĐầu vào chuẩn, các ràng buộc của trang này, các ví dụ và dữ liệu kiểm thử do CSWork tự biên soạn.",
+    "input": "Đầu vào của trang này: dòng đầu chứa R C (1..200), tiếp theo là R xâu độ dài C chỉ chứa ! và x; lối vào hoặc lối ra cũng có thể bị chặn.",
+    "output": "In ra số ô đã thăm lớn nhất, hoặc −1.",
+    "explanation": "Ví dụ 1: trong lưới 3×3 trống, bạn có thể đi ngoằn ngoèo từng hàng qua cả 9 ô và kết thúc ở góc dưới bên phải.\n\nVí dụ 2: các ô bên phải và bên dưới lối vào đều là chướng ngại vật, nên không thể tới lối ra; kết quả là −1.\n\nVí dụ 3: điểm xuất phát cũng là điểm kết thúc và đi được, nên số ô đã thăm là 1.",
+    "hints": [
+      "Dùng quy hoạch động theo từng hàng. Mỗi hàng được vào bằng cách đi xuống từ hàng trước; thực hiện một lượt quét từ trái sang phải và một lượt quét từ phải sang trái, lấy giá trị lớn hơn tại mỗi vị trí, và dùng nó làm điểm vào cho hàng kế tiếp."
+    ]
   }
 }

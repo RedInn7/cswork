@@ -13,6 +13,21 @@
       "q is at most 5000, so there are at most 5000 logs, and scanning every stored log for each query is fast enough without any index.",
       "Store each log's timestamp, service, level and message. A log matches when start <= timestamp <= end (closed interval), service and level are each * or exactly equal, and keyword is * or a substring of message; all four must hold.",
       "Read line by line: for an ADD line everything after the first four fields is the message, which may contain spaces, so do not split it into tokens; a QUERY line splits into 6 whitespace-separated fields. Append logs to a list in order, and for each QUERY scan the list and print the count on its own line. Compare timestamps as 64-bit integers."
+    ],
+    "ja": [
+      "q は高々 5000 なのでログも高々 5000 件であり、クエリごとに保存済みのすべてのログを走査してもインデックスなしで十分高速です。",
+      "各ログの timestamp、service、level、message を保存します。ログが一致するのは、start <= timestamp <= end (閉区間) であり、service と level がそれぞれ * か完全一致であり、keyword が * か message の部分文字列であるとき、つまり 4 つの条件がすべて成り立つときです。",
+      "1 行ずつ読みます。ADD 行では最初の 4 つのフィールド以降がすべて message で、空白を含み得るため、トークンに分割してはいけません。QUERY 行は空白区切りの 6 つのフィールドに分割できます。ログを順にリストへ追加し、QUERY ごとにリストを走査して件数を 1 行に出力します。timestamp は 64 ビット整数として比較します。"
+    ],
+    "ko": [
+      "q가 최대 5000이므로 로그도 최대 5000개이고, 조회마다 저장된 모든 로그를 훑어도 인덱스 없이 충분히 빠릅니다.",
+      "각 로그의 timestamp, service, level, message를 저장합니다. start <= timestamp <= end (닫힌 구간)이고, service와 level이 각각 * 이거나 정확히 같으며, keyword가 * 이거나 message의 부분 문자열이면 로그가 일치합니다. 네 조건이 모두 성립해야 합니다.",
+      "한 줄씩 읽습니다. ADD 줄에서는 앞의 네 필드 이후의 모든 것이 message이며 공백이 포함될 수 있으므로 토큰으로 나누지 마세요. QUERY 줄은 공백으로 구분된 6개의 필드로 나뉩니다. 로그를 리스트에 순서대로 추가하고, 각 QUERY마다 리스트를 훑어 개수를 한 줄에 하나씩 출력합니다. timestamp는 64비트 정수로 비교하세요."
+    ],
+    "vi": [
+      "q tối đa là 5000, nên có tối đa 5000 log, và quét mọi log đã lưu cho mỗi truy vấn là đủ nhanh mà không cần chỉ mục nào.",
+      "Lưu timestamp, service, level và message của mỗi log. Một log khớp khi start <= timestamp <= end (khoảng đóng), service và level mỗi cái là * hoặc bằng chính xác, và keyword là * hoặc là xâu con của message; cả bốn điều kiện phải cùng đúng.",
+      "Đọc từng dòng: với dòng ADD, mọi thứ sau bốn trường đầu là message, có thể chứa dấu cách, nên đừng tách nó thành các token; dòng QUERY tách thành 6 trường cách nhau bởi khoảng trắng. Thêm log vào danh sách theo thứ tự, và với mỗi QUERY quét danh sách rồi in số đếm trên một dòng riêng. So sánh timestamp dưới dạng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nMaintain the appended logs in order; each query scans the current logs and checks the time, service, level, and message conditions entry by entry. The time range is a closed interval. Each query is O(L), and the total complexity is O(q^2), which fits the simplified version directly defined by this problem.\n\n## Proof of correctness\n\nEach ADD enters the log table exactly once. For a QUERY, the algorithm checks whether each record in the table simultaneously satisfies the closed interval, the two optional equality filters, and the keyword containment condition; records that satisfy them are counted once and the others are not, so the result matches the definition.\n\n## Complexity\n\nTimestamps and log numbers are parsed as integers; a single message contains no tab characters.\n\nO(q*L) time and O(L) space, where L is the number of logs written.\n\n## Reference implementation\n\n```python\ndef solve(raw):\n lines=raw.splitlines(); q=int(lines[0]); logs=[]; out=[]\n for line in lines[1:1+q]:\n  p=line.split(maxsplit=4) if line.startswith('ADD ') else line.split()\n  if p[0]=='ADD': logs.append((int(p[1]),p[2],p[3],p[4]))\n  else:\n   _,a,b,s,l,k=p; a=int(a); b=int(b); out.append(str(sum(a<=t<=b and (s=='*' or s==ss) and (l=='*' or l==ll) and (k=='*' or k in m) for t,ss,ll,m in logs)))\n return '\\n'.join(out)\n```"

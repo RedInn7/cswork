@@ -13,6 +13,21 @@
       "To make the AND as large as possible, decide the bits from the highest to the lowest: if a high bit can be 1 it must be, because no combination of lower bits outweighs it.",
       "Assume the higher part of the answer is fixed and try adding one more bit to get a candidate mask. For every number independently, compute the smallest increase that makes it contain all 1 bits of the mask, take the m cheapest, and check whether their sum is at most k.",
       "For a number x, find the highest bit b of the mask that x lacks: the smallest valid value keeps the bits of x above b, sets bit b, and below b keeps only the bits the mask requires; the cost is that value minus x. Try bits 30 down to 0; each time sort the costs, sum the first m, compare with k, and keep the bit if it fits."
+    ],
+    "ja": [
+      "AND をできるだけ大きくするには、ビットを最上位から最下位へ決めていきます。上位のビットを 1 にできるなら、必ず 1 にします。下位のビットをどう組み合わせても、それを上回れないからです。",
+      "答えの上位部分は固定されているものとして、もう 1 ビットを加えた候補マスクを試します。各数について独立に、マスクの 1 のビットをすべて含むようになるための最小の増加量を計算し、安い順に m 個を取って、その和が k 以下かどうかを確認します。",
+      "数 x について、x に欠けているマスクのビットのうち最上位のものを b とします。有効な最小の値は、b より上の x のビットを保ち、ビット b を立て、b より下ではマスクが要求するビットだけを残したもので、コストはその値から x を引いた値です。ビット 30 から 0 まで試し、毎回コストをソートして最初の m 個の和を取り、k と比較して、収まるならそのビットを維持します。"
+    ],
+    "ko": [
+      "AND를 가능한 한 크게 만들려면 비트를 가장 높은 것부터 낮은 것으로 결정합니다. 높은 비트가 1이 될 수 있다면 반드시 1이어야 하며, 낮은 비트의 어떤 조합도 그보다 값이 크지 않기 때문입니다.",
+      "답의 높은 부분이 고정되었다고 가정하고 비트 하나를 더 추가한 후보 마스크를 시도합니다. 각 수에 대해 독립적으로 마스크의 모든 1비트를 포함하게 만드는 최소 증가량을 계산하고, 가장 저렴한 m개를 골라 합이 k 이하인지 확인합니다.",
+      "수 x에 대해 마스크의 비트 중 x에 없는 가장 높은 비트 b를 찾습니다. 가능한 가장 작은 값은 b보다 위의 x의 비트를 유지하고, 비트 b를 켜며, b 아래에서는 마스크가 요구하는 비트만 남깁니다. 비용은 그 값에서 x를 뺀 것입니다. 비트 30부터 0까지 시도하며, 매번 비용을 정렬해 앞의 m개를 합산하고 k와 비교하여 들어맞으면 그 비트를 유지합니다."
+    ],
+    "vi": [
+      "Để AND lớn nhất có thể, hãy quyết định các bit từ cao nhất đến thấp nhất: nếu một bit cao có thể bằng 1 thì nó phải bằng 1, vì không tổ hợp bit thấp nào có giá trị hơn.",
+      "Giả sử phần cao của đáp án đã cố định và thử thêm một bit nữa để có mặt nạ ứng viên. Với mỗi số, độc lập tính mức tăng nhỏ nhất để nó chứa mọi bit 1 của mặt nạ, lấy m chi phí rẻ nhất và kiểm tra tổng của chúng có không vượt quá k hay không.",
+      "Với một số x, tìm bit cao nhất b của mặt nạ mà x còn thiếu: giá trị hợp lệ nhỏ nhất giữ các bit của x phía trên b, đặt bit b, và phía dưới b chỉ giữ các bit mà mặt nạ yêu cầu; chi phí là giá trị đó trừ x. Thử các bit từ 30 xuống 0; mỗi lần sắp xếp các chi phí, cộng m chi phí đầu, so sánh với k, và giữ bit nếu vừa."
     ]
   },
   "explanationEn": "## Approach\n\nTry the answer mask from the highest bit to the lowest. For each number, compute the minimum amount that must be added so that it contains all the 1 bits of the mask; the bit can be kept if the sum of the smallest m costs is ≤ k.\n\n## Proof of Correctness\n\nIf the highest required bit that x is missing is b, the smallest feasible y keeps the prefix above b, sets b to 1, and then keeps only the bits required by the lower part of the mask, clearing all other low bits. Any smaller y must fail to satisfy that bit or a higher prefix. The costs of the items are independent, so choosing the m smallest costs decides feasibility; greedy from the highest bit guarantees the optimum, since integer order is lexicographic order on bits.\n\n## Complexity\n\nTime O(31 n log n), space O(n); the extra processing involves at most 31 bits."

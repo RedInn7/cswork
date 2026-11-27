@@ -13,6 +13,21 @@
       "The score has two parts: the value of every T cell, and one extra point for every pair of adjacent cells that are both T.",
       "A run of k consecutive Ts forms k-1 adjacent T pairs, and each pair adds a point; the run does not get just a single bonus.",
       "Scan from left to right: when the current cell is T add its value, and if the previous cell is also T add 1 more; print the total at the end."
+    ],
+    "ja": [
+      "スコアは 2 つの部分からなります。すべての T のセルの値と、両方が T である隣り合うセルのペアごとの追加の 1 点です。",
+      "連続する k 個の T の並びは k-1 個の隣接する T のペアを作り、各ペアが 1 点を加えます。並び全体に対するボーナスは 1 回だけではありません。",
+      "左から右に走査します。現在のセルが T ならその値を加え、直前のセルも T ならさらに 1 を加えます。最後に合計を出力します。"
+    ],
+    "ko": [
+      "점수는 두 부분으로 이루어집니다. 모든 T 칸의 값, 그리고 둘 다 T인 인접한 칸의 쌍마다 추가 1점입니다.",
+      "연속된 T가 k개인 구간에는 인접한 T 쌍이 k-1개 있고 쌍마다 1점이 더해집니다. 구간 전체가 한 번의 보너스만 받는 것이 아닙니다.",
+      "왼쪽에서 오른쪽으로 훑으면서, 현재 칸이 T이면 그 값을 더하고 이전 칸도 T이면 1점을 더 더합니다. 마지막에 총합을 출력합니다."
+    ],
+    "vi": [
+      "Điểm gồm hai phần: giá trị của mọi ô T, và thêm 1 điểm cho mỗi cặp ô liền kề cùng là T.",
+      "Một dãy k ký tự T liên tiếp tạo ra k-1 cặp T liền kề, và mỗi cặp cộng thêm một điểm; dãy đó không chỉ nhận một điểm thưởng duy nhất.",
+      "Quét từ trái sang phải: khi ô hiện tại là T thì cộng giá trị của nó, và nếu ô trước cũng là T thì cộng thêm 1; cuối cùng in tổng."
     ]
   },
   "explanationEn": "## Approach\n\nFirst add up the values of all T cells, then check each pair of adjacent cells for whether both are T. A run of k consecutive Ts contributes k−1 adjacent pairs, not a single bonus.\n\n## Why It Is Correct\n\nEach base point corresponds uniquely to one T cell, and each bonus point corresponds uniquely to one T-T adjacent edge. The loop checks each cell and each adjacent edge exactly once, so nothing is repeated or missed.\n\n## Complexity\n\nTime O(n), extra space O(1) besides the input."

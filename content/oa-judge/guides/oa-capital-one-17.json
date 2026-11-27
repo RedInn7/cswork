@@ -13,6 +13,21 @@
       "Between two consecutive log events the CPU is used only by the function on top of the call stack; the timestamp of an end event itself still belongs to the finishing function.",
       "Simulate the calls with a stack and remember prev, the first time unit not yet assigned; on every event charge the time from prev up to that event to the function on top of the stack.",
       "On start: if the stack is non-empty add ts - prev to its top, push the new function and set prev = ts; on end: add ts - prev + 1 to the top (the ending unit is included), pop it and set prev = ts + 1; finally print every function exclusive time in id order."
+    ],
+    "ja": [
+      "連続する2つのログイベントの間では、コールスタックの先頭にある関数だけが CPU を使っています。終了イベントのタイムスタンプ自体は、終了する関数に属します。",
+      "スタックで呼び出しをシミュレーションし、まだ割り当てられていない最初の時間単位 prev を覚えておきます。各イベントで、prev からそのイベントまでの時間を、スタックの先頭の関数に加算します。",
+      "start のとき: スタックが空でなければ ts - prev をその先頭に加え、新しい関数を push して prev = ts とします。end のとき: 先頭に ts - prev + 1 を加え(終了する時間単位を含む)、pop して prev = ts + 1 とします。最後に、各関数の排他的な時間を id 順に出力します。"
+    ],
+    "ko": [
+      "연속된 두 로그 이벤트 사이에는 호출 스택의 맨 위에 있는 함수만 CPU를 사용합니다. 종료 이벤트의 타임스탬프 자체는 여전히 끝나는 함수에 속합니다.",
+      "스택으로 호출을 시뮬레이션하고, 아직 배정되지 않은 첫 번째 시간 단위인 prev를 기억합니다. 이벤트마다 prev부터 그 이벤트까지의 시간을 스택 맨 위의 함수에 배정합니다.",
+      "시작 시: 스택이 비어 있지 않으면 맨 위에 ts - prev를 더하고, 새 함수를 push한 뒤 prev = ts로 설정합니다. 종료 시: 맨 위에 ts - prev + 1을 더하고(끝나는 시간 단위 포함), pop한 뒤 prev = ts + 1로 설정합니다. 마지막에 모든 함수의 배타적 시간을 id 순서로 출력합니다."
+    ],
+    "vi": [
+      "Giữa hai sự kiện log liên tiếp, CPU chỉ được dùng bởi hàm ở đỉnh ngăn xếp lời gọi; bản thân mốc thời gian của sự kiện end vẫn thuộc về hàm đang kết thúc.",
+      "Mô phỏng các lời gọi bằng một ngăn xếp và nhớ prev, đơn vị thời gian đầu tiên chưa được gán; ở mỗi sự kiện, tính thời gian từ prev đến sự kiện đó cho hàm ở đỉnh ngăn xếp.",
+      "Với start: nếu ngăn xếp không rỗng thì cộng ts - prev vào đỉnh của nó, đẩy hàm mới vào và đặt prev = ts; với end: cộng ts - prev + 1 vào đỉnh (đơn vị kết thúc được tính), lấy nó ra và đặt prev = ts + 1; cuối cùng in thời gian riêng của mỗi hàm theo thứ tự id."
     ]
   },
   "explanationEn": "## Approach\n\nThe top of the call stack is the function currently running. When a new event arrives, charge the time from prev up to just before the event to the top of the stack; a start pushes the new function, and an end charges the stretch including the ending unit to that function and pops it.\n\n## Proof of correctness\n\nBetween two adjacent events only the function on top of the stack runs; at a start the CPU switches to the new top, and at an end the finishing function is charged with +1. Therefore every unit of execution time is assigned exactly to the function running at that time.\n\n## Complexity\n\nO(m) time, O(n) space.\n\n## Source notes\n\nPart of the original description is truncated, but the complete example it gives matches the standard definition of exclusive time; this site adds the serialization format of the logs."

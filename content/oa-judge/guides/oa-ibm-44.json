@@ -13,6 +13,21 @@
       "In a single thread only the function on top of the call stack runs at any moment, so the whole stretch between two consecutive log entries belongs to the top of the stack at that time.",
       "Keep the call stack and the start previous of the stretch not yet credited. A start takes over at the beginning of its second, so the old top is credited only up to just before t; an end includes its second, so the current function is credited through t and the next stretch starts at t+1.",
       "On start: if the stack is not empty, add t−previous to the top function, then push the new function and set previous=t. On end: add t−previous+1 to the top function, pop it, and set previous=t+1. Finally print the accumulated times for IDs 0 to n−1; recursive calls naturally add up under the same ID."
+    ],
+    "ja": [
+      "シングルスレッドでは、任意の時点でコールスタックの先頭にある関数だけが実行されます。したがって、連続する 2 つのログの間の区間全体は、その時点のスタック先頭の関数のものです。",
+      "コールスタックと、まだ精算していない区間の開始 previous を保持します。開始ログはその秒の始まりに引き継ぐので、古い先頭には t の直前までを加算します。終了ログはその秒を含むので、現在の関数には t までを加算し、次の区間は t+1 から始まります。",
+      "開始時には、スタックが空でなければ先頭の関数に t−previous を加算し、新しい関数をプッシュして previous=t とします。終了時には、先頭の関数に t−previous+1 を加算し、ポップして previous=t+1 とします。最後に、ID 0 から n−1 までの累積時間を出力します。再帰呼び出しは同じ ID に自然に足し込まれます。"
+    ],
+    "ko": [
+      "단일 스레드에서는 어느 순간이든 호출 스택 최상단의 함수만 실행되므로, 연속한 두 로그 사이의 구간 전체는 그 시점의 스택 최상단 함수에 속합니다.",
+      "호출 스택과, 아직 정산하지 않은 구간의 시작 시각 previous를 유지합니다. 시작은 해당 초가 시작될 때 넘겨받으므로 이전 최상단 함수에는 t 직전까지만 더하고, 종료는 해당 초를 포함하므로 현재 함수에 t까지 더한 뒤 다음 구간을 t+1에서 시작합니다.",
+      "시작 시: 스택이 비어 있지 않으면 최상단 함수에 t−previous를 더하고, 새 함수를 푸시한 뒤 previous=t로 둡니다. 종료 시: 최상단 함수에 t−previous+1을 더하고 팝한 뒤 previous=t+1로 둡니다. 마지막으로 ID 0부터 n−1까지 누적된 시간을 출력합니다. 재귀 호출은 같은 ID에 자연스럽게 합산됩니다."
+    ],
+    "vi": [
+      "Trong một luồng, tại mỗi thời điểm chỉ hàm ở đỉnh ngăn xếp lời gọi đang chạy, nên toàn bộ khoảng giữa hai mục nhật ký liên tiếp thuộc về hàm ở đỉnh ngăn xếp lúc đó.",
+      "Giữ ngăn xếp lời gọi và điểm start của khoảng previous chưa được tính. Một start chiếm CPU từ đầu giây của nó, nên đỉnh cũ chỉ được tính đến ngay trước t; một end bao gồm cả giây của nó, nên hàm hiện tại được tính hết t và khoảng kế tiếp bắt đầu tại t+1.",
+      "Khi start: nếu ngăn xếp không rỗng, cộng t−previous vào hàm ở đỉnh, rồi đẩy hàm mới vào và đặt previous=t. Khi end: cộng t−previous+1 vào hàm ở đỉnh, lấy nó ra, và đặt previous=t+1. Cuối cùng in thời gian tích lũy của các ID từ 0 đến n−1; các lời gọi đệ quy tự nhiên cộng dồn dưới cùng một ID."
     ]
   },
   "explanationEn": "## Approach\n\nMaintain the call stack and the last settled time; on a start, credit the old stack top up to just before t; on an end, credit the current function up to t and set the next time to t+1.\n\n## Proof of correctness\n\nBetween two consecutive events only the top of the stack occupies the CPU, so crediting that whole stretch is exact and stretches never overlap. A start does not give second t to the old function, and an end does give second t to the current function, hence t−previous and t−previous+1 respectively; after each update the uncredited stretch again starts at previous, so induction proves correctness.\n\n## Complexity\n\nTime O(n+m), space O(n+m)."

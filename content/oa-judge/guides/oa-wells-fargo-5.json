@@ -13,6 +13,21 @@
       "The shortest substring with exactly k ones must start and end with a 1: trimming extra 0s at either end keeps the number of ones and makes it shorter.",
       "So the only candidates are windows of k consecutive ones: the substring from the i-th one to the (i+k−1)-th one; among them take the minimum by (length, lexicographic order).",
       "Record the indices p of all ones; for each i take the substring s[p[i] .. p[i+k−1]] and update the answer if it is shorter, or equally long and lexicographically smaller; print the answer (without quotes)."
+    ],
+    "ja": [
+      "1 をちょうど k 個含む最短の部分文字列は、必ず 1 で始まり 1 で終わります。どちらかの端にある余分な 0 を取り除いても 1 の個数は変わらず、より短くなるからです。",
+      "したがって候補は、連続する k 個の 1 のウィンドウだけです。i 番目の 1 から (i+k−1) 番目の 1 までの部分文字列で、その中から (長さ, 辞書順) の最小のものを取ります。",
+      "すべての 1 の添字 p を記録します。各 i について部分文字列 s[p[i] .. p[i+k−1]] を取り、より短い場合、または長さが等しく辞書順で小さい場合に答えを更新します。最後に答えを(引用符なしで)出力します。"
+    ],
+    "ko": [
+      "정확히 1이 k개인 가장 짧은 부분 문자열은 반드시 1로 시작하고 1로 끝납니다. 양 끝의 불필요한 0을 잘라 내도 1의 개수는 그대로이고 더 짧아지기 때문입니다.",
+      "따라서 후보는 연속한 k개의 1로 이루어진 창뿐입니다. 즉 i번째 1부터 (i+k−1)번째 1까지의 부분 문자열이며, 이들 중 (길이, 사전순)의 최솟값을 고릅니다.",
+      "모든 1의 인덱스 p를 기록합니다. 각 i에 대해 부분 문자열 s[p[i] .. p[i+k−1]]을 구하고, 더 짧거나 길이가 같으면서 사전순으로 더 작을 때 답을 갱신합니다. 답을 따옴표 없이 출력합니다."
+    ],
+    "vi": [
+      "Xâu con ngắn nhất có đúng k chữ số 1 phải bắt đầu và kết thúc bằng 1: cắt bỏ các chữ số 0 thừa ở hai đầu vẫn giữ nguyên số chữ số 1 và làm xâu ngắn hơn.",
+      "Vì vậy ứng viên duy nhất là các cửa sổ gồm k chữ số 1 liên tiếp: xâu con từ chữ số 1 thứ i đến chữ số 1 thứ (i+k−1); trong số đó lấy giá trị nhỏ nhất theo (độ dài, thứ tự từ điển).",
+      "Ghi lại các chỉ số p của mọi chữ số 1; với mỗi i lấy xâu con s[p[i] .. p[i+k−1]] và cập nhật đáp án nếu nó ngắn hơn, hoặc bằng độ dài nhưng nhỏ hơn theo thứ tự từ điển; in đáp án (không có dấu nháy)."
     ]
   },
   "explanationEn": "## Approach\n\nEnumerate every window of k consecutive ones, keep only the shortest candidate from the window's first one to its k-th one, then take the minimum by length and lexicographic order.\n\n## Correctness\n\nThe ones in any substring with exactly k ones form some window of k consecutive ones in the string. Removing the characters before its first one and after its last one does not change the number of ones and only makes it shorter, so the shortest candidates are always bounded by their first and last ones. Enumerating all windows covers every shortest candidate, so taking the minimum by (length, lexicographic order) is correct.\n\n## Complexity\n\nTime O(n), space O(n)."

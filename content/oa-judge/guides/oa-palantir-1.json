@@ -13,6 +13,21 @@
       "A swap only exchanges two adjacent digits of the same parity, so the parity at each position never changes, and an odd digit can never move past an even digit (and vice versa).",
       "Split the string into maximal runs of consecutive same-parity digits: the digits inside a run can be put in any order by adjacent swaps, but they can never leave the run. For example, in 123 the 1 and the 3 are separated by the 2 and cannot be swapped.",
       "Scan from left to right to find each same-parity run, sort the digits of the run in descending order, put them back in place, and print the resulting string."
+    ],
+    "ja": [
+      "入れ替えは、偶奇が同じ隣り合う 2 つの数字を交換するだけなので、各位置の偶奇は変わらず、奇数の数字は偶数の数字を越えられません(逆も同様です)。",
+      "文字列を、偶奇が同じ数字が連続する極大のラン(連続部分)に分けます。ランの中の数字は、隣り合う入れ替えで任意の順序にできますが、ランの外へ出ることはできません。例えば 123 では、1 と 3 は 2 によって隔てられていて、入れ替えられません。",
+      "左から右へ走査して偶奇が同じ各ランを見つけ、そのランの数字を降順にソートして元の位置に戻し、できた文字列を出力します。"
+    ],
+    "ko": [
+      "교환은 홀짝이 같은 인접한 두 숫자만 바꾸므로 각 위치의 홀짝은 절대 변하지 않으며, 홀수 숫자는 짝수 숫자를 넘어 이동할 수 없습니다(반대도 마찬가지).",
+      "문자열을 홀짝이 같은 숫자가 연속된 극대 구간으로 나누세요. 구간 안의 숫자는 인접 교환으로 어떤 순서로든 배치할 수 있지만 구간 밖으로 나갈 수는 없습니다. 예를 들어 123에서 1과 3은 2로 분리되어 있으므로 교환할 수 없습니다.",
+      "왼쪽에서 오른쪽으로 스캔하며 홀짝이 같은 구간을 찾고, 구간의 숫자를 내림차순으로 정렬해 제자리에 되돌려 놓은 뒤 결과 문자열을 출력하세요."
+    ],
+    "vi": [
+      "Một phép hoán đổi chỉ đổi chỗ hai chữ số liền kề cùng tính chẵn lẻ, nên tính chẵn lẻ tại mỗi vị trí không bao giờ thay đổi, và một chữ số lẻ không bao giờ vượt qua được một chữ số chẵn (và ngược lại).",
+      "Chia xâu thành các đoạn cực đại gồm các chữ số liên tiếp cùng tính chẵn lẻ: các chữ số trong một đoạn có thể được xếp theo thứ tự bất kỳ bằng các phép hoán đổi liền kề, nhưng không bao giờ ra khỏi đoạn. Ví dụ, trong 123, chữ số 1 và chữ số 3 bị ngăn cách bởi chữ số 2 và không thể hoán đổi.",
+      "Quét từ trái sang phải để tìm từng đoạn cùng tính chẵn lẻ, sắp xếp các chữ số của đoạn giảm dần, đặt chúng trở lại vị trí cũ, rồi in xâu kết quả."
     ]
   },
   "explanationEn": "## Approach\n\nOnly two adjacent digits of the same parity can be swapped, so an odd digit can never move past an even digit, and vice versa. Split the string into maximal runs of consecutive same-parity digits: inside a run, adjacent swaps (as in bubble sort) can produce any order, but no digit can leave its run. Sort each run in descending order and concatenate the runs in their original order.\n\n## Correctness\n\nEvery swap happens between two adjacent digits inside one run. It does not change the parity of any position, so the run boundaries and the digits of each run never change, and every reachable result is a concatenation of rearranged runs. Adjacent swaps realize any permutation within a run, so sorting each run descending is reachable; with the boundaries and the digits of each run fixed, the concatenation of descending runs is lexicographically largest, and since the length is unchanged it is also numerically largest.\n\n## Complexity\n\nSorting takes O(n log n) time (O(n) with counting sort, since there are only 10 digits), and space is O(n)."

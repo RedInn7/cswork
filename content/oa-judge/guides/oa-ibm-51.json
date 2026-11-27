@@ -13,6 +13,21 @@
       "There are only n−k+1 contiguous subarrays of length exactly k, and neighboring windows differ by one element entering and one leaving, so a sliding window can check them one by one.",
       "Keep the count of each element in the window and the window sum; the elements are pairwise distinct exactly when the number of distinct values equals k.",
       "Add elements on the right one at a time, updating counts and the sum, and once the window is longer than k remove the leftmost element (dropping it when its count reaches 0); whenever the window has length k and k distinct values, update the maximum with the window sum. If no window is ever valid (including when k>n) print -1; a valid maximum is printed as is, even when negative."
+    ],
+    "ja": [
+      "長さがちょうど k の連続部分配列は n−k+1 個しかなく、隣り合う窓は要素が 1 つ入って 1 つ出るだけの違いなので、スライディングウィンドウで 1 つずつ確認できます。",
+      "窓の中の各要素の出現数と窓の和を保持します。異なる値の個数が k に等しいとき、そのときに限って要素はすべて異なります。",
+      "右側から要素を 1 つずつ加えて出現数と和を更新し、窓が k より長くなったら最も左の要素を取り除きます (出現数が 0 になったら削除)。窓の長さが k で異なる値が k 個のたびに、最大値を窓の和で更新します。有効な窓が 1 つもなければ (k>n の場合も含む) -1 を出力します。有効な最大値は、負であってもそのまま出力します。"
+    ],
+    "ko": [
+      "길이가 정확히 k인 연속 부분 배열은 n−k+1개뿐이고, 이웃한 윈도우는 원소 하나가 들어오고 하나가 나가는 차이만 있으므로 슬라이딩 윈도우로 하나씩 검사할 수 있습니다.",
+      "윈도우 안의 각 원소 개수와 윈도우 합을 유지합니다. 서로 다른 값의 개수가 k와 같을 때 원소가 모두 다릅니다.",
+      "오른쪽에서 원소를 하나씩 추가하며 개수와 합을 갱신하고, 윈도우가 k보다 길어지면 가장 왼쪽 원소를 제거합니다(개수가 0이 되면 삭제). 윈도우의 길이가 k이고 서로 다른 값이 k개일 때마다 윈도우 합으로 최댓값을 갱신합니다. 유효한 윈도우가 하나도 없으면(k>n인 경우 포함) -1을 출력하고, 유효한 최댓값은 음수여도 그대로 출력합니다."
+    ],
+    "vi": [
+      "Chỉ có n−k+1 mảng con liên tiếp có độ dài đúng k, và các cửa sổ kề nhau chỉ khác nhau một phần tử vào và một phần tử ra, nên cửa sổ trượt có thể kiểm tra lần lượt từng cửa sổ.",
+      "Giữ số lần xuất hiện của mỗi phần tử trong cửa sổ và tổng cửa sổ; các phần tử đôi một khác nhau đúng khi số giá trị phân biệt bằng k.",
+      "Thêm từng phần tử ở bên phải, cập nhật số đếm và tổng, và khi cửa sổ dài hơn k thì loại phần tử ngoài cùng bên trái (bỏ nó khi số đếm về 0); mỗi khi cửa sổ có độ dài k và k giá trị phân biệt, cập nhật giá trị lớn nhất bằng tổng cửa sổ. Nếu không có cửa sổ nào hợp lệ (kể cả khi k>n) thì in -1; một giá trị lớn nhất hợp lệ được in nguyên như vậy, kể cả khi âm."
     ]
   },
   "explanationEn": "## Approach\n\nUse a sliding window to maintain the sum and element frequencies; update the maximum sum when the length is exactly k and the number of distinct values is also k.\n\n## Proof of correctness\n\nEvery window of length k is visited exactly once; the frequency table only holds elements inside the window, so having k distinct values is equivalent to all elements being different. Taking the maximum over all valid windows, and reporting -1 only when no valid window was met, gives the answer.\n\n## Complexity\n\nTime O(n), space O(min(n,k))."

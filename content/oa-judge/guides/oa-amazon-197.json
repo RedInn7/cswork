@@ -13,6 +13,21 @@
       "Every move is guaranteed to start at an occupied position and end at an empty one, so the occupied positions are always distinct, and a move simply deletes one position and inserts another.",
       "You do not need to track which piece of data went where; maintaining the set of occupied positions is enough.",
       "Store the initial positions in a hash set (or an ordered set); for each from/to pair, delete from and insert to; finally sort the set's elements ascending and print them space-separated."
+    ],
+    "ja": [
+      "各移動は必ず埋まっている位置から始まり空いている位置で終わるため、埋まっている位置は常に互いに異なります。移動とは、1 つの位置を削除して別の位置を挿入することにほかなりません。",
+      "どのデータがどこへ行ったかを追跡する必要はありません。埋まっている位置の集合を保持すれば十分です。",
+      "初期位置をハッシュ集合（または順序付き集合）に入れ、各 from/to について from を削除し to を挿入します。最後に集合の要素を昇順にソートし、スペース区切りで出力します。"
+    ],
+    "ko": [
+      "모든 이동은 점유된 위치에서 시작해 빈 위치에서 끝남이 보장되므로 점유 위치는 항상 서로 다르며, 이동은 위치 하나를 삭제하고 다른 위치 하나를 삽입하는 것과 같습니다.",
+      "어떤 데이터가 어디로 갔는지 추적할 필요는 없고, 점유된 위치의 집합만 유지하면 충분합니다.",
+      "초기 위치를 해시 집합(또는 순서 있는 집합)에 저장하고, 각 from/to 쌍마다 from을 삭제하고 to를 삽입합니다. 마지막으로 집합의 원소를 오름차순으로 정렬해 공백으로 구분하여 출력합니다."
+    ],
+    "vi": [
+      "Mỗi lần di chuyển đều đảm bảo bắt đầu ở vị trí đang có dữ liệu và kết thúc ở vị trí trống, nên các vị trí bị chiếm luôn phân biệt, và mỗi lần di chuyển chỉ đơn giản là xóa một vị trí rồi chèn một vị trí khác.",
+      "Bạn không cần theo dõi mảnh dữ liệu nào đi đâu; chỉ cần duy trì tập các vị trí đang bị chiếm là đủ.",
+      "Lưu các vị trí ban đầu vào một hash set (hoặc ordered set); với mỗi cặp from/to, xóa from và chèn to; cuối cùng sắp xếp các phần tử của tập theo thứ tự tăng dần và in ra cách nhau bởi dấu cách."
     ]
   },
   "explanationEn": "## Approach\n\nKeep the current positions in a set; for each move delete from and insert to, then sort at the end.\n\n## Proof of correctness\n\nThe initial set is exactly the set of real positions. Each valid move changes only the two given positions, so deleting and inserting keeps the set equal to the real state; by induction, sorting after all operations gives the required result.\n\n## Complexity\n\nExpected time O(m + n log n), space O(n)."

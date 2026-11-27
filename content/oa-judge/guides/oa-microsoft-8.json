@@ -13,6 +13,21 @@
       "An empty lot within distance K of every house is the same as being within distance K of the farthest house.",
       "Manhattan distance equals the larger of the absolute differences of x+y and of x−y between the two points. So the farthest distance from a lot to all houses depends only on four numbers: the minimum and maximum of x+y and of x−y over the houses.",
       "Scan the grid once to find the minimum and maximum of x+y and x−y over all houses; with no house, the answer is the number of cells, since all are empty. Then scan every empty lot, take the largest difference between its x+y, x−y and those four extremes, and count it when that is at most K."
+    ],
+    "ja": [
+      "すべての家から距離 K 以内にある空き地とは、最も遠い家から距離 K 以内にある空き地のことです。",
+      "マンハッタン距離は、2点の x+y の差の絶対値と x−y の差の絶対値のうち大きいほうに等しくなります。したがって、ある空き地からすべての家への最大距離は、家についての x+y と x−y の最小値と最大値という4つの数だけで決まります。",
+      "グリッドを1回走査して、すべての家について x+y と x−y の最小値と最大値を求めます。家がなければ、すべてのセルが空き地なので、答えはセル数です。そのあとすべての空き地を走査し、その x+y, x−y と4つの極値との差の最大値を取り、それが K 以下なら数えます。"
+    ],
+    "ko": [
+      "모든 집까지의 거리가 K 이하인 빈 땅은 가장 먼 집까지의 거리가 K 이하인 빈 땅과 같습니다.",
+      "맨해튼 거리는 두 점의 x+y 차이의 절댓값과 x−y 차이의 절댓값 중 큰 값과 같습니다. 따라서 어떤 땅에서 모든 집까지의 최대 거리는 집들의 x+y와 x−y의 최솟값과 최댓값, 이 네 수에만 의존합니다.",
+      "격자를 한 번 스캔하여 모든 집의 x+y와 x−y의 최솟값과 최댓값을 구합니다. 집이 없으면 모든 칸이 빈 땅이므로 정답은 칸의 수입니다. 이후 모든 빈 땅을 스캔하여 그 땅의 x+y, x−y와 네 극값의 차이 중 가장 큰 값을 구하고, 그 값이 K 이하이면 셉니다."
+    ],
+    "vi": [
+      "Một ô đất trống cách mọi ngôi nhà không quá K khi và chỉ khi nó cách ngôi nhà xa nhất không quá K.",
+      "Khoảng cách Manhattan bằng giá trị lớn hơn trong hai giá trị tuyệt đối của hiệu x+y và hiệu x−y giữa hai điểm. Do đó khoảng cách xa nhất từ một ô đến mọi ngôi nhà chỉ phụ thuộc vào bốn số: giá trị nhỏ nhất và lớn nhất của x+y và của x−y trên các ngôi nhà.",
+      "Quét lưới một lần để tìm giá trị nhỏ nhất và lớn nhất của x+y và x−y trên mọi ngôi nhà; nếu không có ngôi nhà nào, đáp án là số ô, vì tất cả đều trống. Sau đó quét từng ô đất trống, lấy hiệu lớn nhất giữa x+y, x−y của nó và bốn giá trị cực trị đó, rồi đếm ô này nếu hiệu đó không quá K."
     ]
   },
   "explanationEn": "## Approach\n\nMaintain the minimum and maximum of x+y and x−y over all houses; for each empty lot, check whether its differences from all four extremes are ≤K.\n\n## Proof of correctness\n\nThe Manhattan distance equals the maximum of the absolute differences of the two transformed coordinates x+y and x−y. The maximum distance to all houses is determined by these four extremes alone, so checking the four inequalities is necessary and sufficient.\n\n## Complexity\n\nTime O(RC), space O(RC)."

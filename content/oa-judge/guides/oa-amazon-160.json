@@ -13,6 +13,21 @@
       "The amount is a piecewise-constant function of the position. Each step right changes the window's amount by the value entering minus the value leaving, and while neither end touches an interval boundary that change stays the same, so an optimal window can always be pushed to a position where an end lines up with a boundary.",
       "Only two kinds of candidates matter: the window's left end at some interval's left end l, or its right end at some interval's right end r (start max(1, r-k+1)). Prefix amounts over the sorted intervals plus a binary search give any window's real amount in O(log n).",
       "Sort the intervals by l and let prefix[i] be the total of the first i intervals; let F(x) be the total in bags 1..x: binary search the last interval starting at or before x and return the prefix before it plus (min(x, r) - l + 1) * v. For both candidate starts s of every interval compute F(s+k-1) - F(s-1), keep the maximum, and only after all comparisons take it modulo 1000000007. Amounts reach about 10^18, so use 64-bit integers."
+    ],
+    "ja": [
+      "金額は位置に関する区分的に一定の関数です。右へ 1 歩進むごとに、ウィンドウの金額は入ってくる値から出ていく値を引いた分だけ変わり、どちらの端も区間の境界に触れていない間はその変化量は一定なので、最適なウィンドウは常に、端が境界に揃う位置まで動かせます。",
+      "重要な候補は 2 種類だけです。ウィンドウの左端がある区間の左端 l にあるものと、右端がある区間の右端 r にあるもの（開始位置は max(1, r-k+1)）です。ソートした区間の接頭辞金額と二分探索を使えば、任意のウィンドウの実際の金額を O(log n) で求められます。",
+      "区間を l でソートし、prefix[i] を最初の i 個の区間の合計とします。F(x) を袋 1..x の合計とし、x 以下で始まる最後の区間を二分探索で見つけて、その手前までの prefix に (min(x, r) - l + 1) * v を加えた値を返します。各区間の 2 つの候補開始位置 s について F(s+k-1) - F(s-1) を計算して最大値を保持し、すべての比較が終わってから 1000000007 で剰余を取ります。金額は約 10^18 に達するので、64 ビット整数を使ってください。"
+    ],
+    "ko": [
+      "금액은 위치에 대한 구간별 상수 함수입니다. 윈도우를 오른쪽으로 한 칸 옮기면 금액이 들어오는 값에서 나가는 값을 뺀 만큼 변하며, 어느 쪽 끝도 구간 경계에 닿지 않는 동안에는 그 변화량이 일정하므로, 최적 윈도우는 항상 어느 한쪽 끝이 경계에 맞는 위치로 밀어 둘 수 있습니다.",
+      "중요한 후보는 두 종류뿐입니다. 윈도우의 왼쪽 끝이 어떤 구간의 왼쪽 끝 l에 있는 경우와, 오른쪽 끝이 어떤 구간의 오른쪽 끝 r에 있는 경우(시작 위치 max(1, r-k+1))입니다. 정렬된 구간에 대한 접두사 금액과 이분 탐색으로 임의의 윈도우의 실제 금액을 O(log n)에 구할 수 있습니다.",
+      "구간을 l 기준으로 정렬하고, prefix[i]를 앞의 i개 구간의 합계로 둡니다. F(x)를 가방 1..x의 합계라 하면, x 이하에서 시작하는 마지막 구간을 이분 탐색으로 찾아 그 앞까지의 prefix에 (min(x, r) - l + 1) * v를 더해 반환합니다. 모든 구간의 두 후보 시작 위치 s에 대해 F(s+k-1) - F(s-1)을 계산해 최댓값을 유지하고, 모든 비교가 끝난 뒤에만 1000000007로 나눈 나머지를 취합니다. 금액은 약 10^18까지 커지므로 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Số tiền là một hàm hằng từng đoạn theo vị trí. Mỗi bước dịch sang phải làm số tiền của cửa sổ thay đổi bằng giá trị đi vào trừ giá trị đi ra, và chừng nào không đầu nào chạm biên khoảng thì mức thay đổi đó không đổi, nên cửa sổ tối ưu luôn có thể được đẩy tới vị trí mà một đầu thẳng hàng với một biên.",
+      "Chỉ có hai loại ứng viên đáng xét: đầu trái của cửa sổ tại đầu trái l của một khoảng nào đó, hoặc đầu phải của nó tại đầu phải r của một khoảng (điểm bắt đầu max(1, r-k+1)). Số tiền tiền tố trên các khoảng đã sắp xếp cộng với tìm kiếm nhị phân cho ra số tiền thực của bất kỳ cửa sổ nào trong O(log n).",
+      "Sắp xếp các khoảng theo l và gọi prefix[i] là tổng của i khoảng đầu tiên; gọi F(x) là tổng trong các túi 1..x: tìm kiếm nhị phân khoảng cuối cùng bắt đầu tại hoặc trước x và trả về tiền tố trước nó cộng (min(x, r) - l + 1) * v. Với cả hai điểm bắt đầu ứng viên s của mỗi khoảng, tính F(s+k-1) - F(s-1), giữ giá trị lớn nhất, và chỉ sau khi so sánh xong mới lấy modulo 1000000007. Số tiền đạt khoảng 10^18, nên dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nAfter sorting, build the cumulative amount over the intervals, so the prefix amount up to any position can be found by binary search. Only the candidates whose window's left end aligns with an interval's left end, or whose right end aligns with an interval's right end, need to be tested.\n\n## Proof of correctness\n\nWhen the window shifts by one bag, the amount changes by the incoming value minus the outgoing value. If neither end of the window touches a breakpoint of the pieces, the rate of change is constant, so a maximum can be moved to a boundary without decreasing. An increase can only stop when the right end leaves a positive interval or the left end enters a positive interval, so these aligned candidates cover an optimum; the prefix integral computes every window exactly. The amounts are compared before taking the modulus.\n\n## Complexity\n\nTime O(n log n), space O(n)."

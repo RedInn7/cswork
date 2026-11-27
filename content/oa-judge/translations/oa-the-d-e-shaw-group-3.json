@@ -11,5 +11,35 @@
     "hints": [
       "Find the longest strictly increasing prefix and suffix. Enumerate the kept prefix length i, and use two pointers to find the earliest suffix start j that joins it while keeping the array strictly increasing; every suffix start after j also works, so accumulate the number of ways."
     ]
+  },
+  "ja": {
+    "title": "1 つの部分配列を取り除いた後に狭義単調増加になる",
+    "description": "正の整数の配列が与えられます。空でない連続部分配列を 1 つ取り除いたとき、残った配列（空でもよい）が狭義単調増加であれば、その取り除き方は有効です。有効な取り除き方の個数をすべて数えてください。\n\n標準入出力、本サイトで追加した範囲、例は、この問題の記述に従います。元の問題に範囲の記載がない部分は、本サイトによる追加であることを明示しています。",
+    "input": "1 行目に n（1≤n≤100000）、2 行目に n 個の正の整数が与えられます。1≤nums[i]≤10^9。範囲は元の問題の制約から取っています。",
+    "output": "有効な連続部分配列の個数を、64 ビット整数として出力してください。",
+    "explanation": "最長の狭義単調増加な接頭辞と接尾辞を求めます。残す接頭辞の長さ i を列挙し、two pointers を使って、それにつなげても配列が狭義単調増加のままであるような、最も早い接尾辞の開始位置 j を求めます。それより後のどの接尾辞の開始位置でも成り立つので、その場合の数を累積します。",
+    "hints": [
+      "最長の狭義単調増加な接頭辞と接尾辞を求めます。残す接頭辞の長さ i を列挙し、two pointers を使って、それにつなげても配列が狭義単調増加のままであるような、最も早い接尾辞の開始位置 j を求めます。それより後のどの接尾辞の開始位置でも成り立つので、その場合の数を累積します。"
+    ]
+  },
+  "ko": {
+    "title": "부분 배열 하나를 제거해 엄격하게 증가하는 배열 만들기",
+    "description": "양의 정수 배열이 주어질 때, 비어 있지 않은 연속 부분 배열 하나를 제거했을 때 남은 배열(비어 있어도 됨)이 엄격하게 증가하면 유효한 제거입니다. 유효한 제거의 개수를 모두 세세요.\n\n표준 입출력, 이 사이트가 추가한 범위, 예제는 이 문제의 설명을 따릅니다. 원문의 범위가 없는 곳은 이 사이트의 추가임을 명시적으로 표시했습니다.",
+    "input": "첫 줄에 n(1≤n≤100000)이, 둘째 줄에 n개의 양의 정수가 주어지며 1≤nums[i]≤10^9입니다. 범위는 원문 문제의 제약에서 가져왔습니다.",
+    "output": "유효한 연속 부분 배열의 개수를 64비트 정수로 출력합니다.",
+    "explanation": "가장 긴 엄격하게 증가하는 접두사와 접미사를 찾으세요. 남기는 접두사 길이 i를 열거하고, two pointers로 엄격한 증가를 유지하며 이어 붙일 수 있는 가장 이른 접미사 시작 j를 찾습니다. j 이후의 모든 접미사 시작도 유효하므로 경우의 수를 누적하세요.",
+    "hints": [
+      "가장 긴 엄격하게 증가하는 접두사와 접미사를 찾으세요. 남기는 접두사 길이 i를 열거하고, two pointers로 엄격한 증가를 유지하며 이어 붙일 수 있는 가장 이른 접미사 시작 j를 찾습니다. j 이후의 모든 접미사 시작도 유효하므로 경우의 수를 누적하세요."
+    ]
+  },
+  "vi": {
+    "title": "Mảng tăng ngặt sau khi xóa một mảng con",
+    "description": "Cho một mảng các số nguyên dương, việc xóa một mảng con liên tiếp không rỗng là một phép xóa hợp lệ nếu mảng còn lại (có thể rỗng) tăng ngặt. Hãy đếm mọi phép xóa hợp lệ.\n\nĐầu vào/đầu ra chuẩn, các phạm vi do trang này bổ sung và các ví dụ theo mô tả của bài này; ở những chỗ phạm vi của nguồn bị thiếu, chúng được đánh dấu tường minh là phần bổ sung của trang này.",
+    "input": "Dòng đầu chứa n (1≤n≤100000); dòng thứ hai chứa n số nguyên dương, 1≤nums[i]≤10^9. Các phạm vi lấy từ ràng buộc của đề gốc.",
+    "output": "In ra số mảng con liên tiếp hợp lệ, được lưu dưới dạng số nguyên 64 bit.",
+    "explanation": "Tìm tiền tố và hậu tố tăng ngặt dài nhất. Duyệt độ dài tiền tố được giữ i, và dùng hai con trỏ để tìm điểm bắt đầu hậu tố j sớm nhất nối được với nó mà vẫn giữ mảng tăng ngặt; mọi điểm bắt đầu hậu tố sau j cũng dùng được, nên cộng dồn số cách.",
+    "hints": [
+      "Tìm tiền tố và hậu tố tăng ngặt dài nhất. Duyệt độ dài tiền tố được giữ i, và dùng hai con trỏ để tìm điểm bắt đầu hậu tố j sớm nhất nối được với nó mà vẫn giữ mảng tăng ngặt; mọi điểm bắt đầu hậu tố sau j cũng dùng được, nên cộng dồn số cách."
+    ]
   }
 }

@@ -13,6 +13,21 @@
       "Mutation characters are never deleted, and they split the normal characters into independent segments: each segment is eaten only by the mutation character immediately to its right.",
       "In every round, each mutation character deletes exactly one character of the segment to its left, and all segments shrink at the same time; so the number of rounds equals the length of the longest normal segment that has a mutation character on its right. The tail after the last mutation character is never deleted.",
       "Scan left to right with a counter run for the current stretch of normal characters; on a mutation character, update the answer with run and reset run to zero; on a normal character, increase run. Do not use the trailing run at the end, and print the answer (0 if nothing is ever deleted)."
+    ],
+    "ja": [
+      "変異文字は削除されることがなく、通常文字を独立した区間に分割します。各区間を食べるのは、そのすぐ右にある変異文字だけです。",
+      "各ラウンドで、各変異文字はその左の区間から文字をちょうど 1 つ削除し、すべての区間が同時に縮みます。したがってラウンド数は、右側に変異文字がある通常文字の区間の最大長に等しくなります。最後の変異文字より後ろの末尾部分は削除されません。",
+      "左から走査して、現在の通常文字の連続部分の長さをカウンタ run で保持します。変異文字に出会ったら answer を run で更新して run を 0 に戻し、通常文字なら run を増やします。最後の末尾の run は使わず、answer を出力します（何も削除されなければ 0 です）。"
+    ],
+    "ko": [
+      "변이 문자는 삭제되지 않으며 일반 문자들을 서로 독립된 구간으로 나눕니다. 각 구간은 바로 오른쪽에 있는 변이 문자에게만 먹힙니다.",
+      "매 라운드마다 각 변이 문자는 자기 왼쪽 구간의 문자를 정확히 하나씩 삭제하고 모든 구간이 동시에 줄어듭니다. 따라서 라운드 수는 오른쪽에 변이 문자가 있는 일반 구간 중 가장 긴 것의 길이와 같습니다. 마지막 변이 문자 뒤의 꼬리 부분은 절대 삭제되지 않습니다.",
+      "왼쪽에서 오른쪽으로 훑으며 현재 일반 문자 구간의 길이를 카운터 run에 유지합니다. 변이 문자를 만나면 답을 run으로 갱신하고 run을 0으로 되돌리며, 일반 문자이면 run을 증가시킵니다. 끝에 남은 run은 사용하지 말고, 답을 출력합니다(아무것도 삭제되지 않으면 0)."
+    ],
+    "vi": [
+      "Các ký tự đột biến không bao giờ bị xóa, và chúng chia các ký tự thường thành những đoạn độc lập: mỗi đoạn chỉ bị ăn bởi ký tự đột biến ngay bên phải nó.",
+      "Trong mỗi vòng, mỗi ký tự đột biến xóa đúng một ký tự của đoạn bên trái nó, và mọi đoạn co lại cùng lúc; vì vậy số vòng bằng độ dài của đoạn ký tự thường dài nhất có ký tự đột biến ở bên phải. Phần đuôi sau ký tự đột biến cuối cùng không bao giờ bị xóa.",
+      "Duyệt từ trái sang phải với biến đếm run cho đoạn ký tự thường hiện tại; gặp ký tự đột biến thì cập nhật đáp án bằng run rồi đặt lại run về 0; gặp ký tự thường thì tăng run. Không dùng đoạn đuôi còn lại ở cuối, và in đáp án (0 nếu không có gì bị xóa)."
     ]
   },
   "explanationEn": "## Approach\n\nEach mutation character consumes, one per round, the stretch of consecutive normal characters between it and the previous mutation character. The answer is the maximum length of the normal stretches that precede a mutation character; the trailing normal stretch is never consumed.\n\n## Proof of correctness\n\nMutation characters always remain and block each other, so the normal stretch to the left of each one is reduced by exactly one character per round by that character, and all stretches shrink simultaneously and independently. Finishing all stretches takes as many rounds as the longest one, and the tail to the right of the last mutation character is never deleted.\n\n## Complexity\n\nO(n) time and O(1) space."

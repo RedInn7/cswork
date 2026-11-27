@@ -13,6 +13,21 @@
       "The task has two steps: score each string by the share of its most common character, select all strings with the smallest share (ties are all selected), and then decide which characters to output.",
       "A character of a selected string is kept exactly when it does not appear in any unselected string. Collect the characters of all unselected strings into a set first, so filtering is just a set lookup.",
       "For each string, count letter frequencies and compute max(freq) / length; find the minimum and mark every string that attains it (compare carefully, for example with integer cross-multiplication). Put the characters of the unselected strings into a set other. Walk the selected strings in input order and output, character by character, those not in other, keeping repeats."
+    ],
+    "ja": [
+      "このタスクは 2 つのステップからなります。各文字列を、最頻出文字の占める割合でスコア付けし、割合が最小のすべての文字列を選び(同点はすべて選びます)、その後で出力する文字を決めます。",
+      "選ばれた文字列の文字が残るのは、それが選ばれなかったどの文字列にも現れないときだけです。まず、選ばれなかったすべての文字列の文字を集合に集めておけば、フィルタは集合の検索だけで済みます。",
+      "各文字列について文字の頻度を数え、max(freq) / length を計算します。最小値を求め、それを達成するすべての文字列に印を付けます(比較は慎重に行います。例えば整数の交差乗算を使います)。選ばれなかった文字列の文字を集合 other に入れます。選ばれた文字列を入力順にたどり、other にない文字を 1 文字ずつ、重複も保ったまま出力します。"
+    ],
+    "ko": [
+      "작업은 두 단계입니다. 각 문자열의 점수를 가장 흔한 문자의 비중으로 매기고, 비중이 가장 작은 문자열을 모두 선택하며(동점은 모두 선택), 그다음 어떤 문자를 출력할지 정합니다.",
+      "선택된 문자열의 문자는 선택되지 않은 어떤 문자열에도 나타나지 않을 때에만 유지됩니다. 먼저 선택되지 않은 모든 문자열의 문자를 집합에 모아 두면, 거르는 일은 집합 조회로 끝납니다.",
+      "각 문자열에서 글자 빈도를 세어 max(freq) / length를 계산하고 최솟값을 찾아 그것에 도달하는 모든 문자열을 표시합니다(예를 들어 정수 교차 곱셈으로 신중하게 비교하세요). 선택되지 않은 문자열의 문자를 집합 other에 넣습니다. 선택된 문자열을 입력 순서대로 훑으며 other에 없는 문자를 한 글자씩 반복을 유지한 채 출력합니다."
+    ],
+    "vi": [
+      "Bài toán có hai bước: chấm điểm mỗi chuỗi theo phần của ký tự phổ biến nhất, chọn tất cả các chuỗi có phần nhỏ nhất (hòa thì chọn hết), rồi quyết định ký tự nào được in ra.",
+      "Một ký tự của chuỗi được chọn được giữ lại khi và chỉ khi nó không xuất hiện trong bất kỳ chuỗi không được chọn nào. Hãy thu thập trước các ký tự của mọi chuỗi không được chọn vào một tập, để việc lọc chỉ là một lần tra cứu tập.",
+      "Với mỗi chuỗi, đếm tần suất các chữ cái và tính max(freq) / length; tìm giá trị nhỏ nhất và đánh dấu mọi chuỗi đạt giá trị đó (so sánh cẩn thận, ví dụ bằng nhân chéo số nguyên). Đưa các ký tự của các chuỗi không được chọn vào một tập other. Duyệt các chuỗi được chọn theo thứ tự đầu vào và in từng ký tự không thuộc other, giữ nguyên các ký tự lặp."
     ]
   },
   "explanationEn": "## Approach\n\nFor each string compute `max(freq)/length` and select all strings with the smallest ratio. Collect the characters of the unselected strings into a set, then, following the original input order of the selected strings and the order within each string, output the characters not in that set, keeping repeated characters.\n\n## Proof of Correctness\n\nThe set of strings with the smallest ratio is uniquely determined by the definition, and all ties are kept. For each of their characters, checking whether it appears in any unselected string implements exactly the exclusion condition of the problem; outputting character by character in the original order ensures that both the order and the multiplicities of the result meet the requirements.\n\n## Complexity\n\nWith L total characters and an alphabet of size σ, time O(L+σ), space O(L+σ)."

@@ -13,6 +13,21 @@
       "Adding adjacent digits each round is exactly Pascal's triangle recurrence: the final two digits are the sums of the first n-1 and the last n-1 digits weighted by the binomial coefficients C(n-2, i), modulo 10.",
       "n can reach 10^5, so the binomial coefficients cannot be computed directly. Split modulo 10 into modulo 2 and modulo 5: both are primes, so Lucas' theorem gives each digit by digit, and the Chinese remainder theorem combines them into the unique residue in 0..9.",
       "Let N = n - 2; for each i, the coefficient mod 2 is 1 exactly when the bits of i are a subset of the bits of N; mod 5 it is the product of the small binomials of the base-5 digits of N and i (0 if some digit of i exceeds N's); take c or c + 5, whichever matches the parity of the mod 2 value, as the coefficient mod 10; accumulate c*a[i] and c*a[i+1] modulo 10 and print the two digits (keeping a leading zero)."
+    ],
+    "ja": [
+      "各ラウンドで隣接する桁を足すのは、パスカルの三角形の漸化式そのものです。最後の 2 桁は、最初の n-1 桁と最後の n-1 桁を二項係数 C(n-2, i) で重み付けした和を、10 で割った余りです。",
+      "n は 10^5 に達するので、二項係数を直接計算することはできません。mod 10 を mod 2 と mod 5 に分けます。どちらも素数なので、Lucas の定理で各桁ごとに求められ、中国剰余定理で 0..9 の唯一の剰余に組み合わせられます。",
+      "N = n - 2 とします。各 i について、係数の mod 2 は、i のビットが N のビットの部分集合であるときに限り 1 です。mod 5 は、N と i の 5 進数の各桁についての小さな二項係数の積です（i の桁が N の桁を超えるものがあれば 0）。mod 2 の値の偶奇に合う方を、c または c + 5 から選んで mod 10 の係数とします。c*a[i] と c*a[i+1] を mod 10 で累積し、2 桁を出力します（先頭の 0 は残します）。"
+    ],
+    "ko": [
+      "라운드마다 인접한 숫자를 더하는 것은 정확히 파스칼의 삼각형의 점화식입니다. 최종 두 숫자는 처음 n-1개와 마지막 n-1개의 숫자에 이항 계수 C(n-2, i)를 가중치로 곱해 더한 값을 10으로 나눈 나머지입니다.",
+      "n이 10^5까지 커질 수 있으므로 이항 계수를 직접 계산할 수 없습니다. mod 10을 mod 2와 mod 5로 나누면 둘 다 소수이므로 뤼카의 정리로 각 자릿수별로 구할 수 있고, 중국인의 나머지 정리로 0..9 범위의 유일한 나머지로 합칠 수 있습니다.",
+      "N = n - 2로 두고, 각 i에 대해 mod 2 계수는 i의 비트가 N의 비트의 부분집합일 때만 1입니다. mod 5 계수는 N과 i의 5진수 자릿수별 작은 이항 계수의 곱입니다(i의 어떤 자릿수가 N의 자릿수를 넘으면 0). c 또는 c + 5 중 mod 2 값의 홀짝과 일치하는 쪽을 mod 10 계수로 삼아 c*a[i]와 c*a[i+1]을 mod 10으로 누적하고 두 숫자를 출력합니다(앞자리 0 유지)."
+    ],
+    "vi": [
+      "Cộng các chữ số liền kề ở mỗi vòng chính là công thức truy hồi của tam giác Pascal: hai chữ số cuối cùng là tổng của n-1 chữ số đầu và n-1 chữ số cuối, có trọng số là các hệ số nhị thức C(n-2, i), modulo 10.",
+      "n có thể đạt 10^5, nên không thể tính trực tiếp các hệ số nhị thức. Tách modulo 10 thành modulo 2 và modulo 5: cả hai đều là số nguyên tố, nên định lý Lucas cho từng giá trị theo từng chữ số, và định lý phần dư Trung Hoa kết hợp chúng thành phần dư duy nhất trong 0..9.",
+      "Đặt N = n - 2; với mỗi i, hệ số modulo 2 bằng 1 khi và chỉ khi các bit của i là tập con của các bit của N; modulo 5 nó là tích của các hệ số nhị thức nhỏ của các chữ số cơ số 5 của N và i (bằng 0 nếu có chữ số của i vượt quá chữ số tương ứng của N); lấy c hoặc c + 5, tùy cái nào khớp với tính chẵn lẻ của giá trị modulo 2, làm hệ số modulo 10; cộng dồn c*a[i] và c*a[i+1] modulo 10 rồi in hai chữ số (giữ số 0 ở đầu)."
     ]
   },
   "explanationEn": "## Approach\n\nThe two final digits are the weighted sums of two adjacent windows of the digits, weighted by the binomial coefficients of row n-2. Compute these coefficients mod 2 and mod 5 with Lucas' theorem and combine them into the residue mod 10.\n\n## Proof of correctness\n\nEach round of adding neighbours follows Pascal's recurrence, so the final weights are C(n-2, i). For a prime p, decomposing the generating function (1 + x)^N in base p modulo p gives Lucas' digit-by-digit product formula. The residues mod 2 and mod 5 determine a unique residue mod 10, so computing term by term recovers the final two digits.\n\n## Complexity\n\nTime O(n log n), space O(n)."

@@ -13,6 +13,21 @@
       "Look at the last step of the XOR pyramid: f of a subarray equals the XOR of the f values of the two subarrays obtained by dropping its right end and its left end, so f(l,r) = f(l,r-1) xor f(l+1,r).",
       "With n only 2000, precompute every f(l,r) in order of increasing length, together with best(l,r), the maximum f over all subarrays of [l,r]. A subarray of [l,r] is either the whole range or lies inside [l,r-1] or [l+1,r].",
       "Keep the f values of the previous length in a 1D array prev (for length 1 it is the input). For size = 2..n and each left end l, let r = l + size - 1, compute the new f = prev[l] xor prev[l+1], and set best[l][r] = max(new f, best[l][r-1], best[l+1][r]). Store best in a compact n x n integer table and answer each query with best[l][r]."
+    ],
+    "ja": [
+      "XOR ピラミッドの最後の一段に注目してください。部分配列の f は、右端を除いた部分配列と左端を除いた部分配列の f の XOR に等しくなります。つまり f(l,r) = f(l,r-1) xor f(l+1,r) です。",
+      "n は高々 2000 なので、長さの短い順にすべての f(l,r) を前計算できます。あわせて、[l,r] 内のすべての部分配列に対する f の最大値 best(l,r) も求めます。[l,r] の部分配列は、範囲全体そのものか、[l,r-1] または [l+1,r] の内側にあるもののいずれかです。",
+      "1 つ前の長さの f の値を 1 次元配列 prev に保持します（長さ 1 のときは入力そのものです）。size = 2..n と各左端 l について r = l + size - 1 とし、新しい f = prev[l] xor prev[l+1] を計算して、best[l][r] = max(新しい f, best[l][r-1], best[l+1][r]) とします。best は n x n のコンパクトな整数テーブルに保存し、各クエリは best[l][r] で答えます。"
+    ],
+    "ko": [
+      "XOR 피라미드의 마지막 단계를 보세요. 부분 배열의 f는 오른쪽 끝을 뺀 부분 배열과 왼쪽 끝을 뺀 부분 배열의 f 값을 XOR한 것과 같으므로 f(l,r) = f(l,r-1) xor f(l+1,r)입니다.",
+      "n이 2000뿐이므로 길이가 짧은 것부터 모든 f(l,r)를 미리 계산하고, [l,r]의 모든 부분 배열에 대한 f의 최댓값 best(l,r)도 함께 구합니다. [l,r]의 부분 배열은 구간 전체이거나 [l,r-1] 또는 [l+1,r] 안에 포함됩니다.",
+      "이전 길이의 f 값을 1차원 배열 prev에 보관합니다(길이 1일 때는 입력 그대로입니다). size = 2..n과 각 왼쪽 끝 l에 대해 r = l + size - 1로 두고 새 f = prev[l] xor prev[l+1]을 계산한 뒤 best[l][r] = max(새 f, best[l][r-1], best[l+1][r])로 둡니다. best는 n x n 정수 압축 테이블에 저장하고 각 질의는 best[l][r]로 답합니다."
+    ],
+    "vi": [
+      "Hãy nhìn bước cuối của kim tự tháp XOR: f của một mảng con bằng XOR của f của hai mảng con thu được khi bỏ đầu phải và bỏ đầu trái, tức f(l,r) = f(l,r-1) xor f(l+1,r).",
+      "Vì n chỉ là 2000, hãy tính trước mọi f(l,r) theo thứ tự độ dài tăng dần, cùng với best(l,r), giá trị f lớn nhất trên mọi mảng con của [l,r]. Một mảng con của [l,r] hoặc là cả đoạn, hoặc nằm trong [l,r-1] hoặc [l+1,r].",
+      "Giữ các giá trị f của độ dài trước trong mảng một chiều prev (với độ dài 1 đó là mảng đầu vào). Với size = 2..n và mỗi đầu trái l, đặt r = l + size - 1, tính f mới = prev[l] xor prev[l+1], rồi đặt best[l][r] = max(f mới, best[l][r-1], best[l+1][r]). Lưu best trong bảng số nguyên gọn n x n và trả lời mỗi truy vấn bằng best[l][r]."
     ]
   },
   "explanationEn": "## Approach\n\nCompute f(l,r) = f(l,r-1) xor f(l+1,r) in order of increasing length. At the same time, best(l,r) is the maximum of f(l,r), best(l,r-1) and best(l+1,r). Keep a compact unsigned integer table to answer the queries.\n\n## Correctness\n\nThe last step of the XOR pyramid is exactly the XOR of the f values of the two subarrays one element shorter on each side. A subarray inside [l,r] is either the whole range or misses the left end or the right end, so the best recurrence covers every subarray. Processing lengths in increasing order guarantees that the dependencies are already known.\n\n## Complexity\n\nPreprocessing takes O(n²) time, each query O(1), and space is O(n²)."

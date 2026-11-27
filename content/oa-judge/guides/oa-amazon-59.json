@@ -13,6 +13,21 @@
       "At one warehouse, \"you take p, the colleague takes q\" is one full round, and a full round does not change whose turn comes next; only the final remainder r = (v-1) mod (p+q) + 1 (between 1 and p+q) decides the winner.",
       "In that final part your first dispatch removes p; if r > p you need the colleague to skip so you can dispatch again, and the minimum number of skips is ceil(r/p) - 1 = floor((r-1)/p). Every warehouse is worth 1, so buy the cheapest warehouses in skips first.",
       "For each warehouse compute cost = ((v-1) mod (p+q)) / p with integer division; sort the costs ascending and buy them one by one with the skip budget, stopping when a cost exceeds the remaining budget; print the number bought. Note that p+q can exceed the 32-bit range."
+    ],
+    "ja": [
+      "1 つの倉庫では、「あなたが p を引き、同僚が q を引く」のが 1 つの完全なラウンドで、完全なラウンドの後も次の番は変わりません。勝者を決めるのは、最後の剰余 r = (v-1) mod (p+q) + 1（1 以上 p+q 以下）だけです。",
+      "その最後の部分では、あなたの最初の出荷で p が減ります。r > p なら、あなたがもう一度出荷できるよう同僚にスキップしてもらう必要があり、スキップの最小回数は ceil(r/p) - 1 = floor((r-1)/p) です。どの倉庫も価値は 1 なので、スキップ回数が最も少ない倉庫から買います。",
+      "各倉庫について、整数除算で cost = ((v-1) mod (p+q)) / p を計算します。コストを昇順にソートし、スキップの予算で 1 つずつ買い、コストが残りの予算を超えたところで止めて、買った個数を出力します。p+q は 32 ビット整数の範囲を超えうることに注意してください。"
+    ],
+    "ko": [
+      "한 창고에서 \"당신이 p를, 동료가 q를 가져간다\"가 한 전체 라운드이며, 전체 라운드는 다음 차례가 누구인지를 바꾸지 않습니다. 승자는 마지막 나머지 r = (v-1) mod (p+q) + 1 (1 이상 p+q 이하)로만 결정됩니다.",
+      "그 마지막 부분에서 당신의 첫 출고는 p를 제거합니다. r > p이면 당신이 다시 출고할 수 있도록 동료가 건너뛰어야 하며, 최소 건너뛰기 횟수는 ceil(r/p) - 1 = floor((r-1)/p)입니다. 모든 창고의 가치는 1이므로 건너뛰기가 가장 적게 드는 창고부터 사세요.",
+      "각 창고의 비용을 정수 나눗셈으로 cost = ((v-1) mod (p+q)) / p로 계산하고, 오름차순으로 정렬한 뒤 건너뛰기 예산으로 하나씩 사다가 비용이 남은 예산을 넘으면 멈추고, 산 개수를 출력합니다. p+q는 32비트 범위를 넘을 수 있다는 점에 유의하세요."
+    ],
+    "vi": [
+      "Ở một kho, \"bạn lấy p, đồng nghiệp lấy q\" là một vòng đầy đủ, và một vòng đầy đủ không làm đổi lượt tiếp theo của ai; chỉ phần dư cuối cùng r = (v-1) mod (p+q) + 1 (nằm giữa 1 và p+q) quyết định người thắng.",
+      "Trong phần cuối đó, lần điều phối đầu tiên của bạn lấy đi p; nếu r > p bạn cần đồng nghiệp bỏ qua để bạn điều phối lại, và số lượt bỏ qua tối thiểu là ceil(r/p) - 1 = floor((r-1)/p). Mỗi kho đáng giá 1, nên hãy mua các kho rẻ nhất theo số lượt bỏ qua trước.",
+      "Với mỗi kho tính cost = ((v-1) mod (p+q)) / p bằng phép chia nguyên; sắp xếp các cost tăng dần và mua từng kho một bằng ngân sách lượt bỏ qua, dừng khi một cost vượt quá ngân sách còn lại; in số kho đã mua. Lưu ý p+q có thể vượt quá phạm vi 32 bit."
     ]
   },
   "explanationEn": "## Approach\n\nFor each warehouse, take the positive remainder after complete rounds, r = (v-1) mod (p+q) + 1; winning it needs floor((r-1)/p) skips. Buy rewards in ascending order of the number of skips needed.\n\n## Proof of correctness\n\nComplete rounds without skips do not change whose turn it is. In the final positive-remainder phase, each extra dispatch of yours requires one skip by the colleague, so the minimum number of extra skips is ceil(r/p) - 1. Skips placed earlier can be exchanged into the final phase without reducing the required number. Every reward is worth 1, so taking the cheapest first achieves the maximum count.\n\n## Complexity\n\nO(n log n) time and O(n) space."

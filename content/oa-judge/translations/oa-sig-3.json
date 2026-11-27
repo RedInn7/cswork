@@ -13,5 +13,41 @@
       "Each hyphen can only copy a letter already present in the original skeleton, with no limit on the number of uses.",
       "Output the original skeletons, keeping duplicates and order."
     ]
+  },
+  "ja": {
+    "title": "骨組みの既存の文字をコピーしてターゲット単語に一致させる",
+    "description": "小文字のターゲット単語と、同じ長さの骨組み (skeleton) のリストが与えられます。骨組みは小文字とハイフンだけからなります。各ハイフンは、その元の骨組みにすでに現れる任意の文字に置き換えられます。コピーしても文字は消費されないので、同じ文字を複数のハイフンに使えます。他の位置は変わりません。word にできる元の骨組みを、入力の順序と重複を保ったまま返してください。1 つもなければ空のリストを返します。",
+    "input": "1 行目に word、2 行目に骨組みの数 m、続く m 行に骨組みが 1 つずつ与えられます。1≤word の長さ≤100、1≤m≤100 で、すべての骨組みは word と同じ長さです。word には a..z だけ、骨組みには a..z と - だけが含まれます。",
+    "output": "1 行目に一致した数、続けて一致した元の骨組みを 1 行に 1 つずつ出力してください。一致するものがなければ 0 だけを出力し、置換後の単語は出力しないでください。",
+    "explanation": "元の OCR008 は he-o と誤記していましたが、009 は he--o (ハイフン 2 つで l がない) と明記しているため、本サイトは 009 に従って修正しています。hello に対する 4 つの元の骨組み he-lo、he--o、-ell-、hello のうち、条件を満たすのは he-lo と hello だけです。元の l はその場に残り、ハイフンを埋めるためにコピーできます。元の文章には消費や使用回数の制限はありません。他の 2 つの公開例は本サイトが追加したもので、aaaa は a--- から繰り返しコピーして得られ、すべてハイフンの骨組みはコピー元の文字がないので失敗します。",
+    "hints": [
+      "固定された位置は 1 文字ずつ一致していなければなりません。",
+      "各ハイフンは、元の骨組みにすでにある文字しかコピーできず、使用回数に制限はありません。",
+      "元の骨組みを、重複と順序を保ったまま出力します。"
+    ]
+  },
+  "ko": {
+    "title": "뼈대의 기존 문자를 복사하여 목표 단어 만들기",
+    "description": "소문자로 된 목표 단어와 같은 길이의 뼈대(skeleton) 목록이 주어집니다. 뼈대는 소문자와 하이픈으로만 이루어집니다. 각 하이픈은 그 원래 뼈대에 이미 나타나는 문자 중 아무것으로나 바꿀 수 있으며, 복사는 문자를 소모하지 않으므로 같은 문자를 여러 하이픈에 재사용할 수 있습니다. 다른 위치는 그대로 둡니다. word가 될 수 있는 원래 뼈대를 입력 순서와 중복을 유지한 채 반환하세요. 해당하는 것이 없으면 빈 목록을 반환합니다.",
+    "input": "첫 번째 줄에 word가, 두 번째 줄에 뼈대의 개수 m이 주어지고, 이어서 m개의 줄에 각각 뼈대가 하나씩 주어집니다. 1≤word의 길이≤100, 1≤m≤100이며 모든 뼈대의 길이는 word와 같습니다. word는 a..z로만, 뼈대는 a..z와 -로만 이루어집니다.",
+    "output": "첫 번째 줄에 일치하는 뼈대의 개수를 출력하고, 이어서 일치하는 원래 뼈대를 한 줄에 하나씩 출력합니다. 일치하는 것이 없으면 0만 출력하며, 치환 후의 단어는 출력하지 않습니다.",
+    "explanation": "원래 OCR008에는 he-o라고 잘못 적혀 있었지만 009에는 he--o(하이픈 두 개, l 없음)로 분명히 나와 있어, 이 사이트는 009에 맞춰 고쳤습니다. hello에 대한 네 개의 원래 뼈대 he-lo, he--o, -ell-, hello 중 he-lo와 hello만 조건을 만족합니다. 원래의 l은 제자리에 남고 하이픈을 채우기 위해 복사될 수 있으며, 원문에는 소모나 사용 횟수 제한이 없습니다. 나머지 두 개의 공개 예제는 이 사이트에서 추가했습니다. aaaa는 a---에서 반복 복사로 얻을 수 있고, 하이픈으로만 이루어진 뼈대는 원본 문자가 없어 실패합니다.",
+    "hints": [
+      "고정된 위치는 문자 단위로 일치해야 합니다.",
+      "각 하이픈은 원래 뼈대에 이미 있는 문자만 복사할 수 있으며, 사용 횟수에 제한이 없습니다.",
+      "중복과 순서를 유지한 채 원래 뼈대를 출력합니다."
+    ]
+  },
+  "vi": {
+    "title": "Khớp từ đích bằng cách sao chép các chữ cái có sẵn của khung",
+    "description": "Cho một từ đích gồm chữ thường và một danh sách các khung có cùng độ dài. Các khung chỉ chứa chữ cái thường và dấu gạch ngang. Mỗi dấu gạch ngang có thể được thay bằng bất kỳ chữ cái nào đã xuất hiện trong khung gốc đó; việc sao chép không tiêu hao chữ cái, nên cùng một chữ cái có thể dùng lại cho nhiều dấu gạch ngang. Các vị trí khác giữ nguyên. Trả về các khung gốc có thể trở thành word, giữ nguyên thứ tự đầu vào và các bản trùng lặp; trả về danh sách rỗng nếu không có khung nào khớp.",
+    "input": "Dòng đầu chứa word, dòng thứ hai chứa số lượng khung m, tiếp theo là m dòng, mỗi dòng một khung. 1≤độ dài word≤100, 1≤m≤100, và mỗi khung có cùng độ dài với word. word chỉ chứa a..z; các khung chỉ chứa a..z và -.",
+    "output": "Dòng đầu là số lượng khung khớp, tiếp theo là các khung gốc khớp, mỗi khung một dòng. Nếu không có khung nào khớp, chỉ in 0, và không in từ sau khi thay thế.",
+    "explanation": "Bài gốc OCR008 viết nhầm là he-o, trong khi 009 cho thấy rõ he--o (hai dấu gạch ngang và không có l); trang này sửa theo 009. Trong bốn khung gốc cho hello là he-lo, he--o, -ell-, và hello, chỉ he-lo và hello đủ điều kiện. Chữ l gốc giữ nguyên tại chỗ và có thể được sao chép để lấp các dấu gạch ngang; văn bản gốc không có giới hạn tiêu hao hay số lần sử dụng. Hai ví dụ công khai còn lại do trang này bổ sung: aaaa có thể thu được từ a--- bằng sao chép lặp lại, và một khung toàn dấu gạch ngang không khớp vì không có chữ cái nguồn.",
+    "hints": [
+      "Các vị trí cố định phải khớp từng ký tự.",
+      "Mỗi dấu gạch ngang chỉ có thể sao chép một chữ cái đã có trong khung gốc, không giới hạn số lần sử dụng.",
+      "In ra các khung gốc, giữ các bản trùng lặp và thứ tự."
+    ]
   }
 }

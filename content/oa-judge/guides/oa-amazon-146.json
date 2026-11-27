@@ -13,6 +13,21 @@
       "Each letter must occur equally often on the two sides of a palindrome, so the count of each letter in the left half is fixed at its total frequency divided by 2; since the input is a palindrome, at most one letter occurs an odd number of times.",
       "The multiset of the left half is fixed, and its lexicographically smallest arrangement is ascending order; the middle character and the right half are then uniquely determined.",
       "Count the frequencies; build the left half by repeating each letter from a to z frequency/2 times; put the letter with an odd count in the middle; output left + middle + reversed left."
+    ],
+    "ja": [
+      "回文では、各文字は両側で同じ回数だけ現れる必要があるので、左半分における各文字の個数は、その総出現回数を 2 で割った値に固定されます。入力が回文なので、出現回数が奇数の文字は高々 1 つです。",
+      "左半分の多重集合は固定されており、その辞書順最小の並びは昇順です。そのとき、中央の文字と右半分は一意に決まります。",
+      "頻度を数えます。a から z まで、各文字を頻度/2 回ずつ繰り返して左半分を作ります。出現回数が奇数の文字を中央に置き、左半分 + 中央 + 左半分の反転 を出力します。"
+    ],
+    "ko": [
+      "회문에서는 각 글자가 양쪽에 같은 횟수만큼 나타나야 하므로, 왼쪽 절반에서 각 글자의 개수는 전체 빈도를 2로 나눈 값으로 고정됩니다. 입력이 회문이므로 홀수 번 나타나는 글자는 최대 하나입니다.",
+      "왼쪽 절반의 멀티셋은 고정되어 있고, 그 사전순 최소 배열은 오름차순 정렬입니다. 그러면 가운데 문자와 오른쪽 절반은 유일하게 결정됩니다.",
+      "빈도를 세고, a부터 z까지 각 글자를 빈도/2번씩 반복해 왼쪽 절반을 만듭니다. 홀수 번 등장하는 글자는 가운데에 놓고, 왼쪽 + 가운데 + 뒤집은 왼쪽을 출력합니다."
+    ],
+    "vi": [
+      "Mỗi chữ cái phải xuất hiện số lần bằng nhau ở hai phía của một palindrome, nên số lần của mỗi chữ cái ở nửa trái là cố định, bằng tổng tần suất của nó chia 2; vì đầu vào là palindrome, tối đa một chữ cái xuất hiện số lần lẻ.",
+      "Đa tập của nửa trái là cố định, và cách sắp xếp nhỏ nhất theo từ điển của nó là thứ tự tăng dần; ký tự giữa và nửa phải khi đó được xác định duy nhất.",
+      "Đếm tần suất; xây nửa trái bằng cách lặp mỗi chữ cái từ a đến z với tần suất/2 lần; đặt chữ cái có số lần lẻ ở giữa; xuất left + middle + đảo ngược của left."
     ]
   },
   "explanationEn": "## Approach\n\nBuild the left half from half of each letter in ascending order, put the character with an odd count in the middle, and make the right half the reverse of the left half.\n\n## Correctness\n\nThe two sides of a palindrome contain each character equally often, so the number of each character in the left half is fixed at its total frequency divided by 2 (integer division). The lexicographically smallest arrangement of a fixed multiset is ascending order, after which the middle and the right half are uniquely determined.\n\n## Complexity\n\nTime O(n), space O(n)."

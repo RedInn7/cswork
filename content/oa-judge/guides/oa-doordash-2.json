@@ -13,6 +13,21 @@
       "Running a BFS per query is too slow. Every query asks for the distance to the nearest warehouse, so you can go the other way and compute all answers at once starting from the warehouses.",
       "Put every D cell into the queue at once and run a multi-source BFS, never enqueuing walls X. BFS expands in increasing distance, so the first time a cell is reached gives its shortest four-direction distance to any warehouse.",
       "Read the grid line by line (roads are spaces, so read whole lines), set every D to distance 0 and enqueue it, and let BFS fill a distance array; unreached cells stay -1. For each query, first check that the coordinates lie in 0..R-1 and 0..C-1 and print -1 if not; otherwise print the stored distance (walls are naturally -1)."
+    ],
+    "ja": [
+      "クエリごとに BFS を行うのは遅すぎます。どのクエリも最寄りの倉庫までの距離を尋ねているので、逆に、倉庫を始点として、すべての答えを一度に計算できます。",
+      "すべての D セルを一度にキューに入れ、壁 X はキューに入れずに多始点 BFS を行います。BFS は距離の増加順に展開するので、セルに最初に到達したときが、どの倉庫までの 4 方向の最短距離にもなります。",
+      "グリッドを 1 行ずつ読み込み (道は空白なので、行全体を読み込みます)、すべての D の距離を 0 にしてキューに入れ、BFS で距離の配列を埋めます。到達されなかったセルは -1 のままです。各クエリについて、まず座標が 0..R-1 と 0..C-1 の範囲内にあるかを確認し、なければ -1 を出力します。範囲内なら保存された距離を出力します (壁は自然に -1 です)。"
+    ],
+    "ko": [
+      "질의마다 BFS를 하면 너무 느립니다. 모든 질의는 가장 가까운 창고까지의 거리를 묻기 때문에, 방향을 바꾸어 창고에서 출발해 모든 답을 한꺼번에 계산할 수 있습니다.",
+      "모든 D 칸을 큐에 한꺼번에 넣고 다중 시작점 BFS를 수행하되, 벽 X는 큐에 넣지 않습니다. BFS는 거리가 증가하는 순서로 확장하므로, 칸에 처음 도달한 시점이 어느 창고까지의 상하좌우 최단 거리입니다.",
+      "격자를 한 줄씩 읽습니다(도로가 공백이므로 줄 전체를 읽으십시오). 모든 D의 거리를 0으로 하고 큐에 넣은 뒤 BFS가 거리 배열을 채우게 합니다. 도달하지 못한 칸은 -1로 남습니다. 질의마다 먼저 좌표가 0..R-1과 0..C-1 범위 안에 있는지 확인하여 아니면 -1을 출력하고, 그렇지 않으면 저장된 거리를 출력합니다(벽은 자연스럽게 -1입니다)."
+    ],
+    "vi": [
+      "Chạy một BFS cho mỗi truy vấn thì quá chậm. Mỗi truy vấn hỏi khoảng cách tới kho hàng gần nhất, nên bạn có thể đi theo chiều ngược lại và tính mọi đáp án cùng lúc, bắt đầu từ các kho hàng.",
+      "Đưa mọi ô D vào hàng đợi cùng lúc và chạy BFS đa nguồn, không bao giờ đưa tường X vào hàng đợi. BFS mở rộng theo khoảng cách tăng dần, nên lần đầu một ô được tới cho ta khoảng cách bốn hướng ngắn nhất của nó đến bất kỳ kho hàng nào.",
+      "Đọc lưới từng dòng một (đường đi là dấu cách, nên hãy đọc nguyên dòng), đặt mọi D có khoảng cách 0 và đưa vào hàng đợi, rồi để BFS điền mảng khoảng cách; các ô chưa tới giữ nguyên -1. Với mỗi truy vấn, trước hết kiểm tra tọa độ nằm trong 0..R-1 và 0..C-1 và in -1 nếu không; ngược lại in khoảng cách đã lưu (tường mặc nhiên là -1)."
     ]
   },
   "explanationEn": "## Approach\n\nRun a multi-source BFS from all warehouses at once to get the distance from every walkable position to its nearest warehouse, then answer the queries one by one.\n\n## Correctness\n\nBFS expands in increasing order of distance; the first visit of a cell gives its shortest four-neighbor distance from any warehouse. Walls are never enqueued, and unvisited cells and invalid coordinates both return -1.\n\n## Complexity\n\nO(RC+Q) time and O(RC) space."

@@ -13,6 +13,21 @@
       "With the cut fixed, one +1 or −1 shrinks the gap between the two totals by at most 1; repeatedly adding 1 to any category in the smaller shipment closes the gap in exactly that many operations while keeping every quantity positive.",
       "So the cost of a cut is |left total − right total|, and the answer is the minimum of this value over all cuts that leave both shipments non-empty.",
       "Compute the total; accumulate the prefix sum from the left (stopping before the last element so both sides stay non-empty), update the minimum with |2·prefix − total|, and print it; the total can reach 6·10^14, so use 64-bit integers."
+    ],
+    "ja": [
+      "切る位置を固定すると、+1 または −1 の 1 回の操作で 2 つの合計の差は高々 1 しか縮まりません。小さいほうの出荷の任意のカテゴリに 1 を繰り返し足せば、すべての数量を正に保ったまま、ちょうどその差の回数で差を埋められます。",
+      "したがって 1 つの切り方のコストは |左の合計 − 右の合計| で、答えは、両方の出荷が空にならないすべての切り方にわたるこの値の最小値です。",
+      "合計を計算し、左から接頭辞和を累積します(両側が空にならないよう、最後の要素の手前で止めます)。|2·prefix − total| で最小値を更新して出力します。合計は 6·10^14 に達し得るので、64 ビット整数を使ってください。"
+    ],
+    "ko": [
+      "자르는 위치가 정해지면 +1 또는 −1 한 번으로 두 합계의 차이는 최대 1만 줄어듭니다. 합이 작은 쪽 출하 물량의 아무 품목에 1을 반복해서 더하면 모든 수량이 양수로 유지되면서 정확히 그 차이만큼의 연산으로 차이를 없앨 수 있습니다.",
+      "따라서 한 번의 절단 비용은 |왼쪽 합계 − 오른쪽 합계|이며, 정답은 양쪽이 비어 있지 않은 모든 절단에 대한 이 값의 최솟값입니다.",
+      "전체 합계를 구하고, 왼쪽에서부터 접두사 합을 누적하며(양쪽이 비지 않도록 마지막 원소 직전에서 멈춤) |2·prefix − total|로 최솟값을 갱신하여 출력합니다. 합계는 6·10^14에 이를 수 있으므로 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Với điểm cắt cố định, mỗi lần +1 hoặc −1 chỉ thu hẹp khoảng cách giữa hai tổng nhiều nhất là 1; lặp lại việc cộng 1 vào một loại hàng bất kỳ của lô nhỏ hơn thì xóa khoảng cách đó trong đúng chừng ấy thao tác mà vẫn giữ mọi số lượng dương.",
+      "Vậy chi phí của một điểm cắt là |tổng trái − tổng phải|, và đáp án là giá trị nhỏ nhất của nó trên mọi điểm cắt để cả hai lô đều không rỗng.",
+      "Tính tổng; cộng dồn tổng tiền tố từ bên trái (dừng trước phần tử cuối để cả hai phía không rỗng), cập nhật giá trị nhỏ nhất bằng |2·prefix − total|, rồi in ra; tổng có thể lên tới 6·10^14, nên dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nScan every non-empty split point and take the minimum absolute difference between the left and right totals.\n\n## Proof of correctness\n\nOne operation reduces the difference between the two sides by at most 1, so a fixed split needs at least the absolute value of the difference. Repeatedly increasing any category in the smaller shipment achieves equality in exactly that many operations while keeping every quantity positive, so the lower bound of each split is reachable. Enumerating all splits gives the optimum.\n\n## Complexity\n\nO(n) time and O(1) space apart from the input."

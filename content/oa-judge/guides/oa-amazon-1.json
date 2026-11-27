@@ -13,6 +13,21 @@
       "Group all segments by which element is their maximum: a segment's value is its length times its maximum, so for each element sum the lengths of the segments where it is the maximum.",
       "Use a monotonic stack to find how far each position extends: on the left stop at a strictly greater element, on the right at a greater-or-equal one, so a repeated maximum belongs to exactly one position and nothing is counted twice.",
       "If position i has L possible starts on the left and R possible ends on the right, those segments have total length L*R*(L+R)/2; add a[i] times this value. L*R*(L+R)/2 fits in 64 bits, but reduce it modulo 10^9+7 before multiplying by a[i], and print the sum modulo 10^9+7."
+    ],
+    "ja": [
+      "すべての区間を「どの要素が最大か」でグループ分けします。区間の値は長さ × 最大値なので、各要素について、それが最大となる区間の長さの総和を求めます。",
+      "単調スタックで各位置がどこまで広がるかを求めます。左側は厳密に大きい要素で、右側は以上の要素で止まるようにすると、同じ最大値が重複しても 1 つの位置にだけ属し、二重に数えません。",
+      "位置 i の左側に始点の候補が L 個、右側に終点の候補が R 個あるとき、それらの区間の長さの総和は L*R*(L+R)/2 です。a[i] にこの値を掛けて加算します。L*R*(L+R)/2 は 64 ビットに収まりますが、a[i] を掛ける前に 10^9+7 で剰余を取り、総和を 10^9+7 で割った余りを出力します。"
+    ],
+    "ko": [
+      "구간을 그 구간의 최댓값이 되는 원소별로 묶어 보세요. 구간의 값은 길이 × 최댓값이므로, 각 원소에 대해 그 원소가 최댓값인 구간들의 길이를 모두 더하면 됩니다.",
+      "단조 스택으로 각 위치가 어디까지 확장되는지 구합니다. 왼쪽은 엄격하게 큰 원소에서, 오른쪽은 크거나 같은 원소에서 멈추면 같은 최댓값이 반복되어도 정확히 한 위치에만 귀속되어 중복 계산이 없습니다.",
+      "위치 i의 왼쪽에 가능한 시작점이 L개, 오른쪽에 가능한 끝점이 R개라면 이 구간들의 길이 합은 L*R*(L+R)/2입니다. 여기에 a[i]를 곱해 더합니다. L*R*(L+R)/2는 64비트에 들어가지만, a[i]를 곱하기 전에 10^9+7로 나눈 나머지를 취하고, 합도 10^9+7로 나눈 나머지를 출력합니다."
+    ],
+    "vi": [
+      "Nhóm tất cả các đoạn theo phần tử là giá trị lớn nhất của chúng: giá trị của một đoạn bằng độ dài nhân với giá trị lớn nhất, nên với mỗi phần tử hãy cộng độ dài của các đoạn mà nó là phần tử lớn nhất.",
+      "Dùng ngăn xếp đơn điệu để tìm mỗi vị trí mở rộng được bao xa: bên trái dừng ở phần tử lớn hơn hẳn, bên phải dừng ở phần tử lớn hơn hoặc bằng, nhờ đó mỗi giá trị lớn nhất lặp lại thuộc về đúng một vị trí và không bị đếm hai lần.",
+      "Nếu vị trí i có L điểm bắt đầu khả dĩ bên trái và R điểm kết thúc khả dĩ bên phải thì tổng độ dài của các đoạn đó là L*R*(L+R)/2; cộng a[i] nhân với giá trị này. L*R*(L+R)/2 vừa trong 64 bit, nhưng hãy lấy modulo 10^9+7 trước khi nhân với a[i], và in tổng modulo 10^9+7."
     ]
   },
   "explanationEn": "## Approach\n\nUse monotonic stacks to give every maximum its left and right boundaries. On the left look for a strictly greater element and on the right for a greater-or-equal one, so a repeated maximum belongs to only one position.\n\n## Proof of correctness\n\nLet the numbers of possible extensions to the left and right be L and R. All segments containing this position and owned by it have total length Σ(a + b - 1) = LR(L + R)/2. Multiplying by the element and summing counts every contiguous segment exactly once.\n\n## Complexity\n\nTime O(n), space O(n)."

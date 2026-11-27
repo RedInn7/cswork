@@ -13,6 +13,21 @@
       "A vertical line is fully determined by one x coordinate and a horizontal line by one y coordinate; no other lines are allowed.",
       "Count how many times each x value and each y value occurs (repeated points count again); the highest frequency is the most points one line can cover.",
       "Read the n x coordinates and the n y coordinates, get the highest frequency of each group with a hash map or by sorting, and let best be the larger one; print best if best >= 2, otherwise 0."
+    ],
+    "ja": [
+      "垂直線は 1 つの x 座標だけで、水平線は 1 つの y 座標だけで完全に決まります。他の線は許されません。",
+      "各 x の値と各 y の値が何回現れるかを数えます（重複する点も再度数えます）。最大の頻度が、1 本の線で覆える最多の点数です。",
+      "n 個の x 座標と n 個の y 座標を読み、ハッシュマップまたはソートでそれぞれのグループの最大頻度を求め、大きいほうを best とします。best >= 2 なら best を、そうでなければ 0 を出力します。"
+    ],
+    "ko": [
+      "수직선은 x 좌표 하나로, 수평선은 y 좌표 하나로 완전히 정해지며 다른 직선은 허용되지 않습니다.",
+      "각 x 값과 각 y 값이 몇 번 나오는지 셉니다(반복된 점도 다시 센다). 가장 높은 빈도가 직선 하나로 덮을 수 있는 점의 최대 개수입니다.",
+      "n개의 x 좌표와 n개의 y 좌표를 읽고, 해시 맵이나 정렬로 각 그룹의 최고 빈도를 구한 뒤 더 큰 쪽을 best로 둡니다. best >= 2이면 best를, 아니면 0을 출력합니다."
+    ],
+    "vi": [
+      "Đường thẳng đứng được xác định hoàn toàn bởi một tọa độ x và đường nằm ngang bởi một tọa độ y; không cho phép đường nào khác.",
+      "Đếm số lần mỗi giá trị x và mỗi giá trị y xuất hiện (điểm lặp lại được đếm thêm); tần suất cao nhất là số điểm nhiều nhất mà một đường có thể phủ.",
+      "Đọc n tọa độ x và n tọa độ y, lấy tần suất cao nhất của mỗi nhóm bằng hash map hoặc sắp xếp, và đặt best là giá trị lớn hơn; in best nếu best >= 2, ngược lại in 0."
     ]
   },
   "explanationEn": "## Approach\n\nCount the occurrences of every x coordinate and every y coordinate separately, take the maximum, and apply the at-least-two-points condition.\n\n## Proof of correctness\n\nA vertical line is completely determined by a fixed x coordinate and a horizontal line by a fixed y coordinate; the two frequency tables therefore enumerate exactly the number of records covered by every possible line.\n\n## Complexity\n\nO(n) time, O(n) space."

@@ -13,6 +13,21 @@
       "The range holds at most 900 three-digit numbers, so checking each one directly is fast enough; no digit DP is needed.",
       "Split each number into its hundreds, tens and units digits, and count it only when the three digits are pairwise different.",
       "Loop from left to right: the hundreds digit is the number divided by 100, the tens digit is the number divided by 10 then taken mod 10, and the units digit is the number mod 10; add one when all three differ pairwise, then print the count."
+    ],
+    "ja": [
+      "範囲内の 3 桁の数は最大でも 900 個なので、1 つずつ直接確認すれば十分に高速です。桁 DP は必要ありません。",
+      "各数を百の位、十の位、一の位に分け、3 つの桁がどれも互いに異なるときだけ数えます。",
+      "left から right までループします。百の位は数を 100 で割った値、十の位は数を 10 で割ってから 10 で割った余り、一の位は数を 10 で割った余りです。3 つがどれも互いに異なるときに 1 を加え、最後にカウントを出力します。"
+    ],
+    "ko": [
+      "범위에는 세 자리 수가 최대 900개이므로 하나씩 직접 확인해도 충분히 빠르며 자릿수 DP는 필요 없습니다.",
+      "각 수를 백의 자리, 십의 자리, 일의 자리로 나누고, 세 자릿수가 서로 모두 다를 때만 셉니다.",
+      "left부터 right까지 반복합니다. 백의 자리는 수를 100으로 나눈 값, 십의 자리는 수를 10으로 나눈 뒤 10으로 나눈 나머지, 일의 자리는 수를 10으로 나눈 나머지입니다. 세 자리가 모두 서로 다르면 1을 더하고 개수를 출력합니다."
+    ],
+    "vi": [
+      "Khoảng chứa tối đa 900 số có ba chữ số, nên kiểm tra trực tiếp từng số là đủ nhanh; không cần quy hoạch động chữ số.",
+      "Tách mỗi số thành chữ số hàng trăm, hàng chục và hàng đơn vị, và chỉ đếm nó khi ba chữ số đôi một khác nhau.",
+      "Lặp từ left đến right: chữ số hàng trăm là số chia cho 100, chữ số hàng chục là số chia cho 10 rồi lấy modulo 10, và chữ số hàng đơn vị là số modulo 10; cộng một khi cả ba đôi một khác nhau, rồi in số đếm."
     ]
   },
   "explanationEn": "## Approach\n\nEnumerate the integers in the range directly, extract the hundreds, tens and units digits, and check the three pairwise-inequality conditions.\n\n## Proof of correctness\n\nEnumerating the closed range visits every candidate once, and the three inequalities holding means exactly that any two digits differ, so nothing is missed or counted twice.\n\n## Complexity\n\nTime O(right−left+1), extra space O(1)."

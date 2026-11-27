@@ -12,5 +12,38 @@
       "First be clear about the difference between an array position and an element value.",
       "Compare decimal representations digit by digit as strings, and do not mistake a prefix for an arbitrary substring."
     ]
+  },
+  "ja": {
+    "title": "2 つの配列の数の最長共通接頭辞",
+    "description": "正の整数の配列 arr1 と arr2 が与えられます。各整数を通常の 10 進文字列として書き、arr1 から 1 つ、arr2 から 1 つの数を選び、最上位の桁から順に共通する接頭辞を比べます。すべてのペアにわたる最長共通接頭辞の長さを返してください。どのペアも先頭の桁が一致しない場合、結果は 0 です。接頭辞が数全体と等しくてもかまいません。たとえば 123 と 12345 の共通接頭辞の長さは 3 です。\n\n本サイトでの有効な入力範囲: 1≤|arr1|,|arr2|≤50000、1≤arr[i]≤10^9。元の OAMaster のスナップショットには制約が掲載されていなかったため、上記の範囲は本サイトが追加したもので、配列の長さは LeetCode 3043 の制約と同程度の規模です。\n\n元の問題: https://oamaster.com/docs/companies/uber#36-find-length-of-longest-common-prefix (upstream snapshot e66f809f4c953bce129f68491726176615db6afc, catalog content fingerprint f397cc7f27f92f51c7c043f84283075084bea701587a27af3d7bc05d6ca9041f)。\n同じ問題の OA に関する議論(問題文と例は OAMaster と同一): https://leetcode.com/discuss/post/5378805/Uber-OA-Question/。\n標準問題との照合: LeetCode 3043 https://leetcode.com/problems/find-the-length-of-the-longest-common-prefix/。",
+    "input": "1 行目に n m、2 行目に arr1 の n 個の正の整数、3 行目に arr2 の m 個の正の整数が与えられます。",
+    "output": "2 つの配列から取ったすべてのペアにわたる、10 進表記の最長共通接頭辞の長さを出力してください。",
+    "explanation": "arr1 の各整数の空でないすべての接頭辞を集合に入れ、次に arr2 の各数の接頭辞を走査して最大の長さを更新します。集合に含まれない最初の接頭辞で、その数の走査を打ち切れます。",
+    "hints": [
+      "まず、配列の位置と要素の値の違いをはっきりさせましょう。",
+      "10 進表記を文字列として 1 桁ずつ比べます。接頭辞を任意の部分文字列と取り違えないでください。"
+    ]
+  },
+  "ko": {
+    "title": "두 배열 수의 최장 공통 접두사",
+    "description": "양의 정수로 이루어진 두 배열 arr1과 arr2가 주어집니다. 각 정수를 일반적인 십진 문자열로 쓰고, arr1에서 하나, arr2에서 하나를 골라 최상위 자릿수부터 공통 접두사를 비교합니다. 모든 쌍에 대한 최장 공통 접두사의 길이를 반환하세요. 첫 자릿수가 같은 쌍이 없으면 결과는 0입니다. 접두사는 수 전체와 같을 수도 있습니다. 예를 들어 123과 12345의 공통 접두사 길이는 3입니다.\n\n이 사이트의 유효 입력 범위: 1≤|arr1|,|arr2|≤50000; 1≤arr[i]≤10^9. 원래의 OAMaster 스냅샷에는 제약 조건이 없었으며, 위 범위는 이 사이트가 추가한 것입니다. 배열 길이는 LeetCode 3043의 제약과 같은 규모입니다.\n\n원 문제: https://oamaster.com/docs/companies/uber#36-find-length-of-longest-common-prefix (upstream snapshot e66f809f4c953bce129f68491726176615db6afc, catalog content fingerprint f397cc7f27f92f51c7c043f84283075084bea701587a27af3d7bc05d6ca9041f).\n같은 문제의 OA 토론(문제 설명과 예제가 OAMaster와 동일): https://leetcode.com/discuss/post/5378805/Uber-OA-Question/.\n표준 문제 교차 확인: LeetCode 3043 https://leetcode.com/problems/find-the-length-of-the-longest-common-prefix/.",
+    "input": "첫 줄에 n m, 둘째 줄에 arr1의 양의 정수 n개, 셋째 줄에 arr2의 양의 정수 m개가 주어집니다.",
+    "output": "두 배열에서 하나씩 고른 모든 쌍에 대해, 십진 표기의 최장 공통 접두사의 길이를 출력합니다.",
+    "explanation": "arr1의 모든 정수에 대해 비어 있지 않은 접두사를 모두 집합에 저장한 뒤, arr2의 각 수의 접두사를 훑으며 최대 길이를 갱신합니다. 집합에 없는 첫 접두사에서 그 수의 탐색을 멈출 수 있습니다.",
+    "hints": [
+      "먼저 배열의 위치와 원소의 값이 다르다는 점을 분명히 구분하세요.",
+      "십진 표기를 문자열로 보고 자릿수 단위로 비교하며, 접두사를 임의의 부분 문자열로 착각하지 마세요."
+    ]
+  },
+  "vi": {
+    "title": "Độ dài tiền tố chung dài nhất của các số từ hai mảng",
+    "description": "Cho hai mảng arr1 và arr2 gồm các số nguyên dương. Viết mỗi số nguyên dưới dạng xâu thập phân thông thường; chọn một số từ arr1 và một số từ arr2 rồi so sánh tiền tố chung của chúng bắt đầu từ chữ số có nghĩa lớn nhất. Trả về độ dài tiền tố chung dài nhất trên mọi cặp; nếu không cặp nào có chung chữ số đầu tiên, kết quả là 0. Tiền tố có thể bằng cả một số; ví dụ, tiền tố chung của 123 và 12345 có độ dài 3.\n\nPhạm vi đầu vào hợp lệ trên trang này: 1≤|arr1|,|arr2|≤50000; 1≤arr[i]≤10^9. Bản chụp OAMaster gốc không công bố ràng buộc nào; các phạm vi trên do trang này bổ sung, và độ dài mảng cùng quy mô với ràng buộc của LeetCode 3043.\n\nĐề gốc: https://oamaster.com/docs/companies/uber#36-find-length-of-longest-common-prefix (upstream snapshot e66f809f4c953bce129f68491726176615db6afc, catalog content fingerprint f397cc7f27f92f51c7c043f84283075084bea701587a27af3d7bc05d6ca9041f).\nThảo luận OA của cùng bài này (đề và ví dụ giống OAMaster): https://leetcode.com/discuss/post/5378805/Uber-OA-Question/.\nĐối chiếu với bài chuẩn: LeetCode 3043 https://leetcode.com/problems/find-the-length-of-the-longest-common-prefix/.",
+    "input": "Dòng đầu tiên chứa n m; dòng thứ hai chứa n số nguyên dương của arr1; dòng thứ ba chứa m số nguyên dương của arr2.",
+    "output": "In ra độ dài tiền tố chung dài nhất của biểu diễn thập phân trên mọi cặp lấy từ hai mảng.",
+    "explanation": "Lưu mọi tiền tố không rỗng của từng số nguyên trong arr1 vào một tập hợp, rồi duyệt các tiền tố của từng số trong arr2 và cập nhật độ dài lớn nhất. Có thể dừng duyệt một số tại tiền tố đầu tiên không có trong tập.",
+    "hints": [
+      "Trước hết cần phân biệt rõ vị trí trong mảng và giá trị của phần tử.",
+      "So sánh biểu diễn thập phân từng chữ số như các xâu, và đừng nhầm tiền tố với một xâu con tùy ý."
+    ]
   }
 }

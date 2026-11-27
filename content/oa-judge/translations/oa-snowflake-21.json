@@ -11,5 +11,35 @@
     "hints": [
       "Record the positions of each digit. If a query needs digit c r times, reading must reach at least the position of the r-th occurrence of c; the answer is the maximum of all these positions."
     ]
+  },
+  "ja": {
+    "title": "数字列を作るために読む最短の接頭辞",
+    "description": "各クエリを独立に扱います。s を先頭から順に読み、余分な文字は捨ててよく、選んだ文字は並べ替えてよいものとします。クエリを作るために読む必要がある最短の接頭辞の長さを求めてください。作れない場合は −1 を出力します。元の問題文は戻り値を誤って部分文字列と呼んでいますが、本文と例から、読み取りは任意のスライディングウィンドウではなく先頭から始まることがわかります。\n\n入出力の形式と、明示した補足の制約は本サイトで整備したものであり、出題元の解答は実行していません。",
+    "input": "1 行目に数字列 s、2 行目に q、続く q 行に長さ付きの query が与えられます。空のクエリは 0 - と書きます。1≤|s|≤100000、1≤q≤20000、クエリの長さの合計は 1..500000、文字は 0..9 です。元の問題文は空のクエリが時々あることを排除していません。本サイトはそれに対応し、0 を返します。",
+    "output": "まず q を出力し、続いて q 個の最短の接頭辞の長さを出力してください。",
+    "explanation": "3 つの公開例の答えは順に 3\n7 10 -1、4\n0 1 2 -1、2\n3 -1 です。例は、独立した全探索、状態探索、または直接のシミュレーションで再確認しています。",
+    "hints": [
+      "各数字の出現位置を記録します。クエリが数字 c を r 回必要とするなら、読み取りは少なくとも c の r 番目の出現位置まで届く必要があります。答えはこれらの位置すべての最大値です。"
+    ]
+  },
+  "ko": {
+    "title": "숫자 문자열을 만들기 위해 읽어야 하는 가장 짧은 접두사",
+    "description": "각 쿼리마다 독립적으로 s를 맨 앞에서부터 순서대로 읽습니다. 남는 문자는 버려도 되고 선택한 문자는 재배열할 수 있습니다. 쿼리를 만들기 위해 읽어야 하는 가장 짧은 접두사의 길이를 구하고, 만들 수 없으면 −1을 출력하세요. 원문은 반환값을 부분 문자열이라고 잘못 불렀지만, 본문과 예제를 보면 임의의 슬라이딩 윈도우가 아니라 맨 앞에서부터 읽는 것임이 분명합니다.\n\n입출력 규약과 명시적으로 표시된 보충 제약은 이 사이트에서 정리한 것이며, 원 출처의 풀이는 실행하지 않습니다.",
+    "input": "첫 줄에 숫자 문자열 s가, 둘째 줄에 q가 주어지고, 이어서 쿼리의 길이와 쿼리 문자열이 q줄 주어집니다. 빈 쿼리는 0 -로 씁니다. 1≤|s|≤100000, 1≤q≤20000, 쿼리 길이의 총합은 1..500000이며 문자는 0..9입니다. 원문은 빈 쿼리가 간혹 나올 가능성을 배제하지 않으므로, 이 사이트는 이를 지원하여 0을 반환합니다.",
+    "output": "먼저 q를 출력한 다음, q개의 가장 짧은 접두사 길이를 출력합니다.",
+    "explanation": "공개 예제 3개의 답은 순서대로 3\n7 10 -1; 4\n0 1 2 -1; 2\n3 -1입니다. 예제는 독립적인 완전 탐색, 상태 탐색 또는 직접 시뮬레이션으로 다시 확인했습니다.",
+    "hints": [
+      "각 숫자의 등장 위치를 기록합니다. 쿼리가 숫자 c를 r번 필요로 한다면 읽는 위치는 최소한 c의 r번째 등장 위치까지 도달해야 하며, 답은 이 위치들의 최댓값입니다."
+    ]
+  },
+  "vi": {
+    "title": "Tiền tố ngắn nhất cần đọc để tạo xâu chữ số",
+    "description": "Với mỗi truy vấn độc lập, đọc tuần tự s từ đầu; có thể bỏ các ký tự thừa và sắp xếp lại các ký tự đã chọn. Tìm độ dài của tiền tố ngắn nhất cần đọc để tạo ra truy vấn; in −1 nếu không thể tạo. Văn bản gốc gọi nhầm giá trị trả về là xâu con; phần thân đề và các ví dụ cho thấy rõ việc đọc bắt đầu từ đầu, chứ không phải một cửa sổ trượt tùy ý.\n\nGiao thức đầu vào/đầu ra và các ràng buộc bổ sung được đánh dấu rõ do trang này biên soạn; lời giải của nguồn gốc không được chạy.",
+    "input": "Dòng đầu tiên chứa xâu chữ số s, dòng thứ hai chứa q, tiếp theo là q dòng length query; truy vấn rỗng được viết là 0 -. 1≤|s|≤100000, 1≤q≤20000, tổng độ dài truy vấn là 1..500000; các ký tự là 0..9. Văn bản gốc không loại trừ thỉnh thoảng có truy vấn rỗng; trang này hỗ trợ chúng và trả về 0.",
+    "output": "Trước hết in q, sau đó in q độ dài tiền tố ngắn nhất.",
+    "explanation": "Đáp án của ba ví dụ công khai lần lượt là: 3\n7 10 -1; 4\n0 1 2 -1; 2\n3 -1. Các ví dụ đã được kiểm tra lại bằng liệt kê độc lập, tìm kiếm trạng thái hoặc mô phỏng trực tiếp.",
+    "hints": [
+      "Ghi lại các vị trí của từng chữ số. Nếu một truy vấn cần chữ số c đúng r lần, việc đọc phải đến ít nhất vị trí của lần xuất hiện thứ r của c; đáp án là giá trị lớn nhất của mọi vị trí này."
+    ]
   }
 }

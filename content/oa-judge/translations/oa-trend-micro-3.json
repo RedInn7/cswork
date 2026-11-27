@@ -13,5 +13,41 @@
       "A sum of squares of positive numbers increases as the right end grows and decreases as the left end moves right.",
       "Each length has at most one valid start."
     ]
+  },
+  "ja": {
+    "title": "平方和が指定値となる連続正整数列の列挙",
+    "description": "正の整数 n が与えられます。連続する正の整数 p, p+1, …, p+c−1 の c 個の平方の和が n に等しいような、空でない数列をすべて求めてください。p≥1、c≥1 で、項が 1 つだけの数列も出力します。すべての数列を項数 c の降順に出力してください。各長さの数列は高々 1 つなので、この順序は一意に定まります。固定された元の本文は 1≤n≤10^10 を完全に規定しています。当サイトは、コンパイル版のパーサが取りこぼしたルールと範囲を元の HTML から復元し、元の文字列配列の戻り値を 1 行ずつの出力に変換しています。",
+    "input": "正の整数 n が 1 行で与えられます。1≤n≤10000000000 です。",
+    "output": "1 行目に数列の総数 k を出力します。続く k 行には、まず数列の項数 c、次にその c 個の連続する正の整数をスペース区切りで出力します。行は c の降順に出力してください。解がない場合は 0 だけを含む 1 行を出力します。出力するのは要素そのものであり、その平方ではありません。",
+    "explanation": "元のスナップショットには公開例がなく、3 つの例はすべて当サイトで追加したものです。n=1 では [1] のみ、n=2 は解なし、n=25 では 3²+4²=25 と 5²=25 があるので、長い [3,4] が [5] より先に出力されます。",
+    "hints": [
+      "最後の項は整数平方根を超えません。",
+      "正の数の平方和は、右端が伸びると増え、左端が右に動くと減ります。",
+      "各長さに対して有効な開始位置は高々 1 つです。"
+    ]
+  },
+  "ko": {
+    "title": "제곱의 합이 주어진 값인 연속 양의 정수 구간 열거",
+    "description": "양의 정수 n이 주어질 때, c개의 제곱의 합이 n이 되는 연속한 양의 정수 p, p+1, …, p+c−1로 이루어진 비어 있지 않은 모든 수열을 구하십시오. p≥1, c≥1이며, 항이 하나뿐인 수열도 출력해야 합니다. 모든 수열을 항의 개수 c의 내림차순으로 출력하십시오. 길이가 같은 수열은 최대 하나뿐이므로 이 순서는 유일합니다. 고정된 원본 본문은 1≤n≤10^10을 완전히 명시하고 있습니다. 본 사이트는 컴파일된 버전의 파서가 삼켜 버린 규칙과 범위를 원본 HTML에서 복원했으며, 원본이 반환하던 문자열 배열을 줄 단위 출력으로 바꾸었습니다.",
+    "input": "양의 정수 n이 한 줄에 주어집니다. 1≤n≤10000000000.",
+    "output": "첫째 줄에 수열의 총 개수 k를 출력합니다. 다음 k개의 줄에는 각각 먼저 수열의 항의 개수 c를 출력하고, 이어서 c개의 연속한 양의 정수를 공백으로 구분하여 모두 출력합니다. 줄은 c의 내림차순으로 출력합니다. 해가 없으면 0만 담은 한 줄만 출력합니다. 제곱이 아니라 원소 자체를 출력하십시오.",
+    "explanation": "원본 스냅샷에는 공개 예제가 없으며, 세 예제 모두 본 사이트에서 추가했습니다. n=1이면 [1]뿐이고, n=2이면 해가 없으며, n=25이면 3²+4²=25와 5²=25가 있으므로 더 긴 [3,4]를 [5]보다 먼저 출력합니다.",
+    "hints": [
+      "마지막 항은 정수 제곱근을 넘지 않습니다.",
+      "양수들의 제곱의 합은 오른쪽 끝이 커지면 증가하고 왼쪽 끝이 오른쪽으로 이동하면 감소합니다.",
+      "각 길이마다 유효한 시작점은 최대 하나입니다."
+    ]
+  },
+  "vi": {
+    "title": "Liệt kê các dãy số nguyên dương liên tiếp có tổng bình phương cho trước",
+    "description": "Cho số nguyên dương n, tìm mọi dãy khác rỗng gồm các số nguyên dương liên tiếp p, p+1, …, p+c−1 mà tổng c bình phương của chúng bằng n. p≥1 và c≥1, và các dãy chỉ có một phần tử cũng phải được in ra. In tất cả các dãy theo thứ tự giảm dần của số phần tử c. Với mỗi độ dài có tối đa một dãy, nên thứ tự này là duy nhất. Phần mô tả gốc đã cố định nêu đầy đủ 1≤n≤10^10; trang này khôi phục từ HTML gốc các quy tắc và khoảng giá trị mà bộ phân tích của bản biên dịch đã bỏ sót, đồng thời chuyển mảng chuỗi trả về gốc thành đầu ra theo từng dòng.",
+    "input": "Một dòng chứa số nguyên dương n, 1≤n≤10000000000.",
+    "output": "Dòng đầu chứa tổng số dãy k. Mỗi dòng trong k dòng tiếp theo trước hết nêu số phần tử c của dãy, sau đó là c số nguyên dương liên tiếp của dãy, cách nhau bởi dấu cách. In các dòng theo thứ tự giảm dần của c. Nếu không có nghiệm, chỉ in một dòng chứa 0. In ra chính các phần tử, không phải bình phương của chúng.",
+    "explanation": "Bản chụp gốc không có ví dụ công khai; cả ba ví dụ đều do trang này bổ sung. Với n=1 chỉ có [1]; n=2 vô nghiệm; n=25 có 3²+4²=25 và 5²=25, nên dãy dài hơn [3,4] được in trước [5].",
+    "hints": [
+      "Số hạng cuối không vượt quá căn bậc hai nguyên của n.",
+      "Tổng bình phương các số dương tăng khi đầu phải dịch sang phải và giảm khi đầu trái dịch sang phải.",
+      "Mỗi độ dài có tối đa một điểm bắt đầu hợp lệ."
+    ]
   }
 }

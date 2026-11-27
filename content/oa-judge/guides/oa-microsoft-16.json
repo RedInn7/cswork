@@ -13,6 +13,21 @@
       "Only the part before the first uppercase letter matters; if there is no uppercase letter, that is the whole text.",
       "Scan from the start, stop at the first uppercase letter, and put the lowercase letters seen along the way into a set to remove duplicates.",
       "Use a boolean array of 26 entries as the set: read character by character, stop on A to Z, and on a to z mark the letter and add one to the count if it was not marked yet. Read the whole line (it may be empty or contain spaces) and print the count."
+    ],
+    "ja": [
+      "最初の英大文字より前の部分だけが対象です。英大文字がなければ、テキスト全体が対象になります。",
+      "先頭から走査し、最初の英大文字で止め、途中で見た英小文字を集合に入れて重複を取り除きます。",
+      "26要素のブール配列を集合として使います。1文字ずつ読み、A から Z が出たら止め、a から z ならその文字に印を付け、まだ印がなければ個数に 1 を加えます。1行全体を読み込み（空の場合や空白を含む場合があります）、個数を出力します。"
+    ],
+    "ko": [
+      "첫 대문자 앞부분만 중요하며, 대문자가 없으면 텍스트 전체가 해당 부분입니다.",
+      "처음부터 스캔하다가 첫 대문자에서 멈추고, 지나온 소문자를 집합에 넣어 중복을 제거합니다.",
+      "26칸짜리 불리언 배열을 집합으로 사용합니다. 문자를 하나씩 읽다가 A에서 Z 중 하나를 만나면 멈추고, a에서 z 중 하나면 표시하되 아직 표시되지 않았다면 개수에 1을 더합니다. 한 줄 전체를 읽어야 하며(비어 있거나 공백을 포함할 수 있음), 센 값을 출력합니다."
+    ],
+    "vi": [
+      "Chỉ phần nằm trước chữ in hoa đầu tiên là quan trọng; nếu không có chữ in hoa thì đó là toàn bộ văn bản.",
+      "Duyệt từ đầu, dừng tại chữ in hoa đầu tiên, và đưa các chữ thường gặp trên đường vào một tập hợp để loại bỏ trùng lặp.",
+      "Dùng một mảng boolean gồm 26 phần tử làm tập hợp: đọc từng ký tự, dừng khi gặp A đến Z, và với a đến z thì đánh dấu chữ cái đó và tăng số đếm lên một nếu nó chưa được đánh dấu. Đọc cả dòng (có thể rỗng hoặc chứa dấu cách) và in số đếm."
     ]
   },
   "explanationEn": "## Approach\n\nScan and stop at the first uppercase letter, adding the lowercase letters before it to a set.\n\n## Proof of correctness\n\nThe scanned range is exactly the defined prefix, and the set removes duplicates, so the set's size is the number of distinct lowercase letters.\n\n## Complexity\n\nTime O(N), space O(26)."

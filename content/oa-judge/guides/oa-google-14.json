@@ -13,6 +13,21 @@
       "Four-digit codes allow leading zeros, each digit is chosen independently from 0 to 9, and the digit sum is at most 36. Fill the code one digit at a time while tracking the digit sum so far.",
       "Let dp[s] be the number of ways to fill the digits so far with digit sum s. Each extra digit moves every old state s to s + d for d from 0 to 9.",
       "Start with only dp[0] = 1 (the empty code); repeat 4 times: create a new array next, and for every s and digit d with s + d <= 36 add dp[s] to next[s + d], then replace dp with next; print dp[S]."
+    ],
+    "ja": [
+      "4 桁のコードでは先頭の 0 が許され、各桁は 0 から 9 まで独立に選べ、数字の和は高々 36 です。コードを 1 桁ずつ埋めながら、それまでの数字の和を追跡します。",
+      "dp[s] を、ここまでの桁を埋めて数字の和が s になる方法の数とします。桁が 1 つ増えるごとに、古い各状態 s は、d を 0 から 9 として s + d に移ります。",
+      "dp[0] = 1 (空のコード) だけで始め、4 回繰り返します。新しい配列 next を作り、s + d <= 36 を満たすすべての s と数字 d について next[s + d] に dp[s] を足し、dp を next で置き換えます。最後に dp[S] を出力します。"
+    ],
+    "ko": [
+      "네 자리 코드는 앞자리 0을 허용하고, 각 자리는 0부터 9 중에서 독립적으로 선택되며, 숫자 합은 최대 36입니다. 지금까지의 숫자 합을 추적하면서 코드를 한 자리씩 채워 나갑니다.",
+      "dp[s]를 지금까지 채운 자리의 숫자 합이 s인 방법의 수라고 합시다. 숫자가 하나 추가될 때마다 기존의 모든 상태 s가 0부터 9까지의 d에 대해 s + d로 옮겨집니다.",
+      "빈 코드를 뜻하는 dp[0] = 1만 있는 상태에서 시작합니다. 4번 반복합니다. 새 배열 next를 만들고, s + d <= 36인 모든 s와 숫자 d에 대해 dp[s]를 next[s + d]에 더한 뒤 dp를 next로 교체합니다. dp[S]를 출력합니다."
+    ],
+    "vi": [
+      "Mã bốn chữ số cho phép chữ số 0 ở đầu, mỗi chữ số được chọn độc lập từ 0 đến 9, và tổng chữ số tối đa là 36. Điền mã từng chữ số một và theo dõi tổng chữ số cho đến lúc đó.",
+      "Gọi dp[s] là số cách điền các chữ số cho tới hiện tại với tổng chữ số s. Mỗi chữ số thêm vào chuyển mọi trạng thái cũ s sang s + d với d từ 0 đến 9.",
+      "Bắt đầu chỉ với dp[0] = 1 (mã rỗng); lặp 4 lần: tạo một mảng mới next, và với mọi s và chữ số d thỏa s + d <= 36 cộng dp[s] vào next[s + d], rồi thay dp bằng next; in dp[S]."
     ]
   },
   "explanationEn": "## Approach\n\ndp[s] records how many partial codes have digit sum s after some digits have been written. For each new digit, every old state transitions to the states obtained by adding a digit 0..9.\n\n## Why it is correct\n\nInitially there is only the empty code, with digit sum zero. Every code that is one digit longer comes uniquely from the old code obtained by deleting its last digit together with that last digit, so the transitions neither double count nor miss anything. After all four digits, dp[S] is the answer.\n\n## Complexity\n\nO(4×37×10) time, O(37) extra space."

@@ -13,6 +13,21 @@
       "Looking from tower y in one direction, tower x is visible exactly when x is taller than every tower between them; in other words, the towers seen in that direction are exactly the strict new-maximum towers starting from y. The left and right sides are disjoint, so count them separately and add.",
       "While scanning left to right, keep a monotonic stack of the towers visible when looking left from the current position, with heights strictly increasing from top to bottom. Once a new tower is added, every old tower no taller than it is blocked by it for good.",
       "For each position i: first add the stack size to answer[i], then pop every top whose height is <= height[i], then push height[i]; repeat the same pass from right to left, adding into answer, and print the counts in the original order."
+    ],
+    "ja": [
+      "塔 y からある方向を見たとき、塔 x が見えるのは x が間のすべての塔より高いときに限ります。言い換えれば、その方向に見える塔は、y から始めて狭義に最大値を更新していく塔そのものです。左側と右側は重ならないので、別々に数えて足し合わせます。",
+      "左から右へ走査しながら、現在位置から左を見たとき見える塔の単調スタックを保持します。高さは上から下に向かって狭義に増加します。新しい塔を追加すると、それ以下の高さの古い塔は、その塔に永久に遮られます。",
+      "各位置 i について、まず answer[i] にスタックのサイズを加え、次に高さが height[i] 以下のスタックの先頭をすべて取り出し、height[i] を積みます。右から左へも同じ走査を行って answer に加算し、元の順序でカウントを出力します。"
+    ],
+    "ko": [
+      "탑 y에서 한 방향을 볼 때, 탑 x는 그 사이의 모든 탑보다 높을 때에만 보입니다. 다시 말해 그 방향에서 보이는 탑은 y에서 시작해 값이 엄격하게 새로운 최댓값이 되는 탑들입니다. 왼쪽과 오른쪽은 서로 겹치지 않으므로 각각 세어 더합니다.",
+      "왼쪽에서 오른쪽으로 스캔하면서, 현재 위치에서 왼쪽을 볼 때 보이는 탑들의 단조 스택을 유지합니다. 높이는 위에서 아래로 엄격하게 증가합니다. 새 탑이 추가되면 그보다 높지 않은 기존 탑은 이후 영원히 가려집니다.",
+      "각 위치 i에 대해 먼저 스택 크기를 answer[i]에 더하고, 높이가 <= height[i]인 맨 위 원소를 모두 팝한 뒤 height[i]를 푸시합니다. 오른쪽에서 왼쪽으로도 같은 과정을 반복하며 answer에 더하고, 개수를 원래 순서대로 출력합니다."
+    ],
+    "vi": [
+      "Nhìn từ tháp y theo một hướng, tháp x nhìn thấy được đúng khi x cao hơn mọi tháp nằm giữa chúng; nói cách khác, các tháp nhìn thấy theo hướng đó chính là các tháp có giá trị lớn nhất mới ngặt bắt đầu từ y. Phía trái và phía phải không giao nhau, nên đếm riêng rồi cộng lại.",
+      "Khi quét từ trái sang phải, giữ một ngăn xếp đơn điệu gồm các tháp nhìn thấy khi nhìn sang trái từ vị trí hiện tại, với chiều cao tăng ngặt từ đỉnh xuống đáy. Khi một tháp mới được thêm vào, mọi tháp cũ không cao hơn nó bị nó che khuất vĩnh viễn.",
+      "Với mỗi vị trí i: trước tiên cộng kích thước ngăn xếp vào answer[i], rồi bỏ mọi phần tử đỉnh có chiều cao <= height[i], rồi đẩy height[i]; lặp lại lượt quét tương tự từ phải sang trái, cộng dồn vào answer, và in các số theo thứ tự ban đầu."
     ]
   },
   "explanationEn": "## Approach\n\nScan from left to right; the stack keeps the strict record-height towers of the scanned prefix as seen looking from right to left. First add the stack length to the current visible count, then pop the old records whose height is <= the current tower's, and push the current tower. Do the same once more in reverse and accumulate.\n\n## Proof of correctness\n\nA past tower is visible exactly when its height is strictly greater than all heights between it and the current tower, i.e., when it is a strict record-height tower in that direction. After the current tower is added, every old record no taller than it is blocked, while the taller ones remain records; the monotonic stack maintains this invariant. The left and right sides are independent and disjoint, so the results are added.\n\n## Complexity\n\nTime O(n), space O(n). The original example [5,2,10,1] gives [2,2,3,1]; do not apply the other visibility rule based on the minimum height of the two ends."

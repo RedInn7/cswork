@@ -13,6 +13,21 @@
       "When requests are processed by pickup ascending (then return ascending), only cars returned no later than the current pickup can be reused; a car returned at the same moment can be used again immediately.",
       "Use two min-heaps: a busy heap of (return time, car id) ordered by return time, and a free heap ordered by car id. For each request first move every returned car from the busy heap to the free heap, then take the free car with the smallest id; create a new car only when no car is free.",
       "Sort the requests and process them in order: while the busy heap's earliest return time <= pickup, pop it into the free heap; if a car is free take the smallest id, otherwise the id is the current number of cars and a new list is created; append (pickup, return) to that car's list and push (return, id) onto the busy heap; finally print the number of cars and one line per car in the form 'id: (p,r) (p,r) ...'."
+    ],
+    "ja": [
+      "リクエストを pickup の昇順（次に return の昇順）で処理するとき、現在の pickup 以前に返却された車だけが再利用できます。同じ時刻に返却された車は、すぐに再び使えます。",
+      "2 つの最小ヒープを使います。1 つは返却時刻順の使用中ヒープ (return time, car id)、もう 1 つは車の番号順の空きヒープです。各リクエストについて、まず返却済みの車をすべて使用中ヒープから空きヒープに移し、その後、空き車の中で最小の番号を取ります。空き車がないときだけ新しい車を作ります。",
+      "リクエストをソートして順に処理します。使用中ヒープの最も早い返却時刻が pickup 以下の間、それを pop して空きヒープに入れます。空き車があれば最小の番号を取り、なければ番号は現在の車の台数となり、新しいリストを作ります。(pickup, return) をその車のリストに追加し、(return, id) を使用中ヒープに push します。最後に車の台数と、車ごとに 'id: (p,r) (p,r) ...' の形式の 1 行を出力します。"
+    ],
+    "ko": [
+      "요청을 pickup 오름차순(같으면 return 오름차순)으로 처리할 때, 현재 pickup 이하의 시각에 반납된 차량만 재사용할 수 있습니다. 같은 시각에 반납된 차량은 즉시 다시 사용할 수 있습니다.",
+      "두 개의 최소 힙을 사용합니다. 반납 시각 순으로 정렬되는 busy 힙 (return time, car id)과 차량 번호 순으로 정렬되는 free 힙입니다. 각 요청마다 먼저 반납된 모든 차량을 busy 힙에서 free 힙으로 옮긴 뒤, 번호가 가장 작은 free 차량을 취합니다. 놀고 있는 차량이 없을 때만 새 차량을 만듭니다.",
+      "요청을 정렬하고 순서대로 처리합니다. busy 힙의 가장 이른 반납 시각이 <= pickup인 동안 꺼내어 free 힙에 넣습니다. free 차량이 있으면 가장 작은 번호를 쓰고, 없으면 현재 차량 수가 번호가 되며 새 리스트를 만듭니다. 그 차량의 리스트에 (pickup, return)을 추가하고 (return, id)를 busy 힙에 넣습니다. 마지막으로 차량 수와 차량별 한 줄을 'id: (p,r) (p,r) ...' 형식으로 출력합니다."
+    ],
+    "vi": [
+      "Khi xử lý các yêu cầu theo pickup tăng dần (rồi return tăng dần), chỉ những xe được trả không muộn hơn pickup hiện tại mới có thể dùng lại; một xe được trả cùng thời điểm có thể được dùng lại ngay.",
+      "Dùng hai min-heap: heap bận chứa (thời gian trả, mã xe) sắp theo thời gian trả, và heap rảnh sắp theo mã xe. Với mỗi yêu cầu, trước hết chuyển mọi xe đã được trả từ heap bận sang heap rảnh, rồi lấy xe rảnh có mã nhỏ nhất; chỉ tạo xe mới khi không còn xe rảnh.",
+      "Sắp xếp các yêu cầu và xử lý theo thứ tự: trong khi thời gian trả sớm nhất của heap bận <= pickup, pop nó vào heap rảnh; nếu có xe rảnh thì lấy mã nhỏ nhất, nếu không thì mã là số xe hiện tại và tạo một danh sách mới; thêm (pickup, return) vào danh sách của xe đó và push (return, id) vào heap bận; cuối cùng in số xe và mỗi xe một dòng dạng 'id: (p,r) (p,r) ...'."
     ]
   },
   "explanationEn": "## Approach\n\nManage the cars with a busy min-heap keyed by return time and a free min-heap keyed by id. For each request, first release every car that has been returned, then take the smallest free id or a new car.\n\n## Correctness\n\nOnly cars with return time <= pickup can be reused, and the busy heap releases exactly that batch of cars. The free heap gives the smallest id exactly as the canonical rule requires. When a new car is created, all existing cars are in use, so the number of currently overlapping requests requires one more car; creating it is therefore necessary, and the final number of cars is minimal.\n\n## Complexity\n\nTime O(n log n), space O(n + output size)."

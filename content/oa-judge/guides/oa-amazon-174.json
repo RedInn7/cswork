@@ -13,6 +13,21 @@
       "A valid subarray has equal ends, and its variance is the number of elements different from that end value. If the same value also occurs in between, shrinking to two consecutive occurrences is never worse.",
       "So only consecutive occurrences j < i of the same value matter, and then the variance is i - j - 1; take the minimum over all such pairs.",
       "Keep a hash map from each value to the index of its previous occurrence; scanning left to right, when the current value has been seen, update the minimum with i - last[v] - 1, then set last[v] = i. Print the minimum."
+    ],
+    "ja": [
+      "有効な部分配列は両端が等しく、その分散は端の値と異なる要素の個数です。同じ値が途中にも現れるなら、連続する 2 つの出現に縮めても悪くなることはありません。",
+      "したがって重要なのは、同じ値の連続する出現 j < i だけで、そのとき分散は i - j - 1 です。そのようなすべてのペアにわたる最小値を取ります。",
+      "各値からその直前の出現のインデックスへのハッシュマップを保持します。左から右へ走査し、現在の値がすでに見たものなら i - last[v] - 1 で最小値を更新し、その後 last[v] = i とします。最小値を出力します。"
+    ],
+    "ko": [
+      "유효한 부분 배열은 양 끝이 같고, 그 분산은 끝 값과 다른 원소의 개수입니다. 같은 값이 중간에도 등장한다면 연속한 두 등장 위치로 줄이는 것이 더 나빠지는 일은 없습니다.",
+      "따라서 같은 값의 연속한 등장 위치 j < i만 중요하며, 이때 분산은 i - j - 1입니다. 모든 그런 쌍에 대해 최솟값을 취합니다.",
+      "각 값에서 직전 등장 위치의 인덱스로 가는 해시 맵을 유지합니다. 왼쪽에서 오른쪽으로 스캔하다가 현재 값을 이미 본 적이 있으면 i - last[v] - 1로 최솟값을 갱신하고 last[v] = i로 설정합니다. 최솟값을 출력합니다."
+    ],
+    "vi": [
+      "Một mảng con hợp lệ có hai đầu bằng nhau, và phương sai của nó là số phần tử khác giá trị đầu đó. Nếu cùng giá trị đó còn xuất hiện ở giữa, thu hẹp về hai lần xuất hiện liên tiếp không bao giờ tệ hơn.",
+      "Vì vậy chỉ các lần xuất hiện liên tiếp j < i của cùng một giá trị mới quan trọng, và khi đó phương sai là i - j - 1; lấy giá trị nhỏ nhất trên mọi cặp như vậy.",
+      "Giữ một bảng băm từ mỗi giá trị đến chỉ số của lần xuất hiện trước của nó; quét từ trái sang phải, khi giá trị hiện tại đã từng thấy, cập nhật giá trị nhỏ nhất bằng i - last[v] - 1, rồi đặt last[v] = i. In giá trị nhỏ nhất."
     ]
   },
   "explanationEn": "## Approach\n\nFor each value, only compare the index difference minus 1 between two consecutive occurrences, and take the minimum.\n\n## Proof of correctness\n\nIf the endpoint value occurs more than twice in a valid range, its number of non-endpoint values equals the sum of the numbers of other elements in the gaps between consecutive occurrences of that value, and a sum of non-negative terms is no less than its smallest term. Hence some pair of consecutive occurrences gives an answer that is no worse, and it suffices to enumerate those pairs.\n\n## Complexity\n\nTime O(n), space O(n)."

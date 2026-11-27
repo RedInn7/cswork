@@ -13,6 +13,21 @@
       "The difference between two dates equals the difference of their day counts from a common fixed origin, so it suffices to convert a date into the number of days elapsed since January 1 of year 1.",
       "The days before a date have three parts: the days of all earlier full years (365 times the number of years plus the number of leap years, counted with the inclusion-exclusion rule every 4 years, not every 100, again every 400), the days of the earlier full months of the current year, and the day of the month minus 1.",
       "Write a function: with p = year-1, days = 365p + p/4 - p/100 + p/400, plus the month prefix table entry, plus 1 if the month is after February in a leap year, plus day-1. Compute it for both dates and print the second minus the first. Years here are at most 9999, so the result fits in 32 bits."
+    ],
+    "ja": [
+      "2 つの日付の差は、共通の固定された起点からの日数の差に等しいので、日付を 1 年 1 月 1 日からの経過日数に変換すれば十分です。",
+      "日付より前の日数は 3 つの部分からなります。それ以前の完全な年の日数(365 に年数を掛けたものに、閏年の個数を足したもの。閏年の個数は、4 年ごと、100 年ごとを引き、400 年ごとをまた足す包除の規則で数えます)、その年のそれ以前の完全な月の日数、そしてその月の日から 1 を引いたものです。",
+      "関数を書きます。p = year-1 として、days = 365p + p/4 - p/100 + p/400 に、月の接頭辞テーブルの値を加え、閏年で 2 月より後の月なら 1 を加え、さらに day-1 を加えます。両方の日付について計算し、2 つ目から 1 つ目を引いたものを出力します。年は高々 9999 なので、結果は 32 ビットに収まります。"
+    ],
+    "ko": [
+      "두 날짜의 차이는 공통의 고정된 기준일로부터 센 일수의 차이와 같으므로, 날짜를 서기 1년 1월 1일 이후 경과한 일수로 변환하면 충분합니다.",
+      "날짜 이전의 일수는 세 부분으로 이루어집니다. 이전의 모든 완전한 연도의 일수(연수에 365를 곱한 값에 윤년의 수를 더한 것으로, 4년마다, 100년마다 빼고, 400년마다 다시 더하는 포함-배제 규칙으로 셉니다), 현재 연도의 이전 완전한 월들의 일수, 그리고 해당 월의 일에서 1을 뺀 값입니다.",
+      "함수를 하나 작성하세요. p = year-1로 두고 days = 365p + p/4 - p/100 + p/400에 월 누적 표의 항목을 더하고, 윤년에서 월이 2월 이후이면 1을 더하고, day-1을 더합니다. 두 날짜에 대해 계산한 뒤 두 번째에서 첫 번째를 뺀 값을 출력하세요. 연도가 최대 9999이므로 결과는 32비트에 들어갑니다."
+    ],
+    "vi": [
+      "Hiệu giữa hai ngày bằng hiệu số ngày tính từ một mốc cố định chung, nên chỉ cần chuyển một ngày thành số ngày đã trôi qua kể từ ngày 1 tháng 1 năm 1.",
+      "Số ngày trước một ngày gồm ba phần: số ngày của mọi năm đầy đủ trước đó (365 nhân số năm cộng số năm nhuận, đếm bằng quy tắc bao hàm - loại trừ cứ mỗi 4 năm, trừ mỗi 100 năm, cộng lại mỗi 400 năm), số ngày của các tháng đầy đủ trước đó trong năm hiện tại, và ngày trong tháng trừ 1.",
+      "Viết một hàm: với p = year-1, days = 365p + p/4 - p/100 + p/400, cộng thêm giá trị trong bảng tiền tố của tháng, cộng thêm 1 nếu tháng sau tháng Hai trong năm nhuận, cộng thêm day-1. Tính cho cả hai ngày và in hiệu của ngày sau trừ ngày đầu. Năm ở đây tối đa 9999, nên kết quả vừa trong 32 bit."
     ]
   },
   "explanationEn": "## Approach\n\nDefine a date's ordinal as the number of days elapsed before that date. The number of leap years before year y is floor((y-1)/4)-floor((y-1)/100)+floor((y-1)/400); add the total days of the common years, the full months before this one in the current year, and day-1. The answer is the second ordinal minus the first.\n\n## Proof of correctness\n\nThere are y-1 complete years before Gregorian year y, and the number of leap years among them is given exactly by the inclusion-exclusion formula: a leap year every 4 years, none every 100, and again every 400. The month prefix table, plus the extra day after February in a leap year, plus day-1, gives the exact number of days elapsed since January 1 of year 1. The difference of the two ordinals is the number of elapsed days; the problem guarantees the order, so no absolute value is needed.\n\n## Complexity\n\nTime O(1), space O(1). Within this site's year range the answer is at most 3,652,058, which is safe in int32."

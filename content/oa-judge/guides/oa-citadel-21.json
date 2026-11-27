@@ -13,6 +13,21 @@
       "Every palindromic substring has a unique center: either a character (odd length) or the gap between two adjacent characters (even length).",
       "Expand from each center outward on both sides at once; every time the two ends match you get one new palindrome, and you stop at the first mismatch or boundary. Equal texts at different positions are counted separately, which is exactly what center enumeration does.",
       "Loop over the 2n - 1 centers and set left = center / 2 and right = (center + 1) / 2 to handle both parities; while left >= 0, right < n and the ends match, add one and move outward. This is O(n^2), fine for n <= 1000."
+    ],
+    "ja": [
+      "回文部分文字列にはそれぞれ一意の中心があります。文字（奇数長）か、隣り合う 2 文字の間の隙間（偶数長）です。",
+      "各中心から両側に同時に外側へ広げ、両端が一致するたびに新しい回文が 1 つ得られます。最初の不一致か境界で止めます。異なる位置にある同じ文字列は別々に数えられ、これは中心の列挙がまさに行うことです。",
+      "2n - 1 個の中心にわたってループし、left = center / 2、right = (center + 1) / 2 とすれば、両方の偶奇を扱えます。left >= 0、right < n で両端が一致する間、1 を加算し、外側へ進めます。これは O(n^2) で、n <= 1000 なら十分です。"
+    ],
+    "ko": [
+      "모든 회문 부분 문자열에는 유일한 중심이 있습니다. 문자 하나(홀수 길이) 또는 인접한 두 문자 사이의 틈(짝수 길이)입니다.",
+      "각 중심에서 양쪽으로 동시에 확장하며, 양 끝이 일치할 때마다 새로운 회문이 하나 생기고 처음 불일치하거나 경계에 닿으면 멈춥니다. 다른 위치의 같은 문자열을 따로 세는 것이 바로 중심 열거가 하는 일입니다.",
+      "2n - 1개의 중심을 순회하며 left = center / 2, right = (center + 1) / 2로 두어 홀수·짝수 길이를 모두 처리합니다. left >= 0, right < n이고 양 끝이 일치하는 동안 하나를 더하고 바깥으로 이동합니다. 시간은 O(n^2)이며 n <= 1000에서 충분합니다."
+    ],
+    "vi": [
+      "Mỗi xâu con palindrome có một tâm duy nhất: hoặc là một ký tự (độ dài lẻ) hoặc là khe giữa hai ký tự liền kề (độ dài chẵn).",
+      "Mở rộng từ mỗi tâm ra cả hai phía cùng lúc; mỗi lần hai đầu khớp nhau bạn có thêm một palindrome, và dừng ở lần không khớp đầu tiên hoặc khi chạm biên. Các văn bản giống nhau ở các vị trí khác nhau được tính riêng, đó đúng là điều mà việc liệt kê tâm thực hiện.",
+      "Lặp trên 2n - 1 tâm và đặt left = center / 2 và right = (center + 1) / 2 để xử lý cả hai tính chẵn lẻ; trong khi left >= 0, right < n và hai đầu khớp nhau, cộng một và di chuyển ra ngoài. Đây là O(n^2), đủ tốt cho n <= 1000."
     ]
   },
   "explanationEn": "## Approach\n\nEnumerate each character as a center and each gap between adjacent characters as a center, expanding outward on both sides simultaneously; each match contributes one palindrome.\n\n## Proof of correctness\n\nEvery palindrome has a unique center and radius; an expansion produces exactly one new palindrome when the characters on both sides are equal, and it cannot continue after a mismatch or the boundary. Enumerating all odd and even centers covers every substring without repetition.\n\n## Complexity\n\nO(n^2) time and O(1) extra space."

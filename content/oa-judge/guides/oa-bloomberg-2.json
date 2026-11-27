@@ -13,6 +13,21 @@
       "There can be 10^5 queries, but the right endpoints are at most 10^6, so precompute every number from 1 to the largest right endpoint once and answer each range with prefix sums.",
       "To test a number for repeated digits, take its digits one at a time and record them in a 10-bit mask; if a digit bit is already set, the number has a repeat.",
       "Let pre[x] be how many numbers in 1..x have no repeated digit, with pre[x] = pre[x-1] + (x is valid). For each query [n, m] print pre[m] - pre[n-1], one per line in query order."
+    ],
+    "ja": [
+      "クエリは 10^5 個ありえますが、右端は最大でも 10^6 なので、1 から最大の右端までのすべての数を一度だけ前処理し、各範囲を prefix sum で答えます。",
+      "数に重複する桁があるかを調べるには、桁を 1 つずつ取り出して 10 ビットのマスクに記録します。すでに立っている桁のビットがあれば、その数には重複があります。",
+      "pre[x] を、1..x のうち桁の重複がない数の個数とし、pre[x] = pre[x-1] + (x が有効かどうか) とします。各クエリ [n, m] について pre[m] - pre[n-1] を、クエリの順に 1 行ずつ出力します。"
+    ],
+    "ko": [
+      "질의가 10^5개일 수 있지만 오른쪽 끝점은 최대 10^6이므로, 1부터 가장 큰 오른쪽 끝점까지의 모든 수를 한 번만 미리 계산하고 각 구간은 누적 합으로 답합니다.",
+      "수에 중복된 숫자가 있는지 확인하려면 숫자를 하나씩 꺼내 10비트 마스크에 기록하고, 이미 켜진 비트의 숫자가 나오면 중복이 있는 것입니다.",
+      "pre[x]를 1..x 중 숫자가 중복되지 않는 수의 개수라 하면 pre[x] = pre[x-1] + (x가 유효하면 1)입니다. 각 질의 [n, m]에 대해 pre[m] - pre[n-1]을 질의 순서대로 한 줄에 하나씩 출력합니다."
+    ],
+    "vi": [
+      "Có thể có 10^5 truy vấn, nhưng các điểm cuối phải không quá 10^6, nên hãy tiền xử lý mọi số từ 1 tới điểm cuối phải lớn nhất một lần và trả lời mỗi đoạn bằng tổng tiền tố.",
+      "Để kiểm tra một số có chữ số lặp hay không, lấy từng chữ số một và ghi vào một mask 10 bit; nếu bit của một chữ số đã được đặt thì số đó có lặp.",
+      "Gọi pre[x] là số lượng các số trong 1..x không có chữ số lặp, với pre[x] = pre[x-1] + (x hợp lệ). Với mỗi truy vấn [n, m] in pre[m] - pre[n-1], mỗi kết quả một dòng theo thứ tự truy vấn."
     ]
   },
   "explanationEn": "## Approach\n\nUse a bitmask to decide whether each number from 1 to the largest right endpoint has a repeated digit, while building a prefix count; the answer for a range is pre[m]−pre[n−1].\n\n## Correctness\n\nWhile scanning a number, the mask records exactly the digits that have appeared, and a repeated bit occurs if and only if there is a repeated digit. The prefix count therefore equals the number of valid numbers in the corresponding prefix, and the subtraction removes the numbers smaller than n, leaving exactly the answer for the closed interval.\n\n## Complexity\n\nLet M be the largest right endpoint; time O(M log M+q), space O(M+q)."

@@ -11,5 +11,35 @@
     "hints": [
       "For each value, keep a min-heap of original indices; use a max-heap to schedule duplicated positive values. In each round, take the two smallest indices, mark the former as deleted, push the latter into the group of the halved value, and update the duplicate candidates."
     ]
+  },
+  "ja": {
+    "title": "重複する最大優先度を処理した後の残りのキュー",
+    "description": "各ラウンドで、2 回以上現れる最大の優先度 p を探します。存在しない場合、または p=0 の場合は終了します。現在のキューでその優先度を持つ先頭 2 つのうち、1 つ目を削除し、2 つ目を floor(p/2) に下げます。それ以外の要素の相対順序は変わりません。最終的なキューを出力してください。\n\n本サイトは標準入出力と解法を独自に作成しました。出典に欠けている制約の補足や、例の訂正は仕様に明記しています。",
+    "input": "1 行目に n、2 行目に n 個の初期優先度が与えられます。元の制約は 1≤n≤100000、1≤初期優先度≤10^9 です。処理中に 0 が現れることがありますが、0 どうしはそれ以上統合されません。",
+    "output": "1 行目は最終的な長さ、2 行目は最終的な優先度を元の相対順序のまま出力します。",
+    "explanation": "出力は順に、3 つの数 3 6 0、数 0 が 1 つ、2 つの数 0 1 です。原文の 2 つ目の例では、最初の中間キューは 2 2 1 になるはずです。3 つ目の例の追跡に出てくる 17 は誤記で、元の最後の要素は終始 1 のままです。",
+    "hints": [
+      "値ごとに元の添字の最小ヒープを持ち、重複している正の値のスケジュールには最大ヒープを使います。各ラウンドで最小の 2 つの添字を取り出し、前者を削除済みにして、後者を半分にした値のグループへ push し、重複の候補を更新します。"
+    ]
+  },
+  "ko": {
+    "title": "가장 큰 중복 우선순위를 처리한 뒤 남는 큐",
+    "description": "매 라운드마다 두 번 이상 나타나는 우선순위 중 가장 큰 p를 찾습니다. 없거나 p=0이면 멈춥니다. 현재 큐에서 그 우선순위를 가진 처음 두 항목을 잡아 앞의 것은 삭제하고, 뒤의 것은 floor(p/2)로 줄입니다. 나머지의 상대적 순서는 바뀌지 않습니다. 최종 큐를 출력하세요.\n\n본 사이트에서 표준 입출력과 풀이를 독립적으로 마련했습니다. 출처에 없는 범위를 보충한 내용과 예제의 오류를 바로잡은 내용은 명세에 명시되어 있습니다.",
+    "input": "첫 번째 줄에 n, 두 번째 줄에 n개의 초기 우선순위가 주어집니다. 원래 제약 조건: 1≤n≤100000, 1≤초기 우선순위≤10^9. 처리 중에 0이 나타날 수 있으나 0끼리는 더 병합되지 않습니다.",
+    "output": "첫 번째 줄에 최종 길이, 두 번째 줄에 원래의 상대 순서대로 최종 우선순위를 출력합니다.",
+    "explanation": "출력은 각각 3개의 수 3 6 0, 수 하나 0, 2개의 수 0 1입니다. 원문의 두 번째 예제에서 첫 중간 큐는 2 2 1이어야 합니다. 세 번째 예제 풀이 과정의 17은 오타이며, 원래의 마지막 항목은 계속 1로 유지됩니다.",
+    "hints": [
+      "값마다 원래 인덱스의 최소 힙을 두고, 중복된 양수 값을 스케줄링하는 데는 최대 힙을 씁니다. 매 라운드 가장 작은 두 인덱스를 꺼내 앞의 것은 삭제 표시를 하고, 뒤의 것은 절반이 된 값의 그룹에 넣고, 중복 후보를 갱신합니다."
+    ]
+  },
+  "vi": {
+    "title": "Hàng đợi còn lại sau khi xử lý độ ưu tiên trùng lớn nhất",
+    "description": "Ở mỗi vòng, tìm độ ưu tiên p lớn nhất xuất hiện ít nhất hai lần; dừng nếu không có hoặc p=0. Lấy hai phần tử đầu tiên có độ ưu tiên đó trong hàng đợi hiện tại, xóa phần tử thứ nhất, và giảm phần tử thứ hai xuống floor(p/2). Thứ tự tương đối của mọi phần tử khác không đổi. In ra hàng đợi cuối cùng.\n\nTrang này tự biên soạn phần vào/ra chuẩn và lời giải; các giới hạn được bổ sung khi nguồn còn thiếu và các chỉnh sửa cho ví dụ đều được nêu rõ trong đặc tả.",
+    "input": "Dòng đầu chứa n, dòng thứ hai chứa n độ ưu tiên ban đầu. Giới hạn gốc: 1≤n≤100000, 1≤độ ưu tiên ban đầu≤10^9; số 0 có thể xuất hiện trong quá trình xử lý, nhưng các số 0 không thể gộp tiếp.",
+    "output": "Dòng đầu là độ dài cuối cùng; dòng thứ hai là các độ ưu tiên cuối cùng theo thứ tự tương đối ban đầu.",
+    "explanation": "Đầu ra lần lượt là 3 số 3 6 0, một số duy nhất 0, và 2 số 0 1. Trong ví dụ thứ hai của bản gốc, hàng đợi trung gian đầu tiên phải là 2 2 1; số 17 trong phần minh họa của ví dụ thứ ba là lỗi đánh máy, và phần tử gốc cuối cùng luôn giữ nguyên là 1.",
+    "hints": [
+      "Với mỗi giá trị, giữ một min-heap các chỉ số gốc; dùng một max-heap để lập lịch các giá trị dương bị trùng. Ở mỗi vòng, lấy hai chỉ số nhỏ nhất, đánh dấu chỉ số trước là đã xóa, đẩy chỉ số sau vào nhóm của giá trị đã chia đôi, rồi cập nhật các ứng viên trùng."
+    ]
   }
 }

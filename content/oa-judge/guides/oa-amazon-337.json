@@ -13,6 +13,21 @@
       "Characters that are never moved keep their original relative order and all come before every moved character. So the beginning of the final string must be a subsequence of the original string.",
       "To move as few times as possible, keep as many characters in place as possible: they form a prefix of the target (the reversed string) that is also a subsequence of the original. The other characters are then moved to the end one by one in the order of the target's suffix.",
       "Let target be the reverse of s and set a pointer matched=0; scan s in order, and whenever the current character equals target[matched], increase matched by 1. The answer is n−matched."
+    ],
+    "ja": [
+      "一度も移動されない文字は、元の相対順序を保ち、すべて移動された文字より前に来ます。したがって、最終的な文字列の先頭部分は、元の文字列の部分列でなければなりません。",
+      "移動回数を最小にするには、できるだけ多くの文字をその場に残します。残された文字は、目標(反転した文字列)の接頭辞であり、かつ元の文字列の部分列でもあるものをなします。残りの文字は、目標の接尾辞の順に1つずつ末尾へ移されます。",
+      "target を s の反転とし、ポインタ matched=0 を用意します。s を順に走査し、現在の文字が target[matched] に等しいたびに matched を 1 増やします。答えは n−matched です。"
+    ],
+    "ko": [
+      "한 번도 옮기지 않은 문자들은 원래의 상대 순서를 유지하며 옮겨진 모든 문자보다 앞에 놓입니다. 따라서 최종 문자열의 앞부분은 원래 문자열의 부분 수열이어야 합니다.",
+      "최소 횟수로 옮기려면 최대한 많은 문자를 제자리에 두어야 하며, 그 문자들은 목표(뒤집은 문자열)의 접두사이면서 원래 문자열의 부분 수열입니다. 나머지 문자는 목표의 접미사 순서대로 하나씩 끝으로 옮깁니다.",
+      "target을 s의 뒤집은 문자열로 두고 포인터 matched=0을 둡니다. s를 순서대로 훑으며 현재 문자가 target[matched]와 같으면 matched를 1 늘립니다. 정답은 n−matched입니다."
+    ],
+    "vi": [
+      "Các ký tự không bao giờ bị di chuyển giữ nguyên thứ tự tương đối ban đầu và đều đứng trước mọi ký tự đã bị di chuyển. Vì vậy phần đầu của xâu cuối cùng phải là một dãy con của xâu ban đầu.",
+      "Để di chuyển ít lần nhất, hãy giữ nguyên càng nhiều ký tự càng tốt: chúng tạo thành một tiền tố của xâu đích (xâu đảo ngược) đồng thời là dãy con của xâu ban đầu. Các ký tự còn lại sau đó được chuyển xuống cuối từng cái một theo thứ tự của hậu tố xâu đích.",
+      "Gọi target là xâu đảo ngược của s và đặt con trỏ matched=0; quét s theo thứ tự, và mỗi khi ký tự hiện tại bằng target[matched] thì tăng matched thêm 1. Đáp án là n−matched."
     ]
   },
   "explanationEn": "## Approach\n\nLet the target be the reverse of the original string. Scan the original string and greedily match the longest possible prefix of the target, starting from its beginning; the answer is the number of unmatched characters.\n\n## Proof of correctness\n\nCharacters that are never moved keep their original relative order and stay in front of the characters that were moved. So with t operations, at least n−t unmoved characters form a prefix of the target, whose length is at most the longest matchable prefix L, giving t≥n−L. Conversely, keep the original positions of that prefix and move every other character to the end once, in the order of the target's remaining suffix, finishing in n−L operations. When matching the prefix, always taking the earliest available character leaves the most positions for later, so by induction the greedy finds L.\n\n## Complexity\n\nTime O(n), space O(n) to store the reversed string."

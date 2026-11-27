@@ -9,6 +9,7 @@ import {
   oaCompanyPath,
   oaProblemPath,
 } from '@/lib/oa-company-brands';
+import { contentLanguage, forReader, type ContentLanguage } from '@/lib/language';
 import { TOPIC_NAMES } from '@/lib/route-stops';
 import type { SitemapEntry } from '@/lib/seo';
 import { scoreReview, type Drill, type DrillReview } from '@/lib/oa-drills';
@@ -25,7 +26,7 @@ import {
   oaReadyProblems,
   oaVerifiedStatement,
 } from './oa-judge';
-import { oaWrittenEditorial } from './oa-written-editorials';
+import { oaExplanationLocal, oaWrittenEditorial } from './oa-written-editorials';
 import { oaDifficulty, oaDifficultySlot, oaTopic, type OaTopic } from './oa-topics';
 
 const slug = z
@@ -125,6 +126,8 @@ export function createOaLibrary(
       explanation: string;
       /** The editorial in English, from the problem's guide. */
       explanationEn?: string;
+      /** The editorial in ja/ko/vi, where the written editorial is translated. */
+      explanationLocal?: Partial<Record<ContentLanguage, string>>;
       solutions: { language: string; code: string }[];
     };
     /** Topic estimates per problem; lib/content/oa-topics.json by default. */
@@ -225,6 +228,8 @@ export function createOaLibrary(
     /** /oa, company and problem pages; lastmod is the live judge version's publish time. */
     sitemapEntries(
       ready: ReadonlyMap<string, { updatedAt?: number }> = new Map(),
+      /** A ja/ko/vi sitemap: only the problem pages translated into that language. */
+      translated?: (id: string) => boolean,
     ): SitemapEntry[] {
       const shown = visible();
       const latest = new Map<string, number>();
@@ -234,19 +239,21 @@ export function createOaLibrary(
         if (at > (latest.get(slug) || 0)) latest.set(slug, at);
       }
       const date = (at = 0) => (at > 0 ? new Date(at).toISOString() : null);
+      // Title-only pages (no statement, nothing to judge) are noindex and stay out.
+      const problems = shown.items
+        .filter((item) => (ready.has(item.id) || item.statement.trim()) && (!translated || translated(item.id)))
+        .map((item) => ({
+          path: oaProblemPath(item.companySlug, item.id),
+          updatedAt: date(ready.get(item.id)?.updatedAt),
+        }));
+      if (translated) return problems;
       return [
         { path: '/oa', updatedAt: date(Math.max(0, ...latest.values())) },
         ...shown.companies.map((company) => ({
           path: oaCompanyPath(company.slug),
           updatedAt: date(latest.get(company.slug)),
         })),
-        // Title-only pages (no statement, nothing to judge) are noindex and stay out.
-        ...shown.items
-          .filter((item) => ready.has(item.id) || item.statement.trim())
-          .map((item) => ({
-            path: oaProblemPath(item.companySlug, item.id),
-            updatedAt: date(ready.get(item.id)?.updatedAt),
-          })),
+        ...problems,
       ];
     },
     list(
@@ -389,9 +396,15 @@ export function oaLibrary() {
       solution: (id, sourceContentHash) => {
         const registry = oaJudgeRegistry();
         const own = oaWrittenEditorial(id);
+        const explanationLocal = oaExplanationLocal(own);
         // Not judged here: the written editorial instead of "being checked".
         if (!registry.editorialSha256(id) && own)
-          return { explanation: own.explanation, ...(own.explanationEn ? { explanationEn: own.explanationEn } : {}), solutions: own.solutions };
+          return {
+            explanation: own.explanation,
+            ...(own.explanationEn ? { explanationEn: own.explanationEn } : {}),
+            ...(explanationLocal && { explanationLocal }),
+            solutions: own.solutions,
+          };
         const solution = registry.solution(id, sourceContentHash);
         // Beside the package, like translations: the guide's English editorial and the verified
         // programs in the languages the registry's one doesn't cover. A judged problem's written
@@ -402,6 +415,7 @@ export function oaLibrary() {
           ...solution,
           ...(own ? { explanation: own.explanation } : {}),
           ...(explanationEn ? { explanationEn } : {}),
+          ...(explanationLocal && { explanationLocal }),
           solutions: [
             ...solution.solutions,
             ...oaExtraPrograms(id).filter((item) => !shown.has(item.language)),
@@ -475,7 +489,10 @@ export async function handleOaLibrary(
     const solution = data.solution(id);
     // Opening the editorial tab fetches this: before the first AC, the solve counts as assisted.
     recordAid(person!.id, id, 'editorial');
-    return json(solution);
+    const { explanationLocal, ...rest } = solution;
+    // Only the reader's own language of the ja/ko/vi editorials (X-Language).
+    const local = explanationLocal && forReader(explanationLocal, contentLanguage(request.headers.get('x-language')));
+    return json({ ...rest, ...(local && Object.keys(local).length && { explanationLocal: local }) });
   }
   // Never the bug's lines or name until a review is submitted.
   if (id && action === 'drill') return json({ items: currentDrills(id).map(({ n, code, budget }) => ({ n, code, budget })) });

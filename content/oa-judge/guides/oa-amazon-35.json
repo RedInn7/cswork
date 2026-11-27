@@ -13,6 +13,21 @@
       "Every removal takes one fruit from each of two different kinds, so the only real obstacle is the most frequent kind; also, each step removes 2 fruits, so the number left always has the same parity as n.",
       "Let the most frequent kind appear f times. If f is more than half, the other n−f fruits can each cancel at most one of it; otherwise you can keep pairing until parity alone decides whether 0 or 1 remains.",
       "Count the occurrences of each kind, take the maximum f, and print max(2f−n, n mod 2)."
+    ],
+    "ja": [
+      "毎回の除去は、異なる 2 つの種類から 1 個ずつ取るので、本当の障害は最も多い種類だけです。また、1 回の除去で 2 個減るので、残る個数は常に n と偶奇が同じです。",
+      "最も多い種類の出現回数を f とします。f が半分を超えるなら、残りの n−f 個の果物がそれぞれ高々 1 個ずつしか打ち消せません。そうでなければ、ペアにし続けて、偶奇だけで 0 個か 1 個かが決まります。",
+      "各種類の出現回数を数え、最大値 f を求めて、max(2f−n, n mod 2) を出力します。"
+    ],
+    "ko": [
+      "제거할 때마다 서로 다른 두 종류에서 과일을 하나씩 가져가므로 실제 걸림돌은 가장 많은 종류뿐입니다. 또한 한 단계에 2개가 제거되므로 남는 개수의 홀짝은 항상 n과 같습니다.",
+      "가장 많은 종류가 f번 나온다고 합시다. f가 절반보다 크면 나머지 n−f개의 과일은 각각 그 종류를 최대 하나만 상쇄할 수 있고, 그렇지 않으면 홀짝만이 0 또는 1 중 무엇이 남는지 결정할 때까지 계속 짝지을 수 있습니다.",
+      "각 종류의 등장 횟수를 세어 최댓값 f를 구하고 max(2f−n, n mod 2)를 출력합니다."
+    ],
+    "vi": [
+      "Mỗi lần loại bỏ lấy một trái cây từ mỗi trong hai loại khác nhau, nên trở ngại thực sự duy nhất là loại xuất hiện nhiều nhất; ngoài ra, mỗi bước loại bỏ 2 trái cây, nên số còn lại luôn có cùng tính chẵn lẻ với n.",
+      "Gọi loại xuất hiện nhiều nhất là f lần. Nếu f nhiều hơn một nửa, n−f trái cây còn lại mỗi quả triệt tiêu được nhiều nhất một quả của nó; nếu không bạn có thể tiếp tục ghép cặp cho đến khi chỉ tính chẵn lẻ quyết định còn lại 0 hay 1.",
+      "Đếm số lần xuất hiện của mỗi loại, lấy giá trị lớn nhất f, và in max(2f−n, n mod 2)."
     ]
   },
   "explanationEn": "## Approach\n\nLet f be the maximum frequency. The answer is max(2f−n, n mod 2).\n\n## Proof of correctness\n\nIf the most frequent kind is a majority, each of the other n−f fruits can cancel at most one fruit of that kind, so 2f−n must remain, and this is achievable. Otherwise, repeatedly pair the two currently most frequent kinds; this never creates a majority too large to keep pairing, so in the end only parity matters and 0 or 1 fruit remains.\n\n## Complexity\n\nO(n) time and O(n) space."

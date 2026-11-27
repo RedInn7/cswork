@@ -13,6 +13,21 @@
       "Every segment is a prime up to 10^6 with no leading zero, so each segment has at most 6 digits; precompute the primes below 10^6 with a sieve of Eratosthenes.",
       "Count with a prefix DP: dp[i] is the number of partitions of the first i characters, with dp[0] = 1. The last segment starts at a nonzero character and has length 1 to 6.",
       "Go over start positions i from left to right (skip when s[i] is '0'), build value = s[i..j] digit by digit for j up to i + 5, and whenever value is prime add dp[i] to dp[j+1] modulo 10^9+7; the answer is dp[n]."
+    ],
+    "ja": [
+      "各区間は先頭に 0 のない 10^6 以下の素数なので、高々 6 桁です。エラトステネスのふるいで 10^6 未満の素数を前計算します。",
+      "接頭辞に対する DP で数えます。dp[i] は先頭 i 文字の分割の数で、dp[0] = 1 です。最後の区間は 0 でない文字から始まり、長さは 1 から 6 です。",
+      "開始位置 i を左から右へ回します（s[i] が '0' ならスキップ）。j を i + 5 まで動かしながら value = s[i..j] を 1 桁ずつ作り、value が素数なら dp[i] を dp[j+1] に 10^9+7 で割った余りで加えます。答えは dp[n] です。"
+    ],
+    "ko": [
+      "모든 조각은 앞에 0이 없는 10^6 이하의 소수이므로 각 조각은 최대 6자리입니다. 에라토스테네스의 체로 10^6 미만의 소수를 미리 구합니다.",
+      "접두사 DP로 셉니다. dp[i]는 앞 i개 문자의 분할 수이고 dp[0] = 1입니다. 마지막 조각은 0이 아닌 문자에서 시작하며 길이는 1부터 6까지입니다.",
+      "시작 위치 i를 왼쪽에서 오른쪽으로 훑으며(s[i]가 '0'이면 건너뜀), j를 i + 5까지 늘려 가며 value = s[i..j]를 한 자리씩 만들고, value가 소수일 때마다 dp[j+1]에 dp[i]를 10^9+7로 나눈 나머지로 더합니다. 답은 dp[n]입니다."
+    ],
+    "vi": [
+      "Mỗi đoạn là một số nguyên tố tối đa 10^6 không có số 0 đứng đầu, nên mỗi đoạn có tối đa 6 chữ số; tính trước các số nguyên tố dưới 10^6 bằng sàng Eratosthenes.",
+      "Đếm bằng DP tiền tố: dp[i] là số cách phân hoạch i ký tự đầu, với dp[0] = 1. Đoạn cuối bắt đầu ở một ký tự khác 0 và có độ dài từ 1 đến 6.",
+      "Duyệt các vị trí bắt đầu i từ trái sang phải (bỏ qua khi s[i] là '0'), xây value = s[i..j] từng chữ số một với j tối đa i + 5, và mỗi khi value là số nguyên tố thì cộng dp[i] vào dp[j+1] theo modulo 10^9+7; đáp án là dp[n]."
     ]
   },
   "explanationEn": "## Approach\n\nSieve the primes below one million; dp[i] is the number of valid partitions of the first i characters, extending from each nonzero starting position by at most 6 digits.\n\n## Correctness\n\nAny valid last segment has length at most 6 and is a prime without leading zeros; removing it leaves a unique prefix partition. The transitions enumerate all valid last segments, which do not overlap, so by induction from the single way of partitioning the empty prefix, the count is correct.\n\n## Complexity\n\nTime O(10^6 log log 10^6+6n), space O(10^6+n)."

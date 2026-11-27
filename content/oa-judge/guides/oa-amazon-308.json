@@ -13,6 +13,21 @@
       "The total cost depends only on adjacent pairs, so once you reach a position, the later choices only care whether the current bit ended up 0 or 1.",
       "Use two states dp[0] and dp[1]: the minimum cost of the processed prefix with the current bit set to 0 or 1. Moving to the next position only needs the previous bit and the current bit, adding the cost of that pair.",
       "If the first character is !, both states start at 0; otherwise only the matching state is 0 and the other is infinity. For each later character and each allowed value b, take the smaller of dp[b] (same bit as before, cost 0) and dp[other bit] plus the pair cost: 0 then 1 adds x, 1 then 0 adds y. Output the smaller state at the end, using 64-bit integers."
+    ],
+    "ja": [
+      "合計コストは隣接するペアだけで決まるので、ある位置に到達した時点で、以降の選択に関係するのは現在のビットが 0 か 1 かだけです。",
+      "2つの状態 dp[0] と dp[1] を使います。これは、処理済みの接頭辞で現在のビットを 0 または 1 にしたときの最小コストです。次の位置への遷移には直前のビットと現在のビットだけが必要で、そのペアのコストを加えます。",
+      "最初の文字が ! なら両方の状態を 0 で開始し、そうでなければ対応する状態だけを 0、もう一方を無限大にします。以降の各文字と、許される各値 b について、dp[b](直前と同じビット、コスト 0)と、dp[反対のビット] にペアのコストを加えた値の小さい方を取ります。0 の次が 1 なら x、1 の次が 0 なら y を加えます。最後に小さい方の状態を出力します。64 ビット整数を使ってください。"
+    ],
+    "ko": [
+      "총비용은 인접한 쌍에만 의존하므로 한 위치에 도달하면 이후의 선택은 현재 비트가 0인지 1인지만 신경 씁니다.",
+      "두 상태 dp[0]과 dp[1]을 사용합니다. 각각 현재 비트를 0 또는 1로 둔 처리된 접두사의 최소 비용입니다. 다음 위치로 넘어갈 때는 이전 비트와 현재 비트만 있으면 되며, 그 쌍의 비용을 더합니다.",
+      "첫 문자가 !이면 두 상태 모두 0으로 시작하고, 그렇지 않으면 해당하는 상태만 0이고 다른 상태는 무한대입니다. 이후 각 문자와 허용되는 각 값 b에 대해 dp[b](이전과 같은 비트, 비용 0)와 dp[다른 비트]에 쌍 비용을 더한 값 중 작은 것을 택합니다. 0 다음 1은 x를, 1 다음 0은 y를 더합니다. 마지막에 두 상태 중 작은 값을 출력하며, 64비트 정수를 사용합니다."
+    ],
+    "vi": [
+      "Tổng chi phí chỉ phụ thuộc vào các cặp kề nhau, nên khi đã đến một vị trí, các lựa chọn về sau chỉ quan tâm bit hiện tại cuối cùng là 0 hay 1.",
+      "Dùng hai trạng thái dp[0] và dp[1]: chi phí tối thiểu của tiền tố đã xử lý với bit hiện tại được đặt là 0 hoặc 1. Chuyển sang vị trí tiếp theo chỉ cần bit trước và bit hiện tại, cộng thêm chi phí của cặp đó.",
+      "Nếu ký tự đầu tiên là !, cả hai trạng thái bắt đầu bằng 0; ngược lại chỉ trạng thái khớp là 0 và trạng thái kia là vô cùng. Với mỗi ký tự sau đó và mỗi giá trị b được phép, lấy giá trị nhỏ hơn giữa dp[b] (cùng bit như trước, chi phí 0) và dp[bit còn lại] cộng chi phí cặp: 0 rồi 1 cộng x, 1 rồi 0 cộng y. Cuối cùng in trạng thái nhỏ hơn, dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nLet `dp[b]` be the minimum cost after processing the current position with that bit set to `b`. A fixed character has only one possible value, while `!` can be 0 or 1. Enumerate the current bit `b` and the previous bit `p`, and transition from `dp[p]`; the added cost depends only on the adjacent pair `(p,b)`: `01` adds `x`, `10` adds `y`, and equal bits add nothing. The final answer is the smaller of the last bit being 0 or 1.\n\n## Checking the examples\n\nThe two replacements in example 1 are `0100` and `0110`, both costing `x+y=5`, so the minimum is 5, not the original 8. Example 2 can be replaced with `0001`, which has only one `01` and costs 3; the original 7 is just the cost of another replacement, `1001`, and is not the minimum. The original problem's Python, Java and C++ implementations all compute the global minimum with the same transition.\n\n## Correctness\n\nFor each prefix and each value of its last bit, dp stores the minimum feasible cost of that state. A single initial character has no adjacent pair, so its cost is 0. When extending by one character, every valid extension only chooses the current bit, and the transition adds the exact cost of the new adjacent pair to the best value so far. By induction, each dp value equals the minimum cost of its state. The two states of the last bit cover every complete replacement, so the smaller one is the global minimum.\n\n## Complexity\n\nTime `O(n)`, extra space `O(1)`."

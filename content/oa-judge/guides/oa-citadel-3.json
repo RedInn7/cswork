@@ -13,6 +13,21 @@
       "A palindrome of length 5 always has the form a b c b a, and with only the characters 0 and 1 there are just 8 possible patterns.",
       "For each fixed pattern, count the index tuples where it occurs as a subsequence: dp[j] is the number of ways to match the first j characters of the pattern within the scanned prefix. The 8 patterns do not overlap, so add their counts.",
       "For each pattern start with dp = [1,0,0,0,0,0]; for every character loop j from 5 down to 1 and, when the character equals the pattern's j-th symbol, add dp[j-1] to dp[j] (going downward keeps one position from being used twice), all modulo 1000000007. Finally sum the eight values of dp[5] modulo the same number."
+    ],
+    "ja": [
+      "長さ 5 の回文は必ず a b c b a の形になり、文字が 0 と 1 だけなので、パターンは 8 通りしかありません。",
+      "固定した各パターンについて、それが部分列として現れる添字の組の個数を数えます。dp[j] は、走査済みの接頭辞の中でパターンの先頭 j 文字に一致させる方法の数です。8 つのパターンは重ならないので、個数を足し合わせます。",
+      "各パターンで dp = [1,0,0,0,0,0] から始めます。各文字について j を 5 から 1 まで降順にループし、その文字がパターンの j 番目の記号と等しければ dp[j] に dp[j-1] を加算します（降順にすることで、1 つの位置が 2 回使われるのを防げます）。すべて 1000000007 で割った余りで計算します。最後に 8 個の dp[5] を同じ法で合計します。"
+    ],
+    "ko": [
+      "길이 5인 회문은 항상 a b c b a 형태이며, 문자가 0과 1뿐이므로 가능한 패턴은 8가지뿐입니다.",
+      "각 고정 패턴에 대해 그것이 부분 수열로 나타나는 인덱스 튜플의 수를 셉니다. dp[j]는 지금까지 스캔한 접두사에서 패턴의 앞 j개 문자를 맞추는 방법의 수입니다. 8개의 패턴은 서로 겹치지 않으므로 개수를 더하면 됩니다.",
+      "각 패턴마다 dp = [1,0,0,0,0,0]으로 시작하고, 모든 문자에 대해 j를 5부터 1까지 내려가며 그 문자가 패턴의 j번째 기호와 같으면 dp[j]에 dp[j-1]을 더합니다(내려가며 갱신하면 한 위치가 두 번 쓰이지 않습니다). 모두 1000000007로 나눈 나머지를 취합니다. 마지막으로 여덟 개의 dp[5]를 같은 수로 나눈 나머지에서 합산합니다."
+    ],
+    "vi": [
+      "Một palindrome độ dài 5 luôn có dạng a b c b a, và chỉ với hai ký tự 0 và 1 thì chỉ có 8 mẫu khả dĩ.",
+      "Với mỗi mẫu cố định, đếm số bộ chỉ số mà nó xuất hiện như một dãy con: dp[j] là số cách khớp j ký tự đầu của mẫu trong tiền tố đã quét. 8 mẫu không chồng lên nhau, nên cộng các số đếm của chúng.",
+      "Với mỗi mẫu, bắt đầu với dp = [1,0,0,0,0,0]; với mỗi ký tự, duyệt j từ 5 xuống 1 và khi ký tự bằng ký hiệu thứ j của mẫu thì cộng dp[j-1] vào dp[j] (duyệt xuôi chiều giảm giúp một vị trí không bị dùng hai lần), tất cả theo modulo 1000000007. Cuối cùng cộng tám giá trị dp[5] theo cùng modulo đó."
     ]
   },
   "explanationEn": "## Approach\n\nA palindrome has the form abcba, giving 8 patterns in total. Count each fixed pattern with a subsequence DP updated in reverse order, then sum them.\n\n## Proof of correctness\n\nFor a fixed pattern, dp[j] is the number of index choices in the scanned prefix that match the first j characters of the pattern. When the character matches, dp[j] increases by dp[j-1], and updating in reverse order prevents the same position from being used twice. Every length-5 palindrome belongs to exactly one abcba pattern, so adding the 8 counts has neither duplicates nor omissions.\n\n## Complexity\n\nO(40n) time and O(1) extra space."

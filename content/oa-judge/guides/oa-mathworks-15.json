@@ -13,6 +13,21 @@
       "Operations only add 1, so look at the increments d[i] = target[i] - source[i]; if any d[i] is negative the target is unreachable and the answer is -1.",
       "Look at how adjacent increments change: a prefix operation lowers d by 1 only at its right boundary, and a suffix operation raises d by 1 only at its left boundary. So the total of all drops, N, is the minimum number of prefix operations; every prefix covers the first position, so N cannot exceed d[0].",
       "For i = 1..n-1 add the drop max(0, d[i-1] - d[i]) to get N; if N > d[0] output -1, otherwise the minimum number of operations is d[n-1] + N. For n = 1 just output d[0]. Values reach 10^13 and the sums are larger, so use 64-bit integers."
+    ],
+    "ja": [
+      "操作は 1 を加えるだけなので、増分 d[i] = target[i] - source[i] に注目します。負の d[i] が 1 つでもあれば target には到達できず、答えは -1 です。",
+      "隣り合う増分の変化に注目します。prefix 操作は右端の境界でのみ d を 1 減らし、suffix 操作は左端の境界でのみ d を 1 増やします。したがって、すべての減少量の合計 N が prefix 操作の最小回数です。どの prefix も最初の位置を含むので、N は d[0] を超えられません。",
+      "i = 1..n-1 について減少量 max(0, d[i-1] - d[i]) を足して N を求めます。N > d[0] なら -1、そうでなければ最小操作回数は d[n-1] + N です。n = 1 のときは d[0] を出力します。値は 10^13 に達し、その和はさらに大きくなるので、64 ビット整数を使います。"
+    ],
+    "ko": [
+      "연산은 1을 더하기만 하므로 증가량 d[i] = target[i] - source[i]를 살펴봅니다. d[i] 중 하나라도 음수이면 target에 도달할 수 없으므로 답은 -1입니다.",
+      "인접한 증가량이 어떻게 바뀌는지 봅니다. 접두사 연산은 오른쪽 경계에서만 d를 1 낮추고, 접미사 연산은 왼쪽 경계에서만 d를 1 높입니다. 따라서 모든 감소량의 합 N이 접두사 연산의 최소 횟수이며, 모든 접두사는 첫 번째 위치를 포함하므로 N은 d[0]을 넘을 수 없습니다.",
+      "i = 1..n-1에 대해 감소량 max(0, d[i-1] - d[i])를 더해 N을 구합니다. N > d[0]이면 -1을 출력하고, 아니면 최소 연산 횟수는 d[n-1] + N입니다. n = 1이면 d[0]을 그대로 출력합니다. 값이 10^13까지 가고 합은 더 크므로 64비트 정수를 사용합니다."
+    ],
+    "vi": [
+      "Các thao tác chỉ cộng 1, nên hãy xét các lượng tăng d[i] = target[i] - source[i]; nếu có d[i] âm thì không thể đạt target và đáp án là -1.",
+      "Xem các lượng tăng liền kề thay đổi thế nào: một thao tác tiền tố chỉ làm d giảm 1 tại ranh giới bên phải của nó, còn một thao tác hậu tố chỉ làm d tăng 1 tại ranh giới bên trái. Vì vậy tổng mọi mức giảm, N, là số thao tác tiền tố tối thiểu; mọi tiền tố đều phủ vị trí đầu tiên nên N không thể vượt quá d[0].",
+      "Với i = 1..n-1 cộng mức giảm max(0, d[i-1] - d[i]) để được N; nếu N > d[0] thì in -1, ngược lại số thao tác tối thiểu là d[n-1] + N. Với n = 1 chỉ cần in d[0]. Giá trị lên tới 10^13 và các tổng còn lớn hơn, nên dùng số nguyên 64-bit."
     ]
   },
   "explanationEn": "## Approach\n\nLet d[i]=target[i]-source[i], which must be non-negative everywhere. Every drop from d[i-1] to d[i] needs at least one prefix operation ending at that boundary. If the total drop N exceeds d[0], it is impossible; otherwise N prefix operations plus some suffix/whole-array operations fill in the rest, and the minimum number of operations is d[n-1]+N.\n\n## Proof of correctness\n\nLet N be the sum of all drops between adjacent increments. Each prefix operation contributes at most one unit of drop, so at least N prefix operations are needed; the first increment only has d[0] units of prefix/whole-array operations available, so there is no solution when N>d[0]. If N<=d[0], placing prefix operations at each drop position and filling the rest with whole-array and suffix operations constructs the target; after simplification the total number of operations is d[last]+N, which reaches the lower bound.\n\n## Complexity\n\nO(n), space O(n)."

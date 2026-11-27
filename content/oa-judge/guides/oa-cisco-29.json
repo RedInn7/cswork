@@ -13,6 +13,21 @@
       "Every palindrome has an odd center (a character) or an even center (the gap between two neighbours); a single character is itself a palindrome of length 1.",
       "Enumerate all 2n - 1 centers, expand each as far as possible, and remember the longest palindrome found overall; when several are longest, any one of them is accepted.",
       "For center middle in 0..2n - 2 set left = middle / 2 and right = left + middle % 2, and widen both ends while the characters match; the candidate is s[left + 1 .. right - 1], and it replaces the answer when it is longer; print the answer string as is, without quotes."
+    ],
+    "ja": [
+      "どの回文にも、奇数長の中心（1 文字）か偶数長の中心（隣り合う 2 文字の間のすき間）があります。1 文字はそれ自身が長さ 1 の回文です。",
+      "2n - 1 個の中心をすべて列挙し、それぞれをできるだけ広げて、全体で見つかった最長の回文を覚えておきます。最長のものが複数あるときは、そのどれでも受理されます。",
+      "中心 middle を 0..2n - 2 で動かし、left = middle / 2、right = left + middle % 2 として、文字が一致する間は両端を広げます。候補は s[left + 1 .. right - 1] で、より長ければ答えを置き換えます。答えの文字列は引用符を付けずにそのまま出力します。"
+    ],
+    "ko": [
+      "모든 회문에는 홀수 중심(문자 하나) 또는 짝수 중심(이웃한 두 문자 사이의 틈)이 있습니다. 문자 하나는 그 자체로 길이 1의 회문입니다.",
+      "중심 2n - 1개를 모두 순회하며 각각 가능한 한 멀리 확장하고, 전체에서 찾은 가장 긴 회문을 기억합니다. 가장 긴 것이 여러 개이면 어느 것이든 받아들여집니다.",
+      "중심 middle을 0..2n - 2로 두고 left = middle / 2, right = left + middle % 2로 설정한 뒤, 문자가 일치하는 동안 양 끝을 넓힙니다. 후보는 s[left + 1 .. right - 1]이며 더 길면 답을 대체합니다. 답 문자열은 따옴표 없이 그대로 출력합니다."
+    ],
+    "vi": [
+      "Mọi palindrome đều có một tâm lẻ (một ký tự) hoặc một tâm chẵn (khoảng giữa hai ký tự kề nhau); một ký tự đơn tự nó là palindrome độ dài 1.",
+      "Liệt kê tất cả 2n - 1 tâm, mở rộng từng tâm hết mức có thể, và nhớ palindrome dài nhất tìm được; khi có nhiều xâu dài nhất bằng nhau, bất kỳ xâu nào cũng được chấp nhận.",
+      "Với tâm middle trong 0..2n - 2, đặt left = middle / 2 và right = left + middle % 2, rồi nới rộng cả hai đầu khi các ký tự còn khớp; ứng viên là s[left + 1 .. right - 1], và nó thay thế đáp án khi dài hơn; in xâu đáp án nguyên trạng, không kèm dấu ngoặc kép."
     ]
   },
   "explanationEn": "## Approach\n\nEnumerate the odd and even centers and expand toward both sides. Keep the longest substring each center can reach, and finally output one of maximum length. The reference program's internal choice among ties is not part of the output requirement; the semantic checker accepts every optimal result.\n\n## Proof of correctness\n\nEvery palindrome has an odd or an even center. Enumerating all centers and expanding each maximally necessarily covers the globally longest palindrome; the returned candidate belongs to the original string and its characters match pairwise from both ends, so it is valid and optimal.\n\n## Complexity\n\nO(n²) time; the candidate string needs O(n) auxiliary space."

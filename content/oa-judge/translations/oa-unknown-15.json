@@ -13,5 +13,41 @@
       "In Part 3, the character intersection and union are counted with multiplicity.",
       "Compare averages using exact rational numbers."
     ]
+  },
+  "ja": {
+    "title": "低い比率または低い Jaccard で文字列を選択する",
+    "description": "文字列のリストと真偽値 useJaccard が与えられます。false のときは Part 1 の最高文字頻度の比率を使い、比率が最小のすべての文字列を選びます。true のときは Part 3 の平均多重集合 Jaccard 類似度を使い、平均が最小のすべての文字列を選びます。最後に、選ばれた文字列の集合にのみ現れる文字を返します。",
+    "input": "入力は JSON オブジェクトです: {\"strings\":[空でない文字列...],\"useJaccard\":true または false}。サイトの制限: 2≤文字列の個数≤80、各文字列の長さ≤1000、合計の長さ≤10000。文字は Unicode コードポイントとして扱います。",
+    "output": "JSON 文字列を出力してください。選ばれた文字列を入力順に連結し、各文字列の中では重複する文字を元の順序のまま残し、選ばれなかった文字列にも現れる文字だけを除外します。",
+    "explanation": "Part 1 / Part 3 の分岐で各文字列のスコアを計算し、最小スコアとその同点を正確な分数で比較します。その後、選ばれなかった文字列に現れる文字を取り除きます。",
+    "hints": [
+      "Part 1 では、比率は最高の文字頻度を文字列の長さで割ったものです。",
+      "Part 3 では、文字の積集合と和集合は重複度を込めて数えます。",
+      "平均は正確な有理数で比較してください。"
+    ]
+  },
+  "ko": {
+    "title": "낮은 비율 또는 낮은 Jaccard로 문자열 선택",
+    "description": "문자열 목록과 불리언 useJaccard가 주어집니다. false이면 Part 1의 최고 문자 빈도 비율을 사용하여 비율이 가장 낮은 문자열을 모두 선택하고, true이면 Part 3의 평균 멀티셋 Jaccard 유사도를 사용하여 평균이 가장 낮은 문자열을 모두 선택합니다. 마지막으로 선택된 문자열 그룹에만 나타나는 문자들을 반환합니다.",
+    "input": "입력은 JSON 객체입니다: {\"strings\":[비어 있지 않은 문자열...],\"useJaccard\":true 또는 false}. 사이트 제한: 2≤문자열 수≤80, 각 문자열의 길이≤1000, 총 길이≤10000이며, 문자는 유니코드 코드 포인트로 처리합니다.",
+    "output": "JSON 문자열을 출력합니다. 선택된 문자열을 입력 순서대로 이어 붙이되 각 문자열 안에서 반복된 문자의 원래 순서를 유지하고, 선택되지 않은 문자열에도 나타나는 문자만 제외합니다.",
+    "explanation": "Part 1/Part 3 분기는 각 문자열의 점수를 계산합니다. 가장 낮은 점수와 동점은 정확한 분수로 비교하고, 그다음 선택되지 않은 문자열에 나타나는 문자를 걸러 냅니다.",
+    "hints": [
+      "Part 1에서 비율은 최고 문자 빈도를 문자열 길이로 나눈 값입니다.",
+      "Part 3에서 문자의 교집합과 합집합은 중복도를 고려하여 셉니다.",
+      "평균은 정확한 유리수로 비교하세요."
+    ]
+  },
+  "vi": {
+    "title": "Chọn chuỗi theo tỉ lệ thấp hoặc Jaccard thấp",
+    "description": "Cho một danh sách các chuỗi và một giá trị boolean useJaccard. Khi là false, dùng tỉ lệ tần suất ký tự cao nhất của Phần 1 và chọn tất cả các chuỗi có tỉ lệ thấp nhất; khi là true, dùng độ tương đồng Jaccard đa tập hợp trung bình của Phần 3 và chọn tất cả các chuỗi có giá trị trung bình thấp nhất. Cuối cùng, trả về các ký tự chỉ xuất hiện trong nhóm chuỗi được chọn.",
+    "input": "Đầu vào là một đối tượng JSON: {\"strings\":[các chuỗi không rỗng...],\"useJaccard\":true hoặc false}. Giới hạn của trang: 2≤số chuỗi≤80, mỗi chuỗi có độ dài≤1000, và tổng độ dài≤10000; các ký tự được xử lý như các code point Unicode.",
+    "output": "In ra một chuỗi JSON. Các chuỗi được chọn được nối theo thứ tự đầu vào, giữ nguyên các ký tự lặp theo thứ tự gốc trong từng chuỗi, và chỉ loại bỏ các ký tự cũng xuất hiện trong các chuỗi không được chọn.",
+    "explanation": "Nhánh Phần 1/Phần 3 tính một điểm cho mỗi chuỗi; so sánh điểm thấp nhất và các trường hợp hòa bằng phân số chính xác, rồi lọc bỏ các ký tự xuất hiện trong các chuỗi không được chọn.",
+    "hints": [
+      "Ở Phần 1, tỉ lệ là tần suất ký tự cao nhất chia cho độ dài chuỗi.",
+      "Ở Phần 3, giao và hợp của các ký tự được đếm kèm số lần xuất hiện.",
+      "So sánh các giá trị trung bình bằng số hữu tỉ chính xác."
+    ]
   }
 }

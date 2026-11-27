@@ -13,6 +13,21 @@
       "Custom lexicographic order follows exactly the usual rules: compare the characters at the first differing position, and if there is none the shorter string comes first; the only difference is that the order of characters comes from order.",
       "Replace every character by its rank in order (0..61), turning each string into a rank sequence; ordinary lexicographic comparison of rank sequences gives exactly the required order, so simply sort by that key.",
       "Read order and build the rank table; read the n strings, turning - back into the empty string, and build each string's rank sequence as its sort key; sort by the key (keeping all duplicates); when printing, write empty strings as - again, separated by spaces."
+    ],
+    "ja": [
+      "独自の辞書順も通常の規則と全く同じです。最初に異なる位置の文字を比較し、なければ短いほうが先に来ます。違いは、文字の順序が order から決まる点だけです。",
+      "各文字を order での順位（0..61）に置き換えて、各文字列を順位の列にします。順位の列を普通の辞書順で比較すると、必要な順序がちょうど得られるので、そのキーでソートするだけです。",
+      "order を読んで順位の表を作ります。n 個の文字列を読み、- を空文字列に戻して、各文字列の順位の列をソートキーにします。キーでソートし（重複はすべて残します）、出力するときは空文字列を再び - と書き、空白区切りで出力します。"
+    ],
+    "ko": [
+      "사용자 정의 사전순도 평소 규칙과 완전히 같습니다. 처음으로 달라지는 위치의 문자를 비교하고, 없으면 짧은 문자열이 먼저 옵니다. 다른 점은 문자의 순서를 order에서 가져온다는 것뿐입니다.",
+      "모든 문자를 order에서의 순위(0..61)로 바꾸어 각 문자열을 순위 수열로 만듭니다. 순위 수열의 일반적인 사전순 비교가 바로 요구하는 순서이므로 그 키로 정렬하면 됩니다.",
+      "order를 읽어 순위 표를 만들고, n개의 문자열을 읽으면서 -는 빈 문자열로 되돌린 뒤 각 문자열의 순위 수열을 정렬 키로 만듭니다. 키로 정렬하되(중복은 모두 유지), 출력할 때는 빈 문자열을 다시 -로 쓰고 공백으로 구분합니다."
+    ],
+    "vi": [
+      "Thứ tự từ điển tùy chỉnh tuân theo đúng các quy tắc thông thường: so sánh các ký tự ở vị trí khác nhau đầu tiên, và nếu không có thì xâu ngắn hơn đứng trước; điểm khác biệt duy nhất là thứ tự của các ký tự đến từ order.",
+      "Thay mỗi ký tự bằng hạng của nó trong order (0..61), biến mỗi xâu thành một dãy hạng; phép so sánh từ điển thông thường của các dãy hạng cho đúng thứ tự cần thiết, nên chỉ cần sắp xếp theo khóa đó.",
+      "Đọc order và xây bảng hạng; đọc n xâu, đổi - trở lại thành xâu rỗng, và xây dãy hạng của mỗi xâu làm khóa sắp xếp; sắp xếp theo khóa (giữ mọi bản trùng lặp); khi in, viết lại các xâu rỗng thành -, cách nhau bởi dấu cách."
     ]
   },
   "explanationEn": "## Approach\n\nMap each character to its rank 0..61 to get a byte-string sort key; comparing byte strings in Python naturally implements the custom lexicographic order.\n\n## Correctness\n\nAt the first differing position, comparing byte ranks gives the same result as the custom character order; if there is no differing position, the shorter key comes first, which satisfies the prefix rule. So sorting by the key is exactly equivalent to the requirement, and sorting does not remove any duplicates.\n\n## Complexity\n\nTime O((L+n) log n), including the cost of comparing empty strings, and space O(L+n), where L is the total length."

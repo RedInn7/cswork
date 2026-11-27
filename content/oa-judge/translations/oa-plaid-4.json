@@ -13,5 +13,41 @@
       "Side length s is feasible if and only if there is a contiguous segment of length at least s in which every height is at least s.",
       "You can binary search on the side length, or use a monotonic stack to find, for each building, the maximum width over which it is the lowest building."
     ]
+  },
+  "ja": {
+    "title": "Plaid OA #4: Largest Square in Skyscraper Outline",
+    "description": "都市に高層ビルが 1 列に並んでいます。ビル i の高さは cityLine[i]、どのビルも幅は 1 で、隣り合うビルの間に隙間はありません。このビルの列のシルエットの内側に完全に収まる最大の正方形の面積を求めてください。",
+    "input": "1 行目に n、2 行目に空白区切りで n 個の整数 cityLine[0..n-1] が与えられます。1≤n≤3×10^6、1≤cityLine[i]≤10^8。",
+    "output": "整数を 1 つ出力してください。最大の正方形の面積です。答えは 32 ビット整数の範囲を超えることがあります。",
+    "explanation": "例 1：[3,1,3,2,1] では、ビル 3 と 4 の高さが 3 と 2 なので、一辺 2 の正方形が収まり、面積は 4 です。例 2：[4,3,4] では、3 つのビルすべての高さが 3 以上なので、一辺 3 の正方形が収まり、面積は 9 です。例 3：中央の 5 つのビルの高さが 5 なので、一辺 5 の正方形が収まり、面積は 25 です。",
+    "hints": [
+      "正方形は、常に地面に接するまで下に動かせます。",
+      "一辺 s が実現可能であるための必要十分条件は、長さ s 以上の連続区間で、すべての高さが s 以上であるものが存在することです。",
+      "一辺の長さで二分探索するか、単調スタックを使って、各ビルが最も低いビルとなる最大の幅を求めることができます。"
+    ]
+  },
+  "ko": {
+    "title": "Plaid OA #4: Largest Square in Skyscraper Outline",
+    "description": "도시에 고층 건물이 한 줄로 늘어서 있습니다. i번째 건물의 높이는 cityLine[i]이고, 모든 건물의 너비는 1이며, 인접한 건물 사이에 틈이 없습니다. 이 건물들의 윤곽 안에 완전히 들어가는 가장 큰 정사각형의 넓이를 구하세요.",
+    "input": "첫 번째 줄에 n이 주어집니다. 두 번째 줄에 공백으로 구분된 n개의 정수 cityLine[0..n-1]이 주어집니다. 1≤n≤3×10^6, 1≤cityLine[i]≤10^8.",
+    "output": "가장 큰 정사각형의 넓이를 나타내는 정수 하나를 출력합니다. 답은 32비트 정수 범위를 넘을 수 있습니다.",
+    "explanation": "예제 1: [3,1,3,2,1]에서 건물 3과 4의 높이는 3과 2이므로 한 변이 2인 정사각형이 들어가며 넓이는 4입니다. 예제 2: [4,3,4]에서 세 건물의 높이가 모두 3 이상이므로 한 변이 3인 정사각형이 들어가며 넓이는 9입니다. 예제 3: 가운데 다섯 건물의 높이가 5이므로 한 변이 5인 정사각형이 들어가며 넓이는 25입니다.",
+    "hints": [
+      "정사각형은 항상 지면에 닿을 때까지 아래로 내릴 수 있습니다.",
+      "변의 길이 s가 가능할 필요충분조건은 길이가 s 이상이면서 모든 높이가 s 이상인 연속 구간이 존재하는 것입니다.",
+      "변의 길이에 대해 이분 탐색을 하거나, 단조 스택으로 각 건물이 가장 낮은 건물이 되는 최대 너비를 구할 수 있습니다."
+    ]
+  },
+  "vi": {
+    "title": "Plaid OA #4: Largest Square in Skyscraper Outline",
+    "description": "Một thành phố có một hàng nhà chọc trời. Tòa nhà i có chiều cao cityLine[i], mọi tòa nhà đều có chiều rộng 1, và không có khoảng trống giữa các tòa nhà kề nhau. Hãy tìm diện tích của hình vuông lớn nhất nằm hoàn toàn bên trong đường viền của hàng tòa nhà này.",
+    "input": "Dòng đầu chứa n. Dòng thứ hai chứa n số nguyên cityLine[0..n-1], cách nhau bởi khoảng trắng. 1≤n≤3×10^6, 1≤cityLine[i]≤10^8.",
+    "output": "In ra một số nguyên: diện tích của hình vuông lớn nhất. Đáp án có thể vượt quá phạm vi số nguyên 32 bit.",
+    "explanation": "Ví dụ 1: trong [3,1,3,2,1], các tòa nhà 3 và 4 có chiều cao 3 và 2, nên một hình vuông cạnh 2 vừa khít, diện tích 4. Ví dụ 2: trong [4,3,4], cả ba tòa nhà đều cao ít nhất 3, nên một hình vuông cạnh 3 vừa khít, diện tích 9. Ví dụ 3: năm tòa nhà ở giữa có chiều cao 5, nên một hình vuông cạnh 5 vừa khít, diện tích 25.",
+    "hints": [
+      "Một hình vuông luôn có thể được dời xuống cho đến khi chạm đất.",
+      "Cạnh dài s khả thi khi và chỉ khi có một đoạn liên tiếp dài ít nhất s mà mọi chiều cao trong đó đều ít nhất s.",
+      "Bạn có thể tìm kiếm nhị phân trên độ dài cạnh, hoặc dùng ngăn xếp đơn điệu để tìm, với mỗi tòa nhà, chiều rộng tối đa mà nó là tòa nhà thấp nhất."
+    ]
   }
 }

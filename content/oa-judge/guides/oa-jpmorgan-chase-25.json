@@ -13,6 +13,21 @@
       "Once the player with the largest potential becomes champion, they never lose again; before that, every challenger is simply the next player in the original queue who has not played yet.",
       "So one pass over the original order is enough, tracking the current champion and their win streak; k can be as large as 10^18, so never simulate k games.",
       "Start with the first player as champion and a streak of 0; compare with each following player: a larger challenger becomes champion with a streak of 1, otherwise the streak grows by 1; print the champion as soon as the streak reaches k; if the scan ends first, the champion is the global maximum, so print it."
+    ],
+    "ja": [
+      "最大のポテンシャルのプレイヤーがチャンピオンになったら、もう負けることはありません。それ以前は、挑戦者は元の待ち行列で、まだ対戦していない次のプレイヤーです。",
+      "したがって、元の順序を1回走査して、現在のチャンピオンとその連勝数を追えば十分です。k は最大 10^18 なので、k 試合をシミュレーションしてはいけません。",
+      "最初のプレイヤーをチャンピオン、連勝数 0 として始め、後続のプレイヤーと順に比べます。挑戦者のほうが大きければ連勝数 1 のチャンピオンになり、そうでなければ連勝数に 1 を足します。連勝数が k に達した時点でチャンピオンを出力します。それより先に走査が終われば、チャンピオンは全体の最大値なので、それを出力します。"
+    ],
+    "ko": [
+      "잠재력이 가장 큰 플레이어가 챔피언이 되면 다시는 지지 않습니다. 그 전에는 도전자가 항상 원래 대기열에서 아직 경기하지 않은 다음 플레이어입니다.",
+      "따라서 원래 순서대로 한 번만 훑으면 충분하며 현재 챔피언과 연승 횟수만 추적하면 됩니다. k는 10^18까지 클 수 있으므로 k경기를 시뮬레이션해서는 안 됩니다.",
+      "첫 플레이어를 챔피언, 연승을 0으로 시작해 뒤따르는 각 플레이어와 비교합니다. 도전자가 더 크면 챔피언이 되고 연승은 1이며, 아니면 연승이 1 늘어납니다. 연승이 k에 도달하는 즉시 챔피언을 출력합니다. 그 전에 훑기가 끝나면 챔피언은 전체 최댓값이므로 이를 출력합니다."
+    ],
+    "vi": [
+      "Khi người có tiềm năng lớn nhất trở thành nhà vô địch thì họ không bao giờ thua nữa; trước đó, mỗi người thách đấu đơn giản là người tiếp theo trong hàng đợi ban đầu chưa chơi.",
+      "Vì vậy một lượt qua thứ tự ban đầu là đủ, theo dõi nhà vô địch hiện tại và chuỗi thắng của họ; k có thể lên tới 10^18, nên đừng bao giờ mô phỏng k ván.",
+      "Bắt đầu với người đầu tiên là nhà vô địch và chuỗi thắng 0; so sánh với từng người sau đó: người thách đấu lớn hơn trở thành nhà vô địch với chuỗi 1, ngược lại chuỗi tăng thêm 1; in nhà vô địch ngay khi chuỗi đạt k; nếu quét xong mà chưa đạt thì nhà vô địch là giá trị lớn nhất toàn cục, nên in nó."
     ]
   },
   "explanationEn": "## Approach\n\nScan the original queue while maintaining the champion and its win streak, counting from 1 again whenever the champion changes; if the process has not ended when the scan finishes, return the global maximum potential.\n\n## Proof of correctness\n\nBefore the maximum potential first becomes champion, each opponent is exactly the next player in the original queue who has not yet played, so the scan simulates the process exactly. Once the maximum potential becomes champion it never loses again; if the scan is finished without reaching k, the eventual winner can only be that player. Therefore there is no need to play a huge number k of games.\n\n## Complexity\n\nO(n) time and O(1) space apart from the input."

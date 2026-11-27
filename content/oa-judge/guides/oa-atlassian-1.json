@@ -13,6 +13,21 @@
       "There is no need to decompress the string; all that matters is how many times each letter occurs in total.",
       "Keep 26 counters. While scanning, read one letter, then read the whole run of digits right after it as one integer (a frequency can have several digits) and add it to that letter.",
       "After the scan, go from a to z and, for every letter with a non-zero count, append the letter followed by its total frequency to the output string."
+    ],
+    "ja": [
+      "文字列を展開する必要はありません。重要なのは、各文字が合計で何回現れるかだけです。",
+      "26個のカウンタを用意します。走査しながら、文字を1つ読み、その直後の数字の連続全体を1つの整数として読み(頻度は複数桁になりえます)、その文字に加算します。",
+      "走査が終わったら a から z まで順に見ていき、カウントが 0 でない各文字について、その文字と合計頻度を出力文字列に追加します。"
+    ],
+    "ko": [
+      "문자열을 풀 필요는 없습니다. 각 문자가 총 몇 번 나타나는지만 중요합니다.",
+      "카운터 26개를 둡니다. 훑으면서 문자 하나를 읽고, 바로 뒤에 이어지는 숫자 전체를 하나의 정수로 읽어(빈도는 여러 자리일 수 있습니다) 그 문자에 더합니다.",
+      "훑기가 끝나면 a부터 z까지 돌면서 횟수가 0이 아닌 문자마다 그 문자와 총 빈도를 출력 문자열에 이어 붙입니다."
+    ],
+    "vi": [
+      "Không cần giải nén xâu; điều duy nhất quan trọng là tổng số lần mỗi chữ cái xuất hiện.",
+      "Giữ 26 bộ đếm. Khi quét, đọc một chữ cái, rồi đọc toàn bộ dãy chữ số ngay sau nó thành một số nguyên (tần suất có thể có nhiều chữ số) và cộng vào chữ cái đó.",
+      "Sau khi quét, đi từ a đến z và với mỗi chữ cái có số đếm khác không, nối chữ cái đó cùng tổng tần suất của nó vào xâu đầu ra."
     ]
   },
   "explanationEn": "## Approach\n\nScan the complete number of each segment and add it to one of 26 counters, then concatenate them in alphabetical order.\n\n## Proof of Correctness\n\nEach original segment is read exactly once and only adds its frequency to the corresponding character, so each accumulated value equals the number of occurrences after decompression; outputting in ascending order produces the prescribed unique canonical representation.\n\n## Complexity\n\nO(|S|) time and O(26) counter space, without expanding large frequencies into strings."

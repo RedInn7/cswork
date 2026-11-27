@@ -13,6 +13,21 @@
       "Both deletable strings, AB and BB, end in B and may start with any letter, so every deletion is a B removing the character immediately to its left.",
       "Scan from left to right as in bracket matching: when you see a B and some earlier character is still alive, the two cancel; otherwise the current character survives.",
       "Only the number of surviving characters matters: on a B with left > 0 decrease left by 1, otherwise increase it by 1; after the scan, left is the shortest reachable length."
+    ],
+    "ja": [
+      "削除できる文字列 AB と BB は、どちらも B で終わり、先頭は任意の文字です。したがって、すべての削除は、B がすぐ左の文字を取り除くことに相当します。",
+      "括弧の対応づけのように左から右へ走査します。B が来て、それより前にまだ生きている文字があれば、その2つは打ち消し合います。なければ、現在の文字が残ります。",
+      "重要なのは残っている文字の数だけです。B で left > 0 なら left を 1 減らし、そうでなければ 1 増やします。走査後の left が到達できる最短の長さです。"
+    ],
+    "ko": [
+      "삭제할 수 있는 문자열 AB와 BB는 둘 다 B로 끝나고 앞 글자는 아무 글자나 될 수 있으므로, 모든 삭제는 B가 바로 왼쪽의 문자를 제거하는 것입니다.",
+      "괄호 매칭처럼 왼쪽에서 오른쪽으로 훑습니다. B를 만났을 때 앞에 아직 살아 있는 문자가 있으면 둘이 상쇄되고, 없으면 현재 문자가 살아남습니다.",
+      "살아남은 문자의 개수만 중요합니다. B이고 left > 0이면 left를 1 줄이고, 아니면 1 늘립니다. 훑은 뒤의 left가 도달 가능한 최단 길이입니다."
+    ],
+    "vi": [
+      "Cả hai xâu có thể xóa, AB và BB, đều kết thúc bằng B và có thể bắt đầu bằng chữ cái bất kỳ, nên mỗi lần xóa là một chữ B loại bỏ ký tự ngay bên trái nó.",
+      "Quét từ trái sang phải như khớp ngoặc: khi gặp B và vẫn còn một ký tự trước đó còn sống thì hai ký tự triệt tiêu nhau; ngược lại ký tự hiện tại sống sót.",
+      "Chỉ số lượng ký tự sống sót mới quan trọng: gặp B với left > 0 thì giảm left đi 1, ngược lại tăng đi 1; sau khi quét, left là độ dài ngắn nhất có thể đạt được."
     ]
   },
   "explanationEn": "## Approach\n\nScan in order while maintaining the stack length: on a B with a non-zero length, cancel one existing character; otherwise increase the length by one.\n\n## Proof of correctness\n\nAny deletion process is equivalent to pairing each deleted B with one uncancelled character before it, and the paired intervals cannot cross. Consider the current B and its nearest unpaired predecessor: if an optimal plan does not pair these two, the at most two pairs they were originally involved in can be replaced by this pair, and when two remaining endpoints exist they can be paired with each other, keeping B as each right end and the pairs non-crossing, without reducing the number of deletions. Therefore these two can be cancelled first. Doing this prefix by prefix yields the maximum number of pairs and hence the minimum remaining length; the left character of both AB and BB can be matched, so only the stack length is needed.\n\n## Complexity\n\nO(n) time and O(1) space apart from the input."

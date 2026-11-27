@@ -11,5 +11,35 @@
     "hints": [
       "Compute the prefix surplus P of each warehouse relative to the average, including the final 0. The minimum cost in the forward direction is sum(P)−n·min(P), and in the reverse direction n·max(P)−sum(P); take the smaller one."
     ]
+  },
+  "ja": {
+    "title": "倉庫の環を一方向の輸送で均等にする最小コスト",
+    "description": "n 個の倉庫が環状に並んでおり、1 つの品物を隣り合う辺をまたいで動かすコストは 1 です。すべての倉庫の品物数を同じにすることが目標で、合計は n で割り切れることが保証されています。計画全体で使えるのは時計回りか反時計回りの一方向だけで、方向を混ぜることはできません。開始点は自由に選べます。最小の総コストを求めてください。\n\n標準入出力・例・解説は当サイトが独自に作成したものです。当サイトのものと明記した範囲は、元の問題の制約ではありません。",
+    "input": "1 行目に n、2 行目に warehouses が与えられます。元の問題文には値の範囲がありません。当サイトでは 1≤n≤200000、0≤warehouses[i]≤10^9 とし、sum%n=0 が保証されます。法は取らず、正確な整数のコストを出力してください。",
+    "output": "答えを表す整数を 1 つ出力してください。",
+    "explanation": "答えはそれぞれ 8、7、0 です。1 つ目の例では、両方向に動かせばコスト 4 で済むかもしれませんが、元のルールは全体を通じて単一方向なので、最小値は 8 になります。",
+    "hints": [
+      "各倉庫について、平均との差の接頭辞の過不足 P を最後の 0 まで含めて計算します。順方向の最小コストは sum(P)−n·min(P)、逆方向は n·max(P)−sum(P) で、小さいほうを取ります。"
+    ]
+  },
+  "ko": {
+    "title": "창고 고리를 균형 있게 만드는 단방향 최소 운송 비용",
+    "description": "n개의 창고가 고리 모양으로 놓여 있고, 물품 하나를 인접한 간선 하나만큼 옮기는 비용은 1입니다. 모든 창고가 같은 수의 물품을 갖게 하는 것이 목표이며, 총합은 n으로 나누어떨어짐이 보장됩니다. 전체 계획은 시계 방향 또는 반시계 방향 중 한 방향만 사용해야 하며 방향을 섞을 수 없습니다. 시작점은 자유롭게 정할 수 있습니다. 최소 총 비용을 구하세요.\n\n표준 입출력 형식, 예제, 해설은 본 사이트가 독자적으로 작성했습니다. 본 사이트의 범위라고 명시한 값은 원문의 제약 조건이 아닙니다.",
+    "input": "첫째 줄에 n, 둘째 줄에 warehouses가 주어집니다. 원문에는 값의 범위가 없으며 본 사이트에서는 1≤n≤200000, 0≤warehouses[i]≤10^9이고 sum%n=0이 보장됩니다. 나머지 연산 없이 정확한 정수 비용을 출력하세요.",
+    "output": "정수 하나, 즉 답을 출력합니다.",
+    "explanation": "답은 순서대로 8, 7, 0입니다. 첫 번째 예제에서는 양방향으로 옮기면 비용이 4일 수 있으나, 원문의 처음부터 끝까지 한 방향만 사용한다는 규칙에 따라 최솟값은 8입니다.",
+    "hints": [
+      "평균 대비 각 창고의 누적 과잉량 P를 마지막 0까지 포함해 계산합니다. 정방향의 최소 비용은 sum(P)−n·min(P), 역방향은 n·max(P)−sum(P)이며 둘 중 작은 값을 취합니다."
+    ]
+  },
+  "vi": {
+    "title": "Chi phí vận chuyển một chiều tối thiểu để cân bằng vòng kho",
+    "description": "n kho hàng tạo thành một vòng, và chuyển một món qua một cạnh kề tốn 1. Mục tiêu là mọi kho cuối cùng có cùng số món; tổng được đảm bảo chia hết cho n. Toàn bộ kế hoạch chỉ được dùng một chiều, hoặc cùng chiều kim đồng hồ hoặc ngược chiều kim đồng hồ, và không được trộn các chiều; bạn có thể chọn điểm bắt đầu bất kỳ. Tìm tổng chi phí nhỏ nhất.\n\nĐầu vào/đầu ra chuẩn, các ví dụ và phần lời giải do trang này tự viết; các khoảng giá trị được đánh dấu rõ là của trang này không phải ràng buộc gốc của đề.",
+    "input": "Dòng đầu chứa n và dòng thứ hai chứa warehouses. Đề gốc không cho cận giá trị nào; trên trang này 1≤n≤200000, 0≤warehouses[i]≤10^9, và đảm bảo sum%n=0. In ra chi phí là số nguyên chính xác, không có modulo nào.",
+    "output": "In ra một số nguyên duy nhất, là đáp án.",
+    "explanation": "Các đáp án lần lượt là 8, 7 và 0. Ở ví dụ đầu, chuyển hàng theo cả hai chiều có thể tốn 4, nhưng quy tắc gốc là chỉ một chiều suốt kế hoạch nên giá trị nhỏ nhất là 8.",
+    "hints": [
+      "Tính phần dư tiền tố P của mỗi kho so với giá trị trung bình, bao gồm số 0 cuối cùng. Chi phí tối thiểu theo chiều thuận là sum(P)−n·min(P), và theo chiều ngược là n·max(P)−sum(P); lấy giá trị nhỏ hơn."
+    ]
   }
 }

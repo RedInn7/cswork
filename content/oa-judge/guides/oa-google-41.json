@@ -13,6 +13,21 @@
       "Blocking only affects later indices: after taking index i, the next index that can be taken is at least i + points[i] + 1, and the later choices do not depend on decisions before i.",
       "Run a dynamic program from right to left: dp[i] is the best score using only indices i..n-1; for index i there are only two choices, skip it or take it.",
       "Set dp[n] = 0; for i from n-1 down to 0: dp[i] = max(dp[i+1], points[i] + dp[min(n, i + points[i] + 1)]); print dp[0], stored in 64-bit integers."
+    ],
+    "ja": [
+      "ブロックの影響は後ろの添字にだけ及びます。添字 i を取った後に取れる次の添字は少なくとも i + points[i] + 1 で、それ以降の選択は i より前の決定に依存しません。",
+      "右から左へ動的計画法を実行します。dp[i] は添字 i..n-1 だけを使った最良のスコアです。添字 i については、飛ばすか取るかの 2 通りだけです。",
+      "dp[n] = 0 とします。i を n-1 から 0 まで下げながら、dp[i] = max(dp[i+1], points[i] + dp[min(n, i + points[i] + 1)]) とします。dp[0] を出力します。値は 64 ビット整数で保持します。"
+    ],
+    "ko": [
+      "막힘은 뒤쪽 인덱스에만 영향을 줍니다. 인덱스 i를 가져가면 그다음에 가져갈 수 있는 인덱스는 최소 i + points[i] + 1이며, 이후의 선택은 i 이전의 결정에 의존하지 않습니다.",
+      "오른쪽에서 왼쪽으로 동적 계획법을 수행합니다. dp[i]는 인덱스 i..n-1만 사용했을 때의 최고 점수이며, 인덱스 i에서는 건너뛰거나 가져가는 두 가지 선택뿐입니다.",
+      "dp[n] = 0으로 두고, i를 n-1부터 0까지 내려가며 dp[i] = max(dp[i+1], points[i] + dp[min(n, i + points[i] + 1)])를 계산합니다. dp[0]을 출력하며, 64비트 정수로 저장합니다."
+    ],
+    "vi": [
+      "Việc chặn chỉ ảnh hưởng đến các chỉ số phía sau: sau khi lấy chỉ số i, chỉ số kế tiếp có thể lấy ít nhất là i + points[i] + 1, và các lựa chọn sau đó không phụ thuộc vào các quyết định trước i.",
+      "Chạy quy hoạch động từ phải sang trái: dp[i] là điểm tốt nhất chỉ dùng các chỉ số i..n-1; với chỉ số i chỉ có hai lựa chọn, bỏ qua hoặc lấy.",
+      "Đặt dp[n] = 0; với i từ n-1 xuống 0: dp[i] = max(dp[i+1], points[i] + dp[min(n, i + points[i] + 1)]); in dp[0], lưu bằng số nguyên 64-bit."
     ]
   },
   "explanationEn": "## Problem\n\nIn the array points, the value v = points[i] at index i is both the score and the cost: after taking it, the next v indices i+1..i+v can no longer be taken. Blocking only works forward. Find the maximum total score.\n\n## Approach\n\nDynamic programming from right to left: dp[i] is the best score when only indices i..n-1 are considered. Skipping i gives dp[i+1]; taking i gives points[i] + dp[min(n, i+points[i]+1)]. The answer is dp[0].\n\n## Correctness\n\nAfter taking index i, the next index that can be taken is at least i+points[i]+1, and the later choices are not affected by any decision before i (blocking only works forward), so the subproblems are independent and the transition covers both taking and skipping i. In the sample, first take 1 (blocking 3), then take 99 to get 100; if blocking worked in both directions, 99 would block the earlier 1 and the sample would not hold.\n\n## Complexity\n\nO(n). Taking a value v occupies v+1 positions, so the total score is at most n.\n\n## Independent verification\n\nThe oracle uses a \"push\" DP: best[j] is the best score when the next takeable index is j, transitioning forward from left to right, a different direction from the reference's pull-style suffix DP; even smaller data additionally enumerates every subset of indices and checks the blocking condition. All arrays of length 1..6 with values 0..3 are enumerated and each is run through the actual reference program. The wrong solutions cover blocking one too few, one too many, a local greedy, and mistaking the rule for \"adjacent elements cannot both be taken\"."

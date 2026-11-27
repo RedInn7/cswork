@@ -13,6 +13,21 @@
       "Each step needs the column with the lowest height, smallest index on ties, and only that one column's height changes; that is exactly what a min-heap ordered by (height, index) does well.",
       "Put the k columns into a min-heap as (0, i). For each pin in order, pop the top to get the column index, record it, add the pin to that column's height and push it back.",
       "The heap key must be the full pair (height, index) so ties pick the smallest index automatically. Heights can reach about 2 * 10^14, so use 64-bit integers. Print the n assigned indices on the first line and the k final heights on the second. Total time O(n log k)."
+    ],
+    "ja": [
+      "各ステップで必要なのは、高さが最も低い列(同じ高さならインデックスが最小の列)であり、変化するのはその 1 列の高さだけです。これはまさに、(高さ, インデックス) の順序を持つ最小ヒープが得意とする操作です。",
+      "k 本の列を (0, i) として最小ヒープに入れます。各ピンを順に、先頭を取り出して列のインデックスを得て記録し、その列の高さにピンの値を加えてヒープに戻します。",
+      "ヒープのキーは (高さ, インデックス) の組全体にしてください。そうすれば、同じ高さのときにインデックスが最小のものが自動的に選ばれます。高さは約 2 * 10^14 に達しうるので、64 ビット整数を使います。1 行目に割り当てられた n 個のインデックス、2 行目に k 個の最終的な高さを出力します。全体の計算量は O(n log k) です。"
+    ],
+    "ko": [
+      "매 단계마다 높이가 가장 낮고(동률이면 인덱스가 가장 작은) 열이 필요하고, 바뀌는 것은 그 한 열의 높이뿐입니다. (높이, 인덱스) 순서의 최소 힙이 바로 이 일을 잘 처리합니다.",
+      "k개의 열을 (0, i)로 최소 힙에 넣습니다. 각 핀을 순서대로 처리하면서 top을 꺼내 열 인덱스를 얻고 기록한 뒤, 그 열의 높이에 핀 값을 더해 다시 넣습니다.",
+      "힙의 키는 (높이, 인덱스) 쌍 전체여야 동률일 때 가장 작은 인덱스가 자동으로 선택됩니다. 높이는 약 2 * 10^14까지 커질 수 있으므로 64비트 정수를 사용하세요. 첫째 줄에 배정된 n개의 인덱스를, 둘째 줄에 k개의 최종 높이를 출력합니다. 전체 시간 복잡도는 O(n log k)입니다."
+    ],
+    "vi": [
+      "Mỗi bước cần cột có chiều cao thấp nhất, chỉ số nhỏ nhất khi bằng nhau, và chỉ chiều cao của đúng một cột thay đổi; đó chính xác là việc min-heap sắp theo (chiều cao, chỉ số) làm tốt.",
+      "Đưa k cột vào min-heap dưới dạng (0, i). Với mỗi ghim theo thứ tự, lấy phần tử đầu heap để biết chỉ số cột, ghi lại nó, cộng chiều cao ghim vào cột đó rồi đẩy lại vào heap.",
+      "Khóa của heap phải là cả cặp (chiều cao, chỉ số) để khi bằng nhau tự động chọn chỉ số nhỏ nhất. Chiều cao có thể đạt khoảng 2 * 10^14 nên dùng số nguyên 64 bit. In n chỉ số đã gán ở dòng đầu và k chiều cao cuối cùng ở dòng thứ hai. Tổng thời gian O(n log k)."
     ]
   },
   "explanationEn": "## Approach\n\nUse a min-heap ordered by (current height, column index). For each pin, take the top of the heap, record its index, increase that column's height and put it back into the heap.\n\n## Correctness\n\nThe heap order uses height and index as the complete sort key, so the top of the heap is always the lowest column with the smallest index, as the problem requires. After it is popped, only this column's height changes before it is pushed back, and the other columns' states stay the same; processing the pins one by one therefore matches the rule exactly.\n\n## Complexity\n\nLet n be the number of pins and k the number of columns. Time O(n log k), space O(k+n) (including the assignment result)."

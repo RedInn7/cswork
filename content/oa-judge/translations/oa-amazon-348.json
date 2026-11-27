@@ -11,5 +11,35 @@
     "hints": [
       "Merge equal heights from high to low. With the current top c items at height h and the next height l, you can process at most c(h−l) operations in one batch, and the minimum stays fixed except in the phase after everything has become equal. Accumulate the maximums with arithmetic sums over full rounds plus the remainder. Once everything is equal, separately account for the minimum dropping after the first step of each round."
     ]
+  },
+  "ja": {
+    "title": "最大値と最小値を足してから最大値を下げる操作の繰り返し",
+    "description": "ちょうど requests 回の操作を行います。各操作では、まず現在の最大値と現在の最小値の和を答えに加え、その後、現在の最大値のうち1つを1だけ減らします。最終的な合計を正確な整数で求めてください。元の配列も操作後の値も負になりえます。最大値が複数ある場合、どれを選んでも操作後の多重集合は変わりません。\n\n本サイトでは標準入出力、解説、テストを独自に作成しています。元の問題で欠けている制約やサンプルの誤りの訂正は、問題文中に明記しています。",
+    "input": "1行目に n と requests、2行目に n 個の整数が与えられます。出典で与えられているのは requests≥0、整数配列、十分に広い整数型を使うことのみです。本サイトでは 1≤n≤200000、初期値は −10^9..10^9、0≤requests≤10^12 とします。答えは何かで割った余りではなく、符号付き64ビット整数の範囲を超えることがあります。",
+    "output": "答えとなる整数を1つ出力してください。",
+    "explanation": "3つの公開サンプルの出力は 5、-20、6 です。独立した全探索または直接シミュレーションで確認済みです。",
+    "hints": [
+      "等しい高さを高い方から順にまとめていきます。現在の上位 c 個が高さ h にあり、次の高さが l のとき、1回のバッチで最大 c(h−l) 回の操作を処理できます。全要素が等しくなるフェーズに入るまで、最小値は固定です。最大値の和は、完全なラウンドについては等差数列の和、残りについては端数として足し込みます。全要素が等しくなった後は、各ラウンドの最初の操作のあとに最小値が下がる点を別に計上します。"
+    ]
+  },
+  "ko": {
+    "title": "최댓값과 최솟값을 반복해서 더하고 최댓값 낮추기",
+    "description": "정확히 requests번 연산을 수행합니다. 매번 먼저 현재 최댓값과 현재 최솟값의 합을 답에 더한 뒤, 현재 최댓값 중 하나를 1 감소시킵니다. 최종 정수 합계를 정확하게 구하십시오. 원래 배열과 연산 후의 값은 모두 음수일 수 있으며, 최댓값이 여러 개일 때 어느 것을 골라도 결과 멀티셋은 달라지지 않습니다.\n\n이 사이트에서 표준 입출력, 해설, 테스트를 독자적으로 작성했으며, 원문에 빠진 범위와 예제의 정정 사항은 문제에 명시했습니다.",
+    "input": "첫째 줄에 n과 requests가 주어지고, 둘째 줄에 n개의 정수가 주어집니다. 원문에는 requests≥0, 정수 배열, 충분히 넓은 정수형 사용만 명시되어 있으며, 이 사이트에서는 1≤n≤200000, 초기 값은 −10^9..10^9, 0≤requests≤10^12로 정합니다. 답은 어떤 수로도 나누지 않으며 부호 있는 64비트 정수 범위를 넘을 수 있습니다.",
+    "output": "정수 하나, 즉 답을 출력합니다.",
+    "explanation": "공개 예제 3개의 출력은 각각 5, -20, 6이며, 독립적인 전수 조사 또는 직접 시뮬레이션으로 확인했습니다.",
+    "hints": [
+      "같은 높이를 높은 쪽부터 합칩니다. 현재 상위 c개가 높이 h에 있고 다음 높이가 l이면, 한 번에 최대 c(h−l)번의 연산을 일괄 처리할 수 있으며, 모든 값이 같아지는 단계 이전에는 최솟값이 고정됩니다. 최댓값은 완전한 라운드에 대한 등차수열의 합에 나머지를 더해 누적합니다. 모든 값이 같아지면 각 라운드의 첫 단계 이후 최솟값이 내려가는 것을 별도로 계산합니다."
+    ]
+  },
+  "vi": {
+    "title": "Cộng max và min liên tục rồi giảm max",
+    "description": "Thực hiện đúng requests thao tác: mỗi lần, trước tiên cộng tổng của giá trị lớn nhất hiện tại và giá trị nhỏ nhất hiện tại vào đáp án, sau đó giảm một trong các giá trị lớn nhất hiện tại đi 1. Hãy tìm tổng cuối cùng chính xác (là một số nguyên). Cả mảng ban đầu lẫn các giá trị sau khi thao tác đều có thể âm; khi có nhiều giá trị lớn nhất bằng nhau, chọn phần tử nào cũng không làm thay đổi multiset thu được.\n\nTrang này tự viết lại phần đầu vào/đầu ra chuẩn, lời giải và bộ test; những giới hạn gốc còn thiếu và các chỗ sửa lại ví dụ đều được nêu rõ trong đề bài.",
+    "input": "Dòng đầu chứa n và requests, dòng thứ hai chứa n số nguyên. Nguồn gốc chỉ cho biết requests≥0, mảng là số nguyên và cần dùng kiểu số nguyên đủ rộng; trên trang này 1≤n≤200000, giá trị ban đầu nằm trong khoảng −10^9..10^9, và 0≤requests≤10^12. Đáp án không lấy modulo và có thể vượt quá phạm vi số nguyên có dấu 64 bit.",
+    "output": "In ra một số nguyên duy nhất, là đáp án.",
+    "explanation": "Đầu ra của ba ví dụ công khai lần lượt là 5; -20; và 6, đã được kiểm tra bằng liệt kê độc lập hoặc mô phỏng trực tiếp.",
+    "hints": [
+      "Gộp các độ cao bằng nhau từ cao xuống thấp. Với c phần tử cao nhất đang ở độ cao h và độ cao kế tiếp là l, bạn có thể xử lý tối đa c(h−l) thao tác trong một lô, và giá trị nhỏ nhất giữ nguyên cho đến giai đoạn sau khi mọi phần tử đã bằng nhau. Cộng dồn các giá trị lớn nhất bằng tổng cấp số cộng cho các vòng đầy đủ cộng với phần dư. Khi tất cả đã bằng nhau, hãy tính riêng việc giá trị nhỏ nhất giảm sau bước đầu tiên của mỗi vòng."
+    ]
   }
 }

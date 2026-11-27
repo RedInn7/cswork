@@ -13,6 +13,21 @@
       "A query must match both the key and the write time exactly, with no search for the nearest time version, so this is just a dictionary lookup by (key, timestamp).",
       "The same key never appears twice at the same time, so (key, timestamp) is a unique composite key that maps directly to its value.",
       "Store each entry in a hash map under the composite key (key, timestamp); answer each query by looking up the same composite key and print one value per line. Note that entries list timestamp, key, value, while queries give the key first and then the timestamp."
+    ],
+    "ja": [
+      "クエリは key と書き込み時刻の両方に厳密に一致する必要があり、最も近い時刻の版を探すことはありません。つまり (key, timestamp) による辞書の検索にすぎません。",
+      "同じ key が同じ時刻に 2 回現れることはないので、(key, timestamp) は一意な複合キーであり、そのまま value に対応します。",
+      "各エントリを複合キー (key, timestamp) でハッシュマップに格納し、各クエリでは同じ複合キーを検索して、1 行に 1 つずつ値を出力します。エントリは timestamp、key、value の順ですが、クエリは key が先で timestamp が後であることに注意してください。"
+    ],
+    "ko": [
+      "질의는 key와 기록 시각이 모두 정확히 일치해야 하며 가장 가까운 시각의 버전을 찾을 필요가 없으므로, 이 문제는 (key, timestamp)로 딕셔너리를 조회하는 것에 불과합니다.",
+      "같은 key가 같은 시각에 두 번 나타나지 않으므로 (key, timestamp)는 값에 바로 대응되는 유일한 복합 키입니다.",
+      "각 항목을 복합 키 (key, timestamp)로 해시 맵에 저장합니다. 각 질의에 대해서는 같은 복합 키로 조회하여 값을 한 줄에 하나씩 출력합니다. 항목은 timestamp, key, value 순서이고 질의는 key가 먼저, 그다음 timestamp가 온다는 점에 주의하세요."
+    ],
+    "vi": [
+      "Một truy vấn phải khớp chính xác cả khóa lẫn thời điểm ghi, không cần tìm phiên bản gần nhất theo thời gian, nên đây chỉ là tra từ điển theo (key, timestamp).",
+      "Cùng một khóa không bao giờ xuất hiện hai lần tại cùng một thời điểm, nên (key, timestamp) là khóa ghép duy nhất ánh xạ thẳng tới giá trị của nó.",
+      "Lưu mỗi mục vào bảng băm dưới khóa ghép (key, timestamp); trả lời mỗi truy vấn bằng cách tra cùng khóa ghép đó và in mỗi giá trị trên một dòng. Lưu ý các mục liệt kê timestamp, key, value, còn truy vấn cho key trước rồi mới đến timestamp."
     ]
   },
   "explanationEn": "## Approach\n\nBuild a hash map with (key,timestamp) as a composite key and answer the queries one by one.\n\n## Proof of correctness\n\nThe composite key is unique because no key repeats at the same time, so after writing each entry the stored value is exactly that entry's value; a query that is guaranteed to hit accesses the same composite key and must return the corresponding value.\n\n## Complexity\n\nTime O(number of input characters), space O(n·key length)."

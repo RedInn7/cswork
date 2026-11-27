@@ -13,6 +13,21 @@
       "Employees are indistinguishable; only the current number of people in the office matters: C (a new employee enters) and U (returns from the meeting room) add one, R (goes to the meeting room) and L (leaves permanently) subtract one.",
       "At any moment every person in the office needs a chair, so the number of chairs is at least the maximum headcount ever reached; with the rule of using a free chair first and buying only when none is free, the number bought equals exactly that maximum.",
       "For each simulation string, start the office headcount inside and the maximum best at 0; for each character: C or U increments inside, R or L decrements it, and after every step update best with inside; output the best values of all simulations in input order, separated by spaces."
+    ],
+    "ja": [
+      "従業員は区別されず、重要なのは現在オフィスにいる人数だけです。C（新しい従業員の入室）と U（会議室から戻る）は 1 人増やし、R（会議室へ行く）と L（完全に退出する）は 1 人減らします。",
+      "どの時点でも、オフィスにいる全員に椅子が必要なので、椅子の数は少なくとも、これまでに達した最大の人数以上です。空いている椅子を優先して使い、なければ購入するという規則では、購入数はちょうどその最大値になります。",
+      "各シミュレーション文字列について、オフィス内の人数 inside と最大値 best を 0 で始めます。各文字について、C または U なら inside を増やし、R または L なら減らし、ステップごとに inside で best を更新します。すべてのシミュレーションの best を、入力順にスペース区切りで出力します。"
+    ],
+    "ko": [
+      "직원은 서로 구별되지 않으며 현재 사무실에 있는 인원 수만 중요합니다. C(새 직원이 입장)와 U(회의실에서 복귀)는 한 명을 늘리고, R(회의실로 감)과 L(완전히 떠남)은 한 명을 줄입니다.",
+      "어느 시점에든 사무실에 있는 모든 사람에게 의자가 필요하므로 의자 수는 지금까지 도달한 최대 인원 이상이어야 합니다. 빈 의자를 먼저 쓰고 없을 때만 구매하는 규칙에서는 구매한 의자 수가 정확히 그 최댓값과 같습니다.",
+      "각 시뮬레이션 문자열마다 사무실 인원 inside와 최댓값 best를 0으로 시작합니다. 각 문자에 대해 C 또는 U이면 inside를 1 증가시키고, R 또는 L이면 1 감소시키며, 매 단계 후 best를 inside로 갱신합니다. 모든 시뮬레이션의 best 값을 입력 순서대로 공백으로 구분하여 출력합니다."
+    ],
+    "vi": [
+      "Các nhân viên không phân biệt; chỉ số người hiện đang ở văn phòng là quan trọng: C (nhân viên mới vào) và U (trở về từ phòng họp) cộng một, R (đi đến phòng họp) và L (rời đi vĩnh viễn) trừ một.",
+      "Tại mọi thời điểm, mỗi người ở văn phòng đều cần một chiếc ghế, nên số ghế ít nhất bằng số người lớn nhất từng đạt được; với quy tắc dùng ghế trống trước và chỉ mua khi không còn ghế trống, số ghế đã mua bằng đúng giá trị lớn nhất đó.",
+      "Với mỗi xâu mô phỏng, đặt số người trong văn phòng inside và giá trị lớn nhất best bằng 0; với mỗi ký tự: C hoặc U tăng inside, R hoặc L giảm nó, và sau mỗi bước cập nhật best bằng inside; in các giá trị best của mọi mô phỏng theo thứ tự đầu vào, cách nhau bằng dấu cách."
     ]
   },
   "explanationEn": "## Approach\n\nSimulate the number of employees in the office: C and U increase it by one, R and L decrease it by one. The answer is the maximum number of people in the office over the whole process; whenever someone enters and there is no free chair, exactly one more chair has to be bought.\n\n## Correctness\n\nAt every moment each employee in the office must have a chair, so the number of chairs is at least the maximum headcount in the office. Reusing free chairs according to the rules, and buying only when an entry brings the headcount up to the number of chairs already bought, keeps the number of chairs always equal to the maximum headcount so far. At the end the number of purchases reaches exactly this lower bound. The valid event sequence guarantees that every departure or return corresponds to an existing employee, so the state is unique.\n\n## Complexity\n\nLet L be the total number of characters over all simulations; O(L) time and O(1) extra space."

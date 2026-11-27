@@ -13,6 +13,21 @@
       "A process fails exactly when some process prescribed before it actually runs later than it; failures do not propagate, so every process can be judged on its own.",
       "Record each process's actual position and scan in the prescribed order: the current process fails if any earlier one has a larger actual position, so you only need the maximum actual position seen so far.",
       "Build position[v] = index of v in the actual order; walk the prescribed order, add one to the count when position[v] is less than the running maximum, then update the maximum with position[v]; print the count."
+    ],
+    "ja": [
+      "処理が失敗するのは、規定でそれより前にある処理のどれかが、実際にはそれより後に実行される場合だけです。失敗は伝播しないので、各処理を単独で判定できます。",
+      "各処理の実際の位置を記録し、規定された順序で走査します。それより前の処理のどれかが実際の位置でより大きければ、現在の処理は失敗します。そのため、それまでに見た実際の位置の最大値だけを持てば十分です。",
+      "position[v] = 実際の順序での v のインデックスとします。規定の順序をたどり、position[v] が現在の最大値より小さければ個数を 1 増やし、その後 position[v] で最大値を更新します。最後に個数を出力します。"
+    ],
+    "ko": [
+      "규정상 앞선 프로세스 중 하나라도 실제로 더 늦게 실행되면 그 프로세스는 실패합니다. 실패는 전파되지 않으므로 각 프로세스를 독립적으로 판단할 수 있습니다.",
+      "각 프로세스의 실제 위치를 기록하고 규정된 순서대로 훑습니다. 앞선 프로세스 중 실제 위치가 더 큰 것이 있으면 현재 프로세스는 실패하므로 지금까지의 실제 위치 최댓값만 있으면 됩니다.",
+      "position[v] = 실제 순서에서 v의 인덱스로 만들고, 규정된 순서를 따라가며 position[v]가 현재까지의 최댓값보다 작으면 카운트를 하나 늘립니다. 그런 다음 position[v]로 최댓값을 갱신하고 카운트를 출력합니다."
+    ],
+    "vi": [
+      "Một tiến trình thất bại chính xác khi có một tiến trình được quy định trước nó mà thực tế chạy muộn hơn nó; lỗi không lan truyền, nên mỗi tiến trình có thể được đánh giá độc lập.",
+      "Ghi lại vị trí thực tế của mỗi tiến trình và quét theo thứ tự quy định: tiến trình hiện tại thất bại nếu có tiến trình nào đứng trước có vị trí thực tế lớn hơn, nên chỉ cần vị trí thực tế lớn nhất đã thấy cho đến giờ.",
+      "Xây position[v] = chỉ số của v trong thứ tự thực tế; duyệt thứ tự quy định, cộng một vào số đếm khi position[v] nhỏ hơn giá trị lớn nhất đang chạy, rồi cập nhật giá trị lớn nhất bằng position[v]; in số đếm."
     ]
   },
   "explanationEn": "## Approach\n\nRecord each process's actual position and scan in the prescribed order; if the current position is less than the maximum actual position seen so far, at least one prerequisite runs after it.\n\n## Correctness\n\nThe maximum of the earlier positions is greater than the current one if and only if some prerequisite runs later than the current process. Each process is counted independently by this necessary and sufficient condition, which is exactly the problem's \"already run\" requirement; the source's example also makes clear that failed results do not propagate recursively.\n\n## Complexity\n\nTime O(n), space O(n)."

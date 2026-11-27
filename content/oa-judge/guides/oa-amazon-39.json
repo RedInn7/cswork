@@ -13,6 +13,21 @@
       "Sizes can only grow, so you can decide, from small to large, which item receives the next available final size.",
       "When several items can take the current size, give it to the one with the largest unit cost: it pays the most for every extra step of waiting, and an exchange argument shows this is never worse.",
       "Sort items by original size; collect into a max-heap by unit cost every item whose size is at most the current size, pop the top, add (current size − original size) × cost, and increment the current size; when the heap is empty, jump to the next item's size. Use 64-bit arithmetic."
+    ],
+    "ja": [
+      "大きさは増えるだけなので、小さいほうから順に、次に使える最終的な大きさをどのアイテムが受け取るかを決められます。",
+      "現在の大きさを取れるアイテムが複数あるときは、単位コストが最大のものに渡します。待つ 1 歩ごとに最も多く支払うことになるからで、交換の議論により、これが悪くなることはありません。",
+      "アイテムを元の大きさでソートし、現在の大きさ以下の大きさのアイテムをすべて単位コストの最大ヒープに入れ、先頭を取り出して (現在の大きさ − 元の大きさ) × コスト を加算し、現在の大きさを 1 増やします。ヒープが空なら、次のアイテムの大きさまで飛びます。64 ビット演算を使ってください。"
+    ],
+    "ko": [
+      "크기는 커지기만 하므로, 다음으로 사용할 수 있는 최종 크기를 어느 항목이 받을지 작은 것부터 큰 것 순으로 정할 수 있습니다.",
+      "여러 항목이 현재 크기를 가질 수 있을 때는 단가가 가장 큰 항목에 주세요. 그 항목은 한 걸음 더 기다릴 때마다 가장 많은 비용을 내며, 교환 논증으로 이것이 결코 더 나쁘지 않음을 보일 수 있습니다.",
+      "항목을 원래 크기로 정렬하고, 크기가 현재 크기 이하인 모든 항목을 단가 기준 최대 힙에 모은 뒤, 최상단을 꺼내 (현재 크기 − 원래 크기) × 비용을 더하고 현재 크기를 1 늘립니다. 힙이 비면 다음 항목의 크기로 점프합니다. 64비트 연산을 사용하세요."
+    ],
+    "vi": [
+      "Kích thước chỉ có thể tăng, nên bạn có thể quyết định, từ nhỏ đến lớn, mục nào nhận kích thước cuối cùng khả dụng tiếp theo.",
+      "Khi nhiều mục có thể nhận kích thước hiện tại, trao nó cho mục có đơn giá lớn nhất: mục đó phải trả nhiều nhất cho mỗi bước chờ thêm, và một lập luận hoán đổi cho thấy cách này không bao giờ tệ hơn.",
+      "Sắp xếp các mục theo kích thước ban đầu; gom vào một heap cực đại theo đơn giá mọi mục có kích thước không vượt quá kích thước hiện tại, lấy phần tử đỉnh, cộng (kích thước hiện tại − kích thước ban đầu) × chi phí, và tăng kích thước hiện tại; khi heap rỗng, nhảy tới kích thước của mục tiếp theo. Dùng số học 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nAssign final sizes from small to large, adding to a max-cost heap every item whose original size is not greater than the current value. The current size goes first to the item with the largest unit cost.\n\n## Proof of correctness\n\nOf two items that can both be placed, if the cheaper one takes the current position and the more expensive one is delayed, swapping them reduces or keeps the cost, and both items still only increase. So there is always an optimal solution that gives priority to the largest cost. When the heap is empty, jumping to the next original size never misses an available item.\n\n## Complexity\n\nO(n log n) time and O(n) space."

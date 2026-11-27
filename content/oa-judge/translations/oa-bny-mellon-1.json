@@ -13,5 +13,41 @@
       "A simultaneous transformation is a linear transformation, so fast matrix exponentiation works.",
       "A large number of rounds cannot be iterated round by round, and intermediate products need 64 bits."
     ]
+  },
+  "ja": {
+    "title": "同時変換後の文字列の長さ",
+    "description": "小文字の英字からなる文字列に、ちょうど t ラウンドの同時変換を適用します。各 z は ab に置き換えられ、それ以外の各文字はアルファベットの次の文字に置き換えられます。あるラウンドで生成された文字は、次のラウンドまで再び変換されません。最終的な文字列の長さを 1000000007 で割った余りを出力してください。",
+    "input": "ちょうど 2 行。1 行目は a..z のみを含む word、2 行目は非負整数 t です。元の Java の int インターフェースとラウンドの意味に基づき、このサイトでは 0≤t≤2147483647 と明示的に解釈します。この範囲は、元の制約セクションに数値として書かれているものではなく、型から導かれたものです。元の問題には word の長さの上限がありません。このサイトでは、1 つのテストケースの 32MiB の標準入力の予算内で送信できる有効な文字列をすべて対象とし、長さをこれ以上は制限しません。1 行目は空になることもあり、これは空文字列へのこのサイトの数学的な拡張です。",
+    "output": "整数を 1 つ出力してください: 最終的な長さを 1000000007 で割った余りです。t=0 のときは元の長さを同じ剰余で返し、空文字列は常に 0 を返します。",
+    "explanation": "元の問題文では、azbk は 1 ラウンド後に babcl になり、長さは 5 です。元の例 abczy, t=2 では、最初に bcdabz になり、次に cdebcab になって、長さは 7 です。元の出力は TO-DO で、7 は明示されたルールから導いてこのサイトが補ったものです。元の説明の cdedbc は誤りです。3 つ目の公開例 z, t=0→1 は、このサイトが追加した境界ケースです。",
+    "hints": [
+      "文字列を展開するのではなく、26 個のカウンターを使います。",
+      "同時変換は線形変換なので、高速な行列累乗が使えます。",
+      "ラウンド数が大きいと 1 ラウンドずつ反復することはできず、中間の積には 64 ビットが必要です。"
+    ]
+  },
+  "ko": {
+    "title": "동시 문자 변환 후의 문자열 길이",
+    "description": "소문자 영어 문자열에 정확히 t번의 동시 변환 라운드를 적용합니다. 각 z는 ab로 바뀌고, 다른 모든 글자는 알파벳의 다음 글자로 바뀝니다. 한 라운드에서 만들어진 문자는 다음 라운드 전까지 다시 변환되지 않습니다. 최종 문자열의 길이를 1000000007로 나눈 나머지로 출력하세요.",
+    "input": "정확히 두 줄이 주어집니다. 첫 번째 줄은 a..z로만 이루어진 word이고, 두 번째 줄은 음이 아닌 정수 t입니다. 원본 Java int 인터페이스와 라운드 의미에 따라 이 사이트는 0≤t≤2147483647로 명시적으로 해석합니다. 이 범위는 원본 제약 조건 절에 숫자로 주어진 것이 아니라 자료형에서 도출한 것입니다. 원본에는 word의 길이 상한이 없으며, 이 사이트는 테스트 케이스 하나당 32MiB의 표준 입력 한도 안에서 전송 가능한 모든 유효한 문자열을 길이를 더 줄이지 않고 다룹니다. 첫 번째 줄은 비어 있을 수 있으며, 이는 빈 문자열에 대한 이 사이트의 수학적 확장입니다.",
+    "output": "정수 하나를 출력합니다. 최종 길이를 1000000007로 나눈 나머지입니다. t=0이면 원래 길이를 같은 수로 나눈 나머지를 반환하고, 빈 문자열은 항상 0을 반환합니다.",
+    "explanation": "원본 문제 설명에서 azbk는 한 라운드 후 babcl이 되며 길이는 5입니다. 원본 예제 abczy,t=2는 먼저 bcdabz가 되고 이어서 cdebcab가 되어 길이 7입니다. 원본의 출력은 TO-DO였고 7은 이 사이트가 명시된 규칙에서 도출해 채웠으며, 원본 설명의 cdedbc는 틀렸습니다. 세 번째 공개 예제 z,t=0→1은 이 사이트가 추가한 경계 사례입니다.",
+    "hints": [
+      "문자열을 확장하는 대신 26개의 카운터를 사용합니다.",
+      "동시 변환은 선형 변환이므로 행렬 거듭제곱으로 빠르게 계산할 수 있습니다.",
+      "라운드 수가 크면 라운드별로 반복할 수 없고, 중간 곱에는 64비트가 필요합니다."
+    ]
+  },
+  "vi": {
+    "title": "Độ dài sau các phép biến đổi chữ cái đồng thời",
+    "description": "Áp dụng đúng t vòng biến đổi đồng thời cho một xâu chữ cái tiếng Anh thường: mỗi chữ z được thay bằng ab, và mọi chữ cái khác được thay bằng chữ cái kế tiếp trong bảng chữ cái. Các ký tự sinh ra trong một vòng không được biến đổi lại cho tới vòng tiếp theo. In ra độ dài xâu cuối cùng theo modulo 1000000007.",
+    "input": "Đúng hai dòng: dòng đầu là word, chỉ chứa a..z; dòng thứ hai là một số nguyên không âm t. Dựa trên giao diện int của Java gốc và ngữ nghĩa vòng, trang này diễn giải tường minh 0≤t≤2147483647; phạm vi này suy ra từ kiểu dữ liệu chứ không được cho bằng số trong phần ràng buộc của bài gốc. Bài gốc không có cận trên cho độ dài của word; trang này bao phủ mọi xâu hợp lệ có thể truyền được trong ngân sách đầu vào chuẩn 32MiB của một test, không giảm độ dài thêm nữa. Dòng đầu có thể rỗng, như một mở rộng toán học của trang này cho xâu rỗng.",
+    "output": "In ra một số nguyên: độ dài cuối cùng theo modulo 1000000007. Khi t=0, trả về độ dài ban đầu theo modulo đó; xâu rỗng luôn trả về 0.",
+    "explanation": "Trong đề gốc, azbk trở thành babcl sau một vòng, độ dài 5. Trong ví dụ gốc abczy,t=2, đầu tiên nó thành bcdabz rồi thành cdebcab, độ dài 7; đầu ra gốc là TO-DO, và 7 được trang này điền vào bằng cách suy ra từ các quy tắc tường minh; lời giải thích cdedbc của bản gốc là sai. Ví dụ công khai thứ ba z,t=0→1 là một trường hợp biên do trang này thêm vào.",
+    "hints": [
+      "Dùng 26 bộ đếm thay vì mở rộng xâu.",
+      "Một phép biến đổi đồng thời là một phép biến đổi tuyến tính, nên lũy thừa ma trận nhanh dùng được.",
+      "Số vòng lớn không thể lặp từng vòng một, và các tích trung gian cần 64 bit."
+    ]
   }
 }

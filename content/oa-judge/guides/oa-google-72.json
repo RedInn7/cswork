@@ -13,6 +13,21 @@
       "Each letter has a unique key position and the finger's position is fixed by the previous letter, so every move is determined.",
       "Map each letter to its index first, then walk the word adding the absolute difference between consecutive positions, starting from index 0.",
       "Store each letter's index in an array of 26. Set current to 0; for each character of word add |pos[c]−current| to the answer and set current to pos[c]. Print the total."
+    ],
+    "ja": [
+      "各文字のキー位置は一意で、指の位置は直前の文字で決まるので、すべての移動が一意に定まります。",
+      "まず各文字をインデックスに対応付け、word を順にたどって、連続する位置の差の絶対値を足します。開始はインデックス 0 です。",
+      "各文字のインデックスを長さ 26 の配列に保存します。current を 0 にし、word の各文字 c について |pos[c]−current| を答えに加え、current を pos[c] に更新します。合計を出力してください。"
+    ],
+    "ko": [
+      "문자마다 키 위치가 유일하고 손가락의 위치는 직전 문자로 정해지므로, 모든 이동이 결정되어 있습니다.",
+      "먼저 각 문자를 인덱스에 대응시킨 뒤, 인덱스 0에서 시작하여 word를 따라가며 연속한 위치의 차이의 절댓값을 더합니다.",
+      "26칸 배열에 각 문자의 인덱스를 저장합니다. current를 0으로 두고, word의 각 문자 c마다 답에 |pos[c]−current|를 더한 뒤 current를 pos[c]로 갱신합니다. 합계를 출력합니다."
+    ],
+    "vi": [
+      "Mỗi chữ cái có đúng một vị trí phím và vị trí ngón tay được xác định bởi chữ cái trước đó, nên mọi lần di chuyển đều đã được xác định.",
+      "Trước tiên ánh xạ mỗi chữ cái sang chỉ số của nó, rồi duyệt qua word cộng giá trị tuyệt đối của hiệu hai vị trí liên tiếp, bắt đầu từ chỉ số 0.",
+      "Lưu chỉ số của mỗi chữ cái trong một mảng 26 phần tử. Đặt current bằng 0; với mỗi ký tự của word cộng |pos[c]−current| vào đáp án và đặt current bằng pos[c]. In ra tổng."
     ]
   },
   "explanationEn": "## Idea\n\nPrecompute the position of every letter and add up the distance from the previous position for each character in turn.\n\n## Correctness\n\nEach character's target position is unique and the current finger position is fixed by the previous character, so every necessary move is exactly the difference of the two positions; their sum is the total time.\n\n## Complexity\n\nO(26+n) time, O(26) space."

@@ -13,6 +13,21 @@
       "A word can only be written left to right or top to bottom, and it must fill exactly one contiguous segment bounded by the border or by #. So the candidate positions are all segments of every row and every column after splitting on #.",
       "Only segments whose length equals the word's length can work; for such a segment check each cell: it must be _ (empty) or exactly the word's letter at that position.",
       "Split every row and every column (build each column as a string) into segments on #; for each segment whose length equals the word's, check position by position that it is _ or matches the word's letter, and print 1 if all positions are compatible; if no segment works, print 0."
+    ],
+    "ja": [
+      "単語は左から右、または上から下にしか書けず、境界または # で区切られた連続する 1 つの区間をちょうど埋める必要があります。したがって候補は、# で分割したすべての行・列の区間です。",
+      "長さが単語の長さと等しい区間だけが使えます。そのような区間では各マスを確認し、_ (空き) か、その位置の単語の文字と一致しているかを調べます。",
+      "すべての行と列 (列は文字列として組み立てます) を # で区間に分割します。長さが単語と等しい各区間について、位置ごとに _ か単語の文字と一致するかを確認し、すべての位置が適合すれば 1 を出力します。使える区間がなければ 0 を出力します。"
+    ],
+    "ko": [
+      "단어는 왼쪽에서 오른쪽 또는 위에서 아래로만 쓸 수 있고, 경계나 #로 구분된 연속된 구간 하나를 정확히 채워야 합니다. 따라서 후보 위치는 #로 나눈 뒤의 모든 행과 열의 모든 구간입니다.",
+      "길이가 단어의 길이와 같은 구간만 가능합니다. 그런 구간에서는 각 칸이 _ (빈 칸)이거나 그 위치의 단어 글자와 정확히 같아야 합니다.",
+      "모든 행과 모든 열(각 열을 문자열로 만듭니다)을 #에서 구간으로 나눕니다. 길이가 단어의 길이와 같은 각 구간에 대해 위치마다 _ 이거나 단어의 글자와 일치하는지 확인하고, 모든 위치가 호환되면 1을 출력합니다. 가능한 구간이 없으면 0을 출력합니다."
+    ],
+    "vi": [
+      "Một từ chỉ được viết từ trái sang phải hoặc từ trên xuống dưới, và phải lấp đầy đúng một đoạn liên tiếp được giới hạn bởi biên hoặc bởi #. Vì vậy các vị trí ứng viên là mọi đoạn của mỗi hàng và mỗi cột sau khi tách theo #.",
+      "Chỉ các đoạn có độ dài bằng độ dài của từ mới có thể dùng được; với đoạn như vậy, kiểm tra từng ô: nó phải là _ (trống) hoặc đúng bằng chữ cái của từ tại vị trí đó.",
+      "Tách mỗi hàng và mỗi cột (dựng mỗi cột thành một xâu) thành các đoạn tại #; với mỗi đoạn có độ dài bằng độ dài của từ, kiểm tra từng vị trí xem nó là _ hoặc khớp với chữ cái của từ, và in 1 nếu mọi vị trí đều tương thích; nếu không có đoạn nào dùng được thì in 0."
     ]
   },
   "explanationEn": "## Approach\n\nSplit every row and every column on #; check only the segments with the same length as the word, confirming character by character that each cell is empty or the target letter.\n\n## Correctness\n\nA valid placement must correspond to exactly one row or column segment surrounded by walls or the border; conversely, a segment of the same length whose characters are all compatible can always take the word. Enumerating all these segments neither misses any placement nor accepts a partial segment.\n\n## Complexity\n\nO(rc) time, O(rc) space."

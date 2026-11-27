@@ -13,5 +13,41 @@
       "Original index pairs may be reused.",
       "Analyze one operation, two operations, and at least three operations separately."
     ]
+  },
+  "ja": {
+    "title": "絶対差を追加した後の最小要素",
+    "description": "n 個の正の整数からなる配列 data が与えられます。1 回の操作では、現在の配列から異なる 2 つの添字 i<j を選び、|data[i]-data[j]| を末尾に追加します。元の要素は残ります。以降の操作では新しい要素を選んでもよく、以前に選んだ添字のペアを再び使ってもかまいません。ちょうど k 回の操作を行い、最終的な配列の最小要素が取りうる最小の値を求めてください。追加される値は 0 でもかまいません。本サイトの標準入出力は固定された完全な原文からコンパイルしたもので、元の範囲は狭めていません。",
+    "input": "1 行目に n と k、2 行目に n 個の整数 data[i] が与えられます。2≤n≤2000、1≤data[i]≤10^9、1≤k≤10^9。初期配列に重複する値が含まれることもあります。",
+    "output": "ちょうど k 回の操作の後に、配列の最小要素が取りうる最小の値を整数 1 つで出力します。",
+    "explanation": "例 1 では、47 と 50 を 2 回選んで 3 を 2 つ追加でき、2 ステップ後の最小値は 3 です。0 を作るための 3 ステップ目はありません。例 2 では、4 と 5 を選んで 1 を追加します。例 3 では、12 と 11 を選んで 1 を追加し、その後は任意の有効な操作を行います。最小値は 1 のままです。3 つの例はすべて元の問題文からのもので、操作の説明は本サイトが補いました。",
+    "hints": [
+      "新しく追加された差は、以降の操作に使えます。",
+      "元の添字のペアは再利用できます。",
+      "操作が 1 回、2 回、3 回以上の場合を別々に分析します。"
+    ]
+  },
+  "ko": {
+    "title": "차이의 절댓값을 추가한 뒤의 최솟값",
+    "description": "양의 정수 n개로 이루어진 배열 data가 주어집니다. 한 번의 연산에서 현재 배열의 서로 다른 두 인덱스 i<j를 골라 |data[i]-data[j]|를 끝에 추가합니다. 원래 원소는 그대로 유지되며, 이후 연산에서는 새로 추가된 원소를 고를 수도 있고 이전에 골랐던 인덱스 쌍을 다시 쓸 수도 있습니다. 정확히 k번 연산을 수행했을 때 최종 배열의 최소 원소가 도달할 수 있는 가장 작은 값을 구하세요. 추가되는 값은 0일 수 있습니다. 이 사이트의 표준 입출력은 고정된 완전한 원본에서 구성했으며 원래 범위를 줄이지 않았습니다.",
+    "input": "첫 번째 줄에 n과 k가, 두 번째 줄에 n개의 정수 data[i]가 주어집니다. 2≤n≤2000, 1≤data[i]≤10^9, 1≤k≤10^9입니다. 초기 배열에는 중복된 값이 있을 수 있습니다.",
+    "output": "정확히 k번 연산한 뒤 배열의 최소 원소가 가질 수 있는 가장 작은 값을 정수 하나로 출력합니다.",
+    "explanation": "예제 1에서는 47과 50을 두 번 골라 3을 두 개 추가할 수 있으므로 두 단계 후의 최솟값은 3이며, 0을 만드는 세 번째 단계는 없습니다. 예제 2에서는 4와 5를 골라 1을 추가합니다. 예제 3에서는 12와 11을 골라 1을 추가한 뒤 유효한 연산을 아무거나 수행하며, 최솟값은 여전히 1입니다. 세 예제는 모두 원문에서 가져온 것이며 연산에 대한 설명은 이 사이트가 보완했습니다.",
+    "hints": [
+      "새로 추가된 차이도 이후 연산에 참여할 수 있습니다.",
+      "원래 인덱스 쌍을 다시 사용할 수 있습니다.",
+      "연산이 한 번인 경우, 두 번인 경우, 세 번 이상인 경우를 나누어 분석하세요."
+    ]
+  },
+  "vi": {
+    "title": "Phần tử nhỏ nhất sau khi thêm các hiệu tuyệt đối",
+    "description": "Cho mảng data gồm n số nguyên dương. Trong mỗi thao tác, chọn hai chỉ số khác nhau i<j của mảng hiện tại và thêm |data[i]-data[j]| vào cuối. Các phần tử gốc được giữ lại; các thao tác sau có thể chọn các phần tử mới và cũng có thể dùng lại các cặp chỉ số đã chọn trước đó. Thực hiện đúng k thao tác và tìm giá trị nhỏ nhất mà phần tử bé nhất của mảng cuối cùng có thể đạt được. Các giá trị được thêm vào có thể bằng 0. Đầu vào/đầu ra chuẩn của trang này được biên soạn từ nguồn gốc đầy đủ cố định, không thu hẹp các khoảng giá trị gốc.",
+    "input": "Dòng đầu chứa n và k, dòng thứ hai chứa n số nguyên data[i]. 2≤n≤2000, 1≤data[i]≤10^9, 1≤k≤10^9. Mảng ban đầu có thể chứa các giá trị trùng nhau.",
+    "output": "In ra một số nguyên: giá trị nhỏ nhất có thể của phần tử bé nhất trong mảng sau đúng k thao tác.",
+    "explanation": "Trong ví dụ 1, bạn có thể chọn 47 và 50 hai lần và thêm hai số 3, nên phần tử nhỏ nhất sau hai bước là 3; không còn bước thứ ba để tạo ra 0. Trong ví dụ 2, chọn 4 và 5 để thêm 1. Trong ví dụ 3, chọn 12 và 11 để thêm 1 rồi thực hiện một thao tác hợp lệ bất kỳ; phần tử nhỏ nhất vẫn là 1. Cả ba ví dụ đều lấy từ đề gốc; phần giải thích các thao tác do trang này bổ sung.",
+    "hints": [
+      "Các hiệu mới được thêm vào có thể tham gia vào các thao tác sau.",
+      "Các cặp chỉ số gốc có thể được dùng lại.",
+      "Hãy phân tích riêng một thao tác, hai thao tác, và ít nhất ba thao tác."
+    ]
   }
 }

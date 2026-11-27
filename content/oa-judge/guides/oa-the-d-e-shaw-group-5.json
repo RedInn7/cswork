@@ -13,6 +13,21 @@
       "Simplify the expression first: |x - y| + |x + y| always equals 2 * max(|x|, |y|), which you can check separately for x and y with the same sign and with opposite signs.",
       "So sumVal must be a non-negative even number, otherwise the answer is 0. Let r = sumVal / 2; the valid pairs are those where both absolute values are <= r and at least one equals r exactly.",
       "Count le = number of |a[i]| <= r and lt = number of |a[i]| < r. The answer is le(le - 1)/2 - lt(lt - 1)/2, i.e. all pairs with absolute values <= r minus the pairs with both < r. Use 64-bit integers for the counts and the result."
+    ],
+    "ja": [
+      "まず式を簡単にします。|x - y| + |x + y| は常に 2 * max(|x|, |y|) に等しくなります。x と y が同符号の場合と異符号の場合に分けて確認できます。",
+      "したがって sumVal は 0 以上の偶数でなければならず、そうでなければ答えは 0 です。r = sumVal / 2 とすると、有効なペアは、絶対値がどちらも <= r で、かつ少なくとも一方がちょうど r に等しいものです。",
+      "le を |a[i]| <= r である要素の個数、lt を |a[i]| < r である要素の個数とします。答えは le(le - 1)/2 - lt(lt - 1)/2、すなわち絶対値がどちらも <= r のペア全体から、どちらも < r のペアを引いた値です。個数も結果も 64 ビット整数を使ってください。"
+    ],
+    "ko": [
+      "먼저 식을 단순화합니다. |x - y| + |x + y|는 항상 2 * max(|x|, |y|)와 같으며, x와 y의 부호가 같은 경우와 다른 경우를 따로 확인하면 알 수 있습니다.",
+      "따라서 sumVal은 0 이상의 짝수여야 하고, 그렇지 않으면 답은 0입니다. r = sumVal / 2라 하면, 유효한 쌍은 두 절댓값이 모두 <= r이고 그중 적어도 하나가 정확히 r인 쌍입니다.",
+      "le = |a[i]| <= r인 원소 수, lt = |a[i]| < r인 원소 수라 하면, 답은 le(le - 1)/2 - lt(lt - 1)/2, 즉 절댓값이 <= r인 모든 쌍에서 둘 다 < r인 쌍을 뺀 값입니다. 개수와 결과는 64비트 정수로 계산하세요."
+    ],
+    "vi": [
+      "Hãy rút gọn biểu thức trước: |x - y| + |x + y| luôn bằng 2 * max(|x|, |y|); có thể kiểm tra riêng cho trường hợp x, y cùng dấu và khác dấu.",
+      "Vì vậy sumVal phải là số chẵn không âm, nếu không đáp án là 0. Đặt r = sumVal / 2; các cặp hợp lệ là những cặp có cả hai giá trị tuyệt đối đều <= r và có ít nhất một giá trị bằng đúng r.",
+      "Đếm le = số phần tử có |a[i]| <= r và lt = số phần tử có |a[i]| < r. Đáp án là le(le - 1)/2 - lt(lt - 1)/2, tức là tất cả các cặp có giá trị tuyệt đối <= r trừ đi các cặp mà cả hai đều < r. Dùng số nguyên 64 bit cho các biến đếm và kết quả."
     ]
   },
   "explanationEn": "## Approach\n\nUse the identity |x - y| + |x + y| = 2 * max(|x|, |y|). If sumVal is a non-negative even number, let r = sumVal / 2; the answer is the number of pairs of elements with absolute values not exceeding r, minus the number of pairs whose absolute values are both smaller than r.\n\n## Proof of correctness\n\nSplitting real numbers x, y into the cases of equal and opposite signs, the expression equals twice the larger absolute value in both cases. So the maximum absolute value of a valid pair is exactly r. Among all pairs with absolute values <= r, removing the pairs whose maximum is < r leaves exactly the pairs in which at least one value has absolute value equal to r, which correspond exactly to the problem's condition.\n\n## Complexity\n\nO(n) time and O(1) extra space."

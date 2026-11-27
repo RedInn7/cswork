@@ -13,6 +13,21 @@
       "There are only two targets: 0101... or 1010.... With the target fixed, look at positions from left to right: flips that start earlier are already decided, and flips that start later cannot touch the current position.",
       "So when the current position disagrees with the target, the only option is to start a flip of length k right here; if the window would run past the end, that target is impossible. Record with a difference array where each flip ends, and keep the parity of flips covering the current position.",
       "For each of the two targets: use an array end of size n+1, parity = 0, count = 0; for each i: parity ^= end[i]; if (s[i] ^ parity) != (first ^ (i % 2)), the target is impossible when i + k > n, otherwise set parity ^= 1, end[i+k] ^= 1 and add one to count; print the smallest count among feasible targets, or -1 if neither is feasible."
+    ],
+    "ja": [
+      "目標は 0101... か 1010... の 2 つだけです。目標を固定したら、左から右へ位置を見ていきます。それより前から始まる反転はすでに決まっており、後から始まる反転は現在の位置に影響しません。",
+      "したがって、現在の位置が目標と一致しないときの唯一の選択肢は、ちょうどその位置から長さ k の反転を開始することです。窓が末尾を超えるなら、その目標は不可能です。差分配列で各反転が終わる位置を記録し、現在の位置を覆う反転の偶奇を保持します。",
+      "2 つの目標それぞれについて、サイズ n+1 の配列 end、parity = 0、count = 0 を用意します。各 i について parity ^= end[i] とし、(s[i] ^ parity) != (first ^ (i % 2)) なら、i + k > n のとき目標は不可能、そうでなければ parity ^= 1、end[i+k] ^= 1 とし、count に 1 を加えます。達成可能な目標のうち最小の count を出力します。どちらも不可能なら -1 を出力します。"
+    ],
+    "ko": [
+      "목표는 0101... 또는 1010... 두 가지뿐입니다. 목표를 고정하고 왼쪽에서 오른쪽으로 위치를 보면, 더 일찍 시작한 뒤집기는 이미 결정되어 있고 더 늦게 시작하는 뒤집기는 현재 위치에 영향을 줄 수 없습니다.",
+      "따라서 현재 위치가 목표와 다르면 길이 k의 뒤집기를 바로 여기서 시작하는 수밖에 없습니다. 구간이 끝을 넘어가면 그 목표는 불가능합니다. 차분 배열로 각 뒤집기가 끝나는 위치를 기록하고, 현재 위치를 덮는 뒤집기의 홀짝성을 유지합니다.",
+      "두 목표 각각에 대해 크기 n+1의 배열 end, parity = 0, count = 0을 두고 각 i에 대해: parity ^= end[i]; (s[i] ^ parity) != (first ^ (i % 2))이면, i + k > n일 때 그 목표는 불가능하고, 그렇지 않으면 parity ^= 1, end[i+k] ^= 1로 하고 count에 1을 더합니다. 가능한 목표 중 가장 작은 count를 출력하며, 둘 다 불가능하면 -1을 출력합니다."
+    ],
+    "vi": [
+      "Chỉ có hai đích: 0101... hoặc 1010.... Khi đích đã cố định, hãy xét các vị trí từ trái sang phải: các lần lật bắt đầu sớm hơn đã được quyết định, và các lần lật bắt đầu muộn hơn không thể chạm tới vị trí hiện tại.",
+      "Vì vậy khi vị trí hiện tại khác đích, lựa chọn duy nhất là bắt đầu một lần lật độ dài k ngay tại đây; nếu cửa sổ vượt quá cuối xâu thì đích đó là bất khả thi. Ghi lại bằng một mảng hiệu nơi mỗi lần lật kết thúc, và giữ tính chẵn lẻ của các lần lật phủ vị trí hiện tại.",
+      "Với mỗi đích trong hai đích: dùng mảng end kích thước n+1, parity = 0, count = 0; với mỗi i: parity ^= end[i]; nếu (s[i] ^ parity) != (first ^ (i % 2)), đích là bất khả thi khi i + k > n, ngược lại đặt parity ^= 1, end[i+k] ^= 1 và tăng count thêm một; in count nhỏ nhất trong các đích khả thi, hoặc -1 nếu cả hai đều bất khả thi."
     ]
   },
   "explanationEn": "## Approach\n\nFix each of the two targets 0101... and 1010... separately. Scan from left to right, maintaining the parity of the active flips; when the current position does not match, a window must be started at the current position, and if the window goes out of bounds that target has no solution.\n\n## Correctness\n\nWhen the current position is processed, flips starting earlier are already decided, and flips starting later cannot change the current position, so starting a flip here on a mismatch is the only choice. Flipping the same window twice cancels out and can never reduce the count. The unique greedy sequence for each target is optimal; take the minimum over the two targets.\n\n## Complexity\n\nTime O(n), space O(n)."

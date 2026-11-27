@@ -13,6 +13,21 @@
       "Every row of Pascal's triangle starts and ends with 1, and each inner number is the sum of the two adjacent numbers directly above it, so you can build it row by row.",
       "Row i (counting from 0) has i + 1 numbers. Fill the row with 1s, then compute positions 1 to i - 1 from the previous row; when numRows = 0 nothing is built.",
       "Build numRows rows, then print them as compact JSON: outer square brackets, with rows and numbers separated only by commas and no spaces, for example [[1],[1,1],[1,2,1]]; for numRows = 0 print []. Within 30 rows every value fits in a 32-bit integer."
+    ],
+    "ja": [
+      "パスカルの三角形の各行は 1 で始まり 1 で終わります。内側の各数は、真上にある隣り合う 2 つの数の和なので、行ごとに順に作れます。",
+      "行 i（0 から数えます）には i + 1 個の数があります。行を 1 で埋めてから、前の行を使って位置 1 から i - 1 までを計算します。numRows = 0 のときは何も作りません。",
+      "numRows 行を作り、コンパクトな JSON として出力します。外側は角括弧で、行と数の区切りはカンマだけでスペースは入れません（例: [[1],[1,1],[1,2,1]]）。numRows = 0 なら [] を出力します。30 行以内なら、すべての値が 32 ビット整数に収まります。"
+    ],
+    "ko": [
+      "파스칼의 삼각형의 모든 행은 1로 시작해서 1로 끝나고, 안쪽의 각 수는 바로 위의 인접한 두 수의 합이므로 행을 하나씩 쌓아 만들 수 있습니다.",
+      "(0부터 센) i번째 행에는 i + 1개의 수가 있습니다. 행을 1로 채운 뒤 이전 행을 이용해 위치 1부터 i - 1까지를 계산합니다. numRows = 0이면 아무것도 만들지 않습니다.",
+      "numRows개의 행을 만든 뒤 공백 없는 JSON으로 출력합니다. 바깥쪽 대괄호를 두고, 행과 수는 공백 없이 쉼표로만 구분합니다. 예: [[1],[1,1],[1,2,1]]. numRows = 0이면 []를 출력합니다. 30행 이내에서는 모든 값이 32비트 정수에 들어갑니다."
+    ],
+    "vi": [
+      "Mỗi hàng của tam giác Pascal bắt đầu và kết thúc bằng 1, và mỗi số bên trong là tổng của hai số liền kề ngay phía trên nó, nên bạn có thể xây từng hàng một.",
+      "Hàng i (đếm từ 0) có i + 1 số. Điền hàng bằng các số 1, rồi tính các vị trí từ 1 đến i - 1 dựa trên hàng trước; khi numRows = 0 thì không xây gì cả.",
+      "Xây numRows hàng, rồi in dưới dạng JSON gọn: dấu ngoặc vuông ngoài cùng, các hàng và các số chỉ cách nhau bằng dấu phẩy và không có dấu cách, ví dụ [[1],[1,1],[1,2,1]]; với numRows = 0 in []. Trong phạm vi 30 hàng, mọi giá trị đều vừa trong số nguyên 32 bit."
     ]
   },
   "explanationEn": "# Pascal's Triangle\n\n## Approach\n\nBuild the triangle row by row starting from the first row. Each row starts and ends with 1, and every inner position is the sum of the two adjacent numbers in the previous row.\n\n## Correctness\n\nBy induction on the row number: the first row contains only 1, which matches the definition; assuming the previous row is correct, the new row sets its first and last entries to 1 and computes the inner entries by definition, so every position of the new row is correct. Repeating the construction gives the first numRows rows; when numRows=0, an empty array is returned naturally.\n\n## Complexity\n\nTime and output space are both O(numRows^2).\n\n## Reference implementation\n\n```python\nimport json\nimport sys\n\ndef solve(raw):\n    num_rows = int(raw.strip())\n    if not 0 <= num_rows <= 30:\n        raise ValueError(\"numRows must be between 0 and 30\")\n    triangle = []\n    for index in range(num_rows):\n        row = [1] * (index + 1)\n        for column in range(1, index):\n            row[column] = triangle[index - 1][column - 1] + triangle[index - 1][column]\n        triangle.append(row)\n    return json.dumps(triangle, separators=(\",\", \":\"))\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n```"

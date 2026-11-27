@@ -13,5 +13,41 @@
       "Add up the counts of the same letter, and output everything in letter order at the end.",
       "Very long leading zeros still form a valid digit string; parse it digit by digit in decimal."
     ]
+  },
+  "ja": {
+    "title": "重複する文字の個数を統合した正規形への圧縮",
+    "description": "文字列 S は 1 個以上のセグメントを連結したもので、各セグメントは「英小文字 1 文字 + その文字の個数（10 進数）」の形をしています。同じ文字が複数のセグメントに現れることがあります。各文字のすべてのセグメントの個数を合算し、現れたすべての文字を、a から z の順に、各文字を 1 回ずつ、合計個数とともに出力してください。数値は先頭の 0 なしで書きます。入力は正しいエンコードであることが保証されます。数値に先頭の 0 が含まれることはありますが、その値は 1..1000 の範囲に収まります。元の問題は先頭の 0 を禁止しておらず、本サイトもその制限は加えません。合算後の合計個数は 1000 を超えることがあります。\n\n本サイトでは、カタログで切り詰められていた文字と長さの制約を、固定された完全な原文から復元しました。標準入出力は本サイトが整えたものです。",
+    "input": "1 行に文字列 S が与えられます。引用符や空白はありません。原文の完全な範囲は 1≤|S|≤100000、文字は a..z、各セグメントの個数の値は 1..1000 で、各文字の後ろには少なくとも 1 桁の数字が続きます。有効なエンコードの最短は 2 文字であり、長さの下限が 1 であっても、1 文字だけの不正なエンコードが受理されるわけではありません。",
+    "output": "正規形の圧縮文字列を 1 行で出力します。文字は昇順で、各文字の後ろに先頭の 0 なしの合計個数が続きます。",
+    "explanation": "例 1 では c9 と c1 を c10 に統合し、文字順に並べて a3b2c10 になります。例 2 はすでに正規形なので変わりません。例 3 は本サイトが追加したもので、z002 と z03 を z5 に統合し、a01 を a1 に正規化して、結果は a1z5 です。",
+    "hints": [
+      "セグメントごとに解析します。個数の 1 桁だけを読んではいけません。",
+      "同じ文字の個数を合算し、最後に文字順にすべて出力します。",
+      "非常に長い先頭の 0 があっても有効な数字列です。10 進数として 1 桁ずつ解析します。"
+    ]
+  },
+  "ko": {
+    "title": "반복되는 문자 횟수를 합치는 정규 압축",
+    "description": "문자열 S는 하나 이상의 구간을 이어 붙인 것이며, 각 구간은 \"영문 소문자 하나 + 그 문자의 횟수(10진수)\" 형태입니다. 같은 문자가 여러 구간에 나타날 수 있습니다. 각 문자의 모든 구간의 횟수를 합산하여, 등장한 모든 문자를 a부터 z 순서로 각각 한 번씩 총 횟수와 함께 출력하세요. 숫자는 앞에 0이 붙지 않게 씁니다. 입력은 올바른 인코딩임이 보장됩니다. 숫자에는 앞에 0이 올 수 있지만 그 값은 반드시 1..1000 범위 안에 있습니다. 원문은 앞에 오는 0을 금지하지 않으며 이 사이트도 그런 제한을 추가하지 않습니다. 합산한 총 횟수는 1000을 넘을 수 있습니다.\n\n이 사이트는 카탈로그에서 잘려 나간 문자 및 길이 제약을 고정된 완전한 원본에서 복원했으며, 표준 입출력은 이 사이트에서 구성했습니다.",
+    "input": "문자열 S가 한 줄로 주어지며, 따옴표나 공백은 없습니다. 원본의 전체 범위는 1≤|S|≤100000, 문자는 a..z이며 각 구간의 횟수 값은 1..1000입니다. 각 문자 뒤에는 숫자가 최소 하나 이상 따라옵니다. 유효한 인코딩의 최소 길이는 2이며, 길이 하한이 1이라고 해서 유효하지 않은 한 글자짜리 인코딩이 허용된다는 뜻은 아닙니다.",
+    "output": "정규 압축 문자열을 한 줄로 출력합니다. 문자는 오름차순으로 나열하고, 각 문자 뒤에 앞에 0이 없는 총 횟수를 붙입니다.",
+    "explanation": "예제 1은 c9과 c1을 c10으로 합치고 문자순으로 정렬하여 a3b2c10이 됩니다. 예제 2는 이미 정규 형태이므로 그대로입니다. 예제 3은 이 사이트에서 추가한 것으로, z002와 z03을 z5로 합치고 a01을 a1로 정규화하여 결과는 a1z5입니다.",
+    "hints": [
+      "구간 단위로 파싱하세요. 횟수의 한 자리만 읽어서는 안 됩니다.",
+      "같은 문자의 횟수를 모두 더하고, 마지막에 문자 순서대로 모두 출력하세요.",
+      "앞에 0이 매우 길게 이어져도 유효한 숫자열입니다. 10진수로 한 자리씩 파싱하세요."
+    ]
+  },
+  "vi": {
+    "title": "Nén chính tắc bằng cách gộp số lần xuất hiện của từng chữ cái",
+    "description": "Xâu S là phép nối của một hoặc nhiều đoạn, mỗi đoạn có dạng \"một chữ cái viết thường + số lần xuất hiện của chữ cái đó viết dưới dạng thập phân\". Cùng một chữ cái có thể xuất hiện trong nhiều đoạn. Hãy gộp số lần của tất cả các đoạn ứng với mỗi chữ cái, rồi in ra mọi chữ cái có xuất hiện cùng tổng số lần của nó, theo thứ tự từ a đến z, mỗi chữ cái chỉ in một lần và các số được viết không có số 0 đứng đầu. Đầu vào được đảm bảo là một mã hóa hợp lệ; các số có thể có số 0 đứng đầu, nhưng giá trị của chúng vẫn phải nằm trong khoảng 1..1000. Đề gốc không cấm số 0 đứng đầu, và trang này không thêm ràng buộc đó; tổng số lần sau khi cộng có thể vượt quá 1000.\n\nTrang này đã khôi phục các ràng buộc về ký tự và độ dài bị danh mục cắt bớt từ bản gốc đầy đủ cố định; đầu vào/đầu ra chuẩn do trang này biên soạn.",
+    "input": "Một dòng duy nhất chứa xâu S, không có dấu nháy hay dấu cách. Các khoảng giá trị gốc đầy đủ: 1≤|S|≤100000, chữ cái a..z, và giá trị số lần của mỗi đoạn nằm trong 1..1000; mỗi chữ cái được theo sau bởi ít nhất một chữ số. Mã hóa hợp lệ ngắn nhất có 2 ký tự; cận dưới độ dài 1 không có nghĩa là một mã hóa không hợp lệ gồm một ký tự được chấp nhận.",
+    "output": "In ra một dòng chứa xâu nén chính tắc: các chữ cái theo thứ tự tăng dần, mỗi chữ cái theo sau là tổng số lần không có số 0 đứng đầu.",
+    "explanation": "Ví dụ 1 gộp c9 và c1 thành c10, và sắp xếp theo chữ cái cho a3b2c10. Ví dụ 2 vốn đã chính tắc nên giữ nguyên. Ví dụ 3 do trang này bổ sung: z002 và z03 gộp thành z5, a01 được chuẩn hóa thành a1, kết quả là a1z5.",
+    "hints": [
+      "Phân tích từng đoạn một; đừng chỉ đọc một chữ số của số lần.",
+      "Cộng số lần của cùng một chữ cái, rồi cuối cùng in tất cả theo thứ tự chữ cái.",
+      "Dãy số 0 đứng đầu rất dài vẫn là một chuỗi chữ số hợp lệ; hãy phân tích từng chữ số một theo hệ thập phân."
+    ]
   }
 }

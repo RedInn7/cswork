@@ -13,6 +13,21 @@
       "Each catch earns the receiving cell minus the passing cell, so along a path all middle terms cancel and the total reward is just the end value minus the start value.",
       "So the task becomes: for each end cell, find a different start cell that can reach it by moving only right and down and has the smallest value. The cells that can reach (r, c) are those whose row and column are both not larger, and that minimum can be built from the cells above and to the left.",
       "Let low[r][c] be the minimum value over all cells that can reach (r, c), itself included; for every cell except the top-left one, take best as the smaller of low above and low on the left, update the answer with the current value minus best (the answer may be negative), then set low[r][c] = min(current value, best); print the answer after the scan."
+    ],
+    "ja": [
+      "パスを受けるたびに「受け取ったセル − パスしたセル」の報酬が得られるので、経路に沿って途中の項はすべて打ち消し合い、総報酬は「終点の値 − 始点の値」だけになります。",
+      "したがって問題は、各終点セルについて、右と下への移動だけでそこに到達でき、値が最小である別の始点セルを見つけることになります。(r, c) に到達できるセルは、行と列がどちらも大きくないセルで、その最小値は上と左のセルから構築できます。",
+      "low[r][c] を、(r, c) に到達できる（自身を含む）すべてのセルの値の最小値とします。左上のセル以外のすべてのセルについて、best を上の low と左の low の小さい方とし、現在の値から best を引いた値で答えを更新します（答えは負になりえます）。そのあと low[r][c] = min(現在の値, best) とします。走査が終わったら答えを出力します。"
+    ],
+    "ko": [
+      "공을 받을 때마다 받는 칸에서 패스하는 칸을 뺀 값을 얻으므로, 경로를 따라 중간 항은 모두 소거되어 총 보상은 끝 값에서 시작 값을 뺀 것과 같습니다.",
+      "따라서 문제는 각 끝 칸에 대해, 오른쪽과 아래로만 이동해 그 칸에 도달할 수 있고 값이 가장 작은 서로 다른 시작 칸을 찾는 것으로 바뀝니다. (r, c)에 도달할 수 있는 칸은 행과 열이 모두 더 크지 않은 칸들이며, 그 최솟값은 위쪽과 왼쪽 칸들로부터 만들 수 있습니다.",
+      "low[r][c]를 (r, c)에 도달할 수 있는 모든 칸(자기 자신 포함)의 최솟값이라고 하겠습니다. 왼쪽 위 칸을 제외한 모든 칸에서 best를 위쪽 low와 왼쪽 low 중 작은 값으로 잡고, 현재 값에서 best를 뺀 값으로 답을 갱신한 뒤(답은 음수일 수 있음) low[r][c] = min(현재 값, best)로 둡니다. 스캔이 끝나면 답을 출력합니다."
+    ],
+    "vi": [
+      "Mỗi lần bắt bóng nhận (ô nhận trừ ô chuyền), nên dọc một đường đi mọi số hạng ở giữa triệt tiêu và tổng phần thưởng chỉ là giá trị cuối trừ giá trị đầu.",
+      "Vậy bài toán trở thành: với mỗi ô cuối, tìm một ô đầu khác có thể đến nó chỉ bằng cách đi sang phải và xuống dưới và có giá trị nhỏ nhất. Các ô có thể đến (r, c) là những ô có cả hàng lẫn cột đều không lớn hơn, và giá trị nhỏ nhất đó có thể xây từ các ô phía trên và bên trái.",
+      "Gọi low[r][c] là giá trị nhỏ nhất trên mọi ô có thể đến (r, c), kể cả chính nó; với mọi ô trừ ô góc trên trái, lấy best là giá trị nhỏ hơn giữa low phía trên và low bên trái, cập nhật đáp án bằng giá trị hiện tại trừ best (đáp án có thể âm), rồi đặt low[r][c] = min(giá trị hiện tại, best); in đáp án sau khi quét xong."
     ]
   },
   "explanationEn": "## Approach\n\nScan the matrix, maintaining the minimum over the earlier cells that can reach the current position, and subtract it from the current value.\n\n## Proof of correctness\n\nEach reward along the path is the later cell minus the earlier cell, so the cumulative sum telescopes to end minus start. A start and an end that can be connected by moving only right or down are exactly those whose row and column both do not decrease and that are different cells; each end only needs to subtract the minimum among the earlier cells that can reach it. Merging the prefix minima from above and from the left with the current value allows an O(NM) scan.\n\n## Complexity\n\nTime O(NM), space O(NM); the absolute value of the maximum cumulative reward does not exceed 10000."

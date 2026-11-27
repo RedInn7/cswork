@@ -11,5 +11,35 @@
     "hints": [
       "You only need to keep a queue of size at most n; enqueue each new line as you traverse, and remove the earliest line once the capacity is exceeded."
     ]
+  },
+  "ja": {
+    "title": "元のテキストを保ったまま末尾 N 行を出力する",
+    "description": "文字列の配列 lines（各要素は改行文字を含まない 1 行）と非負整数 n が与えられます。末尾の n 行を元の順序のまま返してください。n=0 なら空配列を、n が配列の長さを超えるときはすべての行を返します。",
+    "input": "1 行目は `lineCount n` です。続いて各行の文字列について、まずその UTF-8 バイト長 L を 1 行で与え、次の行にちょうど L バイトの生の内容を置き、直後に LF の区切りを置きます。文字列は空でもよく、スペース、タブ、非 ASCII の UTF-8 文字を含んでもかまいませんが、LF は含みません。0≤lineCount≤5000、0≤n≤5000、すべてのペイロードの合計長は 30000 バイト以下です。この長さ接頭辞つきのプロトコルにより、空行や行内の空白が失われません。",
+    "output": "同じ長さ接頭辞つきのプロトコルで出力してください。まず返す行数を出力し、続いて各行について UTF-8 バイト長と生の内容を出力します。空配列の場合は `0` だけを出力します。",
+    "explanation": "元の問題の意味は明確です。本サイトは、空文字列、スペース、タブがトークン単位の入力で失われないよう、入出力の符号化に UTF-8 バイト長の接頭辞を補いました。",
+    "hints": [
+      "サイズが高々 n のキューを保持すれば十分です。新しい行を走査するたびに追加し、容量を超えたら最も古い行を取り除きます。"
+    ]
+  },
+  "ko": {
+    "title": "원본 텍스트를 유지한 채 마지막 N줄 출력하기",
+    "description": "문자열 배열 lines(각 원소는 개행 문자가 없는 한 줄)와 음이 아닌 정수 n이 주어질 때, 마지막 n줄을 원래 순서대로 반환합니다. n=0이면 빈 배열을, n이 배열 길이를 넘으면 모든 줄을 반환합니다.",
+    "input": "첫 줄에 `lineCount n`이 주어집니다. 이어서 각 줄 문자열마다 먼저 UTF-8 바이트 길이 L을 한 줄에 주고, 다음 줄에 정확히 L바이트의 원본 내용을 준 뒤 바로 LF 구분자가 붙습니다. 문자열은 비어 있을 수 있고 공백, 탭, ASCII가 아닌 UTF-8 문자를 포함할 수 있으나 LF는 포함하지 않습니다. 0≤lineCount≤5000, 0≤n≤5000이며, 모든 페이로드의 총 길이는 ≤30000바이트입니다. 이 길이 접두 프로토콜은 빈 줄과 줄 안의 공백을 손실 없이 보존합니다.",
+    "output": "같은 길이 접두 프로토콜로 결과를 출력합니다. 먼저 반환되는 줄의 수를 출력하고, 각 줄마다 UTF-8 바이트 길이와 원본 내용을 출력합니다. 빈 배열이면 `0`만 출력합니다.",
+    "explanation": "원래 문제의 의미는 명확합니다. 이 사이트는 빈 문자열, 공백, 탭이 토큰 기반 입력에서 사라지지 않도록 입출력 인코딩에 UTF-8 바이트 길이 접두를 추가했습니다.",
+    "hints": [
+      "크기가 최대 n인 큐만 유지하면 됩니다. 줄을 순회하며 새 줄을 큐에 넣고, 용량을 넘으면 가장 오래된 줄을 제거합니다."
+    ]
+  },
+  "vi": {
+    "title": "Lấy N dòng cuối giữ nguyên văn bản",
+    "description": "Cho một mảng xâu lines (mỗi phần tử là một dòng, không chứa ký tự xuống dòng) và một số nguyên không âm n, hãy trả về n dòng cuối theo đúng thứ tự ban đầu. Với n=0, trả về mảng rỗng; khi n vượt quá độ dài mảng, trả về tất cả các dòng.",
+    "input": "Dòng đầu chứa `lineCount n`. Sau đó, với mỗi xâu, trước hết cho độ dài L tính theo byte UTF-8, rồi ở dòng kế tiếp cho đúng L byte thô làm nội dung, ngay sau đó là một dấu phân cách LF. Một xâu có thể rỗng và có thể chứa dấu cách, tab và các ký tự UTF-8 không thuộc ASCII, nhưng không chứa LF. 0≤lineCount≤5000, 0≤n≤5000, và tổng độ dài của toàn bộ payload ≤30000 byte. Giao thức có tiền tố độ dài này giữ nguyên không mất mát các dòng rỗng và khoảng trắng trong dòng.",
+    "output": "Xuất kết quả bằng cùng giao thức tiền tố độ dài: trước hết xuất số dòng được trả về, sau đó với mỗi dòng xuất độ dài theo byte UTF-8 và nội dung thô; với mảng rỗng, chỉ xuất `0`.",
+    "explanation": "Ngữ nghĩa của đề gốc đã rõ ràng; trang này bổ sung cách mã hóa vào/ra bằng tiền tố độ dài theo byte UTF-8 để chuỗi rỗng, dấu cách và tab không bị mất khi đọc theo token.",
+    "hints": [
+      "Chỉ cần giữ một hàng đợi có kích thước tối đa n; khi duyệt, đưa từng dòng mới vào hàng đợi, và khi vượt quá dung lượng thì loại dòng sớm nhất."
+    ]
   }
 }

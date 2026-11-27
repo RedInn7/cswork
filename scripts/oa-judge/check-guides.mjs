@@ -1,9 +1,10 @@
 /**
  * Validates the OA guide and solution sidecars:
  * - content/oa-judge/guides/<id>.json: { id, packageChecksum, sourceContentHash, editorialSha256,
- *   hints: { zh: [3], en: [3] }, explanationEn }, bound to the registry entry (editorialSha256: the
- *   sha256 of the editorial explanationEn translates), Chinese hints in Chinese, English hints and
- *   editorial without Chinese characters;
+ *   hints: { zh: [3], en: [3], ja?: [3], ko?: [3], vi?: [3] }, explanationEn }, bound to the
+ *   registry entry (editorialSha256: the sha256 of the editorial explanationEn translates), Chinese
+ *   hints in Chinese, English hints and editorial without Chinese characters, ja/ko/vi hints in
+ *   their own script (text-checks.mjs);
  * - content/oa-judge/solutions/<id>.json: { id, packageChecksum, programs: [{ language, code,
  *   sha256 }] } in languages the registry entry doesn't already show, each with a passing
  *   reports/solutions-<chunk>.json entry for its exact code and package (verify-solutions.mjs).
@@ -12,6 +13,7 @@
 import { createHash } from 'node:crypto';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { passingPrograms, programKey } from '../../lib/oa-solution-evidence.mjs';
+import { TRANSLATED, scriptProblem } from './text-checks.mjs';
 
 const root = 'content/oa-judge';
 const sha256 = (text) => createHash('sha256').update(text).digest('hex');
@@ -30,13 +32,15 @@ function checkGuide(g, entry, problems) {
     problems.push('fields must be id, packageChecksum, sourceContentHash, editorialSha256, hints, explanationEn');
   if (entry && g.sourceContentHash !== entry.sourceContentHash) problems.push('stale sourceContentHash');
   if (entry && g.editorialSha256 !== sha256(entry.editorial)) problems.push('stale editorialSha256 (the registry editorial changed: update explanationEn)');
-  if (!sameKeys(g.hints, ['zh', 'en'])) problems.push('hints must be { zh, en }');
-  for (const lang of ['zh', 'en']) {
+  const langs = ['zh', 'en', ...TRANSLATED.filter((lang) => lang in (g.hints ?? {}))];
+  if (!sameKeys(g.hints, langs)) problems.push('hints must be { zh, en } and any of ja, ko, vi');
+  for (const lang of langs) {
     const list = g.hints?.[lang];
     if (!Array.isArray(list) || list.length !== 3 || !list.every((h) => text(h, 2000)))
       problems.push(`hints.${lang} must be 3 non-empty strings of at most 2000 characters`);
     else if (lang === 'zh' && !list.every((h) => han.test(h))) problems.push('hints.zh must be Chinese');
     else if (lang === 'en' && list.some((h) => han.test(h))) problems.push('Chinese characters in hints.en');
+    else if (TRANSLATED.includes(lang) && list.some((h) => scriptProblem(lang, h))) problems.push(`hints.${lang} must be written in ${lang}`);
   }
   if (!text(g.explanationEn, 20000)) problems.push('explanationEn must be 1..20000 characters');
   else if (han.test(g.explanationEn)) problems.push('Chinese characters in explanationEn');

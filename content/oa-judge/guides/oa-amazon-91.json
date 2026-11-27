@@ -13,6 +13,21 @@
       "A 01 pair and a 10 pair have different prices. If x > y, reversing the string swaps 01 pairs and 10 pairs, so you only need to handle x <= y.",
       "When x <= y, if two unknown positions are filled as 1 then 0, swapping them to 0 then 1 is never more expensive. So some optimal filling sets a prefix of the unknown positions to 0 and the rest to 1, and only the split point needs to be enumerated.",
       "Fill every unknown with 1 and compute the total cost, then turn the unknowns into 0 one at a time from left to right. Keep the counts of 0s and 1s on each side; flipping one position changes the cost by the pairs it forms with the 1s and 0s on its left and right. Take the minimum cost over all states and apply the modulus 10^9+7 only at the very end, never before comparing."
+    ],
+    "ja": [
+      "01 の組と 10 の組はコストが異なります。x > y のとき、文字列を反転すると 01 の組と 10 の組が入れ替わるので、x <= y の場合だけ考えれば十分です。",
+      "x <= y のとき、2 つの未知の位置を 1, 0 の順に埋めていたなら、0, 1 の順に入れ替えてもコストは増えません。したがって、未知の位置の接頭辞を 0、残りを 1 とする最適な埋め方が存在し、分割点だけを列挙すればよくなります。",
+      "未知をすべて 1 で埋めたときの合計コストを求め、その後、左から順に未知を 1 つずつ 0 に変えていきます。両側の 0 と 1 の個数を保持しておくと、1 つ反転したときのコストの変化は、その位置が左右の 1 や 0 と作る組で計算できます。すべての状態の最小コストを取り、剰余 10^9+7 は比較せずに最後にだけ適用します。"
+    ],
+    "ko": [
+      "01 쌍과 10 쌍의 비용이 서로 다릅니다. x > y이면 문자열을 뒤집을 때 01 쌍과 10 쌍이 서로 바뀌므로 x <= y인 경우만 처리하면 됩니다.",
+      "x <= y일 때, 알 수 없는 두 위치를 1, 0으로 채웠다면 0, 1로 바꾸는 편이 더 비싸지 않습니다. 따라서 알 수 없는 위치 중 앞쪽 접두사를 0으로, 나머지를 1로 채우는 최적 해가 존재하며, 분할 지점만 열거하면 됩니다.",
+      "알 수 없는 위치를 모두 1로 채워 총비용을 구한 뒤, 왼쪽부터 하나씩 0으로 바꿉니다. 양쪽의 0과 1의 개수를 유지하면, 한 위치를 바꿀 때 비용 변화는 그 위치가 왼쪽과 오른쪽의 1, 0과 이루는 쌍으로 계산됩니다. 모든 상태의 비용 중 최솟값을 취하고, 모듈로 10^9+7은 비교 전이 아니라 맨 마지막에만 적용하세요."
+    ],
+    "vi": [
+      "Một cặp 01 và một cặp 10 có giá khác nhau. Nếu x > y, đảo ngược xâu sẽ hoán đổi các cặp 01 và 10, nên chỉ cần xử lý trường hợp x <= y.",
+      "Khi x <= y, nếu hai vị trí chưa biết được điền là 1 rồi 0 thì đổi thành 0 rồi 1 không bao giờ đắt hơn. Do đó có một cách điền tối ưu đặt một tiền tố các vị trí chưa biết bằng 0 và phần còn lại bằng 1, và chỉ cần duyệt điểm chia.",
+      "Điền mọi vị trí chưa biết bằng 1 và tính tổng chi phí, rồi lần lượt đổi từng vị trí chưa biết thành 0 từ trái sang phải. Giữ số lượng các số 0 và 1 ở mỗi phía; đổi một vị trí làm chi phí thay đổi theo các cặp mà nó tạo với các số 1 và 0 ở bên trái và bên phải. Lấy chi phí nhỏ nhất qua mọi trạng thái và chỉ áp dụng modulo 10^9+7 ở cuối cùng, tuyệt đối không áp dụng trước khi so sánh."
     ]
   },
   "explanationEn": "## Approach\n\nIf x>y, reverse the string and swap the costs. After that x≤y, and there is an optimal solution in which the unknown bits are 0s first and then 1s. Start with every unknown bit set to 1, then change them to 0 one by one from left to right, updating the cost with the counts of 0s and 1s on the left and right, and take the minimum over all split points.\n\n## Proof of Correctness\n\nWhen x≤y, if two unknown bits appear as 1 then 0, swap them: the contributions outside stay the same, and the total change involving the two positions and the characters between them is (x−y) times a non-negative quantity, so it is never worse. Repeated swaps give a monotone assignment of the unknown bits. The scan enumerates all such assignments and computes the cost change from all left/right pairs involving the current position, so it finds the global optimum.\n\n## Complexity\n\nTime O(n), space O(n) (for the reversed and working strings); the cost uses big integers, and the modulus is taken at the end."

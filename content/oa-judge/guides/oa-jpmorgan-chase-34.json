@@ -13,6 +13,21 @@
       "A valid substring is a block of 0s followed by an equally long block of 1s, or the reverse, so it crosses exactly one boundary between two adjacent runs of the original string.",
       "If the run left of a boundary has length x and the run right of it has length y, taking k characters from each side for 1 ≤ k ≤ min(x, y) gives distinct valid substrings, so every boundary contributes exactly min(x, y).",
       "Track the previous run length and the current run length: when a character repeats the last one, extend the current run; otherwise add min(previous, current) to the answer, then set previous = current and current = 1; after the scan add min(previous, current) once more. An empty string gives 0."
+    ],
+    "ja": [
+      "条件を満たす部分文字列は、0 のブロックのあとに同じ長さの 1 のブロックが続く形か、その逆です。したがって元の文字列の隣り合う 2 つのランの境界をちょうど 1 つまたぎます。",
+      "境界の左のランの長さが x、右のランの長さが y のとき、1 ≤ k ≤ min(x, y) として両側から k 文字ずつ取ると、互いに異なる有効な部分文字列が得られます。よって各境界はちょうど min(x, y) を寄与します。",
+      "直前のランの長さと現在のランの長さを持ちます。文字が直前の文字と同じなら現在のランを伸ばし、そうでなければ min(previous, current) を答えに加え、previous = current、current = 1 とします。走査後にもう一度 min(previous, current) を加えます。空文字列の答えは 0 です。"
+    ],
+    "ko": [
+      "유효한 부분 문자열은 0 블록 뒤에 같은 길이의 1 블록이 오거나 그 반대이므로, 원래 문자열에서 인접한 두 run 사이의 경계를 정확히 하나 가로지릅니다.",
+      "경계 왼쪽 run의 길이가 x, 오른쪽 run의 길이가 y일 때, 양쪽에서 각각 k개씩 가져오는 것(1 ≤ k ≤ min(x, y))은 서로 다른 유효한 부분 문자열이 됩니다. 따라서 경계마다 정확히 min(x, y)만큼 기여합니다.",
+      "이전 run의 길이와 현재 run의 길이를 추적합니다. 문자가 직전 문자와 같으면 현재 run을 늘리고, 다르면 답에 min(previous, current)를 더한 뒤 previous = current, current = 1로 설정합니다. 스캔이 끝나면 min(previous, current)를 한 번 더 더합니다. 빈 문자열은 0입니다."
+    ],
+    "vi": [
+      "Một xâu con hợp lệ là một khối 0 theo sau bởi một khối 1 cùng độ dài, hoặc ngược lại, nên nó đi qua đúng một ranh giới giữa hai đoạn liên tiếp kề nhau của xâu gốc.",
+      "Nếu đoạn bên trái ranh giới có độ dài x và đoạn bên phải có độ dài y, thì lấy k ký tự từ mỗi phía với 1 ≤ k ≤ min(x, y) cho ra các xâu con hợp lệ khác nhau, nên mỗi ranh giới đóng góp đúng min(x, y).",
+      "Theo dõi độ dài đoạn trước và đoạn hiện tại: khi ký tự lặp lại ký tự trước, kéo dài đoạn hiện tại; ngược lại cộng min(previous, current) vào đáp án, rồi đặt previous = current và current = 1; sau khi quét xong, cộng thêm min(previous, current) một lần nữa. Xâu rỗng cho kết quả 0."
     ]
   },
   "explanationEn": "## Approach\n\nTrack the lengths of adjacent runs; each run boundary contributes the smaller of the lengths on its two sides.\n\n## Proof of correctness\n\nA valid substring crosses exactly one boundary between runs of different characters; if the two sides have lengths x and y, choosing k characters on each side works for 1≤k≤min(x,y), and each k is unique. Different boundaries correspond to different substrings, so the sum of the contributions is exact, with no double counting and no omissions.\n\n## Complexity\n\nO(n) time and O(1) extra space."

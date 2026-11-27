@@ -11,5 +11,35 @@
     "hints": [
       "Split the indices into chains by index mod p; on each chain, maintain a sliding window of length m with its character frequencies and compare them with the target frequencies."
     ]
+  },
+  "ja": {
+    "title": "等間隔の順列マッチング",
+    "description": "2 つの文字列と正のストライド p が与えられます。1 つ目の文字列の位置 i, i+p, …, i+(m−1)p にある m 個の文字が、2 つ目の文字列の順列になっているような開始インデックス i の個数を数えてください。すべてのインデックスは範囲内でなければなりません。\n\n標準入力の形式、例、テストデータは CSWork が独自に作成したものです。",
+    "input": "1 行目に userID1、2 行目に userID2、3 行目に p が与えられます。このサイトでは、入力は小文字の英字からなり、1≤m≤n≤1000000、1≤p≤1000000 です。",
+    "output": "問題が求める整数を 1 つ出力してください。",
+    "explanation": "例 1: 有効な開始位置は（0 始まりで）0 と 2 で、インデックス 0, 2, 4 では a, a, c、インデックス 2, 4, 6 では a, c, a が得られ、どちらも aac の順列です。3 文字すべてを取れるもう 1 つの開始位置 1 では c, c, a となり一致しないので、答えは 2 です。例 2: 目標は 1 文字だけなので、ストライドで 2 つ目のインデックスが生じることはなく、唯一の開始位置 0 が a に一致します。例 3: 2 文字の目標には start と start+2 が必要で、これは常に範囲外になるので、答えは 0 です。",
+    "hints": [
+      "インデックスを index mod p で鎖に分けます。各鎖上で長さ m のスライディングウィンドウを使って文字の出現頻度を保持し、目標の出現頻度と比較します。"
+    ]
+  },
+  "ko": {
+    "title": "같은 간격 순열 매칭",
+    "description": "두 문자열과 양의 정수 간격 p가 주어질 때, 첫 번째 문자열의 위치 i, i+p, …, i+(m−1)p에 있는 m개의 문자가 두 번째 문자열의 순열이 되는 시작 인덱스 i의 개수를 세세요. 모든 인덱스는 범위 안에 있어야 합니다.\n\n표준 입력 형식, 예제, 테스트 데이터는 CSWork가 독자적으로 작성했습니다.",
+    "input": "첫째 줄에 userID1, 둘째 줄에 userID2, 셋째 줄에 p가 주어집니다. 이 사이트에서 입력은 영어 소문자로 이루어지며 1≤m≤n≤1000000, 1≤p≤1000000입니다.",
+    "output": "문제에서 요구하는 답을 정수 하나로 출력합니다.",
+    "explanation": "예제 1: 유효한 시작점은 0과 2(0부터 시작)이며, 인덱스 0, 2, 4에서는 a, a, c를, 인덱스 2, 4, 6에서는 a, c, a를 가져오고 둘 다 aac의 순열입니다. 세 문자를 모두 가져올 수 있는 다른 시작점 1은 c, c, a를 주어 일치하지 않으므로 답은 2입니다. 예제 2: 목표가 한 문자뿐이므로 간격이 두 번째 인덱스를 만들지 않으며, 유일한 시작점 0이 a와 일치합니다. 예제 3: 두 문자짜리 목표에는 시작점과 start+2가 필요한데 항상 범위를 벗어나므로 답은 0입니다.",
+    "hints": [
+      "인덱스를 p로 나눈 나머지에 따라 체인으로 나누고, 각 체인에서 길이 m의 슬라이딩 윈도우와 그 문자 빈도를 유지하면서 목표 빈도와 비교합니다."
+    ]
+  },
+  "vi": {
+    "title": "Khớp hoán vị với bước nhảy đều",
+    "description": "Cho hai xâu và một bước nhảy dương p, hãy đếm các chỉ số bắt đầu i sao cho m ký tự tại các vị trí i, i+p, …, i+(m−1)p của xâu thứ nhất tạo thành một hoán vị của xâu thứ hai. Mọi chỉ số phải nằm trong phạm vi hợp lệ.\n\nĐịnh dạng đầu vào chuẩn, các ví dụ và dữ liệu kiểm thử do CSWork biên soạn độc lập.",
+    "input": "Dòng đầu tiên chứa userID1, dòng thứ hai chứa userID2, và dòng thứ ba chứa p. Trên trang này đầu vào gồm các chữ cái Latin thường; 1≤m≤n≤1000000, 1≤p≤1000000.",
+    "output": "In ra một số nguyên duy nhất là đáp án của bài toán.",
+    "explanation": "Ví dụ 1: các điểm bắt đầu hợp lệ là 0 và 2 (đánh số từ 0), lấy a, a, c tại các chỉ số 0, 2, 4 và a, c, a tại các chỉ số 2, 4, 6, đều là hoán vị của aac; điểm bắt đầu còn lại có thể lấy đủ ba ký tự, là 1, cho c, c, a, không khớp, nên đáp án là 2. Ví dụ 2: xâu đích chỉ có một ký tự, nên bước nhảy không bao giờ tạo ra chỉ số thứ hai, và điểm bắt đầu duy nhất 0 khớp với a. Ví dụ 3: xâu đích hai ký tự cần điểm bắt đầu và start+2, luôn nằm ngoài phạm vi, nên đáp án là 0.",
+    "hints": [
+      "Chia các chỉ số thành các chuỗi theo chỉ số mod p; trên mỗi chuỗi, duy trì một cửa sổ trượt độ dài m cùng tần suất ký tự của nó và so sánh với tần suất của xâu đích."
+    ]
   }
 }

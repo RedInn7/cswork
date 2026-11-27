@@ -13,5 +13,41 @@
       "A new house can only connect to the endpoints of existing contiguous runs.",
       "Keep the global maximum; do not just output the length of the current run."
     ]
+  },
+  "ja": {
+    "title": "建築ごとの最長連続家屋数",
+    "description": "整数の数直線上に、最初は家が 1 軒もありません。queries で与えられる順に、各座標へ新しい家を 1 軒ずつ建てます。建てるたびに、現在あるすべての家のうち、連続する整数座標に並んだ最長の連なりに含まれる家の数を返してください。建てる座標はすべて異なり、新しい家の座標の左右の隣がどちらも既に建っていることはないことが保証されています。各操作の後に返すのは全体で最長の長さであり、新しい家を含む連なりの長さや位置の一覧ではありません。",
+    "input": "1 行目に整数 q、2 行目に q 個の整数 queries[i] が与えられます。1≤q≤100000、−1000000≤queries[i]≤1000000 です。座標はすべて異なり、入力順に処理したとき、queries[i]−1 と queries[i]+1 がどちらも既に建っていることはありません。数直線には境界を表す追加のパラメータ N はありません。",
+    "output": "q 個の整数を 1 行で出力してください。各建築の後の、家の最長連続長を順に並べたものです。",
+    "explanation": "最初の 2 つの例は元の OCR によるものです。[2,1,3] の出力は 1 2 3、[1,3,0,4] の出力は 1 1 2 2 です。3 つ目の例 [−1,−2,10] は本サイトが追加したもので、最後の孤立した家は全体の最大長を変えないので、出力は 1 2 2 です。固定された OCR には、最初は空の直線で、家を 1 軒ずつ建て、長さを出力すると明記されています。MDX はこれを、最初は全面に家があり、家を取り壊して、位置の一覧を出力するという内容に誤って書き換えていました。本問題はこの転記ミスを明示的に訂正し、元の OCR の完全なルールと範囲を採用しています。",
+    "hints": [
+      "建築済みの座標はハッシュテーブルに記録してください。数直線全体を覆う配列を確保する必要はありません。",
+      "新しい家がつながるのは、既存の連続した連なりの端点だけです。",
+      "全体の最大値を保持してください。現在の連なりの長さをそのまま出力してはいけません。"
+    ]
+  },
+  "ko": {
+    "title": "건설 후마다 가장 긴 연속 주택 구간",
+    "description": "처음에는 정수 수직선 위에 주택이 하나도 없습니다. queries에 주어진 순서대로 각 좌표에 새 주택을 하나씩 짓습니다. 건설할 때마다, 현재 모든 주택 중 연속된 정수 좌표로 이어진 가장 긴 구간에 들어 있는 주택의 수를 반환하세요. 모든 건설 좌표는 서로 다르며, 새 주택 좌표의 왼쪽 이웃과 오른쪽 이웃이 이미 둘 다 차 있는 경우는 없음이 보장됩니다. 새 주택이 속한 구간의 길이나 위치 목록이 아니라, 각 연산 후의 전역 최장 길이를 반환해야 합니다.",
+    "input": "첫 줄에 정수 q가, 둘째 줄에 q개의 정수 queries[i]가 주어집니다. 1≤q≤100000, −1000000≤queries[i]≤1000000. 좌표는 서로 다르며, 입력 순서대로 처리할 때 queries[i]−1과 queries[i]+1이 이미 둘 다 지어져 있는 경우는 없습니다. 수직선에는 별도의 경계 매개변수 N이 없습니다.",
+    "output": "한 줄에 q개의 정수를 출력합니다. 각 건설 후 가장 긴 연속 주택 구간의 길이를 순서대로 출력하세요.",
+    "explanation": "처음 두 예제는 원문 OCR에서 가져왔습니다. [2,1,3]의 출력은 1 2 3이고, [1,3,0,4]의 출력은 1 1 2 2입니다. 세 번째 예제 [−1,−2,10]은 이 사이트에서 추가했습니다. 마지막의 고립된 주택은 전역 최대 길이를 바꾸지 않으므로 출력은 1 2 2입니다. 고정된 OCR은 처음에 빈 직선이고, 주택을 하나씩 짓고, 길이를 출력한다고 분명히 명시합니다. MDX는 처음에 가득 차 있고, 주택을 철거하고, 위치 목록을 출력하는 것으로 잘못 옮겼습니다. 이 문제는 그 옮겨 적기 오류를 명시적으로 바로잡고 원문 OCR의 전체 규칙과 범위를 따릅니다.",
+    "hints": [
+      "지어진 좌표를 해시 테이블에 기록하세요. 수직선 전체를 덮는 배열을 할당할 필요가 없습니다.",
+      "새 주택은 기존 연속 구간의 끝점에만 이어질 수 있습니다.",
+      "전역 최댓값을 유지하세요. 현재 구간의 길이만 출력하면 안 됩니다."
+    ]
+  },
+  "vi": {
+    "title": "Đoạn nhà liên tiếp dài nhất sau mỗi lần xây",
+    "description": "Ban đầu không có ngôi nhà nào trên trục số nguyên. Xây một ngôi nhà mới tại mỗi tọa độ theo thứ tự trong queries. Sau mỗi lần xây, trả về số ngôi nhà trong đoạn các tọa độ nguyên liên tiếp dài nhất trong số tất cả các ngôi nhà hiện có. Mọi tọa độ xây đều đôi một khác nhau, và hai lân cận trái và phải của tọa độ ngôi nhà mới không bao giờ đều đã có nhà. Bạn phải trả về độ dài dài nhất toàn cục sau mỗi thao tác, không phải độ dài của đoạn chứa ngôi nhà mới hay danh sách các vị trí.",
+    "input": "Dòng đầu chứa số nguyên q, dòng thứ hai chứa q số nguyên queries[i]. 1≤q≤100000, −1000000≤queries[i]≤1000000. Các tọa độ đôi một khác nhau; khi xử lý theo thứ tự đầu vào, queries[i]−1 và queries[i]+1 không bao giờ đều đã được xây. Trục số không có tham số biên N bổ sung.",
+    "output": "In ra một dòng gồm q số nguyên: độ dài đoạn nhà liên tiếp dài nhất sau mỗi lần xây, theo thứ tự.",
+    "explanation": "Hai ví dụ đầu đến từ OCR gốc: [2,1,3] cho 1 2 3; [1,3,0,4] cho 1 1 2 2. Ví dụ thứ ba [−1,−2,10] do trang này thêm: ngôi nhà cuối cùng đứng riêng không làm thay đổi độ dài lớn nhất toàn cục, nên đầu ra là 1 2 2. OCR gốc đã ghim nêu rõ một dòng ban đầu trống, xây nhà từng cái một, và in ra các độ dài; MDX đã viết lại nhầm thành bắt đầu với toàn bộ đã có nhà, phá nhà, và in ra danh sách vị trí. Bài này tường minh sửa lỗi chép đó và dùng toàn bộ quy tắc cùng phạm vi của OCR gốc.",
+    "hints": [
+      "Dùng bảng băm để ghi lại các tọa độ đã xây; không cần cấp phát mảng phủ toàn bộ trục số.",
+      "Một ngôi nhà mới chỉ có thể nối với các đầu mút của những đoạn liên tiếp hiện có.",
+      "Giữ giá trị lớn nhất toàn cục; đừng chỉ in độ dài của đoạn hiện tại."
+    ]
   }
 }

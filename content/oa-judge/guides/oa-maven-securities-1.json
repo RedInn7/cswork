@@ -13,6 +13,21 @@
       "There are only n-1 cut points; the left part is a prefix, the right part is the matching suffix, and the right sum equals the total minus the left sum.",
       "Compute the total once and accumulate the prefix sum from left to right; then each cut point's condition, left sum strictly greater than right sum, is checked in O(1).",
       "Add the 1st through (n-1)-th elements to the prefix sum one at a time, and after each addition count the cut if the prefix sum exceeds the total minus the prefix sum; for n = 1 there is no cut and the answer is 0. Elements may be negative and sums reach 2 * 10^14, so use 64-bit integers."
+    ],
+    "ja": [
+      "切れ目は n-1 個しかありません。左の部分は接頭辞、右の部分は対応する接尾辞で、右の和は合計から左の和を引いたものに等しくなります。",
+      "合計を 1 回だけ計算し、接頭辞和を左から右へ累積します。すると、各切れ目の条件(左の和が右の和より真に大きい)を O(1) で判定できます。",
+      "1 番目から (n-1) 番目の要素を 1 つずつ接頭辞和に加え、加えるたびに、接頭辞和が合計から接頭辞和を引いた値を超えていればその切り方を数えます。n = 1 のときは切れ目がなく、答えは 0 です。要素は負になりえて、和は 2 * 10^14 に達するので、64 ビット整数を使います。"
+    ],
+    "ko": [
+      "자르는 위치는 n-1개뿐이며, 왼쪽 부분은 접두사, 오른쪽 부분은 대응하는 접미사이고, 오른쪽 합은 전체 합에서 왼쪽 합을 뺀 값과 같습니다.",
+      "전체 합을 한 번 구하고 접두사 합을 왼쪽에서 오른쪽으로 누적하면, 각 자르는 위치의 조건 즉 왼쪽 합이 오른쪽 합보다 엄격히 큰지를 O(1)에 확인할 수 있습니다.",
+      "1번째부터 (n-1)번째 원소까지를 접두사 합에 하나씩 더하고, 더할 때마다 접두사 합이 전체 합에서 접두사 합을 뺀 값보다 크면 그 자르는 방법을 셉니다. n = 1이면 자를 곳이 없으므로 답은 0입니다. 원소는 음수일 수 있고 합은 2 * 10^14까지 이를 수 있으므로 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Chỉ có n-1 điểm cắt; phần trái là một tiền tố, phần phải là hậu tố tương ứng, và tổng phần phải bằng tổng toàn bộ trừ tổng phần trái.",
+      "Tính tổng toàn bộ một lần và cộng dồn tổng tiền tố từ trái sang phải; khi đó điều kiện của mỗi điểm cắt, tổng trái lớn hơn hẳn tổng phải, được kiểm tra trong O(1).",
+      "Cộng lần lượt phần tử thứ 1 đến thứ (n-1) vào tổng tiền tố, và sau mỗi lần cộng, đếm điểm cắt đó nếu tổng tiền tố lớn hơn tổng toàn bộ trừ tổng tiền tố; với n = 1 không có điểm cắt nào và đáp án là 0. Các phần tử có thể âm và tổng đạt tới 2 * 10^14, nên dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nAccumulate the prefix sum and compare it with the total minus the prefix sum.\n\n## Proof of correctness\n\nFor each valid cut point i, the left sum is exactly the prefix sum of the first i items and the right sum is exactly total-left; checking all n-1 cut points one by one, the count is the answer.\n\n## Complexity\n\nTime O(n), space O(1).\n\n## Source notes\n\nInteger sums use arbitrary precision; the standard input/output protocol and the upper bound on n are explicitly supplied by this site.\n\nThis site separately compiled the standard input/output protocol; it does not claim that the original site provided this protocol."

@@ -13,6 +13,21 @@
       "Both arrays are already non-decreasing, so the first unused element of each array is the minimum of what remains in that array.",
       "There is no need to sort all 2n numbers again: compare the current heads of the two arrays; the smaller one is the minimum of all remaining elements and can go straight into the result.",
       "Keep one index on the head of a and one on the head of b; while both have elements left, output a's head and advance it if it is not larger than b's head, otherwise output b's head and advance that index; when one side runs out, append the rest of the other side in order; equal values are all kept."
+    ],
+    "ja": [
+      "2 つの配列はすでに単調非減少なので、各配列の未使用の先頭要素は、その配列の残りの最小値です。",
+      "2n 個の数を再びソートする必要はありません。2 つの配列の現在の先頭を比較すれば、小さいほうが残りのすべての要素の最小値なので、そのまま結果に入れられます。",
+      "a の先頭と b の先頭に 1 つずつインデックスを持ちます。両方に要素が残っている間、a の先頭が b の先頭以下なら a の先頭を出力して進め、そうでなければ b の先頭を出力してそのインデックスを進めます。一方が尽きたら、もう一方の残りを順に追加します。等しい値はすべて残します。"
+    ],
+    "ko": [
+      "두 배열 모두 이미 비내림차순이므로, 각 배열에서 아직 쓰지 않은 첫 원소는 그 배열에 남은 원소 중 최솟값입니다.",
+      "2n개의 수를 다시 정렬할 필요가 없습니다. 두 배열의 현재 맨 앞 값을 비교하면 작은 쪽이 남은 모든 원소 중 최솟값이므로 바로 결과에 넣을 수 있습니다.",
+      "a의 맨 앞과 b의 맨 앞을 가리키는 인덱스를 각각 하나씩 둡니다. 양쪽에 원소가 남아 있는 동안 a의 맨 앞이 b의 맨 앞보다 크지 않으면 a의 맨 앞을 출력하고 그 인덱스를 옮기며, 그렇지 않으면 b의 맨 앞을 출력하고 그 인덱스를 옮깁니다. 한쪽이 바닥나면 다른 쪽의 나머지를 순서대로 붙입니다. 같은 값은 모두 유지합니다."
+    ],
+    "vi": [
+      "Cả hai mảng đã không giảm, nên phần tử chưa dùng đầu tiên của mỗi mảng là giá trị nhỏ nhất trong phần còn lại của mảng đó.",
+      "Không cần sắp xếp lại toàn bộ 2n số: so sánh hai phần tử đầu hiện tại của hai mảng; phần tử nhỏ hơn là giá trị nhỏ nhất trong mọi phần tử còn lại và có thể đưa thẳng vào kết quả.",
+      "Giữ một chỉ số ở đầu của a và một chỉ số ở đầu của b; khi cả hai còn phần tử, in phần tử đầu của a và tiến chỉ số đó nếu nó không lớn hơn phần tử đầu của b, ngược lại in phần tử đầu của b và tiến chỉ số kia; khi một bên hết, nối phần còn lại của bên kia theo thứ tự; các giá trị bằng nhau đều được giữ."
     ]
   },
   "explanationEn": "## Approach\n\nUse two pointers: each step outputs the smaller of the two unprocessed heads, and after one array is used up, append the other array.\n\n## Proof of correctness\n\nThe head of each unprocessed array is that array's smallest remaining value, so the smaller of the two heads is the minimum of all remaining elements. Taking items out one at a time never drops a duplicate value, and induction gives a sorted merge.\n\n## Complexity\n\nTime O(n), output space O(n)."

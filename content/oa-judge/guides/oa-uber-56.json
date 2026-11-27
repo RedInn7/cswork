@@ -13,6 +13,21 @@
       "Pipeline throughput is the minimum over all services, so reaching throughput T means every service must reach T on its own. The minimum number of upgrades for each service is independent of the others, and a larger T never makes the total cost smaller.",
       "Binary search on the answer T. For a given T, service i needs at least ceil(T / base[i]) - 1 upgrades; add up the minimum costs of all services and compare the sum with the budget.",
       "The lower bound is min(base), reachable with no upgrades; the upper bound is min(base[i] * (1 + budget / cost[i])), since no service can exceed that even with the whole budget. For each T accumulate ((T - 1) / base[i]) * cost[i], stopping early once the budget is exceeded; raise the lower bound if feasible, otherwise lower the upper bound. Use 64-bit integers."
+    ],
+    "ja": [
+      "パイプラインのスループットは全サービスの最小値なので、スループット T に達するには、すべてのサービスがそれぞれ T に達する必要があります。各サービスに必要な最小アップグレード回数はほかと独立で、T が大きくなっても合計コストが小さくなることはありません。",
+      "答え T で二分探索します。ある T について、サービス i には少なくとも ceil(T / base[i]) - 1 回のアップグレードが必要です。全サービスの最小コストを合計し、予算と比較します。",
+      "下限はアップグレードなしで達成できる min(base)、上限は min(base[i] * (1 + budget / cost[i])) です。予算をすべて使っても、どのサービスもこれを超えられないからです。各 T について ((T - 1) / base[i]) * cost[i] を累積し、予算を超えた時点で打ち切ります。実現可能なら下限を上げ、そうでなければ上限を下げます。64 ビット整数を使ってください。"
+    ],
+    "ko": [
+      "파이프라인의 처리량은 모든 서비스 중 최솟값이므로, 처리량 T에 도달하려면 모든 서비스가 각자 T에 도달해야 합니다. 서비스별 최소 확장 횟수는 서로 독립이며, T가 커진다고 총 비용이 줄어드는 일은 없습니다.",
+      "답 T에 대해 이분 탐색을 합니다. 주어진 T에 대해 서비스 i는 최소 ceil(T / base[i]) - 1번의 확장이 필요하며, 모든 서비스의 최소 비용을 합해 예산과 비교합니다.",
+      "하한은 확장 없이 도달 가능한 min(base)이고, 상한은 전체 예산을 써도 어떤 서비스도 넘을 수 없는 min(base[i] * (1 + budget / cost[i]))입니다. 각 T에 대해 ((T - 1) / base[i]) * cost[i]를 누적하다가 예산을 넘으면 즉시 중단하고, 가능하면 하한을 올리고 아니면 상한을 내립니다. 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Thông lượng pipeline là giá trị nhỏ nhất trên mọi dịch vụ, nên để đạt thông lượng T thì mỗi dịch vụ phải tự đạt T. Số lần nâng cấp tối thiểu của từng dịch vụ độc lập với các dịch vụ khác, và T lớn hơn không bao giờ làm tổng chi phí nhỏ đi.",
+      "Tìm kiếm nhị phân trên đáp án T. Với một T cho trước, dịch vụ i cần ít nhất ceil(T / base[i]) - 1 lần nâng cấp; cộng chi phí tối thiểu của mọi dịch vụ rồi so sánh tổng với ngân sách.",
+      "Cận dưới là min(base), đạt được mà không cần nâng cấp; cận trên là min(base[i] * (1 + budget / cost[i])), vì không dịch vụ nào vượt được mức đó dù dùng cả ngân sách. Với mỗi T, cộng dồn ((T - 1) / base[i]) * cost[i], dừng sớm khi vượt ngân sách; nếu khả thi thì nâng cận dưới, ngược lại hạ cận trên. Dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nBinary search on the target throughput T. Service i needs at least ceil(T/base[i]) - 1 upgrades; add up these minimum costs one by one, and T is infeasible once the sum exceeds the budget.\n\n## Correctness\n\nTo reach the pipeline target, every service must reach T. The minimum number of upgrades for each service is independent and unique, so the sum of their costs is the necessary and sufficient cost. That cost is non-decreasing in T, so binary search finds the largest feasible value.\n\n## Complexity\n\nTime O(n log U), space O(n), where U = min(base[i] × (1 + budget // cost[i]))."

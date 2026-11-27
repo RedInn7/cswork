@@ -13,6 +13,21 @@
       "The condition \"exactly one element equals 2x\" depends only on how many times the value 2x occurs in the whole list, not on where x is.",
       "First count how many times each value occurs (values are 0..1000 and 2x is at most 2000, so a plain array works). Then for every element x of the input, repeats included, check whether freq[2x] is exactly 1.",
       "Put every qualifying x into the result (each repeated x counts separately), sort it and print it space-separated; print an empty line if the result is empty. Note that twice 0 is still 0, so 0 is selected only if it occurs exactly once in the list. Time O(n log n)."
+    ],
+    "ja": [
+      "「ちょうど 1 個の要素が 2x に等しい」という条件は、リスト全体で値 2x が何回現れるかだけに依存し、x の位置には依存しません。",
+      "まず各値の出現回数を数えます（値は 0..1000 で 2x は最大 2000 なので、単純な配列で足ります）。そのうえで、入力の各要素 x について（重複も含めて）freq[2x] がちょうど 1 かどうかを調べます。",
+      "条件を満たす x をすべて結果に入れ（重複する x もそれぞれ数えます）、ソートして空白区切りで出力します。結果が空なら空行を出力します。0 の 2 倍は 0 なので、0 が選ばれるのは、リストにちょうど 1 回だけ現れるときに限ることに注意してください。時間は O(n log n) です。"
+    ],
+    "ko": [
+      "\"2x와 같은 원소가 정확히 하나 있다\"는 조건은 x의 위치가 아니라 값 2x가 리스트 전체에서 몇 번 나타나는지에만 달려 있습니다.",
+      "먼저 각 값이 몇 번 나타나는지 세세요(값은 0..1000이고 2x는 최대 2000이므로 단순 배열로 충분합니다). 그런 다음 반복을 포함하여 입력의 모든 원소 x에 대해 freq[2x]가 정확히 1인지 확인합니다.",
+      "조건을 만족하는 모든 x를 결과에 넣고(반복된 x는 각각 따로 셉니다), 정렬하여 공백으로 구분해 출력하세요. 결과가 비어 있으면 빈 줄을 출력합니다. 0의 두 배는 여전히 0이므로, 0은 리스트에 정확히 한 번만 나타날 때만 선택됩니다. 시간은 O(n log n)입니다."
+    ],
+    "vi": [
+      "Điều kiện \"có đúng một phần tử bằng 2x\" chỉ phụ thuộc vào số lần giá trị 2x xuất hiện trong toàn danh sách, không phụ thuộc vị trí của x.",
+      "Trước hết đếm mỗi giá trị xuất hiện bao nhiêu lần (các giá trị nằm trong 0..1000 và 2x tối đa là 2000, nên một mảng thường là đủ). Sau đó với mỗi phần tử x của đầu vào, kể cả các lần lặp, kiểm tra xem freq[2x] có đúng bằng 1 hay không.",
+      "Đưa mọi x thỏa mãn vào kết quả (mỗi lần lặp của x được tính riêng), sắp xếp rồi in cách nhau bởi dấu cách; nếu kết quả rỗng thì in một dòng trống. Lưu ý gấp đôi của 0 vẫn là 0, nên 0 chỉ được chọn nếu nó xuất hiện đúng một lần trong danh sách. Thời gian O(n log n)."
     ]
   },
   "explanationEn": "## Approach\n\nCount the frequency of each value. For each element x of the input, check whether freq[2x] is exactly 1; if so, add it to the answer, and sort at the end.\n\n## Correctness\n\nThe frequency array reflects exactly how many times each integer appears in the list. Checking the condition at every input position keeps all repeated x; the requirement of exactly one 2x is expressed precisely by a frequency equal to 1. Sorting satisfies the output order.\n\n## Complexity\n\nTime O(n log n), space O(1001+n)."

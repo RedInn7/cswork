@@ -13,6 +13,21 @@
       "Every step must reach the requested hub, so the start of the next step is fixed, and the total time is simply the sum of the shortest distances between consecutive requests, each computed independently.",
       "The ring has no negative edges, so the shortest path between two hubs is either the clockwise arc or the counterclockwise arc; with prefix sums of the edge weights as linear coordinates, one arc length is the absolute coordinate difference and the other is the perimeter minus it.",
       "Compute prefix[i] with hub 1 at coordinate 0 and start at hub 1; for each request h, let d = |prefix[h-1] - prefix[current]|, add min(d, perimeter - d), then move to h; use a 64-bit total."
+    ],
+    "ja": [
+      "各ステップでは要求されたハブに到達しなければならないので、次のステップの出発点は固定されます。総時間は、連続する要求の間の最短距離を、それぞれ独立に計算して足し合わせたものです。",
+      "リングに負の辺はないので、2 つのハブ間の最短経路は時計回りの弧か反時計回りの弧のどちらかです。辺の重みの累積和を線形座標とすると、一方の弧の長さは座標差の絶対値で、もう一方は周長からそれを引いた値です。",
+      "ハブ 1 を座標 0 として prefix[i] を計算し、ハブ 1 から出発します。各要求 h について d = |prefix[h-1] - prefix[current]| とし、min(d, perimeter - d) を加えてから current を h に移します。総和には 64 ビット整数を使います。"
+    ],
+    "ko": [
+      "각 단계는 요청된 허브에 반드시 도착해야 하므로 다음 단계의 출발점이 고정됩니다. 따라서 총 시간은 연속된 요청 사이의 최단 거리를 각각 독립적으로 구해 더한 값입니다.",
+      "링에는 음수 간선이 없으므로 두 허브 사이의 최단 경로는 시계 방향 호 또는 반시계 방향 호입니다. 간선 가중치의 누적 합을 직선 좌표로 쓰면, 한 호의 길이는 좌표 차의 절댓값이고 다른 호는 둘레에서 그 값을 뺀 것입니다.",
+      "허브 1의 좌표를 0으로 하는 prefix[i]를 계산하고 허브 1에서 시작합니다. 각 요청 h에 대해 d = |prefix[h-1] - prefix[current]|를 구해 min(d, perimeter - d)를 더하고 current를 h로 옮깁니다. 총합은 64비트로 저장하세요."
+    ],
+    "vi": [
+      "Mỗi bước phải đến được trạm được yêu cầu, nên điểm bắt đầu của bước kế tiếp là cố định, và tổng thời gian đơn giản là tổng các khoảng cách ngắn nhất giữa các yêu cầu liên tiếp, mỗi khoảng tính độc lập.",
+      "Vòng không có cạnh âm, nên đường ngắn nhất giữa hai trạm là cung theo chiều kim đồng hồ hoặc cung ngược chiều; với tổng tiền tố của các trọng số cạnh làm tọa độ tuyến tính, độ dài một cung là hiệu tọa độ tuyệt đối và cung kia là chu vi trừ đi hiệu đó.",
+      "Tính prefix[i] với trạm 1 ở tọa độ 0 và xuất phát tại trạm 1; với mỗi yêu cầu h, đặt d = |prefix[h-1] - prefix[current]|, cộng min(d, perimeter - d), rồi chuyển sang h; dùng tổng 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nPrefix sums give each hub's position on the unrolled line; for each pair of consecutive requests, the distance is the smaller of the two arc lengths.\n\n## Proof of correctness\n\nOn a ring without negative edges, the shortest path between two points can only be the clockwise or the counterclockwise simple arc. Each step must reach the specified hub, so the start of the next step is fixed, and minimizing each step separately and adding them up is correct.\n\n## Complexity\n\nO(m+n) time and O(m) space."

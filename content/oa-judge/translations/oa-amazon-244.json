@@ -11,5 +11,35 @@
     "hints": [
       "Undo the attacks in reverse order, turning every position from bad back to good. Maintain the length of each good contiguous segment at its two ends; when a position is activated, read the left and right lengths L and R, and the newly created all-good substrings number exactly (L+1)(R+1). When the damaged count drops from ≥m to <m, the time before that undo is the answer."
     ]
+  },
+  "ja": {
+    "title": "悪意ある文字を含む部分文字列の数がしきい値に達する最も早い時刻",
+    "description": "最初のパスワードは長さ n の小文字の文字列です。t 秒目に、位置 attackOrder[t]（1 始まり）が * に変更されます。attackOrder は 1..n の順列です。破損した部分文字列とは、* を 1 つ以上含む空でない連続部分文字列のことで、開始位置と終了位置が異なるものは別々に数えます。その個数が初めて m 以上になる秒を求めてください。m=0 のときは、元の問題の特別な指定どおり 1 を出力します。元の問題の本文ではしきい値が誤って n と書かれていますが、パラメータ m と 2 つの例に従って修正しています。\n\n標準入出力、例、解説は本サイトが独自に作成したものです。本サイトのものと明記された範囲は、元の問題の制約ではありません。",
+    "input": "1 行目に n m、2 行目にパスワード、3 行目に n 個の attackOrder が与えられます。1≤n≤800000、0≤m≤n(n+1)/2、パスワードは小文字、attackOrder は 1..n の順列です。",
+    "output": "答えを表す整数を 1 つ出力してください。",
+    "explanation": "答えは 2、4、1 です。1 つ目の例では、1 秒目に破損した部分文字列が 8 個、2 秒目に 11 個となり、2 秒目が初めて 10 に達する時刻です。",
+    "hints": [
+      "攻撃を逆順に取り消し、各位置を悪い状態から良い状態に戻していきます。良い連続区間の長さを、その両端に保持します。位置を有効にするときは、左右の長さ L と R を読み出します。新たに生じる、すべて良い文字の部分文字列はちょうど (L+1)(R+1) 個です。破損数が m 以上から m 未満に下がったとき、その取り消しの直前の時刻が答えです。"
+    ]
+  },
+  "ko": {
+    "title": "악성 문자 부분 문자열 수가 임계값에 처음 도달하는 시각",
+    "description": "처음 비밀번호는 길이 n의 소문자 문자열입니다. t초에 위치 attackOrder[t](1-based)의 문자가 *로 바뀌며, attackOrder는 1..n의 순열입니다. 손상된 부분 문자열이란 *를 하나 이상 포함하는 비어 있지 않은 연속 부분 문자열이며, 시작과 끝 위치가 다르면 따로 셉니다. 손상된 부분 문자열의 수가 처음으로 m 이상이 되는 초를 구하세요. m=0이면 원문의 특별 규정에 따라 1을 출력합니다. 원문 본문에는 임계값이 n으로 잘못 적혀 있으며, 매개변수 m과 두 예제에 맞추어 바로잡았습니다.\n\n표준 입출력, 예제, 해설은 이 사이트에서 독립적으로 작성했으며, 이 사이트 기준이라고 명시한 범위는 원문의 원래 제약 조건이 아닙니다.",
+    "input": "첫째 줄에 n m, 둘째 줄에 비밀번호, 셋째 줄에 n개의 attackOrder 값이 주어집니다. 1≤n≤800000, 0≤m≤n(n+1)/2이고, 비밀번호는 소문자이며 attackOrder는 1..n의 순열입니다.",
+    "output": "정답을 나타내는 정수 하나를 출력합니다.",
+    "explanation": "정답은 2, 4, 1입니다. 첫 번째 예제에서는 1초에 손상된 부분 문자열이 8개, 2초에 11개이므로 개수가 처음 10에 도달하는 것은 2초입니다.",
+    "hints": [
+      "공격을 역순으로 되돌려 각 위치를 불량에서 정상으로 바꿉니다. 정상 연속 구간의 길이를 양 끝에 유지하고, 위치를 활성화할 때 좌우 길이 L과 R을 읽으면 새로 생기는 전부 정상인 부분 문자열의 수는 정확히 (L+1)(R+1)입니다. 손상된 수가 m 이상에서 m 미만으로 떨어지면, 그 되돌리기 직전의 시각이 정답입니다."
+    ]
+  },
+  "vi": {
+    "title": "Thời điểm sớm nhất số xâu con chứa ký tự độc hại đạt ngưỡng",
+    "description": "Mật khẩu ban đầu gồm chữ cái thường, độ dài n. Ở giây t, vị trí attackOrder[t] (đánh số từ 1) bị đổi thành *, và attackOrder là một hoán vị của 1..n. Xâu con bị hỏng là xâu con liên tiếp không rỗng chứa ít nhất một dấu *, được đếm riêng theo vị trí đầu và cuối. Tìm giây đầu tiên mà số lượng đó đạt hoặc vượt m. Khi m=0, in 1 theo yêu cầu đặc biệt của nguồn. Phần chính của đề gốc viết nhầm ngưỡng là n; đã được sửa theo tham số m và cả hai ví dụ.\n\nĐề bài chuẩn hóa vào/ra, các ví dụ và lời giải được trang này tự biên soạn; những khoảng giá trị được ghi rõ là của trang này không phải ràng buộc gốc của nguồn.",
+    "input": "Dòng đầu chứa n m, dòng thứ hai là mật khẩu, dòng thứ ba gồm n giá trị attackOrder. 1≤n≤800000, 0≤m≤n(n+1)/2, mật khẩu gồm chữ cái thường, và attackOrder là hoán vị của 1..n.",
+    "output": "In ra một số nguyên duy nhất, là đáp án.",
+    "explanation": "Các đáp án lần lượt là 2, 4 và 1. Trong ví dụ đầu tiên có 8 xâu con bị hỏng ở giây 1 và 11 ở giây 2, đây là lần đầu tiên số đếm đạt 10.",
+    "hints": [
+      "Hoàn tác các cuộc tấn công theo thứ tự ngược, đưa từng vị trí từ xấu trở lại tốt. Lưu độ dài của mỗi đoạn tốt liên tiếp tại hai đầu của nó; khi một vị trí được kích hoạt, đọc các độ dài trái và phải L và R, và số xâu con hoàn toàn tốt mới được tạo ra đúng bằng (L+1)(R+1). Khi số xâu con bị hỏng giảm từ ≥m xuống <m, thời điểm trước lần hoàn tác đó là đáp án."
+    ]
   }
 }

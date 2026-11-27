@@ -13,6 +13,21 @@
       "For each ID only its last occurrence matters; scanning from the back, the first place an ID is met is exactly its last occurrence.",
       "Scan the requests in reverse and keep a hash set of IDs already collected; collect each new ID as it appears, and this order is exactly from most recent to least recent by last occurrence.",
       "Read input line by line (IDs may contain spaces, so do not split on whitespace) and scan from the last line backward: skip IDs already seen, otherwise add them to the set and the result list, and stop as soon as k are collected; if fewer than k are found print -1, otherwise print k followed by the collected IDs, one per line."
+    ],
+    "ja": [
+      "各 ID で重要なのは、最後の出現だけです。後ろから走査すると、ID に最初に出会う位置がちょうど最後の出現です。",
+      "リクエストを逆順に走査し、集め済みの ID のハッシュ集合を保持します。新しい ID が現れたら集めます。この順序が、最後の出現が新しい順そのものです。",
+      "入力は 1 行ずつ読み(ID は空白を含むことがあるので、空白で分割しないでください)、最後の行から逆に走査します。既出の ID は飛ばし、そうでなければ集合と結果のリストに加え、k 個集まったらすぐに止めます。k 個に満たなければ -1 を出力し、そうでなければ k に続けて、集めた ID を 1 行に 1 つずつ出力します。"
+    ],
+    "ko": [
+      "각 ID에서는 마지막 등장만 중요합니다. 뒤에서부터 훑으면 어떤 ID를 처음 만나는 곳이 바로 그 ID의 마지막 등장입니다.",
+      "요청을 역순으로 훑으며 이미 모은 ID의 해시 집합을 유지합니다. 새로운 ID가 나올 때마다 모으면 그 순서가 곧 마지막 등장 기준으로 가장 최근인 것부터 오래된 순입니다.",
+      "입력을 줄 단위로 읽고(ID에 공백이 있을 수 있으므로 공백으로 분리하지 않음) 마지막 줄부터 거꾸로 훑습니다. 이미 본 ID는 건너뛰고, 아니면 집합과 결과 목록에 추가하며 k개가 모이는 즉시 멈춥니다. k개보다 적으면 -1을, 아니면 k와 모은 ID들을 한 줄에 하나씩 출력합니다."
+    ],
+    "vi": [
+      "Với mỗi ID chỉ lần xuất hiện cuối cùng là quan trọng; khi quét từ phía sau, lần đầu gặp một ID chính là lần xuất hiện cuối cùng của nó.",
+      "Quét các yêu cầu theo thứ tự ngược và giữ một bảng băm các ID đã gom; gom mỗi ID mới khi nó xuất hiện, và thứ tự này chính là từ gần nhất đến xa nhất theo lần xuất hiện cuối.",
+      "Đọc đầu vào từng dòng (ID có thể chứa dấu cách nên không tách theo khoảng trắng) và quét từ dòng cuối ngược lên: bỏ qua ID đã thấy, ngược lại thêm vào tập hợp và danh sách kết quả, và dừng ngay khi đã gom đủ k; nếu tìm được ít hơn k thì in -1, ngược lại in k rồi các ID đã gom, mỗi ID một dòng."
     ]
   },
   "explanationEn": "## Approach\n\nScan in reverse, use a set to skip IDs already seen, and stop after collecting k; if there are not enough, report that it is infeasible.\n\n## Proof of correctness\n\nScanning from right to left, the first position where an ID is met is its last occurrence, so the order of first encounters in reverse is exactly the descending order of last-occurrence times. Skipping IDs already seen only removes repeats, so the first k items are what is asked for; if the scan ends with fewer, the total number of distinct IDs really is insufficient.\n\n## Complexity\n\nTime O(n·ID length), space O(n·ID length)."

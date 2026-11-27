@@ -13,6 +13,21 @@
       "Activities cannot be reordered, each week is a contiguous range, and there must be exactly weeks ranges. Think about which range the last week covers.",
       "Let dp[w][i] be the minimum total effort for splitting the first i activities into w weeks. The last week is some suffix cost[j..i−1], so dp[w][i]=min(dp[w−1][j] + the maximum of that range). With n≤300, O(weeks·n²) is fast enough.",
       "Start with dp[0][0]=0 and infinity everywhere else. For each w and each i≥w, move j from i−1 leftward down to w−1, maintaining the running range maximum as you go and taking the minimum transition. Only the previous layer needs to be kept; the answer is dp[weeks][n]."
+    ],
+    "ja": [
+      "アクティビティの順序は変えられず、各週は連続した区間で、区間の数はちょうど weeks 個でなければなりません。最後の週がどの区間を担当するかを考えます。",
+      "dp[w][i] を、最初の i 個のアクティビティを w 週に分割したときの労力合計の最小値とします。最後の週はある接尾辞 cost[j..i−1] なので、dp[w][i]=min(dp[w−1][j] + その区間の最大値) です。n≤300 なので O(weeks·n²) で十分高速です。",
+      "dp[0][0]=0 とし、それ以外は無限大で始めます。各 w と各 i≥w について、j を i−1 から w−1 まで左へ動かし、区間の最大値を更新しながら遷移の最小値を取ります。保持するのは直前の層だけで、答えは dp[weeks][n] です。"
+    ],
+    "ko": [
+      "활동의 순서를 바꿀 수 없고, 각 주는 연속 구간이며, 구간은 정확히 weeks개여야 합니다. 마지막 주가 어떤 구간을 차지하는지 생각해 보세요.",
+      "dp[w][i]를 처음 i개의 활동을 w주로 나눌 때의 최소 노력 합이라 합니다. 마지막 주는 어떤 접미사 cost[j..i−1]이므로 dp[w][i]=min(dp[w−1][j] + 그 구간의 최댓값)입니다. n≤300이므로 O(weeks·n²)이면 충분히 빠릅니다.",
+      "dp[0][0]=0으로 시작하고 나머지는 모두 무한대로 둡니다. 각 w와 i≥w에 대해 j를 i−1에서 w−1까지 왼쪽으로 옮기며 구간 최댓값을 유지하고 전이의 최솟값을 취합니다. 바로 이전 층만 보관하면 되며, 답은 dp[weeks][n]입니다."
+    ],
+    "vi": [
+      "Không được sắp xếp lại các hoạt động, mỗi tuần là một đoạn liên tiếp, và phải có đúng weeks đoạn. Hãy nghĩ xem tuần cuối cùng phủ đoạn nào.",
+      "Gọi dp[w][i] là tổng công sức tối thiểu khi chia i hoạt động đầu tiên thành w tuần. Tuần cuối cùng là một hậu tố cost[j..i−1] nào đó, nên dp[w][i]=min(dp[w−1][j] + giá trị lớn nhất của đoạn đó). Với n≤300, O(weeks·n²) là đủ nhanh.",
+      "Bắt đầu với dp[0][0]=0 và vô cùng ở mọi vị trí khác. Với mỗi w và mỗi i≥w, dịch j từ i−1 sang trái xuống đến w−1, duy trì giá trị lớn nhất đang chạy của đoạn và lấy chuyển trạng thái nhỏ nhất. Chỉ cần giữ lớp trước; đáp án là dp[weeks][n]."
     ]
   },
   "explanationEn": "## Approach\n\ndp[w][i] is the minimum total effort for splitting the first i activities into w weeks. Enumerate the start j of the last week and transition with dp[w−1][j]+max(cost[j:i]). Maintain the range maximum while enumerating j leftward, and roll over the week layers.\n\n## Proof of correctness\n\nIn any valid plan the last week is a non-empty suffix, and everything before it is split into exactly w−1 weeks; if the earlier part were not optimal, replacing it would lower the total cost. Enumerating every j covers every last split point, and w≤j+1 guarantees that no week is empty. Starting from cost 0 for 0 items in 0 weeks and infinity elsewhere, induction gives the required optimum.\n\n## Complexity\n\nTime O(weeks·n²), space O(n)."

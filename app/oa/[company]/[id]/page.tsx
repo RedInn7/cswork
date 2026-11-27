@@ -13,8 +13,9 @@ import { pageMetadata } from '@/lib/server/seo';
 import { icaTask } from '@/lib/server/ai-tasks';
 import { HttpError } from '@/lib/server/http';
 import { mockPresetFor } from '@/lib/server/mock-oa-presets';
-import { requestLocale } from '@/lib/server/locale';
-import { oaEnglishStatement, oaReadyProblems } from '@/lib/server/oa-judge';
+import { CONTENT_LANGUAGES, contentLanguage, localeOf } from '@/lib/language';
+import { requestLanguage } from '@/lib/server/locale';
+import { oaReadyProblems, oaTranslations } from '@/lib/server/oa-judge';
 import { oaDrillIndex, oaLibrary } from '@/lib/server/oa-library';
 import { oaDifficulty, oaTopic } from '@/lib/server/oa-topics';
 import { getPublicOaProblem } from '@/lib/server/oj-problems';
@@ -45,11 +46,16 @@ const load = cache(async (slug: string, id: string) => {
     if (error instanceof HttpError) return null;
     throw error;
   });
-  const locale = await requestLocale();
-  // Statements are English whatever the site language.
-  const english = judged ? oaEnglishStatement(id) : undefined;
+  const language = await requestLanguage();
+  const locale = localeOf(language);
+  // Statements are English whatever the site language, except for a ja/ko/vi reader of a
+  // problem translated into their language.
+  const translated = judged ? oaTranslations(id) : undefined;
+  const english = translated?.en;
+  const own = contentLanguage(language);
+  const local = own && translated?.[own] ? own : null;
   const statement = judged
-    ? oaStatementMarkdown(english || judged, judged.samples, locale)
+    ? oaStatementMarkdown((local && translated?.[local]) || english || judged, judged.samples, local ?? locale)
     : item.statement;
   const name = oaCompanyName(company.slug, company.name, locale);
   const listed = oaLibrary().company(company.slug, new Set((await oaReadyProblems()).keys()));
@@ -61,7 +67,12 @@ const load = cache(async (slug: string, id: string) => {
     judged,
     statement,
     // Verified packages are Chinese and their translations English; catalog text varies.
-    statementLang: judged ? (english ? 'en' : 'zh-CN') : oaStatementLang(statement),
+    statementLang: local ?? (judged ? (english ? 'en' : 'zh-CN') : oaStatementLang(statement)),
+    // The statement's language when it is the reader's own ja/ko/vi, and its title in it.
+    local,
+    title: (local && translated?.[local]?.title) || item.title,
+    // Which of ja/ko/vi this page exists in: each is its own canonical URL (lib/seo.ts).
+    localized: CONTENT_LANGUAGES.filter((option) => translated?.[option]),
     // Title only: no statement and nothing to judge, so not worth indexing.
     thin: !judged && !statement.trim(),
     // A mock needs a preset page and only draws judge-ready problems.
@@ -83,13 +94,14 @@ export async function generateMetadata({ params }: Props) {
   const page = await load(company, id);
   return {
     ...await pageMetadata({
-      title: oaPageTitle(page.locale, page.name, page.item.title),
+      title: oaPageTitle(page.locale, page.name, page.title),
       description: publicLibraryDescription({
-        title: page.item.title,
+        title: page.title,
         summary: null,
         body: page.statement,
       }),
       path: oaProblemPath(page.company.slug, page.item.id),
+      localized: page.localized,
     }),
     ...(page.thin ? { robots: { index: false, follow: true } } : {}),
   };
@@ -130,7 +142,7 @@ export default async function OaProblemPage({ params }: Props) {
           <span aria-hidden="true">·</span>
           <span className="oa-public-number">OA #{item.number}</span>
         </p>
-        <h1>{item.title}</h1>
+        <h1 lang={page.local ?? undefined}>{page.title}</h1>
         <p className="oa-public-ticket-status">
           <OaDifficulty {...oaDifficulty(item.id, judged?.difficulty)} locale={locale} />
           {kind && (
@@ -221,7 +233,7 @@ export default async function OaProblemPage({ params }: Props) {
       {/* Every OA problem has an editorial (judged: the registry's; otherwise content/oa-master/editorials). */}
       <section className="oa-public-editorial" aria-label={zh ? '题解' : 'Editorial'}>
         <h2>{zh ? '题解' : 'Editorial'}</h2>
-        <OaEditorial problemId={item.id} english={!zh} />
+        <OaEditorial problemId={item.id} english={!zh} contentLanguage={page.local} />
       </section>
       {(page.previous || page.next) && (
         <nav className="oa-public-pager" aria-label={zh ? `更多 ${name} OA 题` : `More ${name} OA problems`}>

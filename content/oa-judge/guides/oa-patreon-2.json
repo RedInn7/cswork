@@ -13,6 +13,21 @@
       "The region of position i extends left and right and is blocked only by a strictly higher height; equal heights still let it be the maximum, so the region passes over them.",
       "The region's left boundary is the nearest strictly higher position on the left and its right boundary the nearest strictly higher position on the right; its length is the difference of those indices minus one. Both nearest higher positions can be found in linear time with monotonic stacks.",
       "Scan left to right with a monotonic stack: pop every index whose height is not greater than the current one; the top, if any, is the nearest strictly higher position on the left, otherwise use -1; then push the current index. Do the same from right to left, using n when there is none. Sum right minus left minus 1 over all positions in a 64-bit integer and print it."
+    ],
+    "ja": [
+      "位置 i の領域は左右に広がり、厳密により高い高さにだけ遮られます。高さが等しくても i は最大のままなので、領域はそれを越えて広がります。",
+      "領域の左端は左側で最も近い厳密に高い位置、右端は右側で最も近い厳密に高い位置で決まり、長さはそれらの添字の差から1を引いたものです。最も近い高い位置は、どちらも単調スタックで線形時間に求められます。",
+      "左から右へ単調スタックで走査します。高さが現在以下のインデックスをすべて取り出し、残った先頭があれば、それが左側で最も近い厳密に高い位置です。なければ -1 を使います。その後、現在のインデックスを積みます。同様に右から左へ走査し、なければ n を使います。すべての位置について右 − 左 − 1 を 64 ビット整数で合計して出力します。"
+    ],
+    "ko": [
+      "위치 i의 영역은 왼쪽과 오른쪽으로 확장되며, 엄격히 더 높은 높이에서만 막힙니다. 높이가 같으면 여전히 최댓값이 될 수 있으므로 영역은 그 위치를 넘어갑니다.",
+      "영역의 왼쪽 경계는 왼쪽에서 가장 가까운 엄격히 더 높은 위치이고, 오른쪽 경계는 오른쪽에서 가장 가까운 엄격히 더 높은 위치입니다. 길이는 두 인덱스의 차에서 1을 뺀 값입니다. 가장 가까운 더 높은 위치는 둘 다 단조 스택으로 선형 시간에 구할 수 있습니다.",
+      "단조 스택으로 왼쪽에서 오른쪽으로 훑습니다. 높이가 현재보다 크지 않은 인덱스를 모두 pop하고, 남은 맨 위가 있으면 그것이 왼쪽에서 가장 가까운 엄격히 더 높은 위치이며 없으면 -1을 씁니다. 그다음 현재 인덱스를 push합니다. 오른쪽에서 왼쪽으로도 똑같이 하되 없으면 n을 사용합니다. 모든 위치에 대해 right - left - 1을 64비트 정수로 합산하여 출력합니다."
+    ],
+    "vi": [
+      "Vùng của vị trí i mở rộng sang trái và phải và chỉ bị chặn bởi một chiều cao cao hơn ngặt; các chiều cao bằng nhau vẫn cho phép nó là lớn nhất, nên vùng đi qua chúng.",
+      "Biên trái của vùng là vị trí cao hơn ngặt gần nhất ở bên trái và biên phải là vị trí cao hơn ngặt gần nhất ở bên phải; độ dài của nó bằng hiệu hai chỉ số đó trừ một. Cả hai vị trí cao hơn gần nhất đều tìm được trong thời gian tuyến tính bằng ngăn xếp đơn điệu.",
+      "Quét từ trái sang phải với một ngăn xếp đơn điệu: lấy ra mọi chỉ số có chiều cao không lớn hơn chiều cao hiện tại; phần tử trên cùng, nếu có, là vị trí cao hơn ngặt gần nhất bên trái, nếu không thì dùng -1; rồi đẩy chỉ số hiện tại vào. Làm tương tự từ phải sang trái, dùng n khi không có. Cộng right trừ left trừ 1 trên mọi vị trí bằng số nguyên 64 bit và in ra."
     ]
   },
   "explanationEn": "## Approach\n\nUse monotonic stacks to find the nearest strictly higher heights on the left and on the right.\n\n## Proof of correctness\n\nA valid interval cannot cross a higher position; inside the two boundaries the current value is the maximum throughout, so that whole interval is the longest.\n\n## Complexity\n\nO(n) time, O(n) space."

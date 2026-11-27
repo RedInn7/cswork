@@ -11,5 +11,35 @@
     "hints": [
       "Whether an edge ends up flipped depends only on whether the end point and the start point lie on opposite sides of it; enumerate every end point reached by walking straight left or right and check whether the letter counts balance."
     ]
+  },
+  "ja": {
+    "title": "トークンを動かして a と b の個数を揃える",
+    "description": "トークンは位置 0..N のいずれかにあり、隣り合う位置の間に文字が置かれています。トークンが1歩進むごとに、通り越した a/b の文字が反転します。2種類の文字の個数を等しくするのに必要な最小の歩数を求めてください。不可能な場合は −1 を出力します。\n\n入力の形式、当サイトが追加した範囲、例、テストは、すべて CSWork が独自に作成したものです。",
+    "input": "1行目に文字列 L (長さ 1..100、a/b のみ)、2行目に start (0..N) が与えられます。",
+    "output": "答えを表す整数を1つ出力します。",
+    "explanation": "例 1: 最初の a を右へ通り越すと、文字列は baabab になり、各文字が3個ずつになります。答えは 1 です。\n\n例 2: 左へ5歩進むと添字 1..5 が反転して abbaba になり、各文字が3個ずつになります。これより短い動きでは揃わないので、答えは 5 です。\n\n例 3: 文字の総数 5 が奇数なので、同数に分けることはできません。−1 を出力します。",
+    "hints": [
+      "ある辺が最終的に反転しているかどうかは、終点と始点がその辺の反対側にあるかどうかだけで決まります。左または右へまっすぐ進んで到達できるすべての終点を列挙し、文字の個数が釣り合うかどうかを確認します。"
+    ]
+  },
+  "ko": {
+    "title": "a와 b의 개수를 맞추기 위한 말 이동",
+    "description": "말이 위치 0..N 중 한 곳에 있고, 문자는 인접한 위치 사이에 놓여 있습니다. 한 걸음마다 말이 건너는 a/b 문자가 뒤집힙니다. 두 문자의 개수를 같게 만드는 데 필요한 최소 걸음 수를 구하세요. 불가능하면 −1을 출력합니다.\n\n입력 형식, 이 사이트에서 추가한 범위, 예제, 테스트는 모두 CSWork가 독자적으로 작성했습니다.",
+    "input": "첫 줄에 문자열 L(길이 1..100, a/b만 포함)이 주어지고, 둘째 줄에 start(0..N)가 주어집니다.",
+    "output": "정답을 나타내는 정수 하나를 출력합니다.",
+    "explanation": "예제 1: 오른쪽으로 첫 번째 a를 건너면 문자열이 baabab가 되어 각 문자가 3개씩이므로 정답은 1입니다.\n\n예제 2: 왼쪽으로 5걸음 이동하면 인덱스 1..5가 뒤집혀 abbaba가 되어 각 문자가 3개씩입니다. 더 짧은 이동으로는 균형을 맞출 수 없으므로 정답은 5입니다.\n\n예제 3: 전체 문자 수 5가 홀수이므로 같은 개수로 나눌 수 없어 −1을 출력합니다.",
+    "hints": [
+      "어떤 간선이 최종적으로 뒤집히는지는 도착점과 출발점이 그 간선의 반대편에 있는지에만 달려 있습니다. 왼쪽 또는 오른쪽으로 곧장 걸어 도달하는 모든 도착점을 열거하여 문자 개수가 균형인지 확인합니다."
+    ]
+  },
+  "vi": {
+    "title": "Di chuyển quân cờ để cân bằng a và b",
+    "description": "Một quân cờ nằm ở một trong các vị trí 0..N, và các chữ cái nằm giữa hai vị trí kề nhau. Mỗi bước đi lật chữ a/b mà quân cờ vừa đi qua. Tìm số bước tối thiểu để số lượng hai chữ cái bằng nhau, hoặc −1 nếu không thể.\n\nGiao thức đầu vào, các phạm vi do trang này bổ sung, các ví dụ và bộ test đều do CSWork tự viết độc lập.",
+    "input": "Dòng đầu chứa xâu chữ cái L (1..100, chỉ gồm a/b), dòng thứ hai chứa start (0..N).",
+    "output": "In ra một số nguyên duy nhất, là đáp án.",
+    "explanation": "Ví dụ 1: đi sang phải qua chữ a đầu tiên biến xâu thành baabab, mỗi chữ cái có 3 ký tự; đáp án là 1.\n\nVí dụ 2: đi sang trái 5 bước lật các chỉ số 1..5, được abbaba với mỗi chữ cái 3 ký tự; không có cách đi ngắn hơn nào cân bằng được, nên đáp án là 5.\n\nVí dụ 3: tổng số chữ cái là 5, một số lẻ, nên không thể chia thành hai phần bằng nhau; in ra −1.",
+    "hints": [
+      "Một cạnh cuối cùng có bị lật hay không chỉ phụ thuộc vào việc điểm cuối và điểm xuất phát có nằm ở hai phía đối nhau của nó hay không; hãy duyệt mọi điểm cuối đạt được bằng cách đi thẳng sang trái hoặc sang phải và kiểm tra số lượng chữ cái có cân bằng không."
+    ]
   }
 }

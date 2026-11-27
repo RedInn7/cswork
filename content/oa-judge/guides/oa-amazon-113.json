@@ -13,6 +13,21 @@
       "The cost only depends on how many pairs are of equal characters and how many are mixed; the total number of pairs is fixed at n/2, so you only need to choose the number of equal pairs.",
       "If equal pairs are cheaper, make as many as possible, which is the sum of each frequency divided by 2; if mixed pairs are cheaper, make as few equal pairs as possible, and only a character occurring more than half the time is forced to pair with itself.",
       "Count the frequency of every character and let pairs = n/2; when x <= y set same = sum of floor(f/2), otherwise same = max(0, maxFrequency - pairs); the answer is same*x + (pairs - same)*y."
+    ],
+    "ja": [
+      "コストは、同じ文字のペアの数と異なる文字のペアの数だけで決まります。ペアの総数は n/2 で固定なので、同じ文字のペアの数だけを選べば十分です。",
+      "同じ文字のペアが安いなら、できるだけ多く作ります。その数は各出現回数を 2 で割った値の和です。異なる文字のペアが安いなら、同じ文字のペアはできるだけ少なくします。半数を超えて出現する文字だけが、自分自身とのペアを強いられます。",
+      "各文字の出現回数を数え、pairs = n/2 とします。x <= y のときは same = floor(f/2) の和、そうでなければ same = max(0, maxFrequency - pairs) とします。答えは same*x + (pairs - same)*y です。"
+    ],
+    "ko": [
+      "비용은 같은 문자 쌍과 다른 문자 쌍이 각각 몇 개인지에만 달려 있습니다. 전체 쌍의 수는 n/2로 고정이므로 같은 문자 쌍의 개수만 정하면 됩니다.",
+      "같은 문자 쌍이 더 저렴하면 최대한 많이 만들고, 이는 각 빈도를 2로 나눈 몫의 합입니다. 다른 문자 쌍이 더 저렴하면 같은 문자 쌍을 최소로 만들며, 절반을 넘게 등장하는 문자만 자기 자신과 짝을 이루도록 강제됩니다.",
+      "모든 문자의 빈도를 세고 pairs = n/2라 합니다. x <= y이면 same = sum of floor(f/2), 아니면 same = max(0, maxFrequency - pairs)이며, 답은 same*x + (pairs - same)*y입니다."
+    ],
+    "vi": [
+      "Chi phí chỉ phụ thuộc vào số cặp giống nhau và số cặp hỗn hợp; tổng số cặp luôn cố định là n/2, nên chỉ cần chọn số cặp giống nhau.",
+      "Nếu cặp giống nhau rẻ hơn, hãy tạo càng nhiều càng tốt, tức là tổng của tần suất từng ký tự chia 2; nếu cặp hỗn hợp rẻ hơn, hãy tạo càng ít cặp giống nhau càng tốt, và chỉ ký tự xuất hiện nhiều hơn một nửa mới buộc phải ghép với chính nó.",
+      "Đếm tần suất của từng ký tự và đặt pairs = n/2; khi x <= y đặt same = tổng của floor(f/2), ngược lại same = max(0, maxFrequency - pairs); đáp án là same*x + (pairs - same)*y."
     ]
   },
   "explanationEn": "## Approach\n\nIf same-character pairs are cheaper, make as many of them as possible, which is the sum of each frequency divided by 2 (integer division); if mixed pairs are cheaper, only max(0, (maximum frequency) - n/2) same-character pairs are forced, and all others are mixed.\n\n## Correctness\n\nThe maximum number of same-character pairs is determined by each character's frequency separately, and these maxima can be reached at the same time; the leftover odd items can be paired with each other as mixed pairs. When mixed pairs are cheaper, the excess of the most frequent character beyond half must be paired internally, and otherwise everything can be matched across characters, so the forced number of same-character pairs is the non-negative part of (maximum frequency - total pairs).\n\n## Complexity\n\nTime O(n), space O(26)."

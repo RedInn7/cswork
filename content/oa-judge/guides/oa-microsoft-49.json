@@ -13,6 +13,21 @@
       "Each column has only two cells, so a balanced column is either one R and one W or two cells left as ?. A column with two fixed cells of the same color makes the task impossible.",
       "A column with a single ? has exactly one valid filling (the color opposite to the other cell) and costs 1. A column with two ? can stay as it is or be filled as one R and one W for a cost of 2, which is how row balance gets adjusted.",
       "Handle every single-? column first and count those replacements, while tracking d, the number of R minus W in the top row over the columns with decided colors. Each double-? column changes d by 1 at a cost of 2; if the absolute value of d is at most the number of double-? columns, the answer is the single-? count plus twice the absolute value of d, otherwise −1. Once the top row is balanced, the bottom row is balanced too because every filled column holds one R and one W."
+    ],
+    "ja": [
+      "各列にはセルが 2 つしかないので、揃った列は R と W が 1 つずつか、2 つとも ? のままです。固定された同色の 2 セルを持つ列があれば、不可能です。",
+      "? が 1 つだけの列には有効な埋め方がちょうど 1 通り（もう一方のセルと反対の色）あり、コストは 1 です。? が 2 つの列は、そのままにするか、R と W を 1 つずつ埋めてコスト 2 とするかのどちらかで、これが行の均衡を調整する手段になります。",
+      "まず ? が 1 つの列をすべて処理して置換回数を数え、色が決まった列についての上の行の R − W の個数 d を追跡します。? が 2 つの各列は d を 1 だけ変え、コストは 2 です。d の絶対値が ? が 2 つの列の数以下なら、答えは ? が 1 つの列の数に d の絶対値の 2 倍を加えた値、そうでなければ −1 です。上の行が揃えば、埋められたすべての列に R と W が 1 つずつあるので、下の行も揃います。"
+    ],
+    "ko": [
+      "각 열은 칸이 두 개뿐이므로 균형 잡힌 열은 R 하나와 W 하나이거나 두 칸 모두 ?로 남은 것입니다. 같은 색 두 칸이 고정된 열이 있으면 불가능합니다.",
+      "?가 하나뿐인 열은 유효한 채움이 정확히 하나(다른 칸과 반대 색)이며 비용은 1입니다. ?가 두 개인 열은 그대로 두거나 R 하나와 W 하나로 채울 수 있고 비용은 2이며, 이것이 행의 균형을 조절하는 수단입니다.",
+      "?가 하나인 모든 열을 먼저 처리하며 그 교체 횟수를 세고, 색이 정해진 열들에 대해 위쪽 행의 R 개수에서 W 개수를 뺀 값 d를 추적합니다. ?가 두 개인 열은 하나당 d를 1씩 바꾸고 비용은 2입니다. d의 절댓값이 ?가 두 개인 열의 수 이하이면 정답은 ?가 하나인 열의 교체 수에 d의 절댓값의 두 배를 더한 값이고, 아니면 −1입니다. 위쪽 행이 균형을 이루면 채워진 모든 열이 R 하나와 W 하나를 가지므로 아래쪽 행도 균형을 이룹니다."
+    ],
+    "vi": [
+      "Mỗi cột chỉ có hai ô, nên một cột cân bằng hoặc là một R và một W, hoặc là hai ô để nguyên ?. Một cột có hai ô cố định cùng màu khiến bài toán vô nghiệm.",
+      "Một cột chỉ có một dấu ? có đúng một cách điền hợp lệ (màu ngược với ô còn lại) và tốn 1. Một cột có hai dấu ? có thể để nguyên hoặc điền thành một R và một W với chi phí 2, đó là cách điều chỉnh cân bằng của hàng.",
+      "Xử lý mọi cột một dấu ? trước và đếm số lần thay thế đó, đồng thời theo dõi d, số R trừ số W ở hàng trên trên các cột đã xác định màu. Mỗi cột hai dấu ? làm d thay đổi 1 với chi phí 2; nếu giá trị tuyệt đối của d không vượt quá số cột hai dấu ?, đáp án là số cột một dấu ? cộng hai lần giá trị tuyệt đối của d, ngược lại là −1. Khi hàng trên đã cân bằng thì hàng dưới cũng cân bằng vì mỗi cột đã điền chứa một R và một W."
     ]
   },
   "explanationEn": "## Approach\n\nA ? on one side only must be filled with the color opposite to the other side, and a fixed same-color column means there is no solution. Leave double-? columns empty for now; after the forced fills, if the top row has d more R than W, fill d double-? columns with W on top and R below, and vice versa.\n\n## Correctness\n\nA two-cell column can only be RW, WR, or ??. A column with a single ? has a unique filling. Each double-? column costs 2 replacements to change the top row's difference by 1; therefore at least |difference| such columns are needed, and when there are enough empty columns, filling them this way meets the lower bound, with the bottom row balanced at the same time.\n\n## Complexity\n\nTime O(N), space O(1) apart from the input."

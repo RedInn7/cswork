@@ -13,6 +13,21 @@
       "Among subarrays ending at the same position, extending further left can only add bits to the OR; since values are at most 10⁹, there are only about 31 distinct OR values among them.",
       "Keep every distinct OR of subarrays ending at the current position together with how many subarrays give it: the new element alone is one, and every OR from the previous round ORed with the new element gives the rest, merging equal results.",
       "Put all values of the array into a set (or sort them and binary search). For each element, start the new state list with (element, 1), then add each previous (OR, count) ORed with the element, summing counts of equal ORs; add the counts of states whose OR is in the set to the answer. The answer can exceed 32-bit integers."
+    ],
+    "ja": [
+      "同じ位置で終わる部分配列では、さらに左へ延ばしても OR にビットが加わるだけです。値は高々 10⁹ なので、それらの異なる OR の値は 31 個程度しかありません。",
+      "現在位置で終わる部分配列の異なる OR を、それぞれの値になる部分配列の個数とともに保持します。新しい要素だけの部分配列が1つ、前回の各 OR に新しい要素を OR したものがそれ以外で、同じ結果はまとめます。",
+      "配列のすべての値を集合に入れます（または、ソートして二分探索します）。各要素について、新しい状態のリストを (要素, 1) で始め、前回の各 (OR, 個数) をその要素と OR したものを加え、同じ OR の個数は合計します。OR が集合にある状態の個数を答えに加えます。答えは32ビット整数を超えることがあります。"
+    ],
+    "ko": [
+      "같은 위치에서 끝나는 부분 배열들 중 왼쪽으로 더 확장하면 OR에 비트만 추가될 수 있고, 값이 10⁹ 이하이므로 서로 다른 OR 값은 약 31개뿐입니다.",
+      "현재 위치에서 끝나는 부분 배열의 서로 다른 OR을 각각 몇 개의 부분 배열이 만드는지와 함께 유지합니다. 새 원소 하나만 있는 것이 하나이고, 이전 라운드의 각 OR에 새 원소를 OR한 것이 나머지이며, 같은 결과는 병합합니다.",
+      "배열의 모든 값을 집합에 넣습니다(또는 정렬하고 이분 탐색). 각 원소에 대해 새 상태 목록을 (원소, 1)로 시작하고, 이전의 각 (OR, 개수)에 원소를 OR한 것을 더하되 같은 OR의 개수는 합산합니다. OR이 집합에 있는 상태의 개수를 답에 더합니다. 답은 32비트 정수를 넘을 수 있습니다."
+    ],
+    "vi": [
+      "Trong các mảng con kết thúc tại cùng một vị trí, kéo dài thêm sang trái chỉ có thể thêm bit vào OR; vì các giá trị không quá 10⁹ nên giữa chúng chỉ có khoảng 31 giá trị OR phân biệt.",
+      "Giữ mọi giá trị OR phân biệt của các mảng con kết thúc tại vị trí hiện tại cùng số mảng con cho ra giá trị đó: phần tử mới đứng riêng là một, và mọi giá trị OR của vòng trước OR với phần tử mới cho ra phần còn lại, gộp các kết quả bằng nhau.",
+      "Đưa mọi giá trị của mảng vào một tập hợp (hoặc sắp xếp chúng rồi tìm kiếm nhị phân). Với mỗi phần tử, bắt đầu danh sách trạng thái mới bằng (phần tử, 1), rồi thêm mỗi (OR, số đếm) của vòng trước đã OR với phần tử, cộng số đếm của các OR bằng nhau; cộng số đếm của các trạng thái có OR nằm trong tập vào đáp án. Đáp án có thể vượt quá số nguyên 32 bit."
     ]
   },
   "explanationEn": "## Approach\n\nMaintain all distinct ORs of subarrays ending at the current position, with their counts. OR the new element into each OR from the previous round, merge identical states, and count how many results lie in the global value set.\n\n## Proof of correctness\n\nEvery subarray ending at the current position is either a single element or a subarray ending at the previous position with the current value appended. The transition covers these one-to-one and merges them by count, with no omission or double counting. OR only adds binary bits, so each round has at most about 31 distinct states.\n\n## Complexity\n\nTime O(30n), space O(n+30)."

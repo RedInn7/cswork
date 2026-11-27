@@ -13,6 +13,21 @@
       "Decompose the permutation into cycles: every swap changes the number of cycles by exactly one, so both the minimum number of swaps and the parity of any valid swap count are fixed by the cycle count.",
       "The minimum is n minus the number of cycles; as long as n>=2 you can sort in that many steps and then pad with an even number of extra steps by swapping the same pair twice. With n=1 no step is possible at all.",
       "Walk every cycle with a visited array following p[j]-1 and count the cycles, giving minimum = n - cycles; for each moves value print 1 when n>1, moves>=minimum and moves-minimum is even, otherwise 0, and output the whole string at once."
+    ],
+    "ja": [
+      "順列をサイクルに分解します。スワップのたびにサイクル数はちょうど 1 変わるので、スワップの最小回数も、有効なスワップ回数の偶奇も、サイクル数で決まります。",
+      "最小回数は n からサイクル数を引いたものです。n>=2 なら、その回数で整列でき、その後、同じペアを 2 回入れ替えることで、偶数回の余分なステップを埋められます。n=1 ではステップを実行すること自体ができません。",
+      "visited 配列を使い、p[j]-1 をたどってすべてのサイクルを巡り、サイクル数を数えて minimum = n - cycles を得ます。各 moves の値について、n>1、moves>=minimum、かつ moves-minimum が偶数なら 1、そうでなければ 0 を出力します。文字列全体を一度に出力してください。"
+    ],
+    "ko": [
+      "순열을 사이클로 분해합니다. 교환 한 번은 사이클 수를 정확히 1만큼 바꾸므로, 최소 교환 횟수와 모든 유효한 교환 횟수의 홀짝은 사이클 수로 결정됩니다.",
+      "최솟값은 n에서 사이클 수를 뺀 값이며, n>=2이면 그 횟수로 정렬한 뒤 같은 쌍을 두 번 교환하는 짝수 횟수의 추가 단계로 채울 수 있습니다. n=1이면 단계를 수행할 수 없습니다.",
+      "방문 배열과 p[j]-1을 따라가며 각 사이클을 순회하여 사이클 수를 세면 minimum = n - cycles입니다. 각 moves 값에 대해 n>1이고 moves>=minimum이며 moves-minimum이 짝수이면 1, 아니면 0을 출력하고, 전체 문자열을 한 번에 출력합니다."
+    ],
+    "vi": [
+      "Phân rã hoán vị thành các chu trình: mỗi phép hoán đổi thay đổi số chu trình đúng một đơn vị, nên cả số lần hoán đổi tối thiểu lẫn tính chẵn lẻ của mọi số lần hoán đổi hợp lệ đều được cố định bởi số chu trình.",
+      "Mức tối thiểu là n trừ đi số chu trình; miễn là n>=2 bạn có thể sắp xếp xong trong chừng đó bước rồi đệm thêm một số chẵn bước thừa bằng cách hoán đổi cùng một cặp hai lần. Với n=1 thì không thể thực hiện bước nào.",
+      "Duyệt mọi chu trình bằng mảng visited theo p[j]-1 và đếm số chu trình, được minimum = n - cycles; với mỗi giá trị moves in 1 khi n>1, moves>=minimum và moves-minimum chẵn, ngược lại in 0, và xuất cả xâu một lần."
     ]
   },
   "explanationEn": "## Approach\n\nThe minimum number of swaps is n minus the number of permutation cycles. When n>=2, a count is feasible if it is at least the minimum and has the same parity, because two extra steps can swap the same pair and then swap it back. When n=1 there is no valid swap at all.\n\n## Correctness\n\nOne swap increases or decreases the number of cycles by exactly 1, so at least n - cycles steps are needed and the parity of the number of swaps is fixed. Each cycle can be sorted in (its length - 1) steps, and any extra even number of steps can be filled with swaps that cancel each other, so the condition is also sufficient. The single-element case has to be handled separately.\n\n## Complexity\n\nTime O(n+q), space O(n+q)."

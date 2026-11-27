@@ -13,6 +13,21 @@
       "The modification only affects the k chosen consecutive elements: contributions outside the window are unchanged, the first half of the window becomes hold (contributing 0), and every day of the second half sells (contributing that day's price). Not modifying at all is also allowed.",
       "The original profit is base = sum of strategy[i] * rates[i]. After choosing the window [l, l+k), the new profit is base - the window's original contribution + the sum of prices in the second half; both parts come from prefix sums in O(1).",
       "Build prefix sums P of strategy[i] * rates[i] and Q of rates[i], and let h = k/2. For each l = 0..n-k compute base - (P[l+k] - P[l]) + (Q[l+k] - Q[l+h]); the answer is the maximum of base and all window values. Profits can reach 10^10 in absolute value, so use 64-bit integers."
+    ],
+    "ja": [
+      "変更が影響するのは、選んだ k 個の連続する要素だけです。区間の外の寄与は変わらず、区間の前半は保持になり (寄与は 0)、後半の各日は売却になります (その日の価格が寄与します)。まったく変更しないことも許されます。",
+      "元の利益は base = strategy[i] * rates[i] の総和です。区間 [l, l+k) を選ぶと、新しい利益は base - (区間の元の寄与) + (後半の価格の和) で、どちらの部分も累積和から O(1) で得られます。",
+      "strategy[i] * rates[i] の累積和 P と rates[i] の累積和 Q を作り、h = k/2 とします。l = 0..n-k の各値について base - (P[l+k] - P[l]) + (Q[l+k] - Q[l+h]) を計算し、base とすべての区間の値の最大値が答えです。利益は絶対値で 10^10 に達することがあるので、64 ビット整数を使ってください。"
+    ],
+    "ko": [
+      "수정은 선택된 k개의 연속 원소에만 영향을 줍니다. 구간 밖의 기여는 그대로이고, 구간의 앞 절반은 보유(기여 0)가 되며, 뒤 절반의 모든 날은 매도(그날의 가격을 기여)가 됩니다. 아예 수정하지 않는 것도 허용됩니다.",
+      "원래 이익은 base = strategy[i] * rates[i]의 합입니다. 구간 [l, l+k)를 선택하면 새 이익은 base - (구간의 원래 기여) + (뒤 절반의 가격 합)이며, 두 부분 모두 누적 합으로 O(1)에 구합니다.",
+      "strategy[i] * rates[i]의 누적 합 P와 rates[i]의 누적 합 Q를 만들고 h = k/2로 둡니다. l = 0..n-k에 대해 base - (P[l+k] - P[l]) + (Q[l+k] - Q[l+h])를 계산하며, 답은 base와 모든 구간 값 중 최댓값입니다. 이익의 절댓값은 10^10까지 될 수 있으므로 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Việc sửa đổi chỉ ảnh hưởng k phần tử liên tiếp được chọn: đóng góp bên ngoài cửa sổ không đổi, nửa đầu của cửa sổ trở thành giữ (đóng góp 0), và mỗi ngày của nửa sau là bán (đóng góp giá của ngày đó). Không sửa đổi gì cũng được phép.",
+      "Lợi nhuận ban đầu là base = tổng strategy[i] * rates[i]. Sau khi chọn cửa sổ [l, l+k), lợi nhuận mới là base - đóng góp ban đầu của cửa sổ + tổng giá ở nửa sau; cả hai phần đều lấy được từ tổng tiền tố trong O(1).",
+      "Xây tổng tiền tố P của strategy[i] * rates[i] và Q của rates[i], và đặt h = k/2. Với mỗi l = 0..n-k tính base - (P[l+k] - P[l]) + (Q[l+k] - Q[l+h]); đáp án là giá trị lớn nhất của base và mọi giá trị cửa sổ. Lợi nhuận có thể đạt 10^10 về giá trị tuyệt đối, nên dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Problem\n\nrates[i] is the price on day i, strategy[i] is in {-1 buy, 0 hold, 1 sell}, and profit = sum of selling prices - sum of buying prices. You may (but need not) choose a segment of exactly k consecutive elements, set its first half to 0 and its second half to 1. Find the maximum profit.\n\n## Approach\n\nThe original profit is base = sum of strategy[i] * rates[i]. After choosing the window [l, l+k), the window's original contributions are cleared and every day of the second half becomes a sale, so the new profit = base - (sum over the window of strategy[i] * rates[i]) + (sum over the second half of rates[i]). Two prefix sums compute each window in O(1), and the answer is the maximum of base and all window values (since not modifying is allowed).\n\n## Correctness\n\nElements outside the window are unchanged and the elements inside the window are completely overwritten, so the formula corresponds term by term. All possible window starts and the no-modification case are enumerated.\n\n## Complexity\n\nO(n). The absolute value of the profit can reach 10^10, so use 64-bit integers.\n\n## Independent verification\n\nThe oracle actually builds the modified strategy array for every window and recomputes the whole profit (O(nk), small data only), without prefix sums. All combinations with n = 2..4, every even k, prices 1..2 and strategies in {-1, 0, 1} were enumerated and the reference program was actually run on each. The wrong solutions cover forcing a modification, swapping the two halves, not clearing the original actions in the first half of the window, and 32-bit accumulation."

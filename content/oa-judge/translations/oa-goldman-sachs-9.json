@@ -11,5 +11,35 @@
     "hints": [
       "Store the number of occurrences of each key in a frequency array. For each key, enumerate its divisors greater than 1 and add up their frequencies to get the maximum divisibility, then compute the strength and whether it can be broken by definition."
     ]
+  },
+  "ja": {
+    "title": "Encryption Validity",
+    "description": "テスト速度、有効期間（秒）、正の整数の鍵のリストが与えられます。鍵の可除性とは、リスト内で 1 より大きく、その鍵を割り切る要素の個数です（重複する要素は出現ごとに 1 回数えます）。暗号強度は、可除性の最大値に 100000 を掛けたものです。\n\n本サイトの入力プロトコルと明示された補足の範囲は CSWork が作成したもので、元の OA の規則を装うものではありません。",
+    "input": "1 行目に instructionCount validityPeriod n が与えられ、2 行目に n 個の値 keys[i] が与えられます。元の制約に基づき、本サイトでは n≥1 を追加しています。他の範囲は元の問題どおりで、速度と有効期間は 1..10^8、鍵は 1..10^5 です。",
+    "output": "2 つの整数を出力します。有効期間内に暗号を破れるか（instructionCount×validityPeriod≥strength なら 1、そうでなければ 0）と、暗号強度です。",
+    "explanation": "解法、正当性の証明、計算量は付属の解説を参照してください。",
+    "hints": [
+      "各鍵の出現回数を頻度配列に格納します。各鍵について、1 より大きい約数を列挙して頻度を足し合わせ、可除性の最大値を求めます。そこから強度と、定義どおりに破れるかを計算します。"
+    ]
+  },
+  "ko": {
+    "title": "Encryption Validity",
+    "description": "테스트 속도, 초 단위의 유효 기간, 양의 정수 키 목록이 주어집니다. 키의 약수성은 목록에서 1보다 크면서 그 키를 나누는 원소의 개수입니다(중복된 원소는 등장할 때마다 한 번씩 셉니다). 암호 강도는 최대 약수성에 100000을 곱한 값입니다.\n\n이 사이트의 입력 규약과 명시된 보충 범위는 CSWork가 구성한 것이며 원래 OA 규칙인 척하지 않습니다.",
+    "input": "첫 번째 줄에 instructionCount validityPeriod n이 주어지고, 두 번째 줄에 n개의 값 keys[i]가 주어집니다. 원본 제약을 바탕으로 이 사이트는 n≥1을 추가했으며, 나머지 범위는 원 문제를 따릅니다. 속도와 유효 기간은 1..10^8, 키는 1..10^5입니다.",
+    "output": "두 정수를 출력합니다. 유효 기간 안에 암호를 깰 수 있는지 여부(instructionCount×validityPeriod≥strength이면 1, 아니면 0)와 암호 강도입니다.",
+    "explanation": "접근 방식, 정당성 증명, 복잡도는 함께 제공되는 풀이를 참고하세요.",
+    "hints": [
+      "각 키의 등장 횟수를 빈도 배열에 저장하세요. 각 키에 대해 1보다 큰 약수를 열거하고 그 빈도를 모두 더해 최대 약수성을 구한 뒤, 정의에 따라 강도와 해독 가능 여부를 계산하세요."
+    ]
+  },
+  "vi": {
+    "title": "Encryption Validity",
+    "description": "Cho một tốc độ kiểm thử, một thời hạn hiệu lực tính bằng giây và danh sách các khóa là số nguyên dương. Độ chia hết của một khóa là số phần tử trong danh sách lớn hơn 1 và chia hết khóa đó (các phần tử trùng nhau được tính một lần cho mỗi lần xuất hiện). Độ mạnh mã hóa là độ chia hết lớn nhất nhân với 100000.\n\nGiao thức đầu vào và các khoảng giá trị bổ sung được nêu rõ của trang này do CSWork biên soạn và không giả danh quy tắc OA gốc.",
+    "input": "Dòng đầu chứa instructionCount validityPeriod n; dòng thứ hai chứa n giá trị keys[i]. Dựa trên ràng buộc gốc, trang này bổ sung n≥1; các khoảng còn lại theo bài gốc: tốc độ và thời hạn hiệu lực nằm trong 1..10^8, và các khóa nằm trong 1..10^5.",
+    "output": "In ra hai số nguyên: mã hóa có thể bị phá trong thời hạn hiệu lực hay không (1 nếu instructionCount×validityPeriod≥strength, ngược lại 0), và độ mạnh mã hóa.",
+    "explanation": "Xem lời giải đi kèm để biết ý tưởng, chứng minh tính đúng đắn và độ phức tạp.",
+    "hints": [
+      "Lưu số lần xuất hiện của mỗi khóa trong một mảng tần suất. Với mỗi khóa, duyệt các ước lớn hơn 1 của nó và cộng các tần suất để được độ chia hết lớn nhất, rồi tính độ mạnh và xem theo định nghĩa nó có bị phá được không."
+    ]
   }
 }

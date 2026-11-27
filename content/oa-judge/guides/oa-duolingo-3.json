@@ -13,6 +13,21 @@
       "A single left-to-right scan is enough, keeping a count of the consonants seen so far; non-letters and vowels are neither counted nor changed.",
       "The consonants are the 21 English letters other than a, e, i, o, u (y counts as a consonant). Arrange them in alphabetical order on a cycle; the next consonant is one step forward, so z wraps around to b. Look the letter up in lowercase and then restore its original case.",
       "Read message as a whole line (it may contain spaces), then read n. Scan character by character: for an ASCII letter that is not a vowel, increment the count; when the count is a multiple of n, replace the letter with the next one on the consonant cycle, keeping its case. Leave every other character unchanged and print the whole line."
+    ],
+    "ja": [
+      "左から右への 1 回の走査で十分で、これまでに見た子音の個数を数えます。英字以外と母音は、数えず、変更もしません。",
+      "子音は、a, e, i, o, u を除く 21 個の英字です(y は子音として数えます)。これらをアルファベット順に並べて循環させ、次の子音はそこで 1 つ前に進んだものとします。したがって z は b に戻ります。文字は小文字で調べ、その後で元の大文字小文字を復元します。",
+      "message は(空白を含むことがあるので)1 行全体として読み込み、その後で n を読みます。文字を 1 つずつ走査します。母音でない ASCII の英字なら個数を増やし、個数が n の倍数のとき、その文字を子音の循環上の次の文字に置き換え、大文字小文字は保ちます。それ以外の文字はそのままにして、行全体を出力します。"
+    ],
+    "ko": [
+      "왼쪽에서 오른쪽으로 한 번 스캔하면 충분하며, 지금까지 본 자음의 개수만 유지하면 됩니다. 문자가 아닌 것과 모음은 세지도 바꾸지도 않습니다.",
+      "자음은 a, e, i, o, u를 제외한 영어 문자 21개입니다(y는 자음). 이를 알파벳 순서로 순환에 배치하면 다음 자음은 한 칸 앞이고 z 다음은 b로 돌아갑니다. 문자를 소문자로 찾은 뒤 원래의 대소문자를 복원하세요.",
+      "message를 한 줄 전체로 읽고(공백이 있을 수 있음) 그다음 n을 읽습니다. 문자를 하나씩 스캔하여 모음이 아닌 ASCII 문자이면 개수를 증가시키고, 개수가 n의 배수이면 그 문자를 자음 순환의 다음 문자로 바꾸되 대소문자는 유지합니다. 나머지 문자는 그대로 두고 전체 줄을 출력하세요."
+    ],
+    "vi": [
+      "Một lượt quét từ trái sang phải là đủ, giữ một biến đếm số phụ âm đã gặp; các ký tự không phải chữ cái và các nguyên âm vừa không được đếm vừa không bị đổi.",
+      "Các phụ âm là 21 chữ cái tiếng Anh khác a, e, i, o, u (y được tính là phụ âm). Xếp chúng theo thứ tự bảng chữ cái trên một chu trình; phụ âm kế tiếp là một bước tiến lên, nên z quay vòng về b. Tra chữ cái ở dạng thường rồi khôi phục kiểu chữ ban đầu.",
+      "Đọc message nguyên cả dòng (có thể chứa dấu cách), rồi đọc n. Quét từng ký tự: với chữ cái ASCII không phải nguyên âm, tăng biến đếm; khi biến đếm là bội của n, thay chữ cái bằng chữ kế tiếp trên chu trình phụ âm, giữ nguyên kiểu chữ. Giữ nguyên mọi ký tự khác và in cả dòng."
     ]
   },
   "explanationEn": "## Approach\n\nScan the string while maintaining the number of consonants seen; whenever the count is a multiple of n, advance one position in the cycle formed by the 21 English consonants.\n\n## Proof of correctness\n\nScanning character by character guarantees that characters that are not targets stay unchanged; the count only increases on English letters that are not vowels, so the k-th consonant is identified exactly when the count reaches k. The successor operation on the cyclic consonant list directly implements the \"next consonant\" rule of the statement, including the z-to-b wraparound, and the case is restored after mapping in lowercase.\n\n## Complexity\n\nO(|message|) time and O(|message|) extra space."

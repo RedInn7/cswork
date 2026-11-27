@@ -13,6 +13,21 @@
       "Each product offers a price chain: its initial stock, stock − 1, ..., 1. Maximum revenue means always selling at the highest price currently available, and the prices chosen this way are automatically prefixes of the chains.",
       "Sort the stock in descending order; the highest several stocks then drop together. Starting from the top, the first width products fall from the current height to the next product's height, and each level sells width items at the same price. m can reach 10^9, so never simulate item by item.",
       "Print −1 if the total stock is < m. Otherwise append a 0 after sorting; for i = 0..n−1 let width = i+1, at most (a[i] − a[i+1])·width items can be sold on this layer, and take = min(m, that amount); full levels = take / width and rest = take % width; add width times the arithmetic sum of levels prices counting down from a[i], plus rest·(a[i] − levels); subtract take from m and stop at 0. Multiply width·levels first to stay within 64 bits."
+    ],
+    "ja": [
+      "各商品には価格の列があります。初期在庫、在庫 − 1、...、1 です。売上を最大にするとは、常にその時点で得られる最も高い価格で売ることで、こうして選ばれた価格は自動的に各列の先頭からの部分になります。",
+      "在庫を降順にソートすると、最も多い数個の在庫がまとめて下がっていきます。上から順に、最初の width 個の商品が現在の高さから次の商品の高さまで下がり、各水準で width 個が同じ価格で売れます。m は 10^9 に達するので、1個ずつシミュレーションしてはいけません。",
+      "在庫の合計が m 未満なら −1 を出力します。そうでなければ、ソート後に 0 を付け足し、i = 0..n−1 について width = i+1 とします。この層で売れるのは高々 (a[i] − a[i+1])·width 個で、take = min(m, その数) とします。完全な水準の数 levels = take / width、rest = take % width とし、a[i] から数えて下がる levels 個の価格の等差数列の和の width 倍と、rest·(a[i] − levels) を加えます。m から take を引き、0 になったら止めます。64 ビットに収めるため、まず width·levels を掛けます。"
+    ],
+    "ko": [
+      "각 상품은 가격 사슬(처음 재고, 재고 − 1, ..., 1)을 제공합니다. 수익을 최대화하려면 항상 현재 가능한 가장 높은 가격으로 팔면 되고, 이렇게 고른 가격은 자동으로 사슬의 접두사가 됩니다.",
+      "재고를 내림차순으로 정렬하면 가장 높은 몇 개의 재고가 함께 내려갑니다. 위에서부터 처음 width개의 상품이 현재 높이에서 다음 상품의 높이까지 내려가며, 각 층은 같은 가격으로 width개를 팝니다. m은 10^9까지 가능하므로 하나씩 시뮬레이션해서는 안 됩니다.",
+      "총 재고가 m보다 작으면 −1을 출력합니다. 아니면 정렬 후 0을 하나 덧붙이고, i = 0..n−1에 대해 width = i+1로 둡니다. 이 층에서는 최대 (a[i] − a[i+1])·width개를 팔 수 있고 take = min(m, 그 수)입니다. 완전한 층 수 = take / width, rest = take % width로 두고, a[i]부터 내려가는 levels개의 가격의 등차수열 합에 width를 곱한 값과 rest·(a[i] − levels)를 더합니다. m에서 take를 빼고 0이 되면 멈춥니다. 64비트를 넘지 않도록 width·levels를 먼저 곱하세요."
+    ],
+    "vi": [
+      "Mỗi sản phẩm có một chuỗi giá: tồn kho ban đầu, tồn kho − 1, ..., 1. Doanh thu tối đa nghĩa là luôn bán ở mức giá cao nhất hiện có, và các giá chọn theo cách đó tự động là các tiền tố của các chuỗi.",
+      "Sắp xếp tồn kho giảm dần; khi đó vài tồn kho cao nhất giảm cùng nhau. Bắt đầu từ trên cùng, width sản phẩm đầu tiên hạ từ độ cao hiện tại xuống độ cao của sản phẩm kế tiếp, và mỗi mức bán width món cùng một giá. m có thể tới 10^9, nên đừng bao giờ mô phỏng từng món.",
+      "In −1 nếu tổng tồn kho < m. Ngược lại thêm một số 0 vào cuối sau khi sắp xếp; với i = 0..n−1 đặt width = i+1, tối đa (a[i] − a[i+1])·width món có thể bán ở lớp này, và lấy take = min(m, lượng đó); số mức đầy = take / width và rest = take % width; cộng width nhân tổng cấp số cộng của levels giá đếm ngược từ a[i], cộng rest·(a[i] − levels); trừ take khỏi m và dừng khi về 0. Nhân width·levels trước để nằm trong 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nSort the stock in descending order and lower the several highest stocks together to the next level; when there are not enough customers to sell off a full level, use division to compute the number of full levels lowered and the leftover sales, and accumulate with arithmetic-series sums.\n\n## Proof of correctness\n\nEach product provides a price chain decreasing from its initial stock down to 1. If a sales plan chooses a smaller available price without choosing a larger available one, switching to the latter does not reduce revenue, and the chosen prices remain prefixes of the price chains, so the plan stays feasible. Therefore taking the highest prices one after another is optimal. The layered algorithm sells equal highest prices in batches, which is equivalent to this greedy; the arithmetic-series sum only speeds up the computation and does not change the chosen prices.\n\n## Complexity\n\nO(n log n) time and O(n) space, without looping over m one item at a time."

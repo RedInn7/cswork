@@ -13,6 +13,21 @@
       "Repeat groups can nest: the content inside the parentheses must be fully decoded before it is repeated k times and appended to the outer level; k can be 0 and may have several digits.",
       "Use a stack holding the string being built at each level: on '(' push a new level, on ')' pop that level, read the count from the following {k}, and append the popped level k times to the end of the outer level.",
       "Start the stack with one empty string; scan character by character: append letters to the top; push an empty string on '('; on ')' pop the top t, skip \"){\", read the run of digits as k, skip '}', and append t k times to the new top; decode each encoded line independently and print one result per line."
+    ],
+    "ja": [
+      "繰り返しグループはネストします。括弧の中身を完全にデコードしてから k 回繰り返し、外側の階層に追加します。k は 0 の場合があり、複数桁になることもあります。",
+      "各階層で構築中の文字列を保持するスタックを使います。'(' で新しい階層を push し、')' でその階層を pop して、後ろに続く {k} から回数を読み取り、pop した文字列を外側の階層の末尾に k 回追加します。",
+      "スタックを空文字列 1 つで初期化し、1 文字ずつ走査します。文字は先頭に追加し、'(' では空文字列を push します。')' では先頭 t を pop し、\"){\" を読み飛ばして連続する数字を k として読み、'}' を読み飛ばして、新しい先頭に t を k 回追加します。各行は独立にデコードし、結果を 1 行ずつ出力します。"
+    ],
+    "ko": [
+      "반복 그룹은 중첩될 수 있습니다. 괄호 안의 내용을 먼저 완전히 디코딩한 뒤 k번 반복해서 바깥 수준에 붙여야 하며, k는 0일 수 있고 여러 자리일 수 있습니다.",
+      "각 수준에서 만들고 있는 문자열을 담는 스택을 사용합니다. '('를 만나면 새 수준을 push하고, ')'를 만나면 그 수준을 pop한 뒤 뒤따르는 {k}에서 횟수를 읽어 pop한 문자열을 바깥 수준 끝에 k번 이어 붙입니다.",
+      "스택을 빈 문자열 하나로 시작해 문자를 하나씩 스캔합니다. 문자는 top에 붙이고, '('에서는 빈 문자열을 push하며, ')'에서는 top t를 pop하고 \"){\"를 건너뛴 뒤 연속된 숫자를 k로 읽고 '}'를 건너뛰어 새 top에 t를 k번 붙입니다. 인코딩된 각 줄은 독립적으로 디코딩하고 결과를 한 줄에 하나씩 출력합니다."
+    ],
+    "vi": [
+      "Các nhóm lặp có thể lồng nhau: nội dung trong ngoặc phải được giải mã hoàn chỉnh trước rồi mới lặp k lần và nối vào cấp ngoài; k có thể bằng 0 và có thể gồm nhiều chữ số.",
+      "Dùng một stack chứa xâu đang xây dựng ở mỗi cấp: khi gặp '(' thì đẩy thêm một cấp mới, khi gặp ')' thì lấy cấp đó ra, đọc số lần lặp từ phần {k} theo sau, rồi nối cấp vừa lấy ra k lần vào cuối cấp ngoài.",
+      "Khởi tạo stack với một xâu rỗng; duyệt từng ký tự: chữ cái thì nối vào phần tử đỉnh; '(' thì đẩy một xâu rỗng; với ')' thì lấy đỉnh t ra, bỏ qua \"){\", đọc dãy chữ số làm k, bỏ qua '}', rồi nối t lặp k lần vào đỉnh mới; giải mã từng dòng mã hóa độc lập và in mỗi kết quả trên một dòng."
     ]
   },
   "explanationEn": "## Approach\n\nUse an explicit stack to accumulate the content of each level; when a parenthesis closes, append the substring to its parent level the given number of times.\n\n## Proof of correctness\n\nEach group repeats its substring and concatenates it, from the inside out, exactly as defined; reducing with the stack matches the recursive evaluation of the nested grammar.\n\n## Complexity\n\nO(output length) time and space."

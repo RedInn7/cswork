@@ -13,6 +13,21 @@
       "An element has both a strictly smaller and a strictly greater element exactly when it is strictly above the global minimum and strictly below the global maximum. If the same middle value appears at several positions, each position counts.",
       "Scan once to find the minimum lo and the maximum hi, then scan again and count the positions whose value satisfies lo < value < hi.",
       "Read the array and compute lo = minimum and hi = maximum. For every position, add 1 to the count if its value is strictly greater than lo and strictly less than hi. Print the count; it can be 0, for example when all values are equal."
+    ],
+    "ja": [
+      "要素が、厳密により小さい要素と厳密により大きい要素の両方を持つのは、全体の最小値より真に大きく、全体の最大値より真に小さいときです。同じ中間の値が複数の位置に現れるなら、各位置を数えます。",
+      "1 回走査して最小値 lo と最大値 hi を求め、もう 1 回走査して、値が lo < value < hi を満たす位置を数えます。",
+      "配列を読み込み、lo = 最小値、hi = 最大値を求めます。各位置について、値が lo より真に大きく hi より真に小さければ、個数に 1 を加えます。個数を出力します。すべての値が等しいときなどは 0 になることもあります。"
+    ],
+    "ko": [
+      "어떤 원소에 엄격히 작은 원소와 엄격히 큰 원소가 모두 있는 것은, 그 값이 전체 최솟값보다 엄격히 크고 전체 최댓값보다 엄격히 작을 때와 정확히 같습니다. 같은 중간 값이 여러 위치에 있으면 각 위치를 모두 셉니다.",
+      "한 번 스캔해서 최솟값 lo와 최댓값 hi를 구한 뒤, 다시 스캔해 값이 lo < value < hi를 만족하는 위치의 수를 셉니다.",
+      "배열을 읽고 lo = 최솟값, hi = 최댓값을 계산합니다. 각 위치에 대해 값이 lo보다 엄격히 크고 hi보다 엄격히 작으면 개수에 1을 더합니다. 개수를 출력하며, 모든 값이 같은 경우처럼 0일 수도 있습니다."
+    ],
+    "vi": [
+      "Một phần tử có cả phần tử nhỏ hơn hẳn và phần tử lớn hơn hẳn khi và chỉ khi nó lớn hơn hẳn giá trị nhỏ nhất toàn cục và nhỏ hơn hẳn giá trị lớn nhất toàn cục. Nếu cùng một giá trị ở giữa xuất hiện ở nhiều vị trí, mỗi vị trí đều được tính.",
+      "Quét một lần để tìm giá trị nhỏ nhất lo và giá trị lớn nhất hi, rồi quét lần nữa và đếm các vị trí có giá trị thỏa lo < value < hi.",
+      "Đọc mảng và tính lo = giá trị nhỏ nhất và hi = giá trị lớn nhất. Với mỗi vị trí, cộng 1 vào số đếm nếu giá trị của nó lớn hơn hẳn lo và nhỏ hơn hẳn hi. In số đếm; nó có thể bằng 0, ví dụ khi mọi giá trị bằng nhau."
     ]
   },
   "explanationEn": "## Approach\n\nLet lo=min(nums) and hi=max(nums). A position in the array satisfies the requirement if and only if its value lies strictly between lo and hi; the count is taken position by position, so equal middle values are not deduplicated.\n\n## Proof of correctness\n\nIf lo < x < hi, the array has an element equal to lo and an element equal to hi, which are strictly smaller and strictly greater than x respectively, so x satisfies the requirement. Conversely, if x satisfies the requirement, there are a smaller element and a greater element, so x must be strictly greater than the global minimum and strictly less than the global maximum. Hence the qualifying positions are exactly those with lo < nums[i] < hi, and the algorithm's position-by-position count is correct.\n\n## Complexity\n\nTwo linear scans: O(n) time and O(1) extra space.\n\n## Source and site conventions\n\nThe input protocol and bounds of this site are given in the statement. Fixed OAMaster snapshot: https://oamaster.com/docs/companies/uber#26-count-elements-with-at-least-one-smaller-and-one-greater-value; the original reason it was blocked: the body had no definable condition and only gave the result 1 for [1,2,3], so it was impossible to know what was being counted."

@@ -13,6 +13,21 @@
       "Think of each truck as a sequence of slots used in order: C, floor(C/2), floor(C/4), ...; one truck can only use them in that order, and a later slot is never larger than an earlier one.",
       "The heaviest package is the hardest to place, so it should get the largest available slot; if even the largest slot cannot hold the heaviest remaining package, no arrangement can succeed. A max-heap of current capacities yields the slots in globally descending order.",
       "Put all capacities into a max-heap and sort the packages by weight in descending order; for each package take the top capacity; if it is smaller than the weight print 0 and stop, otherwise halve it (rounding down) and push it back; after delivering everything print 1."
+    ],
+    "ja": [
+      "各トラックを、順番に使われるスロットの列と考えます。C、floor(C/2)、floor(C/4)、... です。1 台のトラックはこの順にしかスロットを使えず、後のスロットが前のスロットより大きくなることはありません。",
+      "最も重いパッケージが最も配置しにくいので、最大の利用可能なスロットを割り当てるべきです。最大のスロットでも残りの最も重いパッケージを載せられないなら、どう並べても成功しません。現在の容量の最大ヒープを使えば、スロットを全体で降順に取り出せます。",
+      "すべての容量を最大ヒープに入れ、パッケージを重さの降順にソートします。各パッケージについてヒープの先頭の容量を取り出し、重さより小さければ 0 を出力して終了します。そうでなければ容量を半分（切り捨て）にしてヒープに戻します。すべて配送できたら 1 を出力します。"
+    ],
+    "ko": [
+      "각 트럭을 차례로 쓰이는 슬롯의 열이라고 생각합니다. 용량이 C이면 C, floor(C/2), floor(C/4), ... 순으로만 사용할 수 있고, 뒤쪽 슬롯은 앞쪽 슬롯보다 절대 크지 않습니다.",
+      "가장 무거운 패키지가 배치하기 가장 어려우므로 가장 큰 슬롯을 받아야 합니다. 사용 가능한 가장 큰 슬롯으로도 남은 가장 무거운 패키지를 담을 수 없다면 어떤 배치도 성공할 수 없습니다. 현재 용량의 최대 힙을 쓰면 슬롯을 전체에서 내림차순으로 얻을 수 있습니다.",
+      "모든 용량을 최대 힙에 넣고 패키지를 무게의 내림차순으로 정렬합니다. 각 패키지마다 최상위 용량을 꺼내 무게보다 작으면 0을 출력하고 종료하며, 아니면 (내림하여) 절반으로 줄여 다시 넣습니다. 모두 배송하면 1을 출력합니다."
+    ],
+    "vi": [
+      "Hãy xem mỗi xe tải như một dãy các suất được dùng lần lượt: C, floor(C/2), floor(C/4), ...; một xe chỉ có thể dùng chúng theo đúng thứ tự đó, và suất sau không bao giờ lớn hơn suất trước.",
+      "Gói nặng nhất là gói khó xếp nhất, nên nó phải nhận suất lớn nhất còn lại; nếu ngay cả suất lớn nhất cũng không chứa nổi gói nặng nhất còn lại thì không cách sắp xếp nào thành công. Một max-heap các sức chở hiện tại cho ra các suất theo thứ tự giảm dần trên toàn cục.",
+      "Đưa tất cả sức chở vào max-heap và sắp xếp các gói theo khối lượng giảm dần; với mỗi gói, lấy sức chở ở đỉnh; nếu nó nhỏ hơn khối lượng thì in 0 và dừng, ngược lại chia đôi (làm tròn xuống) rồi đẩy lại vào heap; sau khi giao hết thì in 1."
     ]
   },
   "explanationEn": "## Approach\n\nSort the packages by weight in descending order. Each time, take the truck with the current largest capacity; if it is enough, deliver the package and put the halved capacity back into the heap; otherwise fail.\n\n## Proof of correctness\n\nEach truck provides decreasing slots C, floor(C/2), ..., which can only be used as a prefix in this order. The max-heap enumerates, step by step, the largest available value among all slots, because a later slot is never larger than its predecessor, giving the slots in globally descending order. If the largest remaining slot is smaller than the largest remaining package, there is no solution; otherwise matching in descending order is optimal for feasibility.\n\n## Complexity\n\nO(n + m log n + m log m) time and O(n + m) space."

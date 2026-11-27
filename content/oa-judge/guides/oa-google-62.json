@@ -13,6 +13,21 @@
       "As the cut moves right, exactly one character moves from the right part to the left part, so each side's distinct count can only change because of that character.",
       "Start with the letter counts of the whole string as the right side. Move characters to the left one by one: mark the letter as seen on the left, decrement its right count, and when that count reaches 0 the right side loses one distinct letter.",
       "There are n−1 cuts with both parts non-empty. After moving each character except the last, compare the two distinct counts and count the cut when they are equal. This is O(n) with a 26-letter alphabet."
+    ],
+    "ja": [
+      "切れ目が右へ動くとき、右の部分から左の部分へ移る文字はちょうど 1 つなので、各側の異なる文字の種類数は、その文字によってのみ変化します。",
+      "文字列全体の文字の個数を右側として始めます。文字を 1 つずつ左へ移します。その文字を左側で出現済みにし、右側のその個数を減らし、個数が 0 になったら、右側の異なる文字が 1 つ減ります。",
+      "両側が空でない切れ目は n−1 個あります。最後の文字を除く各文字を移した後で、2 つの異なる文字の種類数を比べ、等しければその切れ目を数えます。アルファベットが 26 文字なので O(n) です。"
+    ],
+    "ko": [
+      "분할 지점이 오른쪽으로 이동할 때 오른쪽 부분에서 왼쪽 부분으로 정확히 한 문자만 옮겨 가므로, 양쪽의 서로 다른 문자 수는 그 문자 때문에만 바뀔 수 있습니다.",
+      "전체 문자열의 문자 개수를 오른쪽 부분으로 두고 시작합니다. 문자를 하나씩 왼쪽으로 옮깁니다. 그 문자를 왼쪽에서 본 것으로 표시하고 오른쪽 개수를 1 줄이며, 그 개수가 0이 되면 오른쪽의 서로 다른 문자가 하나 줄어듭니다.",
+      "양쪽이 모두 비어 있지 않은 분할 지점은 n−1개입니다. 마지막 문자를 제외한 각 문자를 옮긴 뒤 두 서로 다른 문자 수를 비교하여 같으면 그 분할을 셉니다. 알파벳이 26자이므로 O(n)입니다."
+    ],
+    "vi": [
+      "Khi điểm cắt dịch sang phải, đúng một ký tự chuyển từ phần bên phải sang phần bên trái, nên số ký tự phân biệt của mỗi phía chỉ có thể thay đổi do ký tự đó.",
+      "Bắt đầu với số đếm các chữ cái của cả xâu làm phía bên phải. Chuyển từng ký tự sang trái: đánh dấu chữ cái đã thấy ở bên trái, giảm số đếm bên phải của nó, và khi số đếm đó về 0 thì phía bên phải mất đi một chữ cái phân biệt.",
+      "Có n−1 điểm cắt mà cả hai phần đều khác rỗng. Sau khi chuyển mỗi ký tự trừ ký tự cuối, so sánh hai số đếm phân biệt và đếm điểm cắt đó khi chúng bằng nhau. Độ phức tạp O(n) với bảng chữ cái 26 chữ."
     ]
   },
   "explanationEn": "## Idea\n\nStart with the right-side frequencies of the whole string and move characters into the left side one by one, maintaining the number of distinct characters on both sides.\n\n## Correctness\n\nEvery valid cut is checked exactly once, right after the last character on its left is moved over. A distinct count is updated whenever a frequency goes from positive to zero or from zero to positive, so the compared values are always correct.\n\n## Complexity\n\nO(n) time, O(26) space."

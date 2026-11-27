@@ -13,6 +13,21 @@
       "Only elements whose value lies in the closed interval [-100, 100] take part; the others are ignored, but they still occupy their indices.",
       "Split by the parity of the 0-based index: qualifying elements at even indices go into one sum and those at odd indices into another, and the answer is the first minus the second.",
       "Scan once: for element i, if -100 <= x <= 100, add it to even or odd according to the parity of i; finally print even - odd. The parity uses the position in the original array, not in the filtered list."
+    ],
+    "ja": [
+      "対象となるのは値が閉区間 [-100, 100] にある要素だけで、それ以外は無視しますが、その添字は引き続き占有されます。",
+      "0 始まりの添字の偶奇で分けます。条件を満たす要素のうち偶数添字のものを一方の合計に、奇数添字のものをもう一方の合計に入れ、答えは前者から後者を引いた値です。",
+      "1 回走査します。要素 i について -100 <= x <= 100 なら、i の偶奇に応じて even または odd に加え、最後に even - odd を出力します。偶奇の判定は、絞り込んだ後のリストではなく、元の配列での位置に基づきます。"
+    ],
+    "ko": [
+      "값이 닫힌 구간 [-100, 100]에 속하는 원소만 계산에 참여하고 나머지는 무시합니다. 다만 무시되는 원소도 자기 인덱스는 그대로 차지합니다.",
+      "0 기반 인덱스의 홀짝으로 나눕니다. 조건을 만족하는 원소 중 짝수 인덱스에 있는 것은 한 합에, 홀수 인덱스에 있는 것은 다른 합에 넣고, 답은 첫 번째 합에서 두 번째 합을 뺀 값입니다.",
+      "한 번 훑습니다. 원소 i에 대해 -100 <= x <= 100이면 i의 홀짝에 따라 even 또는 odd에 더하고, 마지막에 even - odd를 출력합니다. 홀짝은 걸러낸 목록이 아니라 원래 배열에서의 위치를 기준으로 합니다."
+    ],
+    "vi": [
+      "Chỉ những phần tử có giá trị thuộc đoạn đóng [-100, 100] tham gia; các phần tử khác bị bỏ qua, nhưng chúng vẫn chiếm chỉ số của mình.",
+      "Chia theo tính chẵn lẻ của chỉ số tính từ 0: các phần tử hợp lệ ở chỉ số chẵn vào một tổng và ở chỉ số lẻ vào một tổng khác, đáp án là tổng thứ nhất trừ tổng thứ hai.",
+      "Duyệt một lần: với phần tử i, nếu -100 <= x <= 100 thì cộng nó vào even hoặc odd tùy theo tính chẵn lẻ của i; cuối cùng in even - odd. Tính chẵn lẻ dùng vị trí trong mảng gốc, không phải trong danh sách đã lọc."
     ]
   },
   "explanationEn": "## Approach\n\nScan the array once; add only the values in [-100,100] to the sum matching the parity of their index, and take the difference at the end.\n\n## Proof of correctness\n\nEach element is counted if and only if its value falls in the closed interval, and it goes into the sum for the parity of its real index; at the end of the scan the two sums are exactly as defined, so outputting their difference is correct.\n\n## Complexity\n\nO(n) time and O(1) extra space."

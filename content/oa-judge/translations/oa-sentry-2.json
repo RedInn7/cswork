@@ -11,5 +11,35 @@
     "hints": [
       "First run BFS from start to get the shortest distance to every cell; then do DP in increasing order of distance, transitioning only from neighbors whose distance is 1 smaller, and record for each cell the maximum number of treasures over shortest paths that reach it."
     ]
+  },
+  "ja": {
+    "title": "Escape the Haunted Castle (Part 2)",
+    "description": "通行可能なマスと壁からなるグリッド、スタート、出口、およびいくつかの宝が与えられます。各宝は高々 1 回だけ拾えます。スタートから出口までの最小の移動回数を求め、すべての最短経路のうち、集められる宝の最大数も求めてください。出口に到達できない場合は `-1 0` を出力します。\n\nOAMaster の Sentry #2 は、関数の目的と例を 1 つ示すだけで、オンラインジャッジ用の標準入力形式や範囲を持ちません。以下の stdin/stdout プロトコルと制約は、この問題のために CSWork が追加したサイト上の定義であり、OAMaster の原文を表すものではありません。",
+    "input": "1 行目に rows cols、2 行目に壁の数 wallCount が与えられ、続く wallCount 行にそれぞれ壁の座標 row col が与えられます。次に宝の数 treasureCount が与えられ、続く treasureCount 行にそれぞれ宝の座標 row col が与えられます。最後の 2 行はそれぞれスタートと出口の座標です。座標はすべて 0 始まりです。サイト上の制約: 1 <= rows, cols <= 200。すべての座標はグリッド内にあり、スタートと出口は壁ではなく、宝の座標は互いに異なります。壁の座標の重複は同じ壁として扱います。",
+    "output": "最小の歩数と、すべての最短経路で集められる宝の最大数を、2 つの整数で出力してください。スタートのマスにある宝も結果に数えます。出口に到達できない場合は `-1 0` を出力します。",
+    "explanation": "まずスタートから BFS を行い、各マスへの最短距離を求めます。次に距離の小さい順に DP を行い、距離が 1 小さい隣接マスからのみ遷移して、各マスについて、そこに至る最短経路上の宝の最大数を記録します。",
+    "hints": [
+      "まずスタートから BFS を行い、各マスへの最短距離を求めます。次に距離の小さい順に DP を行い、距離が 1 小さい隣接マスからのみ遷移して、各マスについて、そこに至る最短経路上の宝の最大数を記録します。"
+    ]
+  },
+  "ko": {
+    "title": "Escape the Haunted Castle (Part 2)",
+    "description": "통과 가능한 칸과 벽으로 이루어진 격자와 시작점, 출구, 몇 개의 보물이 주어집니다. 각 보물은 최대 한 번만 주울 수 있습니다. 시작점에서 출구까지의 최소 이동 횟수를 구하고, 모든 최단 경로 중에서 모을 수 있는 보물의 최대 개수도 구하세요. 출구에 도달할 수 없으면 `-1 0`을 출력합니다.\n\nOAMaster의 Sentry #2는 함수의 목표와 예제 하나만 제시하며, 온라인 채점용 표준 입력 형식이나 범위는 없습니다. 아래의 stdin/stdout 프로토콜과 제약 조건은 CSWork가 이 문제를 위해 사이트에서 추가한 정의이며 OAMaster의 원문을 나타내지 않습니다.",
+    "input": "첫 번째 줄에 rows cols가 주어집니다. 두 번째 줄에 벽의 수 wallCount가 주어집니다. 다음 wallCount개의 줄에 벽 좌표 row col이 하나씩 주어집니다. 그다음 보물의 수 treasureCount가 주어지고, 다음 treasureCount개의 줄에 보물 좌표 row col이 하나씩 주어집니다. 마지막 두 줄에는 각각 시작점과 출구의 좌표가 주어집니다. 모든 좌표는 0부터 시작합니다. 사이트 제약 조건: 1 <= rows, cols <= 200; 모든 좌표는 격자 안에 있습니다. 시작점과 출구는 벽이 아닙니다. 보물 좌표는 서로 다릅니다. 중복된 벽 좌표는 같은 벽으로 취급합니다.",
+    "output": "두 정수를 출력합니다. 최소 걸음 수와, 모든 최단 경로에서 모을 수 있는 보물의 최대 개수입니다. 시작 칸의 보물도 결과에 포함됩니다. 출구에 도달할 수 없으면 `-1 0`을 출력합니다.",
+    "explanation": "먼저 시작점에서 BFS를 수행해 모든 칸까지의 최단 거리를 구합니다. 그다음 거리가 증가하는 순서로 DP를 수행하되, 거리가 1 작은 이웃에서만 전이하며, 각 칸에 대해 그 칸에 도달하는 최단 경로들의 보물 수의 최댓값을 기록합니다.",
+    "hints": [
+      "먼저 시작점에서 BFS를 수행해 모든 칸까지의 최단 거리를 구합니다. 그다음 거리가 증가하는 순서로 DP를 수행하되, 거리가 1 작은 이웃에서만 전이하며, 각 칸에 대해 그 칸에 도달하는 최단 경로들의 보물 수의 최댓값을 기록합니다."
+    ]
+  },
+  "vi": {
+    "title": "Escape the Haunted Castle (Part 2)",
+    "description": "Cho một lưới gồm các ô đi được và tường, cùng một điểm xuất phát, một lối ra và một số kho báu. Mỗi kho báu chỉ được nhặt tối đa một lần. Hãy tìm số bước đi tối thiểu từ điểm xuất phát đến lối ra; trong mọi đường đi ngắn nhất, hãy tìm thêm số kho báu tối đa có thể thu thập. Nếu không thể đến lối ra, in `-1 0`.\n\nSentry #2 của OAMaster chỉ đưa ra mục tiêu của hàm và một ví dụ, không có định dạng nhập chuẩn hay cận cho chấm bài trực tuyến. Giao thức stdin/stdout và các ràng buộc dưới đây là định nghĩa trên trang do CSWork bổ sung cho bài toán này và không đại diện cho văn bản gốc của OAMaster.",
+    "input": "Dòng đầu chứa rows cols; dòng thứ hai chứa số tường wallCount; mỗi dòng trong wallCount dòng tiếp theo chứa tọa độ một bức tường row col; sau đó là số kho báu treasureCount; mỗi dòng trong treasureCount dòng tiếp theo chứa tọa độ một kho báu row col; hai dòng cuối lần lượt cho tọa độ điểm xuất phát và lối ra. Mọi tọa độ tính từ 0. Ràng buộc trên trang: 1 <= rows, cols <= 200; mọi tọa độ nằm trong lưới; điểm xuất phát và lối ra không phải tường; tọa độ kho báu đôi một khác nhau. Các tọa độ tường trùng nhau được coi là cùng một bức tường.",
+    "output": "In ra hai số nguyên: số bước tối thiểu và số kho báu tối đa có thể thu thập trên mọi đường đi ngắn nhất. Kho báu nằm trên ô xuất phát được tính vào kết quả; nếu không đến được lối ra, in `-1 0`.",
+    "explanation": "Trước hết chạy BFS từ điểm xuất phát để có khoảng cách ngắn nhất đến mọi ô; sau đó chạy quy hoạch động theo thứ tự khoảng cách tăng dần, chỉ chuyển từ các ô kề có khoảng cách nhỏ hơn 1, và ghi lại cho mỗi ô số kho báu tối đa trên các đường đi ngắn nhất đến nó.",
+    "hints": [
+      "Trước hết chạy BFS từ điểm xuất phát để có khoảng cách ngắn nhất đến mọi ô; sau đó chạy quy hoạch động theo thứ tự khoảng cách tăng dần, chỉ chuyển từ các ô kề có khoảng cách nhỏ hơn 1, và ghi lại cho mỗi ô số kho báu tối đa trên các đường đi ngắn nhất đến nó."
+    ]
   }
 }

@@ -11,5 +11,35 @@
     "hints": [
       "Use inclusion–exclusion over prime factors: each square-free factor d>1 contributes −μ(d)(2^count[d]−1). An update only changes the counts of these factors for the old value and the new value. Precompute the smallest prime factors and the powers of 2."
     ]
+  },
+  "ja": {
+    "title": "点更新のたびに数える良い部分列の総数",
+    "description": "空でない部分列は、その要素すべての GCD が 1 より大きいとき「良い」とします。点の置き換えを 1 つずつ行い、置き換えるたびに良い部分列の個数を 10⁹+7 で割った余りで求め、最後にそれらの値をそのまま合計します。最終的な合計は mod を取りません。異なる添字の選び方は別々に数えます。\n\n標準入出力、例、解法、テストは本サイトが独自に作成しました。",
+    "input": "1 行目に N Q（1..100000）、2 行目に N 個の A の値（1..100000）が与えられます。続いて Q 行の X Y が与えられ、1≤X≤N、1≤Y≤100000 です。",
+    "output": "答えを整数 1 つで出力します。",
+    "explanation": "例 1：配列は 2, 2 になり、要素 1 つずつの 2 通りと 2 つ組が有効で、合計 3 です。\n\n例 2：2 回の置き換えの後、良い部分列はそれぞれ 4 個と 7 個で、合計 11 です。\n\n例 3：2 回の置き換えの後、2 が 4 個の状態と 2 が 3 個の状態になり、それぞれ 15 と 7 で、合計 22 です。",
+    "hints": [
+      "素因数に対する包除原理を使います。平方因子を持たない各約数 d>1 は −μ(d)(2^count[d]−1) を寄与します。更新で変わるのは、古い値と新しい値に対するこれらの約数の count だけです。最小素因数と 2 の累乗を前計算しておきます。"
+    ]
+  },
+  "ko": {
+    "title": "점 갱신 하에서 좋은 부분 수열의 총 개수",
+    "description": "공집합이 아닌 부분 수열의 모든 원소의 GCD가 1보다 크면 좋은 부분 수열이라고 합니다. 점 교체를 하나씩 순서대로 수행하며, 각 교체 후 좋은 부분 수열의 개수를 10⁹+7로 나눈 나머지를 구하고, 마지막에 이 나머지들을 그대로 더합니다. 최종 합은 나머지를 취하지 않습니다. 서로 다른 인덱스를 고른 경우는 각각 따로 셉니다.\n\n이 사이트에서 표준 입출력, 예제, 풀이, 테스트를 독자적으로 작성했습니다.",
+    "input": "첫째 줄에 N Q (1..100000)가 주어지고, 둘째 줄에 A의 N개 값 (1..100000)이 주어집니다. 이어서 Q개의 줄에 X Y가 주어지며, 1≤X≤N, 1≤Y≤100000입니다.",
+    "output": "정답을 나타내는 정수 하나를 출력합니다.",
+    "explanation": "예제 1: 배열이 2, 2가 되며, 원소 하나씩인 경우 둘과 쌍 하나가 모두 조건을 만족하므로 총 3입니다.\n\n예제 2: 두 번의 교체 후 좋은 부분 수열이 각각 4개, 7개이므로 합은 11입니다.\n\n예제 3: 두 번의 교체 후 2가 4개, 3개 남아 각각 15, 7이 되므로 합은 22입니다.",
+    "hints": [
+      "소인수에 대한 포함-배제를 사용합니다. 제곱 없는 약수 d>1마다 −μ(d)(2^count[d]−1)이 기여합니다. 갱신은 이전 값과 새 값에 대한 이 약수들의 count만 바꿉니다. 최소 소인수와 2의 거듭제곱을 미리 계산해 둡니다."
+    ]
+  },
+  "vi": {
+    "title": "Tổng số dãy con tốt sau các lần cập nhật điểm",
+    "description": "Một dãy con không rỗng được gọi là tốt nếu GCD của tất cả phần tử trong nó lớn hơn 1. Thực hiện lần lượt các phép thay thế một phần tử; sau mỗi phép, lấy số dãy con tốt theo modulo 10⁹+7, rồi cuối cùng cộng trực tiếp các giá trị đã rút gọn này lại. Tổng cuối cùng không lấy modulo. Các cách chọn chỉ số khác nhau được đếm riêng.\n\nTrang này tự viết độc lập đầu vào/đầu ra chuẩn, các ví dụ, lời giải và bộ test.",
+    "input": "Dòng đầu chứa N Q (1..100000), dòng thứ hai chứa N giá trị của A (1..100000); tiếp theo là Q dòng X Y, với 1≤X≤N và 1≤Y≤100000.",
+    "output": "In ra một số nguyên duy nhất, là đáp án.",
+    "explanation": "Ví dụ 1: mảng trở thành 2, 2; cả hai dãy con một phần tử và dãy con cả cặp đều hợp lệ, tổng cộng 3.\n\nVí dụ 2: sau hai phép thay thế lần lượt có 4 và 7 dãy con tốt, tổng là 11.\n\nVí dụ 3: sau hai phép thay thế còn lại lần lượt 4 số 2 và 3 số 2, cho 15 và 7 dãy con, tổng là 22.",
+    "hints": [
+      "Dùng bao hàm – loại trừ trên các ước nguyên tố: mỗi ước không chứa bình phương d>1 đóng góp −μ(d)(2^count[d]−1). Một lần cập nhật chỉ làm thay đổi count của các ước này đối với giá trị cũ và giá trị mới. Hãy tính trước ước nguyên tố nhỏ nhất và các lũy thừa của 2."
+    ]
   }
 }

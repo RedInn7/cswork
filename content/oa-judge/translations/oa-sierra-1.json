@@ -11,5 +11,35 @@
     "hints": [
       "Maintain the current header stack and the current chunk; when the limit would be exceeded, output the old chunk and use the header stack as the prefix of the new chunk. Each line is scanned only once, so apart from copying the output the time is O(text length)."
     ]
+  },
+  "ja": {
+    "title": "Markdown Header Chunks",
+    "description": "Markdown を行単位で分割します。あるヘッダーレベルの途中で新しいチャンクが始まる場合は、まず現在有効なヘッダーのパスを再掲します。表示では、行を ` | ` で連結します。\n\n本サイトの標準入出力形式と補足の範囲は、この問題のとおりです。",
+    "input": "1 行目に maxChunkSize (1≤値≤10^5)、続いて生の Markdown テキストが与えられます。行は分割できず、入力の総長は 10^5 以下です。長すぎる内容行は単独でチャンクを成しますが、有効なヘッダーは付きます。",
+    "output": "チャンクごとに 1 行を出力し、内部の行を ` | ` で連結してください。空の文書では出力は空です。",
+    "explanation": "現在のヘッダースタックと現在のチャンクを管理します。上限を超えそうになったら、古いチャンクを出力し、ヘッダースタックを新しいチャンクの接頭辞にします。各行は 1 回だけ走査されるので、出力のコピーを除けば、時間は O(テキスト長) です。",
+    "hints": [
+      "現在のヘッダースタックと現在のチャンクを管理します。上限を超えそうになったら、古いチャンクを出力し、ヘッダースタックを新しいチャンクの接頭辞にします。各行は 1 回だけ走査されるので、出力のコピーを除けば、時間は O(テキスト長) です。"
+    ]
+  },
+  "ko": {
+    "title": "Markdown Header Chunks",
+    "description": "Markdown을 줄 단위로 나눕니다. 어떤 헤더 레벨의 중간에서 새 청크가 시작되면 먼저 현재 활성 헤더 경로를 다시 출력합니다. 표시할 때 줄들은 ` | `로 이어 붙입니다.\n\n이 사이트의 표준 입출력 형식과 보충 제약 조건은 이 문제에 명시된 대로입니다.",
+    "input": "첫 번째 줄에 maxChunkSize (1≤값≤10^5)가 주어지고, 이어서 원본 Markdown 텍스트가 주어집니다. 줄은 나눌 수 없으며 전체 입력 길이는 ≤10^5입니다. 지나치게 긴 내용 줄은 단독으로 하나의 청크를 이루지만, 활성 헤더는 그대로 가집니다.",
+    "output": "청크마다 한 줄씩 출력하며, 청크 내부의 줄들은 ` | `로 이어 붙입니다. 빈 문서는 빈 출력을 냅니다.",
+    "explanation": "현재 헤더 스택과 현재 청크를 유지합니다. 제한을 넘을 것 같으면 이전 청크를 출력하고 헤더 스택을 새 청크의 접두로 사용합니다. 각 줄은 한 번만 스캔되므로 출력 복사를 제외하면 시간은 O(텍스트 길이)입니다.",
+    "hints": [
+      "현재 헤더 스택과 현재 청크를 유지합니다. 제한을 넘을 것 같으면 이전 청크를 출력하고 헤더 스택을 새 청크의 접두로 사용합니다. 각 줄은 한 번만 스캔되므로 출력 복사를 제외하면 시간은 O(텍스트 길이)입니다."
+    ]
+  },
+  "vi": {
+    "title": "Markdown Header Chunks",
+    "description": "Chia Markdown theo từng dòng nguyên vẹn; nếu một đoạn mới bắt đầu giữa chừng một cấp tiêu đề nào đó, trước tiên hãy phát lại đường dẫn tiêu đề đang hoạt động. Để hiển thị, các dòng được nối bằng ` | `.\n\nĐịnh dạng nhập/xuất chuẩn và các giới hạn bổ sung của trang này như nêu trong đề bài.",
+    "input": "Dòng đầu chứa maxChunkSize (1≤giá trị≤10^5), tiếp theo là văn bản Markdown thô; không được chia nhỏ một dòng, và tổng độ dài đầu vào ≤10^5. Một dòng nội dung quá dài tự tạo thành một đoạn riêng, nhưng vẫn mang theo các tiêu đề đang hoạt động.",
+    "output": "In ra một dòng cho mỗi đoạn, với các dòng bên trong được nối bằng ` | `; tài liệu rỗng cho đầu ra rỗng.",
+    "explanation": "Duy trì ngăn xếp tiêu đề hiện tại và đoạn hiện tại; khi sắp vượt giới hạn, xuất đoạn cũ và dùng ngăn xếp tiêu đề làm tiền tố cho đoạn mới. Mỗi dòng chỉ được quét một lần, nên ngoài việc sao chép đầu ra, thời gian là O(độ dài văn bản).",
+    "hints": [
+      "Duy trì ngăn xếp tiêu đề hiện tại và đoạn hiện tại; khi sắp vượt giới hạn, xuất đoạn cũ và dùng ngăn xếp tiêu đề làm tiền tố cho đoạn mới. Mỗi dòng chỉ được quét một lần, nên ngoài việc sao chép đầu ra, thời gian là O(độ dài văn bản)."
+    ]
   }
 }

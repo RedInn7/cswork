@@ -13,6 +13,21 @@
       "Fix the number of running robots r (so w=n−r wait). Only robots with threshold ≤r may run and only those with threshold >w may wait, so each robot is either forced into one state or free.",
       "Use a prefix count F(t) of thresholds. If r≤w, middle thresholds fit neither state, so r contributes 1 only when F(r)=F(w)=r. If r>w, thresholds ≤w must run and thresholds >r must wait; the other M=F(r)−F(w) robots are free and exactly K=r−F(w) of them must run, contributing C(M,K).",
       "As r grows from n/2+1 to n, M and K never decrease, so update with C(M,K)=C(M−1,K)·M/(M−K) and C(M,K)=C(M,K−1)·(M−K+1)/K. K may start negative or above M, where the value is 0, and it resets to 1 when K reaches 0 or M. The result is an exact big integer with no modulus; in C++ you need your own big number with small multiplication, exact small division and addition."
+    ],
+    "ja": [
+      "実行中のロボット数 r を固定します(待機は w=n−r)。しきい値が r 以下のロボットだけが実行でき、しきい値が w より大きいロボットだけが待機できるので、各ロボットはどちらか一方の状態に強制されるか、自由かのいずれかです。",
+      "しきい値の累積個数 F(t) を使います。r≤w のとき、中間のしきい値はどちらの状態にも合わないので、F(r)=F(w)=r のときだけ r は 1 を寄与します。r>w のとき、しきい値が w 以下のものは実行、r より大きいものは待機でなければなりません。残りの M=F(r)−F(w) 個は自由で、そのうちちょうど K=r−F(w) 個が実行でなければならず、C(M,K) を寄与します。",
+      "r が n/2+1 から n まで増えるとき、M と K は減らないので、C(M,K)=C(M−1,K)·M/(M−K) と C(M,K)=C(M,K−1)·(M−K+1)/K で更新します。K は負または M を超える値から始まることがあり、その場合の値は 0 です。K が 0 や M に達したら 1 にリセットします。結果は剰余を取らない正確な多倍長整数です。C++ では、小さな数との掛け算、小さな数による正確な割り算、加算ができる自前の多倍長整数が必要です。"
+    ],
+    "ko": [
+      "실행 중인 로봇 수 r을 고정합니다(대기는 w=n−r). 임계값이 ≤r인 로봇만 실행할 수 있고 임계값이 >w인 로봇만 대기할 수 있으므로, 각 로봇은 한 상태로 강제되거나 자유롭습니다.",
+      "임계값의 접두사 개수 F(t)를 사용합니다. r≤w이면 중간 임계값은 어느 상태에도 맞지 않으므로, F(r)=F(w)=r일 때만 r이 1을 기여합니다. r>w이면 임계값 ≤w인 로봇은 실행해야 하고 임계값 >r인 로봇은 대기해야 하며, 나머지 M=F(r)−F(w)개의 로봇은 자유롭고 그중 정확히 K=r−F(w)개가 실행해야 하므로 C(M,K)를 기여합니다.",
+      "r이 n/2+1에서 n까지 커지는 동안 M과 K는 감소하지 않으므로 C(M,K)=C(M−1,K)·M/(M−K)와 C(M,K)=C(M,K−1)·(M−K+1)/K로 갱신합니다. K는 음수이거나 M보다 큰 값에서 시작할 수 있으며 그 경우 값은 0이고, K가 0 또는 M에 도달하면 1로 재설정됩니다. 결과는 나머지 연산이 없는 정확한 큰 정수이며, C++에서는 작은 수 곱셈, 정확한 작은 수 나눗셈, 덧셈을 지원하는 자체 큰 수 구현이 필요합니다."
+    ],
+    "vi": [
+      "Cố định số robot đang chạy r (nên w=n−r robot chờ). Chỉ các robot có ngưỡng ≤r mới được chạy và chỉ các robot có ngưỡng >w mới được chờ, nên mỗi robot hoặc bị buộc vào một trạng thái hoặc tự do.",
+      "Dùng đếm tiền tố F(t) của các ngưỡng. Nếu r≤w, các ngưỡng ở giữa không hợp với trạng thái nào, nên r đóng góp 1 chỉ khi F(r)=F(w)=r. Nếu r>w, các ngưỡng ≤w phải chạy và các ngưỡng >r phải chờ; M=F(r)−F(w) robot còn lại là tự do và đúng K=r−F(w) trong số đó phải chạy, đóng góp C(M,K).",
+      "Khi r tăng từ n/2+1 đến n, M và K không bao giờ giảm, nên cập nhật bằng C(M,K)=C(M−1,K)·M/(M−K) và C(M,K)=C(M,K−1)·(M−K+1)/K. K có thể bắt đầu âm hoặc lớn hơn M, khi đó giá trị là 0, và nó được đặt lại thành 1 khi K chạm 0 hoặc M. Kết quả là một số nguyên lớn chính xác, không có modulus; trong C++ bạn cần tự cài số lớn với phép nhân số nhỏ, phép chia chính xác cho số nhỏ và phép cộng."
     ]
   },
   "explanationEn": "## Approach\n\nA frequency prefix F(t) counts the thresholds ≤t. Fix r. When r≤n−r, check the forbidden middle range and the forced counts; otherwise let M=F(r)−F(n−r) and K=r−F(n−r), which contributes C(M,K). As r increases, neither M nor K decreases, so the binomial coefficient is updated in batches with the neighboring-ratio recurrences instead of recomputing comb for every r.\n\n## Proof of correctness\n\nLet w=n−r. When r≤w, robots with threshold ≤r can only run, robots with threshold >w can only wait, and middle thresholds are invalid in both states, so only F(r)=F(w)=r contributes 1. When r>w, thresholds ≤w are forced to run and thresholds >r are forced to wait; the remaining M robots are free, and choosing exactly K of them to run gives C(M,K) ways. Configurations with different r are mutually exclusive. Update the binomial coefficient along the monotone M and K: adding a row uses C(M+1,K)=C(M,K)(M+1)/(M+1−K), adding a column in the same row uses C(M,K+1)=C(M,K)(M−K)/(K+1), and an out-of-range value 0 is restored to 1 at the boundaries K=0 or K=M. Induction with these identities gives the exact count.\n\n## Complexity\n\nO(n) big-integer multiplications and divisions plus O(n) frequency operations; this is not O(n) bit complexity. The integers have at most O(n) digits, and the frequencies take O(n) space."

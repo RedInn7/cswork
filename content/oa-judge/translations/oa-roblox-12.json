@@ -11,5 +11,35 @@
     "hints": [
       "First separate each rule of the original problem from the input conventions added by this site, then choose a suitable data structure."
     ]
+  },
+  "ja": {
+    "title": "Rate Limit by Multiple Request Fields",
+    "description": "各リクエストには複数のフィールドの次元があり、各次元にはそれぞれ fieldName、window、limit が設定されています。どの次元も上限を超えていない場合に限り、リクエストは ALLOW です。本サイトは明示的にスライディングウィンドウ [timestamp-window,timestamp) を使い、各次元の履歴には ALLOW されたリクエストだけを数えます。したがって REJECT されたリクエストはクォータを消費しません。\n\n「本サイトで追加」と記した部分と標準入出力の形式は、本サイトが明示的に整理したものです。元の問題に他の明示されていないルールがあることを意味するものではありません。",
+    "input": "1 行目に d q が与えられ、続く d 行は fieldName window limit、その後に q 行の timestamp value1 ... valued が続きます。本サイトで追加：1≤d≤10、1≤q≤200000、window と limit は正の整数、value は空白を含まず、timestamp は非減少です。",
+    "output": "各リクエストについて ALLOW または REJECT を、空白区切りで出力してください。",
+    "explanation": "考え方、正当性の証明、計算量については付属の解説を参照してください。",
+    "hints": [
+      "まず、元の問題の各ルールと、本サイトが追加した入力の取り決めを切り分けたうえで、適切なデータ構造を選んでください。"
+    ]
+  },
+  "ko": {
+    "title": "Rate Limit by Multiple Request Fields",
+    "description": "각 요청에는 여러 필드 차원이 있고, 각 차원마다 고유한 fieldName, window, limit이 설정되어 있습니다. 어떤 차원도 limit을 넘지 않을 때만 요청이 ALLOW입니다. 이 사이트는 명시적으로 슬라이딩 윈도우 [timestamp-window,timestamp)를 사용하며, 각 차원의 기록에는 ALLOW된 요청만 포함되므로 REJECT된 요청은 할당량을 소비하지 않습니다.\n\n'added by this site'로 표시된 부분과 표준 입출력 규약은 이 사이트에서 명시적으로 정리한 것이며, 원문 문제에 다른 명시되지 않은 규칙이 있다는 뜻은 아닙니다.",
+    "input": "첫 줄에 d q가 주어지고, 이어서 d개의 줄에 fieldName window limit이, 그다음 q개의 줄에 timestamp value1 ... valued가 주어집니다. 이 사이트가 추가한 조건: 1≤d≤10, 1≤q≤200000, window와 limit은 양의 정수이고, 값에는 공백이 없으며, 타임스탬프는 감소하지 않습니다.",
+    "output": "각 요청에 대해 ALLOW 또는 REJECT를 공백으로 구분하여 출력합니다.",
+    "explanation": "접근 방법, 정당성 증명, 복잡도는 함께 제공되는 해설을 참고하세요.",
+    "hints": [
+      "먼저 원문 문제의 각 규칙과 이 사이트가 추가한 입력 규약을 구분한 뒤, 알맞은 자료구조를 선택하세요."
+    ]
+  },
+  "vi": {
+    "title": "Rate Limit by Multiple Request Fields",
+    "description": "Mỗi yêu cầu có nhiều chiều trường, và mỗi chiều được cấu hình với fieldName, window và limit riêng. Một yêu cầu chỉ được ALLOW nếu không chiều nào vượt giới hạn của nó; trang này tường minh dùng cửa sổ trượt [timestamp-window,timestamp), và chỉ các yêu cầu ALLOW được tính vào lịch sử của mỗi chiều, nên các yêu cầu bị REJECT không tiêu tốn hạn mức.\n\nCác phần đánh dấu 'do trang này bổ sung' và giao thức đầu vào/đầu ra chuẩn đều do trang này biên soạn tường minh; điều đó không có nghĩa đề gốc còn quy tắc nào khác chưa nêu.",
+    "input": "Dòng đầu chứa d q; sau đó là d dòng fieldName window limit; rồi q dòng timestamp value1 ... valued. Do trang này bổ sung: 1≤d≤10, 1≤q≤200000, window và limit là các số nguyên dương, các giá trị không chứa dấu cách, và timestamp không giảm.",
+    "output": "Với mỗi yêu cầu, in ALLOW hoặc REJECT, cách nhau bởi dấu cách.",
+    "explanation": "Xem phần lời giải đi kèm để biết cách tiếp cận, chứng minh tính đúng đắn và độ phức tạp.",
+    "hints": [
+      "Trước hết hãy tách từng quy tắc của đề gốc khỏi quy ước đầu vào do trang này thêm vào, rồi chọn cấu trúc dữ liệu phù hợp."
+    ]
   }
 }

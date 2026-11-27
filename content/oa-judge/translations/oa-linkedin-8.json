@@ -11,5 +11,35 @@
     "hints": [
       "Advance the DP segment by segment, enumerating the start of the last segment and extending leftward while maintaining that segment's maximum."
     ]
+  },
+  "ja": {
+    "title": "ちょうど K 個の区間で区間最大値の和を最小化",
+    "description": "配列を、順序を保ったままちょうど K 個の空でない連続する区間に分割し、各区間の最大値の和を最小化します。区間和の最大値を最小化する問題ではありません。\n\n本サイトは標準入出力と解法を独自に整備しました。元の問題で欠けていた制約の補足と、例の修正はプロトコルに明記してあります。",
+    "input": "1 行目に n K、2 行目に n 個の数が与えられます。元の制約は 1<K≤n<300 と 1<a[i]<10^5 ですが、元の例には 1 が含まれています。その例に対応するため、本サイトでは 2≤K≤n≤299、1≤a[i]≤99999 とし、元の厳密な範囲をすべて含むようにしています。",
+    "output": "整数 1 つ（答え）を出力します。",
+    "explanation": "3 つの公開例の出力は順に 6、6、11 です。独立した全探索または直接のシミュレーションで確認済みです。",
+    "hints": [
+      "DP を区間ごとに進めます。最後の区間の開始位置を列挙し、その区間の最大値を保ちながら左へ伸ばしていきます。"
+    ]
+  },
+  "ko": {
+    "title": "정확히 K개 구간으로 나누어 구간 최댓값의 합 최소화",
+    "description": "배열을 순서를 유지한 채 정확히 K개의 비어 있지 않은 연속 구간으로 나누어, 각 구간의 최댓값의 합을 최소화하세요. 구간 합의 최댓값을 최소화하는 문제가 아닙니다.\n\n이 사이트는 표준 입출력과 풀이를 독자적으로 정리했으며, 원문에 없는 범위의 보충과 예제의 정정은 프로토콜에 명시했습니다.",
+    "input": "첫째 줄에 n K, 둘째 줄에 n개의 수가 주어집니다. 원래 범위는 1<K≤n<300, 1<a[i]<10^5이지만 원래 예제에 1이 포함되어 있습니다. 이 예제를 수용하기 위해 이 사이트는 2≤K≤n≤299, 1≤a[i]≤99999로 하며, 원래의 엄격한 정의역 전체를 포함합니다.",
+    "output": "정수 하나를 출력합니다.",
+    "explanation": "공개 예제 세 개의 출력은 순서대로 6; 6; 11입니다. 독립적인 완전 탐색 또는 직접 시뮬레이션으로 검증했습니다.",
+    "hints": [
+      "구간 개수 단위로 DP를 진행하세요. 마지막 구간의 시작점을 열거하며 왼쪽으로 확장하면서 그 구간의 최댓값을 유지합니다."
+    ]
+  },
+  "vi": {
+    "title": "Tối thiểu hoá tổng các giá trị lớn nhất của đoạn với đúng K đoạn",
+    "description": "Chia mảng, giữ nguyên thứ tự, thành đúng K đoạn liên tiếp không rỗng, sao cho tổng các giá trị lớn nhất của từng đoạn là nhỏ nhất; đây không phải bài tối thiểu hoá tổng đoạn lớn nhất.\n\nSite này tự biên soạn phần nhập xuất chuẩn và lời giải; các bổ sung cho giới hạn còn thiếu của nguồn và các sửa đổi ví dụ được nêu rõ trong giao thức.",
+    "input": "Dòng đầu chứa n K, dòng thứ hai chứa n số. Các giới hạn gốc là 1<K≤n<300 và 1<a[i]<10^5, nhưng ví dụ gốc lại chứa số 1; để phù hợp với ví dụ đó, site này dùng 2≤K≤n≤299 và 1≤a[i]≤99999, giữ nguyên toàn bộ miền chặt của đề gốc.",
+    "output": "In ra một số nguyên là đáp án.",
+    "explanation": "Đầu ra của ba ví dụ công khai lần lượt là: 6; 6; 11. Đã kiểm tra bằng liệt kê độc lập hoặc mô phỏng trực tiếp.",
+    "hints": [
+      "Chạy quy hoạch động theo từng đoạn một, liệt kê điểm bắt đầu của đoạn cuối và mở rộng sang trái trong khi duy trì giá trị lớn nhất của đoạn đó."
+    ]
   }
 }

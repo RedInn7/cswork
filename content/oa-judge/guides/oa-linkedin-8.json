@@ -13,6 +13,21 @@
       "The quantity to minimize is the sum of the segment maximums, not the largest segment sum; with n below 300, a cubic algorithm is perfectly fine.",
       "Use a DP that advances one segment at a time: let dp[g][e] be the minimum cost of splitting the first e numbers into exactly g segments. The last segment is some range [s, e), so the cost is dp[g-1][s] plus that segment's maximum; the first g-1 segments of an optimal split must themselves be optimal.",
       "Loop over the segment count g = 1..K and over the end e, then move the start s leftward from e-1 (keeping s at least g-1 so every earlier segment is non-empty), updating the segment maximum as you go and relaxing dp[g][e] with dp[g-1][s] plus that maximum. Keeping only the previous layer is enough; the answer is dp[K][n]."
+    ],
+    "ja": [
+      "最小化する量は区間最大値の和であり、最大の区間和ではありません。n は 300 未満なので、3 乗のアルゴリズムで十分です。",
+      "区間を 1 つずつ増やしていく DP を使います。dp[g][e] を、先頭 e 個の数をちょうど g 個の区間に分割するときの最小コストとします。最後の区間はある範囲 [s, e) なので、コストは dp[g-1][s] にその区間の最大値を足したものです。最適な分割の最初の g-1 個の区間も、それ自体が最適でなければなりません。",
+      "区間数 g = 1..K と終端 e についてループし、開始位置 s を e-1 から左へ動かします（それ以前の区間がすべて空でないよう、s は少なくとも g-1 にします）。動かしながら区間の最大値を更新し、dp[g][e] を dp[g-1][s] とその最大値の和で緩和します。直前の層だけを保持すれば十分です。答えは dp[K][n] です。"
+    ],
+    "ko": [
+      "최소화할 값은 구간 최댓값의 합이지 가장 큰 구간 합이 아닙니다. n이 300 미만이므로 세제곱 알고리즘으로 충분합니다.",
+      "구간을 하나씩 늘려 가는 DP를 사용합니다. dp[g][e]를 앞의 e개 수를 정확히 g개 구간으로 나누는 최소 비용이라 합시다. 마지막 구간은 어떤 범위 [s, e)이므로 비용은 dp[g-1][s]에 그 구간의 최댓값을 더한 값입니다. 최적 분할의 처음 g-1개 구간도 그 자체로 최적이어야 합니다.",
+      "구간 수 g = 1..K와 끝 e에 대해 반복하고, 시작 s를 e-1에서 왼쪽으로 옮기며(앞의 구간이 모두 비지 않도록 s는 g-1 이상으로 유지) 구간 최댓값을 갱신하면서 dp[g][e]를 dp[g-1][s]에 그 최댓값을 더한 값으로 완화합니다. 이전 층만 유지하면 충분하며, 답은 dp[K][n]입니다."
+    ],
+    "vi": [
+      "Đại lượng cần tối thiểu hoá là tổng các giá trị lớn nhất của các đoạn, không phải tổng đoạn lớn nhất; với n dưới 300, thuật toán bậc ba hoàn toàn ổn.",
+      "Dùng quy hoạch động tiến từng đoạn một: gọi dp[g][e] là chi phí nhỏ nhất để chia e số đầu thành đúng g đoạn. Đoạn cuối là một khoảng [s, e) nào đó, nên chi phí là dp[g-1][s] cộng giá trị lớn nhất của đoạn đó; g-1 đoạn đầu của một cách chia tối ưu cũng phải tối ưu.",
+      "Lặp theo số đoạn g = 1..K và theo điểm cuối e, rồi dịch điểm đầu s sang trái từ e-1 (giữ s ít nhất là g-1 để mọi đoạn trước đều không rỗng), cập nhật giá trị lớn nhất của đoạn trên đường đi và cập nhật dp[g][e] bằng dp[g-1][s] cộng giá trị lớn nhất đó. Chỉ cần giữ lớp trước là đủ; đáp án là dp[K][n]."
     ]
   },
   "explanationEn": "## Approach\n\nAdvance the DP one segment at a time, enumerate the start of the last segment, and extend it to the left while maintaining that segment's maximum.\n\n## Proof of correctness\n\nAny optimal partition has a unique start for its last segment; the segments before it must themselves be optimal, otherwise they could be replaced to improve the total. Enumerating every start and taking the best previous value plus the current maximum covers all cases and never introduces an illegal empty segment. By induction we obtain the optimal value for exactly K segments.\n\n## Complexity\n\nO(Kn^2) time, O(n) space with rolling arrays."

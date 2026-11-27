@@ -13,6 +13,21 @@
       "When every maximal run has even length, every run boundary falls on an even position, so after grouping the string into consecutive pairs, the two characters of each pair must end up equal.",
       "Each pair's minimum flips are independent: 00 and 11 need no flip and must stay as they are under the minimum flip count; 01 and 10 need exactly one flip and may become either 00 or 11, so they can take the color of a neighboring fixed pair without adding runs.",
       "Scan the string two characters at a time and look only at fixed pairs (two equal characters); keep the character last of the previous fixed pair and add one run whenever the current fixed pair differs from last, then update last; if every pair is free the count is 0, so print max(1, runs)."
+    ],
+    "ja": [
+      "すべての極大ランの長さが偶数なら、ランの境界はすべて偶数位置にあるので、文字列を連続する 2 文字ずつのペアに分けると、各ペアの 2 文字は最終的に等しくなければなりません。",
+      "各ペアの最小の反転回数は独立です。00 と 11 は反転が不要で、最小の反転回数のもとではそのまま保たなければなりません。01 と 10 はちょうど 1 回の反転が必要で、00 にも 11 にもなれるので、ランを増やさずに隣の固定されたペアの色を取れます。",
+      "文字列を 2 文字ずつ走査し、固定されたペア（2 文字が等しいもの）だけを見ます。直前の固定されたペアの文字を last として保持し、現在の固定されたペアが last と異なるたびにランを 1 つ加え、last を更新します。すべてのペアが自由ならカウントは 0 なので、max(1, runs) を出力します。"
+    ],
+    "ko": [
+      "모든 최대 구간의 길이가 짝수이면 모든 구간 경계가 짝수 위치에 놓이므로, 문자열을 연속한 쌍으로 묶었을 때 각 쌍의 두 문자는 결국 같아야 합니다.",
+      "각 쌍의 최소 뒤집기 횟수는 독립입니다. 00과 11은 뒤집을 필요가 없고 최소 뒤집기 횟수에서는 그대로 두어야 하며, 01과 10은 정확히 한 번 뒤집어야 하고 00 또는 11 어느 쪽으로든 될 수 있으므로 구간을 늘리지 않고 이웃한 고정된 쌍의 색을 따를 수 있습니다.",
+      "문자열을 두 글자씩 훑으며 고정된 쌍(같은 문자 두 개)만 봅니다. 이전 고정된 쌍의 문자를 last에 두고, 현재 고정된 쌍이 last와 다르면 구간을 하나 더하고 last를 갱신합니다. 모든 쌍이 자유로우면 개수는 0이므로 max(1, runs)를 출력합니다."
+    ],
+    "vi": [
+      "Khi mọi đoạn cực đại có độ dài chẵn, mọi ranh giới đoạn đều rơi vào vị trí chẵn, nên sau khi nhóm xâu thành các cặp liên tiếp, hai ký tự của mỗi cặp phải bằng nhau.",
+      "Số lần lật tối thiểu của mỗi cặp là độc lập: 00 và 11 không cần lật và phải giữ nguyên dưới số lần lật tối thiểu; 01 và 10 cần đúng một lần lật và có thể trở thành 00 hoặc 11, nên chúng có thể lấy màu của một cặp cố định bên cạnh mà không làm tăng số đoạn.",
+      "Duyệt xâu mỗi lần hai ký tự và chỉ xét các cặp cố định (hai ký tự bằng nhau); giữ ký tự last của cặp cố định trước đó và cộng một đoạn mỗi khi cặp cố định hiện tại khác last, rồi cập nhật last; nếu mọi cặp đều tự do thì số đếm là 0, nên in max(1, runs)."
     ]
   },
   "explanationEn": "## Approach\n\nGroup the string by original positions into pairs of two. Pairs 00 and 11 need no flip and must be kept under the minimum number of flips; pairs 01 and 10 need exactly one flip and may freely become 00 or 11. Ignore the free pairs, count the changes of character among the forced pairs, and add 1; if every pair is free, there is 1 run.\n\n## Proof of correctness\n\nEvery boundary of an even-length maximal run must lie at an even position, so each pair of positions must be equal, and the minimum flips of each pair are determined independently. A free pair can be filled with the color of a neighbor on its left or right, so it never adds more runs than the forced color changes require; each forced color change adds at least one run, and this lower bound is achievable.\n\n## Complexity\n\nO(n) time and O(1) space."

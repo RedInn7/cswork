@@ -13,6 +13,21 @@
       "In a tree, two nodes at distance at most 2 are either parent and child or siblings under the same parent (a grandparent and grandchild are also at distance 2, with the parent between them). So each node only has to differ from its parent, its grandparent and its siblings.",
       "Pick any root, color from the top down and count by multiplication. The root has k choices; the root's children must avoid the root and differ from each other; the children of any other node must avoid that node and its parent and differ from each other. Each node's children contribute one falling factorial.",
       "Root the tree at city 1 and count degrees. Start the answer at k mod 10^9 + 7. For each node v, the available colors are k - 1 for the root or k - 2 otherwise, and the number of children is deg(v) for the root or deg(v) - 1 otherwise. If available < children, the answer is 0; otherwise multiply available * (available - 1) * ... * (available - children + 1) into the answer, reducing modulo at every step."
+    ],
+    "ja": [
+      "木では、距離が 2 以下の 2 ノードは、親子であるか、同じ親の下の兄弟であるか(祖父母と孫も、間に親を挟んで距離 2 です)のどれかです。したがって、各ノードは自分の親、祖父母、兄弟と異なっていればよいことになります。",
+      "任意の根を選び、上から順に色を決めて、掛け算で数えます。根の選び方は k 通りです。根の子は、根を避け、互いに異なっていなければなりません。それ以外のノードの子は、そのノードとその親を避け、互いに異なっていなければなりません。各ノードの子は、降べき(下降階乗)を 1 つずつ与えます。",
+      "都市 1 を根とし、次数を数えます。答えを k mod 10^9 + 7 で始めます。各ノード v について、使える色の数は根なら k - 1、そうでなければ k - 2 で、子の数は根なら deg(v)、そうでなければ deg(v) - 1 です。available < children なら答えは 0 です。そうでなければ available * (available - 1) * ... * (available - children + 1) を答えに掛け、各ステップで剰余を取ります。"
+    ],
+    "ko": [
+      "트리에서 거리가 2 이하인 두 노드는 부모-자식이거나 같은 부모 아래의 형제입니다(조부모와 손자도 거리 2이며, 그 사이에 부모가 있습니다). 따라서 각 노드는 자신의 부모, 조부모, 형제와만 달라야 합니다.",
+      "아무 노드나 루트로 잡고 위에서 아래로 색을 칠하며 곱셈으로 셉니다. 루트는 k가지 선택이 있고, 루트의 자식들은 루트를 피하고 서로 달라야 합니다. 그 밖의 노드의 자식들은 그 노드와 그 부모를 피하고 서로 달라야 합니다. 각 노드의 자식들은 하강 팩토리얼 하나를 기여합니다.",
+      "도시 1을 루트로 잡고 차수를 셉니다. 답은 k mod 10^9 + 7에서 시작합니다. 각 노드 v에 대해 사용 가능한 색의 수는 루트이면 k - 1, 아니면 k - 2이고, 자식의 수는 루트이면 deg(v), 아니면 deg(v) - 1입니다. available < children이면 답은 0이고, 아니면 available * (available - 1) * ... * (available - children + 1)을 답에 곱하되 매 단계마다 나머지를 취합니다."
+    ],
+    "vi": [
+      "Trong một cây, hai nút ở khoảng cách không quá 2 là nút cha và nút con, hoặc là hai nút anh em dưới cùng một nút cha (nút ông và nút cháu cũng ở khoảng cách 2, với nút cha nằm giữa). Vì vậy mỗi nút chỉ cần khác nút cha, nút ông và các nút anh em của nó.",
+      "Chọn một gốc bất kỳ, tô màu từ trên xuống và đếm bằng phép nhân. Gốc có k lựa chọn; các nút con của gốc phải tránh gốc và khác nhau đôi một; các nút con của bất kỳ nút nào khác phải tránh nút đó và nút cha của nó, đồng thời khác nhau đôi một. Các nút con của mỗi nút đóng góp một giai thừa giảm.",
+      "Chọn thành phố 1 làm gốc và đếm bậc. Bắt đầu đáp án bằng k mod 10^9 + 7. Với mỗi nút v, số màu khả dụng là k - 1 với gốc hoặc k - 2 với các nút khác, và số nút con là deg(v) với gốc hoặc deg(v) - 1 với các nút khác. Nếu available < children thì đáp án là 0; ngược lại nhân available * (available - 1) * ... * (available - children + 1) vào đáp án, lấy modulo ở mỗi bước."
     ]
   },
   "explanationEn": "## Approach\n\nPick any root and count along the parent-child relation: the root has k choices; the root's children, one by one, avoid the root and the siblings already colored; the children of every other node must also avoid that node and its parent as well as the siblings already colored. Each node corresponds to a falling factorial, and all the factors are multiplied together modulo the given number.\n\n## Proof of Correctness\n\nIn a tree, the pairs of nodes at distance at most 2 are exactly parent-child pairs and siblings under the same parent. When coloring from the root toward the leaves, the colors available to the current node are exactly those left after excluding its parent and the siblings already processed, so every valid coloring is counted once and without conflict. If there are not enough available colors, the answer is 0.\n\n## Complexity\n\nTime O(n), space O(n). An independent oracle exhaustively enumerates colorings on small trees and checks every pair for distance-1/2 conflicts."

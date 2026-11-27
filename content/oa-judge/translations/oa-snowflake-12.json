@@ -11,5 +11,35 @@
     "hints": [
       "Maintain dp[value][j], the longest length ending with value using at most j changes, and the global best best[j] for each j. Update j in decreasing order, taking the better of extending the same value and best[j−1]+1."
     ]
+  },
+  "ja": {
+    "title": "隣接する値の変化が高々 k 回の最長部分列",
+    "description": "スキル配列から、値が異なる隣接要素の組の個数が高々 k である部分列を選び、その最大長を求めてください。部分列は連続している必要はありません。\n\n入出力の形式は本サイトで独自に整備したものであり、出題元の解答は実行していません。",
+    "input": "1 行目に n k、2 行目に n 個のスキル値が与えられます。出題元では n≤2000 とあり、残りの制約は途中で切れています。本サイトでは 1≤n≤2000、0≤k<n、1≤スキル値≤10⁹ と定めます。",
+    "output": "問題が求める整数を 1 つ出力してください。",
+    "explanation": "3 つの公開例の答えは順に 5、3、1 です。すべての例は、独立した小規模な全探索または状態探索で検証済みです。",
+    "hints": [
+      "dp[value][j]（value で終わり、変化が高々 j 回の最長の長さ）と、各 j についての全体の最良値 best[j] を管理します。j を降順に更新し、同じ値を延長する場合と best[j−1]+1 のうち良い方を採用します。"
+    ]
+  },
+  "ko": {
+    "title": "인접한 값 변화가 최대 k번인 가장 긴 부분 수열",
+    "description": "skill 배열에서 서로 인접한 원소의 값이 다른 경우가 최대 k번인 부분 수열을 골라 그 최대 길이를 구하세요. 부분 수열은 연속하지 않아도 됩니다.\n\n입출력 규약은 이 사이트에서 독자적으로 정리한 것이며, 원 출처의 풀이는 실행하지 않습니다.",
+    "input": "첫 줄에 n k가, 둘째 줄에 n개의 skill 값이 주어집니다. 원문에는 n≤2000만 주어지고 나머지 제약은 잘려 있어, 이 사이트에서 1≤n≤2000, 0≤k<n, 1≤skill 값≤10⁹로 정했습니다.",
+    "output": "문제가 요구하는 정수 하나를 출력합니다.",
+    "explanation": "공개 예제 3개의 답은 순서대로 5; 3; 1입니다. 모든 예제는 독립적인 소규모 완전 탐색 또는 상태 탐색으로 검증했습니다.",
+    "hints": [
+      "dp[value][j]를 value로 끝나고 변화가 최대 j번인 가장 긴 길이로, best[j]를 각 j에 대한 전역 최댓값으로 둡니다. j를 감소하는 순서로 갱신하며, 같은 값을 이어 붙이는 경우와 best[j−1]+1 중 더 좋은 쪽을 택합니다."
+    ]
+  },
+  "vi": {
+    "title": "Dãy con dài nhất có tối đa k lần đổi giá trị liền kề",
+    "description": "Chọn một dãy con của mảng kỹ năng sao cho số cặp phần tử liền kề có giá trị khác nhau không quá k, và tìm độ dài lớn nhất của nó. Dãy con không cần liên tục.\n\nGiao thức đầu vào/đầu ra do trang này tự biên soạn; lời giải của nguồn gốc không được chạy.",
+    "input": "Dòng đầu tiên chứa n k, dòng thứ hai chứa n giá trị kỹ năng. Văn bản gốc cho n≤2000 và các ràng buộc còn lại bị cắt cụt; trang này quy định 1≤n≤2000, 0≤k<n và 1≤giá trị kỹ năng≤10⁹.",
+    "output": "In ra một số nguyên là đáp án.",
+    "explanation": "Đáp án của ba ví dụ công khai lần lượt là: 5; 3; 1. Tất cả ví dụ đã được kiểm chứng bằng liệt kê quy mô nhỏ độc lập hoặc tìm kiếm trạng thái.",
+    "hints": [
+      "Duy trì dp[value][j], độ dài lớn nhất của dãy con kết thúc bằng value với tối đa j lần đổi, và giá trị tốt nhất toàn cục best[j] cho mỗi j. Cập nhật j theo thứ tự giảm dần, lấy giá trị tốt hơn giữa việc nối tiếp cùng giá trị và best[j−1]+1."
+    ]
   }
 }

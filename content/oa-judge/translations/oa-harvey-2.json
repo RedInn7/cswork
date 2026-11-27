@@ -11,5 +11,35 @@
     "hints": [
       "Tentatively apply the SET, then run DFS along the dependency graph to check whether it can get back to the assigned cell; if there is a cycle, restore the old value, otherwise commit. GET sums recursively by the current definitions and caches intermediate results only within the current read."
     ]
+  },
+  "ja": {
+    "title": "Spreadsheet Formula Evaluator",
+    "description": "SET label expression と GET label を実装してください。式は非負整数とセルのラベルをプラス記号でつないだものだけからなります。依存関係の循環を作る SET は拒否され、古い値が保たれます。未設定のセル、または参照の連鎖を評価できないセルに対する GET は ERROR を返します。\n\n本サイトの明示的な標準入出力形式と追加の制約はオンライン版を定義するものであり、出典の元の制約を主張するものではありません。",
+    "input": "各行に 1 つのコマンドがあります。コマンドは高々 1000 個、異なるラベルは高々 300 個です。ラベルは大文字 1 文字に数字が続いたものです。加算式の項は高々 50 個、リテラルは 10^9 以下で、評価できるすべての結果は符号付き 64 ビット整数に収まることが保証されます。未設定のセルの参照は循環を作らず、その場合の GET は ERROR を返します。",
+    "output": "各コマンドについて、OK、ERROR、または整数を出力してください。",
+    "explanation": "SET をいったん仮に適用してから、依存グラフに沿って DFS を行い、代入したセルに戻れるかを調べます。循環があれば古い値に戻し、なければ確定させます。GET は現在の定義に従って再帰的に合計し、途中の結果は現在の読み取りの間だけキャッシュします。",
+    "hints": [
+      "SET をいったん仮に適用してから、依存グラフに沿って DFS を行い、代入したセルに戻れるかを調べます。循環があれば古い値に戻し、なければ確定させます。GET は現在の定義に従って再帰的に合計し、途中の結果は現在の読み取りの間だけキャッシュします。"
+    ]
+  },
+  "ko": {
+    "title": "Spreadsheet Formula Evaluator",
+    "description": "SET label expression과 GET label을 구현하세요. 수식은 음이 아닌 정수와 셀 레이블을 더하기 기호로 이은 것으로만 이루어집니다. 의존성 순환을 만드는 SET은 거부되고 이전 값이 유지됩니다. GET은 설정되지 않은 셀이나 참조 체인을 평가할 수 없는 셀에 대해 ERROR를 반환합니다.\n\n이 사이트의 명시적인 표준 입출력 형식과 추가 제약 조건은 온라인 버전을 정의하는 것이며, 원문의 제약 조건이라고 주장하지 않습니다.",
+    "input": "각 줄에 명령이 하나씩 주어지며, 명령은 최대 1000개, 서로 다른 레이블은 최대 300개입니다. 레이블은 대문자 하나와 그 뒤의 숫자로 이루어집니다. 덧셈 수식은 항이 최대 50개이고, 리터럴은 ≤10^9이며, 평가 가능한 모든 결과는 부호 있는 64비트 정수에 들어맞음이 보장됩니다. 설정되지 않은 셀을 참조하는 것은 순환을 이루지 않으며, 이 경우 GET은 ERROR를 반환합니다.",
+    "output": "각 명령마다 OK, ERROR 또는 정수를 출력합니다.",
+    "explanation": "SET을 잠정적으로 적용한 뒤, 의존성 그래프를 따라 DFS를 수행하여 배정된 셀로 되돌아올 수 있는지 확인합니다. 순환이 있으면 이전 값을 복원하고, 없으면 확정합니다. GET은 현재 정의에 따라 재귀적으로 합산하며, 중간 결과는 현재 읽기 안에서만 캐시합니다.",
+    "hints": [
+      "SET을 잠정적으로 적용한 뒤, 의존성 그래프를 따라 DFS를 수행하여 배정된 셀로 되돌아올 수 있는지 확인합니다. 순환이 있으면 이전 값을 복원하고, 없으면 확정합니다. GET은 현재 정의에 따라 재귀적으로 합산하며, 중간 결과는 현재 읽기 안에서만 캐시합니다."
+    ]
+  },
+  "vi": {
+    "title": "Spreadsheet Formula Evaluator",
+    "description": "Hãy cài đặt SET label expression và GET label. Một biểu thức chỉ gồm các số nguyên không âm và các nhãn ô nối với nhau bằng dấu cộng. Một lệnh SET tạo ra chu trình phụ thuộc sẽ bị từ chối và giữ nguyên giá trị cũ; GET trả về ERROR đối với ô chưa được đặt hoặc ô có chuỗi tham chiếu không thể tính được.\n\nĐịnh dạng vào/ra chuẩn tường minh và các ràng buộc bổ sung trên trang web này định nghĩa phiên bản trực tuyến và không tuyên bố là các ràng buộc gốc của nguồn.",
+    "input": "Mỗi dòng chứa một lệnh; có tối đa 1000 lệnh và tối đa 300 nhãn phân biệt. Một nhãn là một chữ cái in hoa theo sau là các chữ số; một biểu thức cộng có tối đa 50 số hạng, các hằng số ≤10^9, và mọi kết quả tính được đều được đảm bảo vừa trong số nguyên có dấu 64 bit. Tham chiếu tới một ô chưa đặt không tạo thành chu trình; khi đó GET trả về ERROR.",
+    "output": "Với mỗi lệnh, in ra OK, ERROR hoặc một số nguyên.",
+    "explanation": "Áp dụng thử lệnh SET, rồi chạy DFS dọc theo đồ thị phụ thuộc để kiểm tra xem có quay lại được ô vừa gán hay không; nếu có chu trình thì khôi phục giá trị cũ, nếu không thì xác nhận. GET cộng đệ quy theo các định nghĩa hiện tại và chỉ lưu đệm các kết quả trung gian trong phạm vi lần đọc hiện tại.",
+    "hints": [
+      "Áp dụng thử lệnh SET, rồi chạy DFS dọc theo đồ thị phụ thuộc để kiểm tra xem có quay lại được ô vừa gán hay không; nếu có chu trình thì khôi phục giá trị cũ, nếu không thì xác nhận. GET cộng đệ quy theo các định nghĩa hiện tại và chỉ lưu đệm các kết quả trung gian trong phạm vi lần đọc hiện tại."
+    ]
   }
 }

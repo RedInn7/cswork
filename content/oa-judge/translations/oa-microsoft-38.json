@@ -11,5 +11,35 @@
     "hints": [
       "Process row by row, keeping the top two scores from all previous rows that lie in distinct columns. Pair the current cell with the best of these whose column differs from its own, then add the current row to the candidates."
     ]
+  },
+  "ja": {
+    "title": "異なる行・列に置く 2 つのルークの最大スコア",
+    "description": "長方形の盤面にルークをちょうど 2 つ置きます。2 つは異なる行、かつ異なる列になければなりません。2 つのマスのスコアの和の最大値を求めてください。元のサイトのサンプル入力は長方形になっていないため、本サイトでは問題文と整合する独自の例を使っています。\n\n標準入出力、例、解法、テストは本サイトが独自に作成しました。",
+    "input": "本サイト独自の範囲です。1 行目に N M（2..500）、続いて各行に M 個の整数スコア（−10⁹..10⁹）を持つ N 行が与えられます。",
+    "output": "答えを整数 1 つで出力します。",
+    "explanation": "例 1：右上の 4 と左下の 2 を取り、和は 6 です。\n\n例 2：ルークは必ず 2 つ置くので、−1 と −2 を取り、最大の和は −3 です。\n\n例 3：9 と 8 は同じ列にあるので組めず、9 と 2 を取り、和は 11 です。",
+    "hints": [
+      "行ごとに処理しながら、これまでのすべての行のうち、異なる列にある上位 2 つのスコアを保持します。現在のマスを、列が自分と異なるものの中で最良のものと組み合わせ、その後で現在の行を候補に加えます。"
+    ]
+  },
+  "ko": {
+    "title": "서로 다른 행과 열에 놓는 룩 두 개의 최대 점수",
+    "description": "직사각형 보드에 룩을 정확히 두 개 놓습니다. 두 룩은 서로 다른 행, 서로 다른 열에 있어야 합니다. 두 룩이 놓인 칸의 점수 합의 최댓값을 구하세요. 원 사이트의 예제 입력은 직사각형이 아니므로, 이 사이트에서는 문제 설명과 일치하는 독자적인 예제를 사용합니다.\n\n이 사이트에서 표준 입출력, 예제, 풀이, 테스트를 독자적으로 작성했습니다.",
+    "input": "이 사이트의 범위: 첫째 줄에 N M (2..500)이 주어지고, 이어서 N개의 줄에 각각 정수 점수 M개 (−10⁹..10⁹)가 주어집니다.",
+    "output": "정답을 나타내는 정수 하나를 출력합니다.",
+    "explanation": "예제 1: 오른쪽 위의 4와 왼쪽 아래의 2를 택하면 합은 6입니다.\n\n예제 2: 룩을 반드시 두 개 놓아야 하므로 −1과 −2를 택해 최대 합은 −3입니다.\n\n예제 3: 9와 8은 같은 열에 있어 함께 쓸 수 없으므로 9와 2를 택해 합은 11입니다.",
+    "hints": [
+      "행 단위로 처리하면서 이전 모든 행 중 서로 다른 열에 있는 점수 상위 두 개를 유지합니다. 현재 칸의 열과 다른 열에 있는 후보 중 가장 좋은 것과 짝을 지은 뒤, 현재 행을 후보에 추가합니다."
+    ]
+  },
+  "vi": {
+    "title": "Điểm tối đa của hai quân xe ở khác hàng và khác cột",
+    "description": "Đặt đúng hai quân xe lên một bảng chữ nhật; chúng phải ở khác hàng và khác cột. Tìm tổng điểm lớn nhất của hai ô chúng đứng. Dữ liệu mẫu của trang gốc không phải hình chữ nhật, nên trang này dùng các ví dụ độc lập nhất quán với đề bài.\n\nTrang này tự viết độc lập đầu vào/đầu ra chuẩn, các ví dụ, lời giải và bộ test.",
+    "input": "Phạm vi của trang này: dòng đầu chứa N M (2..500), tiếp theo là N dòng, mỗi dòng M điểm số nguyên (−10⁹..10⁹).",
+    "output": "In ra một số nguyên duy nhất, là đáp án.",
+    "explanation": "Ví dụ 1: lấy số 4 ở góc trên bên phải và số 2 ở góc dưới bên trái, tổng bằng 6.\n\nVí dụ 2: bắt buộc đặt hai quân xe, nên lấy −1 và −2, tổng lớn nhất là −3.\n\nVí dụ 3: 9 và 8 nằm cùng một cột nên không thể ghép, vì vậy lấy 9 và 2, tổng bằng 11.",
+    "hints": [
+      "Xử lý từng hàng một, giữ hai điểm số lớn nhất từ tất cả các hàng trước đó nằm ở các cột phân biệt. Ghép ô hiện tại với điểm tốt nhất trong số đó có cột khác cột của nó, rồi thêm hàng hiện tại vào tập ứng viên."
+    ]
   }
 }

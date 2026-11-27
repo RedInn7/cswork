@@ -13,6 +13,21 @@
       "The final string is a concatenation of abc blocks, and the original characters that fall in the same block must be strictly increasing (a<b<c).",
       "So whenever two adjacent original characters are not strictly increasing (the later one is not greater than the earlier one), a new block must start between them; after cutting at these places, every piece is a subsequence of abc and can be completed to abc.",
       "The number of blocks is 1 plus the number of adjacent positions with s[i]≤s[i−1]; the answer is 3 × blocks − original length."
+    ],
+    "ja": [
+      "最終的な文字列は abc ブロックの連結で、同じブロックに入る元の文字は真に増加(a<b<c)していなければなりません。",
+      "したがって、隣り合う元の 2 文字が真に増加していない(後ろの文字が前の文字より大きくない)箇所では、その間で新しいブロックが始まる必要があります。この箇所で切ると、各断片は abc の部分列になり、abc に補完できます。",
+      "ブロック数は、1 に s[i]≤s[i−1] となる隣接位置の個数を加えた値です。答えは 3 × ブロック数 − 元の長さです。"
+    ],
+    "ko": [
+      "최종 문자열은 abc 블록들을 이어 붙인 것이며, 같은 블록에 속하는 원래 문자들은 엄격히 증가해야 합니다(a<b<c).",
+      "따라서 인접한 두 원래 문자가 엄격히 증가하지 않으면(뒤의 문자가 앞의 문자보다 크지 않으면) 그 사이에서 새 블록이 시작되어야 합니다. 이런 곳에서 자르면 각 조각은 abc의 부분 수열이므로 abc로 완성할 수 있습니다.",
+      "블록 수는 1에 s[i]≤s[i−1]인 인접 위치의 수를 더한 값이며, 답은 3 × 블록 수 − 원래 길이입니다."
+    ],
+    "vi": [
+      "Xâu cuối cùng là phép ghép các khối abc, và các ký tự gốc rơi vào cùng một khối phải tăng chặt (a<b<c).",
+      "Vì vậy khi hai ký tự gốc kề nhau không tăng chặt (ký tự sau không lớn hơn ký tự trước), một khối mới phải bắt đầu giữa chúng; sau khi cắt tại những chỗ này, mỗi đoạn là một dãy con của abc và có thể được bổ sung thành abc.",
+      "Số khối bằng 1 cộng số vị trí kề nhau có s[i]≤s[i−1]; đáp án là 3 × số khối − độ dài ban đầu."
     ]
   },
   "explanationEn": "## Approach\n\nWhenever adjacent characters are not strictly increasing, a new abc block must start; multiply the number of blocks by 3 and subtract the original length.\n\n## Proof of correctness\n\nThe original characters kept within one abc block must be strictly increasing, so every non-increasing boundary forces a cut. After cutting at these boundaries, each block is a subsequence of abc and can be completed to abc, which reaches the forced lower bound on the number of blocks.\n\n## Complexity\n\nTime O(n), space O(1)."

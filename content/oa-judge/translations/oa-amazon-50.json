@@ -11,5 +11,35 @@
     "hints": [
       "Store the costs of adjacent edges in prefix sums. Enumerate the removal window, subtract the removed inner edges and connecting edges, then add the new connecting edge when both sides exist."
     ]
+  },
+  "ja": {
+    "title": "固定長の連続区間を取り除いた後のシステムコスト最小値",
+    "description": "ちょうど k 個の連続する要素を取り除きます。残った要素は元の順序を保ち、コストは隣り合う要素の差の絶対値の総和です。最小のコストを求めてください。\n\n標準入出力・例・判定は CSWork が独自に作成したものです。このサイト独自の規約は、元の問題の制約としては扱っていません。",
+    "input": "1 行目に n k (1≤k<n≤200000)、2 行目に n 個の値 (1..10⁹) が与えられます。",
+    "output": "整数 1 つ（答え）を出力してください。",
+    "explanation": "例 1: 末尾の 3 要素を取り除くと [3,9] が残り、コストは 6 で、他の 2 つの窓より小さくなります。例 2: どの要素を取り除いても 1 要素しか残らないので、コストは 0 です。例 3: 末尾の 8 を取り除くと [1,4,2] が残り、コストは 3+2=5 です。4 を取り除くと 1+6=7 で、他により良い選択肢はありません。",
+    "hints": [
+      "隣接する辺のコストを累積和に保存します。取り除く窓を列挙し、取り除かれる内部の辺と接続する辺を引き、両側に要素が残る場合は新たにつながる辺を加えます。"
+    ]
+  },
+  "ko": {
+    "title": "연속 구간을 고정 길이만큼 제거한 뒤의 최소 시스템 비용",
+    "description": "연속한 원소를 정확히 k개 제거합니다. 남은 원소는 원래 순서를 유지하며, 비용은 인접한 원소 사이의 차이의 절댓값의 합입니다. 최소 비용을 구하세요.\n\n표준 입출력 형식, 예제, 채점은 이 사이트가 독자적으로 작성했습니다.",
+    "input": "첫째 줄에 n k(1≤k<n≤200000)가 주어지고, 둘째 줄에 n개의 값(1..10⁹)이 주어집니다.",
+    "output": "정수 하나로 답을 출력합니다.",
+    "explanation": "예제 1: 마지막 세 원소를 제거하면 [3,9]가 남아 비용 6이며, 다른 두 구간보다 작습니다. 예제 2: 어느 원소를 제거하든 원소가 하나만 남으므로 비용은 0입니다. 예제 3: 마지막 8을 제거하면 [1,4,2]가 남아 비용 3+2=5이고, 4를 제거하면 1+6=7이며 다른 선택은 더 좋지 않습니다.",
+    "hints": [
+      "인접한 간선의 비용을 누적 합으로 저장합니다. 제거할 구간을 열거하며 제거된 안쪽 간선과 연결 간선을 빼고, 양쪽 모두 원소가 남아 있으면 새 연결 간선을 더합니다."
+    ]
+  },
+  "vi": {
+    "title": "Chi phí hệ thống nhỏ nhất sau khi xóa một đoạn liên tiếp có độ dài cố định",
+    "description": "Xóa đúng k phần tử liên tiếp; các phần tử còn lại giữ nguyên thứ tự ban đầu, và chi phí là tổng các hiệu tuyệt đối giữa các phần tử kề nhau. Hãy tìm chi phí nhỏ nhất.\n\nĐầu vào/đầu ra chuẩn, các ví dụ và bộ chấm do CSWork tự biên soạn độc lập; những quy ước được ghi là của trang này không được trình bày như ràng buộc gốc của đề.",
+    "input": "Dòng đầu tiên chứa n k (1≤k<n≤200000), dòng thứ hai chứa n giá trị (1..10⁹).",
+    "output": "In ra một số nguyên duy nhất là đáp án.",
+    "explanation": "Ví dụ 1: xóa ba phần tử cuối còn lại [3,9] với chi phí 6, nhỏ hơn hai cửa sổ còn lại. Ví dụ 2: xóa phần tử nào thì cũng chỉ còn một phần tử, nên chi phí là 0. Ví dụ 3: xóa số 8 ở cuối còn lại [1,4,2] với chi phí 3+2=5; xóa 4 cho 1+6=7, và không có cách nào khác tốt hơn.",
+    "hints": [
+      "Lưu chi phí của các cạnh kề nhau bằng tổng tiền tố. Duyệt qua cửa sổ bị xóa, trừ đi các cạnh bên trong bị xóa và các cạnh nối, rồi cộng thêm cạnh nối mới khi cả hai phía đều còn phần tử."
+    ]
   }
 }

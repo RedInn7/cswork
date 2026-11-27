@@ -11,5 +11,35 @@
     "hints": [
       "Precompute whether each prefix is free of adjacent repeats. Enumerate the first changed position from right to left, try the smallest valid larger character there, then greedily fill the smallest suffix with a or b."
     ]
+  },
+  "ja": {
+    "title": "隣接する同一文字を持たない、s より真に大きい最小の文字列",
+    "description": "s と同じ長さで、辞書順で s より真に大きく、隣り合う 2 文字が等しくない文字列のうち、最小のものを出力してください。存在しない場合は −1 を出力します。元の文字列自体に隣接する同一文字が含まれていてもかまいません。また、z から a へ繰り上がること（ラップ）はできません。\n\n標準入出力、例、解説は本サイトが独自に作成したものです。本サイトのものと明記された範囲は、元の問題の制約ではありません。",
+    "input": "1 行で小文字からなる文字列が与えられます。1≤長さ≤1000000。",
+    "output": "条件を満たす文字列を出力してください。存在しない場合は −1 を出力します。",
+    "explanation": "答えは abca、abcdab、−1 です。元の文字列の内部に同一文字の連続が残ったまま、最後の 1 文字だけを変えることはできません。",
+    "hints": [
+      "各接頭辞に隣接する同一文字がないかを前計算します。最初に変更する位置を右から左へ列挙し、その位置に置ける、条件を満たす最小の大きい文字を試します。その後ろは a か b を交互に置いて、最小になるよう貪欲に埋めます。"
+    ]
+  },
+  "ko": {
+    "title": "인접한 같은 문자가 없는 가장 작은 더 큰 문자열",
+    "description": "길이가 s와 같고, s보다 사전순으로 엄격히 크며, 인접한 두 문자가 같은 곳이 없는 문자열 중 가장 작은 것을 출력하세요. 그런 문자열이 없으면 −1을 출력합니다. 원래 문자열 자체에는 인접한 같은 문자가 있을 수 있으며, z는 a로 넘어가지(wrap) 않습니다.\n\n표준 입출력, 예제, 해설은 이 사이트에서 독립적으로 작성했으며, 이 사이트 기준이라고 명시한 범위는 원문의 원래 제약 조건이 아닙니다.",
+    "input": "소문자로 이루어진 문자열이 한 줄로 주어집니다. 1≤길이≤1000000.",
+    "output": "조건을 만족하는 문자열을 출력하고, 없으면 −1을 출력합니다.",
+    "explanation": "정답은 abca, abcdab, −1입니다. 원래 문자열 안에 같은 문자가 반복된 상태에서 마지막 글자만 바꾸는 것은 불가능합니다.",
+    "hints": [
+      "각 접두사에 인접한 같은 문자가 없는지 미리 계산합니다. 처음으로 바뀌는 위치를 오른쪽에서 왼쪽으로 열거하면서, 그 위치에 넣을 수 있는 가장 작은 더 큰 문자를 시도하고, 나머지 접미사는 a와 b로 탐욕적으로 가장 작게 채웁니다."
+    ]
+  },
+  "vi": {
+    "title": "Xâu nhỏ nhất lớn hơn s và không có hai ký tự kề nhau giống nhau",
+    "description": "In ra xâu nhỏ nhất có cùng độ dài với s, lớn hơn s hoàn toàn theo thứ tự từ điển và không có hai ký tự kề nhau bằng nhau; nếu không tồn tại thì in −1. Bản thân xâu gốc có thể đã chứa các ký tự kề nhau giống nhau, và z không thể quay vòng về a.\n\nĐề bài chuẩn hóa vào/ra, các ví dụ và lời giải được trang này tự biên soạn; những khoảng giá trị được ghi rõ là của trang này không phải ràng buộc gốc của nguồn.",
+    "input": "Một dòng chứa xâu gồm chữ cái thường. 1≤độ dài≤1000000.",
+    "output": "In ra xâu cần tìm, hoặc −1 nếu không tồn tại.",
+    "explanation": "Các đáp án lần lượt là abca, abcdab và −1. Không thể chỉ đổi ký tự cuối khi phần lặp ký tự vẫn nằm trong xâu gốc.",
+    "hints": [
+      "Tính trước xem mỗi tiền tố có không chứa ký tự kề nhau giống nhau hay không. Duyệt vị trí đầu tiên bị thay đổi từ phải sang trái, thử ký tự lớn hơn nhỏ nhất hợp lệ tại đó, rồi điền phần hậu tố nhỏ nhất bằng cách xen kẽ a và b theo kiểu tham lam."
+    ]
   }
 }

@@ -13,6 +13,21 @@
       "Demolishing a house only affects the block containing it; all other blocks stay the same. The change depends only on whether the positions immediately to its left and right still hold houses.",
       "Keep the remaining houses in a set. If both neighbors exist, one block splits into two and the count goes up by 1; if neither exists, an isolated block disappears and the count goes down by 1; if exactly one exists, the count is unchanged. The initial count is the number of houses without a left neighbor.",
       "Put all coordinates in a set. The initial block count is the number of houses whose left neighbor position is not in the set. For each demolished coordinate v, let left be 1 if v - 1 is in the set and 0 otherwise, and right likewise for v + 1; add left + right - 1 to the count, remove v from the set, and print the count."
+    ],
+    "ja": [
+      "家を取り壊すと影響を受けるのはその家を含むブロックだけで、他のブロックは変わりません。変化は、すぐ左と右の位置にまだ家があるかどうかだけで決まります。",
+      "残っている家を集合に入れておきます。両隣があればブロックが 1 つから 2 つに分かれて個数が 1 増え、どちらもなければ孤立したブロックが消えて 1 減り、ちょうど片側だけにあれば個数は変わりません。初期のブロック数は、左隣のない家の数です。",
+      "すべての座標を集合に入れます。初期のブロック数は、左隣の位置が集合にない家の数です。取り壊す各座標 v について、v - 1 が集合にあれば left を 1、なければ 0 とし、v + 1 についても right を同様に決めます。個数に left + right - 1 を足し、v を集合から取り除いて、個数を出力します。"
+    ],
+    "ko": [
+      "집 하나를 철거하면 그 집이 속한 구역만 영향을 받고 다른 구역은 그대로입니다. 변화량은 바로 왼쪽과 오른쪽 위치에 아직 집이 있는지에만 달려 있습니다.",
+      "남은 집들을 집합에 보관합니다. 양쪽 이웃이 모두 있으면 한 구역이 둘로 나뉘어 개수가 1 늘고, 둘 다 없으면 고립된 구역이 사라져 1 줄며, 정확히 한쪽만 있으면 개수는 그대로입니다. 초기 개수는 왼쪽 이웃이 없는 집의 수입니다.",
+      "모든 좌표를 집합에 넣습니다. 초기 구역 수는 왼쪽 이웃 위치가 집합에 없는 집의 수입니다. 철거할 좌표 v마다, v - 1이 집합에 있으면 left를 1, 없으면 0으로 두고, v + 1에 대해서도 right를 같은 방식으로 정합니다. 개수에 left + right - 1을 더하고, v를 집합에서 제거한 뒤, 개수를 출력합니다."
+    ],
+    "vi": [
+      "Phá dỡ một ngôi nhà chỉ ảnh hưởng đến khối chứa nó; mọi khối khác giữ nguyên. Sự thay đổi chỉ phụ thuộc vào việc các vị trí ngay bên trái và bên phải của nó còn nhà hay không.",
+      "Giữ các ngôi nhà còn lại trong một tập hợp. Nếu cả hai hàng xóm đều tồn tại, một khối tách thành hai và số lượng tăng 1; nếu cả hai đều không, một khối đơn lẻ biến mất và số lượng giảm 1; nếu đúng một bên tồn tại, số lượng không đổi. Số khối ban đầu là số ngôi nhà không có hàng xóm bên trái.",
+      "Đưa mọi tọa độ vào một tập hợp. Số khối ban đầu là số ngôi nhà mà vị trí hàng xóm bên trái không có trong tập. Với mỗi tọa độ v bị phá, đặt left bằng 1 nếu v - 1 có trong tập và bằng 0 nếu không, và right tương tự cho v + 1; cộng left + right - 1 vào số khối, xóa v khỏi tập rồi in số khối."
     ]
   },
   "explanationEn": "## Approach\n\nUse a set to check whether there are houses to the left and right of the removed position. If both sides have houses, one block splits into two, adding 1; if neither does, the isolated block disappears, subtracting 1; if only one side does, the count is unchanged.\n\n## Correctness\n\nOnly the block containing the removed house can change; all other blocks stay the same. Whether the left and right neighbors exist covers all three cases exhaustively, so updating by left+right−1 is correct. Initially, every house without a left neighbor represents exactly one block.\n\n## Complexity\n\nExpected time O(n+q), space O(n)."

@@ -13,6 +13,21 @@
       "There can be 10^5 queries, but values only go up to 10^6, and positive integers with all-distinct digits are few (fewer than 170,000).",
       "Enumerate once, by DFS, every positive integer up to 10^6 with no leading zero and no repeated digit, sort them, and answer each query with two binary searches.",
       "The DFS starts at 0 and appends an unused digit each step (the first digit cannot be 0), recording and recursing while the number stays ≤ 10^6; after sorting, answer [lower, upper] with (first index whose value > upper) minus (first index whose value ≥ lower)."
+    ],
+    "ja": [
+      "クエリは 10^5 個あり得ますが、値は 10^6 までで、すべての桁が異なる正の整数は少数です(170,000 未満)。",
+      "DFS で、先頭に 0 がなく、桁が重複しない 10^6 以下の正の整数を 1 回だけすべて列挙してソートし、各クエリには 2 回の二分探索で答えます。",
+      "DFS は 0 から始め、各ステップで未使用の数字を 1 つ追加します(先頭の数字は 0 にできません)。数が ≤ 10^6 である間は記録して再帰します。ソート後、[lower, upper] には (値が > upper となる最初のインデックス) − (値が ≥ lower となる最初のインデックス) で答えます。"
+    ],
+    "ko": [
+      "쿼리는 최대 10^5개이지만 값은 10^6까지이며, 모든 숫자가 서로 다른 양의 정수는 많지 않습니다(170,000개 미만).",
+      "10^6 이하이고 앞자리가 0이 아니며 숫자가 반복되지 않는 모든 양의 정수를 DFS로 한 번 열거하여 정렬한 뒤, 각 쿼리를 두 번의 이분 탐색으로 답합니다.",
+      "DFS는 0에서 시작하여 매 단계마다 사용하지 않은 숫자를 붙이며(첫 숫자는 0이 될 수 없음), 수가 ≤ 10^6인 동안 기록하고 재귀합니다. 정렬한 뒤 [lower, upper]는 (값이 > upper인 첫 인덱스) − (값이 ≥ lower인 첫 인덱스)로 답합니다."
+    ],
+    "vi": [
+      "Có thể có 10^5 truy vấn, nhưng giá trị chỉ lên tới 10^6, và các số nguyên dương có mọi chữ số khác nhau thì ít (dưới 170,000).",
+      "Liệt kê một lần bằng DFS mọi số nguyên dương tới 10^6 không có số 0 đứng đầu và không có chữ số lặp, sắp xếp chúng, và trả lời mỗi truy vấn bằng hai lần tìm kiếm nhị phân.",
+      "DFS bắt đầu từ 0 và ở mỗi bước nối thêm một chữ số chưa dùng (chữ số đầu tiên không được là 0), ghi lại và đệ quy khi số còn ≤ 10^6; sau khi sắp xếp, trả lời [lower, upper] bằng (chỉ số đầu tiên có giá trị > upper) trừ (chỉ số đầu tiên có giá trị ≥ lower)."
     ]
   },
   "explanationEn": "## Approach\n\nEnumerate all positive integers without repeated digits (at most 6 digits) once and sort them; for each query, count the closed range with two binary searches.\n\n## Proof of correctness\n\nThe DFS always picks an unused digit and never starts with zero, so every number it produces is valid; every valid number corresponds, by its digits, to exactly one DFS path. After sorting, the difference between the binary-search index past the right end and the index before the left end equals exactly the number of valid numbers in the range.\n\n## Complexity\n\nO(U log U) preprocessing, O(q log U) for the queries, and O(U+q) space, where U is the number of valid numbers not exceeding one million."

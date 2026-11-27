@@ -11,5 +11,35 @@
     "hints": [
       "For each OR value, keep only the smallest last value of a reachable increasing subsequence; when you meet v, transition from states whose last value is <v to OR|v."
     ]
+  },
+  "ja": {
+    "title": "狭義単調増加部分列の OR 値の種類",
+    "description": "元の配列から、順序を保ち、値が狭義単調増加になる部分列を選び、そのビット単位 OR を計算します。得られた異なる結果をすべて昇順で返してください。空の部分列の OR は 0 です。元の OCR では配列を返すとなっていますが、問題 1 の旧キュレーションページでは誤って個数を返すと書かれていました。現在は元の記述に従って修正しています。\n\n入出力の形式は本サイトが整理したものです。欠けていた数値の範囲と、原文の誤記の修正はすべて明示しています。",
+    "input": "1 行目に n、続けて n 個の整数が与えられます。OCR で補った範囲は 1≤n≤10000、1≤a[i]<1024 です。同じ問題である問題 15 の別の Fastprep ページと OCR を突き合わせて、欠けていた範囲を補っています。",
+    "output": "1 行目に結果の個数、2 行目に異なる OR 値を昇順で出力してください。0 も含みます。",
+    "explanation": "3 つの公開例の出力は順に、5 / 0 1 2 4 6、6 / 0 2 3 4 6 7、5 / 0 1 3 5 7 です。これらの答えは、独立した全列挙または直接のシミュレーションで検証済みです。",
+    "hints": [
+      "各 OR 値について、到達可能な増加部分列の最後の値の最小値だけを保持します。v に出会ったら、最後の値が v 未満の状態から OR|v へ遷移します。"
+    ]
+  },
+  "ko": {
+    "title": "순증가 부분 수열의 서로 다른 OR 값",
+    "description": "원본 배열에서 순서를 유지하면서 값이 순증가(strictly increasing)하는 부분 수열을 고르고, 그 비트 OR를 계산합니다. 얻을 수 있는 서로 다른 결과를 모두 오름차순으로 반환하세요. 빈 부분 수열의 OR는 0입니다. 원본 OCR은 배열을 반환하는 문제이며, 1번 문제의 예전 정리 페이지에는 개수를 반환한다고 잘못 적혀 있었으나 원문에 맞게 바로잡았습니다.\n\n입출력 프로토콜은 이 사이트에서 정리한 것이며, 빠져 있던 수치 범위와 원문 오타의 복원 내용은 모두 명시했습니다.",
+    "input": "첫 번째 줄에 n이 주어지고, 이어서 n개의 정수가 주어집니다. OCR 전체 범위: 1≤n≤10000, 1≤a[i]<1024. 같은 문제인 15번의 별도 Fastprep 페이지와 OCR을 종합하여 빠져 있던 범위를 보충했습니다.",
+    "output": "첫 번째 줄에 결과의 개수를, 두 번째 줄에 0을 포함한 서로 다른 OR 값을 오름차순으로 출력합니다.",
+    "explanation": "공개된 세 예제의 출력은 순서대로 5 / 0 1 2 4 6; 6 / 0 2 3 4 6 7; 5 / 0 1 3 5 7입니다. 이 답들은 독립적인 완전 탐색 또는 직접 시뮬레이션으로 검증했습니다.",
+    "hints": [
+      "각 OR 값마다 도달 가능한 증가 부분 수열의 마지막 값 중 가장 작은 것만 유지합니다. v를 만나면 마지막 값이 v보다 작은 상태에서 OR|v로 전이합니다."
+    ]
+  },
+  "vi": {
+    "title": "Các giá trị OR phân biệt của dãy con tăng ngặt",
+    "description": "Chọn một dãy con của mảng gốc giữ nguyên thứ tự và tăng ngặt về giá trị, rồi tính phép OR theo bit của nó; trả về mọi kết quả phân biệt theo thứ tự tăng dần. OR của dãy con rỗng là 0. OCR gốc yêu cầu trả về một mảng; trang đã biên soạn cũ cho bài số 1 nhầm là trả về một số lượng, nay đã khôi phục theo văn bản gốc.\n\nGiao thức đầu vào/đầu ra do trang này biên soạn; các cận số còn thiếu và việc khôi phục lỗi đánh máy của nguồn đều được nêu rõ.",
+    "input": "Dòng đầu tiên chứa n, tiếp theo là n số nguyên. Khoảng đầy đủ theo OCR: 1≤n≤10000, 1≤a[i]<1024. Trang Fastprep riêng của bài số 15, cùng một bài, kết hợp với OCR bổ sung các khoảng còn thiếu.",
+    "output": "Dòng đầu tiên chứa số lượng kết quả, dòng thứ hai chứa các giá trị OR phân biệt theo thứ tự tăng dần, bao gồm cả 0.",
+    "explanation": "Đầu ra của ba ví dụ công khai lần lượt là: 5 / 0 1 2 4 6; 6 / 0 2 3 4 6 7; 5 / 0 1 3 5 7. Các đáp án này đã được kiểm chứng bằng liệt kê độc lập hoặc mô phỏng trực tiếp.",
+    "hints": [
+      "Với mỗi giá trị OR, chỉ giữ giá trị cuối nhỏ nhất của một dãy con tăng có thể đạt được; khi gặp v, chuyển từ các trạng thái có giá trị cuối <v sang OR|v."
+    ]
   }
 }

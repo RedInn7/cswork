@@ -11,5 +11,35 @@
     "hints": [
       "The left end can only be the first occurrence of some character, so there are at most 26 choices. Scan right from each one and stop if some character's first occurrence is before the left end; track the last occurrence of the characters seen, and when the right end covers all of them you get a closed segment; exclude the whole string and take the maximum."
     ]
+  },
+  "ja": {
+    "title": "文字が外側に現れない最長の真部分文字列",
+    "description": "どの文字も部分文字列の外側に現れないような、空でない連続部分文字列のうち最長のものを求めてください。ただし、その部分文字列は元の文字列全体と等しくてはいけません。存在しない場合は 0 を返します。\n\n標準入出力と解法はこのサイトが独自に作成したものです。このサイトのものと明記された範囲は、元の出典の制約ではありません。",
+    "input": "小文字からなる長さ 1..100000 の文字列が 1 行で与えられます。",
+    "output": "答えを表す整数を 1 つ出力してください。",
+    "explanation": "例 1: bcb では b も c も外側に現れないので、長さ 3 の真部分文字列になります。出典の 0 は修正済みです。例 2: zonservices の長さは 11 で、外側には a、m、a しかなく、共通する文字はありません。例 3: 全体でない限り、内側の a は必ず外側にも現れるため、条件を満たす空でない真部分文字列は存在せず、答えは 0 です。",
+    "hints": [
+      "左端はある文字の初出位置に限られるので、候補は高々 26 個です。それぞれから右へ走査し、ある文字の初出が左端より前にあれば打ち切ります。見た文字の最終出現位置を追跡し、右端がそのすべてを覆った時点で閉じた区間が得られます。全体は除外して最大値を取ります。"
+    ]
+  },
+  "ko": {
+    "title": "바깥에 등장하지 않는 문자로만 이루어진 가장 긴 진부분 문자열",
+    "description": "부분 문자열의 모든 문자가 그 부분 문자열 바깥에는 나타나지 않으면서, 원래 문자열 전체와 같지 않은 가장 긴 비어 있지 않은 연속 부분 문자열을 구하세요. 그런 것이 없으면 0을 반환합니다.\n\n표준 입출력과 풀이는 이 사이트에서 독자적으로 작성했으며, 이 사이트가 정한 것으로 표시된 범위는 원 출처의 제약 조건이 아닙니다.",
+    "input": "첫 번째 줄에 길이가 1..100000인 소문자 문자열이 주어집니다.",
+    "output": "정수 하나를 출력합니다.",
+    "explanation": "예제 1: bcb에서는 b와 c 모두 바깥에 나타나지 않으므로 길이 3의 진부분 문자열이 되며, 원 출처의 0은 정정했습니다. 예제 2: zonservices의 길이는 11이고, 바깥에는 a, m, a만 있어 이 부분 문자열의 문자와 겹치지 않습니다. 예제 3: 전체 문자열이 아닌 한 안에 있는 a는 바깥에도 나타나므로 조건을 만족하는 비어 있지 않은 진부분 문자열이 없어 답은 0입니다.",
+    "hints": [
+      "왼쪽 끝은 어떤 문자의 첫 등장 위치일 수밖에 없으므로 후보는 최대 26개입니다. 각 후보에서 오른쪽으로 스캔하다가 어떤 문자의 첫 등장 위치가 왼쪽 끝보다 앞서면 중단합니다. 지금까지 본 문자들의 마지막 등장 위치를 추적하고, 오른쪽 끝이 그 위치를 모두 덮으면 닫힌 구간이 완성됩니다. 전체 문자열은 제외하고 최댓값을 취하세요."
+    ]
+  },
+  "vi": {
+    "title": "Xâu con thực sự dài nhất có các ký tự không xuất hiện bên ngoài",
+    "description": "Tìm xâu con liên tiếp không rỗng dài nhất sao cho không ký tự nào của nó xuất hiện bên ngoài xâu con đó, và xâu con này không được bằng toàn bộ xâu ban đầu; nếu không có thì trả về 0.\n\nĐầu vào/đầu ra chuẩn và lời giải do trang này tự viết; các khoảng giá trị được đánh dấu là của trang này không phải là ràng buộc gốc của nguồn.",
+    "input": "Một dòng chứa xâu chữ cái thường có độ dài từ 1 đến 100000.",
+    "output": "In ra một số nguyên là đáp án.",
+    "explanation": "Ví dụ 1: trong bcb, cả b lẫn c đều không xuất hiện bên ngoài, nên đây là xâu con thực sự có độ dài 3; giá trị 0 trong nguồn đã được sửa lại. Ví dụ 2: zonservices có độ dài 11, bên ngoài nó chỉ có a, m, a, không có ký tự nào trùng với nó. Ví dụ 3: trừ khi lấy cả xâu, mọi chữ a bên trong đều cũng xuất hiện ở bên ngoài, nên không có xâu con thực sự không rỗng hợp lệ nào và đáp án là 0.",
+    "hints": [
+      "Đầu trái chỉ có thể là lần xuất hiện đầu tiên của một ký tự nào đó, nên có tối đa 26 lựa chọn. Từ mỗi đầu trái, quét sang phải và dừng nếu lần xuất hiện đầu tiên của một ký tự nào đó nằm trước đầu trái; theo dõi lần xuất hiện cuối cùng của các ký tự đã gặp, khi đầu phải bao phủ tất cả chúng thì ta được một đoạn đóng; loại trừ toàn bộ xâu và lấy giá trị lớn nhất."
+    ]
   }
 }

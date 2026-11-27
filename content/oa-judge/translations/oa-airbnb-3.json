@@ -11,5 +11,35 @@
     "hints": [
       "Run BFS over empty cells, scanning up to k cells in each of the four directions and stopping at a wall; an already visited empty cell is not an obstacle, so keep scanning to farther positions."
     ]
+  },
+  "ja": {
+    "title": "障害物を越えずに進む最小ジャンプ回数",
+    "description": "左上の角から右下の角まで進みます。1 ステップで 1 つの軸に沿って 1..k マス動き、通過するマスはすべて空でなければなりません (開始と着地のマスを含む)。到達できない場合は −1 を返します。\n\n当サイトは標準入出力と解法を独自に用意しました。原典で欠けている上下限の補足と例の訂正は、プロトコルに明記してあります。",
+    "input": "1 行目に n m k、続いて 0/1 の値が m 個ある行が n 行与えられます。原典の完全な範囲 1≤n,m,k≤100 を維持します。当サイトでは、どちらかの端点が障害物なら −1 を返すことを定めます (1×1 で障害物のグリッドも含む)。空の 1×1 グリッドは 0 です。",
+    "output": "答えを表す整数を 1 つ出力します。",
+    "explanation": "公開されている 3 つの例の出力は、順に 2、2、-1 です。独立した全探索または直接のシミュレーションで検証済みです。",
+    "hints": [
+      "空のマスに対して BFS を行い、4 方向それぞれについて壁に当たるまで最大 k マスを走査します。訪問済みの空のマスは障害物ではないので、走査を続けてより遠い位置まで進みます。"
+    ]
+  },
+  "ko": {
+    "title": "장애물을 넘지 않고 이동하는 최소 점프 횟수",
+    "description": "왼쪽 위 모서리에서 오른쪽 아래 모서리까지 갑니다. 한 걸음에 한 축을 따라 1..k칸을 이동하며, 거치는 모든 칸은 비어 있어야 합니다(시작 칸과 도착 칸 포함). 목표에 도달할 수 없으면 −1을 반환하십시오.\n\n본 사이트는 표준 입출력과 풀이를 독자적으로 작성했으며, 원문에 없는 범위의 보충과 예제의 정정은 프로토콜에 명시되어 있습니다.",
+    "input": "첫째 줄에 n m k가 주어지고, 이어서 0/1 값 m개로 된 줄이 n줄 주어집니다. 원래의 전체 범위 1≤n,m,k≤100을 유지합니다. 본 사이트는 시작점이나 도착점 중 하나가 장애물이면 −1을 반환하도록 정하며, 장애물이 있는 1×1 격자도 포함합니다. 비어 있는 1×1 격자의 답은 0입니다.",
+    "output": "정수 답 하나를 출력합니다.",
+    "explanation": "공개된 세 예제의 출력은 차례로 2, 2, -1입니다. 독립적인 전수 조사 또는 직접 시뮬레이션으로 검증했습니다.",
+    "hints": [
+      "빈 칸에 대해 BFS를 수행하며, 네 방향 각각으로 최대 k칸을 훑되 벽에서 멈춥니다. 이미 방문한 빈 칸은 장애물이 아니므로 더 먼 위치까지 계속 훑어야 합니다."
+    ]
+  },
+  "vi": {
+    "title": "Số bước nhảy tối thiểu mà không vượt qua chướng ngại vật",
+    "description": "Đi từ góc trên bên trái đến góc dưới bên phải. Mỗi bước di chuyển 1..k ô dọc theo một trục, và mọi ô đi qua phải trống, kể cả ô xuất phát và ô tiếp đất. Trả về −1 nếu không thể đến đích.\n\nTrang này tự biên soạn đầu vào/đầu ra chuẩn và lời giải; các phần bổ sung cho những giới hạn còn thiếu trong đề gốc và các chỉnh sửa cho ví dụ được nêu rõ trong giao thức.",
+    "input": "Dòng đầu tiên chứa n m k, tiếp theo là n dòng, mỗi dòng m giá trị 0/1. Miền đầy đủ ban đầu 1≤n,m,k≤100 được giữ nguyên. Trang này quy định: nếu một trong hai đầu mút là chướng ngại vật thì trả về −1, kể cả lưới 1×1 là chướng ngại vật; lưới 1×1 trống cho 0.",
+    "output": "In ra một số nguyên duy nhất là đáp án.",
+    "explanation": "Đầu ra của ba ví dụ công khai lần lượt là: 2; 2; -1. Đã được kiểm chứng bằng liệt kê độc lập hoặc mô phỏng trực tiếp.",
+    "hints": [
+      "Chạy BFS trên các ô trống, quét tối đa k ô theo mỗi trong bốn hướng và dừng khi gặp tường; một ô trống đã thăm không phải là chướng ngại vật, nên hãy tiếp tục quét tới các vị trí xa hơn."
+    ]
   }
 }

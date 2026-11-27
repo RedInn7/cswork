@@ -13,6 +13,21 @@
       "An all-ones square with a given bottom-right cell, when shrunk by one toward the left, the top or the top-left, gives all-ones squares ending at the neighboring cells. So the largest side at the current cell is determined by those three neighbors.",
       "Let dp[i][j] be the largest side of an all-ones square whose bottom-right corner is (i,j). For a 1 cell it is the minimum of the left, top and top-left values plus one; for a 0 cell it is 0. Only the previous row is needed, so roll the rows.",
       "Keep prev for the previous row and cur for the current one (1-indexed, column 0 always 0). For each cell, if it is '1' set cur[j] = 1 + min(prev[j], prev[j-1], cur[j-1]) and update the best side; otherwise set it to 0. Swap the rows after each row. The answer is best squared."
+    ],
+    "ja": [
+      "あるセルを右下とするすべて 1 の正方形は、左、上、左上のいずれかに 1 つ縮めると、隣接するセルで終わるすべて 1 の正方形になります。したがって現在のセルでの最大の一辺は、その 3 つの隣接セルで決まります。",
+      "dp[i][j] を、(i,j) を右下の角とするすべて 1 の正方形の最大の一辺とします。1 のセルでは左、上、左上の値の最小値に 1 を足したもの、0 のセルでは 0 です。必要なのは直前の行だけなので、行をローリングさせます。",
+      "直前の行を prev、現在の行を cur として持ちます(1 始まりで、列 0 は常に 0 です)。各セルについて '1' なら cur[j] = 1 + min(prev[j], prev[j-1], cur[j-1]) とし、best を更新します。そうでなければ 0 にします。各行のあと、行を入れ替えます。答えは best の 2 乗です。"
+    ],
+    "ko": [
+      "오른쪽 아래 칸이 정해진 전부 1인 정사각형을 왼쪽, 위, 왼쪽 위 방향으로 한 칸 줄이면 이웃한 칸에서 끝나는 전부 1인 정사각형이 됩니다. 따라서 현재 칸의 최대 변 길이는 그 세 이웃으로 결정됩니다.",
+      "dp[i][j]를 오른쪽 아래 꼭짓점이 (i,j)인 전부 1인 정사각형의 최대 변 길이라고 합시다. 1인 칸에서는 왼쪽, 위, 왼쪽 위 값의 최솟값에 1을 더한 값이고, 0인 칸에서는 0입니다. 이전 행만 필요하므로 행을 롤링합니다.",
+      "이전 행의 prev와 현재 행의 cur을 유지합니다(1-인덱스, 열 0은 항상 0). 각 칸이 '1'이면 cur[j] = 1 + min(prev[j], prev[j-1], cur[j-1])로 두고 best를 갱신하며, 아니면 0으로 둡니다. 행이 끝날 때마다 두 행을 교체합니다. 답은 best의 제곱입니다."
+    ],
+    "vi": [
+      "Một hình vuông toàn số 1 với ô góc dưới bên phải cho trước, khi thu nhỏ đi một đơn vị về phía bên trái, bên trên hoặc trên-trái, cho các hình vuông toàn số 1 kết thúc tại các ô lân cận. Vì vậy cạnh lớn nhất tại ô hiện tại được xác định bởi ba ô lân cận đó.",
+      "Gọi dp[i][j] là cạnh lớn nhất của hình vuông toàn số 1 có góc dưới bên phải là (i,j). Với ô là 1, nó bằng giá trị nhỏ nhất trong các giá trị bên trái, bên trên và trên-trái cộng một; với ô là 0, nó bằng 0. Chỉ cần hàng trước, nên cuộn các hàng.",
+      "Giữ prev cho hàng trước và cur cho hàng hiện tại (đánh chỉ số từ 1, cột 0 luôn là 0). Với mỗi ô, nếu là '1' thì đặt cur[j] = 1 + min(prev[j], prev[j-1], cur[j-1]) và cập nhật cạnh tốt nhất; ngược lại đặt nó bằng 0. Hoán đổi các hàng sau mỗi hàng. Đáp án là best bình phương."
     ]
   },
   "explanationEn": "## Approach\n\nUse a row-by-row rolling DP. When the current cell is 1, the largest side of a square with it as the bottom-right corner is the minimum of the left, top and top-left values plus 1.\n\n## Correctness\n\nA square of side s needs the three squares above (left, top, top-left) to have sides of at least s-1, together with the current 1. Taking the minimum of the three plus 1 does form a square, and anything larger would leave at least one side short. Taking the maximum side over all bottom-right corners and squaring it gives the answer.\n\n## Complexity\n\nTime O(nm), space O(m) apart from the input."

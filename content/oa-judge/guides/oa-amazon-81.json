@@ -13,6 +13,21 @@
       "There are exactly n/2 primaries, so the primaries' total memory can never exceed the sum of the n/2 largest values. The question is whether that bound is reachable.",
       "Sort the array and split it into the smaller half and the larger half: every value in the smaller half is at most every value in the larger half, so any one-to-one pairing satisfies backup <= primary, and the bound is reached.",
       "Sort the memory values ascending and print the sum of the elements at indices n/2..n-1; the sum may exceed 32 bits, so use a 64-bit integer."
+    ],
+    "ja": [
+      "プライマリはちょうど n/2 台なので、プライマリのメモリ合計は、最大の n/2 個の値の和を超えることはありません。問題は、この上界に到達できるかどうかです。",
+      "配列をソートして、小さいほうの半分と大きいほうの半分に分けます。小さいほうの半分のすべての値は、大きいほうの半分のすべての値以下なので、どの 1 対 1 のペアリングでも backup <= primary を満たし、上界に到達します。",
+      "メモリ値を昇順にソートし、インデックス n/2..n-1 の要素の和を出力します。和は 32 ビットを超える可能性があるので、64 ビット整数を使います。"
+    ],
+    "ko": [
+      "주 서버는 정확히 n/2대이므로 주 서버의 메모리 합은 가장 큰 n/2개 값의 합을 절대 넘을 수 없습니다. 문제는 이 상한에 도달할 수 있는가입니다.",
+      "배열을 정렬하고 작은 절반과 큰 절반으로 나눕니다. 작은 절반의 모든 값은 큰 절반의 모든 값 이하이므로 어떤 일대일 짝짓기도 backup <= primary를 만족하며, 상한에 도달합니다.",
+      "메모리 값을 오름차순으로 정렬하고 인덱스 n/2..n-1의 원소의 합을 출력합니다. 합이 32비트를 넘을 수 있으므로 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Có đúng n/2 máy chính, nên tổng bộ nhớ của các máy chính không bao giờ vượt quá tổng n/2 giá trị lớn nhất. Câu hỏi là cận này có đạt được hay không.",
+      "Sắp xếp mảng và chia thành nửa nhỏ và nửa lớn: mọi giá trị trong nửa nhỏ đều không lớn hơn mọi giá trị trong nửa lớn, nên mọi cách ghép một-một đều thỏa backup <= primary, và cận được đạt.",
+      "Sắp xếp các giá trị bộ nhớ tăng dần và in tổng các phần tử ở chỉ số n/2..n-1; tổng có thể vượt quá 32 bit nên dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nAfter sorting, choose the n/2 largest servers as primaries and the rest as backups.\n\n## Proof of correctness\n\nAny choice has only n/2 primaries, and their sum cannot exceed the sum of the larger half. Every value in the smaller half is <= every value in the larger half, so any one-to-one matching satisfies backup <= primary, reaching the upper bound.\n\n## Complexity\n\nO(n log n) time and O(n) space."

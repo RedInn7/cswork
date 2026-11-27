@@ -13,6 +13,21 @@
       "The usage values are guaranteed to be pairwise distinct, so the device with the largest usage is unique; you only need the ID that goes with the maximum.",
       "Read the records one by one, parse the four-digit usage (possibly with leading zeros) as an integer, and keep the current maximum usage and its device ID while scanning.",
       "Start the maximum at -1; whenever a record's usage is strictly greater than the current maximum, update both the maximum and the ID. After the scan, print that ID on its own line. Time O(n), extra space O(1)."
+    ],
+    "ja": [
+      "usage の値は互いに異なることが保証されているので、usage が最大のデバイスは一意です。必要なのは、最大値に対応する ID だけです。",
+      "レコードを 1 つずつ読み、4 桁の usage（先頭に 0 があってもよい）を整数として解釈し、走査しながら現在の最大の usage とそのデバイス ID を保持します。",
+      "最大値を -1 から始め、レコードの usage が現在の最大値より厳密に大きいときだけ、最大値と ID の両方を更新します。走査の後、その ID を 1 行で出力します。時間は O(n)、追加空間は O(1) です。"
+    ],
+    "ko": [
+      "usage 값은 서로 다름이 보장되므로 usage가 가장 큰 기기는 유일합니다. 최댓값에 대응하는 ID만 있으면 됩니다.",
+      "레코드를 하나씩 읽고, 네 자리 usage(앞에 0이 있을 수 있음)를 정수로 파싱하면서 스캔하는 동안 현재 최대 usage와 그 기기 ID를 유지하세요.",
+      "최댓값을 -1로 시작하세요. 레코드의 usage가 현재 최댓값보다 엄격히 크면 최댓값과 ID를 모두 갱신합니다. 스캔이 끝나면 그 ID를 한 줄에 출력하세요. 시간은 O(n), 추가 공간은 O(1)입니다."
+    ],
+    "vi": [
+      "Các giá trị usage được đảm bảo đôi một khác nhau, nên thiết bị có usage lớn nhất là duy nhất; bạn chỉ cần ID đi kèm với giá trị lớn nhất.",
+      "Đọc từng bản ghi, phân tích usage bốn chữ số (có thể có số 0 ở đầu) thành số nguyên, và giữ usage lớn nhất hiện tại cùng ID thiết bị của nó trong khi quét.",
+      "Khởi tạo giá trị lớn nhất bằng -1; mỗi khi usage của một bản ghi lớn hơn hẳn giá trị lớn nhất hiện tại thì cập nhật cả giá trị lớn nhất và ID. Sau khi quét xong, in ID đó trên một dòng riêng. Thời gian O(n), bộ nhớ phụ O(1)."
     ]
   },
   "explanationEn": "## Approach\n\nParse each record's ID and the integer given by its four digits, and keep the entry with the largest usage. The statement guarantees that usage values are distinct, so the maximum corresponds to a unique device.\n\n## Correctness\n\nAfter scanning the first i records, best is always the ID of the device with the largest usage among them. Update it when a new record has larger usage, otherwise keep it. When the scan ends, best therefore corresponds to the overall maximum usage.\n\n## Complexity\n\nTime O(n), extra space O(1)."

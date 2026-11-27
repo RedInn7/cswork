@@ -13,6 +13,21 @@
       "Once the root is fixed, the required direction of every edge is determined: from parent to child. So the cost of a root is the number of edges whose original direction is opposite to the parent-to-child direction.",
       "Count the edges to reverse with 0 as the root, then reroot: moving the root from a node v to an adjacent child w flips only the required direction of the edge between them, and every other edge keeps its requirement, so the cost changes by exactly 1 in one direction or the other.",
       "For an original edge u -> v, add (v, 0) to u's list and (u, 1) to v's list, where 1 means the edge must be reversed when traversed in that direction. BFS from 0 to get parents, the visiting order and cost[w] for each child, summing them into the cost of root 0. Then, in BFS order, set ans[w] = ans[parent[w]] + 1 - 2 * cost[w], and output the minimum of all ans."
+    ],
+    "ja": [
+      "根を固定すると、各辺に必要な向きは親から子へと決まります。したがって、ある根のコストは、元の向きが親から子への向きと逆になっている辺の数です。",
+      "0 を根としたときに反転が必要な辺の数を数え、その後に根を付け替えます。根を頂点 v から隣接する子 w に移すと、その間の辺の必要な向きだけが反転し、ほかの辺の要件は変わりません。したがってコストはどちらかの向きにちょうど 1 だけ変化します。",
+      "元の辺 u -> v について、u のリストに (v, 0)、v のリストに (u, 1) を追加します。ここで 1 は、その向きにたどるとその辺を反転する必要があることを表します。0 から BFS を行って、親、訪問順、各子の cost[w] を求め、根 0 のコストとして合計します。その後、BFS の順に ans[w] = ans[parent[w]] + 1 - 2 * cost[w] を設定し、すべての ans の最小値を出力します。"
+    ],
+    "ko": [
+      "루트를 고정하면 모든 간선에서 필요한 방향, 즉 부모에서 자식으로 향하는 방향이 정해집니다. 따라서 루트의 비용은 원래 방향이 부모에서 자식으로의 방향과 반대인 간선의 수입니다.",
+      "0을 루트로 했을 때 뒤집어야 하는 간선 수를 세고 루트를 옮깁니다. 루트를 노드 v에서 인접한 자식 w로 옮기면 두 노드 사이 간선의 필요한 방향만 바뀌고 나머지 간선의 요구는 그대로이므로, 비용은 어느 한쪽으로 정확히 1만큼만 변합니다.",
+      "원래 간선 u -> v에 대해 u의 목록에 (v, 0)을, v의 목록에 (u, 1)을 넣습니다. 여기서 1은 그 방향으로 지날 때 간선을 뒤집어야 함을 뜻합니다. 0에서 BFS를 하여 부모, 방문 순서, 각 자식의 cost[w]를 구하고 이를 합해 루트 0의 비용을 얻습니다. 그다음 BFS 순서대로 ans[w] = ans[parent[w]] + 1 - 2 * cost[w]로 두고 모든 ans의 최솟값을 출력합니다."
+    ],
+    "vi": [
+      "Khi đã cố định gốc, hướng cần có của mọi cạnh được xác định: từ cha xuống con. Vậy chi phí của một gốc là số cạnh có hướng ban đầu ngược với hướng cha xuống con.",
+      "Đếm số cạnh cần đảo khi gốc là 0, rồi đổi gốc: chuyển gốc từ nút v sang nút con kề w chỉ làm đổi hướng yêu cầu của cạnh nối giữa chúng, mọi cạnh khác giữ nguyên yêu cầu, nên chi phí thay đổi đúng 1 theo một chiều hoặc chiều kia.",
+      "Với cạnh gốc u -> v, thêm (v, 0) vào danh sách của u và (u, 1) vào danh sách của v, trong đó 1 nghĩa là cạnh phải đảo khi đi theo hướng đó. BFS từ 0 để lấy cha, thứ tự thăm và cost[w] của mỗi nút con, cộng chúng vào chi phí của gốc 0. Sau đó, theo thứ tự BFS, đặt ans[w] = ans[parent[w]] + 1 - 2 * cost[w], và in ra giá trị nhỏ nhất trong mọi ans."
     ]
   },
   "explanationEn": "## Approach\n\nFirst count the reversed edges with 0 as the root, then reroot: when the root moves to a child along an edge that originally points from parent to child, one more reversal is needed; if that edge was originally reversed, one fewer is needed.\n\n## Correctness\n\nRerooting between adjacent nodes only changes the target direction of the edge between them; every other edge keeps the same required direction relative to the root, so the cost changes by exactly ±1. Traversing all nodes gives the cost of every root, and we take the minimum.\n\n## Complexity\n\nTime O(n), space O(n)."

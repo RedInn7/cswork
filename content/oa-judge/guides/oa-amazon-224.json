@@ -13,6 +13,21 @@
       "The route never needs to go all the way around: the edges it actually walks form one contiguous arc covering every target, so the question becomes which part of the ring can be skipped.",
       "Sort the targets and look at the gaps between adjacent targets, including the wrap-around gap from the last back to the first. Walking from one end to the other covers the whole ring except one gap, so the skipped gap should be as large as possible.",
       "Sort the targets; the wrap-around gap is the first target plus total minus the last target; compare every pair of adjacent targets and take the largest gap overall; the answer is total minus that largest gap. With a single target the gap is exactly total and the answer is 0."
+    ],
+    "ja": [
+      "経路がリングを 1 周する必要はありません。実際に歩く辺は、すべての対象を覆う 1 本の連続した弧になるので、問題はリングのどの部分を飛ばせるかに帰着します。",
+      "対象をソートし、隣り合う対象の間の間隔を見ます。最後から最初に戻る巡回の間隔も含みます。一方の端から他方の端まで歩くと、1 つの間隔を除いてリング全体を覆うので、飛ばす間隔は最大にすべきです。",
+      "対象をソートします。巡回の間隔は 最初の対象 + total − 最後の対象 です。隣り合うすべての対象の組も比べて、全体で最大の間隔を求め、答えは total からその最大の間隔を引いた値です。対象が 1 つのとき、間隔はちょうど total なので答えは 0 です。"
+    ],
+    "ko": [
+      "경로가 링을 한 바퀴 다 돌 필요는 없습니다. 실제로 걷는 간선들은 모든 대상을 덮는 하나의 연속된 호를 이루므로, 링의 어느 부분을 건너뛸 수 있는지가 문제가 됩니다.",
+      "대상을 정렬하고 인접한 대상 사이의 간격(마지막에서 처음으로 돌아오는 순환 간격 포함)을 봅니다. 한쪽 끝에서 다른 쪽 끝까지 걸으면 간격 하나를 제외한 링 전체를 덮으므로, 건너뛰는 간격은 가능한 한 커야 합니다.",
+      "대상을 정렬합니다. 순환 간격은 첫 대상 + total − 마지막 대상이고, 인접한 모든 쌍과 비교해 가장 큰 간격을 구합니다. 정답은 total에서 그 최대 간격을 뺀 값입니다. 대상이 하나뿐이면 간격이 정확히 total이므로 정답은 0입니다."
+    ],
+    "vi": [
+      "Lộ trình không bao giờ cần đi trọn một vòng: các cạnh thực sự đi qua tạo thành một cung liên tục phủ mọi mục tiêu, nên câu hỏi trở thành phần nào của vòng có thể bỏ qua.",
+      "Sắp xếp các mục tiêu và xét các khoảng trống giữa hai mục tiêu kề nhau, kể cả khoảng trống vòng từ mục tiêu cuối về mục tiêu đầu. Đi từ đầu này đến đầu kia bao phủ toàn bộ vòng trừ một khoảng trống, nên khoảng trống bị bỏ qua cần lớn nhất có thể.",
+      "Sắp xếp các mục tiêu; khoảng trống vòng qua là mục tiêu đầu cộng total trừ mục tiêu cuối; so sánh mọi cặp mục tiêu kề nhau và lấy khoảng trống lớn nhất; đáp án là total trừ khoảng trống lớn nhất đó. Với một mục tiêu duy nhất, khoảng trống đúng bằng total và đáp án là 0."
     ]
   },
   "explanationEn": "## Approach\n\nSort the targets and compute the gaps between adjacent targets, including the wrap-around gap from the last back to the first; the answer is the ring length minus the largest gap.\n\n## Proof of correctness\n\nA route that goes all the way around the ring is never better than the route obtained by dropping one gap. If the route does not cover the whole ring, the set of edges it uses lies within some path that covers all targets, so the route is at least as long as that path. The part such a path can omit contains no targets, and the longest omittable part is exactly the largest arc between adjacent targets; walking the remaining path from one end to the other attains this lower bound.\n\n## Complexity\n\nTime O(n log n), space O(n)."

@@ -12,5 +12,38 @@
       "First look up the index of the complement seen earlier, then record the current position.",
       "You can also enumerate all i<j directly, since n is at most 10."
     ]
+  },
+  "ja": {
+    "title": "Two Sum の一意な添字ペア",
+    "description": "整数配列 nums と整数 target が与えられます。nums[i]+nums[j]=target を満たす 2 つの異なる添字 i と j を返してください。入力には、有効な順序なしの添字ペアがちょうど 1 つあることが保証されています。本サイトでは、出力を 0 始まりの添字の昇順 i<j に固定します。同じ値が異なる位置から来ることはありますが、同じ添字を 2 回使うことはできません。出典の生のテキストでは返す内容の記述が不完全ですが、2 つの例の説明はどちらも 2 つの数の添字を返しています。修正版の 3 言語のソースコードは、現在の添字を加える前に、それ以前の添字を検索しています。そのため本サイトでは、添字が異なること、および出力順を明示しています。元の例 1 には 11 と 15 が含まれていますが、これは元の値の範囲を超えています。公式のテストでは使われておらず、これに基づいて制約を広げてはいけません。",
+    "input": "1 行目に n target、2 行目に n 個の値 nums[i] が与えられます。元の制約の全体は 2≤n≤10、-10≤nums[i]≤10、-10≤target≤10 で、nums[i]+nums[j]=target を満たす i<j のペアがちょうど 1 つ存在します。標準入力と添字の昇順出力は、本サイトの形式です。",
+    "output": "0≤i<j<n かつ nums[i]+nums[j]=target を満たす 2 つの整数 i j を、空白区切りで出力してください。返すのは要素の値ではなく添字です。解がない入力や、複数の解がある入力は含まれません。",
+    "explanation": "1 つ目の例は、元の有効な例 2 に由来します。2+7=9 なので、0 1 を出力します。2 つ目の例では、2 つの 3 は異なる位置にあるので、0 1 を出力します。3 つ目の例では -3+3=0 なので、0 2 を出力します。位置 1 の 0 を 2 回使うことはできません。",
+    "hints": [
+      "まず、それ以前に現れた補数の添字を検索し、その後で現在の位置を記録してください。",
+      "n は高々 10 なので、i<j のすべての組を直接列挙することもできます。"
+    ]
+  },
+  "ko": {
+    "title": "두 수의 합에 대한 유일한 인덱스 쌍",
+    "description": "정수 배열 nums와 정수 target이 주어졌을 때 nums[i]+nums[j]=target을 만족하는 서로 다른 두 인덱스 i와 j를 반환합니다. 입력에는 유효한 순서 없는 인덱스 쌍이 정확히 하나 있음이 보장됩니다. 이 사이트는 출력을 오름차순의 0 기반 인덱스 i<j로 고정합니다. 같은 값이 서로 다른 위치에 있는 것은 허용되지만 같은 인덱스를 두 번 쓸 수는 없습니다. 출처 원문의 반환 설명은 불완전하지만 두 예시의 설명은 모두 두 수의 인덱스를 반환하는 것을 분명히 하며, 고정된 버전의 세 언어 소스 코드는 현재 인덱스를 추가하기 전에 앞선 인덱스를 먼저 조회하므로, 이 사이트는 서로 다른 인덱스와 출력 순서를 명시적으로 밝힙니다. 원래 예시 1에는 11과 15가 있어 원래의 값 범위를 벗어나므로 공식 테스트에서는 사용하지 않으며, 이를 근거로 제약을 확장해서는 안 됩니다.",
+    "input": "첫째 줄에 n target이 주어지고, 둘째 줄에 n개의 값 nums[i]가 주어집니다. 원래 제약 전체: 2≤n≤10, -10≤nums[i]≤10, -10≤target≤10이며, nums[i]+nums[j]=target을 만족하는 쌍 i<j가 정확히 하나 존재합니다. 표준 입력과 오름차순 인덱스 출력은 이 사이트의 프로토콜입니다.",
+    "output": "0≤i<j<n이고 nums[i]+nums[j]=target을 만족하는 두 정수 i j를 공백으로 구분하여 출력합니다. 원소의 값이 아니라 인덱스를 반환합니다. 해가 없거나 해가 여러 개인 입력은 포함되지 않습니다.",
+    "explanation": "첫 번째 예시는 유효한 원래 예시 2에서 가져온 것으로, 2+7=9이므로 0 1을 출력합니다. 두 번째 예시에서는 두 개의 3이 서로 다른 위치에서 나온 것이므로 0 1을 출력합니다. 세 번째 예시에서는 -3+3=0이므로 0 2를 출력하며, 위치 1의 0은 두 번 사용할 수 없습니다.",
+    "hints": [
+      "먼저 앞서 본 보수(complement)의 인덱스를 조회한 뒤 현재 위치를 기록하세요.",
+      "n이 최대 10이므로 모든 i<j를 직접 열거해도 됩니다."
+    ]
+  },
+  "vi": {
+    "title": "Cặp chỉ số duy nhất của Two Sum",
+    "description": "Cho một mảng số nguyên nums và một số nguyên target, trả về hai chỉ số phân biệt i và j sao cho nums[i]+nums[j]=target. Đầu vào được đảm bảo có đúng một cặp chỉ số không có thứ tự hợp lệ. Trang này cố định đầu ra là các chỉ số tính từ 0 theo thứ tự tăng dần i<j; các giá trị bằng nhau có thể đến từ các vị trí khác nhau, nhưng không được dùng cùng một chỉ số hai lần. Phần mô tả giá trị trả về trong văn bản thô của nguồn chưa đầy đủ, trong khi giải thích của cả hai ví dụ đều rõ ràng là trả về chỉ số của hai số; mã nguồn bản đã sửa ở cả ba ngôn ngữ tra cứu các chỉ số trước đó rồi mới thêm chỉ số hiện tại, nên trang này nêu tường minh các chỉ số phân biệt và thứ tự đầu ra. Ví dụ gốc 1 chứa 11 và 15, vượt quá phạm vi giá trị gốc; nó không được dùng trong các bài kiểm tra chính thức, và không được mở rộng ràng buộc dựa vào nó.",
+    "input": "Dòng đầu chứa n target; dòng thứ hai chứa n giá trị nums[i]. Ràng buộc gốc đầy đủ: 2≤n≤10, -10≤nums[i]≤10, -10≤target≤10, và có đúng một cặp i<j thỏa nums[i]+nums[j]=target. Đầu vào chuẩn và đầu ra chỉ số tăng dần là giao thức của trang này.",
+    "output": "In ra hai số nguyên cách nhau bằng dấu cách i j sao cho 0≤i<j<n và nums[i]+nums[j]=target. Trả về các chỉ số, không phải giá trị phần tử. Các đầu vào không có nghiệm hoặc có nhiều nghiệm không nằm trong bộ test.",
+    "explanation": "Ví dụ đầu tiên đến từ ví dụ gốc 2 hợp lệ: 2+7=9, nên in 0 1. Trong ví dụ thứ hai, hai số 3 đến từ các vị trí khác nhau, nên in 0 1. Trong ví dụ thứ ba, -3+3=0, nên in 0 2; số 0 ở vị trí 1 không thể dùng hai lần.",
+    "hints": [
+      "Trước hết tra cứu chỉ số của phần bù đã gặp trước đó, rồi mới ghi lại vị trí hiện tại.",
+      "Cũng có thể liệt kê trực tiếp mọi cặp i<j, vì n tối đa là 10."
+    ]
   }
 }

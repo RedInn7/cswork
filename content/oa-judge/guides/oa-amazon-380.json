@@ -13,6 +13,21 @@
       "Every move is guaranteed to have data at from and none at to, so all you need is the set of occupied positions.",
       "A move just deletes from and inserts to in that set; which piece of data moved does not matter.",
       "Put the initial positions in a hash set, apply the m moves in order, then sort the set and print its size followed by the positions in ascending order (the second line is empty when n=0)."
+    ],
+    "ja": [
+      "各移動では、from にデータがあり to にはないことが保証されているので、必要なのは使用中の位置の集合だけです。",
+      "移動は、その集合から from を削除して to を挿入するだけです。どのデータが動いたかは関係ありません。",
+      "初期位置をハッシュ集合に入れ、m 個の移動を順に適用してから、集合をソートして、サイズに続いて位置を昇順に出力します (n=0 のとき 2 行目は空です)。"
+    ],
+    "ko": [
+      "모든 이동에서 from에는 데이터가 있고 to에는 없음이 보장되므로, 점유된 위치의 집합만 알면 충분합니다.",
+      "이동은 그 집합에서 from을 삭제하고 to를 삽입하는 것일 뿐이며, 어느 데이터가 이동했는지는 중요하지 않습니다.",
+      "초기 위치를 해시 집합에 넣고 m번의 이동을 순서대로 적용한 뒤, 집합을 정렬해 크기와 위치를 오름차순으로 출력합니다 (n=0이면 두 번째 줄은 비어 있습니다)."
+    ],
+    "vi": [
+      "Mỗi lần di chuyển đều được đảm bảo có dữ liệu ở from và không có ở to, nên chỉ cần quản lý tập các vị trí đang có dữ liệu.",
+      "Một lần di chuyển chỉ xóa from và chèn to vào tập đó; dữ liệu nào được chuyển không quan trọng.",
+      "Đưa các vị trí ban đầu vào một hash set, áp dụng m lần di chuyển theo thứ tự, rồi sắp xếp tập đó và in kích thước của nó, theo sau là các vị trí theo thứ tự tăng dần (dòng thứ hai để trống khi n=0)."
     ]
   },
   "explanationEn": "## Approach\n\nA set stores the positions that hold data; for each move, remove from and add to; sort at the end.\n\n## Proof of correctness\n\nInitially the set equals the set of occupied positions. A valid move removes exactly one old position and adds one empty position, leaving the others unchanged, so every step keeps the two equal; the final sort only changes the output order.\n\n## Complexity\n\nExpected O(m+n log n) time and O(n+m) space including the input."

@@ -11,5 +11,35 @@
     "hints": [
       "First compute prefix sums of 0s in the initial string. Flipping the whole string only toggles one boolean state; when querying position i, the answer is the original prefix count of 0s if unflipped, or (i+1) minus the original prefix count of 0s if flipped."
     ]
+  },
+  "ja": {
+    "title": "2進文字列の反転と接頭辞内の 0 の個数",
+    "description": "0 と 1 からなる文字列が与えられ、操作を順に処理します。`flip` は文字列全体の 0 と 1 を入れ替えます。`count i` は、現在の文字列の添字 0 から i まで(i を含む)にある 0 の個数を尋ねます。\n\n標準入出力、このサイトの補足の範囲、および例は、この問題の説明に従います。",
+    "input": "1行目に n q(1≤n≤200000、0≤q≤8000)、2行目に長さ n の2進文字列、続く q 行に操作 `flip` または `count i`(0≤i<n)が与えられます。q と添字の範囲はサイトの補足で、標準入力の形式を明確にし、標準出力をジャッジの制限内に収めるためのものです。操作中の添字は0始まりです。",
+    "output": "count の答えを、クエリが現れる順に空白区切りで出力してください。count 操作がなければ空行を出力してください。",
+    "explanation": "まず、初期文字列の 0 の累積和を計算します。文字列全体の反転は真偽値の状態を切り替えるだけです。位置 i をクエリするとき、反転していなければ元の 0 の累積カウントが答えで、反転していれば (i+1) から元の 0 の累積カウントを引いたものが答えです。",
+    "hints": [
+      "まず、初期文字列の 0 の累積和を計算します。文字列全体の反転は真偽値の状態を切り替えるだけです。位置 i をクエリするとき、反転していなければ元の 0 の累積カウントが答えで、反転していれば (i+1) から元の 0 の累積カウントを引いたものが答えです。"
+    ]
+  },
+  "ko": {
+    "title": "이진 문자열 뒤집기와 접두사 0의 개수",
+    "description": "0과 1로 이루어진 문자열이 주어지고 연산을 순서대로 처리합니다. `flip`은 문자열 전체의 0과 1을 맞바꿉니다. `count i`는 현재 문자열의 인덱스 0부터 i까지(i 포함)에 있는 0의 개수를 묻습니다.\n\n표준 입출력, 이 사이트의 보충 범위, 예시는 이 문제의 설명을 따릅니다.",
+    "input": "첫째 줄에 n q (1≤n≤200000, 0≤q≤8000)가 주어지고, 둘째 줄에 길이 n인 이진 문자열이 주어지며, 이어서 q개의 줄에 연산 `flip` 또는 `count i`(0≤i<n)가 주어집니다. q와 인덱스의 범위는 표준 입력 규약을 명확히 하고 표준 출력을 채점기의 한도 안에 두기 위한 사이트 보충입니다. 연산의 인덱스는 0부터 셉니다.",
+    "output": "count 결과를 질의가 나타난 순서대로 공백으로 구분하여 출력합니다. count 연산이 없으면 빈 줄을 출력합니다.",
+    "explanation": "먼저 초기 문자열에서 0의 접두사 합을 계산합니다. 문자열 전체를 뒤집는 것은 불리언 상태 하나를 토글하는 것과 같습니다. 위치 i를 질의할 때, 뒤집히지 않았다면 답은 원래의 0의 접두사 개수이고, 뒤집혔다면 (i+1)에서 원래의 0의 접두사 개수를 뺀 값입니다.",
+    "hints": [
+      "먼저 초기 문자열에서 0의 접두사 합을 계산합니다. 문자열 전체를 뒤집는 것은 불리언 상태 하나를 토글하는 것과 같습니다. 위치 i를 질의할 때, 뒤집히지 않았다면 답은 원래의 0의 접두사 개수이고, 뒤집혔다면 (i+1)에서 원래의 0의 접두사 개수를 뺀 값입니다."
+    ]
+  },
+  "vi": {
+    "title": "Lật xâu nhị phân và đếm số 0 tiền tố",
+    "description": "Cho một xâu gồm các số 0 và 1, xử lý các thao tác theo thứ tự. `flip` đổi 0 và 1 trên toàn xâu; `count i` hỏi số lượng số 0 trong xâu hiện tại từ chỉ số 0 đến i (bao gồm cả i).\n\nĐầu vào/đầu ra chuẩn, các khoảng bổ sung của trang này và các ví dụ theo mô tả của bài này.",
+    "input": "Dòng đầu tiên chứa n q (1≤n≤200000, 0≤q≤8000); dòng thứ hai chứa một xâu nhị phân độ dài n; sau đó q dòng thao tác: `flip` hoặc `count i`, trong đó 0≤i<n. Các khoảng của q và các chỉ số là bổ sung của trang để làm rõ giao thức đầu vào chuẩn và giữ đầu ra chuẩn trong giới hạn của trình chấm. Chỉ số trong các thao tác tính từ 0.",
+    "output": "In các số đếm theo thứ tự các truy vấn xuất hiện, cách nhau bởi dấu cách; nếu không có thao tác count nào, in một dòng trống.",
+    "explanation": "Trước hết tính tổng tiền tố số 0 của xâu ban đầu. Lật toàn bộ xâu chỉ đảo một trạng thái boolean; khi truy vấn vị trí i, đáp án là số 0 tiền tố gốc nếu chưa lật, hoặc (i+1) trừ đi số 0 tiền tố gốc nếu đã lật.",
+    "hints": [
+      "Trước hết tính tổng tiền tố số 0 của xâu ban đầu. Lật toàn bộ xâu chỉ đảo một trạng thái boolean; khi truy vấn vị trí i, đáp án là số 0 tiền tố gốc nếu chưa lật, hoặc (i+1) trừ đi số 0 tiền tố gốc nếu đã lật."
+    ]
   }
 }

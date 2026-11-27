@@ -13,6 +13,21 @@
       "Each operation sorts a proper substring, so every operation leaves at least one end untouched. Work out when one operation suffices and when two can never be enough.",
       "One is enough when the first character is already a global minimum or the last is already a global maximum: sort the rest. Two usually suffice: first move a minimum to the front or a maximum to the end, then sort the remainder. The only exception is a unique maximum first and a unique minimum last, where the first step cannot fix either end.",
       "Check in order: already sorted, print 0; s[0] equals the smallest character or s[n-1] equals the largest, print 1; s[0] is the largest character and occurs once while s[n-1] is the smallest and occurs once, print 3 (sort the first n-1, the last n-1, then the first n-1 characters); otherwise print 2."
+    ],
+    "ja": [
+      "各操作は真部分文字列をソートするので、どの操作でも少なくとも片方の端は変更されません。1 回で足りるのはいつか、2 回でも決して足りないのはいつかを考えてみてください。",
+      "先頭の文字がすでに全体の最小値であるか、末尾の文字がすでに全体の最大値であれば、残りをソートする 1 回で足ります。多くの場合は 2 回で足ります。まず最小値を先頭に、または最大値を末尾に移し、その後で残りをソートします。唯一の例外は、先頭が唯一の最大値で末尾が唯一の最小値の場合で、最初の 1 手ではどちらの端も直せません。",
+      "順に確認します。すでにソート済みなら 0 を出力します。s[0] が最小の文字に等しいか、s[n-1] が最大の文字に等しければ 1 を出力します。s[0] が最大の文字でかつ 1 回だけ現れ、s[n-1] が最小の文字でかつ 1 回だけ現れるなら 3 を出力します（先頭の n-1 文字、末尾の n-1 文字、再び先頭の n-1 文字の順にソートします）。それ以外は 2 を出力します。"
+    ],
+    "ko": [
+      "한 번의 연산은 진부분 문자열을 정렬하므로 항상 적어도 한쪽 끝은 건드리지 않습니다. 연산 1번으로 충분한 경우와 2번으로도 절대 부족한 경우를 생각해 보세요.",
+      "첫 문자가 이미 전체 최솟값이거나 마지막 문자가 이미 전체 최댓값이면 나머지를 정렬하는 1번으로 충분합니다. 보통은 2번이면 됩니다. 먼저 최솟값을 앞으로, 또는 최댓값을 뒤로 옮긴 다음 나머지를 정렬합니다. 유일한 예외는 첫 문자가 유일한 최댓값이고 마지막 문자가 유일한 최솟값인 경우로, 첫 단계가 어느 쪽 끝도 고치지 못합니다.",
+      "순서대로 확인합니다. 이미 정렬되어 있으면 0을 출력합니다. s[0]이 가장 작은 문자와 같거나 s[n-1]이 가장 큰 문자와 같으면 1을 출력합니다. s[0]이 가장 큰 문자이고 한 번만 나타나며 s[n-1]이 가장 작은 문자이고 한 번만 나타나면 3을 출력합니다(앞 n-1개, 뒤 n-1개, 다시 앞 n-1개의 문자를 정렬). 그렇지 않으면 2를 출력합니다."
+    ],
+    "vi": [
+      "Mỗi thao tác sắp xếp một xâu con thực sự, nên sau mỗi thao tác ít nhất một đầu vẫn chưa bị đụng đến. Hãy xác định khi nào một thao tác là đủ và khi nào hai thao tác không bao giờ đủ.",
+      "Một thao tác là đủ khi ký tự đầu đã là giá trị nhỏ nhất toàn xâu hoặc ký tự cuối đã là giá trị lớn nhất: sắp xếp phần còn lại. Hai thao tác thường là đủ: trước hết đưa một giá trị nhỏ nhất lên đầu hoặc một giá trị lớn nhất xuống cuối, rồi sắp xếp phần còn lại. Ngoại lệ duy nhất là giá trị lớn nhất duy nhất ở đầu và giá trị nhỏ nhất duy nhất ở cuối, khi đó bước đầu không thể sửa được đầu nào.",
+      "Kiểm tra theo thứ tự: đã sắp xếp thì in 0; s[0] bằng ký tự nhỏ nhất hoặc s[n-1] bằng ký tự lớn nhất thì in 1; s[0] là ký tự lớn nhất và chỉ xuất hiện một lần trong khi s[n-1] là ký tự nhỏ nhất và chỉ xuất hiện một lần thì in 3 (sắp xếp n-1 ký tự đầu, n-1 ký tự cuối, rồi lại n-1 ký tự đầu); ngược lại in 2."
     ]
   },
   "explanationEn": "## Approach\n\nIf already sorted, the answer is 0. If the first character is the global minimum or the last character is the global maximum, sorting the rest takes only 1. Otherwise, if the first character is the unique maximum and the last character is the unique minimum, 3 are needed; in every other case, 2.\n\n## Proof of correctness\n\nOne operation must leave at least one end in place, so it requires that end to already hold its correct final extreme value. Two operations can first move a minimum to the front or a maximum to the end, then sort the rest; the only exception is a unique maximum at the front and a unique minimum at the end, where no proper substring can handle both ends at once, the first step cannot fix any end, and 2 operations are not enough. In that case, sorting the first n-1 characters, then the last n-1, then the first n-1 again completes it in 3.\n\n## Complexity\n\nO(n) time and O(1) space."

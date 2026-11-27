@@ -13,6 +13,21 @@
       "Whether a string is valid depends only on each pair of adjacent letters, so when appending a character you only need to know the current last letter.",
       "Let v[c] be the number of valid strings ending in letter c; when the length grows by one, the new v[c] is the sum of the old v values over all last letters within distance d of c.",
       "Start with all 26 states equal to 1; repeat n-1 times: build prefix sums of the old v, then take the sum over [c-d, c+d] (clipped to 0..25) in O(1) as the new v[c], reducing modulo 1000000007 throughout; finally output the sum of the 26 values."
+    ],
+    "ja": [
+      "文字列が有効かどうかは隣り合う文字の組だけで決まるので、文字を末尾に追加するときは現在の最後の文字だけ分かればよいです。",
+      "v[c] を文字 c で終わる有効な文字列の個数とします。長さが 1 増えるとき、新しい v[c] は、c との距離が d 以内にあるすべての最後の文字についての古い v の和になります。",
+      "26 個の状態をすべて 1 で初期化し、n-1 回繰り返します。古い v の累積和を作り、[c-d, c+d]（0..25 にクリップ）の区間和を O(1) で求めて新しい v[c] とし、そのつど 1000000007 で割った余りを取ります。最後に 26 個の値の和を出力します。"
+    ],
+    "ko": [
+      "문자열이 유효한지는 인접한 두 글자 쌍에만 달려 있으므로, 글자를 덧붙일 때는 현재의 마지막 글자만 알면 됩니다.",
+      "v[c]를 글자 c로 끝나는 유효한 문자열의 개수라고 하면, 길이가 1 늘어날 때 새 v[c]는 c와의 거리가 d 이내인 모든 마지막 글자에 대한 이전 v 값의 합입니다.",
+      "26개 상태를 모두 1로 시작합니다. n-1번 반복하면서, 이전 v의 누적 합을 만든 뒤 [c-d, c+d] 구간(0..25로 잘라냄)의 합을 O(1)에 구해 새 v[c]로 삼고, 계산 내내 1000000007로 나머지를 취합니다. 마지막으로 26개 값의 합을 출력합니다."
+    ],
+    "vi": [
+      "Một xâu có hợp lệ hay không chỉ phụ thuộc vào từng cặp chữ cái liền kề, nên khi thêm một ký tự bạn chỉ cần biết chữ cái cuối hiện tại.",
+      "Gọi v[c] là số xâu hợp lệ kết thúc bằng chữ cái c; khi độ dài tăng thêm một, v[c] mới bằng tổng các giá trị v cũ của mọi chữ cái cuối cách c không quá d.",
+      "Khởi tạo cả 26 trạng thái bằng 1; lặp n-1 lần: xây tổng tiền tố của v cũ, rồi lấy tổng trên đoạn [c-d, c+d] (cắt về 0..25) trong O(1) làm v[c] mới, luôn lấy modulo 1000000007; cuối cùng in ra tổng của 26 giá trị."
     ]
   },
   "explanationEn": "## Approach\n\nRun a dynamic program over the last letter; a new character can only transition from last-letter states that differ from it by at most d.\n\n## Proof of correctness\n\nClassify strings by their last letter. Appending character c is valid if and only if the distance between the old last letter and c is at most d; therefore this transition counts every valid string without omission or duplication.\n\n## Complexity\n\nO(26n), space O(26)."

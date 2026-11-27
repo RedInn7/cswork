@@ -13,5 +13,41 @@
       "Go greedily from high indices to low ones, buying whenever you can.",
       "Take the modulo only when accumulating the profit; never compare values after the modulo."
     ]
+  },
+  "ja": {
+    "title": "利益の最大化",
+    "description": "互いに異なる n 個の商品を購入して転売できます。商品 i（添字は 0 始まり）の価格は cost[i] で、転売すると 2^i の利益が得られます。所持金は x で、各商品は高々 1 回しか購入できず、購入した商品の価格の合計は x を超えられません。得られる最大の利益を求めてください。答えが大きくなる場合があるので、10^9+7 で割った余りを出力します。",
+    "input": "1 行目に 2 つの整数 n と x、2 行目に n 個の整数 cost[0..n−1] が与えられます。1≤n≤100000、1≤cost[i]≤10^9、1≤x≤10^14。",
+    "output": "整数を 1 つ出力します。利益の最大値を 10^9+7 で割った余りです。",
+    "explanation": "例 1：cost=[10,20,14,40,50]、x=70。0、1、2 を買う（コスト 44）と利益は 7、0 と 4（コスト 60）では 17、1 と 4（コスト 70）では 18、2 と 4（コスト 64）では 20 となり、これが最大です。\n例 2：両方の商品を買うとちょうど 7 を使い、利益は 1+2=3 です。\n例 3：添字 2 の商品は買えません。添字 0 と 1 の商品を買うと利益は 3 です。",
+    "hints": [
+      "2^i は、それより小さいすべての添字の利益の合計より大きくなります。",
+      "添字の大きいほうから小さいほうへ貪欲に進み、買えるなら買います。",
+      "剰余は利益を加算するときだけに取り、剰余を取った後の値同士を比較してはいけません。"
+    ]
+  },
+  "ko": {
+    "title": "Fortinet OA #1: 최대 이익",
+    "description": "서로 다른 n개의 물건을 사서 되팔 수 있습니다. i번 물건(인덱스는 0부터)의 가격은 cost[i]이고, 되팔면 2^i의 이익이 생깁니다. 가진 돈은 x이고, 각 물건은 최대 한 번만 살 수 있으며, 산 물건의 가격 합은 x를 넘을 수 없습니다. 얻을 수 있는 최대 이익을 구하세요. 답이 매우 클 수 있으므로 10^9+7로 나눈 나머지를 출력합니다.",
+    "input": "첫 번째 줄에 두 정수 n과 x가 주어지고, 두 번째 줄에 n개의 정수 cost[0..n−1]이 주어집니다. 1≤n≤100000, 1≤cost[i]≤10^9, 1≤x≤10^14.",
+    "output": "정수 하나를 출력합니다. 최대 이익을 10^9+7로 나눈 나머지입니다.",
+    "explanation": "예제 1: cost=[10,20,14,40,50], x=70. 0, 1, 2번을 사면(비용 44) 이익은 7, 0번과 4번(비용 60)은 17, 1번과 4번(비용 70)은 18, 2번과 4번(비용 64)은 20으로 이것이 최대입니다.\n예제 2: 두 물건을 모두 사면 정확히 7을 쓰고 이익은 1+2=3입니다.\n예제 3: 인덱스 2의 물건은 살 수 없습니다. 인덱스 0과 1의 물건을 사면 이익은 3입니다.",
+    "hints": [
+      "2^i는 그보다 작은 모든 인덱스의 이익 합보다 큽니다.",
+      "큰 인덱스부터 작은 인덱스 순으로 살 수 있으면 바로 사는 탐욕법을 쓰세요.",
+      "나머지 연산은 이익을 누적할 때만 적용하고, 나머지를 취한 값끼리는 절대 비교하지 마세요."
+    ]
+  },
+  "vi": {
+    "title": "Fortinet OA #1: Lợi nhuận tối đa",
+    "description": "Có n món hàng khác nhau mà bạn có thể mua rồi bán lại. Món i (chỉ số bắt đầu từ 0) có giá mua cost[i], và bán lại mang về lợi nhuận 2^i. Bạn có x đơn vị tiền, mỗi món chỉ được mua tối đa một lần, và tổng giá của các món đã mua không được vượt quá x. Tìm lợi nhuận lớn nhất có thể đạt được. Đáp án có thể rất lớn nên in ra theo modulo 10^9+7.",
+    "input": "Dòng đầu chứa hai số nguyên n và x; dòng thứ hai chứa n số nguyên cost[0..n−1]. 1≤n≤100000, 1≤cost[i]≤10^9, 1≤x≤10^14.",
+    "output": "In ra một số nguyên: lợi nhuận lớn nhất theo modulo 10^9+7.",
+    "explanation": "Ví dụ 1: cost=[10,20,14,40,50], x=70. Mua 0,1,2 (tổng giá 44) được lợi nhuận 7; mua 0 và 4 (giá 60) được 17; mua 1 và 4 (giá 70) được 18; mua 2 và 4 (giá 64) được 20, đây là giá trị lớn nhất.\nVí dụ 2: mua cả hai món tốn đúng 7, lợi nhuận 1+2=3.\nVí dụ 3: món ở chỉ số 2 không đủ tiền mua; mua các món ở chỉ số 0 và 1 được lợi nhuận 3.",
+    "hints": [
+      "2^i lớn hơn tổng lợi nhuận của mọi chỉ số nhỏ hơn.",
+      "Duyệt tham lam từ chỉ số cao xuống thấp, cứ mua được là mua.",
+      "Chỉ lấy modulo khi cộng dồn lợi nhuận; không bao giờ so sánh các giá trị sau khi đã lấy modulo."
+    ]
   }
 }

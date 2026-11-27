@@ -11,5 +11,35 @@
     "hints": [
       "First make sure you understand the original operation rules and the strict comparison condition."
     ]
+  },
+  "ja": {
+    "title": "3 ラウンドの組み合わせで全員に勝てるプレイヤー",
+    "description": "各プレイヤーは 3 つのブースト値を持ちます。各試合は 3 ラウンドで、各値はちょうど 1 回ずつ使われます。双方の値の並べ方をうまく選んで、X の値が Y の値を少なくとも 2 ラウンドで厳密に上回るようにできるとき、X は Y に勝つとします。他の全プレイヤーに個別に勝てるプレイヤーの数を数えてください。相手ごとに異なる並べ方を使ってよく、引き分けは勝ちに数えません。修正済みの元の問題文には、そのような組み合わせが「存在する」ことが明記されています。このサイトでは、初期の要約にあった誤った表現「任意の順列で」を訂正しています。元の問題では各プレイヤーの 3 つの値は互いに異なるとされていましたが、初期の要約では重複を制限していませんでした。このサイトは重複を許すより広い範囲を明示的に採用しており、勝敗のルールは変わりません。",
+    "input": "1 行目に n、続く n 行にそれぞれ 3 つのブースト値が与えられます。元の問題と要約に共通の範囲: 2≤n≤100000、1≤ブースト値≤10^9。このサイトによる範囲の拡張: 値は行内でもプレイヤー間でも重複してよいものとします。標準入出力はこのサイトが追加しました。",
+    "output": "整数の答えを 1 つ出力してください。",
+    "explanation": "例 1 は初期の要約にあった元の例で、正しい勝者はプレイヤー 2 と 4 の合計 2 人です。例 2 は元の問題文からのもので、2 人とも 2 ラウンドに勝てる組み合わせを見つけられるので、答えは 2 です。例 3 は重複する値を含むこのサイトの補足で、すべてのラウンドが引き分けなので、答えは 0 です。",
+    "hints": [
+      "まず、元の操作ルールと、厳密な比較の条件を正しく理解してください。"
+    ]
+  },
+  "ko": {
+    "title": "세 라운드 조합으로 모든 상대를 이길 수 있는 플레이어",
+    "description": "각 플레이어는 세 개의 부스트 값을 가지며, 한 경기는 세 라운드로 이루어지고 각 값은 정확히 한 번씩 사용됩니다. 양측 값의 순열로 짝을 지었을 때 X의 값이 Y의 값보다 엄격하게 큰 라운드가 두 번 이상 되는 짝짓기가 존재하면 X가 Y를 이깁니다. 다른 모든 플레이어를 각각 이길 수 있는 플레이어의 수를 세세요. 상대마다 다른 순열을 쓸 수 있으며 동점은 승리로 치지 않습니다. 고정된 원문에는 이러한 짝짓기가 \"존재해야 한다\"고 명확히 적혀 있으며, 이 사이트는 초기 요약의 \"임의의 순열에 대해\"라는 잘못된 표현을 바로잡았습니다. 원문은 각 플레이어의 세 값이 서로 달라야 한다고 요구하지만 초기 요약은 중복을 제한하지 않았고, 이 사이트는 값의 중복을 허용하는 더 넓은 범위를 명시적으로 채택했으며 승리 규칙은 그대로입니다.",
+    "input": "첫째 줄에 n이 주어지고, 이어지는 n개의 줄에 각각 세 개의 부스트 값이 주어집니다. 원문과 요약이 공유하는 범위: 2≤n≤100000, 1≤부스트 값≤10^9. 이 사이트의 범위 확장: 한 줄 안에서나 플레이어 사이에서 값이 중복될 수 있습니다. 표준 입출력은 이 사이트에서 추가했습니다.",
+    "output": "답을 정수 하나로 출력합니다.",
+    "explanation": "예제 1은 초기 요약의 원래 예제이며 올바른 승자는 플레이어 2와 4로 총 2명입니다. 예제 2는 원문에서 가져왔으며, 두 플레이어 모두 두 라운드를 이기는 짝짓기를 찾을 수 있으므로 답은 2입니다. 예제 3은 이 사이트가 값이 중복되는 경우를 보충한 것으로, 모든 라운드가 동점이므로 답은 0입니다.",
+    "hints": [
+      "먼저 원래의 연산 규칙과 엄격한 비교 조건을 정확히 이해하세요."
+    ]
+  },
+  "vi": {
+    "title": "Người chơi thắng mọi người với một cách ghép ba vòng nào đó",
+    "description": "Mỗi người chơi có ba giá trị tăng cường; mỗi trận đấu có ba vòng và mỗi giá trị được dùng đúng một lần. X thắng Y nếu tồn tại một cách ghép các hoán vị của hai bên sao cho giá trị của X lớn hơn hẳn giá trị của Y trong ít nhất hai vòng. Hãy đếm số người chơi có thể thắng từng người chơi khác; với các đối thủ khác nhau có thể dùng các hoán vị khác nhau, và hòa không tính là thắng. Đề gốc đã được cố định nêu rõ rằng chỉ cần tồn tại một cách ghép như vậy; trang này sửa cách diễn đạt sai \"với mọi hoán vị\" trong bản tóm tắt ban đầu. Đề gốc yêu cầu ba giá trị của mỗi người chơi đôi một khác nhau, nhưng bản tóm tắt ban đầu không hạn chế việc trùng lặp; trang này chủ động dùng phạm vi rộng hơn, cho phép các giá trị lặp lại, còn quy tắc thắng giữ nguyên.",
+    "input": "Dòng đầu tiên chứa n; mỗi dòng trong n dòng tiếp theo chứa ba giá trị tăng cường. Phạm vi chung của bản gốc và bản tóm tắt: 2≤n≤100000, 1≤giá trị tăng cường≤10^9. Phần mở rộng phạm vi của trang này: các giá trị có thể lặp lại trong cùng một dòng và giữa các người chơi. Định dạng vào/ra chuẩn do trang này bổ sung.",
+    "output": "In ra một số nguyên là đáp án.",
+    "explanation": "Ví dụ 1 là ví dụ gốc từ bản tóm tắt ban đầu; những người thắng đúng là người chơi 2 và 4, tổng cộng 2. Ví dụ 2 lấy từ đề gốc; cả hai người chơi đều tìm được một cách ghép thắng hai vòng, nên đáp án là 2. Ví dụ 3 do trang này bổ sung với các giá trị lặp: mọi vòng đều hòa, nên đáp án là 0.",
+    "hints": [
+      "Trước hết hãy chắc chắn hiểu đúng quy tắc thao tác của đề gốc và điều kiện so sánh chặt."
+    ]
   }
 }

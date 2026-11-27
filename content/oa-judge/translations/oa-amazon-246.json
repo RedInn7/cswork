@@ -11,5 +11,35 @@
     "hints": [
       "Sort the counts in ascending order and accumulate from left to right. Whenever the current value is greater than the sum of all previous values, move the start of the candidate surviving suffix to the current position; finally output the original indices whose count is not less than the value at that start."
     ]
+  },
+  "ja": {
+    "title": "最後まで生き残れる在庫タスクの添字",
+    "description": "毎回、現在あるタスクから任意の 2 つを選んで戦わせます。ロボット数が多い方が勝ち、相手のロボットをすべて吸収します。数が等しい場合はどちらが勝ってもかまいません。これをタスクが 1 つだけになるまで続けます。ある進め方で最後まで生き残れるタスクについて、元の 1 始まりの添字をすべて昇順に出力してください。\n\n標準入出力、例、解説は本サイトが独自に作成したものです。本サイトのものと明記された範囲は、元の問題の制約ではありません。",
+    "input": "1 行目に n、2 行目にロボット数が与えられます。1≤n≤200000、1≤count≤10^9。タスクの添字はすべて異なりますが、ロボット数は等しいことがあります。",
+    "output": "生き残れるタスクの 1 始まりの添字を、昇順にスペース区切りで出力してください。",
+    "explanation": "答えは 2 4、1 2、2 3 です。数が等しいタスク同士の戦いでは、選んだタスクが勝ってもかまいません。",
+    "hints": [
+      "ロボット数を昇順にソートし、左から右へ累積します。現在の値がそれまでの全要素の和より大きいたびに、生き残る候補となる接尾辞の開始位置を現在の位置へ移します。最後に、ロボット数がその開始位置の値以上である元の添字を出力します。"
+    ]
+  },
+  "ko": {
+    "title": "최후의 생존자가 될 수 있는 재고 작업의 인덱스",
+    "description": "매번 현재 남아 있는 작업 중 임의의 두 개를 골라 싸우게 합니다. 로봇 수가 더 많은 쪽이 이기며 상대의 로봇을 모두 흡수하고, 수가 같으면 어느 쪽이 이겨도 됩니다. 작업이 하나만 남을 때까지 이를 반복합니다. 어떤 진행 방식으로든 끝까지 살아남을 수 있는 작업의 원래 1-based 인덱스를 모두 오름차순으로 출력하세요.\n\n표준 입출력, 예제, 해설은 이 사이트에서 독립적으로 작성했으며, 이 사이트 기준이라고 명시한 범위는 원문의 원래 제약 조건이 아닙니다.",
+    "input": "첫째 줄에 n이 주어지고, 둘째 줄에 로봇 수가 주어집니다. 1≤n≤200000, 1≤개수≤10^9. 작업의 인덱스는 서로 다르지만 개수는 같을 수 있습니다.",
+    "output": "살아남을 수 있는 모든 작업의 1-based 인덱스를 오름차순으로 공백으로 구분해 출력합니다.",
+    "explanation": "정답은 2 4, 1 2, 2 3입니다. 개수가 같은 두 작업이 싸울 때는 고른 작업이 이겨도 됩니다.",
+    "hints": [
+      "개수를 오름차순으로 정렬하고 왼쪽에서 오른쪽으로 누적합니다. 현재 값이 앞의 모든 값의 합보다 크면 생존 후보 접미사의 시작을 현재 위치로 옮깁니다. 마지막에 개수가 그 시작 위치의 값 이상인 원래 인덱스를 출력합니다."
+    ]
+  },
+  "vi": {
+    "title": "Các chỉ số nhiệm vụ kho có thể là người sống sót cuối cùng",
+    "description": "Mỗi lần chọn hai nhiệm vụ hiện có bất kỳ để giao đấu; nhiệm vụ có nhiều robot hơn thắng và hấp thụ toàn bộ robot của nhiệm vụ kia, còn khi bằng nhau thì bên nào thắng cũng được. Quá trình tiếp tục đến khi chỉ còn một nhiệm vụ. In ra theo thứ tự tăng dần mọi chỉ số gốc (đánh số từ 1) mà tồn tại ít nhất một cách diễn ra để nhiệm vụ đó sống sót đến cuối.\n\nĐề bài chuẩn hóa vào/ra, các ví dụ và lời giải được trang này tự biên soạn; những khoảng giá trị được ghi rõ là của trang này không phải ràng buộc gốc của nguồn.",
+    "input": "Dòng đầu chứa n; dòng thứ hai chứa số robot. 1≤n≤200000, 1≤số lượng≤10^9. Các chỉ số nhiệm vụ là phân biệt, còn số lượng có thể bằng nhau.",
+    "output": "In ra các chỉ số (đánh số từ 1) của mọi nhiệm vụ có thể sống sót, theo thứ tự tăng dần, cách nhau bởi dấu cách.",
+    "explanation": "Các đáp án lần lượt là 2 4, 1 2 và 2 3. Khi hai nhiệm vụ có số lượng bằng nhau giao đấu, nhiệm vụ nào bạn chọn cũng được phép thắng.",
+    "hints": [
+      "Sắp xếp các số lượng tăng dần và cộng dồn từ trái sang phải. Mỗi khi giá trị hiện tại lớn hơn tổng mọi giá trị trước đó, dời điểm bắt đầu của hậu tố ứng viên sống sót đến vị trí hiện tại; cuối cùng in các chỉ số gốc có số lượng không nhỏ hơn giá trị tại điểm bắt đầu đó."
+    ]
   }
 }

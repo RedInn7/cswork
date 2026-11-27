@@ -13,6 +13,21 @@
       "Two strings are anagrams exactly when the counts of all 26 letters match, and the substring you need must have the same length as pattern.",
       "Slide a window of length |pattern| over s: moving it one step right only decrements the count of the letter that leaves and increments the count of the letter that enters.",
       "If |pattern| > |s|, print -1. Count the letters of pattern and of the first |pattern| characters of s, then starting from position 0 compare the two 26-entry count arrays; print the start on equality, otherwise slide by one. If no window matches, print -1."
+    ],
+    "ja": [
+      "2 つの文字列がアナグラムであるのは、26 文字すべての出現回数が一致するときちょうどであり、求める部分文字列は pattern と同じ長さでなければなりません。",
+      "長さ |pattern| のウィンドウを s の上でスライドさせます。1 つ右に動かすとき、抜ける文字の回数を 1 減らし、入る文字の回数を 1 増やすだけで済みます。",
+      "|pattern| > |s| なら -1 を出力します。pattern と、s の先頭 |pattern| 文字の出現回数を数え、位置 0 から 26 要素の 2 つの回数配列を比較します。等しければその開始位置を出力し、そうでなければ 1 つスライドします。どのウィンドウも一致しなければ -1 を出力します。"
+    ],
+    "ko": [
+      "두 문자열이 애너그램이라는 것은 26개 알파벳의 개수가 모두 같다는 뜻이며, 찾는 부분 문자열의 길이는 pattern과 같아야 합니다.",
+      "길이 |pattern|의 윈도우를 s 위에서 밀어 나갑니다. 한 칸 오른쪽으로 옮길 때는 빠져나가는 문자의 개수를 하나 줄이고 들어오는 문자의 개수를 하나 늘리기만 하면 됩니다.",
+      "|pattern| > |s|이면 -1을 출력합니다. pattern의 알파벳 개수와 s의 앞 |pattern|개 문자의 알파벳 개수를 센 뒤, 위치 0부터 두 개의 26칸 개수 배열을 비교합니다. 같으면 시작 위치를 출력하고, 아니면 한 칸 밀어 나갑니다. 일치하는 윈도우가 없으면 -1을 출력합니다."
+    ],
+    "vi": [
+      "Hai xâu là đảo chữ của nhau đúng khi số đếm của cả 26 chữ cái khớp nhau, và xâu con cần tìm phải có cùng độ dài với pattern.",
+      "Trượt một cửa sổ có độ dài |pattern| trên s: dịch nó sang phải một bước chỉ cần giảm số đếm của chữ cái rời đi và tăng số đếm của chữ cái đi vào.",
+      "Nếu |pattern| > |s|, in -1. Đếm các chữ cái của pattern và của |pattern| ký tự đầu của s, rồi bắt đầu từ vị trí 0 so sánh hai mảng đếm 26 phần tử; in vị trí bắt đầu khi bằng nhau, nếu không thì trượt một bước. Nếu không cửa sổ nào khớp, in -1."
     ]
   },
   "explanationEn": "## Approach\n\nUse a sliding window of length |pattern| to maintain the counts of the 26 letters. Check the windows one by one; the first position whose counts equal those of pattern is the answer.\n\n## Proof of correctness\n\nEach contiguous substring of fixed length |pattern| corresponds to exactly one sliding window, and two strings are anagrams of each other if and only if their frequency vectors are equal. Windows are checked in increasing order of start, so the first hit is the smallest index; if none hits, there is no solution.\n\n## Complexity\n\nO(|s|+|pattern|) time and O(1) space."

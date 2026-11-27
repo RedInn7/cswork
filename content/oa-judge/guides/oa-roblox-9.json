@@ -13,6 +13,21 @@
       "With fixed windows, whether a request is allowed depends only on its key and its window number floor(timestamp / window); quotas of different windows never affect each other.",
       "Map each request to the combined key (key, floor(timestamp / window)) and count in a hash map how many requests of that combination have been allowed; no individual timestamps need to be stored.",
       "For each request: if the combination's allowed count is below limit, output ALLOW and increment the count; otherwise output REJECT and leave the count unchanged (rejected requests use no quota). Timestamps can be large, so divide with 64-bit integers. Join all results with spaces on one line. Expected total time O(q)."
+    ],
+    "ja": [
+      "固定ウィンドウでは、リクエストが許可されるかどうかは、そのキーとウィンドウ番号 floor(timestamp / window) だけで決まり、異なるウィンドウのクォータが互いに影響することはありません。",
+      "各リクエストを複合キー (key, floor(timestamp / window)) に対応させ、その組み合わせで許可されたリクエストの数をハッシュマップで数えます。個々のタイムスタンプを保存する必要はありません。",
+      "各リクエストについて、その組み合わせの許可済みの数が limit 未満なら ALLOW を出力して数を 1 増やし、そうでなければ REJECT を出力して数は変えません（拒否されたリクエストはクォータを使いません）。タイムスタンプは大きくなりえるので、64 ビット整数で割り算してください。すべての結果を 1 行に空白区切りで出力します。全体の期待時間は O(q) です。"
+    ],
+    "ko": [
+      "고정 윈도우에서는 요청의 허용 여부가 그 요청의 키와 윈도우 번호 floor(timestamp / window)에만 달려 있습니다. 서로 다른 윈도우의 할당량은 서로 영향을 주지 않습니다.",
+      "각 요청을 결합 키 (key, floor(timestamp / window))로 대응시키고, 해시 맵에서 그 조합으로 허용된 요청이 몇 개인지 세세요. 개별 타임스탬프를 저장할 필요는 없습니다.",
+      "각 요청에 대해, 그 조합의 허용 횟수가 limit보다 작으면 ALLOW를 출력하고 횟수를 1 늘리세요. 그렇지 않으면 REJECT를 출력하고 횟수는 그대로 둡니다(거부된 요청은 할당량을 쓰지 않습니다). 타임스탬프가 클 수 있으므로 나눗셈은 64비트 정수로 하세요. 모든 결과를 공백으로 이어 한 줄에 출력합니다. 기대 전체 시간은 O(q)입니다."
+    ],
+    "vi": [
+      "Với cửa sổ cố định, một yêu cầu có được cho phép hay không chỉ phụ thuộc vào khóa của nó và số hiệu cửa sổ floor(timestamp / window); hạn mức của các cửa sổ khác nhau không bao giờ ảnh hưởng lẫn nhau.",
+      "Ánh xạ mỗi yêu cầu sang khóa ghép (key, floor(timestamp / window)) và đếm trong một bảng băm có bao nhiêu yêu cầu của tổ hợp đó đã được cho phép; không cần lưu từng timestamp.",
+      "Với mỗi yêu cầu: nếu số lần được cho phép của tổ hợp nhỏ hơn limit thì in ALLOW và tăng số đếm; ngược lại in REJECT và giữ nguyên số đếm (yêu cầu bị từ chối không dùng hạn mức). Timestamp có thể lớn, nên chia bằng số nguyên 64 bit. Nối mọi kết quả bằng dấu cách trên một dòng. Tổng thời gian kỳ vọng O(q)."
     ]
   },
   "explanationEn": "## Approach\n\nAmong the strategies the original problem allows, this site chooses fixed windows. Map each request to (key, floor(timestamp/window)) and maintain the number of times that combination has been allowed; if it has not reached limit, allow and increment, otherwise reject.\n\n## Correctness\n\nUnder the fixed-window strategy, each request is affected only by its own key and window number, and the quota is used only by earlier allowed requests of that group. The hash map stores each group's count exactly, so the decisions agree with the definition.\n\n## Complexity\n\nExpected O(1) per request, total time O(q), space O(q)."

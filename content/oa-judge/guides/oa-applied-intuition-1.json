@@ -13,6 +13,21 @@
       "The dependencies form a directed graph in which each prerequisite points to the modules that depend on it. A module can be compiled now exactly when all its prerequisites are done, that is, when its in-degree is 0.",
       "Run Kahn topological sort, but replace the plain queue with a min-heap so that each step pops the lexicographically smallest module that can currently be compiled, which is the selection rule required.",
       "For each dependency [module, prerequisite], add an edge prerequisite -> module and increase the in-degree of module. Push all modules with in-degree 0 into the heap; repeatedly pop the smallest, append it to the result, and decrease the in-degree of its successors, pushing any that reach 0. If the result has fewer than n modules there is a cycle, so print IMPOSSIBLE."
+    ],
+    "ja": [
+      "依存関係は有向グラフを成し、各 prerequisite から、それに依存するモジュールへ辺が向かいます。モジュールを今コンパイルできるのは、そのすべての prerequisite が完了している、つまり入次数が 0 のときだけです。",
+      "Kahn のトポロジカルソートを実行しますが、通常のキューを min-heap に置き換え、各ステップで、現在コンパイル可能なモジュールのうち辞書順で最小のものを取り出します。これが求められている選択規則です。",
+      "各依存関係 [module, prerequisite] について、辺 prerequisite -> module を追加し、module の入次数を増やします。入次数が 0 のモジュールをすべてヒープに入れ、最小のものを取り出して結果に追加し、その後続の入次数を減らして、0 になったものをヒープに入れる、という操作を繰り返します。結果が n 個に満たなければ循環があるので IMPOSSIBLE を出力します。"
+    ],
+    "ko": [
+      "의존성은 방향 그래프를 이루며, 각 prerequisite에서 그것에 의존하는 모듈로 간선이 향합니다. 모듈의 모든 prerequisite가 끝났을 때, 즉 진입 차수가 0일 때 정확히 지금 컴파일할 수 있습니다.",
+      "Kahn 위상 정렬을 실행하되 일반 큐 대신 최소 힙을 써서, 매 단계에서 지금 컴파일할 수 있는 모듈 중 사전순으로 가장 작은 것을 꺼냅니다. 이것이 요구되는 선택 규칙입니다.",
+      "각 의존성 [module, prerequisite]마다 prerequisite -> module 간선을 추가하고 module의 진입 차수를 늘립니다. 진입 차수가 0인 모든 모듈을 힙에 넣고, 가장 작은 것을 반복해서 꺼내 결과에 추가한 뒤 후속 모듈의 진입 차수를 줄이고, 0이 된 모듈은 힙에 넣습니다. 결과가 n개보다 적으면 사이클이 있는 것이므로 IMPOSSIBLE을 출력합니다."
+    ],
+    "vi": [
+      "Các phụ thuộc tạo thành một đồ thị có hướng, trong đó mỗi prerequisite trỏ tới các module phụ thuộc vào nó. Một module có thể biên dịch ngay khi và chỉ khi mọi prerequisite của nó đã xong, tức là bậc vào bằng 0.",
+      "Chạy sắp xếp tô-pô Kahn, nhưng thay hàng đợi thường bằng min-heap để mỗi bước lấy ra module nhỏ nhất theo thứ tự từ điển trong số các module hiện có thể biên dịch, đúng như quy tắc chọn yêu cầu.",
+      "Với mỗi phụ thuộc [module, prerequisite], thêm cạnh prerequisite -> module và tăng bậc vào của module. Đẩy mọi module có bậc vào 0 vào heap; lặp lại việc lấy ra phần tử nhỏ nhất, thêm vào kết quả, giảm bậc vào của các module kế tiếp, và đẩy vào heap những module có bậc vào về 0. Nếu kết quả có ít hơn n module thì có chu trình, hãy in IMPOSSIBLE."
     ]
   },
   "explanationEn": "## Approach\n\nKahn topological sort, using a min-heap to decide which module to pick among those available at the same moment.\n\n## Proof of Correctness\n\nAn in-degree that reaches zero means that all prerequisite dependencies are complete; taking the smallest available item at each step implements the lexicographic rule, and if the result has fewer than n items, a cycle exists.\n\n## Complexity\n\nO((n+m) log n) time, O(n+m) space."

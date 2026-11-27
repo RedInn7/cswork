@@ -11,5 +11,35 @@
     "hints": [
       "Build a 2D range-maximum tree. With the corners removed, each region splits into a full middle rectangle and two segments on the top and bottom borders, so at most three rectangles are queried; if an original border is out of bounds, skip that segment, and do not mistakenly remove corners after clipping."
     ]
+  },
+  "ja": {
+    "title": "元の四隅を除いた領域の最大値セル",
+    "description": "値が 0 でないセル (i,j) について、その値 v は半径としても使われ、領域は [i−v,i+v]×[j−v,j+v] から元の四隅の 4 点を除いたものです。範囲外の部分は無視します。セルの値がその領域内の最大値に等しいとき、そのセルを領域最大とします。最大値が同点の場合はすべて残します。該当するすべてのセルを任意の順序で返してください。\n\n本サイトでは標準入出力の形式を明確にしています。出題元に記載のない範囲は、本サイト独自の仕様として定めています。",
+    "input": "1 行目に n m、続く n 行に m 個の整数が与えられます。出題元には値の範囲の記載がないため、本サイトでは 1≤n,m≤100、0≤value≤10⁹ とします。",
+    "output": "まず該当するセルの個数 k を出力し、続いて k 組の 0-indexed の行と列の座標を、任意の順序で重複なく出力してください。",
+    "explanation": "例 1：条件を満たすのは (0,0) の 3 と (0,2) の 1 だけです。例 2：(0,1) の 9 が最大です。2 つの 1 の領域はどちらも 9 を含み、しかも 9 は元の四隅ではないので、条件を満たすのは (0,1) だけです。例 3：4 つのセルすべてが最大値で同点なので、すべてを任意の順序で出力します。",
+    "hints": [
+      "2 次元の区間最大値木を構築します。四隅を除くと、各領域は中央の完全な長方形と、上端・下端の辺にある 2 つの線分に分かれるので、問い合わせる長方形は最大 3 つです。元の辺が範囲外にあるときはその線分を飛ばし、切り取った後の四隅を誤って除かないようにしてください。"
+    ]
+  },
+  "ko": {
+    "title": "원래 모서리를 제외한 영역의 최댓값 칸",
+    "description": "0이 아닌 칸 (i,j)의 값 v는 반지름 역할도 하며, 그 영역은 [i−v,i+v]×[j−v,j+v]에서 원래의 네 모서리 점을 제외하고 범위를 벗어나는 부분은 무시한 것입니다. 칸의 값이 자신의 영역에서의 최댓값과 같으면 그 칸은 영역 최댓값입니다. 최댓값이 동률이면 모두 남깁니다. 이런 칸을 모두 순서에 상관없이 반환하세요.\n\n이 사이트는 표준 입출력을 명시적으로 정했으며, 원문에 범위가 없는 부분은 모두 이 사이트의 규약으로 표시했습니다.",
+    "input": "첫 줄에 n m이 주어지고, 이어서 m개의 정수로 이루어진 줄이 n개 주어집니다. 원문에는 값의 범위가 없으며, 이 사이트에서는 1≤n,m≤100, 0≤value≤10⁹입니다.",
+    "output": "먼저 칸의 수 k를 출력하고, 이어서 k개의 0-based 행·열 좌표 쌍을 순서에 상관없이, 중복 없이 출력합니다.",
+    "explanation": "예제 1: (0,0)의 3과 (0,2)의 1만 조건을 만족합니다. 예제 2: (0,1)의 9가 가장 크고, 두 1의 영역은 모두 이를 포함하며 이 칸은 원래 모서리가 아니므로 (0,1)만 조건을 만족합니다. 예제 3: 네 칸이 모두 최댓값으로 동률이므로 순서에 상관없이 모두 출력합니다.",
+    "hints": [
+      "2차원 구간 최댓값 트리를 만듭니다. 모서리를 제거하면 각 영역은 가운데 전체 직사각형과 위·아래 경계의 두 선분으로 나뉘므로 질의는 최대 세 개의 직사각형입니다. 원래 경계가 범위를 벗어나면 그 선분은 건너뛰며, 범위로 잘라낸 뒤에 모서리를 잘못 제거하지 않도록 주의하세요."
+    ]
+  },
+  "vi": {
+    "title": "Cực đại vùng khi loại bỏ bốn góc gốc",
+    "description": "Với ô khác 0 tại (i,j), giá trị v của nó cũng đóng vai trò bán kính, và vùng của nó là [i−v,i+v]×[j−v,j+v] sau khi loại bỏ bốn điểm góc gốc và bỏ qua phần ngoài biên. Một ô là cực đại vùng nếu giá trị của nó bằng giá trị lớn nhất trên vùng của nó; các cực đại bằng nhau đều được giữ. Trả về mọi ô như vậy theo thứ tự bất kỳ.\n\nTrang này nêu rõ định dạng đầu vào/đầu ra chuẩn; mọi khoảng giá trị mà nguồn không cho đều được đánh dấu là quy ước của trang này.",
+    "input": "Dòng đầu tiên chứa n m, tiếp theo là n dòng m số nguyên. Nguồn không cho khoảng giá trị; trên trang này 1≤n,m≤100 và 0≤value≤10⁹.",
+    "output": "Trước hết in số ô k, sau đó là k cặp tọa độ hàng và cột đánh chỉ số từ 0, theo thứ tự bất kỳ và không trùng lặp.",
+    "explanation": "Ví dụ 1: số 3 tại (0,0) và số 1 tại (0,2) thỏa mãn. Ví dụ 2: số 9 tại (0,1) là lớn nhất; vùng của cả hai số 1 đều chứa nó, và nó không phải góc gốc, nên chỉ (0,1) thỏa mãn. Ví dụ 3: cả bốn ô cùng bằng giá trị lớn nhất, nên in ra tất cả, theo thứ tự bất kỳ.",
+    "hints": [
+      "Xây cây cực đại đoạn hai chiều. Khi bỏ các góc, mỗi vùng tách thành một hình chữ nhật giữa đầy đủ và hai đoạn trên biên trên và biên dưới, nên chỉ truy vấn tối đa ba hình chữ nhật; nếu một biên gốc nằm ngoài lưới thì bỏ qua đoạn đó, và đừng loại bỏ nhầm góc sau khi đã cắt theo biên."
+    ]
   }
 }

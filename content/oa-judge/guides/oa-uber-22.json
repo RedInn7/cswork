@@ -13,6 +13,21 @@
       "After every step the health is clamped to [0, 100], and clamping throws away the excess, so the result depends on the order of changes. You cannot sum all the changes first and clamp once.",
       "Simulate in order: add each change, then clamp the result to the range 0..100.",
       "Read n and the initial health. For each change c, set health = max(0, min(100, health + c)). After all changes, print health; when n is 0 this is just the initial value."
+    ],
+    "ja": [
+      "各ステップの後に体力は [0, 100] に収められ、収める操作は超過分を捨てるので、結果は変化の順序に依存します。すべての変化を先に合計して、1 回だけ収めることはできません。",
+      "順にシミュレーションします。各変化を加算し、結果を 0..100 の範囲に収めます。",
+      "n と初期の体力を読み込みます。各変化 c について health = max(0, min(100, health + c)) とします。すべての変化の後で health を出力します。n が 0 なら初期値そのものです。"
+    ],
+    "ko": [
+      "매 단계마다 체력이 [0, 100]으로 제한되고 clamp는 초과분을 버리므로, 결과는 변화량의 순서에 따라 달라집니다. 변화량을 먼저 모두 합산한 다음 한 번만 clamp할 수는 없습니다.",
+      "순서대로 시뮬레이션합니다. 변화량을 더한 다음 그 결과를 0..100 범위로 제한합니다.",
+      "n과 초기 체력을 읽습니다. 각 변화량 c에 대해 health = max(0, min(100, health + c))로 갱신합니다. 모든 변화량을 처리한 뒤 health를 출력하며, n이 0이면 초기값 그대로입니다."
+    ],
+    "vi": [
+      "Sau mỗi bước, máu được giới hạn vào [0, 100], và việc giới hạn bỏ đi phần dư, nên kết quả phụ thuộc vào thứ tự các thay đổi. Không thể cộng tất cả các thay đổi trước rồi giới hạn một lần.",
+      "Mô phỏng theo thứ tự: cộng mỗi thay đổi, rồi giới hạn kết quả vào khoảng 0..100.",
+      "Đọc n và máu ban đầu. Với mỗi thay đổi c, đặt health = max(0, min(100, health + c)). Sau mọi thay đổi, in health; khi n bằng 0 thì đó chỉ là giá trị ban đầu."
     ]
   },
   "explanationEn": "## Approach\n\nSimulate in order, adding first and then clamping at each step.\n\n## Correctness\n\nBy induction, every update is exactly what the statement describes; the changes cannot be summed first, because intermediate clamping discards the overflowing part.\n\n## Complexity\n\nTime O(n), space O(1) apart from the input."

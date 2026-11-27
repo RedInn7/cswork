@@ -13,6 +13,21 @@
       "Each step adds at least 1, so the generated side lengths are already strictly increasing and need no sorting. Every value is at most 10^9, so the 6,000,000 values fit compactly in unsigned 32-bit storage.",
       "For a fixed length s[i], the valid widths form a prefix of the sorted array, and this prefix only shrinks as the length grows. So use two pointers, with a right pointer that moves left from the end of the array.",
       "Generate s by the recurrence. Start right = n - 1 and loop left = 0..n-1: while right >= 0 and s[left] * s[right] > area, decrement right; if right < 0 stop, otherwise add right + 1 to the answer. Compare products with area and accumulate the count in 64-bit integers."
+    ],
+    "ja": [
+      "各ステップで少なくとも 1 増えるので、生成される辺の長さはすでに狭義単調増加で、ソートは不要です。すべての値は最大 10^9 なので、6,000,000 個の値は符号なし 32 ビットでコンパクトに格納できます。",
+      "固定した長さ s[i] に対して、有効な幅はソート済み配列の接頭辞になり、この接頭辞は長さが増えるほど縮む一方です。したがって、配列の末尾から左へ動く右ポインタを使った 2 ポインタ法を用います。",
+      "漸化式で s を生成します。right = n - 1 から始め、left = 0..n-1 でループします。right >= 0 かつ s[left] * s[right] > area の間 right をデクリメントし、right < 0 なら終了、そうでなければ答えに right + 1 を加算します。積と area の比較を行い、個数は 64 ビット整数で累積してください。"
+    ],
+    "ko": [
+      "각 단계마다 최소 1씩 증가하므로 생성된 변의 길이는 이미 순증가이며 정렬할 필요가 없습니다. 모든 값이 최대 10^9이므로 6,000,000개의 값을 부호 없는 32비트 저장 공간에 컴팩트하게 담을 수 있습니다.",
+      "고정된 길이 s[i]에 대해 유효한 세로 길이는 정렬된 배열의 접두 구간을 이루며, 길이가 커질수록 이 접두 구간은 줄어들기만 합니다. 따라서 배열 끝에서 왼쪽으로 이동하는 오른쪽 포인터를 가진 투 포인터를 사용합니다.",
+      "점화식으로 s를 생성합니다. right = n - 1에서 시작하여 left = 0..n-1에 대해 반복합니다. right >= 0이고 s[left] * s[right] > area인 동안 right를 감소시키고, right < 0이면 중단하며, 아니면 답에 right + 1을 더합니다. 곱은 area와 비교하고 개수는 64비트 정수로 누적합니다."
+    ],
+    "vi": [
+      "Mỗi bước cộng thêm ít nhất 1, nên các độ dài cạnh được sinh ra đã tăng chặt và không cần sắp xếp. Mỗi giá trị nhiều nhất là 10^9, nên 6,000,000 giá trị vừa gọn trong bộ nhớ số nguyên không dấu 32 bit.",
+      "Với một chiều dài s[i] cố định, các chiều rộng hợp lệ tạo thành một tiền tố của mảng đã sắp xếp, và tiền tố này chỉ co lại khi chiều dài tăng. Vì vậy dùng hai con trỏ, với con trỏ phải di chuyển sang trái từ cuối mảng.",
+      "Sinh s theo công thức truy hồi. Bắt đầu với right = n - 1 và lặp left = 0..n-1: trong khi right >= 0 và s[left] * s[right] > area thì giảm right; nếu right < 0 thì dừng, ngược lại cộng right + 1 vào đáp án. So sánh tích với area và cộng dồn số đếm bằng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nEach side length is at least 1 larger than the previous one, so the array is already strictly increasing. Store it in a compact unsigned 32-bit array and move a right pointer from the end toward the left; for each left side length, add the number of right side lengths whose area qualifies.\n\n## Correctness\n\nWith the length fixed at s[i], the valid widths form a prefix of the sorted array; as the length increases, the upper bound of the valid widths never increases, so the right pointer only needs to move left. Under each length every width is counted exactly once, so ordered combinations are counted and squares are not missed. Side lengths are at most 10^9, so 32-bit storage is safe; use 64-bit or arbitrary-precision integers for products and counts.\n\n## Complexity\n\nO(n) time and 4n bytes of extra space for the side lengths; Python uses array instead of six million int objects."

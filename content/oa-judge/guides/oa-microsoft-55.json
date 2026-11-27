@@ -13,6 +13,21 @@
       "If the whole message fits (its length is at most K), print it unchanged without an ellipsis.",
       "Otherwise the notification must be some whole leading words followed by the 4 characters of a space and three periods; keeping more words only makes it longer, so keep words from the front for as long as the next one still fits within K.",
       "Split the message on single spaces and track the length of the kept prefix (word lengths plus the spaces between them). Try to add the next word, and stop once the new length plus 4 exceeds K. If at least one word was kept, print the prefix followed by \" ...\"; if none fits, print just \"...\". The message contains spaces, so read it as a whole line."
+    ],
+    "ja": [
+      "メッセージ全体が収まる（長さが K 以下の）場合は、省略記号を付けずにそのまま出力します。",
+      "そうでなければ、通知は先頭からいくつかの単語を丸ごと残し、その後にスペースとピリオド 3 つの 4 文字を付けたものです。単語を多く残すほど長くなるので、次の単語を足しても K に収まる間は先頭から残していきます。",
+      "メッセージを 1 つのスペースで分割し、残した接頭辞の長さ（単語の長さと間のスペースの合計）を管理します。次の単語を足してみて、新しい長さに 4 を足した値が K を超えたら止めます。1 つ以上の単語を残せたら接頭辞に続けて \" ...\" を出力し、1 つも収まらなければ \"...\" だけを出力します。メッセージにはスペースが含まれるので、1 行全体として読み込んでください。"
+    ],
+    "ko": [
+      "메시지 전체가 들어가면(길이가 K 이하이면) 줄임표 없이 그대로 출력합니다.",
+      "그렇지 않으면 알림은 앞쪽 단어 몇 개 뒤에 공백과 마침표 세 개, 즉 4글자가 붙은 형태여야 합니다. 단어를 더 남길수록 길어지기만 하므로, 다음 단어를 더해도 K 이내인 동안 앞에서부터 계속 남기세요.",
+      "메시지를 공백 하나 기준으로 나누고, 남긴 접두사의 길이(단어 길이 합에 단어 사이 공백을 더한 값)를 추적하세요. 다음 단어를 추가해 보고, 새 길이에 4를 더한 값이 K를 넘으면 멈춥니다. 단어를 하나 이상 남겼다면 접두사 뒤에 \" ...\"를 붙여 출력하고, 하나도 들어가지 않으면 \"...\"만 출력합니다. 메시지에 공백이 있으므로 한 줄 전체로 읽어야 합니다."
+    ],
+    "vi": [
+      "Nếu cả thông báo vừa (độ dài nhiều nhất là K), in nguyên vẹn mà không thêm dấu ba chấm.",
+      "Nếu không, thông báo phải là một số từ nguyên vẹn ở đầu, theo sau là 4 ký tự gồm một dấu cách và ba dấu chấm; giữ nhiều từ hơn chỉ làm nó dài hơn, nên hãy giữ các từ từ đầu miễn là từ kế tiếp vẫn vừa trong K.",
+      "Tách thông báo theo từng dấu cách và theo dõi độ dài của tiền tố đã giữ (độ dài các từ cộng các dấu cách giữa chúng). Thử thêm từ kế tiếp, và dừng khi độ dài mới cộng 4 vượt quá K. Nếu đã giữ được ít nhất một từ, in tiền tố theo sau là \" ...\"; nếu không từ nào vừa, chỉ in \"...\". Thông báo có chứa dấu cách, nên hãy đọc nó như một dòng nguyên vẹn."
     ]
   },
   "explanationEn": "## Approach\n\nFirst check whether the whole message fits. Otherwise keep prefix words one by one as long as the prefix length plus 4 does not exceed K, then append the ellipsis; if not even one word fits, return the three periods.\n\n## Correctness\n\nA notification must be a whole-word prefix of the original message plus the suffix. The prefix length strictly increases with the number of kept words, so the longest prefix within the limit is optimal; when the whole message needs no suffix, it is shown in full first.\n\n## Complexity\n\nTime O(message length), space O(message length)."

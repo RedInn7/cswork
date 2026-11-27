@@ -11,5 +11,35 @@
     "hints": [
       "Map target values to indices. Every non-positive target is a forced matching anchor. Scan initial for its matched indices q; let b be the index of the last non-positive target before q, so the best predecessor can only lie in [b,q). Query the range maximum with a tree and apply chmax at q. When b does not exist, the empty predecessor 0 is allowed. Finally take the largest matching length among the states at the last anchor and after it; if one exists, the answer is n minus it, otherwise −1."
     ]
+  },
+  "ja": {
+    "title": "正の整数だけを挿入して目標を部分列にする",
+    "description": "initialList には重複する整数が含まれていてもよく、finalList の整数はすべて異なります。1 ステップごとに、initialList の任意の位置に正の整数を 1 つ挿入できます。既存の要素を削除したり並べ替えたりすることはできません。finalList が最終的な initialList の部分列になるまでに必要な、挿入の最小回数を求めてください。目標に含まれる 0 や負の整数は挿入では得られないため、既存の要素と対応していなければなりません。不可能な場合は、当サイトのプロトコルに従い −1 を出力します。\n\n標準入出力・例・解説は当サイトが独自に作成したものです。当サイトのものと明記した範囲は、元の問題の制約ではありません。",
+    "input": "1 行目に m n、2 行目に initialList の m 個の整数、3 行目に finalList の n 個の整数が与えられます。元の問題文には値の範囲がありません。当サイトでは 1≤m,n≤200000、−10^9≤すべての要素≤10^9 で、finalList は相異なります。「挿入できるのは正の数だけ」というルールを、元の配列がすべて正でなければならないという意味に誤読してはいけません。元の問題文は、解がない場合の出力を定義していません。当サイトは解のない入力を除外せず、明示的に −1 として符号化します。",
+    "output": "答えを表す整数を 1 つ出力してください。",
+    "explanation": "答えは 3、1、−1 です。1 つ目の例では、最後の −1 は残す必要があり、そのうえで 1、2、3 を挿入します。3 つ目の例では、アンカーの順序が不可能です。元の問題文の 1 か所では部分列の向きが逆に書かれています。当サイトは Returns と完全な計算例に基づいて、final が initial の部分列であると定め、解がない場合の −1 を明示的に追加しています。",
+    "hints": [
+      "目標の値を添字に対応づけます。正でない目標はすべて、対応が強制されるアンカーです。initial を走査し、対応する添字 q に対して、q より前の最後の正でない目標の添字を b とすると、最適な直前の要素は [b,q) の範囲にしかありえません。木で範囲最大値を問い合わせ、q で chmax を適用します。b が存在しないときは、空の直前の要素 0 が許されます。最後に、最後のアンカーの状態とそれ以降の状態の中で最大の対応長を取り、存在すれば答えは n からそれを引いた値、存在しなければ −1 です。"
+    ]
+  },
+  "ko": {
+    "title": "양의 정수만 삽입해서 목표를 부분 수열로 만들기",
+    "description": "initialList에는 중복된 정수가 있을 수 있고, finalList의 정수는 서로 다릅니다. 각 단계에서 initialList의 임의 위치에 양의 정수 하나를 삽입할 수 있으며, 기존 원소를 삭제하거나 순서를 바꿀 수는 없습니다. finalList가 최종 initialList의 부분 수열이 되도록 하는 최소 삽입 횟수를 구하세요. 목표 안의 0과 음의 정수는 삽입으로 얻을 수 없으므로 기존 원소와 일치해야 합니다. 불가능하면 본 사이트의 프로토콜에 따라 −1을 출력합니다.\n\n표준 입출력 형식, 예제, 해설은 본 사이트가 독자적으로 작성했습니다. 본 사이트의 범위라고 명시한 값은 원문의 제약 조건이 아닙니다.",
+    "input": "첫째 줄에 m n, 둘째 줄에 initialList의 정수 m개, 셋째 줄에 finalList의 정수 n개가 주어집니다. 원문에는 값의 범위가 없으며 본 사이트에서는 1≤m,n≤200000, −10^9≤모든 원소≤10^9이고 finalList는 서로 다릅니다. 양수만 삽입할 수 있다는 규칙을 원래 배열이 모두 양수여야 한다는 뜻으로 잘못 읽지 않았습니다. 원문은 해가 없을 때의 출력을 정의하지 않으며, 본 사이트는 해가 없는 입력을 제외하지 않고 이를 −1로 명시적으로 정합니다.",
+    "output": "정수 하나, 즉 답을 출력합니다.",
+    "explanation": "답은 순서대로 3, 1, −1입니다. 첫 번째 예제에서는 마지막의 −1을 유지해야 하고 그 뒤에 1, 2, 3을 삽입합니다. 세 번째 예제에서는 앵커들의 순서가 불가능합니다. 원문의 한 곳은 부분 수열의 방향을 반대로 적었으나, 본 사이트는 Returns와 완전한 예시 풀이를 근거로 final이 initial의 부분 수열이라고 정하고, 해가 없는 경우의 −1을 명시적으로 추가했습니다.",
+    "hints": [
+      "목표 값을 인덱스로 대응시킵니다. 양이 아닌 목표는 모두 반드시 일치시켜야 하는 앵커입니다. initial을 스캔하며 일치하는 인덱스 q를 찾고, b를 q 앞에 있는 마지막 양이 아닌 목표의 인덱스라고 하면 최선의 선행 원소는 [b,q) 안에만 있을 수 있습니다. 트리로 구간 최댓값을 질의하고 q에 chmax를 적용합니다. b가 없으면 빈 선행 원소 0이 허용됩니다. 마지막으로 마지막 앵커와 그 이후의 상태 중 일치 길이의 최댓값을 취하며, 존재하면 답은 n에서 그 값을 뺀 것이고 없으면 −1입니다."
+    ]
+  },
+  "vi": {
+    "title": "Biến chuỗi đích thành dãy con bằng cách chỉ chèn số nguyên dương",
+    "description": "initialList có thể chứa các số nguyên trùng lặp, còn các số nguyên trong finalList đôi một khác nhau. Mỗi bước bạn có thể chèn một số nguyên dương vào vị trí bất kỳ của initialList; bạn không thể xóa hay sắp xếp lại các phần tử hiện có. Tìm số lần chèn tối thiểu để finalList trở thành dãy con của initialList cuối cùng. Số 0 và các số nguyên âm trong đích không thể có được bằng cách chèn và phải khớp với các phần tử hiện có; nếu không thể, in ra −1 theo giao thức của trang này.\n\nĐầu vào/đầu ra chuẩn, các ví dụ và phần lời giải do trang này tự viết; các khoảng giá trị được đánh dấu rõ là của trang này không phải ràng buộc gốc của đề.",
+    "input": "Dòng đầu chứa m n, dòng thứ hai chứa m số nguyên của initialList, và dòng thứ ba chứa n số nguyên của finalList. Đề gốc không cho cận giá trị nào; trên trang này 1≤m,n≤200000, −10^9≤mọi phần tử≤10^9, và finalList đôi một khác nhau. Quy tắc chỉ được chèn số dương không bị hiểu nhầm thành yêu cầu mảng ban đầu toàn số dương. Đề gốc không định nghĩa đầu ra khi không có nghiệm; trang này không loại trừ các đầu vào vô nghiệm và mã hóa chúng tường minh là −1.",
+    "output": "In ra một số nguyên duy nhất, là đáp án.",
+    "explanation": "Các đáp án lần lượt là 3, 1 và −1. Ở ví dụ đầu, số −1 cuối cùng phải được giữ, rồi chèn 1, 2 và 3; ở ví dụ thứ ba, thứ tự của các mốc neo là bất khả thi. Một chỗ trong đề gốc đảo ngược chiều của dãy con; dựa trên phần Returns và ví dụ giải đầy đủ, trang này quy định final là dãy con của initial, và bổ sung công khai −1 cho trường hợp vô nghiệm.",
+    "hints": [
+      "Ánh xạ các giá trị đích sang chỉ số. Mọi giá trị đích không dương là một mốc neo buộc phải khớp. Quét initial để lấy các chỉ số khớp q; gọi b là chỉ số của giá trị đích không dương cuối cùng trước q, thì tiền nhiệm tốt nhất chỉ có thể nằm trong [b,q). Truy vấn cực đại trên đoạn bằng một cây và áp dụng chmax tại q. Khi b không tồn tại, cho phép tiền nhiệm rỗng 0. Cuối cùng lấy độ dài khớp lớn nhất trong các trạng thái tại mốc neo cuối cùng và sau đó; nếu tồn tại thì đáp án là n trừ đi nó, ngược lại là −1."
+    ]
   }
 }

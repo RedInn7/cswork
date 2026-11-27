@@ -13,6 +13,21 @@
       "n can be 40, so enumerating all 2^40 subsets is too slow; but each half has only 20 elements, and 2^20 is about one million, which is fine to enumerate.",
       "Meet in the middle: every subset splits uniquely into a left-half subset and a right-half subset. Enumerate all subset sums of the left half into a set (or a sorted array), then for each subset sum s of the right half check whether target - s is among them.",
       "Generate the left sums by doubling the list one element at a time. Enumerate the right half in Gray-code order, where consecutive subsets differ by one element, so the running sum only adds or removes that element. The empty subset with sum 0 also counts; print 1 on the first hit, or 0 after everything is checked. Sums can reach 4 * 10^10 in absolute value, so use 64-bit integers."
+    ],
+    "ja": [
+      "n は 40 になり得るので、2^40 通りの部分集合をすべて列挙するのは遅すぎます。しかし各半分は 20 要素しかなく、2^20 は約 100 万なので列挙できます。",
+      "半分全列挙（meet in the middle）を使います。どの部分集合も、左半分の部分集合と右半分の部分集合に一意に分けられます。左半分のすべての部分和を集合（またはソート済み配列）に入れ、右半分の各部分和 s について target - s がその中にあるかを調べます。",
+      "左側の和は、要素を 1 つずつ加えてリストを倍にしていく形で生成します。右半分は Gray コード順で列挙します。隣り合う部分集合は 1 要素だけ違うので、現在の和はその要素を足すか引くだけで更新できます。和 0 の空集合も有効です。最初に見つかった時点で 1 を出力し、すべて調べても見つからなければ 0 を出力します。和の絶対値は最大 4 * 10^10 になり得るので、64 ビット整数を使います。"
+    ],
+    "ko": [
+      "n이 40까지 가능하므로 2^40개의 부분집합을 모두 열거하는 것은 너무 느립니다. 하지만 각 절반은 원소가 20개뿐이고 2^20은 약 100만이므로 열거할 수 있습니다.",
+      "Meet in the middle: 모든 부분집합은 왼쪽 절반의 부분집합과 오른쪽 절반의 부분집합으로 유일하게 나뉩니다. 왼쪽 절반의 모든 부분집합 합을 집합(또는 정렬된 배열)에 넣고, 오른쪽 절반의 각 부분집합 합 s마다 target - s가 그 안에 있는지 확인합니다.",
+      "왼쪽 합은 원소를 하나씩 추가하며 리스트를 두 배로 늘려 생성합니다. 오른쪽 절반은 그레이 코드 순서로 열거하는데, 연속한 부분집합은 원소 하나만 다르므로 누적 합에서 그 원소만 더하거나 빼면 됩니다. 합이 0인 공집합도 포함되며, 처음 일치하는 순간 1을 출력하고 모두 확인한 뒤에도 없으면 0을 출력합니다. 합의 절댓값이 4 * 10^10까지 될 수 있으므로 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "n có thể bằng 40 nên liệt kê toàn bộ 2^40 tập con là quá chậm; nhưng mỗi nửa chỉ có 20 phần tử, và 2^20 xấp xỉ một triệu, hoàn toàn liệt kê được.",
+      "Meet in the middle: mỗi tập con tách duy nhất thành một tập con của nửa trái và một tập con của nửa phải. Liệt kê mọi tổng tập con của nửa trái vào một tập hợp (hoặc mảng đã sắp xếp), rồi với mỗi tổng tập con s của nửa phải, kiểm tra xem target - s có nằm trong đó không.",
+      "Sinh các tổng của nửa trái bằng cách nhân đôi danh sách theo từng phần tử. Liệt kê nửa phải theo thứ tự mã Gray, trong đó hai tập con liên tiếp chỉ khác nhau một phần tử, nên tổng đang chạy chỉ cần cộng hoặc trừ phần tử đó. Tập con rỗng với tổng 0 cũng được tính; in 1 ngay khi tìm thấy, hoặc in 0 sau khi đã kiểm tra hết. Tổng có thể đạt tới 4 * 10^10 về giá trị tuyệt đối, nên hãy dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nSplit the array in the middle into two halves, enumerate all subset sums of the left half and put them in a set. Enumerate the right half in Gray code order; each step flips exactly one element, so the current sum can be updated in O(1). For each right-half sum `s`, check whether `target-s` is in the left-half set. The empty subset naturally corresponds to the sum 0.\n\n## Correctness\n\nAny subset splits uniquely into a left-half subset and a right-half subset. If its total is target, then when the right-half sum is s the left-half sum must be target-s, so the lookup hits; conversely, if the set contains this difference, combining the two corresponding half subsets gives a subset of the original array whose sum is target.\n\n## Complexity\n\nO(2^(n/2)) time and O(2^(n/2)) space; on this site n<=40."

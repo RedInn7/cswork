@@ -11,5 +11,35 @@
     "hints": [
       "Scan the characters from left to right, maintaining a stack of `(character, consecutive count)`. When a count reaches K, pop that group; after popping, subsequent characters naturally merge with the new stack top, which handles chained deletions."
     ]
+  },
+  "ja": {
+    "title": "Word Compression (Remove k Consecutive Equal Characters)",
+    "description": "単語から、ちょうど K 個連続する同じ文字のグループを、それ以上削除できなくなるまで繰り返し削除します。問題文は、最後に少なくとも 1 文字が残ること、および最終結果が一意に定まることを保証しています。\n\n入力形式、例、テストデータは CSWork が整理・作成したものです。元の出典と本サイトが追加した制限については問題文を参照してください。",
+    "input": "小文字 ASCII の単語 word と整数 K を含む 1 行。元の MDX には K や長さの範囲が書かれていません。本サイトでは 2≤K≤200000 と 2≤|word|≤200000 を追加しています。ルールに従って圧縮した結果が空でないような入力とします(元の問題の保証と一致します)。",
+    "output": "最後に残る単語を出力します。",
+    "explanation": "上記のルールに従って入力を処理します。解法、正当性の証明、計算量については付属の解説を参照してください。",
+    "hints": [
+      "文字を左から右へ走査し、`(character, consecutive count)` のスタックを保持します。個数が K に達したらそのグループを pop します。pop の後は、後続の文字が新しいスタックの先頭と自然に結合するので、連鎖的な削除も処理されます。"
+    ]
+  },
+  "ko": {
+    "title": "Word Compression (Remove k Consecutive Equal Characters)",
+    "description": "더 이상 제거할 수 없을 때까지, 단어에서 정확히 K개의 연속된 같은 문자 묶음을 반복해서 삭제하세요. 문제에서는 최종적으로 문자가 최소 하나 남는다는 것을 보장하며 최종 결과가 유일하다고 명시합니다.\n\n입력 형식, 예제, 테스트 데이터는 CSWork가 정리하여 작성했습니다. 원문 출처와 이 사이트에서 추가한 제한은 문제 설명을 참고하세요.",
+    "input": "소문자 ASCII 단어 word와 정수 K가 한 줄로 주어집니다. 원문 MDX에는 K나 길이의 범위가 없으며, 이 사이트에서 2≤K≤200000과 2≤|word|≤200000을 추가했습니다. 규칙대로 압축한 결과가 비어 있지 않도록 입력이 주어져야 합니다(원문의 보장과 동일).",
+    "output": "마지막에 남는 단어를 출력합니다.",
+    "explanation": "위 규칙에 따라 입력을 처리하세요. 풀이 방법, 정당성 증명, 복잡도는 함께 제공되는 설명을 참고하세요.",
+    "hints": [
+      "문자를 왼쪽에서 오른쪽으로 스캔하면서 `(character, consecutive count)`의 스택을 유지하세요. 개수가 K에 도달하면 그 묶음을 pop합니다. pop한 뒤에는 이후 문자가 새 스택 top과 자연스럽게 합쳐지므로 연쇄 삭제가 처리됩니다."
+    ]
+  },
+  "vi": {
+    "title": "Word Compression (Remove k Consecutive Equal Characters)",
+    "description": "Lặp đi lặp lại việc xóa bất kỳ nhóm đúng K ký tự giống hệt nhau liên tiếp khỏi từ cho đến khi không thể xóa thêm; đề bài đảm bảo cuối cùng còn lại ít nhất một ký tự và nêu rõ kết quả cuối cùng là duy nhất.\n\nĐịnh dạng đầu vào, ví dụ và dữ liệu kiểm thử do CSWork tổng hợp và biên soạn; xem đề bài để biết nguồn gốc và các giới hạn do trang này bổ sung.",
+    "input": "Một dòng chứa một từ ASCII chữ thường word và một số nguyên K. MDX gốc không nêu phạm vi của K hay độ dài; trang này bổ sung 2≤K≤200000 và 2≤|word|≤200000. Đầu vào phải sao cho kết quả sau khi nén theo quy tắc là không rỗng (nhất quán với đảm bảo của đề gốc).",
+    "output": "In ra từ còn lại ở cuối cùng.",
+    "explanation": "Xử lý đầu vào theo các quy tắc ở trên; xem phần ghi chú kèm theo để biết hướng tiếp cận, chứng minh tính đúng đắn và độ phức tạp.",
+    "hints": [
+      "Duyệt các ký tự từ trái sang phải, duy trì một ngăn xếp gồm `(character, consecutive count)`. Khi số đếm đạt K, pop nhóm đó; sau khi pop, các ký tự tiếp theo tự nhiên gộp với đỉnh ngăn xếp mới, xử lý được các lần xóa dây chuyền."
+    ]
   }
 }

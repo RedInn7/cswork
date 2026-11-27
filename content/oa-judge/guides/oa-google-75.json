@@ -13,6 +13,21 @@
       "Put the elements one by one into strictly decreasing sequences; a new value x can only follow a sequence whose last value is greater than x. To keep options open for later, attach it to the sequence with the smallest such last value.",
       "Keep the last values sorted and use an upper_bound binary search for the first one greater than x: replace it with x if found, otherwise start a new sequence. This is the same greedy as the one for the longest non-decreasing subsequence.",
       "Maintain a sorted array tails. For each x find the first index j with tails[j] > x; if j equals the length append x, otherwise set tails[j]=x. The final length of tails is the answer, and it equals the length of the longest non-decreasing subsequence, which is a lower bound."
+    ],
+    "ja": [
+      "要素を 1 つずつ狭義単調減少列に入れていきます。新しい値 x は、末尾が x より大きい列にしか続けられません。後の選択肢を残すため、そのような末尾のうち最小のものを持つ列に付けます。",
+      "末尾の値をソートしたまま保持し、upper_bound による二分探索で x より大きい最初のものを探します。見つかればそれを x に置き換え、なければ新しい列を始めます。これは最長非減少部分列の貪欲法と同じです。",
+      "ソート済みの配列 tails を保持します。各 x について tails[j] > x となる最初のインデックス j を探し、j が長さと等しければ x を追加、そうでなければ tails[j]=x とします。最終的な tails の長さが答えで、下界である最長非減少部分列の長さと一致します。"
+    ],
+    "ko": [
+      "원소를 하나씩 엄격하게 감소하는 수열에 넣습니다. 새 값 x는 마지막 값이 x보다 큰 수열 뒤에만 붙을 수 있습니다. 이후 선택지를 최대한 남겨 두기 위해, 그런 마지막 값 중 가장 작은 것을 가진 수열에 붙입니다.",
+      "마지막 값들을 정렬된 상태로 유지하고, upper_bound 이분 탐색으로 x보다 큰 첫 번째 값을 찾습니다. 찾으면 그 값을 x로 바꾸고, 없으면 새 수열을 시작합니다. 이는 가장 긴 비내림차순 부분 수열을 구하는 그리디와 같습니다.",
+      "정렬된 배열 tails를 유지합니다. 각 x에 대해 tails[j] > x인 첫 인덱스 j를 찾고, j가 길이와 같으면 x를 추가하고 아니면 tails[j]=x로 바꿉니다. 마지막 tails의 길이가 답이며, 이는 하한인 가장 긴 비내림차순 부분 수열의 길이와 같습니다."
+    ],
+    "vi": [
+      "Đưa lần lượt các phần tử vào các dãy giảm ngặt; một giá trị mới x chỉ có thể đứng sau dãy có giá trị cuối lớn hơn x. Để giữ nhiều lựa chọn cho sau này, hãy gắn nó vào dãy có giá trị cuối nhỏ nhất thỏa điều kiện đó.",
+      "Giữ các giá trị cuối đã sắp xếp và dùng tìm kiếm nhị phân upper_bound để tìm giá trị đầu tiên lớn hơn x: thay nó bằng x nếu tìm thấy, ngược lại bắt đầu một dãy mới. Đây chính là thuật toán tham lam như bài dãy con không giảm dài nhất.",
+      "Duy trì một mảng tails đã sắp xếp. Với mỗi x tìm chỉ số j đầu tiên có tails[j] > x; nếu j bằng độ dài thì thêm x vào cuối, ngược lại đặt tails[j]=x. Độ dài cuối cùng của tails là đáp án, và nó bằng độ dài của dãy con không giảm dài nhất, vốn là một cận dưới."
     ]
   },
   "explanationEn": "## Idea\n\nKeep the last values of all decreasing sequences in sorted order. A new value x is attached to the sequence whose last value is the smallest one greater than x; if there is none, start a new sequence. Update with an upper_bound binary search.\n\n## Correctness\n\nAmong the sequences that can take x, choosing the smallest greater last value keeps the other, larger last values available for future elements; an exchange argument shows this is never worse. Equivalently, this maintains the smallest last values of the longest non-decreasing subsequences: the elements of such a subsequence must lie in different decreasing groups, and the number of groups used by the greedy reaches exactly this lower bound.\n\n## Complexity\n\nO(n log n) time, O(n) space."

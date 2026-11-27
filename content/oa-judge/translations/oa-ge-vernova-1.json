@@ -11,5 +11,35 @@
     "hints": [
       "Do dynamic programming over the subsequence length. The transition is `min_j(dp[j]+|a[i]-a[j]|)`; split it into a prefix minimum of `dp[j]-a[j]` and a suffix minimum of `dp[j]+a[j]` over values in sorted order, and update them with a scan. Exhaustive enumeration of combinations provides an independent check."
     ]
+  },
+  "ja": {
+    "title": "The Best Subsequence | Minimize Special Value",
+    "description": "元の順序を保ったまま k 個の要素を選び、選んだ隣り合う値の差の絶対値の和を最小にします。\n\n本サイトの標準入出力形式と補足の範囲は、この問題の記述のとおりです。",
+    "input": "1 行目に n k (1≤n≤800、1≤k≤n) が与えられ、次の行に n 個の整数 (|arr[i]|≤10^9) が与えられます。",
+    "output": "最小の特殊値を出力してください。",
+    "explanation": "部分列の長さについて動的計画法を行います。遷移は `min_j(dp[j]+|a[i]-a[j]|)` で、これを値でソートした順に、`dp[j]-a[j]` の接頭辞の最小値と `dp[j]+a[j]` の接尾辞の最小値に分け、走査で更新します。組み合わせの全列挙が独立した検証になります。",
+    "hints": [
+      "部分列の長さについて動的計画法を行います。遷移は `min_j(dp[j]+|a[i]-a[j]|)` で、これを値でソートした順に、`dp[j]-a[j]` の接頭辞の最小値と `dp[j]+a[j]` の接尾辞の最小値に分け、走査で更新します。組み合わせの全列挙が独立した検証になります。"
+    ]
+  },
+  "ko": {
+    "title": "The Best Subsequence | Minimize Special Value",
+    "description": "k개의 원소를 원래 순서를 유지한 채 골라, 인접한 선택 값들의 차의 절댓값의 합이 최소가 되도록 합니다.\n\n본 사이트의 표준 입출력 형식과 보충 범위는 이 문제에 설명된 대로입니다.",
+    "input": "첫째 줄에 n k(1≤n≤800, 1≤k≤n)가 주어지고, 다음 줄에 n개의 정수가 주어집니다. |arr[i]|≤10^9입니다.",
+    "output": "특수 값의 최솟값을 출력합니다.",
+    "explanation": "부분 수열의 길이에 대해 동적 계획법을 합니다. 전이는 `min_j(dp[j]+|a[i]-a[j]|)`이며, 정렬된 값 순서에서 `dp[j]-a[j]`의 접두사 최솟값과 `dp[j]+a[j]`의 접미사 최솟값으로 나누어 훑으며 갱신합니다. 조합을 모두 열거하면 독립적인 검증이 됩니다.",
+    "hints": [
+      "부분 수열의 길이에 대해 동적 계획법을 합니다. 전이는 `min_j(dp[j]+|a[i]-a[j]|)`이며, 정렬된 값 순서에서 `dp[j]-a[j]`의 접두사 최솟값과 `dp[j]+a[j]`의 접미사 최솟값으로 나누어 훑으며 갱신합니다. 조합을 모두 열거하면 독립적인 검증이 됩니다."
+    ]
+  },
+  "vi": {
+    "title": "The Best Subsequence | Minimize Special Value",
+    "description": "Chọn k phần tử, giữ nguyên thứ tự ban đầu, sao cho tổng các hiệu tuyệt đối giữa các giá trị được chọn kề nhau là nhỏ nhất.\n\nĐịnh dạng vào/ra chuẩn và các giới hạn bổ sung của trang này được mô tả trong bài này.",
+    "input": "Dòng đầu tiên chứa n k (1≤n≤800, 1≤k≤n); dòng tiếp theo chứa n số nguyên, |arr[i]|≤10^9.",
+    "output": "In ra giá trị đặc biệt nhỏ nhất.",
+    "explanation": "Quy hoạch động theo độ dài dãy con. Phép chuyển là `min_j(dp[j]+|a[i]-a[j]|)`; hãy tách nó thành giá trị nhỏ nhất theo tiền tố của `dp[j]-a[j]` và giá trị nhỏ nhất theo hậu tố của `dp[j]+a[j]` trên các giá trị đã sắp xếp, và cập nhật chúng bằng một lượt quét. Liệt kê vét cạn các tổ hợp cho một phép kiểm tra độc lập.",
+    "hints": [
+      "Quy hoạch động theo độ dài dãy con. Phép chuyển là `min_j(dp[j]+|a[i]-a[j]|)`; hãy tách nó thành giá trị nhỏ nhất theo tiền tố của `dp[j]-a[j]` và giá trị nhỏ nhất theo hậu tố của `dp[j]+a[j]` trên các giá trị đã sắp xếp, và cập nhật chúng bằng một lượt quét. Liệt kê vét cạn các tổ hợp cho một phép kiểm tra độc lập."
+    ]
   }
 }

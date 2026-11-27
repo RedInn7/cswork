@@ -13,6 +13,21 @@
       "Reversing digits needs no string: x modulo 10 gives the lowest digit and integer division by 10 removes it.",
       "Remember the sign, reverse the absolute value, then apply the sign again; trailing zeros of the input become leading zeros and simply disappear.",
       "Repeat \"answer times 10 plus the lowest digit, then divide x by 10\" until x is 0. Finally check that the result lies in −2^31 to 2^31−1 and print 0 otherwise. Keep the intermediate value in a 64-bit integer so the overflow check is safe; the absolute value of −2^31 already exceeds 32 bits."
+    ],
+    "ja": [
+      "桁の反転に文字列は不要です。x を 10 で割った余りが最下位の桁で、10 で整数除算すればそれを取り除けます。",
+      "符号を覚えておき、絶対値を反転してから符号を戻します。入力の末尾の 0 は反転すると先頭の 0 になり、自然に消えます。",
+      "x が 0 になるまで、「答えを 10 倍して最下位の桁を足し、x を 10 で割る」を繰り返します。最後に結果が −2^31 から 2^31−1 の範囲にあるかを確認し、範囲外なら 0 を出力します。オーバーフローの確認を安全に行うため、中間値は 64 ビット整数で持ってください。−2^31 の絶対値はすでに 32 ビットを超えています。"
+    ],
+    "ko": [
+      "자릿수를 뒤집는 데 문자열은 필요 없습니다. x를 10으로 나눈 나머지가 가장 낮은 자릿수이고, 10으로 정수 나눗셈을 하면 그 자릿수가 제거됩니다.",
+      "부호를 기억해 두고 절댓값을 뒤집은 다음 다시 부호를 적용하세요. 입력 끝의 0은 앞쪽 0이 되어 자연히 사라집니다.",
+      "\"답에 10을 곱하고 가장 낮은 자릿수를 더한 뒤 x를 10으로 나눈다\"를 x가 0이 될 때까지 반복합니다. 마지막으로 결과가 −2^31 이상 2^31−1 이하인지 검사하고, 아니면 0을 출력하세요. 중간값은 64비트 정수로 유지해 오버플로 검사가 안전하도록 합니다. −2^31의 절댓값은 이미 32비트를 넘습니다."
+    ],
+    "vi": [
+      "Đảo chữ số không cần dùng xâu: x modulo 10 cho chữ số cuối cùng và phép chia nguyên cho 10 loại bỏ nó.",
+      "Ghi nhớ dấu, đảo giá trị tuyệt đối, rồi áp dụng lại dấu; các số 0 ở cuối của đầu vào trở thành số 0 ở đầu và tự biến mất.",
+      "Lặp lại \"đáp án nhân 10 cộng chữ số cuối, rồi chia x cho 10\" cho đến khi x bằng 0. Cuối cùng kiểm tra kết quả nằm trong khoảng −2^31 đến 2^31−1, nếu không thì in 0. Hãy giữ giá trị trung gian trong số nguyên 64 bit để việc kiểm tra tràn số an toàn; giá trị tuyệt đối của −2^31 đã vượt quá 32 bit."
     ]
   },
   "explanationEn": "## Approach\n\nRepeatedly take the units digit and append it to the end of the answer, without using string operations.\n\n## Overflow\n\nThe rule from the official statement of the same problem says to output 0 when the reversed result is outside the signed 32-bit range.\n\n## Correctness\n\nEach step appends the lowest digit of the original number to the current answer, so after all digits are processed the answer is exactly the reversed number; overflow is then handled by the range rule.\n\n## Complexity\n\nTime O(log|x|), space O(1)."

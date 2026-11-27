@@ -13,6 +13,21 @@
       "A server's contribution depends only on its current ID, so it is enough to know how many servers have each ID, not which ones.",
       "Keep a frequency table of IDs and the current total; replacing every r with v changes each of those c servers by v-r and moves the whole count from r to v.",
       "Initialize the frequencies and the total; for each day, if r != v, take c = freq[r], set it to 0, add (v-r)*c to the total and add c to freq[v]; output the total for every day whether or not it changed."
+    ],
+    "ja": [
+      "サーバーの寄与は現在の ID だけで決まるので、どのサーバーかではなく、各 ID に何台あるかだけがわかれば十分です。",
+      "ID の頻度表と現在の合計を保持します。すべての r を v に置換すると、その c 台それぞれが v-r だけ変化し、r の台数がそのまま v へ移ります。",
+      "頻度と合計を初期化します。各日について、r != v なら c = freq[r] を取り、freq[r] を 0 にして、合計に (v-r)*c を加え、freq[v] に c を加えます。変化の有無にかかわらず、毎日の合計を出力します。"
+    ],
+    "ko": [
+      "서버의 기여분은 현재 ID에만 달려 있으므로, 어떤 서버인지가 아니라 각 ID를 가진 서버가 몇 대인지만 알면 됩니다.",
+      "ID별 빈도표와 현재 총합을 유지합니다. 모든 r을 v로 교체하면 해당 c대의 서버가 각각 v-r만큼 변하고, 개수 전체가 r에서 v로 옮겨 갑니다.",
+      "빈도와 총합을 초기화합니다. 매일 r != v이면 c = freq[r]을 구해 freq[r]을 0으로 만들고, 총합에 (v-r)*c를 더하며 freq[v]에 c를 더합니다. 총합은 변했든 아니든 매일 출력합니다."
+    ],
+    "vi": [
+      "Đóng góp của một máy chủ chỉ phụ thuộc vào ID hiện tại của nó, nên chỉ cần biết có bao nhiêu máy chủ ứng với mỗi ID, không cần biết là máy nào.",
+      "Giữ bảng tần suất các ID và tổng hiện tại; thay mọi r bằng v làm mỗi một trong c máy chủ đó thay đổi v-r và chuyển toàn bộ số lượng từ r sang v.",
+      "Khởi tạo tần suất và tổng; mỗi ngày, nếu r != v thì lấy c = freq[r], đặt về 0, cộng (v-r)*c vào tổng và cộng c vào freq[v]; mỗi ngày đều in tổng dù có thay đổi hay không."
     ]
   },
   "explanationEn": "## Approach\n\nKeep the ID frequencies and the total. When r changes to v, move c=count[r] over, apply total+=(v−r)*c, and output the updated total.\n\n## Proof of correctness\n\nThe frequencies describe all servers exactly. An operation affects only the c servers whose ID is r, and each one's contribution changes by v−r. Moving these c identities to v leaves the other frequencies unchanged, and induction gives each day's state and total. When r=v the state simply stays the same.\n\n## Complexity\n\nTime O(n), space O(n)."

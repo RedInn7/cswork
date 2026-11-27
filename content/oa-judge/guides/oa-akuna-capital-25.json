@@ -13,6 +13,21 @@
       "Split each word into maximal runs of equal letters. Different runs never form equal neighbours, so conflicts only happen inside a run.",
       "A run of length L contains floor(L/2) disjoint pairs of adjacent positions, and each pair needs at least one change, so at least floor(L/2) changes are needed; changing every second letter to one that differs from both neighbours reaches this bound.",
       "For each word, scan from left to right to find each run length L and add floor(L/2); print the result for every word in input order, space-separated. The total input can reach 10^7 characters, so read it quickly and scan character by character."
+    ],
+    "ja": [
+      "各単語を、同じ文字が連続する極大なランに分けます。異なるランが等しい隣り合う文字をなすことはないので、衝突はランの内部でしか起こりません。",
+      "長さ L のランには、隣り合う位置の互いに素なペアが floor(L/2) 組あり、各ペアで少なくとも 1 回の変更が必要なので、少なくとも floor(L/2) 回の変更が必要です。1 つおきの文字を両隣と異なる文字に変更すれば、この下界に達します。",
+      "各単語について左から右へ走査して各ランの長さ L を求め、floor(L/2) を足します。各単語の結果を入力順にスペース区切りで出力します。入力の総量は 10^7 文字に達しうるので、高速に読み込み、1 文字ずつ走査してください。"
+    ],
+    "ko": [
+      "각 단어를 같은 글자가 이어지는 극대 구간들로 나눕니다. 서로 다른 구간은 같은 이웃을 만들지 않으므로 충돌은 구간 안에서만 일어납니다.",
+      "길이 L인 구간에는 서로 겹치지 않는 인접 위치 쌍이 floor(L/2)개 있고 각 쌍은 최소 한 번 바꿔야 하므로 최소 floor(L/2)번의 변경이 필요합니다. 두 이웃과 모두 다른 글자로 두 번째마다 하나씩 바꾸면 이 하한에 도달합니다.",
+      "각 단어에 대해 왼쪽에서 오른쪽으로 스캔하며 각 구간의 길이 L을 구해 floor(L/2)를 더합니다. 각 단어의 결과를 입력 순서대로 공백으로 구분해 출력합니다. 전체 입력은 10^7 문자에 이를 수 있으므로 빠르게 읽고 문자 단위로 스캔하세요."
+    ],
+    "vi": [
+      "Chia mỗi từ thành các đoạn cực đại gồm các chữ cái bằng nhau. Các đoạn khác nhau không bao giờ tạo thành các ký tự kề nhau bằng nhau, nên xung đột chỉ xảy ra bên trong một đoạn.",
+      "Một đoạn độ dài L chứa floor(L/2) cặp vị trí kề nhau rời nhau, và mỗi cặp cần ít nhất một lần đổi, nên cần ít nhất floor(L/2) lần đổi; đổi mỗi chữ cái thứ hai thành một chữ khác với cả hai láng giềng thì đạt cận này.",
+      "Với mỗi từ, quét từ trái sang phải để tìm độ dài L của từng đoạn và cộng floor(L/2); in kết quả của mọi từ theo thứ tự đầu vào, cách nhau bằng dấu cách. Tổng đầu vào có thể đạt 10^7 ký tự, nên hãy đọc nhanh và quét từng ký tự."
     ]
   },
   "explanationEn": "## Approach\n\nSplit the word into maximal runs of the same character. A run of length L needs at least one replacement for every two characters, floor(L/2) in total; runs are independent of each other, so add the results.\n\n## Proof of correctness\n\nA run of L equal characters contains floor(L/2) disjoint pairs of adjacent positions, and each pair needs at least one position changed, so floor(L/2) is a lower bound. Replacing every second position while avoiding the characters on both sides reaches the bound; 26 letters are enough to choose from, and run boundaries do not introduce new conflicts. Adding over the runs gives the optimum.\n\n## Full range and complexity\n\nThe full range of 100 words of 100000 characters each is kept, so the total can reach 10000000 characters. Total time O(S), extra algorithm space O(1); splitting the actual input into lines takes another O(S). The largest standard input is 10000104 bytes, under 32 MiB; the domain is not reduced because of the input budget.\n\n## Independent verification\n\nSmall cases use a minimum-replacement DP over 26 letters; large cases are cross-checked with pairing of disjoint adjacent conflicts and closed-form expectations, and two real 100 x 100000 cases are in the official package."

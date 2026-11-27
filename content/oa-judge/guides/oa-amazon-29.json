@@ -13,6 +13,21 @@
       "With hubs A and B added, plus the fixed hub n, every warehouse connects to the nearest hub on its right, so the warehouses split into exactly three segments, [1,A], [A+1,B] and [B+1,n], each connecting to the hub at its end.",
       "Within a segment each warehouse costs (end capacity − its own capacity), so a segment totals (segment length × end capacity − sum of capacities in the segment). The capacity sum comes from prefix sums in O(1), and each query is the sum of three segments.",
       "Precompute prefix sums of the capacities; for each query, use A, B and n in turn as the segment end, starting right after the previous segment, and add length × end capacity − the difference of prefix sums; print the results in query order, using 64-bit integers."
+    ],
+    "ja": [
+      "ハブ A と B を追加し、固定ハブ n と合わせると、各倉庫は右側の最も近いハブに接続します。そのため倉庫は [1,A]、[A+1,B]、[B+1,n] のちょうど 3 つの区間に分かれ、それぞれの区間の末尾のハブに接続します。",
+      "区間内では、各倉庫のコストは（末尾の容量 − 自分の容量）なので、区間の合計は（区間の長さ × 末尾の容量 − 区間内の容量の和）です。容量の和は累積和で O(1) で求められ、各クエリは 3 つの区間の和になります。",
+      "容量の累積和を前計算します。各クエリでは、A、B、n を順に区間の末尾とし、直前の区間の直後から始めて、長さ × 末尾の容量 − 累積和の差 を加えます。結果はクエリの順に出力し、64 ビット整数を使ってください。"
+    ],
+    "ko": [
+      "허브 A와 B를 추가하고 고정 허브 n이 있으면, 모든 창고는 자신의 오른쪽에서 가장 가까운 허브에 연결되므로 창고는 정확히 세 구간 [1,A], [A+1,B], [B+1,n]으로 나뉘고 각 구간은 끝에 있는 허브에 연결됩니다.",
+      "한 구간 안에서 각 창고의 비용은 (끝 용량 − 자신의 용량)이므로, 구간의 합계는 (구간 길이 × 끝 용량 − 구간 내 용량의 합)입니다. 용량의 합은 누적 합으로 O(1)에 구할 수 있고, 각 질의의 답은 세 구간의 합입니다.",
+      "용량의 누적 합을 미리 계산합니다. 각 질의에서 A, B, n을 차례로 구간의 끝으로 삼고 시작은 이전 구간 바로 다음으로 하여, 길이 × 끝 용량 − 누적 합의 차를 더합니다. 결과는 질의 순서대로 출력하며 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Khi thêm các đầu mối A và B cùng đầu mối cố định n, mọi kho đều kết nối với đầu mối gần nhất bên phải, nên các kho chia thành đúng ba đoạn, [1,A], [A+1,B] và [B+1,n], mỗi đoạn kết nối với đầu mối ở cuối đoạn.",
+      "Trong một đoạn, mỗi kho tốn (sức chứa cuối đoạn − sức chứa của chính nó), nên cả đoạn tốn (độ dài đoạn × sức chứa cuối đoạn − tổng sức chứa trong đoạn). Tổng sức chứa lấy từ tổng tiền tố trong O(1), và mỗi truy vấn là tổng của ba đoạn.",
+      "Tính trước tổng tiền tố của các sức chứa; với mỗi truy vấn, lần lượt dùng A, B và n làm cuối đoạn, bắt đầu ngay sau đoạn trước, và cộng độ dài × sức chứa cuối đoạn − hiệu của các tổng tiền tố; in kết quả theo thứ tự truy vấn, dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nUse prefix sums to compute the three segments that connect to A, B and n separately; each segment costs segment length × hub capacity − the sum of capacities in the segment.\n\n## Proof of correctness\n\nThe nearest hub to the right splits the warehouses exactly into [1,A], [A+1,B] and [B+1,n], and every warehouse in a segment uses the same hub, so summing the per-warehouse costs gives the formula. Queries are independent of each other.\n\n## Complexity\n\nTime O(n+q), space O(n+q)."

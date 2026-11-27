@@ -13,6 +13,21 @@
       "Normalize first: if x > y, reverse the string and swap x and y (reversing turns every 01 pair into 10 and vice versa), so only the case x <= y remains.",
       "When x <= y, any two wildcards filled as 1 then 0 can be swapped to 0 then 1 without getting worse. So in an optimal solution the wildcards, by position, are a block of 0s followed by a block of 1s, and you only need to try every split point.",
       "Compute the full cost with every ! set to 1; then scan by position keeping the counts of 0s and 1s on each side, and at each ! turn it from 1 into 0, changing the cost by left1*y - left0*x + right1*x - right0*y; keep the minimum. Use 64-bit throughout and take the result modulo 1000000007 only at the end."
+    ],
+    "ja": [
+      "まず正規化します。x > y なら、文字列を反転して x と y を入れ替えます（反転すると、すべての 01 ペアが 10 に、10 ペアが 01 になります）。これで x <= y の場合だけを考えればよくなります。",
+      "x <= y のとき、1 のあとに 0 と埋めた 2 つのワイルドカードは、0 のあとに 1 に入れ替えても悪くなりません。したがって最適解では、ワイルドカードは位置順に 0 のブロックのあと 1 のブロックとなり、すべての分割点を試せば十分です。",
+      "すべての ! を 1 にしたときの全コストを計算します。次に位置順に走査して、両側の 0 と 1 の個数を保持し、各 ! を 1 から 0 に変えるたびにコストが left1*y - left0*x + right1*x - right0*y だけ変化するとして更新し、最小値を保持します。全体を通して 64 ビットを使い、最後にだけ 1000000007 で割った余りを取ります。"
+    ],
+    "ko": [
+      "먼저 정규화합니다. x > y이면 문자열을 뒤집고 x와 y를 맞바꿉니다(뒤집으면 모든 01 쌍이 10 쌍이 되고 그 반대도 마찬가지입니다). 그러면 x <= y인 경우만 남습니다.",
+      "x <= y일 때 와일드카드 두 개를 1, 0으로 채운 것은 0, 1로 바꿔도 나빠지지 않습니다. 따라서 최적해에서 와일드카드는 위치 순서대로 0 블록 다음에 1 블록이 되며, 모든 분할 지점만 시도하면 됩니다.",
+      "모든 !를 1로 설정했을 때의 전체 비용을 계산합니다. 그다음 위치 순서로 훑으면서 양쪽의 0과 1 개수를 유지하고, 각 !를 1에서 0으로 바꿀 때 비용 변화량 left1*y - left0*x + right1*x - right0*y를 더하며 최솟값을 유지합니다. 전부 64비트로 계산하고 마지막에만 1000000007로 나눈 나머지를 취합니다."
+    ],
+    "vi": [
+      "Chuẩn hóa trước: nếu x > y, đảo ngược xâu và hoán đổi x và y (đảo ngược biến mọi cặp 01 thành 10 và ngược lại), nên chỉ còn trường hợp x <= y.",
+      "Khi x <= y, hai ký tự đại diện bất kỳ được điền là 1 rồi 0 có thể hoán đổi thành 0 rồi 1 mà không tệ hơn. Vì vậy trong một lời giải tối ưu, các ký tự đại diện theo vị trí là một khối số 0 rồi đến một khối số 1, và bạn chỉ cần thử mọi điểm chia.",
+      "Tính toàn bộ chi phí khi mọi ! được đặt là 1; sau đó duyệt theo vị trí, giữ số lượng 0 và 1 ở mỗi bên, và tại mỗi ! đổi nó từ 1 sang 0, chi phí thay đổi left1*y - left0*x + right1*x - right0*y; giữ giá trị nhỏ nhất. Dùng 64-bit xuyên suốt và chỉ lấy kết quả modulo 1000000007 ở cuối."
     ]
   },
   "explanationEn": "## Approach\n\nIf x > y, reverse the string and swap x and y so that x <= y. Some optimal solution fills the wildcards, in position order, with 0s first and then 1s; start with all wildcards as 1, change them to 0 one by one while maintaining the counts of 0s and 1s on the left and right and the cost change, and enumerate every split point.\n\n## Proof of correctness\n\nWhen x <= y, swapping an inverted wildcard pair 1, 0 into 0, 1 does not increase the total contribution of that pair and the positions between them, and contributions outside are unchanged, so all inversions can be removed. Every optimal single split point appears during the scan. The change from turning a 1 into a 0 is left1*y - left0*x + right1*x - right0*y, which updates the full cost exactly; the modulus is taken only at the end.\n\n## Complexity\n\nTime O(n), space O(n)."

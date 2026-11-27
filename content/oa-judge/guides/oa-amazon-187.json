@@ -13,6 +13,21 @@
       "Which real name a registration belongs to depends only on how many of each letter it contains; real names are not rearrangements of each other, so each registration matches at most one real name.",
       "Give every name an order-independent signature (for example its letters sorted), count how often each signature appears among the registrations, then look up how many times each real name's signature was registered.",
       "Compute and count the signatures of the m registrations (a hash map, or sort the signatures and count with binary search); collect the real names whose signature count is greater than 1; sort them lexicographically and print them space-separated, or None if there are none."
+    ],
+    "ja": [
+      "登録がどの本物の名前に属するかは、各文字がそれぞれ何個含まれるかだけで決まります。本物の名前は互いに並べ替えではないので、各登録は高々 1 つの本物の名前にしか一致しません。",
+      "各名前に、順序に依存しない署名（たとえば文字をソートしたもの）を付け、登録の中で各署名が何回現れるかを数えたあと、各本物の名前の署名が何回登録されたかを調べます。",
+      "m 個の登録名の署名を計算して数えます（ハッシュマップを使うか、署名をソートして二分探索で数えます）。署名の個数が 1 より大きい本物の名前を集め、辞書順にソートして空白区切りで出力し、なければ None を出力します。"
+    ],
+    "ko": [
+      "등록이 어느 실제 이름에 속하는지는 각 문자가 몇 개 들어 있는지에만 달려 있습니다. 실제 이름끼리는 서로 재배열 관계가 아니므로 각 등록은 많아야 하나의 실제 이름에만 대응됩니다.",
+      "모든 이름에 순서와 무관한 시그니처(예: 문자를 정렬한 것)를 부여하고, 등록들 사이에서 각 시그니처가 몇 번 나오는지 센 다음, 각 실제 이름의 시그니처가 몇 번 등록되었는지 조회합니다.",
+      "m개 등록의 시그니처를 계산해 셉니다(해시 맵, 또는 시그니처를 정렬해 이분 탐색으로 셈). 시그니처 개수가 1보다 큰 실제 이름을 모아 사전순으로 정렬하고 공백으로 구분해 출력하며, 없으면 None을 출력합니다."
+    ],
+    "vi": [
+      "Một lượt đăng ký thuộc tên thật nào chỉ phụ thuộc vào việc nó chứa bao nhiêu chữ cái mỗi loại; các tên thật không phải hoán vị của nhau, nên mỗi lượt đăng ký khớp tối đa một tên thật.",
+      "Gán cho mỗi tên một chữ ký không phụ thuộc thứ tự (ví dụ các chữ cái của nó đã sắp xếp), đếm mỗi chữ ký xuất hiện bao nhiêu lần trong các lượt đăng ký, rồi tra xem chữ ký của mỗi tên thật đã được đăng ký bao nhiêu lần.",
+      "Tính và đếm chữ ký của m lượt đăng ký (bảng băm, hoặc sắp xếp các chữ ký rồi đếm bằng tìm kiếm nhị phân); gom các tên thật có số đếm chữ ký lớn hơn 1; sắp xếp chúng theo thứ tự từ điển và in cách nhau bởi dấu cách, hoặc None nếu không có."
     ]
   },
   "explanationEn": "## Approach\n\nUse the sorted characters of a name as its signature, count the signatures of all registrations, then keep the real names whose signature count is greater than 1 and sort them.\n\n## Proof of correctness\n\nTwo strings are rearrangements of each other if and only if every character has the same frequency, and the sorted string characterizes exactly that equivalence class. Real names have distinct signatures, so counting signatures gives each person's total number of accounts; filtering and sorting then meets the output requirements.\n\n## Complexity\n\nTime O((n+m)L log L + n log n * L), space O((n+m)L), with L <= 10."

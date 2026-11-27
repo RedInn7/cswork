@@ -13,6 +13,21 @@
       "Enumeration is impossible, so look for a recurrence. Let F[i] be the number of valid strings of length i; a string shorter than k cannot contain k equal letters in a row, so F[i]=26^i for i<k. Note that when k=1 every non-empty string is invalid, so the answer is 0.",
       "Appending any letter to a valid string of length i-1 gives 26F[i-1] strings, and some of them become invalid: exactly those whose last k letters became equal. Each is a valid prefix of length i-k followed by one letter different from that prefix's last letter repeated k times, so there are 25F[i-k] of them; when i=k the invalid strings are just the 26 all-equal strings.",
       "If k=1, print 0. Otherwise set F[0]=1 and for i=1..n let F[i]=26F[i-1], subtract 26 when i=k, or subtract 25F[i-k] when i>k, everything modulo 1000000007 and fixed up to be non-negative after subtraction. Print F[n]."
+    ],
+    "ja": [
+      "全列挙は不可能なので、漸化式を探します。F[i] を長さ i の有効な文字列の個数とします。k より短い文字列には同じ文字が k 個連続することはあり得ないので、i<k では F[i]=26^i です。なお k=1 のときは空でないすべての文字列が無効になるので、答えは 0 です。",
+      "長さ i-1 の有効な文字列に任意の 1 文字を付け足すと 26F[i-1] 個の文字列ができ、そのうち無効になるのは、末尾の k 文字が等しくなったものだけです。それらは、長さ i-k の有効な接頭辞に、その接頭辞の最後の文字とは異なる文字を k 回繰り返したものを続けた形なので、25F[i-k] 個あります。i=k のときは、無効な文字列は 26 個の全文字同一の文字列だけです。",
+      "k=1 なら 0 を出力します。そうでなければ F[0]=1 とし、i=1..n について F[i]=26F[i-1] とし、i=k なら 26 を引き、i>k なら 25F[i-k] を引きます。すべて 1000000007 を法とし、引き算の後は非負に補正します。F[n] を出力します。"
+    ],
+    "ko": [
+      "전수 조사는 불가능하므로 점화식을 찾습니다. F[i]를 길이 i인 유효한 문자열의 수라고 합니다. k보다 짧은 문자열은 같은 문자가 k번 연속할 수 없으므로 i<k이면 F[i]=26^i입니다. k=1이면 비어 있지 않은 모든 문자열이 유효하지 않으므로 답은 0입니다.",
+      "길이 i-1인 유효한 문자열 뒤에 임의의 문자를 붙이면 26F[i-1]개가 되고, 그중 일부가 유효하지 않게 됩니다. 정확히 마지막 k개 문자가 같아진 경우입니다. 이는 길이 i-k인 유효한 접두사 뒤에, 그 접두사의 마지막 문자와 다른 문자를 k번 반복한 것이므로 25F[i-k]개입니다. i=k이면 유효하지 않은 문자열은 모두 같은 문자인 26개뿐입니다.",
+      "k=1이면 0을 출력합니다. 그렇지 않으면 F[0]=1로 두고 i=1..n에 대해 F[i]=26F[i-1]로 두되, i=k이면 26을 빼고 i>k이면 25F[i-k]를 뺍니다. 모두 1000000007로 나눈 나머지로 처리하며 뺄셈 뒤에는 음수가 되지 않도록 보정합니다. F[n]을 출력합니다."
+    ],
+    "vi": [
+      "Không thể liệt kê, nên hãy tìm công thức truy hồi. Gọi F[i] là số xâu hợp lệ độ dài i; một xâu ngắn hơn k không thể chứa k chữ cái giống nhau liên tiếp, nên F[i]=26^i với i<k. Lưu ý khi k=1 mọi xâu không rỗng đều không hợp lệ, nên đáp án là 0.",
+      "Thêm một chữ cái bất kỳ vào một xâu hợp lệ độ dài i-1 cho 26F[i-1] xâu, và một số trong đó trở nên không hợp lệ: đúng những xâu có k chữ cái cuối bằng nhau. Mỗi xâu như vậy là một tiền tố hợp lệ độ dài i-k theo sau là một chữ cái khác với chữ cái cuối của tiền tố đó lặp lại k lần, nên có 25F[i-k] xâu; khi i=k, các xâu không hợp lệ chỉ là 26 xâu gồm toàn chữ cái giống nhau.",
+      "Nếu k=1, in 0. Ngược lại đặt F[0]=1 và với i=1..n đặt F[i]=26F[i-1], trừ 26 khi i=k, hoặc trừ 25F[i-k] khi i>k, tất cả modulo 1000000007 và chỉnh về không âm sau phép trừ. In F[n]."
     ]
   },
   "explanationEn": "## Approach\n\nLet F[i] be the number of valid strings of length i. For i<k it is 26^i; F[k]=26^k-26; for i>k, F[i]=26F[i-1]-25F[i-k]. When k=1, output 0 directly.\n\n## Proof of correctness\n\nAny valid string of length i-1 followed by any letter gives 26F[i-1] strings in total. When i>k, the newly created invalid strings are exactly a valid prefix of length i-k followed by a letter different from that prefix's last character repeated k times, 25F[i-k] in total; when i=k, the invalid strings are the 26 all-equal strings. Subtracting gives the number of valid strings with no duplicates and no omissions.\n\n## Complexity\n\nTime O(n), space O(n) for the array of residues, which can be further reduced to O(k) with a circular buffer."

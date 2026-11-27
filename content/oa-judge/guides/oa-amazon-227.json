@@ -13,6 +13,21 @@
       "Two adjacent windows of length k differ only in their first and last elements, so all window sums are equal exactly when a[i] = a[i+k] for every valid i.",
       "Group the indices by index mod k; the groups are independent and each must end up constant. A group that is already constant needs no change; otherwise the common value after changes must be a positive integer, so only positions equal to one positive value can be kept.",
       "If k >= n, output 0; for each remainder r take the elements at r, r+k, r+2k, ...; skip the group if it holds a single value; otherwise count the occurrences of each positive value and add the group size minus the highest positive frequency (0 when there is no positive value)."
+    ],
+    "ja": [
+      "長さ k の隣り合う 2 つのウィンドウは、先頭と末尾の要素だけが異なるので、すべてのウィンドウの和が等しいのは、有効なすべての i で a[i] = a[i+k] となるとき、かつそのときに限ります。",
+      "添字を index mod k でグループ化します。グループは独立で、それぞれ最終的に定数になる必要があります。すでに定数のグループは変更不要です。そうでなければ、変更後の共通の値は正の整数でなければならないので、ある 1 つの正の値に等しい位置だけが残せます。",
+      "k >= n なら 0 を出力します。各剰余 r について、r, r+k, r+2k, ... の要素を取ります。グループが 1 種類の値だけなら飛ばし、そうでなければ各正の値の出現数を数え、グループのサイズから最大の正の頻度を引いた値を加えます（正の値がなければグループのサイズ全体を加えます）。"
+    ],
+    "ko": [
+      "길이 k인 인접한 두 윈도우는 첫 원소와 마지막 원소만 다르므로, 모든 윈도우 합이 같을 필요충분조건은 모든 유효한 i에 대해 a[i] = a[i+k]인 것입니다.",
+      "인덱스를 index mod k로 묶으면 그룹들은 서로 독립이며 각 그룹은 상수가 되어야 합니다. 이미 상수인 그룹은 바꿀 필요가 없습니다. 그렇지 않으면 변경 후 공통 값은 양의 정수여야 하므로, 어떤 한 양수 값과 같은 위치만 남길 수 있습니다.",
+      "k >= n이면 0을 출력합니다. 각 나머지 r에 대해 r, r+k, r+2k, ... 위치의 원소를 취합니다. 그룹에 값이 하나뿐이면 건너뜁니다. 그렇지 않으면 각 양수 값의 등장 횟수를 세어 그룹 크기에서 가장 높은 양수 빈도를 뺀 값을 더합니다(양수 값이 없으면 그룹 크기 전체)."
+    ],
+    "vi": [
+      "Hai cửa sổ kề nhau độ dài k chỉ khác nhau ở phần tử đầu và phần tử cuối, nên mọi tổng cửa sổ bằng nhau đúng khi a[i] = a[i+k] với mọi i hợp lệ.",
+      "Nhóm các chỉ số theo chỉ số mod k; các nhóm độc lập nhau và mỗi nhóm cuối cùng phải là hằng. Một nhóm đã là hằng thì không cần đổi; nếu không, giá trị chung sau khi đổi phải là số nguyên dương, nên chỉ những vị trí bằng một giá trị dương nào đó mới có thể được giữ.",
+      "Nếu k >= n, in 0; với mỗi số dư r lấy các phần tử tại r, r+k, r+2k, ...; bỏ qua nhóm nếu nó chỉ có một giá trị; nếu không thì đếm số lần xuất hiện của mỗi giá trị dương và cộng kích thước nhóm trừ đi tần suất dương cao nhất (0 khi không có giá trị dương)."
     ]
   },
   "explanationEn": "## Approach\n\nSubtracting adjacent windows gives a[i]=a[i+k]. Group the indices by index mod k: a group whose values are already all equal stays unchanged; any other group is unified to its most frequent positive value, or entirely changed to 1 if it has no positive value.\n\n## Proof of correctness\n\nAll windows having the same sum is equivalent to every group being constant, and different groups do not interfere. If a group needs no change, any original value can be kept; when a change is needed, the target can only be a positive integer, so at most the highest frequency of a positive value in that group can be kept. Every group reaches its lower bound, and summing gives the global optimum.\n\n## Complexity\n\nTime O(n+k), space O(n)."

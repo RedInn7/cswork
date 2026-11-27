@@ -13,6 +13,21 @@
       "C(i, j) is symmetric in i and j, so the total equals 2 * sum(i mod j); for each divisor j you only need the sum of remainders over i = 1..n.",
       "Fix j and write n = q * j + r: the remainders consist of q full cycles 0..j - 1 plus a tail 0..r, and both parts have closed-form arithmetic-series sums.",
       "For j from 1 to n: q = n / j and r = n % j; add q * j * (j - 1) / 2 + r * (r + 1) / 2 and reduce modulo 1000000007 (intermediate values stay around 10^12, so 64-bit integers suffice); finally print 2 * total mod 1000000007."
+    ],
+    "ja": [
+      "C(i, j) は i と j について対称なので、合計は 2 * sum(i mod j) に等しくなります。各約数 j について、i = 1..n にわたる余りの和だけが必要です。",
+      "j を固定して n = q * j + r と書くと、余りは q 回の完全な周期 0..j - 1 と、端の 0..r からなり、どちらの部分にも等差数列の和の閉じた式があります。",
+      "j を 1 から n まで動かし、q = n / j、r = n % j として、q * j * (j - 1) / 2 + r * (r + 1) / 2 を加算し、1000000007 で剰余を取ります（途中の値は約 10^12 に収まるので、64 ビット整数で足ります）。最後に 2 * total mod 1000000007 を出力します。"
+    ],
+    "ko": [
+      "C(i, j)는 i와 j에 대해 대칭이므로 전체 합은 2 * sum(i mod j)와 같습니다. 각 j에 대해 i = 1..n의 나머지 합만 구하면 됩니다.",
+      "j를 고정하고 n = q * j + r로 쓰면, 나머지들은 0..j - 1이 q번 반복되는 완전한 주기와 0..r의 꼬리 부분으로 이루어지며, 두 부분 모두 등차수열 합의 닫힌 식이 있습니다.",
+      "j를 1부터 n까지 돌며 q = n / j, r = n % j로 두고 q * j * (j - 1) / 2 + r * (r + 1) / 2를 더한 뒤 1000000007로 나눈 나머지를 취합니다(중간값은 약 10^12 정도라 64비트 정수로 충분합니다). 마지막에 2 * total mod 1000000007을 출력합니다."
+    ],
+    "vi": [
+      "C(i, j) đối xứng theo i và j, nên tổng bằng 2 * sum(i mod j); với mỗi ước j bạn chỉ cần tổng các số dư trên i = 1..n.",
+      "Cố định j và viết n = q * j + r: các số dư gồm q chu kỳ đầy đủ 0..j - 1 cộng một phần đuôi 0..r, và cả hai phần đều có tổng dạng công thức đóng của cấp số cộng.",
+      "Với j từ 1 đến n: q = n / j và r = n % j; cộng q * j * (j - 1) / 2 + r * (r + 1) / 2 và lấy modulo 1000000007 (các giá trị trung gian vào khoảng 10^12, nên số nguyên 64 bit là đủ); cuối cùng in 2 * total mod 1000000007."
     ]
   },
   "explanationEn": "## Approach\n\nUse symmetry to compute 2 times the sum of (i mod j). Fix j and write n=qj+r: the complete remainder cycles contribute q*j(j-1)/2 and the remainder tail contributes r(r+1)/2.\n\n## Proof of correctness\n\nThe remainders of 1..n consist of exactly q complete cycles 0..j-1 and a tail 0..r, and both arithmetic-series sums are exact. Enumerating every divisor j gives the total of the first term; swapping i and j shows that the second term has the same total, so we multiply by 2 and reduce modulo.\n\n## Complexity\n\nO(n) time, O(1) extra space."

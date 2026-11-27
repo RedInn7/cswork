@@ -11,5 +11,35 @@
     "hints": [
       "Prefix sums give each hub's position on the linear unrolling; the distance between consecutive requests is the smaller of the two arc lengths."
     ]
+  },
+  "ja": {
+    "title": "円形ドローンハブを順に巡る最短総時間",
+    "description": "i 番目の transitionTime の区間はハブ i とハブ i+1 を結び、最後の区間は m と 1 を結びます。どの区間も両方向に移動できます。1 番から出発し、要求されたハブを順に訪れるときの最小の総時間を求めてください。この辺の重みでは、元の例の答えは 4 ではなく 3 です。\n\n標準入出力、例、判定は本サイトが独自に作成しました。",
+    "input": "1 行目に m n (1≤m≤5000, 1≤n≤200000)、2 行目に m 個の辺の重み (1..1000000)、3 行目に n 個の要求ハブ番号 (1..m) が与えられます。",
+    "output": "答えとなる整数を 1 つ出力します。",
+    "explanation": "例 1: 1→1 は 0、最後の辺を使う 1→3 は 1、3→3 は 0、3→2 は 2 で、合計 3 です。例 2: ハブは 1 つしかないので、総時間は 0 です。例 3: 2 つのハブの間にある 2 つの経路のうち短いほうの 2 を選び、2 往復で合計 4 です。",
+    "hints": [
+      "累積和により、各ハブが線形に展開した上でどの位置にあるかが分かります。連続する要求の間の距離は、2 つの弧の長さのうち小さいほうです。"
+    ]
+  },
+  "ko": {
+    "title": "원형 드론 허브를 순서대로 방문하는 최단 총 시간",
+    "description": "transitionTime의 i번째 구간은 허브 i와 허브 i+1을 잇고, 마지막 구간은 m과 1을 잇습니다. 모든 구간은 양방향으로 이동할 수 있습니다. 1번에서 출발하여 요청된 허브들을 순서대로 방문할 때의 최소 총 시간을 구하세요. 이 간선 가중치에서 원문 예제의 답은 4가 아니라 3입니다.\n\n표준 입출력, 예제, 채점은 이 사이트가 독자적으로 작성했습니다.",
+    "input": "첫째 줄에 m n(1≤m≤5000, 1≤n≤200000)이 주어지고, 둘째 줄에 m개의 간선 가중치(1..1000000)가, 셋째 줄에 n개의 요청 허브 번호(1..m)가 주어집니다.",
+    "output": "정수 하나로 답을 출력합니다.",
+    "explanation": "예제 1: 1→1은 0, 마지막 간선을 거치는 1→3은 1, 3→3은 0, 3→2는 2이므로 총 3입니다. 예제 2: 허브가 하나뿐이므로 총 시간은 0입니다. 예제 3: 두 허브 사이의 두 경로 중 짧은 쪽인 2를 택하고, 왕복 두 번이므로 총 4입니다.",
+    "hints": [
+      "누적 합으로 각 허브를 펼친 직선 위의 위치로 나타내면, 연속된 두 요청 사이의 거리는 두 호의 길이 중 작은 쪽입니다."
+    ]
+  },
+  "vi": {
+    "title": "Tổng thời gian ngắn nhất để thăm các trạm drone hình vòng theo thứ tự",
+    "description": "Đoạn thứ i của transitionTime nối trạm i và trạm i+1, đoạn cuối nối m với 1; mỗi đoạn có thể đi theo cả hai chiều. Xuất phát từ 1, thăm các trạm được yêu cầu theo thứ tự và tìm tổng thời gian tối thiểu. Với các trọng số cạnh này, đáp án của ví dụ gốc là 3, không phải 4.\n\nTrang này tự viết độc lập phần vào/ra chuẩn, các ví dụ và phần chấm bài.",
+    "input": "Dòng đầu chứa m n (1≤m≤5000, 1≤n≤200000), dòng thứ hai chứa m trọng số cạnh (1..1000000), dòng thứ ba chứa n số hiệu trạm được yêu cầu (1..m).",
+    "output": "In ra một số nguyên là đáp án.",
+    "explanation": "Ví dụ 1: 1→1 mất 0, 1→3 qua cạnh cuối mất 1, 3→3 mất 0, và 3→2 mất 2, tổng cộng 3. Ví dụ 2: chỉ có một trạm nên tổng thời gian là 0. Ví dụ 3: trong hai tuyến giữa hai trạm, chọn tuyến ngắn hơn, 2; hai chuyến đi về có tổng 4.",
+    "hints": [
+      "Tổng tiền tố cho biết vị trí của mỗi trạm trên đường thẳng được trải ra; khoảng cách giữa hai yêu cầu liên tiếp là cung ngắn hơn trong hai cung."
+    ]
   }
 }

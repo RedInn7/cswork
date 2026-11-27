@@ -13,6 +13,21 @@
       "An integer is even exactly when its remainder modulo 2 is 0. This test also works for negative numbers and 0: 0 is even, and negative even numbers are even too.",
       "Just check every element of the array and count those that satisfy the test. No sorting or extra data structure is needed; n can be 0, in which case the answer is 0.",
       "Read n and then n integers. Start a counter at 0 and add one for each x with x mod 2 = 0 (avoid testing \"remainder equals 1 means odd\", since negative odd numbers give remainder -1 in some languages). Output the counter."
+    ],
+    "ja": [
+      "整数が偶数であるのは、2 で割った余りが 0 のとき、かつそのときに限ります。この判定は負の数と 0 でも成り立ちます。0 は偶数で、負の偶数も偶数です。",
+      "配列のすべての要素を調べ、判定を満たすものを数えるだけです。ソートや追加のデータ構造は不要です。n が 0 になることもあり、その場合の答えは 0 です。",
+      "n を読み込み、続けて n 個の整数を読み込みます。カウンタを 0 で始め、x mod 2 = 0 である x ごとに 1 を加えます(「余りが 1 なら奇数」という判定は避けてください。言語によっては負の奇数の余りが -1 になるためです)。カウンタを出力します。"
+    ],
+    "ko": [
+      "정수가 짝수인 것은 2로 나눈 나머지가 0일 때, 그리고 그때에 한합니다. 이 판정은 음수와 0에도 통합니다. 0은 짝수이고 음의 짝수도 짝수입니다.",
+      "배열의 모든 원소를 검사하여 조건을 만족하는 것의 수를 세면 됩니다. 정렬이나 추가 자료 구조는 필요 없습니다. n이 0일 수 있으며, 이때 답은 0입니다.",
+      "n과 n개의 정수를 읽습니다. 카운터를 0으로 두고 x mod 2 = 0인 각 x마다 하나씩 더합니다(일부 언어에서는 음의 홀수가 나머지 -1을 주므로 “나머지가 1이면 홀수”라는 식의 판정은 피하세요). 카운터를 출력합니다."
+    ],
+    "vi": [
+      "Một số nguyên là số chẵn khi và chỉ khi số dư của nó khi chia cho 2 bằng 0. Phép kiểm tra này cũng đúng với số âm và 0: 0 là số chẵn, và các số âm chẵn cũng là số chẵn.",
+      "Chỉ cần kiểm tra từng phần tử của mảng và đếm những phần tử thỏa phép kiểm tra. Không cần sắp xếp hay cấu trúc dữ liệu phụ; n có thể bằng 0, khi đó đáp án là 0.",
+      "Đọc n rồi n số nguyên. Bắt đầu một biến đếm bằng 0 và cộng một cho mỗi x có x mod 2 = 0 (tránh kiểm tra \"số dư bằng 1 nghĩa là lẻ\", vì các số lẻ âm cho số dư -1 trong một số ngôn ngữ). In ra biến đếm."
     ]
   },
   "explanationEn": "## Approach\n\nTraverse the input array and add one to the count whenever `x % 2 == 0`. This test holds for negative even numbers and 0 as well.\n\n## Proof of Correctness\n\nEach array element is checked exactly once, and a number is even if and only if its remainder when divided by 2 is 0. Therefore the counter ends up equal to exactly the number of even numbers in the array.\n\n## Complexity\n\nTime O(n), space O(1)."

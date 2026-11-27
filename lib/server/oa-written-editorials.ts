@@ -7,6 +7,10 @@ const writtenEditorial = z
     id: z.string(),
     explanation: z.string().min(1),
     explanationEn: z.string().min(1).optional(),
+    // The English write-up translated, where done; code blocks stay as they are.
+    explanationJa: z.string().min(1).optional(),
+    explanationKo: z.string().min(1).optional(),
+    explanationVi: z.string().min(1).optional(),
     solutions: z.array(z.object({ language: z.string(), code: z.string().min(1) })),
   })
   .strict();
@@ -30,4 +34,13 @@ export function oaWrittenEditorial(id: string) {
     written.set(id, value);
   }
   return written.get(id) ?? null;
+}
+/** A written editorial's ja/ko/vi text by language; undefined when it has none. */
+export function oaExplanationLocal(editorial: z.infer<typeof writtenEditorial> | null) {
+  const local = {
+    ...(editorial?.explanationJa && { ja: editorial.explanationJa }),
+    ...(editorial?.explanationKo && { ko: editorial.explanationKo }),
+    ...(editorial?.explanationVi && { vi: editorial.explanationVi }),
+  };
+  return Object.keys(local).length ? local : undefined;
 }

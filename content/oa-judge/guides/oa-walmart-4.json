@@ -13,6 +13,21 @@
       "Let y[i] = X[i] − (i+1); then |X[i] − (k+i+1)| equals |y[i] − k|, so the task becomes choosing k to minimize the total distance to all y[i].",
       "On a line, the sum of absolute distances to a set of points is minimized at a median, and the median is itself an integer.",
       "Compute every y[i] (shifting all of them by the same constant, e.g. using X[i]−i, does not matter), sort, take k = y[n/2], and print the sum of |y[i] − k|; the sum reaches 2×10¹⁴, so use 64-bit integers."
+    ],
+    "ja": [
+      "y[i] = X[i] − (i+1) とおくと、|X[i] − (k+i+1)| は |y[i] − k| に等しくなります。したがって、すべての y[i] との距離の総和が最小になるように k を選ぶ問題になります。",
+      "数直線上で、点集合までの絶対距離の総和は中央値で最小になります。中央値は整数になります。",
+      "すべての y[i] を計算し (全体を同じ定数だけずらしても、たとえば X[i]−i を使っても問題ありません)、ソートして k = y[n/2] とし、|y[i] − k| の総和を出力します。総和は 2×10¹⁴ に達するので、64 ビット整数を使ってください。"
+    ],
+    "ko": [
+      "y[i] = X[i] − (i+1)로 두면 |X[i] − (k+i+1)|은 |y[i] − k|와 같으므로, 모든 y[i]까지의 거리 합이 최소가 되도록 k를 고르는 문제가 됩니다.",
+      "수직선 위에서 절댓값 거리의 합은 중앙값에서 최소가 되며, 중앙값은 그 자체로 정수입니다.",
+      "모든 y[i]를 계산한 뒤(모두 같은 상수만큼 이동시켜도, 예를 들어 X[i]−i를 써도 상관없습니다) 정렬하고 k = y[n/2]로 잡아 |y[i] − k|의 합을 출력합니다. 합은 2×10¹⁴까지 커지므로 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Đặt y[i] = X[i] − (i+1); khi đó |X[i] − (k+i+1)| bằng |y[i] − k|, nên bài toán trở thành chọn k sao cho tổng khoảng cách tới mọi y[i] là nhỏ nhất.",
+      "Trên một đường thẳng, tổng khoảng cách tuyệt đối tới một tập điểm đạt nhỏ nhất tại trung vị, và trung vị đó là một số nguyên.",
+      "Tính mọi y[i] (dịch tất cả đi cùng một hằng số, chẳng hạn dùng X[i]−i, cũng không ảnh hưởng), sắp xếp, lấy k = y[n/2], rồi in tổng |y[i] − k|; tổng có thể lên tới 2×10¹⁴ nên hãy dùng số nguyên 64-bit."
     ]
   },
   "explanationEn": "## Approach\n\nLet y[i] = X[i]−(i+1); the target becomes Σ|y[i]−k|, and the median of y is an optimal k.\n\n## Proof of correctness\n\nThe sum of absolute deviations is minimized at the median. After the transformation the original expression equals |y[i]−k| term by term, so plugging in the median and summing gives the global minimum.\n\n## Complexity\n\nTime O(n log n), extra space O(n)."

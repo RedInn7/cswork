@@ -13,6 +13,21 @@
       "To visit every target on the ring, the part you walk is one contiguous arc, and the part you skip lies inside a gap between two neighboring targets.",
       "The longer the skipped gap the better, so skip the largest gap between neighboring targets (including the one that wraps from the last target back to the first). Answer = ring length − largest gap.",
       "Sort and deduplicate; start the gap at a[0]+total−a[last] (the wrap-around part), then take the maximum with the difference of each pair of neighboring targets; output total minus the largest gap. With a single target the answer is 0."
+    ],
+    "ja": [
+      "リング上の目標をすべて訪れるとき、歩く部分は連続した 1 本の弧で、歩かない部分は隣り合う 2 つの目標の間隔の内側にあります。",
+      "歩かない間隔が長いほどよいので、隣り合う目標の間の最大の間隔（最後の目標から最初の目標に戻る回り込みも含む）を飛ばします。答え = リングの長さ − 最大の間隔 です。",
+      "ソートして重複を除きます。間隔の初期値を a[0]+total−a[last]（回り込みの部分）とし、隣り合う目標の差の最大値を取り、total から最大の間隔を引いた値を出力します。目標が 1 つなら答えは 0 です。"
+    ],
+    "ko": [
+      "원 위의 모든 목표를 방문하려면 걸어가는 부분은 연속된 하나의 호이고, 건너뛰는 부분은 이웃한 두 목표 사이의 간격 안에 놓입니다.",
+      "건너뛰는 간격이 길수록 좋으므로, 이웃한 목표 사이의 가장 큰 간격(마지막 목표에서 첫 목표로 돌아오는 간격 포함)을 건너뜁니다. 답 = 원의 길이 − 가장 큰 간격입니다.",
+      "정렬하고 중복을 제거합니다. 간격의 초깃값을 a[0]+total−a[last](돌아오는 부분)로 잡고, 이웃한 목표 쌍의 차이와 최댓값을 비교하세요. total에서 가장 큰 간격을 뺀 값을 출력합니다. 목표가 하나뿐이면 답은 0입니다."
+    ],
+    "vi": [
+      "Để thăm mọi mục tiêu trên vòng, phần bạn đi là một cung liên tục, và phần bạn bỏ qua nằm trong một khoảng trống giữa hai mục tiêu kề nhau.",
+      "Khoảng bỏ qua càng dài càng tốt, nên hãy bỏ qua khoảng trống lớn nhất giữa các mục tiêu kề nhau (kể cả khoảng đi vòng từ mục tiêu cuối về mục tiêu đầu). Đáp án = độ dài vòng − khoảng trống lớn nhất.",
+      "Sắp xếp và khử trùng lặp; bắt đầu khoảng trống ở a[0]+total−a[last] (phần đi vòng), rồi lấy giá trị lớn nhất với hiệu của mỗi cặp mục tiêu kề nhau; xuất total trừ khoảng trống lớn nhất. Với một mục tiêu duy nhất, đáp án là 0."
     ]
   },
   "explanationEn": "## Approach\n\nSort and deduplicate the points to visit, find the largest gap along the ring between adjacent points, and the answer is the ring length minus that largest gap.\n\n## Proof of correctness\n\nAfter removing the largest gap, the remaining arc is connected and contains every target, so walking along it once is enough. If a shortest walk covers the whole ring, it takes at least the ring length; otherwise the edges it passes form one arc containing every target, and the part it does not walk cannot span a target, so its length is at most the largest gap. Hence this construction is the shortest.\n\n## Complexity\n\nTime O(n log n), space O(n)."

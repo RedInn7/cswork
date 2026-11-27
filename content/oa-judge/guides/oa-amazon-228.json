@@ -13,6 +13,21 @@
       "With a fixed number of docks, the start-immediately-in-order rule fixes every truck's start and finish time; more docks only make each truck start earlier, so feasibility is monotone in the number of docks.",
       "Binary search the number of docks; to test a value, simulate with a min-heap, giving each truck in turn to the dock that frees up earliest, and check whether the last finish time is at most T.",
       "Search over 1..n; to test d, start with d free times equal to 0, and in input order take the earliest free time, add the duration and put it back; after all trucks, compare the largest finish time with T; shrink the upper end if feasible, otherwise raise the lower end, and output the smallest feasible value. Times can reach 5*10^13, so use 64-bit integers."
+    ],
+    "ja": [
+      "ドックの数を固定すると、順番に直ちに開始するというルールで、すべてのトラックの開始と終了の時刻が決まります。ドックが増えると各トラックの開始が早くなるだけなので、実行可能性はドックの数について単調です。",
+      "ドックの数で二分探索します。ある値を判定するには、最小ヒープでシミュレートし、各トラックを順に、最も早く空くドックに割り当て、最後の終了時刻が T 以下かどうかを確認します。",
+      "1..n を探索します。d を判定するには、空き時刻 0 を d 個から始め、入力順に最も早い空き時刻を取り、所要時間を足して戻します。すべてのトラックのあと、最大の終了時刻を T と比べます。実行可能なら上端を縮め、そうでなければ下端を上げ、実行可能な最小の値を出力します。時刻は 5*10^13 に達しうるので、64 ビット整数を使います。"
+    ],
+    "ko": [
+      "도크 수가 정해지면 순서대로 즉시 시작하는 규칙이 모든 트럭의 시작과 종료 시각을 결정하고, 도크가 늘어나면 각 트럭은 더 일찍 시작할 뿐이므로 가능 여부는 도크 수에 대해 단조입니다.",
+      "도크 수를 이분 탐색합니다. 값을 검사할 때는 최소 힙으로 시뮬레이션해 각 트럭을 차례로 가장 먼저 비는 도크에 주고, 마지막 종료 시각이 T 이하인지 확인합니다.",
+      "1..n 범위를 탐색합니다. d를 검사할 때는 d개의 사용 가능 시각을 0으로 시작해 입력 순서대로 가장 이른 시각을 꺼내 소요 시간을 더하고 다시 넣습니다. 모든 트럭 처리 후 가장 큰 종료 시각을 T와 비교하여, 가능하면 상한을 줄이고 아니면 하한을 올립니다. 가능한 최솟값을 출력합니다. 시각은 5*10^13까지 커질 수 있으므로 64비트 정수를 사용합니다."
+    ],
+    "vi": [
+      "Với số cổng cố định, quy tắc bắt đầu ngay theo thứ tự xác định thời điểm bắt đầu và kết thúc của mọi xe tải; nhiều cổng hơn chỉ làm mỗi xe tải bắt đầu sớm hơn, nên tính khả thi là đơn điệu theo số cổng.",
+      "Tìm kiếm nhị phân số cổng; để kiểm tra một giá trị, mô phỏng bằng min-heap, lần lượt giao mỗi xe tải cho cổng rảnh sớm nhất, và kiểm tra xem thời điểm kết thúc cuối cùng có không vượt quá T hay không.",
+      "Tìm trong 1..n; để kiểm tra d, bắt đầu với d thời điểm rảnh bằng 0, và theo thứ tự đầu vào lấy thời điểm rảnh sớm nhất, cộng thời lượng và đặt lại vào heap; sau khi xử lý hết xe tải, so sánh thời điểm kết thúc lớn nhất với T; thu hẹp cận trên nếu khả thi, nếu không thì nâng cận dưới, và in ra giá trị khả thi nhỏ nhất. Thời gian có thể đạt 5*10^13, nên hãy dùng số nguyên 64-bit."
     ]
   },
   "explanationEn": "## Approach\n\nBinary search the number of docks. To check d, keep each dock's available time in a min-heap, assign each truck to the earliest free dock, then check the latest finish time.\n\n## Proof of correctness\n\nWith a fixed number of docks, the rule that trucks start immediately uniquely determines every start time, and the heap simulates the earliest available dock exactly. Adding docks never makes the i-th truck, started greedily in order, start later: by induction over the finish times of all trucks already started, extra capacity can only make the possible start times earlier. Feasibility is therefore monotone, and binary search finds the smallest feasible value.\n\n## Complexity\n\nTime O(n log^2 n), space O(n)."

@@ -13,6 +13,21 @@
       "Start by giving every task to the second person, so the score is the sum of reward_2; every time task i is moved to the first person, the score changes by exactly reward_1[i] - reward_2[i].",
       "The first person must do exactly k tasks, so the problem becomes choosing exactly k of the n differences with the largest sum. An exchange argument shows you should take the k largest differences, even if some of them are negative.",
       "Compute the sum of reward_2, compute each task's difference, sort the differences in descending order, and add the first k of them to the sum; when k = 0 the answer is just the sum of reward_2."
+    ],
+    "ja": [
+      "まずすべてのタスクを 2 人目に任せるとスコアは reward_2 の総和になります。タスク i を 1 人目に移すたびに、スコアはちょうど reward_1[i] - reward_2[i] だけ変化します。",
+      "1 人目はちょうど k 個を担当するので、n 個の差分からちょうど k 個を選んで合計を最大にする問題になります。交換論法により、負の値が含まれていても差分の大きい方から k 個を選べばよいことが分かります。",
+      "reward_2 の総和を求め、各タスクの差分を計算して降順にソートし、先頭 k 個を総和に加えます。k = 0 のときは reward_2 の総和がそのまま答えです。"
+    ],
+    "ko": [
+      "먼저 모든 작업을 두 번째 사람에게 주면 점수는 reward_2의 합입니다. 작업 i를 첫 번째 사람에게 옮길 때마다 점수는 정확히 reward_1[i] - reward_2[i]만큼 변합니다.",
+      "첫 번째 사람은 정확히 k개의 작업을 해야 하므로, 문제는 n개의 차이 중 합이 최대가 되도록 정확히 k개를 고르는 것이 됩니다. 교환 논증에 따르면 일부가 음수이더라도 가장 큰 k개의 차이를 택해야 합니다.",
+      "reward_2의 합을 구하고 각 작업의 차이를 계산한 뒤 차이를 내림차순으로 정렬해, 앞의 k개를 합에 더합니다. k = 0이면 답은 reward_2의 합입니다."
+    ],
+    "vi": [
+      "Bắt đầu bằng cách giao mọi công việc cho người thứ hai, khi đó điểm là tổng của reward_2; mỗi lần chuyển công việc i sang người thứ nhất, điểm thay đổi đúng reward_1[i] - reward_2[i].",
+      "Người thứ nhất phải làm đúng k công việc, nên bài toán trở thành chọn đúng k trong n giá trị chênh lệch sao cho tổng lớn nhất. Lập luận hoán đổi cho thấy cần lấy k chênh lệch lớn nhất, kể cả khi một số trong đó âm.",
+      "Tính tổng của reward_2, tính chênh lệch của từng công việc, sắp xếp các chênh lệch giảm dần, rồi cộng k giá trị đầu tiên vào tổng; khi k = 0 đáp án chính là tổng của reward_2."
     ]
   },
   "explanationEn": "## Approach\n\nExample 1: if the second person does everything, the score is 15; moving the three tasks with the largest differences to the first person adds 6, for a total of 21. The addends in the source's explanation contradict its output, so the statement and the output take precedence.\n\n## Proof of correctness\n\nTake giving every task to the second person as the baseline. Reassigning task i to the first person yields a gain of reward_1[i]-reward_2[i]. When exactly k tasks are chosen, if a larger gain is left out while a smaller gain is chosen, swapping them improves or keeps the total score, so the k largest differences should be chosen.\n\n## Complexity\n\nTime O(n log n), space O(n)."

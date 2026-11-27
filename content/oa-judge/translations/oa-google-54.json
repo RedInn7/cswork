@@ -11,5 +11,35 @@
     "hints": [
       "Fix each of the two targets 0101… and 1010… separately. Maintain the parity of the active flips from left to right; when the current position does not match, a window must start at the current position, and if that window goes out of bounds, the target has no solution."
     ]
+  },
+  "ja": {
+    "title": "固定長の窓を反転して交互の 2 進文字列にする",
+    "description": "1 回の操作で、長さちょうど k の連続する部分文字列を反転します（0 と 1 を入れ替えます）。隣り合うすべての位置が異なるようにするために必要な最小の操作回数を求めてください。不可能な場合は −1 を出力します。最終的な文字列は 0 または 1 のどちらから始まってもかまいません。元のサイトの 1 番目の例の答え 2 は、長さ 3 の窓を固定する規則に反しているため、このサイトでは全探索によって 6 に訂正しました。\n\n入力・出力と例は CSWork が整理したものです。このサイトのものと明記した数値範囲は、このサイトの判定上の取り決めです。",
+    "input": "このサイトの標準入力: 1 行目に n k（1≤k≤n≤100000）、2 行目に長さ n の 2 進文字列が与えられます。",
+    "output": "問題で求められた答えを出力してください。",
+    "explanation": "例 1: インデックス 0、1、2、3、4、5 から順に長さ 3 の反転を開始すると 10101010 になり、6 回の操作です。もう一方の交互の目標には到達できません。元のサイトの答え 2 は誤りです。例 2: 文字列はすでに交互になっているので、操作は 0 回です。例 3: 文字列は 00 と 11 の間でしか切り替わらず、交互にはなりえないので、出力は −1 です。",
+    "hints": [
+      "0101… と 1010… の 2 つの目標を別々に固定します。左から右へ、有効な反転の偶奇を保持します。現在の位置が一致しないときは、現在の位置から窓を開始しなければなりません。その窓が範囲外に出るなら、その目標に解はありません。"
+    ]
+  },
+  "ko": {
+    "title": "고정 길이 구간 뒤집기로 교대 이진 문자열 만들기",
+    "description": "한 번의 연산은 길이가 정확히 k인 연속 부분 문자열을 뒤집습니다(0과 1을 서로 바꿈). 인접한 모든 위치 쌍이 서로 다르도록 만드는 데 필요한 최소 연산 횟수를 구하고, 불가능하면 −1을 출력하세요. 최종 문자열은 0으로 시작해도 1로 시작해도 됩니다. 원본 사이트가 첫 번째 예제에 제시한 답 2는 길이 3 고정 구간 규칙에 어긋나며, 이 사이트에서는 완전 탐색으로 6으로 바로잡았습니다.\n\n입력/출력과 예제는 CSWork에서 정리한 것이며, 이 사이트의 것이라고 표시된 수치 범위는 이 사이트의 채점 기준입니다.",
+    "input": "이 사이트의 표준 입력: 첫째 줄에 n k (1≤k≤n≤100000)가 주어지고, 둘째 줄에 길이 n인 이진 문자열이 주어집니다.",
+    "output": "문제에서 요구하는 답을 출력합니다.",
+    "explanation": "예제 1: 인덱스 0, 1, 2, 3, 4, 5에서 차례로 길이 3의 뒤집기를 시작하면 10101010이 되며 연산은 6번입니다. 다른 교대 목표는 도달할 수 없으며, 원본 사이트의 답 2는 틀렸습니다. 예제 2: 문자열이 이미 교대하므로 연산은 0번입니다. 예제 3: 문자열은 00과 11 사이에서만 바뀔 수 있어 절대 교대할 수 없으므로 −1을 출력합니다.",
+    "hints": [
+      "두 목표 0101…과 1010…을 각각 따로 고정합니다. 왼쪽에서 오른쪽으로 활성 뒤집기의 홀짝성을 유지하며, 현재 위치가 맞지 않으면 구간은 반드시 현재 위치에서 시작해야 합니다. 그 구간이 범위를 벗어나면 그 목표는 해가 없습니다."
+    ]
+  },
+  "vi": {
+    "title": "Lật cửa sổ cố định để được xâu nhị phân xen kẽ",
+    "description": "Mỗi thao tác lật một xâu con liên tiếp có độ dài đúng bằng k (đổi 0 thành 1 và ngược lại). Tìm số thao tác tối thiểu để mọi cặp vị trí liền kề đều khác nhau; in −1 nếu không thể. Xâu cuối cùng có thể bắt đầu bằng 0 hoặc 1. Đáp án 2 cho ví dụ đầu tiên trên trang gốc vi phạm quy tắc cửa sổ cố định độ dài 3; trang này đã sửa thành 6 bằng vét cạn.\n\nPhần đầu vào/đầu ra và các ví dụ do CSWork biên soạn; các khoảng giá trị được ghi là của trang này là quy ước chấm bài của trang này.",
+    "input": "Đầu vào chuẩn của trang này: dòng đầu chứa n k (1≤k≤n≤100000); dòng thứ hai chứa một xâu nhị phân độ dài n.",
+    "output": "In ra đáp án theo yêu cầu của đề bài.",
+    "explanation": "Ví dụ 1: lần lượt bắt đầu các lần lật độ dài 3 tại chỉ số 0, 1, 2, 3, 4, 5 để được 10101010, tổng cộng 6 thao tác; đích xen kẽ còn lại không thể đạt được, và đáp án 2 của trang gốc là sai. Ví dụ 2: xâu đã xen kẽ, nên cần 0 thao tác. Ví dụ 3: xâu chỉ có thể chuyển qua lại giữa 00 và 11 và không bao giờ xen kẽ được, nên in −1.",
+    "hints": [
+      "Cố định riêng từng đích trong hai đích 0101… và 1010…. Duy trì tính chẵn lẻ của các lần lật đang có hiệu lực từ trái sang phải; khi vị trí hiện tại không khớp, một cửa sổ phải bắt đầu tại vị trí hiện tại, và nếu cửa sổ đó vượt ra ngoài biên thì đích này không có nghiệm."
+    ]
   }
 }

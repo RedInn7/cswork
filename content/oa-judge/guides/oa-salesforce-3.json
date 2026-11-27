@@ -13,6 +13,21 @@
       "Each position must answer two questions: has its value appeared earlier, and does it appear later? The position itself does not count.",
       "While scanning from left to right, keep a set of values already seen; checking whether the current value is in it answers the first question. Doing the same from right to left answers the second. Make sure to look up first and only then add the current value.",
       "Forward scan: write 1 if the current value is in the set, otherwise 0, then add it. Clear the set and scan backwards to get the later-occurrence flags, kept in the original order. Print the earlier flags on the first line and the later flags on the second, each exactly n digits."
+    ],
+    "ja": [
+      "各位置で 2 つの問いに答える必要があります。その値がより前に現れたか、より後ろに現れるか。位置自身は数えません。",
+      "左から右へ走査しながら、すでに見た値の set を保持します。現在の値がその中にあるかどうかが 1 つ目の問いの答えです。右から左へ同様に行うと 2 つ目の答えが得られます。必ず先に検索してから現在の値を追加するようにしてください。",
+      "前向きの走査: 現在の値が set にあれば 1、なければ 0 を書き、その後で追加します。set を空にして後ろ向きに走査し、後方の出現フラグを、元の順序に直して得ます。1 行目に前方のフラグ、2 行目に後方のフラグを、それぞれちょうど n 桁で出力します。"
+    ],
+    "ko": [
+      "각 위치는 두 가지 질문에 답해야 합니다. 그 값이 앞에 등장했는가, 그리고 뒤에 등장하는가입니다. 위치 자체는 세지 않습니다.",
+      "왼쪽에서 오른쪽으로 스캔하며 이미 본 값의 집합을 유지하고, 현재 값이 그 안에 있는지 확인하면 첫 번째 질문에 답할 수 있습니다. 오른쪽에서 왼쪽으로 같은 일을 하면 두 번째 질문에 답할 수 있습니다. 먼저 조회한 다음에 현재 값을 추가해야 합니다.",
+      "앞쪽 스캔: 현재 값이 집합에 있으면 1, 아니면 0을 쓰고 그 값을 추가합니다. 집합을 비우고 뒤쪽으로 스캔하여 이후 등장 플래그를 구하고, 원래 순서대로 보관합니다. 첫 번째 줄에 이전 등장 플래그를, 두 번째 줄에 이후 등장 플래그를 정확히 n자리씩 출력합니다."
+    ],
+    "vi": [
+      "Mỗi vị trí phải trả lời hai câu hỏi: giá trị của nó đã xuất hiện trước đó chưa, và nó có xuất hiện sau đó không? Bản thân vị trí đó không được tính.",
+      "Khi quét từ trái sang phải, giữ một tập các giá trị đã thấy; việc kiểm tra giá trị hiện tại có nằm trong đó hay không trả lời câu hỏi thứ nhất. Làm tương tự từ phải sang trái trả lời câu hỏi thứ hai. Hãy tra cứu trước rồi mới thêm giá trị hiện tại.",
+      "Quét xuôi: ghi 1 nếu giá trị hiện tại có trong tập, ngược lại ghi 0, rồi thêm nó vào. Xóa tập và quét ngược để có các cờ xuất hiện sau, giữ theo thứ tự ban đầu. In các cờ xuất hiện trước ở dòng đầu và các cờ xuất hiện sau ở dòng thứ hai, mỗi dòng đúng n chữ số."
     ]
   },
   "explanationEn": "## Approach\n\nDo one forward scan and one backward scan, using a set to store the numbers already seen.\n\n## Correctness\n\nWhen the scan reaches position i, the set contains exactly the values at smaller indices, so a lookup gives the first line; the backward scan likewise gives the values at larger indices. Looking up before inserting excludes the current position itself.\n\n## Complexity\n\nTime O(n), space O(n)."

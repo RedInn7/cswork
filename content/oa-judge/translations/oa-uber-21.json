@@ -11,5 +11,35 @@
     "hints": [
       "When the number of R countries is even, all of them can be opened. When it is odd, only one R needs to remain. After deleting each candidate R, each of its adjacent components gives the starts inside it a reachable size; the Euler order represents these components as subtree ranges or subtree complements, which are aggregated with range-maximum updates."
     ]
+  },
+  "ja": {
+    "title": "国を 2 つずつ開放した後の到達可能数の合計",
+    "description": "木上の国は、開放（O）または制限（R）のどちらかです。1 回の操作では、異なる 2 つの R の国を O に変えることだけができ、これを 0 回以上行えます。各出発国について、その国から O の国だけを通って到達できる国の数が最大になるよう、変換の計画を別々に選び、その最大値を合計してください。出発国ごとの計画は互いに独立です。開放できない出発国は 0 と数えます。\n\n本サイトでは標準入出力を明示しています。元の問題で与えられていない範囲は、すべて本サイトのプロトコルとして明記しています。",
+    "input": "1 行目に n、2 行目に長さ n の O/R 文字列、続く n−1 行に木の無向辺 u v（0 始まり）が与えられます。1≤n≤50005 です。",
+    "output": "答えを整数 1 つで出力します。",
+    "explanation": "例 1: 7 つの出発国の到達可能数の最大値はそれぞれ 4, 4, 5, 5, 5, 5, 5 で、合計は 33 です。例 2: 唯一の R は、ペアの一部として開放できないので、出力は 0 です。例 3: O の出発国は自分自身しか訪れられず、R の出発国は開放できないので、合計は 1 です。",
+    "hints": [
+      "R の国の数が偶数のときは、すべてを開放できます。奇数のときは、R を 1 つだけ残せば十分です。各候補の R を削除した後、隣接する各連結成分は、その内部の出発国に到達可能な大きさを与えます。オイラー順では、これらの成分は部分木の区間または部分木の補集合として表され、区間の最大値更新で集計されます。"
+    ]
+  },
+  "ko": {
+    "title": "국가를 쌍으로 개방한 뒤 도달 가능한 수의 합",
+    "description": "트리 위의 국가들은 개방(O) 또는 제한(R) 상태입니다. 한 번의 연산으로 서로 다른 두 R 국가만 O로 바꿀 수 있으며, 이를 0번 이상 수행할 수 있습니다. 각 시작 국가에 대해, O 국가만 거쳐 도달할 수 있는 국가의 수가 최대가 되도록 변환 계획을 따로따로 선택하고, 그 최댓값들을 모두 더하세요. 서로 다른 시작 국가의 계획은 독립적이며, 개방할 수 없는 시작 국가는 0으로 칩니다.\n\n이 사이트의 표준 입출력은 명시적으로 정의되어 있으며, 원문에서 주어지지 않은 범위는 모두 이 사이트의 규약으로 표시합니다.",
+    "input": "첫째 줄에 n이, 둘째 줄에 길이 n의 O/R 문자열이 주어지고, 이어서 무방향 트리 간선 u v(0 기반)가 n−1줄 주어집니다. 1≤n≤50005입니다.",
+    "output": "정수 하나, answer를 출력합니다.",
+    "explanation": "예제 1: 7개 시작점의 최선 도달 가능 수는 4, 4, 5, 5, 5, 5, 5이고 합은 33입니다. 예제 2: 유일한 R은 쌍으로 개방할 수 없으므로 0을 출력합니다. 예제 3: O 시작점은 자기 자신만 방문할 수 있고 R 시작점은 개방할 수 없으므로 합은 1입니다.",
+    "hints": [
+      "R 국가의 수가 짝수이면 모두 개방할 수 있습니다. 홀수이면 R 하나만 남기면 됩니다. 후보 R을 하나씩 제거하면 인접한 각 컴포넌트가 그 안의 시작점들에 도달 가능한 크기를 줍니다. 오일러 순서에서 이 컴포넌트들은 서브트리 구간 또는 서브트리의 여집합으로 표현되며, 구간 최댓값 갱신으로 집계합니다."
+    ]
+  },
+  "vi": {
+    "title": "Tổng số quốc gia đến được sau khi mở các quốc gia theo cặp",
+    "description": "Các quốc gia trên một cây ở trạng thái mở (O) hoặc hạn chế (R). Mỗi thao tác chỉ có thể biến hai quốc gia R khác nhau thành O, và có thể thực hiện không hoặc nhiều lần. Với mỗi quốc gia xuất phát, chọn riêng một phương án chuyển đổi để cực đại hóa số quốc gia đến được từ điểm xuất phát đó khi chỉ đi qua các quốc gia O, rồi cộng các giá trị cực đại này lại. Phương án của các điểm xuất phát khác nhau là độc lập; điểm xuất phát không thể mở được thì tính là 0.\n\nĐầu vào/đầu ra chuẩn của trang này được nêu rõ; những phạm vi mà nguồn không cho đều được đánh dấu là giao thức của trang này.",
+    "input": "Dòng đầu chứa n, dòng thứ hai chứa xâu O/R có độ dài n, tiếp theo là n−1 dòng cạnh vô hướng của cây u v (đánh số từ 0). 1≤n≤50005.",
+    "output": "In ra một số nguyên answer.",
+    "explanation": "Ví dụ 1: số lượng đến được tốt nhất của bảy điểm xuất phát là 4, 4, 5, 5, 5, 5, 5, tổng bằng 33. Ví dụ 2: chữ R duy nhất không thể được mở trong một cặp, nên đầu ra là 0. Ví dụ 3: điểm xuất phát O chỉ có thể thăm chính nó, còn điểm xuất phát R không thể mở, nên tổng là 1.",
+    "hints": [
+      "Khi số lượng quốc gia R là chẵn, tất cả đều có thể được mở. Khi là lẻ, chỉ cần giữ lại một R. Sau khi xóa mỗi R ứng viên, mỗi thành phần liên thông kề với nó cho các điểm xuất phát bên trong một kích thước đến được; thứ tự Euler biểu diễn các thành phần này dưới dạng đoạn của cây con hoặc phần bù của cây con, được tổng hợp bằng các cập nhật cực đại trên đoạn."
+    ]
   }
 }

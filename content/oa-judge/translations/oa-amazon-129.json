@@ -11,5 +11,35 @@
     "hints": [
       "Scan to compute, for each element, its distance to the nearest initial 1 on its left, which is the round in which it unlocks; record the maximum per round, then for each round keep the maximum of the values unlocked so far."
     ]
+  },
+  "ja": {
+    "title": "右方向への同期した解除による辞書順最大の列",
+    "description": "各ステップで、現在使える要素を 1 つ選び（重複してもかまいません）、結果に追加します。そのあと、値が 0 で左隣が元から 1 だったすべての位置が、同時に 1 になります。解除は選んだものに依存せず、右に 1 マスずつしか広がりません。これを m ステップ行い、結果を辞書順で最大にしてください。すべてが 0 で何も選べないときは、本サイトの標準入出力の規約として -1 を出力します。\n\n標準入出力と解答は本サイトが独自に作成したものです。本サイト独自とされている範囲は、元の問題の制約ではありません。",
+    "input": "1 行目に n m、2 行目に n 個の正の整数、3 行目に使用可否を表す 01 文字列が与えられます。出典には値の上限がないため、本サイトでは 1≤n,m≤100000、要素は 1..10⁹、文字列の長さは n としています。",
+    "output": "解がなければ -1 を出力し、そうでなければ選んだ m 個の値を出力してください。",
+    "explanation": "例 1: 最初は 5 と 6 が使えるので、まず 6 を取ります。7 が解除されたら 7 を取ります。例 2: まず 4 を取ります。1 ラウンド後に 9 と 10 の両方が解除され、以降の選択はすべて 10 なので、出典の 4 9 10 10 を修正して 4 10 10 10 を出力します。例 3: 最初に使える要素が 1 つもないので解はなく、-1 を出力します。",
+    "hints": [
+      "走査して、各要素について、その左にある最も近い元の 1 までの距離（それが解除されるラウンドです）を求めます。ラウンドごとに最大値を記録し、各ラウンドで、そこまでに解除された値の最大値を保持します。"
+    ]
+  },
+  "ko": {
+    "title": "동시에 오른쪽으로 잠금이 풀리는 사전순 최대 수열",
+    "description": "매 단계에서 현재 사용할 수 있는 원소 중 하나를 고르고(반복 가능) 결과에 덧붙입니다. 그다음 0이면서 왼쪽 이웃이 원래 1이었던 모든 위치가 동시에 1이 됩니다. 잠금 해제는 무엇을 골랐는지와 무관하며 오른쪽으로 한 칸씩만 퍼집니다. m단계를 수행하여 결과를 사전순으로 최대화하세요. 모두 0이어서 고를 수 있는 것이 없으면, 이 사이트의 표준 입출력 규약에 따라 -1을 출력합니다.\n\n표준 입출력 형식과 풀이는 이 사이트가 독자적으로 작성했으며, 이 사이트의 것이라고 표시된 범위는 원문의 제약 조건이 아닙니다.",
+    "input": "첫째 줄에 n m이 주어지고, 둘째 줄에 n개의 양의 정수가, 셋째 줄에 사용 가능 여부를 나타내는 01 문자열이 주어집니다. 원문에는 값의 상한이 없으며, 이 사이트에서 1≤n,m≤100000, 원소는 1..10⁹, 문자열 길이는 n으로 정했습니다.",
+    "output": "해가 없으면 -1을 출력하고, 그렇지 않으면 선택한 m개의 값을 출력합니다.",
+    "explanation": "예제 1: 처음에는 5와 6을 사용할 수 있으므로 6을 먼저 고르고, 7의 잠금이 풀린 뒤 7을 고릅니다. 예제 2: 먼저 4를 고릅니다. 한 라운드 뒤 9와 10이 모두 풀리고 이후 모든 선택은 10이므로 원문의 4 9 10 10을 바로잡아 4 10 10 10을 출력합니다. 예제 3: 처음에 사용할 수 있는 원소가 없으므로 해가 없어 -1을 출력합니다.",
+    "hints": [
+      "왼쪽에서 가장 가까운 초기 1까지의 거리가 각 원소가 풀리는 라운드이므로 이를 구해 라운드별 최댓값을 기록하고, 라운드마다 그때까지 풀린 값들의 최댓값을 취합니다."
+    ]
+  },
+  "vi": {
+    "title": "Dãy lớn nhất theo thứ tự từ điển với việc mở khóa đồng bộ sang phải",
+    "description": "Ở mỗi bước, chọn một phần tử bất kỳ đang khả dụng (cho phép lặp lại) và thêm nó vào kết quả; sau đó mọi vị trí có giá trị 0 mà láng giềng bên trái ban đầu là 1 đều đồng thời trở thành 1. Việc mở khóa không phụ thuộc vào thứ được chọn và chỉ lan sang phải một ô. Thực hiện m bước và cực đại hóa kết quả theo thứ tự từ điển. Khi mọi thứ đều là 0 và không thể chọn gì, quy ước nhập/xuất chuẩn của trang này là in ra -1.\n\nTrang này tự viết phần nhập/xuất chuẩn và lời giải; các khoảng giá trị được đánh dấu là của trang này không phải ràng buộc gốc của đề nguồn.",
+    "input": "Dòng đầu tiên chứa n m, dòng thứ hai chứa n số nguyên dương, và dòng thứ ba chứa xâu 01 biểu diễn tính khả dụng. Nguồn không cho giới hạn giá trị; trang này đặt 1≤n,m≤100000, các phần tử trong 1..10⁹, và độ dài xâu là n.",
+    "output": "Nếu không có nghiệm, in ra -1; ngược lại in ra m giá trị đã chọn.",
+    "explanation": "Ví dụ 1: ban đầu 5 và 6 khả dụng, nên lấy 6 trước; sau khi 7 được mở khóa, lấy 7. Ví dụ 2: lấy 4 trước; sau một vòng cả 9 và 10 đều được mở khóa, và mọi lần chọn sau đó đều là 10, nên in ra 4 10 10 10, sửa lại 4 9 10 10 của nguồn. Ví dụ 3: ban đầu không có phần tử nào khả dụng, nên không có nghiệm; in ra -1.",
+    "hints": [
+      "Quét để tính, với mỗi phần tử, khoảng cách đến số 1 ban đầu gần nhất bên trái, chính là vòng mà nó được mở khóa; ghi lại giá trị lớn nhất theo từng vòng, rồi với mỗi vòng giữ giá trị lớn nhất trong các giá trị đã được mở khóa cho đến giờ."
+    ]
   }
 }

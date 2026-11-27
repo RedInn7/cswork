@@ -13,6 +13,21 @@
       "Rotating substring [l, r] right moves s[r] to position l and leaves everything before l unchanged. For the smallest result, find the earliest position that has a smaller character somewhere after it.",
       "Find the earliest position l whose suffix contains a character smaller than s[l], and move the smallest character of that suffix to l. If that smallest character occurs several times, take its rightmost occurrence: the characters shifted right in between are all no smaller than it.",
       "Scan from right to left keeping best, the rightmost position of the smallest character in the suffix: if s[i] > s[best], record left = i and right = best; if s[i] < s[best], set best = i. If left was never recorded, the original string is the answer; otherwise print the first left characters of s, then s[right], then s[left..right-1], then s[right+1..]."
+    ],
+    "ja": [
+      "部分文字列 [l, r] を右に回転すると、s[r] が位置 l に移り、l より前はそのまま変わりません。結果を最小にするには、それより後ろにより小さい文字がある最も早い位置を見つけます。",
+      "接尾辞に s[l] より小さい文字を含む最も早い位置 l を見つけ、その接尾辞の最小の文字を l に移します。その最小の文字が複数回現れるときは、最も右の出現を選びます。間で右にずれる文字はすべて、それ以上の大きさだからです。",
+      "右から左へ走査しながら、接尾辞の最小の文字の最も右の位置 best を保持します。s[i] > s[best] なら left = i、right = best を記録し、s[i] < s[best] なら best = i とします。left が一度も記録されなければ、元の文字列が答えです。そうでなければ、s の最初の left 文字、s[right]、s[left..right-1]、s[right+1..] の順に出力します。"
+    ],
+    "ko": [
+      "부분 문자열 [l, r]을 오른쪽으로 회전하면 s[r]이 위치 l로 이동하고 l 앞의 문자는 변하지 않습니다. 가장 작은 결과를 얻으려면, 뒤에 자기보다 작은 문자가 있는 가장 앞 위치를 찾으세요.",
+      "접미사에 s[l]보다 작은 문자가 있는 가장 앞의 위치 l을 찾아, 그 접미사의 가장 작은 문자를 l로 옮깁니다. 그 최소 문자가 여러 번 나오면 가장 오른쪽 등장을 고르세요. 그 사이에서 오른쪽으로 밀리는 문자들은 모두 그 문자보다 작지 않기 때문입니다.",
+      "오른쪽에서 왼쪽으로 스캔하며 접미사에서 가장 작은 문자의 가장 오른쪽 위치 best를 유지합니다. s[i] > s[best]이면 left = i, right = best로 기록하고, s[i] < s[best]이면 best = i로 둡니다. left가 한 번도 기록되지 않았다면 원래 문자열이 답입니다. 그렇지 않으면 s의 앞 left개 문자, s[right], s[left..right-1], s[right+1..]을 순서대로 이어 출력합니다."
+    ],
+    "vi": [
+      "Xoay phải xâu con [l, r] chuyển s[r] đến vị trí l và giữ nguyên mọi thứ trước l. Để kết quả nhỏ nhất, hãy tìm vị trí sớm nhất mà sau nó có một ký tự nhỏ hơn.",
+      "Tìm vị trí l sớm nhất mà hậu tố của nó chứa một ký tự nhỏ hơn s[l], và chuyển ký tự nhỏ nhất của hậu tố đó đến l. Nếu ký tự nhỏ nhất đó xuất hiện nhiều lần, hãy lấy lần xuất hiện ngoài cùng bên phải: các ký tự bị dịch sang phải ở giữa đều không nhỏ hơn nó.",
+      "Quét từ phải sang trái và giữ best, vị trí ngoài cùng bên phải của ký tự nhỏ nhất trong hậu tố: nếu s[i] > s[best], ghi nhận left = i và right = best; nếu s[i] < s[best], đặt best = i. Nếu left chưa bao giờ được ghi nhận thì xâu ban đầu là đáp án; ngược lại in left ký tự đầu của s, rồi s[right], rồi s[left..right-1], rồi s[right+1..]."
     ]
   },
   "explanationEn": "## Approach\n\nFrom the right, maintain the minimum character of the suffix and its rightmost position; find the earliest position that can be improved by a smaller character after it, and move the rightmost occurrence of that suffix minimum to this position.\n\n## Proof of correctness\n\nAn optimal change must make a character smaller as early as possible; a position with no smaller character after it is not worth changing. At that position, choosing the smallest suffix character is optimal. If the smallest character occurs several times, moving the rightmost occurrence differs from choosing a more left one only in additionally shifting the segment between the two occurrences right by one; the characters of that segment are all no smaller than the minimum character, so at the first difference the rightmost choice is smaller or equal. Hence the rightmost minimum character gives the optimal result. If no position can be improved, the original string is optimal.\n\n## Complexity\n\nTime O(n), space O(n)."

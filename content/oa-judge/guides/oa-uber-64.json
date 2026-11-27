@@ -13,6 +13,21 @@
       "The string can have a million digits, so it cannot be converted to an integer. Deciding divisibility by 3 does not need the actual number, though: every power of 10 is 1 modulo 3.",
       "So the integer modulo 3 equals the sum of its digits modulo 3. The other condition, that 7 appears at least twice, is independent; count it during the same scan, and output 1 only when both conditions hold.",
       "Scan every character, adding c - '0' to total and increasing a counter on each '7'. At the end output 1 if total mod 3 is 0 and the counter is at least 2, otherwise 0. Leading zeros do not affect the result."
+    ],
+    "ja": [
+      "文字列は 100 万桁にもなりうるので、整数に変換することはできません。ただし 3 での割り切れ判定には実際の数は必要ありません。10 のべき乗はすべて 3 を法として 1 だからです。",
+      "したがって、整数を 3 で割った余りは、その各桁の和を 3 で割った余りに等しくなります。もう一方の条件、7 が 2 回以上現れることは独立しています。同じ走査で数え、両方の条件が成り立つときだけ 1 を出力します。",
+      "すべての文字を走査し、total に c - '0' を加え、'7' のたびにカウンタを増やします。最後に、total を 3 で割った余りが 0 でカウンタが 2 以上なら 1、そうでなければ 0 を出力します。先頭の 0 は結果に影響しません。"
+    ],
+    "ko": [
+      "문자열의 길이가 백만 자리일 수 있어 정수로 변환할 수 없습니다. 그러나 3으로 나누어떨어지는지는 실제 수가 필요하지 않습니다. 10의 거듭제곱은 모두 3으로 나눈 나머지가 1이기 때문입니다.",
+      "따라서 정수를 3으로 나눈 나머지는 자릿수 합을 3으로 나눈 나머지와 같습니다. 다른 조건인 7이 두 번 이상 나타나는지는 독립적이므로 같은 스캔에서 세고, 두 조건이 모두 성립할 때만 1을 출력합니다.",
+      "모든 문자를 스캔하며 total에 c - '0'을 더하고 '7'이 나올 때마다 카운터를 증가시킵니다. 마지막에 total을 3으로 나눈 나머지가 0이고 카운터가 2 이상이면 1을, 그렇지 않으면 0을 출력합니다. 앞의 0은 결과에 영향을 주지 않습니다."
+    ],
+    "vi": [
+      "Xâu có thể có một triệu chữ số, nên không thể chuyển thành số nguyên. Tuy nhiên để xét chia hết cho 3 không cần số thực: mọi lũy thừa của 10 đều bằng 1 theo modulo 3.",
+      "Vì vậy số nguyên modulo 3 bằng tổng các chữ số modulo 3. Điều kiện còn lại, 7 xuất hiện ít nhất hai lần, là độc lập; đếm nó trong cùng lượt quét, và chỉ in 1 khi cả hai điều kiện đều thỏa.",
+      "Quét từng ký tự, cộng c - '0' vào total và tăng bộ đếm mỗi khi gặp '7'. Cuối cùng in 1 nếu total mod 3 bằng 0 và bộ đếm ít nhất là 2, ngược lại in 0. Các số 0 đứng đầu không ảnh hưởng kết quả."
     ]
   },
   "explanationEn": "## Approach\n\nScan the string to get the digit sum and the number of 7s, then check that the digit sum is 0 modulo 3 and that the count is at least 2.\n\n## Correctness\n\nEvery power of the decimal base 10 is 1 modulo 3, so the integer modulo 3 equals its digit sum modulo 3. The number of 7s is counted separately, and the conjunction enforces both conditions.\n\n## Complexity\n\nTime O(n), extra space O(1)."

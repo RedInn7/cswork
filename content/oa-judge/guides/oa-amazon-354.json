@@ -13,6 +13,21 @@
       "The output must be numerically sorted and free of duplicates; sorting the array first takes care of most of that.",
       "Run two pointers on the sorted array: if the sum is too small move the left pointer right, if too large move the right pointer left. The pointers always sit on different indices, so pairing a value with itself requires two real occurrences.",
       "On a match, record a[l],a[r] and skip every copy of a[l] on the left and of a[r] on the right to avoid repeats; stop when l ≥ r and print None if nothing was found. Sums reach 2×10^9, so use 64-bit integers."
+    ],
+    "ja": [
+      "出力は数値順で重複がない必要があります。先に配列をソートしておけば、ほとんどはそれで解決します。",
+      "ソート済みの配列に2つのポインタを走らせます。和が小さすぎれば左ポインタを右へ、大きすぎれば右ポインタを左へ動かします。ポインタは常に異なる添字を指すので、同じ値同士のペアには、実際に2つ出現していることが必要です。",
+      "一致したら a[l],a[r] を記録し、重複を避けるため、左側の a[l] のコピーと右側の a[r] のコピーをすべて飛ばします。l ≥ r になったら終了し、何も見つからなければ None を出力します。和は 2×10^9 に達するので、64ビット整数を使ってください。"
+    ],
+    "ko": [
+      "출력은 수치 순으로 정렬되어야 하고 중복이 없어야 합니다. 배열을 먼저 정렬하면 대부분 해결됩니다.",
+      "정렬된 배열에서 투 포인터를 실행합니다. 합이 너무 작으면 왼쪽 포인터를 오른쪽으로, 너무 크면 오른쪽 포인터를 왼쪽으로 옮깁니다. 포인터는 항상 서로 다른 인덱스에 있으므로, 같은 값끼리 쌍을 이루려면 실제로 두 번 나타나야 합니다.",
+      "일치하면 a[l],a[r]을 기록하고, 반복을 피하기 위해 왼쪽의 a[l] 복사본과 오른쪽의 a[r] 복사본을 모두 건너뜁니다. l ≥ r이면 종료하고, 아무것도 찾지 못했으면 None을 출력합니다. 합이 2×10^9까지 커지므로 64비트 정수를 사용합니다."
+    ],
+    "vi": [
+      "Đầu ra phải được sắp xếp theo thứ tự số học và không có trùng lặp; sắp xếp mảng trước sẽ giải quyết phần lớn việc này.",
+      "Chạy hai con trỏ trên mảng đã sắp xếp: nếu tổng quá nhỏ thì dịch con trỏ trái sang phải, nếu quá lớn thì dịch con trỏ phải sang trái. Hai con trỏ luôn ở các chỉ số khác nhau, nên ghép một giá trị với chính nó đòi hỏi có hai lần xuất hiện thật sự.",
+      "Khi khớp, ghi lại a[l],a[r] và bỏ qua mọi bản sao của a[l] ở bên trái và của a[r] ở bên phải để tránh lặp; dừng khi l ≥ r và in None nếu không tìm thấy gì. Tổng có thể đạt 2×10^9, nên dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nSort, then use two pointers: when the sum is below the target, move the left pointer right; when it is above, move the right pointer left; when it is equal, record the pair and skip all duplicate values at both ends.\n\n## Proof of correctness\n\nWith the left value fixed, if the current sum is below the target, pairing it with any smaller right value cannot reach the target either, so the left end can be safely discarded; the case above the target is symmetric. When the sum is equal, this value pair is fully represented, and skipping duplicates only removes repeated output while keeping every distinct value pair. The left and right indices are always different, so no single element is used twice, and the increasing left value naturally gives numeric lexicographic order.\n\n## Complexity\n\nO(n log n) time and O(n) space."

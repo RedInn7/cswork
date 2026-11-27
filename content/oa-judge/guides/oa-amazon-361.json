@@ -13,6 +13,21 @@
       "Count subarrays whose last element is the maximum and those whose first element is the maximum, then subtract those where both ends are the maximum, since they were counted twice.",
       "Fixing the right end i, the left end can extend until just before the first strictly greater element on the left; a monotonic stack that pops all elements ≤ the current value gives that distance directly. Run it again on the reversed array for the first-element case.",
       "For subarrays with both ends maximal, keep a stack of (value, count) groups with decreasing values; on v, pop all smaller groups; if the top value equals v, increment its count and add the new count (including the single element), otherwise push a new group and add 1. The answer is the two stack counts minus this overlap, in 64-bit integers."
+    ],
+    "ja": [
+      "最後の要素が最大の部分配列と、最初の要素が最大の部分配列を数え、両端がともに最大であるものは二重に数えられているので差し引きます。",
+      "右端 i を固定すると、左端は、左側で最初の真に大きい要素の直前まで伸ばせます。現在の値以下の要素をすべてポップする単調スタックを使えば、その距離が直接得られます。最初の要素のケースは、反転した配列に対してもう一度同じ処理をします。",
+      "両端がともに最大の部分配列については、値が減少する (value, count) のグループのスタックを持ちます。v が来たら小さいグループをすべてポップし、先頭の値が v と等しければ、その count を増やして新しい count(単独の要素を含む)を加算します。そうでなければ新しいグループをプッシュして 1 を加算します。答えは、2つのスタックによる個数の和からこの重複を引いたもので、64ビット整数を使います。"
+    ],
+    "ko": [
+      "마지막 원소가 최댓값인 부분 배열과 첫 원소가 최댓값인 부분 배열을 각각 센 뒤, 두 번 세어진 양 끝이 모두 최댓값인 부분 배열을 뺍니다.",
+      "오른쪽 끝 i를 고정하면 왼쪽 끝은 왼쪽에서 처음 나오는 엄격하게 큰 원소 바로 앞까지 확장할 수 있습니다. 현재 값 이하인 원소를 모두 pop하는 단조 스택이 그 거리를 바로 줍니다. 첫 원소가 최댓값인 경우는 뒤집은 배열에 대해 다시 실행합니다.",
+      "양 끝이 모두 최대인 부분 배열은 값이 감소하는 (value, count) 그룹의 스택을 유지합니다. 값 v가 오면 더 작은 그룹을 모두 pop하고, top의 값이 v와 같으면 count를 증가시키고 새 count(원소 하나짜리 포함)를 더하며, 아니면 새 그룹을 push하고 1을 더합니다. 답은 두 스택에서 센 개수의 합에서 이 중복을 뺀 값이며 64비트 정수를 사용합니다."
+    ],
+    "vi": [
+      "Đếm các mảng con có phần tử cuối là giá trị lớn nhất và các mảng con có phần tử đầu là giá trị lớn nhất, rồi trừ đi những mảng có cả hai đầu là giá trị lớn nhất, vì chúng đã bị đếm hai lần.",
+      "Khi cố định đầu phải i, đầu trái có thể mở rộng đến ngay trước phần tử đầu tiên lớn hơn hẳn ở bên trái; một ngăn xếp đơn điệu lấy ra mọi phần tử ≤ giá trị hiện tại cho ngay khoảng cách đó. Chạy lại trên mảng đảo ngược cho trường hợp phần tử đầu.",
+      "Với các mảng con có cả hai đầu cực đại, giữ một ngăn xếp các nhóm (giá trị, số lượng) có giá trị giảm dần; khi gặp v, lấy ra mọi nhóm nhỏ hơn; nếu giá trị ở đỉnh bằng v thì tăng số lượng của nó và cộng số lượng mới (kể cả phần tử đơn lẻ), nếu không thì đẩy một nhóm mới và cộng 1. Đáp án là hai số đếm của ngăn xếp trừ đi phần chồng lấn này, dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nUse monotonic stacks to count, separately, the subarrays whose last element is the maximum and those whose first element is the maximum, popping equal values too so as to find the strictly greater boundary; then use a decreasing stack of value groups to subtract the subarrays where both ends are the maximum.\n\n## Proof of correctness\n\nExtending inward from a fixed end until the first strictly greater value gives exactly all subarrays in which that end is the maximum. The two counts need inclusion-exclusion: when a value v appears, pop the smaller groups; if the top group has the same value, its previous c occurrences have no greater value between them and the current position, contributing c+1 subarrays with both ends maximal (including the single element); if the top differs, only the single element counts. Once a smaller group lies behind the current greater value, it can never contribute across it again, so popping it is safe. Therefore the subtracted term handles all repeated endpoints exactly, instead of just subtracting n.\n\n## Complexity\n\nO(n) time and O(n) space; counts use 64 bits."

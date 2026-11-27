@@ -11,5 +11,35 @@
     "hints": [
       "Scan the return time j, adding departure j−1 (if it exists) to the running minimum; update the answer with the minimum departure cost so far plus the current return cost."
     ]
+  },
+  "ja": {
+    "title": "帰りが出発より厳密に後となる往復の最小コスト",
+    "description": "2 つの配列の添字はそれぞれ時刻を表し、値は航空券の料金です。帰りの添字 j は出発の添字 i より厳密に大きくなければなりません。2 つの配列の長さは異なる場合があります。合計料金の最小値を求めてください。有効な組が存在しない場合、本サイトでは追加で −1 を出力し、解が必ず存在するという保証は加えません。\n\n本サイトは標準入出力と解法を独自に作成しました。出典に欠けている制約の補足や、例の訂正は仕様に明記しています。",
+    "input": "順に、出発配列の長さ n、n 個の整数、帰り配列の長さ m、m 個の整数が与えられます。原文には値の範囲や、非負・等長の保証はありません。本サイトでは 0≤n,m≤200000、料金は −10^9..10^9 とします。",
+    "output": "答えを表す整数を 1 つ出力してください。",
+    "explanation": "3 つの公開例の出力は順に 2、-1、3 です。独立した全列挙または直接シミュレーションで確認済みです。",
+    "hints": [
+      "帰りの時刻 j を走査しながら、出発 j−1 (存在する場合) を累積最小値に取り込みます。それまでの出発コストの最小値と現在の帰りコストの和で答えを更新します。"
+    ]
+  },
+  "ko": {
+    "title": "귀환이 출발보다 엄격히 늦어야 하는 왕복 최소 비용",
+    "description": "두 배열의 인덱스는 각각 시간을 나타내고 값은 항공권 가격입니다. 귀환 인덱스 j는 출발 인덱스 i보다 엄격히 커야 합니다. 두 배열의 길이는 다를 수 있습니다. 총비용의 최솟값을 구하세요. 유효한 쌍이 없으면 이 사이트에서는 추가로 −1을 출력하며, 해가 항상 존재한다는 보장은 덧붙이지 않습니다.\n\n본 사이트에서 표준 입출력과 풀이를 독립적으로 마련했습니다. 출처에 없는 범위를 보충한 내용과 예제의 오류를 바로잡은 내용은 명세에 명시되어 있습니다.",
+    "input": "순서대로 출발 배열의 길이 n, n개의 정수, 귀환 배열의 길이 m, m개의 정수가 주어집니다. 원문에는 값의 범위가 없고 음이 아님이나 길이가 같다는 보장도 없으며, 이 사이트에서는 0≤n,m≤200000, 비용은 −10^9..10^9로 둡니다.",
+    "output": "정답인 정수 하나를 출력합니다.",
+    "explanation": "세 개의 공개 예제의 출력은 순서대로 2; -1; 3입니다. 독립적인 완전 탐색 또는 직접 시뮬레이션으로 검증했습니다.",
+    "hints": [
+      "귀환 시각 j를 순회하면서 출발 j−1이 존재하면 누적 최솟값에 반영하고, 지금까지의 최소 출발 비용에 현재 귀환 비용을 더한 값으로 답을 갱신합니다."
+    ]
+  },
+  "vi": {
+    "title": "Chi phí khứ hồi nhỏ nhất với chuyến về phải sau chuyến đi",
+    "description": "Chỉ số của hai mảng mỗi mảng biểu diễn thời gian, còn giá trị là chi phí chuyến bay; chỉ số chuyến về j phải lớn hơn chặt chỉ số chuyến đi i. Hai mảng có thể có độ dài khác nhau. Tìm tổng chi phí nhỏ nhất; nếu không có cặp hợp lệ, trang này bổ sung in −1, mà không thêm đảm bảo rằng luôn có nghiệm.\n\nTrang này tự biên soạn phần vào/ra chuẩn và lời giải; các giới hạn được bổ sung khi nguồn còn thiếu và các chỉnh sửa cho ví dụ đều được nêu rõ trong đặc tả.",
+    "input": "Nhập lần lượt độ dài mảng chuyến đi n, n số nguyên, độ dài mảng chuyến về m, và m số nguyên. Bản gốc không đưa ra giới hạn giá trị, cũng không đảm bảo không âm hay độ dài bằng nhau; trang này dùng 0≤n,m≤200000 và chi phí trong −10^9..10^9.",
+    "output": "In ra một số nguyên duy nhất là đáp án.",
+    "explanation": "Đầu ra của ba ví dụ công khai lần lượt là: 2; -1; 3. Đã được kiểm tra bằng liệt kê độc lập hoặc mô phỏng trực tiếp.",
+    "hints": [
+      "Quét thời điểm về j, thêm chuyến đi j−1 (nếu có) vào giá trị nhỏ nhất đang chạy; cập nhật đáp án bằng chi phí chuyến đi nhỏ nhất cho đến hiện tại cộng với chi phí chuyến về hiện tại."
+    ]
   }
 }

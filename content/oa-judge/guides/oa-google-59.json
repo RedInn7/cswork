@@ -13,6 +13,21 @@
       "When all ones end at the right, each one must pass every zero to its right exactly once, so the total moving distance is fixed: it equals the number of 1-before-0 inversion pairs. Only the number of operations can vary, and each operation adds 1.",
       "To maximise the number of operations, a one should cross the zeros in as many separate moves as possible. A one can produce at most one operation per original block of consecutive zeros, so the operation count is bounded by the sum, over all original zero blocks, of the number of ones to the left of the block.",
       "Scan left to right keeping the count of ones seen so far. On every zero add that count (the distance part); if the zero starts a block (the previous character is a one), add the count once more (the operations for that block). Use a 64-bit total."
+    ],
+    "ja": [
+      "すべての 1 が右端に着くとき、各 1 は自分より右にあるすべての 0 をちょうど 1 回ずつ越えなければならないので、移動距離の合計は固定で、0 より前に 1 がある転倒ペアの数に等しくなります。変えられるのは操作の回数だけで、各操作で 1 が加わります。",
+      "操作の回数を最大化するには、1 ができるだけ多くの別々の移動で 0 を越えるようにします。1 は元の連続する 0 のブロックごとに高々 1 回の操作しか生じさせないので、操作回数は、元のすべての 0 のブロックについて、ブロックの左側にある 1 の個数の総和で抑えられます。",
+      "左から右へ走査し、これまでに見た 1 の個数を保持します。0 ごとにその個数を加えます（距離の部分）。その 0 がブロックの先頭（直前の文字が 1）なら、その個数をもう一度加えます（そのブロックの操作回数の部分）。合計には 64 ビット整数を使ってください。"
+    ],
+    "ko": [
+      "모든 1이 오른쪽 끝으로 가면 각 1은 자기 오른쪽의 모든 0을 정확히 한 번씩 지나야 하므로 총 이동 거리는 고정되어 있습니다. 이는 1이 0보다 앞서는 역전 쌍의 수와 같습니다. 달라질 수 있는 것은 연산 횟수뿐이며, 연산 하나당 1이 추가됩니다.",
+      "연산 횟수를 최대화하려면 1이 가능한 한 많은 별개의 이동으로 0들을 건너야 합니다. 하나의 1은 원래 연속한 0 블록마다 최대 한 번의 연산을 만들 수 있으므로, 연산 횟수는 모든 원래 0 블록에 대해 블록 왼쪽의 1의 개수를 합한 값 이하입니다.",
+      "왼쪽에서 오른쪽으로 스캔하며 지금까지 본 1의 개수를 유지합니다. 0마다 그 개수를 더하고(거리 부분), 그 0이 블록의 시작(이전 문자가 1)이면 개수를 한 번 더 더합니다(그 블록에 대한 연산 횟수). 합계는 64비트로 계산합니다."
+    ],
+    "vi": [
+      "Khi mọi số 1 kết thúc ở bên phải, mỗi số 1 phải đi qua đúng một lần mọi số 0 ở bên phải nó, nên tổng quãng đường dời là cố định: nó bằng số cặp nghịch thế 1-trước-0. Chỉ số thao tác có thể thay đổi, và mỗi thao tác cộng thêm 1.",
+      "Để cực đại hóa số thao tác, một số 1 nên vượt qua các số 0 trong càng nhiều lần dời riêng biệt càng tốt. Một số 1 có thể tạo ra tối đa một thao tác cho mỗi khối số 0 liên tiếp ban đầu, nên số thao tác bị chặn bởi tổng, trên mọi khối số 0 ban đầu, của số các số 1 ở bên trái khối đó.",
+      "Quét từ trái sang phải và giữ số các số 1 đã thấy. Với mỗi số 0, cộng số đó (phần quãng đường); nếu số 0 mở đầu một khối (ký tự trước là số 1), cộng thêm một lần nữa số đó (các thao tác cho khối đó). Dùng tổng 64 bit."
     ]
   },
   "explanationEn": "## Idea\n\nThe total moving distance always equals the number of inversion pairs. Each operation adds 1 more, and the number of operations is at most the sum, over every original block of consecutive zeros, of the number of ones to its left. While scanning, add the number of ones seen so far at every zero, and add it once more if the zero is the first of a zero block.\n\n## Correctness\n\nEach right move only swaps the moved one with the zeros it passes, and all ones finish at the right end, so every original 10 inversion pair must be swapped, and is swapped exactly once. A one produces at most one operation per original zero block, so the number of operations is bounded by the sum above. Processing the zero blocks from left to right and moving the ones to their left one by one keeps the later zero blocks intact and reaches that bound. Adding the two parts gives the maximum cost.\n\n## Complexity\n\nO(n) time, O(1) space."

@@ -11,5 +11,35 @@
     "hints": [
       "Sort each pair's endpoints so that a<b, and record the maximum a for each b. When scanning the right end r, the left end must be at least one more than the largest smaller endpoint among all conflicts seen so far. Add up the number of possible left ends."
     ]
+  },
+  "ja": {
+    "title": "共存できる細菌の連続区間を数える",
+    "description": "サンプルは 1 から n の番号で並んでいます。衝突するペアのどちらの 2 サンプルも、同じ区間に同時に含まれることはできず、衝突に向きはありません。有効な空でない連続区間の個数を数えてください。サンプルの並べ替えはできません。重複した衝突を二重に引くことはありません。\n\n入出力は本サイトが整備したものです。",
+    "input": "1 行目に n m、続いて m 行にそれぞれ a b (衝突するペア) が与えられます。元の問題には数値の上限がなく、本サイトでは 1≤n≤200000、0≤m≤200000、1≤a,b≤n、a≠b とし、重複や逆向きの重複も許されます。",
+    "output": "有効な区間の個数を 64 ビット整数で出力してください。",
+    "explanation": "例 1 の有効な区間は、3 つの単一点と [1,2] で、合計 4 です。例 2 ではすべての 10 区間が有効です。例 3 では、重複して逆向きになった関係は 1 つと数え、有効な区間は合計 6 です。",
+    "hints": [
+      "各ペアの端点を a<b となるよう並べ替え、各 b について最大の a を記録します。右端 r を走査するとき、左端は、それまでに見たすべての衝突のうち最大の小さいほうの端点より 1 大きい値以上でなければなりません。可能な左端の個数を足し合わせます。"
+    ]
+  },
+  "ko": {
+    "title": "공존하는 세균의 연속 구간 수 세기",
+    "description": "샘플은 1부터 n까지의 번호 순으로 배열되어 있습니다. 충돌하는 쌍의 두 샘플은 한 구간에 함께 나타날 수 없으며, 충돌은 방향과 무관합니다. 유효한 비어 있지 않은 연속 구간의 수를 세세요. 샘플의 순서를 바꿀 수는 없습니다. 중복된 충돌은 두 번 빼지 않습니다.\n\n입출력은 이 사이트가 정리했습니다.",
+    "input": "첫째 줄에 n m, 이어서 m개의 줄에 각각 a b가 주어지며 충돌하는 쌍을 나타냅니다. 원래 문제에는 수치 범위가 없으며 이 사이트는 1≤n≤200000, 0≤m≤200000, 1≤a,b≤n, a≠b를 사용합니다. 중복과 뒤집힌 중복이 허용됩니다.",
+    "output": "유효한 구간의 수를 64비트 정수로 출력합니다.",
+    "explanation": "예제 1에서 유효한 구간은 단일 점 세 개와 [1,2]이므로 합계 4입니다. 예제 2에서는 10개의 모든 구간이 유효합니다. 예제 3에서는 중복되고 뒤집힌 관계를 하나로 세며, 유효한 구간은 총 6개입니다.",
+    "hints": [
+      "각 쌍의 끝점을 정렬하여 a<b가 되게 하고, 각 b에 대해 최대 a를 기록합니다. 오른쪽 끝 r을 훑을 때 왼쪽 끝은 지금까지 본 모든 충돌 중 가장 큰 작은 쪽 끝점보다 1 커야 합니다. 가능한 왼쪽 끝의 수를 모두 더합니다."
+    ]
+  },
+  "vi": {
+    "title": "Đếm các đoạn liên tiếp mà vi khuẩn cùng tồn tại",
+    "description": "Các mẫu được xếp theo số thứ tự từ 1 đến n. Hai mẫu của bất kỳ cặp xung đột nào không thể cùng xuất hiện trong một đoạn, và hướng không quan trọng đối với xung đột. Đếm các đoạn liên tiếp khác rỗng hợp lệ; không được sắp xếp lại các mẫu. Các xung đột trùng lặp không bị trừ hai lần.\n\nĐầu vào và đầu ra do trang này biên soạn.",
+    "input": "Dòng đầu tiên chứa n m, tiếp theo là m dòng mỗi dòng có a b, biểu thị một cặp xung đột. Đề gốc không có giới hạn số; trang này dùng 1≤n≤200000, 0≤m≤200000, 1≤a,b≤n, và a≠b; cho phép các cặp trùng lặp và trùng lặp đảo ngược.",
+    "output": "Số đoạn hợp lệ, dưới dạng số nguyên 64 bit.",
+    "explanation": "Trong Ví dụ 1, các đoạn hợp lệ là ba điểm đơn và [1,2], tổng cộng 4. Trong Ví dụ 2, cả 10 đoạn đều hợp lệ. Trong Ví dụ 3, quan hệ đảo ngược trùng lặp chỉ được tính là một, và có tổng cộng 6 đoạn hợp lệ.",
+    "hints": [
+      "Sắp xếp hai đầu mút của mỗi cặp sao cho a<b, và ghi lại a lớn nhất cho mỗi b. Khi quét đầu phải r, đầu trái phải lớn hơn đầu mút nhỏ hơn lớn nhất trong mọi xung đột đã gặp ít nhất một đơn vị. Cộng số đầu trái có thể."
+    ]
   }
 }

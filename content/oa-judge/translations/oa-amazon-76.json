@@ -11,5 +11,35 @@
     "hints": [
       "Record a +1 event at start and a −1 event at end+1, and sort by time. Between adjacent events the active count is fixed, so accumulate segment by segment; when the threshold falls inside a segment, use ceiling division to find the minimum number of seconds."
     ]
+  },
+  "ja": {
+    "title": "累積使用量が閾値に達する最も早い整数秒",
+    "description": "各ユーザーは、start から end までのすべての整数秒に、1 の使用量を寄与します。累積使用量が初めて max_usage に達する整数秒を求めてください。CSWork の標準入出力の取り決めとして、閾値に一度も達しない場合は −1 を出力します。\n\n標準入出力と判定は本サイトが独自に作成しました。本サイト独自とされている範囲は、元の問題の制約ではありません。",
+    "input": "1 行目に n max_usage (1≤n≤100000, 1≤max_usage≤10¹⁴) が与えられ、続く n 行に start end (1≤start≤end≤10⁹) が与えられます。",
+    "output": "答えとなる整数を 1 つ出力します。",
+    "explanation": "例 1: 累積合計は 1 秒目で 1 です。2 秒目には 2 人のユーザーがそれぞれ 1 を寄与するので、累積は 3 となり、2 を出力します。例 2: 開始と終了が同じ秒でも 1 を寄与し、閾値に初めて達するのは 5 秒目です。例 3: 総使用量は 1 しかなく、2 には決して達しないので、本サイトの取り決めにより −1 を出力します。",
+    "hints": [
+      "start に +1 のイベント、end+1 に −1 のイベントを記録し、時刻でソートします。隣り合うイベントの間ではアクティブな数が一定なので、区間ごとに累積していきます。閾値が区間の中に入るときは、切り上げ除算で必要な最小の秒数を求めます。"
+    ]
+  },
+  "ko": {
+    "title": "누적 사용량이 임계값에 처음 도달하는 가장 이른 정수 초",
+    "description": "각 사용자는 start부터 end까지의 모든 정수 초마다 사용량 1을 기여합니다. 누적 사용량이 처음으로 max_usage에 도달하는 정수 초를 구하세요. CSWork 표준 입출력 규칙: 임계값에 끝내 도달하지 못하면 −1을 출력합니다.\n\n표준 입출력과 채점은 이 사이트가 독자적으로 작성했으며, 이 사이트의 것이라고 표시된 범위는 원문의 제약 조건이 아닙니다.",
+    "input": "첫째 줄에 n max_usage(1≤n≤100000, 1≤max_usage≤10¹⁴)가 주어지고, 이어서 n개의 줄에 start end(1≤start≤end≤10⁹)가 주어집니다.",
+    "output": "정수 하나로 답을 출력합니다.",
+    "explanation": "예제 1: 1초에 누적 사용량은 1이고, 2초에는 두 사용자가 각각 1씩 기여해 누적 3이 되므로 2를 출력합니다. 예제 2: 같은 초에 시작하고 끝나도 1을 기여하며, 임계값에는 5초에 처음 도달합니다. 예제 3: 총 사용량이 1뿐이라 2에 도달하지 못하므로 이 사이트의 규칙에 따라 −1을 출력합니다.",
+    "hints": [
+      "start에서 +1 이벤트를, end+1에서 −1 이벤트를 기록하고 시간순으로 정렬합니다. 인접한 두 이벤트 사이에서는 활성 사용자 수가 고정이므로 구간별로 누적합니다. 임계값이 어떤 구간 안에 있으면 올림 나눗셈으로 필요한 최소 초를 구합니다."
+    ]
+  },
+  "vi": {
+    "title": "Giây nguyên sớm nhất khi lượng sử dụng tích lũy đạt ngưỡng",
+    "description": "Mỗi người dùng đóng góp 1 lượng sử dụng ở mỗi giây nguyên từ start đến end. Hãy tìm giây nguyên mà tại đó lượng sử dụng tích lũy lần đầu đạt max_usage. Quy ước vào/ra chuẩn của CSWork: in −1 nếu không bao giờ đạt ngưỡng.\n\nTrang này tự viết độc lập phần vào/ra chuẩn và phần chấm bài; các khoảng giá trị đánh dấu là của trang này không phải ràng buộc gốc của đề.",
+    "input": "Dòng đầu chứa n max_usage (1≤n≤100000, 1≤max_usage≤10¹⁴), tiếp theo là n dòng start end (1≤start≤end≤10⁹).",
+    "output": "In ra một số nguyên là đáp án.",
+    "explanation": "Ví dụ 1: tổng tích lũy là 1 ở giây 1; ở giây 2 hai người dùng mỗi người đóng góp 1, tổng tích lũy là 3, nên in 2. Ví dụ 2: bắt đầu và kết thúc trong cùng một giây vẫn đóng góp 1, và ngưỡng lần đầu đạt được ở giây 5. Ví dụ 3: tổng sử dụng chỉ là 1 và không bao giờ đạt 2, nên in −1 theo quy ước của trang này.",
+    "hints": [
+      "Ghi một sự kiện +1 tại start và một sự kiện −1 tại end+1, rồi sắp xếp theo thời gian. Giữa hai sự kiện liền kề, số người dùng đang hoạt động là cố định, nên cộng dồn theo từng đoạn; khi ngưỡng rơi vào bên trong một đoạn, dùng phép chia lấy trần để tìm số giây tối thiểu."
+    ]
   }
 }

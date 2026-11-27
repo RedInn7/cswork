@@ -13,5 +13,41 @@
       "Updating an existing key also counts as a use.",
       "A hash map combined with an ordered doubly linked list gives O(1) per operation."
     ]
+  },
+  "ja": {
+    "title": "Implement an LRU Cache",
+    "description": "以下の関数を完成させてください。この関数は標準入力全体を 1 つの文字列として受け取り、この問題に対する標準出力の各行をそのまま返さなければなりません。\nLRU（Least Recently Used）キャッシュを実装してください。次の操作をサポートします。\nLRUCache(capacity): 与えられた正の容量でキャッシュを初期化します。\nget(key): キーが存在すれば値を返し、そのキーを最近使われたものとして記録します。存在しなければ -1 を返します。\nput(key, value): キーと値を挿入または更新し、最近使われたものとして記録します。キャッシュが容量を超えたら、最も長く使われていないエントリを削除します。\n要件:\n目標の時間計算量: get/put ともに 1 操作あたり O(1)。\n**制約**\n操作回数: 1 ≤ N ≤ 2 * 10⁵\nkey、value は 32 ビット整数\n**入力:**\ncapacity=2\nput(1,1)\nput(2,2)\nget(1)\nput(3,3)\nget(2)\nput(4,4)\nget(1)\nget(3)\nget(4)\n**出力:**\n1\n-1\n-1\n3\n4\n**入力:**\ncapacity=1\nput(1,1)\nput(2,2)\nget(1)\nget(2)\n**出力:**\n-1\n2\n**入力:**\ncapacity=2\nput(1,1)\nput(1,10)\nget(1)\n**出力:**\n10\n**入力:**\ncapacity=3\nget(42)\n**出力:**\n-1\n**入力:**\ncapacity=2\nput(1,1)\nput(2,2)\nput(3,3)\nget(1)\nget(2)\nget(3)\n**出力:**\n-1\n2\n3\n**例**\n**入力**\ncapacity=2\nput(1,1)\nput(2,2)\nget(1)\nput(3,3)\nget(2)\nput(4,4)\nget(1)\nget(3)\nget(4)\n**出力**\n1\n-1\n3\n4\n**関数の説明**\n`solveLRUCacheOperations` を完成させてください。引数は 1 つで、標準入力の全内容を含む `String input` です。標準出力の内容を、末尾の改行文字を含まない行の配列として返してください。\n\n**制約**\n\nプロンプトに記載された上限と要件を使用してください。\n\n### 例 1\n**入力:**\n```\ninput = \"capacity=2\\nput(1,1)\\nput(2,2)\\nget(1)\\nput(3,3)\\nget(2)\\nput(4,4)\\nget(1)\\nget(3)\\nget(4)\"\n```\n**出力:**\n```\n[\"1\", \"-1\", \"-1\", \"3\", \"4\"]\n```\n**説明:**\n返す文字列配列は、サンプル入力に対する期待される標準出力の各行と一致しなければなりません。\n\n**ソースの誤り:** 最初の複数ステップの例では、`put(4,4)` の後の `get(1)` が返す `-1` が抜けています。後ろに繰り返し掲載されている例 1 には 5 つの結果すべてが載っており、同じ LRU のルールで再現しても `1, -1, -1, 3, 4` になります。",
+    "input": "1 行目は capacity=N（正の整数）です。続く各行は `put(key,value)` または `get(key)` の操作 1 つです。",
+    "output": "get ごとに 1 行を出力してください。put は何も出力しません。",
+    "explanation": "最も長く使われていないものから最近使われたものへの順序を保持します。get がヒットしたとき、および put（既存のキーの更新を含む）のたびに、そのキーを最近使われた側の端に移動します。容量を超えたら、最も長く使われていないキーを削除します。問題文中の最初の例は -1 が 1 つ抜けています。問題文中で繰り返されている例 1 の出力と、ステップごとの状態の両方が、訂正後の値を裏づけています。",
+    "hints": [
+      "get がヒットすると、後でどのエントリが削除されるかも変わります。",
+      "既存のキーの更新も、使用としてカウントされます。",
+      "ハッシュマップと順序つき双方向連結リストを組み合わせれば、1 操作あたり O(1) になります。"
+    ]
+  },
+  "ko": {
+    "title": "Implement an LRU Cache",
+    "description": "아래 함수를 완성하세요. 함수는 표준 입력 전체를 하나의 문자열로 받으며, 설명된 문제에 대한 정확한 표준 출력 줄들을 반환해야 합니다.\n다음을 지원하는 LRU(Least Recently Used) 캐시를 구현하세요:\nLRUCache(capacity): 주어진 양의 용량으로 캐시를 초기화합니다.\nget(key): 키가 존재하면 값을 반환하고 그 키를 가장 최근에 사용한 것으로 표시하며, 존재하지 않으면 -1을 반환합니다.\nput(key, value): 키에 값을 삽입하거나 갱신하고 가장 최근에 사용한 것으로 표시합니다. 캐시가 용량을 넘으면 가장 오래전에 사용한 항목을 제거합니다.\n요구 사항:\n목표 시간 복잡도: get/put당 O(1).\n**제약 조건**\n연산의 수: 1 ≤ N ≤ 2 * 10⁵\nkey, value는 32비트 정수\n**입력:**\ncapacity=2\nput(1,1)\nput(2,2)\nget(1)\nput(3,3)\nget(2)\nput(4,4)\nget(1)\nget(3)\nget(4)\n**출력:**\n1\n-1\n-1\n3\n4\n**입력:**\ncapacity=1\nput(1,1)\nput(2,2)\nget(1)\nget(2)\n**출력:**\n-1\n2\n**입력:**\ncapacity=2\nput(1,1)\nput(1,10)\nget(1)\n**출력:**\n10\n**입력:**\ncapacity=3\nget(42)\n**출력:**\n-1\n**입력:**\ncapacity=2\nput(1,1)\nput(2,2)\nput(3,3)\nget(1)\nget(2)\nget(3)\n**출력:**\n-1\n2\n3\n**예제**\n**입력**\ncapacity=2\nput(1,1)\nput(2,2)\nget(1)\nput(3,3)\nget(2)\nput(4,4)\nget(1)\nget(3)\nget(4)\n**출력**\n1\n-1\n3\n4\n**함수 설명**\n`solveLRUCacheOperations`를 완성하세요. 매개변수는 `String input` 하나이며, 표준 입력 전체가 들어 있습니다. 표준 출력 내용을 줄바꿈 문자 없이 줄 단위 배열로 반환하세요.\n\n**제약 조건**\n\n프롬프트에 명시된 제한과 요구 사항을 사용합니다.\n\n### 예제 1\n**입력:**\n```\ninput = \"capacity=2\\nput(1,1)\\nput(2,2)\\nget(1)\\nput(3,3)\\nget(2)\\nput(4,4)\\nget(1)\\nget(3)\\nget(4)\"\n```\n**출력:**\n```\n[\"1\", \"-1\", \"-1\", \"3\", \"4\"]\n```\n**설명:**\n반환되는 문자열 배열은 샘플 입력에 대한 기대 표준 출력 줄과 일치해야 합니다.\n\n**원문 오류 정정:** 첫 번째 다단계 예제에는 `put(4,4)` 뒤의 `get(1)`이 반환하는 `-1`이 빠져 있습니다. 뒤에 다시 붙은 예제 1에는 다섯 개의 결과가 모두 나와 있으며, 같은 LRU 규칙으로 재현해 봐도 `1, -1, -1, 3, 4`가 나옵니다.",
+    "input": "첫 줄은 capacity=N(양의 정수)이고, 이어지는 각 줄은 `put(key,value)` 또는 `get(key)` 연산 하나입니다.",
+    "output": "get마다 한 줄씩 출력하며, put은 출력이 없습니다.",
+    "explanation": "가장 오래전에 사용한 것부터 가장 최근에 사용한 것까지의 순서를 유지합니다. get이 적중하거나 모든 put(기존 키의 갱신 포함)은 해당 키를 가장 최근 쪽 끝으로 옮기고, 용량을 넘으면 가장 오래전에 사용한 키를 삭제합니다. 문제 설명의 첫 번째 예제에는 -1이 하나 빠져 있으며, 문제 설명에 반복된 예제 1의 출력과 단계별 상태가 모두 정정된 값을 확인해 줍니다.",
+    "hints": [
+      "get이 적중하면 나중에 제거될 항목도 달라집니다.",
+      "기존 키를 갱신하는 것도 사용으로 간주됩니다.",
+      "해시 맵과 순서가 있는 이중 연결 리스트를 함께 쓰면 연산당 O(1)입니다."
+    ]
+  },
+  "vi": {
+    "title": "Implement an LRU Cache",
+    "description": "Hoàn thành hàm dưới đây. Hàm nhận toàn bộ đầu vào chuẩn dưới dạng một xâu và phải trả về đúng các dòng đầu ra chuẩn của bài toán được mô tả.\nCài đặt một bộ nhớ đệm LRU (Least Recently Used) hỗ trợ:\nLRUCache(capacity): khởi tạo bộ nhớ đệm với dung lượng dương cho trước.\nget(key): trả về giá trị nếu khóa tồn tại và đánh dấu nó là được dùng gần đây nhất; ngược lại trả về -1.\nput(key, value): chèn hoặc cập nhật khóa với giá trị và đánh dấu nó là được dùng gần đây nhất; nếu bộ nhớ đệm vượt quá dung lượng, loại bỏ mục ít được dùng gần đây nhất.\nYêu cầu:\nĐộ phức tạp thời gian mục tiêu: O(1) cho mỗi get/put.\n**Ràng buộc**\nSố thao tác: 1 ≤ N ≤ 2 * 10⁵\nkey, value là các số nguyên 32 bit\n**Đầu vào:**\ncapacity=2\nput(1,1)\nput(2,2)\nget(1)\nput(3,3)\nget(2)\nput(4,4)\nget(1)\nget(3)\nget(4)\n**Đầu ra:**\n1\n-1\n-1\n3\n4\n**Đầu vào:**\ncapacity=1\nput(1,1)\nput(2,2)\nget(1)\nget(2)\n**Đầu ra:**\n-1\n2\n**Đầu vào:**\ncapacity=2\nput(1,1)\nput(1,10)\nget(1)\n**Đầu ra:**\n10\n**Đầu vào:**\ncapacity=3\nget(42)\n**Đầu ra:**\n-1\n**Đầu vào:**\ncapacity=2\nput(1,1)\nput(2,2)\nput(3,3)\nget(1)\nget(2)\nget(3)\n**Đầu ra:**\n-1\n2\n3\n**Ví dụ**\n**Đầu vào**\ncapacity=2\nput(1,1)\nput(2,2)\nget(1)\nput(3,3)\nget(2)\nput(4,4)\nget(1)\nget(3)\nget(4)\n**Đầu ra**\n1\n-1\n3\n4\n**Mô tả hàm**\nHoàn thành `solveLRUCacheOperations`. Hàm có một tham số, `String input`, chứa toàn bộ dữ liệu stdin. Trả về dữ liệu stdout dưới dạng một mảng các dòng, không có ký tự xuống dòng ở cuối.\n\n**Ràng buộc**\n\nSử dụng các giới hạn và yêu cầu được nêu trong đề bài.\n\n### Ví dụ 1\n**Đầu vào:**\n```\ninput = \"capacity=2\\nput(1,1)\\nput(2,2)\\nget(1)\\nput(3,3)\\nget(2)\\nput(4,4)\\nget(1)\\nget(3)\\nget(4)\"\n```\n**Đầu ra:**\n```\n[\"1\", \"-1\", \"-1\", \"3\", \"4\"]\n```\n**Giải thích:**\nMảng xâu trả về phải khớp với các dòng đầu ra chuẩn kỳ vọng cho đầu vào mẫu.\n\n**Đính chính nguồn:** Ví dụ nhiều bước đầu tiên bỏ sót giá trị `-1` do `get(1)` trả về sau `put(4,4)`. Ví dụ 1 được lặp lại ở phần sau liệt kê đủ cả năm kết quả, và việc phát lại với cùng quy tắc LRU cũng cho `1, -1, -1, 3, 4`.",
+    "input": "Dòng đầu là capacity=N (một số nguyên dương); mỗi dòng tiếp theo là một thao tác `put(key,value)` hoặc `get(key)`.",
+    "output": "Xuất một dòng cho mỗi get; put không có đầu ra.",
+    "explanation": "Duy trì thứ tự từ ít được dùng gần đây nhất đến được dùng gần đây nhất. Một lần get trúng và mọi lần put (kể cả cập nhật một khóa đã có) đều chuyển khóa đó về đầu mút gần đây nhất; khi vượt dung lượng, xóa khóa ít được dùng gần đây nhất. Ví dụ đầu tiên trong đề bỏ sót một số -1; đầu ra của Ví dụ 1 được lặp lại trong đề và trạng thái từng bước đều xác nhận giá trị đã hiệu chỉnh.",
+    "hints": [
+      "Một lần get trúng cũng thay đổi mục nào sẽ bị loại sau này.",
+      "Cập nhật một khóa đã tồn tại cũng được tính là một lần sử dụng.",
+      "Hash map kết hợp với danh sách liên kết đôi có thứ tự cho độ phức tạp O(1) mỗi thao tác."
+    ]
   }
 }

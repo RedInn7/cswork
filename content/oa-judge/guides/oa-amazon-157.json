@@ -13,6 +13,21 @@
       "The lowest prefix balance of the original string fixes how many opening brackets must be added, and the total balance then fixes how many closing ones; anything added beyond that has to come as one opening plus one closing bracket to stay balanced.",
       "For the mandatory part, take the required number of opening and closing brackets with the highest ratings. Sort the remaining opening and closing brackets by rating, descending, pair the j-th extra opening bracket with the j-th extra closing one, and add a pair only while its rating sum is positive.",
       "Scan the original string for the total balance and the lowest prefix balance low; the mandatory counts are L = -low (low <= 0) opening and R = L + balance closing brackets. Split the kit's ratings by bracket type and sort each group descending; add the first L of the opening group and the first R of the closing group; then add pairs starting right after those, stopping at the first pair whose sum is <= 0. Use 64-bit integers for the total."
+    ],
+    "ja": [
+      "元の文字列の接頭辞バランスの最小値から、追加しなければならない開き括弧の個数が決まり、全体のバランスから閉じ括弧の個数が決まります。それを超えて追加する分は、釣り合いを保つために開き括弧 1 つと閉じ括弧 1 つの組でなければなりません。",
+      "必須部分では、評価値の高い開き括弧と閉じ括弧を必要な個数だけ取ります。残りの開き括弧と閉じ括弧を評価値の降順に並べ、j 番目の余分な開き括弧と j 番目の余分な閉じ括弧を組にし、組の評価値の和が正である間だけ追加します。",
+      "元の文字列を走査して全体のバランスと接頭辞バランスの最小値 low を求めます。必須の個数は、開き括弧が L = -low（low <= 0）個、閉じ括弧が R = L + balance 個です。kit の評価値を括弧の種類で分け、それぞれ降順に並べ替えます。開き括弧の先頭 L 個と閉じ括弧の先頭 R 個を加え、その直後から組を加えていき、和が <= 0 になる最初の組で止めます。合計には 64 ビット整数を使ってください。"
+    ],
+    "ko": [
+      "원래 문자열의 접두사 균형 최솟값이 반드시 추가해야 하는 여는 괄호의 개수를 정하고, 전체 균형이 반드시 추가해야 하는 닫는 괄호의 개수를 정합니다. 그 이상 추가하려면 균형을 유지하도록 여는 괄호 하나와 닫는 괄호 하나를 한 쌍으로 추가해야 합니다.",
+      "필수 부분에서는 필요한 개수만큼 평점이 가장 높은 여는 괄호와 닫는 괄호를 고릅니다. 남은 여는 괄호와 닫는 괄호를 각각 평점 내림차순으로 정렬한 뒤, j번째 추가 여는 괄호와 j번째 추가 닫는 괄호를 짝짓고, 평점 합이 양수인 동안에만 그 쌍을 추가합니다.",
+      "원래 문자열을 스캔하면서 전체 균형과 접두사 균형의 최솟값 low를 구합니다. 필수 개수는 여는 괄호 L = -low(low <= 0)개, 닫는 괄호 R = L + balance개입니다. kit의 평점을 괄호 종류별로 나누어 각각 내림차순 정렬하고, 여는 괄호 그룹에서 앞의 L개와 닫는 괄호 그룹에서 앞의 R개를 더합니다. 그다음 바로 이어지는 위치부터 쌍을 더하되, 합이 <= 0인 첫 번째 쌍에서 멈춥니다. 합계에는 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Số dư tiền tố thấp nhất của xâu ban đầu quyết định cần thêm bao nhiêu dấu ngoặc mở, rồi tổng số dư quyết định cần bao nhiêu dấu ngoặc đóng; mọi thứ thêm vào ngoài mức đó phải đi thành một dấu mở cộng một dấu đóng để vẫn cân bằng.",
+      "Với phần bắt buộc, lấy số dấu mở và dấu đóng cần thiết có điểm cao nhất. Sắp xếp các dấu mở và dấu đóng còn lại theo điểm giảm dần, ghép dấu mở thừa thứ j với dấu đóng thừa thứ j, và chỉ thêm một cặp khi tổng điểm của nó dương.",
+      "Quét xâu ban đầu để lấy tổng số dư và số dư tiền tố thấp nhất low; số lượng bắt buộc là L = -low (low <= 0) dấu mở và R = L + balance dấu đóng. Tách điểm đánh giá của kit theo loại ngoặc và sắp xếp mỗi nhóm giảm dần; thêm L phần tử đầu của nhóm mở và R phần tử đầu của nhóm đóng; rồi thêm các cặp bắt đầu ngay sau đó, dừng tại cặp đầu tiên có tổng <= 0. Dùng số nguyên 64 bit cho tổng."
     ]
   },
   "explanationEn": "## Approach\n\nFirst compute how many opening and closing brackets must be added; for each kind, sort the ratings in descending order and take the required number. After that, extra choices must come in opening-closing pairs; add pairs one by one while their gain is positive.\n\n## Proof of correctness\n\nLet the minimum prefix balance of the original string be m and its total balance b. Any plan must add at least L=max(0,-m) opening brackets and R=L+b closing brackets; putting all the opening ones at the front and all the closing ones at the end achieves this. The numbers of extra brackets of the two kinds are equal. For a fixed number of choices, taking the highest ratings is optimal, and the gains of successive pairs are non-increasing, so it suffices to take the pairs with positive gain.\n\n## Complexity\n\nTime O(n + m log m), space O(n + m)."

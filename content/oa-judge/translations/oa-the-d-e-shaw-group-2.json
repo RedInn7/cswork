@@ -13,5 +13,41 @@
       "Find the nearest strictly taller index on the left and on the right; students of equal height can be crossed on both sides.",
       "The sum may exceed 32 bits."
     ]
+  },
+  "ja": {
+    "title": "各生徒が最大となる最長領域の総和",
+    "description": "並んだ生徒の身長が、並んでいる順に与えられます。各添字 i について、i を含む連続部分配列のうち、heights[i] がその部分配列の最大値に等しいもの（他の生徒が同じ身長でもかまいません）をすべて考えます。i の領域とは、これらの部分配列の中で最も長いものの長さです。すべての i にわたる領域の長さの総和を返してください。条件を満たす部分配列の個数ではありません。",
+    "input": "1 行目に n、2 行目に n 個の整数 heights[i] が与えられます。元の問題自体の完全な範囲：1≤n≤100000、1≤heights[i]≤10^9。",
+    "output": "正確な整数の和を出力してください。10000000000 に達しうるので、64 ビット整数または多倍長整数が必要です。剰余は取りません。",
+    "explanation": "元の例 [3,5,6] では、領域の長さは 1、2、3 で、合計は 6 です。元の注記には、失われた元の画像では 5 と示されていたとありますが、正式な出力と明示的なルールのどちらも 6 を与えます。本サイトはこの矛盾を明示したうえで、再計算できる正式な出力を採用しています。元の例 [1,2,1] では、長さは 1、3、1 で合計は 5 です。元の解説では、中央の範囲から末尾の 1 を誤って落としていましたが、正しくは [1,2,1] です。3 つ目の例 [2,2] は本サイトが追加したもので、2 人とも配列全体を取れるので、合計は 4 です。",
+    "hints": [
+      "領域を遮るのは、厳密に背が高い生徒だけです。",
+      "左側と右側それぞれで、最も近い厳密に背が高い添字を求めてください。身長が等しい生徒は両側で越えられます。",
+      "合計は 32 ビットを超えることがあります。"
+    ]
+  },
+  "ko": {
+    "title": "각 학생이 최대인 가장 긴 구간의 합",
+    "description": "한 줄로 서 있는 학생들의 키가 서 있는 순서대로 주어집니다. 각 인덱스 i에 대해, i를 포함하며 heights[i]가 부분 배열의 최댓값과 같은(다른 학생이 같은 키여도 됨) 모든 연속 부분 배열을 고려합니다. i의 영역은 이 부분 배열들 중 가장 긴 길이입니다. 모든 i에 대한 영역 길이의 합을 반환하세요. 조건을 만족하는 부분 배열의 개수가 아닙니다.",
+    "input": "첫 줄에 n이, 둘째 줄에 n개의 정수 heights[i]가 주어집니다. 원문 문제 자체의 전체 범위입니다. 1≤n≤100000, 1≤heights[i]≤10^9.",
+    "output": "정확한 정수 합을 출력합니다. 합은 10000000000까지 될 수 있으므로 64비트 또는 임의 정밀도 정수가 필요하며, 모듈러는 취하지 않습니다.",
+    "explanation": "원문 예제 [3,5,6]에서 영역 길이는 1, 2, 3이고 합은 6입니다. 원문의 한 주석은 누락된 원본 이미지가 5를 보여 주었다고 주장했지만, 공식 출력과 명시적 규칙은 모두 6을 줍니다. 이 사이트는 이 충돌을 밝히고 다시 계산할 수 있는 공식 출력을 유지합니다. 원문 예제 [1,2,1]에서 길이는 1, 3, 1이고 합은 5입니다. 원문 설명은 가운데 구간에서 마지막 1을 실수로 빠뜨렸으며, 올바른 구간은 [1,2,1]입니다. 세 번째 예제 [2,2]는 이 사이트에서 추가했습니다. 두 사람 모두 전체 배열을 취할 수 있으므로 합은 4입니다.",
+    "hints": [
+      "엄격하게 더 큰 학생만 영역을 막습니다.",
+      "왼쪽과 오른쪽에서 가장 가까운, 엄격하게 더 큰 인덱스를 찾으세요. 키가 같은 학생은 양쪽 모두에서 넘어갈 수 있습니다.",
+      "합은 32비트를 넘을 수 있습니다."
+    ]
+  },
+  "vi": {
+    "title": "Tổng các vùng dài nhất mà mỗi học sinh là cao nhất",
+    "description": "Chiều cao của một hàng học sinh được cho theo thứ tự đứng. Với mỗi chỉ số i, xét mọi mảng con liên tiếp chứa i trong đó heights[i] bằng giá trị lớn nhất của mảng con (các học sinh khác có thể cao bằng). Vùng của i là độ dài lớn nhất trong số các mảng con này. Trả về tổng độ dài các vùng trên mọi i. Đây không phải số mảng con thỏa điều kiện.",
+    "input": "Dòng đầu chứa n, và dòng thứ hai chứa n số nguyên heights[i]. Các phạm vi đầy đủ của chính đề gốc: 1≤n≤100000, 1≤heights[i]≤10^9.",
+    "output": "In ra tổng chính xác. Nó có thể đạt 10000000000, nên cần số nguyên 64 bit hoặc độ chính xác tùy ý; không lấy modulo.",
+    "explanation": "Trong ví dụ gốc [3,5,6], độ dài các vùng là 1, 2 và 3, tổng cộng 6. Một ghi chú gốc cho rằng ảnh nguồn bị mất hiển thị 5, nhưng Output chính thức và các quy tắc tường minh đều cho 6; trang này nêu rõ mâu thuẫn và giữ output chính thức, có thể tính lại được. Trong ví dụ gốc [1,2,1], độ dài là 1, 3 và 1, tổng cộng 5; phần giải thích gốc nhầm khi bỏ số 1 cuối khỏi khoảng giữa, mà đúng ra phải là [1,2,1]. Ví dụ thứ ba [2,2] do trang này thêm: cả hai người đều có thể lấy toàn bộ mảng, tổng cộng 4.",
+    "hints": [
+      "Chỉ một học sinh cao hơn hẳn mới chặn một vùng.",
+      "Tìm chỉ số cao hơn hẳn gần nhất ở bên trái và bên phải; các học sinh cùng chiều cao có thể được vượt qua ở cả hai phía.",
+      "Tổng có thể vượt quá 32 bit."
+    ]
   }
 }

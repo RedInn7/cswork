@@ -13,6 +13,21 @@
       "While scanning from left to right, you only need to know how many left parentheses are still unmatched, not which ones.",
       "When a right parenthesis arrives, match it with an unmatched left one if there is any; if there is none, a left parenthesis must be inserted before it no matter what. Every left parenthesis still unmatched at the end needs one inserted right parenthesis.",
       "Keep left (unmatched left parentheses) and missing (left parentheses that must be inserted): on a left parenthesis increase left; on a right parenthesis decrease left if it is positive, otherwise increase missing; finally print left plus missing."
+    ],
+    "ja": [
+      "左から右へ走査するとき、必要なのは、どの括弧かではなく、まだ対応していない左括弧の個数だけです。",
+      "右括弧が来たら、未対応の左括弧があればそれと対応させます。なければ、その前に左括弧を挿入するしかありません。最後まで未対応の左括弧は、それぞれ右括弧を1つ挿入する必要があります。",
+      "left(未対応の左括弧の数)と missing(挿入が必要な左括弧の数)を持ちます。左括弧では left を増やし、右括弧では left が正なら減らし、そうでなければ missing を増やします。最後に left と missing の和を出力します。"
+    ],
+    "ko": [
+      "왼쪽에서 오른쪽으로 훑을 때는 어떤 왼쪽 괄호인지가 아니라 아직 짝이 없는 왼쪽 괄호가 몇 개인지만 알면 됩니다.",
+      "오른쪽 괄호가 나오면 짝 없는 왼쪽 괄호가 있을 때 하나와 짝지으며, 없다면 어떻게 해도 그 앞에 왼쪽 괄호를 삽입해야 합니다. 마지막까지 짝이 없는 왼쪽 괄호마다 오른쪽 괄호를 하나씩 삽입해야 합니다.",
+      "left(짝 없는 왼쪽 괄호 수)와 missing(삽입해야 하는 왼쪽 괄호 수)을 유지합니다. 왼쪽 괄호에서는 left를 늘리고, 오른쪽 괄호에서는 left가 양수이면 줄이고 아니면 missing을 늘립니다. 마지막에 left와 missing의 합을 출력합니다."
+    ],
+    "vi": [
+      "Khi duyệt từ trái sang phải, bạn chỉ cần biết còn bao nhiêu ngoặc trái chưa được ghép, không cần biết là những ngoặc nào.",
+      "Khi gặp ngoặc phải, ghép nó với một ngoặc trái chưa ghép nếu còn; nếu không còn thì bắt buộc phải chèn một ngoặc trái trước nó. Mỗi ngoặc trái còn chưa ghép ở cuối cần chèn thêm một ngoặc phải.",
+      "Giữ left (số ngoặc trái chưa ghép) và missing (số ngoặc trái cần chèn): với ngoặc trái thì tăng left; với ngoặc phải thì giảm left nếu left dương, ngược lại tăng missing; cuối cùng in left cộng missing."
     ]
   },
   "explanationEn": "## Approach\n\nMaintain the number of unmatched left parentheses. On a right parenthesis, cancel it against a left one if there is any; otherwise insert one left parenthesis. At the end, insert right parentheses for the remaining left parentheses.\n\n## Proof of correctness\n\nEvery right parenthesis with no left parenthesis to match must get one inserted left parenthesis, and every remaining unmatched left parenthesis must get one inserted right parenthesis; these two parts form a necessary lower bound. Inserting left parentheses immediately during the scan and right parentheses at the end produces a balanced string and reaches exactly this lower bound.\n\n## Complexity\n\nTime O(n), space O(1)."

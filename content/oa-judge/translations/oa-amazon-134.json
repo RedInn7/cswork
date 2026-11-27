@@ -11,5 +11,35 @@
     "hints": [
       "Process in reverse, tracking the maximum of the later global floors; the first time you meet a point assignment for an index, its final value is fixed as max(assigned value, later floor), and earlier assignments are ignored. Indices never assigned use their initial price."
     ]
+  },
+  "ja": {
+    "title": "点更新と全体の価格下限適用後の最終価格",
+    "description": "操作 1 x v は商品 x の価格を直接 v に設定します（下がってもかまいません）。操作 2 v v は v 未満のすべての価格を v に引き上げます。操作を与えられた順に実行し、最終的な配列を出力してください。\n\nこのサイトの標準入出力と解法は独自に作成したものです。このサイトの制約と明記された範囲は、元の出典の制約ではありません。",
+    "input": "1 行目に n q、2 行目に n 個の価格、続いて q 行の操作が与えられます。添字は 1 始まりで、タイプ 2 の後ろの 2 つの値は等しいです。元の問題には値の上限がありません。このサイトでは 1≤n,q≤100000 とし、すべての価格と v は 1..10⁹ の範囲とします。",
+    "output": "最終的な n 個の価格を出力してください。",
+    "explanation": "例 1: 下限を適用すると価格は 5, 9 になり、その後 2 番目の商品が 2 に下げられるので、最終結果は 5 2 です。例 2: 最初は 3, 1 で、その後に一律の下限を適用すると 7 7 になります。例 3: 最後の点代入 9 は下限 6 では下がらないので、答えは 9 です。",
+    "hints": [
+      "逆順に処理しながら、後の全体下限の最大値を持ち続けます。ある添字に対する点代入に初めて出会った時点で、その最終値は max(代入値, 後の下限) に確定し、それより前の代入は無視します。一度も代入されない添字は初期価格を使います。"
+    ]
+  },
+  "ko": {
+    "title": "개별 가격 변경과 전체 최저가 적용 후의 최종 가격",
+    "description": "연산 1 x v는 상품 x의 가격을 v로 직접 설정하며(값이 내려갈 수도 있습니다), 연산 2 v v는 v보다 낮은 모든 가격을 v로 올립니다. 연산을 주어진 순서대로 실행한 뒤 최종 배열을 출력하세요.\n\n표준 입출력과 풀이는 이 사이트에서 독자적으로 작성했으며, 이 사이트가 정한 것으로 표시된 범위는 원 출처의 제약 조건이 아닙니다.",
+    "input": "첫 번째 줄에 n q, 두 번째 줄에 n개의 가격이 주어지고, 이어서 q줄에 연산이 주어집니다. 인덱스는 1부터 시작하며, 유형 2의 두 값은 같습니다. 원 출처에는 값의 범위가 없으며, 이 사이트에서는 1≤n,q≤100000, 모든 가격과 v를 1..10⁹ 범위로 정했습니다.",
+    "output": "n개의 최종 가격을 출력합니다.",
+    "explanation": "예제 1: 최저가를 적용하면 가격이 5, 9가 되고, 이어서 두 번째 상품이 2로 내려가므로 최종 결과는 5 2입니다. 예제 2: 먼저 3, 1이 되고, 이후 전체 최저가가 적용되어 7 7이 됩니다. 예제 3: 마지막 개별 설정값 9는 최저가 6에 의해 낮아지지 않으므로 답은 9입니다.",
+    "hints": [
+      "연산을 거꾸로 처리하면서 이후의 전체 최저가 중 최댓값을 추적합니다. 어떤 인덱스에 대한 개별 설정을 처음 만나는 순간 그 최종 값은 max(설정값, 이후 최저가)로 확정되고, 그보다 앞선 설정은 무시합니다. 한 번도 설정되지 않은 인덱스는 초기 가격을 사용합니다."
+    ]
+  },
+  "vi": {
+    "title": "Giá cuối cùng sau các cập nhật điểm và sàn giá toàn cục",
+    "description": "Thao tác 1 x v đặt giá của mặt hàng x thẳng thành v (có thể giảm); thao tác 2 v v nâng mọi giá nhỏ hơn v lên v. Thực hiện theo đúng thứ tự cho trước và xuất mảng cuối cùng.\n\nCách vào/ra chuẩn và lời giải do trang này tự viết; các phạm vi được đánh dấu là của trang này không phải ràng buộc gốc của đề.",
+    "input": "Dòng đầu chứa n q, dòng thứ hai chứa n giá, tiếp theo là q dòng thao tác. Chỉ số tính từ 1, và hai giá trị sau loại 2 bằng nhau. Đề gốc không cho cận giá trị; trang này quy định 1≤n,q≤100000, và mọi giá cùng v nằm trong 1..10⁹.",
+    "output": "Xuất n giá cuối cùng.",
+    "explanation": "Ví dụ 1: sau khi áp sàn giá, các giá là 5, 9, rồi mặt hàng thứ hai bị hạ xuống 2, nên kết quả cuối là 5 2. Ví dụ 2: đầu tiên là 3, 1, rồi sàn đồng loạt cho ra 7 7. Ví dụ 3: phép gán điểm cuối cùng bằng 9 không bị sàn 6 hạ xuống, nên đáp án là 9.",
+    "hints": [
+      "Xử lý ngược, theo dõi giá trị lớn nhất của các sàn toàn cục về sau; lần đầu gặp phép gán điểm cho một chỉ số, giá trị cuối cùng của nó được cố định là max(giá trị gán, sàn về sau), và các phép gán trước đó bị bỏ qua. Các chỉ số chưa bao giờ được gán dùng giá ban đầu."
+    ]
   }
 }

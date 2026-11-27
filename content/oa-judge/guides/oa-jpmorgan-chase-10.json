@@ -13,6 +13,21 @@
       "A plan is fully determined by the number x of a-person teams: the remaining p − a·x people must split exactly into b-person teams.",
       "Enumerate x from 0 to p/a; whenever the remaining people are divisible by b, you get a valid plan with x plus remaining/b teams. Take the minimum over all plans.",
       "Initialize the best value to the impossible p+1; for each x compute rest = p − a·x and, if b divides rest, update with x + rest/b; if the best is still p+1 at the end, print −1."
+    ],
+    "ja": [
+      "分け方は a 人チームの数 x だけで決まります。残りの p − a·x 人はちょうど b 人ずつのチームに分けられなければなりません。",
+      "x を 0 から p/a まで列挙し、残りが b で割り切れるたびに、x + 残り/b チームという有効な分け方が得られます。すべての分け方の中の最小値を取ります。",
+      "最良値を実現不可能な値 p+1 で初期化します。各 x について rest = p − a·x を計算し、b が rest を割り切るなら x + rest/b で更新します。最後まで最良値が p+1 のままなら −1 を出力します。"
+    ],
+    "ko": [
+      "방법은 a명 팀의 수 x로 완전히 결정됩니다. 남은 p − a·x명은 b명 팀으로 정확히 나누어져야 합니다.",
+      "x를 0부터 p/a까지 순회하면서, 남은 인원이 b로 나누어떨어질 때마다 팀 수 x + remaining/b인 유효한 방법을 얻습니다. 모든 방법 중 최솟값을 구합니다.",
+      "최적값을 불가능을 뜻하는 p+1로 초기화합니다. 각 x에 대해 rest = p − a·x를 계산하고 b가 rest를 나누면 x + rest/b로 갱신합니다. 끝까지 p+1이면 −1을 출력합니다."
+    ],
+    "vi": [
+      "Một phương án hoàn toàn được xác định bởi số đội a người x: p − a·x người còn lại phải chia đúng thành các đội b người.",
+      "Duyệt x từ 0 đến p/a; mỗi khi số người còn lại chia hết cho b, ta có một phương án hợp lệ với x cộng remaining/b đội. Lấy giá trị nhỏ nhất trên mọi phương án.",
+      "Khởi tạo giá trị tốt nhất là p+1 (không khả thi); với mỗi x tính rest = p − a·x và nếu b chia hết rest thì cập nhật với x + rest/b; nếu cuối cùng giá trị tốt nhất vẫn là p+1 thì in −1."
     ]
   },
   "explanationEn": "## Approach\n\nEnumerate the number of a-person teams; if the remaining people are divisible by b, that forms a valid plan. Take the plan with the fewest teams.\n\n## Proof of correctness\n\nThe number of a-person teams in any valid plan must lie within the enumerated range; once it is fixed, the number of b-person teams is uniquely determined by the remaining people, and the divisibility check is a necessary and sufficient condition for validity. Taking the minimum over all valid plans gives the optimum; if there is no candidate, there is no solution.\n\n## Complexity\n\nO(p/a+1) time and O(1) extra space."

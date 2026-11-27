@@ -11,5 +11,35 @@
     "hints": [
       "Keep only the factor[i] largest elements of each row, then take the x largest among all candidates."
     ]
+  },
+  "ja": {
+    "title": "行ごとの上限付きで行列から選ぶ",
+    "description": "n×n の行列からちょうど x 個の要素を選びます。ただし、行 i から選べるのは高々 factor[i] 個です。合計を最大にしてください。x 個選べない場合は −1 を出力し、x=0 のときは 0 を出力します。\n\n標準入力の形式、例、テストデータは CSWork が独自に作成しました。",
+    "input": "1 行目に n x（1≤n≤1000、0≤x≤n²）、2 行目に n 個の factor の値（0..n）、続く n 行に行列が与えられます。行列の値は 1..10⁹ です。",
+    "output": "問題が求める答えを整数 1 つで出力します。",
+    "explanation": "例 1：1 行目から 8 と 6、2 行目から 10、3 行目から 5 と 1 を選ぶと、すべての行の上限を満たします。5 個で合計 30 です。例 2：唯一の行の上限が 0 なので、必要な 1 個を選べず、−1 を出力します。例 3：0 個を選ぶので、空の選択の和 0 になります。",
+    "hints": [
+      "各行の大きい順に factor[i] 個だけを残し、全候補の中から大きいほうの x 個を取りましょう。"
+    ]
+  },
+  "ko": {
+    "title": "행별 선택 제한이 있는 행렬 원소 선택",
+    "description": "n×n 행렬에서 정확히 x개의 원소를 선택하되 i번째 행에서는 최대 factor[i]개까지만 선택할 수 있습니다. 선택한 원소의 총합을 최대화하세요. x개를 선택할 수 없으면 −1을 출력하고, x=0이면 0을 출력합니다.\n\n표준 입력 형식, 예제, 테스트 데이터는 CSWork가 독자적으로 작성했습니다.",
+    "input": "첫째 줄에 n x가 주어집니다(1≤n≤1000, 0≤x≤n²). 둘째 줄에 n개의 값 factor가 주어집니다(0..n). 이어서 n줄에 걸쳐 행렬이 주어지며, 값은 1..10⁹입니다.",
+    "output": "문제에서 요구하는 답인 정수 하나를 출력합니다.",
+    "explanation": "예제 1: 첫 번째 행에서 8과 6, 두 번째 행에서 10, 세 번째 행에서 5와 1을 선택하면 모든 행의 제한을 지키며 5개의 원소로 합계 30이 됩니다. 예제 2: 유일한 행의 제한이 0이므로 필요한 1개를 선택할 수 없어 −1을 출력합니다. 예제 3: 0개를 선택해야 하며 빈 선택의 합은 0입니다.",
+    "hints": [
+      "각 행에서 가장 큰 factor[i]개의 원소만 남기고, 모든 후보 중에서 가장 큰 x개를 고르세요."
+    ]
+  },
+  "vi": {
+    "title": "Chọn phần tử ma trận với giới hạn theo từng hàng",
+    "description": "Chọn đúng x phần tử từ ma trận n×n, tối đa factor[i] phần tử từ hàng i, sao cho tổng là lớn nhất. Xuất −1 nếu không thể chọn đủ x phần tử; xuất 0 khi x=0.\n\nĐịnh dạng đầu vào chuẩn, các ví dụ và dữ liệu kiểm thử do CSWork tự biên soạn.",
+    "input": "Dòng đầu chứa n x (1≤n≤1000, 0≤x≤n²); dòng thứ hai chứa n giá trị factor (0..n); n dòng tiếp theo chứa ma trận, với các giá trị 1..10⁹.",
+    "output": "Xuất một số nguyên duy nhất, là đáp án mà đề yêu cầu.",
+    "explanation": "Ví dụ 1: chọn 8 và 6 từ hàng đầu, 10 từ hàng thứ hai, và 5 và 1 từ hàng thứ ba, thỏa mọi giới hạn theo hàng: 5 phần tử với tổng 30. Ví dụ 2: hàng duy nhất có giới hạn 0, nên không thể chọn 1 phần tử theo yêu cầu; xuất −1. Ví dụ 3: yêu cầu 0 phần tử, và lựa chọn rỗng có tổng 0.",
+    "hints": [
+      "Chỉ giữ lại factor[i] phần tử lớn nhất của mỗi hàng, rồi lấy x phần tử lớn nhất trong tất cả các ứng viên."
+    ]
   }
 }

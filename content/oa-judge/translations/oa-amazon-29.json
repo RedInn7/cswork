@@ -11,5 +11,35 @@
     "hints": [
       "Use prefix sums to compute the three segments that connect to A, B and n separately; each segment costs segment length × hub capacity − the sum of capacities in the segment."
     ]
+  },
+  "ja": {
+    "title": "ハブを追加した場合の倉庫接続コスト",
+    "description": "倉庫の容量は非減少の順に並んでいます。倉庫 i は、j が i 以上であるうち最も近いハブ j に接続し、コストは capacity[j]−capacity[i] です。倉庫 n は常にハブです。各クエリでは、独立に 2 つのハブ hubA と hubB を追加し、接続コストの合計を出力します。元の例の 13 は誤りで、定義に従うと正しいコストは 5 です。\n\n標準入出力、例、判定は CSWork が独自に作成しました。本サイトのものと明記した取り決めを、原典の元の制限として扱うことはしません。",
+    "input": "1 行目に n q（3≤n≤200000、1≤q≤200000）、2 行目に非減少の n 個の容量（1..10⁹）が与えられます。続く q 行にはそれぞれ A B が与えられ、1≤A<B<n です。",
+    "output": "q 個の整数をクエリの順に出力します。",
+    "explanation": "例 1：ハブは 1、3、5 で、各倉庫のコストは 0、2、0、3、0、合計 5 です。例 2：すべての容量が等しいので、コストは 0 です。例 3：ハブが 1、2、4 のとき、倉庫 3 だけが 10−6=4 を支払います。ハブが 2、3、4 のとき、倉庫 1 だけが 3−1=2 を支払います。",
+    "hints": [
+      "累積和を使って、A、B、n に接続する 3 つの区間を別々に計算します。各区間のコストは 区間の長さ × ハブの容量 − 区間内の容量の和 です。"
+    ]
+  },
+  "ko": {
+    "title": "허브를 추가한 창고 연결 비용",
+    "description": "창고의 용량은 비감소 순서로 주어집니다. 창고 i는 j가 i 이상인 가장 가까운 허브 j에 연결되며, 비용은 capacity[j]−capacity[i]입니다. 창고 n은 항상 허브입니다. 각 질의는 독립적으로 허브 두 개 hubA와 hubB를 추가하며, 총 연결 비용을 출력합니다. 원문 예제의 13은 틀렸으며, 정의에 따른 올바른 비용은 5입니다.\n\n표준 입출력, 예제, 채점은 CSWork가 독자적으로 작성했습니다. 이 사이트의 규약이라고 표시된 내용을 원문의 제한이라고 주장하지 않습니다.",
+    "input": "첫째 줄에 n q가 주어집니다(3≤n≤200000, 1≤q≤200000). 둘째 줄에 n개의 비감소 용량이 주어집니다(1..10⁹). 이어지는 q줄에는 각각 A B가 주어지며 1≤A<B<n입니다.",
+    "output": "질의 순서대로 q개의 정수를 출력합니다.",
+    "explanation": "예제 1: 허브는 1, 3, 5이고, 각 창고의 비용은 0, 2, 0, 3, 0이므로 합계는 5입니다. 예제 2: 모든 용량이 같으므로 비용은 0입니다. 예제 3: 허브가 1, 2, 4이면 창고 3만 10−6=4를 지불하고, 허브가 2, 3, 4이면 창고 1만 3−1=2를 지불합니다.",
+    "hints": [
+      "누적 합으로 A, B, n에 연결되는 세 구간을 각각 계산하세요. 각 구간의 비용은 구간 길이 × 허브 용량 − 구간 내 용량의 합입니다."
+    ]
+  },
+  "vi": {
+    "title": "Chi phí kết nối kho khi thêm các trung tâm đầu mối",
+    "description": "Sức chứa của các kho được cho theo thứ tự không giảm. Kho i kết nối với đầu mối gần nhất j mà j không nhỏ hơn i, với chi phí capacity[j]−capacity[i]. Kho n luôn là đầu mối. Mỗi truy vấn độc lập thêm hai đầu mối, hubA và hubB; hãy xuất tổng chi phí kết nối. Giá trị 13 trong ví dụ gốc là sai; theo định nghĩa, chi phí đúng là 5.\n\nViệc vào/ra chuẩn, các ví dụ và chấm bài do CSWork tự biên soạn; các quy ước được đánh dấu là của trang này không tuyên bố là giới hạn gốc của nguồn.",
+    "input": "Dòng đầu chứa n q (3≤n≤200000, 1≤q≤200000); dòng thứ hai chứa n sức chứa không giảm (1..10⁹); mỗi dòng trong q dòng tiếp theo chứa A B, với 1≤A<B<n.",
+    "output": "Xuất q số nguyên theo thứ tự truy vấn.",
+    "explanation": "Ví dụ 1: các đầu mối là 1, 3 và 5; chi phí của các kho là 0, 2, 0, 3, 0, tổng cộng 5. Ví dụ 2: mọi sức chứa đều bằng nhau, nên chi phí là 0. Ví dụ 3: với các đầu mối 1, 2 và 4, chỉ kho 3 phải trả 10−6=4; với các đầu mối 2, 3 và 4, chỉ kho 1 phải trả 3−1=2.",
+    "hints": [
+      "Dùng tổng tiền tố để tính riêng ba đoạn kết nối với A, B và n; chi phí mỗi đoạn là độ dài đoạn × sức chứa đầu mối − tổng sức chứa trong đoạn."
+    ]
   }
 }

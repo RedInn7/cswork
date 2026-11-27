@@ -11,5 +11,35 @@
     "hints": [
       "First merge the intersecting existing intervals. One new interval can connect several consecutive blocks if and only if the left end of the last block − the right end of the first block ≤k; use two pointers to find the maximum number of blocks that can be connected."
     ]
+  },
+  "ja": {
+    "title": "配送範囲を 1 つ追加した後の連結ブロックの最小数",
+    "description": "既存の閉区間がいくつか与えられます。そこに、0≤b−a≤k を満たす閉区間 [a,b] をちょうど 1 つ追加します。区間は交差するか端点を共有するときに結合し、共通点がなく端点が 1 だけ離れている整数の区間は接しているとはみなしません。連結ブロックの最小数を求めてください。\n\n標準入出力・例・判定は本サイトが独自に作成したものです。",
+    "input": "1 行目に n k (1≤n≤200000, 1≤k≤10⁹) が与えられ、続く n 行に a b (1≤a≤b≤10⁹) が与えられます。追加する区間の端点は、自分で選んだ任意の整数にできます。",
+    "output": "整数 1 つ（答え）を出力してください。",
+    "explanation": "例 1: 結合後は 4 ブロックあり、長さ 2 の [5,7] を追加すると最初の 3 ブロックがつながって、2 ブロックになります。例 2: 新しい区間を既存の区間の内側に置けるので、1 ブロックのままです。例 3: 長さ 4 の [1,5] を追加すると 2 つの点がつながり、1 ブロックになります。",
+    "hints": [
+      "まず交差する既存の区間を結合します。1 つの新しい区間が連続する複数のブロックをつなげられるのは、最後のブロックの左端 − 最初のブロックの右端 ≤k のときかつそのときに限ります。2 ポインタで、つなげられるブロック数の最大値を求めます。"
+    ]
+  },
+  "ko": {
+    "title": "배송 범위 하나를 추가한 뒤의 최소 연결 블록 수",
+    "description": "닫힌 구간이 여러 개 주어질 때, 0≤b−a≤k를 만족하는 닫힌 구간 [a,b]를 정확히 하나 추가합니다. 구간들은 교차하거나 끝점을 공유하면 합쳐집니다. 끝점이 정수로 1만큼 차이 나지만 공통점이 없으면 맞닿은 것으로 보지 않습니다. 연결된 블록 수의 최솟값을 구하세요.\n\n표준 입출력 형식, 예제, 채점은 이 사이트가 독자적으로 작성했습니다.",
+    "input": "첫째 줄에 n k(1≤n≤200000, 1≤k≤10⁹)가 주어지고, 이어서 n개의 줄에 a b(1≤a≤b≤10⁹)가 주어집니다. 새 구간의 끝점은 원하는 정수로 정할 수 있습니다.",
+    "output": "정수 하나로 답을 출력합니다.",
+    "explanation": "예제 1: 합친 뒤 블록은 4개이고, 길이 2인 [5,7]을 추가하면 처음 세 블록이 연결되어 2개가 됩니다. 예제 2: 새 구간을 기존 구간 안에 놓을 수 있으므로 여전히 1개입니다. 예제 3: 길이 4인 [1,5]를 추가하면 두 점이 연결되어 1개의 블록이 됩니다.",
+    "hints": [
+      "먼저 교차하는 기존 구간을 합칩니다. 새 구간 하나가 연속한 여러 블록을 연결할 수 있는 것은 마지막 블록의 왼쪽 끝 − 첫 블록의 오른쪽 끝 ≤k일 때 그리고 그때뿐입니다. 투 포인터로 연결할 수 있는 블록의 최대 개수를 구하세요."
+    ]
+  },
+  "vi": {
+    "title": "Số khối liên thông tối thiểu sau khi thêm một khoảng giao hàng",
+    "description": "Cho một số đoạn đóng có sẵn, hãy thêm đúng một đoạn đóng [a,b] với 0≤b−a≤k. Các đoạn được gộp lại khi chúng giao nhau hoặc chung một đầu mút; hai đầu mút nguyên khác nhau 1 mà không có điểm chung thì không tính là chạm nhau. Hãy tìm số khối liên thông tối thiểu.\n\nTrang này tự biên soạn độc lập đầu vào/đầu ra chuẩn, các ví dụ và bộ chấm.",
+    "input": "Dòng đầu tiên chứa n k (1≤n≤200000, 1≤k≤10⁹), tiếp theo là n dòng a b (1≤a≤b≤10⁹). Các đầu mút của đoạn mới có thể là bất kỳ số nguyên nào bạn chọn.",
+    "output": "In ra một số nguyên duy nhất là đáp án.",
+    "explanation": "Ví dụ 1: sau khi gộp có 4 khối; thêm [5,7] có độ dài 2 nối ba khối đầu lại, còn 2 khối. Ví dụ 2: đoạn mới có thể đặt bên trong một đoạn có sẵn, nên vẫn còn 1 khối. Ví dụ 3: thêm [1,5] có độ dài 4 nối hai điểm thành 1 khối.",
+    "hints": [
+      "Trước hết gộp các đoạn có sẵn giao nhau. Một đoạn mới có thể nối nhiều khối liên tiếp khi và chỉ khi đầu trái của khối cuối − đầu phải của khối đầu ≤k; dùng hai con trỏ để tìm số khối tối đa có thể nối."
+    ]
   }
 }

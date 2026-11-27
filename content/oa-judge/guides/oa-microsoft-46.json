@@ -13,6 +13,21 @@
       "Removing the fewest dominoes means keeping the most: find the longest subsequence of dominoes in which neighbors match end to start.",
       "Whether a chain can take the next domino depends only on the right value of its last domino, and there are only six values 1 to 6, so the state is just the ending value.",
       "Let dp[v] be the longest chain so far that ends with right value v, all starting at 0. For a domino (l, r), update dp[r] with the old dp[l] plus 1 if that is larger; a single domino thereby counts as length 1. Print N minus the maximum of dp."
+    ],
+    "ja": [
+      "最も少なく取り除くとは、最も多く残すことです。隣り合うドミノが末尾から先頭へ一致する、最長のドミノの部分列を求めます。",
+      "連鎖が次のドミノを取れるかどうかは、最後のドミノの右の値だけで決まり、値は 1 から 6 の 6 通りしかないので、状態は終端の値だけです。",
+      "dp[v] を、これまでで右の値が v で終わる最長の連鎖とし、すべて 0 から始めます。ドミノ (l, r) について、古い dp[l] に 1 を足した値のほうが大きければ dp[r] を更新します。これで 1 枚のドミノも長さ 1 と数えられます。N から dp の最大値を引いた値を出力します。"
+    ],
+    "ko": [
+      "최소한으로 제거한다는 것은 최대한 남긴다는 뜻입니다. 이웃한 도미노가 끝과 시작으로 맞물리는 가장 긴 도미노 부분 수열을 찾으세요.",
+      "체인이 다음 도미노를 받을 수 있는지는 마지막 도미노의 오른쪽 값에만 달려 있고, 값은 1부터 6까지 여섯 가지뿐이므로 상태는 끝 값 하나면 충분합니다.",
+      "dp[v]를 오른쪽 값이 v로 끝나는 지금까지의 가장 긴 체인이라 하고 모두 0으로 시작합니다. 도미노 (l, r)에 대해 이전 dp[l]에 1을 더한 값이 더 크면 dp[r]을 갱신합니다. 이렇게 하면 도미노 하나는 길이 1로 셉니다. N에서 dp의 최댓값을 뺀 값을 출력합니다."
+    ],
+    "vi": [
+      "Bỏ ít domino nhất nghĩa là giữ nhiều nhất: tìm dãy con domino dài nhất trong đó các domino kề nhau khớp đầu với đuôi.",
+      "Một chuỗi có thể nhận thêm domino tiếp theo hay không chỉ phụ thuộc vào giá trị bên phải của domino cuối cùng, và chỉ có sáu giá trị từ 1 đến 6, nên trạng thái chỉ là giá trị kết thúc.",
+      "Gọi dp[v] là chuỗi dài nhất từ trước đến nay kết thúc bằng giá trị bên phải v, tất cả khởi đầu bằng 0. Với một domino (l, r), cập nhật dp[r] bằng dp[l] cũ cộng 1 nếu lớn hơn; nhờ đó một domino đơn có độ dài 1. In N trừ đi giá trị lớn nhất của dp."
     ]
   },
   "explanationEn": "## Approach\n\ndp[v] stores the length of the longest valid subsequence ending with value v. On (l,r), update dp[r] with the old dp[l]+1; all other states stay unchanged.\n\n## Correctness\n\nIf a valid subsequence uses the current domino, the previous domino must end with l; if it does not use the current domino, the old state is kept. Every valid choice appears in the recurrence, and the maximum number kept is the complement of the minimum number removed.\n\n## Complexity\n\nTime O(N), space O(1) apart from the input."

@@ -11,5 +11,35 @@
     "hints": [
       "Only the shortest length L needs to be considered: the length-L prefix of any longer substring occurs at least as often and has no more distinct characters. Mark the qualifying length-L windows with a sliding window, use a suffix automaton to count the occurrences of each substring exactly, and filter the states that represent length L."
     ]
+  },
+  "ja": {
+    "title": "異なる文字数が制限された最頻部分文字列",
+    "description": "長さが [minLength,maxLength] の範囲にあり、異なる文字数が maxUnique 以下である連続部分文字列のうち、同じテキストが現れる回数の最大値を求めてください。重なった出現も許されます。条件を満たす部分文字列がなければ 0 を返します。\n\n入出力プロトコルと明示された補足制約は本サイトが整備したものであり、元の解法は実行していません。",
+    "input": "本サイトの JSON 入力: [s,minLength,maxLength,maxUnique]。エスケープされた空白や Unicode を含むことがあり、長さは Unicode 文字数で数えます。元の文章には数値の上下限がないため、本サイトでは 1≤|s|≤100000、1≤minLength≤maxLength≤|s|、1≤maxUnique≤100000 とします。",
+    "output": "問題で求められる整数を 1 つ出力してください。",
+    "explanation": "3 つの公開例の答えは順に 3; 2; 2 です。例は、独立した全探索・状態探索・直接シミュレーションで再確認済みです。",
+    "hints": [
+      "最短の長さ L だけ考えれば十分です。より長い部分文字列の長さ L の接頭辞は、少なくとも同じ回数現れ、異なる文字数も増えません。スライディングウィンドウで条件を満たす長さ L のウィンドウに印を付け、suffix automaton で各部分文字列の出現回数を正確に数え、長さ L を表す状態を絞り込みます。"
+    ]
+  },
+  "ko": {
+    "title": "서로 다른 문자 수가 제한된 가장 빈번한 부분 문자열",
+    "description": "길이가 [minLength,maxLength] 범위에 있고 서로 다른 문자의 개수가 maxUnique 이하인 연속 부분 문자열 중에서, 같은 텍스트가 등장하는 횟수의 최댓값을 구하세요. 겹치는 등장도 허용됩니다. 조건을 만족하는 부분 문자열이 없으면 0을 반환합니다.\n\n입출력 규약과 명시된 보충 제약 조건은 이 사이트에서 정리한 것이며, 원본 풀이는 실행하여 검증하지 않았습니다.",
+    "input": "이 사이트의 JSON 입력: [s,minLength,maxLength,maxUnique]이며, 이스케이프된 공백 문자나 유니코드가 포함될 수 있습니다. 길이는 유니코드 문자 단위로 셉니다. 원문에는 수치 범위가 없으므로 이 사이트는 1≤|s|≤100000, 1≤minLength≤maxLength≤|s|, 1≤maxUnique≤100000을 사용합니다.",
+    "output": "문제에서 요구하는 정수 하나를 출력합니다.",
+    "explanation": "세 공개 예제의 답은 순서대로 3; 2; 2입니다. 예제는 독립적인 완전 탐색, 상태 탐색 또는 직접 시뮬레이션으로 다시 검증했습니다.",
+    "hints": [
+      "가장 짧은 길이 L만 고려하면 됩니다. 더 긴 부분 문자열의 길이 L 접두사는 최소한 그만큼 자주 등장하고 서로 다른 문자 수도 더 많지 않습니다. 슬라이딩 윈도우로 조건을 만족하는 길이 L 윈도우를 표시하고, 서픽스 오토마톤으로 각 부분 문자열의 등장 횟수를 정확히 센 뒤, 길이 L을 나타내는 상태만 골라냅니다."
+    ]
+  },
+  "vi": {
+    "title": "Xâu con xuất hiện nhiều nhất với số ký tự khác nhau bị giới hạn",
+    "description": "Trong các xâu con liên tiếp có độ dài thuộc [minLength,maxLength] và số ký tự phân biệt ≤maxUnique, hãy tìm số lần xuất hiện lớn nhất của cùng một đoạn văn bản; cho phép các lần xuất hiện chồng lấn. Trả về 0 nếu không có xâu con nào thỏa mãn.\n\nGiao thức đầu vào/đầu ra và các ràng buộc bổ sung được đánh dấu rõ do trang này biên soạn; lời giải của nguồn gốc không được chạy.",
+    "input": "Đầu vào JSON của trang này: [s,minLength,maxLength,maxUnique], có thể chứa khoảng trắng hoặc Unicode đã được escape; độ dài được tính theo ký tự Unicode. Văn bản gốc không cho cận số; trang này quy định 1≤|s|≤100000, 1≤minLength≤maxLength≤|s| và 1≤maxUnique≤100000.",
+    "output": "In ra một số nguyên duy nhất theo yêu cầu của đề bài.",
+    "explanation": "Đáp án của ba ví dụ công khai lần lượt là: 3; 2; 2. Các ví dụ đã được kiểm tra lại bằng liệt kê độc lập, tìm kiếm trạng thái hoặc mô phỏng trực tiếp.",
+    "hints": [
+      "Chỉ cần xét độ dài nhỏ nhất L: tiền tố độ dài L của mọi xâu con dài hơn xuất hiện không ít hơn và có không nhiều ký tự phân biệt hơn. Đánh dấu các cửa sổ độ dài L thỏa mãn bằng cửa sổ trượt, dùng suffix automaton để đếm chính xác số lần xuất hiện của từng xâu con, rồi lọc các trạng thái biểu diễn độ dài L."
+    ]
   }
 }

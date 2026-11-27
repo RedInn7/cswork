@@ -13,6 +13,21 @@
       "Characters can be swapped freely across all strings, so only the overall character counts matter, while each string's length stays fixed.",
       "A palindrome of length L needs floor(L/2) pairs of equal characters, and the center of an odd-length string can hold anything. So the number of equal-character pairs available overall is a budget, each string costs floor(L/2), and each completed string is worth 1.",
       "Count the 26 letters over all strings and sum floor(count/2) to get the pair budget. Sort the values floor(length/2) of the strings and spend the budget on them from smallest to largest, stopping at the first one that does not fit; the number paid for is the answer."
+    ],
+    "ja": [
+      "文字はすべての文字列にわたって自由に入れ替えられるので、全体の文字の個数だけが重要で、各文字列の長さは固定です。",
+      "長さ L の回文には floor(L/2) 組の同じ文字のペアが必要で、奇数長の文字列の中央には何を置いてもかまいません。したがって、全体で使える同じ文字のペア数が予算で、各文字列は floor(L/2) を消費し、完成した文字列 1 つにつき価値 1 です。",
+      "すべての文字列にわたって 26 個の文字を数え、floor(count/2) の和でペアの予算を求めます。文字列の floor(length/2) の値をソートし、小さいほうから順に予算を使い、収まらない最初のところで止めます。支払えた個数が答えです。"
+    ],
+    "ko": [
+      "문자는 모든 문자열에 걸쳐 자유롭게 교환할 수 있으므로 전체 문자 개수만 중요하고 각 문자열의 길이는 고정됩니다.",
+      "길이 L인 회문은 같은 문자 쌍 floor(L/2)개가 필요하고, 홀수 길이 문자열의 가운데에는 무엇이든 올 수 있습니다. 따라서 전체에서 사용 가능한 같은 문자 쌍의 수가 예산이고, 각 문자열은 floor(L/2)의 비용이 들며, 완성된 문자열 하나는 1의 가치가 있습니다.",
+      "모든 문자열에서 26개 알파벳의 개수를 세고 floor(count/2)의 합으로 쌍 예산을 구합니다. 문자열들의 floor(length/2) 값을 정렬하고 작은 것부터 큰 것 순으로 예산을 소비하며, 처음으로 예산이 모자라는 곳에서 멈춥니다. 비용을 치른 문자열의 수가 답입니다."
+    ],
+    "vi": [
+      "Các ký tự có thể được hoán đổi tự do giữa mọi xâu, nên chỉ có số lượng ký tự tổng thể là quan trọng, còn độ dài mỗi xâu giữ cố định.",
+      "Một palindrome độ dài L cần floor(L/2) cặp ký tự bằng nhau, còn ký tự giữa của xâu có độ dài lẻ có thể là bất kỳ. Vì vậy số cặp ký tự bằng nhau có sẵn trên toàn bộ là một ngân sách, mỗi xâu tốn floor(L/2), và mỗi xâu hoàn thành có giá trị 1.",
+      "Đếm 26 chữ cái trên mọi xâu và cộng floor(count/2) để có ngân sách số cặp. Sắp xếp các giá trị floor(length/2) của các xâu và dùng ngân sách cho chúng từ nhỏ đến lớn, dừng ở xâu đầu tiên không đủ; số xâu đã trả được chính là đáp án."
     ]
   },
   "explanationEn": "## Approach\n\nCount the pairs of equal characters that the whole character pool can provide, and spend that budget on the strings' demands floor(length/2) in ascending order.\n\n## Correctness\n\nSwaps can realize any arrangement of the character pool. Each palindrome needs floor(length/2) pairs of equal characters, and the center of an odd-length string can take any leftover character. Once the pairs are chosen, the remaining characters are always enough to fill all centers and all unselected strings, breaking leftover pairs if necessary. So the pair budget is the only constraint. Every string is worth the same, and an exchange argument shows that taking the smallest demands first maximizes the count.\n\n## Complexity\n\nTime O(total characters + N log N), extra space O(N+26)."

@@ -13,5 +13,41 @@
       "The check looks at the gap between two adjacent heartbeats, and it must be strictly greater.",
       "The result must be sorted lexicographically."
     ]
+  },
+  "ja": {
+    "title": "IBM OA #68: サービスのタイムアウト検出",
+    "description": "各ハートビートの記録には、タイムスタンプと、それが属するサービスの ID が含まれます。サービス ID ごとにハートビートをタイムスタンプでソートし、隣り合う2つのハートビートの間隔が threshold より真に大きいものが1つでもあれば、そのサービスは少なくとも1回タイムアウトしたとみなします。ハートビートが1つしかないサービスは、タイムアウトしません。入力のハートビートはタイムスタンプ順に並んでいないことに注意してください。\n\n少なくとも1回タイムアウトしたすべてのサービス ID を求め、辞書順の昇順に出力してください。",
+    "input": "1行目に2つの整数 n と threshold が与えられます。続く n 行にはそれぞれ整数のタイムスタンプ timestamp と文字列 serviceId が与えられます。1≤n≤200000、1≤timestamp≤10^9、0≤threshold≤10^9 で、serviceId は長さ 1..10 の小文字と数字のみからなります。",
+    "output": "1行目にタイムアウトしたサービスの数 k を出力します。続けて k 行に、サービス ID を1行に1つずつ辞書順の昇順で出力します。",
+    "explanation": "例 1: svc1 は 20 と 80 の間に 60 の間隔があり、svc2 は 10 と 65 の間に 55 の間隔があります。どちらも 30 を超えるので、2つのサービスを出力します。\n例 2: svc1 は 1 と 3 の間に 2 の間隔があり、1 を超えます。svc2 はハートビートが1つしかなくタイムアウトしないので、1つのサービス svc1 を出力します。\n例 3: a のハートビートは 1 と 4、b のハートビートは 3 と 6 で、どちらの間隔も 3 で 5 を超えないので、出力は 0 です。",
+    "hints": [
+      "まずサービスごとにグループ化し、各グループ内で時刻順にソートします。",
+      "判定は隣り合う2つのハートビートの間隔に対して行い、真に大きい場合のみです。",
+      "結果は辞書順にソートする必要があります。"
+    ]
+  },
+  "ko": {
+    "title": "IBM OA #68: 서비스 타임아웃 감지",
+    "description": "각 하트비트 기록에는 타임스탬프와 그것이 속한 서비스의 ID가 들어 있습니다. 서비스 ID마다 하트비트를 타임스탬프 순으로 정렬했을 때, 인접한 두 하트비트 사이의 간격이 threshold보다 엄격히 크면 그 서비스는 적어도 한 번 타임아웃된 것으로 봅니다. 하트비트가 하나뿐인 서비스는 타임아웃되지 않습니다. 입력의 하트비트는 타임스탬프 순으로 정렬되어 있지 않다는 점에 주의하세요.\n\n적어도 한 번 타임아웃된 모든 서비스 ID를 사전순 오름차순으로 출력하세요.",
+    "input": "첫째 줄에 두 정수 n과 threshold가 주어집니다. 다음 n줄에는 각각 정수 timestamp와 문자열 serviceId가 주어집니다. 1≤n≤200000, 1≤timestamp≤10^9, 0≤threshold≤10^9이며, serviceId는 길이 1..10이고 소문자와 숫자로만 이루어집니다.",
+    "output": "첫째 줄에 타임아웃된 서비스의 수 k를 출력합니다. 이어서 k줄에 걸쳐 서비스 ID를 사전순 오름차순으로 한 줄에 하나씩 출력합니다.",
+    "explanation": "예제 1: svc1은 20과 80 사이의 간격이 60이고, svc2는 10과 65 사이의 간격이 55이며, 둘 다 30을 초과하므로 서비스 2개를 출력합니다.\n예제 2: svc1은 1과 3 사이의 간격이 2로 1을 초과하고, svc2는 하트비트가 하나뿐이어서 타임아웃되지 않으므로 서비스 svc1 1개를 출력합니다.\n예제 3: a의 하트비트는 1과 4, b의 하트비트는 3과 6이며, 두 간격 모두 3으로 5를 초과하지 않으므로 출력은 0입니다.",
+    "hints": [
+      "먼저 서비스별로 묶은 뒤, 각 그룹 안에서 시간순으로 정렬합니다.",
+      "검사는 인접한 두 하트비트 사이의 간격을 보며, 반드시 엄격히 커야 합니다.",
+      "결과는 사전순으로 정렬해야 합니다."
+    ]
+  },
+  "vi": {
+    "title": "IBM OA #68: Phát hiện dịch vụ quá hạn",
+    "description": "Mỗi bản ghi heartbeat gồm một mốc thời gian và ID của dịch vụ mà nó thuộc về. Với mỗi ID dịch vụ, sắp xếp các heartbeat của nó theo mốc thời gian; nếu khoảng cách giữa hai heartbeat kề nhau lớn hơn hẳn threshold thì coi như dịch vụ đã quá hạn ít nhất một lần. Dịch vụ chỉ có một heartbeat thì không bao giờ quá hạn. Lưu ý rằng các heartbeat trong đầu vào không được sắp xếp theo mốc thời gian.\n\nTìm tất cả ID dịch vụ đã quá hạn ít nhất một lần và in chúng theo thứ tự từ điển tăng dần.",
+    "input": "Dòng đầu chứa hai số nguyên n và threshold. Mỗi dòng trong n dòng tiếp theo chứa một số nguyên timestamp và một xâu serviceId. 1≤n≤200000, 1≤timestamp≤10^9, 0≤threshold≤10^9, và serviceId có độ dài 1..10 và chỉ chứa chữ cái thường và chữ số.",
+    "output": "Dòng đầu in số k các dịch vụ quá hạn; sau đó in k dòng, mỗi dòng một ID dịch vụ, theo thứ tự từ điển tăng dần.",
+    "explanation": "Ví dụ 1: svc1 có khoảng cách 60 giữa 20 và 80, và svc2 có khoảng cách 55 giữa 10 và 65; cả hai đều vượt quá 30, nên in ra 2 dịch vụ.\nVí dụ 2: svc1 có khoảng cách 2 giữa 1 và 3, vượt quá 1; svc2 chỉ có một heartbeat và không quá hạn, nên in ra 1 dịch vụ là svc1.\nVí dụ 3: a có các heartbeat 1 và 4, và b có các heartbeat 3 và 6; cả hai khoảng cách đều là 3, không vượt quá 5, nên đầu ra là 0.",
+    "hints": [
+      "Trước hết nhóm theo dịch vụ, sau đó sắp xếp theo thời gian trong từng nhóm.",
+      "Phép kiểm tra xét khoảng cách giữa hai heartbeat kề nhau, và phải lớn hơn hẳn.",
+      "Kết quả phải được sắp xếp theo thứ tự từ điển."
+    ]
   }
 }

@@ -11,5 +11,35 @@
     "hints": [
       "Binary search on the total time. Sort the players and the points, and assign points to players from left to right. The current player first collects the uncovered points on its left that it must pass anyway, then computes the farthest point to the right reachable within time t, and advances the pointer."
     ]
+  },
+  "vi": {
+    "title": "Collect Points",
+    "description": "n người chơi di chuyển đồng thời và độc lập trên một trục số, mỗi người di chuyển nhiều nhất một đơn vị mỗi giây. Một điểm được thu thập khi có bất kỳ người chơi nào đi qua nó. Tìm số giây tối thiểu cần thiết để thu thập tất cả các điểm.\n\nBộ ký tự ASCII, các giới hạn và định dạng nhập/xuất chuẩn dưới đây là hợp đồng bổ sung của trang này và không được khẳng định là các ràng buộc gốc của đề nguồn.",
+    "input": "Dòng đầu tiên chứa n m (1≤n,m≤100000); dòng thứ hai chứa n tọa độ của người chơi; dòng thứ ba chứa m tọa độ của các điểm. Mọi tọa độ là số nguyên trong khoảng 1..10^9. Đầu vào không đảm bảo đã được sắp xếp.",
+    "output": "In ra số giây tối thiểu.",
+    "explanation": "Tìm kiếm nhị phân theo tổng thời gian. Sắp xếp người chơi và các điểm, rồi gán các điểm cho người chơi từ trái sang phải. Người chơi hiện tại trước tiên thu thập các điểm chưa được phủ ở bên trái mà dù sao anh ta cũng phải đi qua, sau đó tính điểm xa nhất bên phải có thể đạt được trong thời gian t, rồi dịch con trỏ lên.",
+    "hints": [
+      "Tìm kiếm nhị phân theo tổng thời gian. Sắp xếp người chơi và các điểm, rồi gán các điểm cho người chơi từ trái sang phải. Người chơi hiện tại trước tiên thu thập các điểm chưa được phủ ở bên trái mà dù sao anh ta cũng phải đi qua, sau đó tính điểm xa nhất bên phải có thể đạt được trong thời gian t, rồi dịch con trỏ lên."
+    ]
+  },
+  "ja": {
+    "title": "Collect Points",
+    "description": "n 人のプレイヤーが数直線上を同時に独立して動き、各プレイヤーは 1 秒に最大 1 単位まで移動できます。いずれかのプレイヤーが訪れた点は回収されます。すべての点を回収するのに必要な最小の秒数を求めてください。\n\n以下の ASCII 文字集合、制約、標準入出力の形式は本サイトによる補足的な取り決めであり、元の問題の制約であるとは主張しません。",
+    "input": "1 行目に n m (1≤n,m≤100000)、2 行目に n 個のプレイヤーの座標、3 行目に m 個の点の座標が与えられます。座標はすべて 1..10^9 の整数です。入力がソートされている保証はありません。",
+    "output": "最小の秒数を出力してください。",
+    "explanation": "総時間で二分探索します。プレイヤーと点をソートし、左から右へ点をプレイヤーに割り当てていきます。現在のプレイヤーは、どのみち通過することになる左側の未回収の点をまず回収し、次に時間 t 以内に到達できる最も右の点を計算してポインタを進めます。",
+    "hints": [
+      "総時間で二分探索します。プレイヤーと点をソートし、左から右へ点をプレイヤーに割り当てていきます。現在のプレイヤーは、どのみち通過することになる左側の未回収の点をまず回収し、次に時間 t 以内に到達できる最も右の点を計算してポインタを進めます。"
+    ]
+  },
+  "ko": {
+    "title": "Collect Points",
+    "description": "n명의 플레이어가 수직선 위에서 동시에 독립적으로 움직이며, 각자 1초에 최대 1 단위씩 이동합니다. 어느 플레이어든 한 점을 방문하면 그 점은 수집됩니다. 모든 점을 수집하는 데 필요한 최소 시간(초)을 구하세요.\n\n아래의 ASCII 문자 집합, 범위, 표준 입출력 형식은 이 사이트가 보충한 규약이며 원본 문제의 원래 제약이라고 주장하지 않습니다.",
+    "input": "첫째 줄에 n m (1≤n,m≤100000), 둘째 줄에 n개의 플레이어 좌표, 셋째 줄에 m개의 점 좌표가 주어집니다. 모든 좌표는 1..10^9 범위의 정수입니다. 입력이 정렬되어 있다고 보장되지 않습니다.",
+    "output": "최소 시간(초)을 출력합니다.",
+    "explanation": "총 시간에 대해 이분 탐색을 합니다. 플레이어와 점을 정렬하고 점을 왼쪽부터 플레이어에게 배정합니다. 현재 플레이어는 어차피 지나가야 하는 왼쪽의 아직 덮이지 않은 점을 먼저 수집한 뒤, 시간 t 안에 오른쪽으로 도달할 수 있는 가장 먼 점을 계산하고 포인터를 전진시킵니다.",
+    "hints": [
+      "총 시간에 대해 이분 탐색을 합니다. 플레이어와 점을 정렬하고 점을 왼쪽부터 플레이어에게 배정합니다. 현재 플레이어는 어차피 지나가야 하는 왼쪽의 아직 덮이지 않은 점을 먼저 수집한 뒤, 시간 t 안에 오른쪽으로 도달할 수 있는 가장 먼 점을 계산하고 포인터를 전진시킵니다."
+    ]
   }
 }

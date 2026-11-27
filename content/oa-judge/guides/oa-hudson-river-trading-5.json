@@ -13,6 +13,21 @@
       "Values strictly increase along a path, so edges from smaller to larger neighbouring values form a directed acyclic graph, and increasing paths are paths in it.",
       "Process cells by increasing value; when a cell is processed, all its smaller neighbours are done. The number of paths ending at the cell is 1 (the cell alone) plus the sum over smaller neighbours of their ending counts.",
       "Sort the existing cells (rows may differ in length, and only existing cells are adjacent) by value, compute dp in that order, and add dp−1 for every cell, which removes the single-cell paths."
+    ],
+    "ja": [
+      "パスに沿って値は真に増加するので、隣接する小さい値から大きい値への辺は有向非巡回グラフをなし、増加パスはそのグラフ上のパスです。",
+      "セルを値の昇順に処理します。あるセルを処理する時点で、それより小さい隣接セルはすべて処理済みです。そのセルで終わるパスの数は、1 (そのセル単体) に、より小さい隣接セルで終わるパス数の和を足したものです。",
+      "存在するセルを値でソートし (行ごとに長さが異なり、存在するセルだけが隣接します)、その順に dp を計算し、各セルについて dp−1 を足します。これで単一セルのパスが除かれます。"
+    ],
+    "ko": [
+      "경로를 따라 값이 엄격하게 증가하므로, 인접한 칸 중 작은 값에서 큰 값으로 향하는 간선은 방향 비순환 그래프를 이루며, 증가 경로는 이 그래프 위의 경로입니다.",
+      "칸을 값이 증가하는 순서로 처리하면, 어떤 칸을 처리할 때 그 칸의 더 작은 이웃은 모두 처리가 끝나 있습니다. 그 칸에서 끝나는 경로의 수는 1(그 칸 단독)에 더 작은 이웃들의 끝나는 경로 수를 모두 더한 값입니다.",
+      "존재하는 칸들을(행 길이가 다를 수 있고 존재하는 칸끼리만 인접함) 값 기준으로 정렬하고, 그 순서로 dp를 계산하면서 모든 칸에 대해 dp−1을 더합니다. 이렇게 하면 단일 칸 경로가 제거됩니다."
+    ],
+    "vi": [
+      "Giá trị tăng nghiêm ngặt dọc theo đường đi, nên các cạnh từ giá trị nhỏ hơn sang giá trị lớn hơn của các ô kề nhau tạo thành một đồ thị có hướng không chu trình, và các đường đi tăng dần chính là các đường đi trong đồ thị này.",
+      "Xử lý các ô theo giá trị tăng dần; khi xử lý một ô thì mọi ô kề nhỏ hơn của nó đã xong. Số đường đi kết thúc tại ô đó bằng 1 (chỉ riêng ô đó) cộng với tổng, trên các ô kề nhỏ hơn, số đường đi kết thúc tại chúng.",
+      "Sắp xếp các ô tồn tại (các hàng có thể có độ dài khác nhau, và chỉ các ô tồn tại mới kề nhau) theo giá trị, tính dp theo thứ tự đó, và cộng dp−1 cho mọi ô, nhờ đó loại bỏ các đường đi chỉ có một ô."
     ]
   },
   "explanationEn": "## Idea\n\nTreat the cells as a directed acyclic graph where a smaller value points to an adjacent larger value. Do dynamic programming in increasing order of value: the number of paths ending at a cell is 1 (the single cell) plus the counts of all smaller neighbours; finally subtract all single-cell paths.\n\n## Proof of correctness\n\nStrictly increasing values make the path graph acyclic, and increasing value order guarantees that all smaller neighbours of a cell are finished before it is processed. Every path of length at least 2 ending at the current cell comes uniquely from a path of one smaller neighbour extended by the current cell; so the recurrence is complete and counts nothing twice. Each subtracted single cell corresponds exactly to one path that does not meet the length requirement.\n\n## Complexity\n\nLet V be the number of cells and E≤4V. O(V log V+E) time, O(V) space.\n\n## Source note\n\nThe original example output 4 matches the adjacency-path definition, but the listed path endpoints are inaccurate: the four actual paths are 1→5, 1→2, 2→7 and 1→2→7. This site keeps the rule and the answer, corrects the explanation and records the original error.\n\nThis site separately prepared the standard input/output protocol; it does not claim the original site provides it."

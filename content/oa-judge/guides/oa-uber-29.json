@@ -13,6 +13,21 @@
       "Extending the window to the right never decreases the number of pairs. So for a fixed left end, once some right end reaches k pairs, every farther right end also qualifies.",
       "Run two pointers with a count of each value in the window: adding a value creates as many new pairs as its previous count. When the window qualifies, the current left end contributes n - right subarrays; count them and then remove the left element.",
       "Keep cnt for the window and start pairs and the answer at 0. For each new element v at the right, add cnt[v] to pairs and then increase cnt[v]. While pairs is at least k, add n - right to the answer, decrease the count of the left element, subtract the decreased count from pairs, and move left forward. Print the answer as a 64-bit integer."
+    ],
+    "ja": [
+      "ウィンドウを右に広げてもペア数は減りません。したがって左端を固定すると、ある右端でペア数が k に達すれば、それより右のすべての右端も条件を満たします。",
+      "ウィンドウ内の各値の個数を持ちながらしゃくとり法を行います。値を追加すると、その値のそれまでの個数と同じ数だけ新しいペアができます。ウィンドウが条件を満たしたら、現在の左端から n - right 個の部分配列が得られるので、それを数えてから左端の要素を取り除きます。",
+      "ウィンドウの cnt を持ち、pairs と答えを 0 から始めます。右に新しい要素 v が来るたびに、pairs に cnt[v] を足してから cnt[v] を 1 増やします。pairs が k 以上の間、答えに n - right を足し、左端の要素の個数を 1 減らし、減らした後の個数を pairs から引いて、left を進めます。答えは 64 ビット整数で出力します。"
+    ],
+    "ko": [
+      "윈도우를 오른쪽으로 늘려도 쌍의 수는 줄어들지 않습니다. 따라서 왼쪽 끝을 고정했을 때 어떤 오른쪽 끝에서 쌍이 k개에 도달하면, 그보다 더 오른쪽의 모든 끝도 조건을 만족합니다.",
+      "윈도우 안 각 값의 개수를 세면서 투 포인터를 돌립니다. 값을 추가하면 그 값의 이전 개수만큼 새 쌍이 생깁니다. 윈도우가 조건을 만족하면 현재 왼쪽 끝은 n - right개의 부분 배열을 만들어 내므로 그만큼 더한 뒤 왼쪽 원소를 제거합니다.",
+      "윈도우의 cnt를 유지하고 pairs와 답을 0으로 시작합니다. 오른쪽에 새 원소 v가 들어올 때마다 pairs에 cnt[v]를 더한 뒤 cnt[v]를 증가시킵니다. pairs가 k 이상인 동안 답에 n - right를 더하고, 왼쪽 원소의 개수를 줄인 뒤 줄어든 개수만큼 pairs에서 빼고 left를 앞으로 옮깁니다. 답은 64비트 정수로 출력합니다."
+    ],
+    "vi": [
+      "Mở rộng cửa sổ sang phải không bao giờ làm giảm số cặp. Vì vậy với một đầu trái cố định, khi có một đầu phải đạt k cặp thì mọi đầu phải xa hơn cũng thỏa mãn.",
+      "Chạy hai con trỏ cùng bộ đếm của từng giá trị trong cửa sổ: thêm một giá trị tạo ra số cặp mới bằng số lần xuất hiện trước đó của nó. Khi cửa sổ thỏa mãn, đầu trái hiện tại đóng góp n - right mảng con; hãy đếm chúng rồi bỏ phần tử bên trái.",
+      "Giữ cnt cho cửa sổ, khởi tạo pairs và đáp án bằng 0. Với mỗi phần tử mới v ở đầu phải, cộng cnt[v] vào pairs rồi tăng cnt[v]. Trong khi pairs lớn hơn hoặc bằng k, cộng n - right vào đáp án, giảm số đếm của phần tử bên trái, trừ số đếm sau khi giảm khỏi pairs và dịch left về phía trước. In đáp án dưới dạng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nMaintain the window and the frequencies with two pointers. A new element adds as many pairs as its previous frequency. When the window reaches k, the current left end is valid with the current right end and every farther one; count them and then remove the left end.\n\n## Correctness\n\nExtending to the right never decreases the number of pairs. When a left end first reaches k, all longer windows are valid and all earlier ones were not, so it contributes n−right. Each left end is removed only once, so the contributions neither overlap nor miss anything.\n\n## Complexity\n\nTime O(n), space O(n)."

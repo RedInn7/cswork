@@ -13,6 +13,21 @@
       "Each empty position can independently take any integer from 1 to 10000, so the totals a team can reach after filling are not scattered values but one contiguous run of integers.",
       "If a team's existing skills sum to s and it has z empty positions, its total after filling can be every integer in [s+z, s+10000z] (only s when z = 0). Equal totals means choosing a value in the intersection of the two intervals, and the smallest one is the intersection's lower bound.",
       "For each team add up the non-zero skills and count the zeros, then build its interval; the intersection's lower bound is the larger of the two lower bounds and its upper bound the smaller of the two upper bounds; output the lower bound if it does not exceed the upper bound, otherwise -1. Use 64-bit integers for the sums to be safe."
+    ],
+    "ja": [
+      "空きポジションはそれぞれ独立に 1 から 10000 までの任意の整数を取れるので、チームが補充後に達成できる合計は、飛び飛びの値ではなく、連続した整数の範囲になります。",
+      "チームの既存のスキルの和を s、空きポジション数を z とすると、補充後の合計は [s+z, s+10000z] のすべての整数になります（z = 0 のときは s のみ）。合計が等しいとは、2 つの区間の共通部分から値を選ぶことであり、その最小値は共通部分の下端です。",
+      "各チームについて 0 でないスキルを合計し、0 の個数を数えて区間を作ります。共通部分の下端は 2 つの下端の大きい方、上端は 2 つの上端の小さい方です。下端が上端以下なら下端を出力し、そうでなければ -1 を出力します。念のため、和には 64 ビット整数を使います。"
+    ],
+    "ko": [
+      "각 빈 자리는 독립적으로 1부터 10000 사이의 임의의 정수를 취할 수 있으므로, 채운 뒤 팀이 만들 수 있는 총합은 흩어진 값들이 아니라 연속한 정수 구간입니다.",
+      "어떤 팀의 기존 실력 합이 s이고 빈 자리가 z개이면, 채운 뒤 총합은 [s+z, s+10000z]의 모든 정수가 될 수 있습니다(z = 0이면 s뿐). 총합이 같다는 것은 두 구간의 교집합에서 값을 고르는 것이고, 가장 작은 값은 교집합의 하한입니다.",
+      "각 팀에서 0이 아닌 실력을 더하고 0의 개수를 센 뒤 구간을 만듭니다. 교집합의 하한은 두 하한 중 큰 값, 상한은 두 상한 중 작은 값입니다. 하한이 상한을 넘지 않으면 하한을 출력하고, 아니면 -1을 출력합니다. 합이 클 수 있으니 64비트 정수를 사용하는 것이 안전합니다."
+    ],
+    "vi": [
+      "Mỗi vị trí trống có thể độc lập nhận bất kỳ số nguyên nào từ 1 đến 10000, nên các tổng mà một đội có thể đạt sau khi điền không phải các giá trị rời rạc mà là một dãy số nguyên liên tục.",
+      "Nếu tổng kỹ năng hiện có của một đội là s và đội có z vị trí trống, thì tổng sau khi điền có thể là mọi số nguyên trong [s+z, s+10000z] (chỉ là s khi z = 0). Tổng bằng nhau nghĩa là chọn một giá trị trong giao của hai đoạn, và giá trị nhỏ nhất là cận dưới của giao.",
+      "Với mỗi đội, cộng các kỹ năng khác 0 và đếm số số 0, rồi lập đoạn của nó; cận dưới của giao là giá trị lớn hơn trong hai cận dưới và cận trên là giá trị nhỏ hơn trong hai cận trên; in cận dưới nếu nó không vượt quá cận trên, ngược lại in -1. Dùng số nguyên 64-bit cho các tổng để an toàn."
     ]
   },
   "explanationEn": "## Problem\n\nIn the two teams' skill arrays, 0 means that position is missing a player, and every empty position must be filled with one player whose skill is between 1 and 10000 (0 stands for a missing player, so a filled position cannot be 0; any player's skill is at most 10000). Find the minimum possible total when the two teams' total skills are equal; if that cannot be done, output -1.\n\n## Approach\n\nWhen a team's existing skill sum is s and it has z empty positions, the total after filling can be any integer in [s+z, s+10000z] (each empty position independently takes 1..10000, and the sums cover the whole interval); when z=0 it can only be s. Intersect the two teams' intervals; if the intersection is non-empty, the answer is its lower bound, otherwise -1.\n\n## Correctness\n\nThe sum of z integers each taken from [1,10000] takes exactly every integer in [z,10000z], so the reachable set is an interval. An equal total must belong to both intervals, and the smallest such value is the lower bound of the intersection.\n\n## Complexity\n\nO(n+m). The total is at most about 10^9; 64-bit integers are the safer choice.\n\n## Independent verification\n\nThe oracle represents each team's set of reachable totals as a Python big-integer bitset: for each empty position it takes the union of the set shifted by every amount in 1..10000 (implemented by doubling), then finds the lowest set bit of the intersection of the two teams' sets, without using the interval formula. It enumerates every combination of team lengths 1..3 with elements from {0,3,10000} and actually runs the reference program on each one. The wrong solutions cover allowing a fill of 0, ignoring the upper limit, taking the smaller lower bound, and getting the upper bound wrong."

@@ -13,6 +13,21 @@
       "Each line takes as many words as possible, so greedily take the longest prefix of words that fits with single spaces between them; the line breaks are then unique.",
       "Once a line's words are fixed, distribute spaces: for a line that is not the last and has more than one word, divide the total spaces by the number of gaps for the base width, and give one extra space to each of the leftmost gaps for the remainder.",
       "The last line and any single-word line join words with single spaces and pad on the right to maxWidth. Print the number of lines, then each line with exactly maxWidth characters including trailing spaces (the checker compares exactly)."
+    ],
+    "ja": [
+      "各行はできるだけ多くの単語を取るので、単語間を空白 1 つとしたときに収まる最長の接頭辞を貪欲に取ります。すると改行位置は一意に決まります。",
+      "行の単語が決まったら空白を配分します。最終行ではなく複数の単語を持つ行では、空白の総数を隙間の数で割って基本の幅とし、余りの数だけ左側の隙間に 1 つずつ余分に割り当てます。",
+      "最終行と単語が 1 つだけの行は、単語を空白 1 つで連結し、右側を maxWidth まで埋めます。行数を出力し、続いて末尾の空白を含めてちょうど maxWidth 文字の各行を出力します（判定は完全一致で比較します）。"
+    ],
+    "ko": [
+      "각 줄에는 가능한 한 많은 단어를 넣으므로, 단어 사이에 공백 하나씩을 두었을 때 들어가는 가장 긴 접두사를 그리디하게 취합니다. 그러면 줄 바꿈 위치는 유일하게 정해집니다.",
+      "줄의 단어가 정해지면 공백을 분배합니다. 마지막 줄이 아니고 단어가 둘 이상이면 전체 공백 수를 간격 수로 나눈 몫을 기본 너비로 하고, 나머지는 가장 왼쪽 간격부터 하나씩 더 줍니다.",
+      "마지막 줄과 단어가 하나뿐인 줄은 단어를 공백 하나로 잇고 오른쪽을 maxWidth까지 채웁니다. 줄 수를 출력한 뒤 각 줄을 뒤쪽 공백까지 포함하여 정확히 maxWidth 글자로 출력합니다(채점기는 정확히 비교합니다)."
+    ],
+    "vi": [
+      "Mỗi dòng lấy càng nhiều từ càng tốt, nên hãy tham lam lấy tiền tố dài nhất của các từ còn vừa khi có một dấu cách đơn giữa chúng; khi đó các điểm ngắt dòng là duy nhất.",
+      "Khi các từ của một dòng đã cố định, hãy phân bổ dấu cách: với dòng không phải dòng cuối và có nhiều hơn một từ, chia tổng số dấu cách cho số khoảng trống để được độ rộng cơ bản, và cho mỗi khoảng trống ngoài cùng bên trái thêm một dấu cách tương ứng với phần dư.",
+      "Dòng cuối và mọi dòng chỉ có một từ nối các từ bằng dấu cách đơn và đệm bên phải đến maxWidth. In số dòng, rồi mỗi dòng có đúng maxWidth ký tự kể cả dấu cách ở cuối (trình chấm so sánh chính xác)."
     ]
   },
   "explanationEn": "## Idea\n\nCollect the words of each line greedily, using the minimum of one space between words. For lines other than the last, distribute the total spaces by dividing by the number of gaps; the last line uses single spaces and is padded on the right.\n\n## Correctness\n\nTaking the longest prefix that fits follows the rule of placing as many words as possible exactly. The quotient of the even split makes the gaps differ by at most 1, and giving the remainder to the left gaps satisfies the left-first rule; the last line and single-word lines are padded as specified, so the output is unique.\n\n## Complexity\n\nO(number of output characters) time and O(number of output characters) space."

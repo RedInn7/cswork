@@ -13,6 +13,21 @@
       "The statement defines a deterministic process, and with n <= 1000 you can simulate it directly. In every round the leftmost nonzero element itself always drops to 0, since its value is exactly x.",
       "Each round: find the value x of the leftmost nonzero element, add x to the total, then go right from that position and subtract x only from elements whose current value is at least x; smaller ones stay unchanged.",
       "Move a pointer i from left to right: if a[i] is 0, advance; otherwise take x = a[i], add it to the total, and apply the conditional subtraction to j = i..n-1. Because a[i] becomes 0 every round, there are at most n rounds of O(n) work, O(n^2) in total. Keep the total in a 64-bit integer to be safe."
+    ],
+    "ja": [
+      "問題文は決定的な処理を定義しており、n <= 1000 なら直接シミュレートできます。各ラウンドで、最左の非ゼロ要素自身は値がちょうど x なので、必ず 0 になります。",
+      "各ラウンドで、最左の非ゼロ要素の値 x を求めて合計に加え、その位置から右へ進み、現在の値が x 以上の要素からだけ x を引きます。x より小さい要素は変わりません。",
+      "ポインタ i を左から右へ動かします。a[i] が 0 なら進め、そうでなければ x = a[i] とし、合計に加えて j = i..n-1 に条件つきの引き算を適用します。各ラウンドで a[i] が 0 になるので、ラウンドは高々 n 回で、1 回あたり O(n) の処理となり、全体で O(n^2) です。念のため合計は 64 ビット整数で保持してください。"
+    ],
+    "ko": [
+      "문제는 결정적인 과정을 정의하고 있으며 n <= 1000이므로 그대로 시뮬레이션할 수 있습니다. 매 라운드에서 가장 왼쪽의 0이 아닌 원소는 값이 정확히 x이므로 항상 0이 됩니다.",
+      "각 라운드에서 가장 왼쪽의 0이 아닌 원소의 값 x를 찾아 총합에 더하고, 그 위치부터 오른쪽으로 가며 현재 값이 x 이상인 원소에서만 x를 뺍니다. 더 작은 원소는 그대로 둡니다.",
+      "포인터 i를 왼쪽에서 오른쪽으로 옮깁니다. a[i]가 0이면 넘어가고, 아니면 x = a[i]로 두어 총합에 더한 뒤 j = i..n-1에 대해 조건부 뺄셈을 수행합니다. 매 라운드 a[i]가 0이 되므로 라운드는 최대 n번이고 각 라운드는 O(n)이므로 전체는 O(n^2)입니다. 안전을 위해 총합은 64비트 정수로 유지합니다."
+    ],
+    "vi": [
+      "Đề bài định nghĩa một quá trình xác định, và với n <= 1000 bạn có thể mô phỏng trực tiếp. Mỗi vòng, phần tử khác 0 ngoài cùng bên trái luôn về 0, vì giá trị của nó đúng bằng x.",
+      "Mỗi vòng: tìm giá trị x của phần tử khác 0 ngoài cùng bên trái, cộng x vào tổng, rồi đi sang phải từ vị trí đó và chỉ trừ x khỏi các phần tử có giá trị hiện tại không nhỏ hơn x; các phần tử nhỏ hơn giữ nguyên.",
+      "Di chuyển con trỏ i từ trái sang phải: nếu a[i] là 0 thì tiến lên; ngược lại lấy x = a[i], cộng vào tổng, và áp dụng phép trừ có điều kiện cho j = i..n-1. Vì a[i] về 0 mỗi vòng, nên có tối đa n vòng, mỗi vòng O(n) công việc, tổng cộng O(n^2). Hãy lưu tổng trong số nguyên 64 bit cho chắc."
     ]
   },
   "explanationEn": "## Approach\n\nSimulate each round directly as described: locate the leftmost nonzero value x, add x to the total, and subtract x only from the elements in the suffix whose current value is not less than x.\n\n## Proof of correctness\n\nThe simulation always selects the same leftmost nonzero element as the problem and applies the conditional subtraction prescribed by the problem to the same suffix element by element, so after each round the array state and the accumulated value agree with the defined process. The problem guarantees that the process terminates, and when the simulation ends the accumulated value is the required answer.\n\n## Complexity\n\nAt most n rounds are processed (each round sets the current leftmost nonzero element to zero), and each round scans at most n items; O(n^2) time and O(n) extra space."

@@ -13,6 +13,21 @@
       "Both conditions depend only on |x| and |y|, so take absolute values first. Then assume a<=b and see what |x-y| and |x+y| turn into.",
       "After taking absolute values, the smaller of |x-y| and |x+y| is b-a and the larger is b+a. The second inequality b+a>=b always holds, and the first one b-a<=a is equivalent to b<=2a. So you only need to count index pairs where the larger value is at most twice the smaller one.",
       "Take absolute values of all numbers and sort them. Use two pointers: advance right one step at a time, and move left forward while a[right] > 2*a[left]. Every element in [left,right) then pairs with right, so add right-left to the answer. The answer can reach about 2*10^10, so use a 64-bit integer."
+    ],
+    "ja": [
+      "どちらの条件も |x| と |y| だけに依存するので、まず絶対値を取ります。その上で a<=b と仮定して、|x-y| と |x+y| がどうなるかを見ます。",
+      "絶対値を取った後は、|x-y| と |x+y| のうち小さいほうが b-a、大きいほうが b+a です。2 つ目の不等式 b+a>=b は常に成り立ち、1 つ目の b-a<=a は b<=2a と同値です。したがって、大きいほうの値が小さいほうの値の 2 倍以下である添字の組を数えれば十分です。",
+      "すべての数の絶対値を取ってソートします。しゃくとり法を使い、right を 1 つずつ進め、a[right] > 2*a[left] の間 left を進めます。すると [left,right) の要素はすべて right と組になるので、答えに right-left を加えます。答えは約 2*10^10 に達し得るので、64 ビット整数を使います。"
+    ],
+    "ko": [
+      "두 조건은 |x|와 |y|에만 의존하므로 먼저 절댓값을 취합니다. 그다음 a<=b라 가정하고 |x-y|와 |x+y|가 무엇이 되는지 살펴보세요.",
+      "절댓값을 취한 뒤 |x-y|와 |x+y| 중 작은 쪽은 b-a, 큰 쪽은 b+a입니다. 두 번째 부등식 b+a>=b는 항상 성립하고, 첫 번째 부등식 b-a<=a는 b<=2a와 동치입니다. 따라서 큰 값이 작은 값의 두 배 이하인 인덱스 쌍의 수만 세면 됩니다.",
+      "모든 수의 절댓값을 취해 정렬합니다. 투 포인터를 사용합니다. right를 한 칸씩 전진시키며 a[right] > 2*a[left]인 동안 left를 앞으로 옮깁니다. 그러면 [left,right)의 모든 원소가 right와 쌍을 이루므로 답에 right-left를 더합니다. 답은 약 2*10^10까지 커질 수 있으므로 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Cả hai điều kiện chỉ phụ thuộc vào |x| và |y|, nên trước hết hãy lấy giá trị tuyệt đối. Sau đó giả sử a<=b và xem |x-y| và |x+y| trở thành gì.",
+      "Sau khi lấy giá trị tuyệt đối, giá trị nhỏ hơn trong |x-y| và |x+y| là b-a và giá trị lớn hơn là b+a. Bất đẳng thức thứ hai b+a>=b luôn đúng, còn bất đẳng thức thứ nhất b-a<=a tương đương với b<=2a. Vì vậy bạn chỉ cần đếm các cặp chỉ số mà giá trị lớn hơn không quá hai lần giá trị nhỏ hơn.",
+      "Lấy giá trị tuyệt đối của mọi số rồi sắp xếp. Dùng hai con trỏ: tiến right từng bước một, và dịch left về phía trước trong khi a[right] > 2*a[left]. Khi đó mọi phần tử trong [left,right) đều ghép được với right, nên cộng right-left vào đáp án. Đáp án có thể đạt khoảng 2*10^10, nên dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nTake absolute values and sort. With a<=b, the two inequalities become b-a<=a and b+a>=b, so only b<=2a is needed; count the index pairs in the window with two pointers.\n\n## Proof of correctness\n\nThe smaller of the absolute sum and difference is b-a, and the larger is b+a. The second inequality is always true, and the first is equivalent to b<=2a. Sorting does not change the number of index pairs; for each right end the valid left ends form a contiguous suffix, and after sliding the left end, adding the window length counts each pair exactly once.\n\n## Complexity\n\nTime O(n log n), space O(n); the answer is at most 19999900000 and needs 64 bits."

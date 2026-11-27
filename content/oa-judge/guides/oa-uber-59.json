@@ -13,6 +13,21 @@
       "Water takes one unit of time per step and can only flow to an adjacent cell whose height does not exceed the current cell's. Treat \"can flow there\" as a directed edge; the time a cell first gets wet is the shortest number of steps from the start to it.",
       "Shortest paths with all edge weights equal to 1 are exactly breadth-first search. Expanding layer by layer, the first time a cell is visited gives the earliest time it gets wet.",
       "Initialize every dist to -1, set the start to 0 and push it into the queue. Pop a cell and check its four neighbors: if a neighbor is inside the grid, not yet visited, and not higher than the current cell, set its dist to the current dist plus one and push it. After the BFS, print dist as n rows of m columns; unvisited cells stay -1."
+    ],
+    "ja": [
+      "水は 1 ステップに 1 単位時間かかり、現在のセルより高くない隣接セルにしか流れません。「そこへ流れられる」を有向辺と見なすと、セルが最初に濡れる時刻は、開始セルからそこまでの最短ステップ数です。",
+      "すべての辺の重みが 1 の最短経路は、まさに幅優先探索です。層ごとに広げていくと、セルが最初に訪問された時点が最も早く濡れる時刻になります。",
+      "すべての dist を -1 で初期化し、開始セルを 0 にしてキューに入れます。セルを取り出して 4 つの隣接セルを調べ、グリッド内にあって未訪問で、現在のセルより高くないなら、その dist を現在の dist に 1 を足した値にしてキューに入れます。BFS の後、dist を n 行 m 列で出力します。未訪問のセルは -1 のままです。"
+    ],
+    "ko": [
+      "물은 한 단계에 시간 1이 걸리고 높이가 현재 칸을 넘지 않는 인접한 칸으로만 흐릅니다. \"그곳으로 흐를 수 있다\"를 방향 간선으로 보면, 칸이 처음 젖는 시간은 시작 칸에서 그 칸까지의 최단 단계 수입니다.",
+      "모든 간선의 가중치가 1인 최단 경로는 곧 너비 우선 탐색입니다. 층별로 확장하면 어떤 칸을 처음 방문한 시점이 그 칸이 가장 일찍 젖는 시간입니다.",
+      "모든 dist를 -1로 초기화하고 시작 칸을 0으로 하여 큐에 넣습니다. 칸을 꺼내 네 이웃을 확인하여, 이웃이 격자 안에 있고 아직 방문하지 않았으며 현재 칸보다 높지 않다면 dist를 현재 dist에 1을 더한 값으로 두고 큐에 넣습니다. BFS가 끝나면 dist를 n행 m열로 출력하며, 방문하지 못한 칸은 -1로 남습니다."
+    ],
+    "vi": [
+      "Nước mất một đơn vị thời gian mỗi bước và chỉ chảy được sang ô kề có độ cao không vượt quá ô hiện tại. Xem \"chảy được tới đó\" là một cạnh có hướng; thời điểm một ô ướt lần đầu là số bước ngắn nhất từ ô xuất phát tới nó.",
+      "Đường đi ngắn nhất với mọi cạnh có trọng số 1 chính là tìm kiếm theo chiều rộng. Mở rộng từng lớp một, lần đầu một ô được thăm cho biết thời điểm sớm nhất nó ướt.",
+      "Khởi tạo mọi dist bằng -1, đặt ô xuất phát bằng 0 và đẩy vào hàng đợi. Lấy một ô ra và xét bốn ô lân cận: nếu ô lân cận nằm trong lưới, chưa được thăm và không cao hơn ô hiện tại, đặt dist của nó bằng dist hiện tại cộng một và đẩy vào. Sau BFS, in dist dưới dạng n hàng m cột; các ô chưa thăm giữ nguyên -1."
     ]
   },
   "explanationEn": "## Approach\n\nTreat each allowed flow direction as a directed edge and use breadth-first search to compute the shortest number of edges from the start to every cell.\n\n## Correctness\n\nEach spreading step takes time 1, so a valid path of length t makes its endpoint wet at time t; conversely, the process of first becoming wet produces a valid path of the same length. BFS expands layer by layer in order of distance, so the first visit gives the shortest distance.\n\n## Complexity\n\nTime O(nm), space O(nm)."

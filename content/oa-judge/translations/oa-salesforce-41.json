@@ -11,5 +11,35 @@
     "hints": [
       "Let F[i] be the number of valid strings of length i. For i<k it is 26^i; F[k]=26^k−26; for i>k, F[i]=26F[i−1]−25F[i−k]. When k=1, output 0 directly."
     ]
+  },
+  "ja": {
+    "title": "同じ文字が k 個連続しない文字列の個数",
+    "description": "長さ n の小文字の英字列のうち、同じ文字が k 個以上連続して現れないものの個数を、1000000007 で割った余りで求めてください。同じ文字が連続してよいのは高々 k−1 個までです。k 個まで許すと誤読しないでください。\n\n本サイトが欠けている範囲を補った点と、原文の誤記を訂正した点については、入力プロトコルに記載しています。",
+    "input": "入力は n k です。原文の範囲はすべてそのままです。1≤n≤100000、1≤k<n で、有効な n は実際には ≥2 です。k≤n に変えたり、禁止する長さを k+1 に変えたりしないでください。",
+    "output": "整数 1 つ(答え)を出力してください。",
+    "explanation": "3 つの公開サンプルの出力は順に 16250; 0; 11880050 です。独立した全探索または直接シミュレーションで確認済みです。",
+    "hints": [
+      "F[i] を長さ i の有効な文字列の個数とします。i<k では 26^i、F[k]=26^k−26、i>k では F[i]=26F[i−1]−25F[i−k] です。k=1 のときは直接 0 を出力します。"
+    ]
+  },
+  "ko": {
+    "title": "같은 문자가 k번 연속하지 않는 문자열의 개수",
+    "description": "길이가 n이고 같은 소문자가 k번 이상 연속하지 않는 소문자 영어 문자열의 개수를 1000000007로 나눈 나머지로 구하세요. 같은 문자는 연속으로 최대 k−1개까지 나올 수 있으며, k개까지 허용하는 것으로 잘못 읽지 마세요.\n\n이 사이트가 누락된 범위를 보완한 내용과 원문 오타를 복구한 내용은 입력 규약에 설명되어 있습니다.",
+    "input": "입력으로 n k가 주어집니다. 원문의 전체 범위: 1≤n≤100000, 1≤k<n이므로 유효한 n은 실제로 ≥2입니다. k≤n으로 바꾸거나 금지 길이를 k+1로 바꾸지 마세요.",
+    "output": "정수 하나를 정답으로 출력합니다.",
+    "explanation": "공개 예제 3개의 출력은 순서대로 16250; 0; 11880050입니다. 독립적인 전수 조사 또는 직접 시뮬레이션으로 검증했습니다.",
+    "hints": [
+      "F[i]를 길이 i인 유효한 문자열의 수라고 합니다. i<k이면 26^i, F[k]=26^k−26, i>k이면 F[i]=26F[i−1]−25F[i−k]입니다. k=1이면 바로 0을 출력합니다."
+    ]
+  },
+  "vi": {
+    "title": "Đếm xâu không có k chữ cái giống nhau liên tiếp",
+    "description": "Hãy đếm các xâu chữ cái thường tiếng Anh có độ dài n không chứa k chữ cái giống nhau liên tiếp trở lên, modulo 1000000007. Cho phép tối đa k−1 chữ cái giống nhau liên tiếp; đừng đọc nhầm thành cho phép k.\n\nCác khoảng giá trị mà trang này bổ sung cho những ràng buộc còn thiếu, cùng việc khôi phục lỗi đánh máy của đề gốc, được mô tả trong giao thức đầu vào.",
+    "input": "Đầu vào gồm n k. Cận đầy đủ của đề gốc: 1≤n≤100000, 1≤k<n, nên thực tế n hợp lệ ≥2; đừng đổi thành k≤n hoặc đổi độ dài bị cấm thành k+1.",
+    "output": "In ra một số nguyên là đáp án.",
+    "explanation": "Đầu ra của ba ví dụ công khai lần lượt là: 16250; 0; 11880050. Các kết quả này đã được kiểm tra bằng liệt kê độc lập hoặc mô phỏng trực tiếp.",
+    "hints": [
+      "Gọi F[i] là số xâu hợp lệ độ dài i. Với i<k, F[i]=26^i; F[k]=26^k−26; với i>k, F[i]=26F[i−1]−25F[i−k]. Khi k=1, in thẳng 0."
+    ]
   }
 }

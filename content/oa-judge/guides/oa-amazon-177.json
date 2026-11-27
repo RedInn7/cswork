@@ -13,6 +13,21 @@
       "The ground you cover is always an interval containing 0, and you eat every apple inside it; so only k apples that are consecutive in sorted order need to be considered.",
       "For a window [L, R] of k consecutive apples, the shortest route goes first to the end nearer 0 and then to the other end, costing (R - L) + min(|L|, |R|); the formula still holds when the whole window lies on one side of 0.",
       "Sort the coordinates; for each i compute a[i+k-1] - a[i] + min(|a[i]|, |a[i+k-1]|) and print the smallest value over all windows."
+    ],
+    "ja": [
+      "たどる範囲は常に 0 を含む区間で、その中のりんごはすべて食べられます。したがって、ソートした順に連続する k 個のりんごだけを考えればよいことになります。",
+      "連続する k 個のりんごの窓 [L, R] については、最短経路はまず 0 に近い端へ行き、次にもう一方の端へ行くものです。コストは (R - L) + min(|L|, |R|) で、窓全体が 0 の片側にある場合も式は成り立ちます。",
+      "座標をソートし、各 i について a[i+k-1] - a[i] + min(|a[i]|, |a[i+k-1]|) を計算して、すべての窓での最小値を出力します。"
+    ],
+    "ko": [
+      "지나간 범위는 항상 0을 포함하는 구간이고 그 안의 사과를 모두 먹게 됩니다. 따라서 정렬했을 때 연속한 k개의 사과만 고려하면 됩니다.",
+      "연속한 k개 사과의 구간 [L, R]에서 최단 경로는 0에 가까운 끝으로 먼저 간 뒤 반대쪽 끝으로 가는 것이며, 비용은 (R - L) + min(|L|, |R|)입니다. 구간 전체가 0의 한쪽에 있어도 이 공식은 그대로 성립합니다.",
+      "좌표를 정렬하고, 각 i에 대해 a[i+k-1] - a[i] + min(|a[i]|, |a[i+k-1]|)을 계산해 모든 윈도우에서 가장 작은 값을 출력합니다."
+    ],
+    "vi": [
+      "Đoạn đường bạn đi qua luôn là một khoảng chứa 0, và bạn ăn mọi quả táo trong khoảng đó; vì vậy chỉ cần xét k quả táo liên tiếp theo thứ tự đã sắp xếp.",
+      "Với một cửa sổ [L, R] gồm k quả táo liên tiếp, lộ trình ngắn nhất đi đến đầu gần 0 hơn trước rồi mới sang đầu kia, tốn (R - L) + min(|L|, |R|); công thức vẫn đúng khi cả cửa sổ nằm về một phía của 0.",
+      "Sắp xếp các tọa độ; với mỗi i tính a[i+k-1] - a[i] + min(|a[i]|, |a[i+k-1]|) và in giá trị nhỏ nhất trên mọi cửa sổ."
     ]
   },
   "explanationEn": "## Approach\n\nSort, then enumerate the two ends of every k consecutive coordinates; the cost is the distance between the two ends plus the distance from 0 to the nearer end, which is visited first.\n\n## Proof of correctness\n\nThe coordinates walked over form an interval; if at least k apples are eaten, it contains k consecutive sorted coordinates. Visiting that window requires walking over both of its ends, and the shortest route to visit it goes from 0 to the nearer end and then to the other end; when both ends are on the same side of 0, the formula likewise equals the distance to the far end. Hence take the minimum cost over all windows.\n\n## Complexity\n\nTime O(n log n), space O(n)."

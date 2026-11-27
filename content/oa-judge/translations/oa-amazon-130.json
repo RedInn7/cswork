@@ -11,5 +11,35 @@
     "hints": [
       "Map each character to its rank 0..61 to get a byte-string sort key; Python byte-string comparison naturally implements the custom lexicographic order."
     ]
+  },
+  "ja": {
+    "title": "独自のアルファベット順で文字列をソートする",
+    "description": "アルファベットは、異なる文字を小さいものから大きいものへの順に与えます。この順序で、すべての文字列を辞書順にソートしてください。短い接頭辞が先に来て、同一の文字列はすべてのコピーを残します。標準入出力では空文字列を - で表し、- は使用できるアルファベットには含まれません。\n\n標準入出力と解答は本サイトが独自に作成したものです。本サイト独自とされている範囲は、元の問題の制約ではありません。",
+    "input": "1 行目に order、2 行目に n、続いて n 個の文字列が与えられます（空文字列は - と書きます）。order は英大文字・英小文字・数字からなり、1≤|order|≤62、1≤n≤100000 で、元の文字列の長さの合計は ≤1000000 です。",
+    "output": "ソート後の n 個の文字列を出力してください。空文字列は - で表し、重複は残します。",
+    "explanation": "例 1: 順序は Aa999、B、B9A、B9A、B9ca、BBBB9、BBBBa です。出典の BBB89 は誤記で、文字が変わっています。例 2: yaY、Yay、b、bay、lyab、lyab です。重複する lyab を lyaB に変えてはいけません。例 3: 2 つの空文字列が最初に来て、続いて b、ba、a となり、空文字列はそれぞれ - として出力します。",
+    "hints": [
+      "各文字をその順位 0..61 に写してバイト列のソートキーを作ります。Python のバイト列の比較は、独自の辞書順をそのまま実現します。"
+    ]
+  },
+  "ko": {
+    "title": "사용자 정의 알파벳 순서로 문자열 정렬하기",
+    "description": "alphabet은 서로 다른 문자를 가장 작은 것부터 큰 것 순으로 나열한 것입니다. 모든 문자열을 이 순서에 따른 사전순으로 정렬하세요. 더 짧은 접두사가 먼저 오며, 동일한 문자열은 모든 복사본을 유지합니다. 표준 입출력에서는 빈 문자열을 -로 표현하며, -는 허용된 알파벳에 포함되지 않습니다.\n\n표준 입출력 형식과 풀이는 이 사이트가 독자적으로 작성했으며, 이 사이트의 것이라고 표시된 범위는 원문의 제약 조건이 아닙니다.",
+    "input": "첫째 줄에 order가 주어지고, 둘째 줄에 n이 주어지며, 이어서 n개의 문자열이 주어집니다(빈 문자열은 -로 씁니다). order는 영문 대소문자와 숫자로 이루어지며 1≤|order|≤62, 1≤n≤100000이고 원래 문자열의 총 길이는 ≤1000000입니다.",
+    "output": "정렬된 순서대로 n개의 문자열을 출력하며, 빈 문자열은 -로 쓰고 중복은 유지합니다.",
+    "explanation": "예제 1: 순서는 Aa999, B, B9A, B9A, B9ca, BBBB9, BBBBa이며, 원문의 BBB89는 문자를 바꿔 버린 오타입니다. 예제 2: yaY, Yay, b, bay, lyab, lyab이며, 중복된 lyab을 lyaB로 바꾸면 안 됩니다. 예제 3: 빈 문자열 두 개가 먼저 오고 b, ba, a가 이어지며, 각 빈 문자열은 -로 출력합니다.",
+    "hints": [
+      "각 문자를 0..61의 순위로 매핑하여 바이트 문자열 정렬 키를 만듭니다. Python의 바이트 문자열 비교가 사용자 정의 사전순을 그대로 구현합니다."
+    ]
+  },
+  "vi": {
+    "title": "Sắp xếp các xâu theo bảng chữ cái tùy chỉnh",
+    "description": "Bảng chữ cái cho thứ tự của các ký tự phân biệt từ nhỏ đến lớn. Sắp xếp tất cả các xâu theo thứ tự từ điển dựa trên thứ tự này; một tiền tố ngắn hơn đứng trước, và các xâu giống hệt nhau giữ lại tất cả các bản sao. Đầu vào/đầu ra chuẩn dùng - để biểu diễn xâu rỗng, và - không thuộc bảng chữ cái cho phép.\n\nTrang này tự viết phần nhập/xuất chuẩn và lời giải; các khoảng giá trị được đánh dấu là của trang này không phải ràng buộc gốc của đề nguồn.",
+    "input": "Dòng đầu tiên chứa order, dòng thứ hai chứa n, tiếp theo là n xâu (xâu rỗng được viết là -). order gồm chữ cái hoa, chữ cái thường và chữ số, 1≤|order|≤62, 1≤n≤100000, và tổng độ dài của các xâu gốc ≤1000000.",
+    "output": "In ra n xâu theo thứ tự đã sắp xếp, dùng - cho xâu rỗng và giữ các bản trùng lặp.",
+    "explanation": "Ví dụ 1: thứ tự là Aa999, B, B9A, B9A, B9ca, BBBB9, BBBBa; BBB89 trong nguồn là lỗi đánh máy làm thay đổi một ký tự. Ví dụ 2: yaY, Yay, b, bay, lyab, lyab; xâu lyab trùng lặp không được đổi thành lyaB. Ví dụ 3: hai xâu rỗng đứng đầu, tiếp theo là b, ba, a, và mỗi xâu rỗng được in ra là -.",
+    "hints": [
+      "Ánh xạ mỗi ký tự sang hạng 0..61 của nó để có khóa sắp xếp dạng chuỗi byte; phép so sánh chuỗi byte của Python tự nhiên thực hiện thứ tự từ điển tùy chỉnh."
+    ]
   }
 }

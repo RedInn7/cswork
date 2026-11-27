@@ -10,6 +10,7 @@ import {
   formatOaVerifiedStatement,
 } from '../oa-verified-statement';
 import { passingPrograms, programKey } from '../oa-solution-evidence.mjs';
+import { CONTENT_LANGUAGES, type ContentLanguage } from '../language';
 
 const digest = z.string().regex(/^[a-f0-9]{64}$/);
 const registrySchema = z.object({
@@ -186,49 +187,61 @@ export function assertOaVersionReady(
     throw new HttpError(409, '这道 OA 题的版本已变化，请等待重新校验');
 }
 
-const englishStatement = z
+const translatedText = z.object({
+  title: z.string().trim().min(1).max(180),
+  description: z.string().min(1).max(60000),
+  input: z.string().min(1).max(12000),
+  output: z.string().min(1).max(12000),
+  explanation: z.string().max(12000),
+  hints: z.array(z.string().min(1).max(2000)).max(10),
+});
+const translatedStatement = z
   .object({
     schemaVersion: z.literal(1),
     id: z.string(),
     packageChecksum: z.string(),
-    en: z.object({
-      title: z.string().trim().min(1).max(180),
-      description: z.string().min(1).max(60000),
-      input: z.string().min(1).max(12000),
-      output: z.string().min(1).max(12000),
-      explanation: z.string().max(12000),
-      hints: z.array(z.string().min(1).max(2000)).max(10),
-    }),
+    en: translatedText,
+    ja: translatedText.optional(),
+    ko: translatedText.optional(),
+    vi: translatedText.optional(),
   })
   .strict();
-const englishCache = new Map<
-  string,
-  z.infer<typeof englishStatement> | null
->();
+type OaTranslations = Pick<z.infer<typeof translatedStatement>, 'en' | ContentLanguage>;
+const translationCache = new Map<string, { id: string; packageChecksum: string; statements: OaTranslations }>();
 /**
- * English statement for an OA problem, kept beside the judge package so translating never
- * changes verified packages. Served only while bound to the package that is currently live.
+ * An OA problem's statement in English and in whichever of ja/ko/vi it is translated into, kept
+ * beside the judge package so translating never changes verified packages. Served only while
+ * bound to the package that is currently live.
  */
-export function oaEnglishStatement(id: string) {
+export function oaTranslations(id: string): OaTranslations | undefined {
   if (!/^oa-[a-z0-9-]+$/.test(id)) return undefined;
-  if (!englishCache.get(id)) {
+  if (!translationCache.get(id)) {
     // Only parsed files are cached; a missing file is re-checked so later additions appear.
     const file = resolve(`content/oa-judge/translations/${id}.json`);
     try {
       if (existsSync(file) && statSync(file).size < 1024 * 1024) {
-        const value = englishStatement.parse(
+        const value = translatedStatement.parse(
           JSON.parse(readFileSync(file, 'utf8')),
         );
         // Translations mirror the package, provenance notes included; display drops them.
-        englishCache.set(id, { ...value, en: cleanOaStatement(value.en) });
+        translationCache.set(id, {
+          id: value.id,
+          packageChecksum: value.packageChecksum,
+          statements: {
+            en: cleanOaStatement(value.en),
+            ...Object.fromEntries(
+              CONTENT_LANGUAGES.flatMap((language) => (value[language] ? [[language, cleanOaStatement(value[language])]] : [])),
+            ),
+          },
+        });
       }
     } catch {
       // An unreadable translation simply falls back to the Chinese statement.
     }
   }
-  const value = englishCache.get(id);
+  const value = translationCache.get(id);
   return value && value.id === id && oaJudgeRegistry().isCurrent(id, value.packageChecksum)
-    ? value.en
+    ? value.statements
     : undefined;
 }
 
@@ -239,7 +252,9 @@ const guideSchema = z
     packageChecksum: digest,
     sourceContentHash: digest,
     editorialSha256: digest,
-    hints: z.object({ zh: hintList, en: hintList }).strict(),
+    hints: z
+      .object({ zh: hintList, en: hintList, ja: hintList.optional(), ko: hintList.optional(), vi: hintList.optional() })
+      .strict(),
     explanationEn: z.string().trim().min(1).max(20000),
   })
   .strict();
@@ -289,8 +304,8 @@ function sidecar<T extends { id: string }>(
 }
 
 /**
- * A problem's guide (content/oa-judge/guides/<id>.json): three hints in Chinese and English
- * (observation, approach, steps) and the editorial in English, kept beside the verified package
+ * A problem's guide (content/oa-judge/guides/<id>.json): three hints in Chinese and English, and
+ * in ja/ko/vi where translated (observation, approach, steps), and the editorial in English, kept beside the verified package
  * like translations. Served only while bound to the live package and its catalog source; the
  * English editorial only while the registry's editorial is still the one it translates.
  */

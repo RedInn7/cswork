@@ -13,6 +13,21 @@
       "This is weighted interval scheduling: once intervals are sorted by end time, taking or skipping the current one depends only on the intervals that end before it starts.",
       "Let dp[i] be the best profit among the first i intervals by end time; the current interval is either skipped, or appended after the prefix whose end times are strictly less than its start (a shared endpoint counts as overlap).",
       "Compute each end = start+duration and sort by end; for the i-th interval, binary search among the first i end times for the first one not less than its start, at position j, and set dp[i+1] = max(dp[i], dp[j]+profit); output dp[n], which is at least 0 since choosing nothing is allowed; use 64-bit integers."
+    ],
+    "ja": [
+      "これは重み付き区間スケジューリングです。区間を終了時刻でソートすると、現在の区間を取るか飛ばすかは、その開始前に終わる区間だけに依存します。",
+      "dp[i] を、終了時刻順の最初の i 個の区間における最良の利益とします。現在の区間は、飛ばすか、終了時刻がその開始より真に小さい接頭辞の後に追加するかのどちらかです（端点の共有は重なりとみなします）。",
+      "各 end = start+duration を計算して end でソートします。i 番目の区間について、最初の i 個の終了時刻の中から、その開始以上である最初のものを二分探索で見つけ（位置 j）、dp[i+1] = max(dp[i], dp[j]+利益) とします。dp[n] を出力します。何も選ばないことも許されるので、これは 0 以上です。64 ビット整数を使います。"
+    ],
+    "ko": [
+      "이것은 가중치 구간 스케줄링(weighted interval scheduling)입니다. 종료 시각 순으로 정렬하면 현재 구간을 택할지 건너뛸지는 그 구간이 시작하기 전에 끝나는 구간들에만 달려 있습니다.",
+      "dp[i]를 종료 시각 순으로 앞의 i개 구간에서 얻을 수 있는 최대 이익이라고 합니다. 현재 구간은 건너뛰거나, 종료 시각이 그 시작보다 엄격히 작은 접두사 뒤에 붙입니다(끝점 공유는 겹침으로 취급).",
+      "각 구간의 end = start+duration을 계산하고 end 순으로 정렬합니다. i번째 구간에 대해 앞의 i개 종료 시각에서 그 시작 이상인 첫 번째를 이분 탐색하여 그 위치를 j라 하고, dp[i+1] = max(dp[i], dp[j]+이익)로 둡니다. 아무것도 고르지 않아도 되므로 dp[n]은 0 이상이며 이를 출력합니다. 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Đây là bài lập lịch đoạn có trọng số: khi các đoạn đã sắp xếp theo thời điểm kết thúc, việc lấy hay bỏ đoạn hiện tại chỉ phụ thuộc vào các đoạn kết thúc trước khi nó bắt đầu.",
+      "Gọi dp[i] là lợi nhuận tốt nhất trong i đoạn đầu theo thời điểm kết thúc; đoạn hiện tại hoặc bị bỏ, hoặc được nối sau tiền tố có thời điểm kết thúc nhỏ hơn hoàn toàn thời điểm bắt đầu của nó (có chung đầu mút được tính là chồng nhau).",
+      "Tính mỗi end = start+duration và sắp xếp theo end; với đoạn thứ i, tìm kiếm nhị phân trong i thời điểm kết thúc đầu tiên vị trí đầu tiên không nhỏ hơn thời điểm bắt đầu của nó, gọi là j, và đặt dp[i+1] = max(dp[i], dp[j]+profit); in dp[n], giá trị này ít nhất bằng 0 vì được phép không chọn gì; dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nSort by end time, with dp recording the best value over the first several intervals. For the current interval, binary search the prefix whose end times are strictly less than its start, and take the maximum of skipping it and appending it after that prefix.\n\n## Proof of correctness\n\nIf an optimal solution does not contain the current interval, it belongs to the previous prefix; if it does, all other chosen intervals must end before the current start, and the optimum of that prefix is compatible with it. The two cases cover every choice, and induction shows dp is correct. Equal endpoints intersect, so the comparison must be strictly less than.\n\n## Complexity\n\nTime O(n log n), space O(n); profit sums use 64-bit integers."

@@ -11,5 +11,35 @@
     "hints": [
       "A point assignment can lower a single value; do not treat the historical HPA maximum as a lower bound that stays valid forever."
     ]
+  },
+  "ja": {
+    "title": "Horizontal Pod Autoscaler",
+    "description": "n 個のマイクロサービスの Pod 数を管理します。操作 1 は、指定したサービスの数を x に直接設定します(増減どちらもありえます)。操作 2 は、x 未満のすべてのサービスの数を x に引き上げます。すべての操作を順に実行し、最終的な配列を出力してください。",
+    "input": "1 行目に n, m、2 行目に n 個の初期 Pod 数、続く m 行にそれぞれ typ p x。typ=1 は 1 始まりのサービス p を x に直接設定します。typ=2 のとき p は -1 でなければならず、すべての Pod に max(pods[i],x) を適用します。元の MDX には範囲が示されていません。本サイトでは 1≤n,m≤200000、1≤pods[i]≤10^9、0≤x≤10^9 を追加し、この stdin/stdout の形式を定義しています。",
+    "output": "最終的な n 個の Pod 数を空白区切りで出力します。",
+    "explanation": "解法、正当性の証明、計算量については付属の解説を参照してください。",
+    "hints": [
+      "点への代入は 1 つの値を下げることがあります。履歴上の HPA の最大値を、いつまでも有効な下限として扱ってはいけません。"
+    ]
+  },
+  "ko": {
+    "title": "Horizontal Pod Autoscaler",
+    "description": "n개 마이크로서비스의 파드 수를 관리합니다. 연산 1은 지정한 서비스의 파드 수를 x로 직접 설정합니다(늘어날 수도 줄어들 수도 있음). 연산 2는 x보다 작은 모든 서비스의 파드 수를 x로 올립니다. 모든 연산을 순서대로 실행한 뒤 최종 배열을 출력하세요.",
+    "input": "첫 줄에 n, m이 주어지고, 둘째 줄에 n개의 초기 파드 수가 주어지며, 이어서 m개의 줄에 각각 typ p x가 주어집니다. typ=1이면 1부터 시작하는 서비스 p를 x로 직접 설정하고, typ=2이면 p는 -1이어야 하며 모든 pods에 max(pods[i],x)를 적용합니다. 원문 MDX에는 범위가 없으며, 이 사이트에서 1≤n,m≤200000, 1≤pods[i]≤10^9, 0≤x≤10^9를 추가하고 이 stdin/stdout 프로토콜을 정의했습니다.",
+    "output": "n개의 최종 파드 수를 공백으로 구분하여 출력합니다.",
+    "explanation": "전체 접근 방법, 정당성 증명, 복잡도는 함께 제공되는 해설을 참고하세요.",
+    "hints": [
+      "점 대입은 한 값을 낮출 수 있으므로, HPA의 과거 최댓값을 영원히 유효한 하한으로 취급하지 마세요."
+    ]
+  },
+  "vi": {
+    "title": "Horizontal Pod Autoscaler",
+    "description": "Duy trì số lượng pod của n microservice. Thao tác 1 đặt trực tiếp số lượng của một service về x (có thể tăng hoặc giảm); thao tác 2 nâng số lượng của mọi service đang dưới x lên x. Thực hiện mọi thao tác theo thứ tự và in ra mảng cuối cùng.",
+    "input": "Dòng đầu chứa n, m; dòng thứ hai chứa n số pod ban đầu; tiếp theo là m dòng, mỗi dòng chứa typ p x. typ=1 đặt trực tiếp service p (đánh số từ 1) về x; khi typ=2, p phải là -1, và max(pods[i],x) được áp dụng cho mọi pod. MDX gốc không nêu phạm vi; trang này bổ sung 1≤n,m≤200000, 1≤pods[i]≤10^9, 0≤x≤10^9, và định nghĩa giao thức stdin/stdout này.",
+    "output": "In ra n số lượng pod cuối cùng, cách nhau bởi dấu cách.",
+    "explanation": "Xem phần lời giải kèm theo để biết đầy đủ hướng tiếp cận và chứng minh. Xem phần lời giải kèm theo để biết đầy đủ hướng tiếp cận.",
+    "hints": [
+      "Phép gán điểm có thể làm giảm một giá trị đơn lẻ; đừng coi giá trị lớn nhất của HPA trong lịch sử là cận dưới còn hiệu lực mãi mãi."
+    ]
   }
 }

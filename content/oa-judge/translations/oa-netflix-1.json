@@ -11,5 +11,35 @@
     "hints": [
       "Before each ADD or MUL, push the current state onto a stack; UNDO pops the top and restores it, and PRINT only records the current state."
     ]
+  },
+  "ja": {
+    "title": "取り消し付き整数コマンドシステム",
+    "description": "状態は 0 から始まります。ADD x は x を加え、MUL x は x を掛け、UNDO はまだ取り消されていない直近の変更コマンドを取り消し、PRINT は現在の状態を出力します。PRINT は変更履歴に入らず、REDO はありません。\n\n入力と出力は本サイトが整理したものです。",
+    "input": "1行目に q が与えられ、続く q 行がコマンドです。元のスナップショットには数値の範囲がありません。本サイトでは 1≤q≤100000、−10⁹≤x≤10⁹ とします。UNDO が実行されるときは、まだ取り消されていない変更が必ず存在し、途中のすべての状態は符号付き 64 ビットの範囲に収まります。",
+    "output": "1行目に PRINT コマンドの総数 p を出力し、続けて p 行に各 PRINT 時点の状態を順に出力します。PRINT がない場合は 0 だけを出力します。",
+    "explanation": "例1: 5 に 3 を掛けて 15 になり、掛け算を取り消すと 5 が出力されます。例2: 0 を掛けると 0 が出力され、UNDO で 7 を復元できます。UNDO は除算では実装できません。例3: 2、−6、2 が順に出力されます。PRINT は取り消し記録を消費せず、4 の加算を取り消した後の新しい掛け算は状態 2 に対して実行されます。",
+    "hints": [
+      "ADD や MUL の前に現在の状態をスタックに積みます。UNDO は先頭を取り出して復元し、PRINT は現在の状態を記録するだけです。"
+    ]
+  },
+  "ko": {
+    "title": "실행 취소가 있는 정수 명령 시스템",
+    "description": "상태는 0에서 시작합니다. ADD x는 x를 더하고, MUL x는 x를 곱하며, UNDO는 아직 취소되지 않은 가장 최근의 변경 명령을 취소하고, PRINT는 현재 상태를 출력합니다. PRINT는 변경 이력에 들어가지 않으며 REDO는 없습니다.\n\n입력과 출력은 이 사이트에서 정리한 것입니다.",
+    "input": "첫째 줄에 q가 주어지고 이어서 q줄의 명령이 주어집니다. 원래 스냅샷에는 수치 범위가 없으며, 이 사이트는 1≤q≤100000, −10⁹≤x≤10⁹를 사용합니다. UNDO가 실행될 때는 아직 취소되지 않은 변경이 반드시 존재하며, 모든 중간 상태는 부호 있는 64비트 범위에 들어갑니다.",
+    "output": "첫째 줄에 PRINT 명령의 총 개수 p를 출력하고, 이어서 p줄에 각 PRINT 시점의 상태를 순서대로 출력합니다. PRINT가 없으면 0만 출력합니다.",
+    "explanation": "예제 1: 5에 3을 곱해 15가 되고, 곱셈을 취소하면 5가 출력됩니다. 예제 2: 0을 곱하면 0이 출력되며, 취소로 7을 복원할 수 있습니다. 취소는 나눗셈으로 구현할 수 없습니다. 예제 3: 2, −6, 2가 순서대로 출력됩니다. PRINT는 취소 기록을 차지하지 않으며, 4를 더한 것을 취소한 뒤 새 곱셈은 상태 2에 적용됩니다.",
+    "hints": [
+      "ADD나 MUL 전에 현재 상태를 스택에 push하세요. UNDO는 맨 위를 pop하여 복원하고, PRINT는 현재 상태를 기록하기만 합니다."
+    ]
+  },
+  "vi": {
+    "title": "Hệ lệnh số nguyên có hoàn tác",
+    "description": "Trạng thái ban đầu là 0. ADD x cộng x, MUL x nhân với x, và UNDO hoàn tác lệnh thay đổi gần nhất chưa bị hoàn tác; PRINT in ra trạng thái hiện tại. PRINT không bao giờ được đưa vào lịch sử thay đổi, và không có REDO.\n\nĐầu vào và đầu ra do trang này biên soạn.",
+    "input": "Dòng đầu chứa q, tiếp theo là q dòng lệnh. Bản chụp gốc không có cận số; trang này dùng 1≤q≤100000 và −10⁹≤x≤10⁹. Mỗi khi UNDO chạy, đảm bảo có một thay đổi chưa bị hoàn tác, và mọi trạng thái trung gian đều nằm trong khoảng số có dấu 64 bit.",
+    "output": "Dòng đầu in tổng số lệnh PRINT là p; sau đó in p dòng là trạng thái tại mỗi lệnh PRINT theo thứ tự. Nếu không có PRINT, chỉ in 0.",
+    "explanation": "Ví dụ 1: 5 nhân 3 được 15; sau khi hoàn tác phép nhân, in ra 5. Ví dụ 2: nhân với 0 in ra 0, và hoàn tác vẫn khôi phục được 7; không thể cài đặt hoàn tác bằng phép chia. Ví dụ 3: in lần lượt 2, −6, 2; PRINT không chiếm một bản ghi hoàn tác, và sau khi hoàn tác phép cộng 4, phép nhân mới chạy trên trạng thái 2.",
+    "hints": [
+      "Trước mỗi ADD hoặc MUL, đẩy trạng thái hiện tại vào một ngăn xếp; UNDO lấy phần tử trên cùng ra và khôi phục, còn PRINT chỉ ghi lại trạng thái hiện tại."
+    ]
   }
 }

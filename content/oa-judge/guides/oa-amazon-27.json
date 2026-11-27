@@ -13,6 +13,21 @@
       "Every round deals positive damage, so the accumulated damage is largest after the final round; surviving the final round means surviving every earlier one.",
       "The armor can be used only once and blocks min(armor, that round's damage), which is largest on the round with the highest damage.",
       "Compute the total damage and the largest single-round damage; the answer is the total minus min(armor, largest damage) plus 1, because health must stay strictly above 0. The total can reach 10^14, so use 64-bit integers."
+    ],
+    "ja": [
+      "どのラウンドも正のダメージを与えるので、累積ダメージは最後のラウンドの後が最大です。最後のラウンドを生き延びれば、それまでのすべてのラウンドも生き延びています。",
+      "アーマーは 1 回しか使えず、防げる量は min(armor, そのラウンドのダメージ) です。これはダメージが最大のラウンドで最も大きくなります。",
+      "総ダメージと 1 ラウンドの最大ダメージを求めます。答えは、総ダメージ − min(armor, 最大ダメージ) + 1 です。体力は厳密に 0 より大きくなければならないため、1 を足します。総ダメージは 10^14 に達し得るので、64 ビット整数を使ってください。"
+    ],
+    "ko": [
+      "모든 라운드의 피해는 양수이므로 누적 피해는 마지막 라운드 이후에 가장 큽니다. 마지막 라운드를 버티면 그 이전의 모든 라운드도 버틴 것입니다.",
+      "방어구는 한 번만 사용할 수 있고 min(armor, 해당 라운드의 피해)만큼 막으므로, 피해가 가장 큰 라운드에 사용할 때 막는 양이 최대입니다.",
+      "총 피해와 한 라운드의 최대 피해를 구합니다. 체력이 0보다 엄격하게 커야 하므로 답은 총합 − min(armor, 최대 피해) + 1입니다. 총합이 10^14까지 될 수 있으므로 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Mỗi vòng gây sát thương dương, nên sát thương tích lũy lớn nhất sau vòng cuối; sống sót qua vòng cuối nghĩa là sống sót qua mọi vòng trước đó.",
+      "Giáp chỉ dùng được một lần và chặn min(armor, sát thương vòng đó), lớn nhất ở vòng có sát thương cao nhất.",
+      "Tính tổng sát thương và sát thương một vòng lớn nhất; đáp án là tổng trừ min(armor, sát thương lớn nhất) cộng 1, vì máu phải luôn lớn hơn 0. Tổng có thể đạt 10^14, nên dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nSubtract the most that can be blocked, min(armor,max(power)), from the total damage, then add 1.\n\n## Proof of correctness\n\nEffective damage is always non-negative, so the accumulated damage is largest at the last moment. The armor can block, once, an amount no greater than armor and no greater than the chosen round's damage, and the largest reduction comes on the round with the maximum damage. Adding 1 exactly guarantees strict survival.\n\n## Complexity\n\nTime O(n), extra space O(1) (excluding the input)."

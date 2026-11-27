@@ -13,6 +13,21 @@
       "The relation between two circles depends only on how the center distance d compares with the sum and the difference of the radii; coinciding centers are a special case to check first.",
       "To avoid precision problems from square roots, compare squares directly: compare d² with (R+r)² and (R−r)², since squaring non-negative numbers preserves their order.",
       "For each pair compute d² first: if it is 0 print Concentric; if it equals (R+r)² or (R−r)² print Touching; if it is greater than (R+r)² print Disjoint-Outside; if it is less than (R−r)² print Disjoint-Inside; otherwise print Intersecting. Coordinates and radii are at most 5000, so integer squares are exact."
+    ],
+    "ja": [
+      "2 円の位置関係は、中心間距離 d が半径の和・差とどう比較されるかだけで決まります。中心が一致する場合は特別扱いで、最初に調べます。",
+      "平方根による精度の問題を避けるため、2 乗のまま比較します。つまり d² を (R+r)² および (R−r)² と比べます。非負の数は 2 乗しても大小関係が保たれます。",
+      "各組でまず d² を計算します。0 なら Concentric、(R+r)² または (R−r)² に等しければ Touching、(R+r)² より大きければ Disjoint-Outside、(R−r)² より小さければ Disjoint-Inside、それ以外は Intersecting を出力します。座標と半径は 5000 以下なので、整数の 2 乗は正確に扱えます。"
+    ],
+    "ko": [
+      "두 원의 관계는 중심 거리 d를 반지름의 합 및 차와 비교하는 것으로 정해집니다. 중심이 일치하는 경우는 특수한 경우이므로 먼저 확인합니다.",
+      "제곱근으로 인한 정밀도 문제를 피하려면 제곱끼리 직접 비교합니다. 음이 아닌 수는 제곱해도 대소 관계가 유지되므로 d²을 (R+r)² 및 (R−r)²과 비교하면 됩니다.",
+      "각 쌍에 대해 먼저 d²을 계산합니다. 0이면 Concentric, (R+r)² 또는 (R−r)²과 같으면 Touching, (R+r)²보다 크면 Disjoint-Outside, (R−r)²보다 작으면 Disjoint-Inside, 그 외에는 Intersecting을 출력합니다. 좌표와 반지름이 5000 이하이므로 정수 제곱은 정확합니다."
+    ],
+    "vi": [
+      "Quan hệ giữa hai đường tròn chỉ phụ thuộc vào việc khoảng cách tâm d so với tổng và hiệu hai bán kính như thế nào; trường hợp hai tâm trùng nhau là trường hợp đặc biệt cần kiểm tra trước.",
+      "Để tránh sai số do căn bậc hai, hãy so sánh trực tiếp các bình phương: so sánh d² với (R+r)² và (R−r)², vì bình phương các số không âm giữ nguyên thứ tự của chúng.",
+      "Với mỗi cặp, tính d² trước: nếu bằng 0 thì in Concentric; nếu bằng (R+r)² hoặc (R−r)² thì in Touching; nếu lớn hơn (R+r)² thì in Disjoint-Outside; nếu nhỏ hơn (R−r)² thì in Disjoint-Inside; còn lại in Intersecting. Tọa độ và bán kính không quá 5000 nên bình phương số nguyên là chính xác."
     ]
   },
   "explanationEn": "## Approach\n\nFirst check whether the centers coincide; otherwise compare the squared distance between the centers with the square of the sum of the radii and the square of their difference.\n\n## Proof of correctness\n\nThe two circles' boundaries meet exactly when |R−r| ≤ d ≤ R+r; equality at either end is exactly tangency, and the strict interior gives two intersection points; outside this range the circles are separate from each other or one lies inside the other. Squaring preserves order for non-negative numbers, and handling the concentric case separately avoids confusing coincident circles with degenerate cases.\n\n## Complexity\n\nTime O(n), space O(n) to store the output."

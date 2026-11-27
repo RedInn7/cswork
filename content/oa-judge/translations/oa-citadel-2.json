@@ -11,5 +11,35 @@
     "hints": [
       "Enumerate the friends of each person's friends to count two-hop occurrences, excluding the person and their direct friends; if there is no candidate with a positive score, scan for the smallest ID not in the set formed by the person and their friends."
     ]
+  },
+  "ja": {
+    "title": "共通の友達が最も多い友達以外の推薦",
+    "description": "各人に対して、本人でも直接の友達でもないユーザーを 1 人推薦します。共通の友達が最も多い人を優先し、同数なら ID が最小の人を選びます。共通の友達が 0 人のユーザーも候補に含まれます。友達以外のユーザーがまったくいない場合に限り −1 を返します。元の OCR の入力は辺のリストであり、旧キュレーションページの行列ではありません。元の問題の正式な条件は、共通の友達が正の数であることを要求していません。\n\n入出力の形式は本サイトが整理したものです。欠けていた数値の範囲と、原文の誤記の修正はすべて明示しています。",
+    "input": "1 行目に n m、続く m 行に無向辺が与えられます。同じ問題全体の元の範囲は 1≤n≤100000、0≤m≤250000、ID は 0..n−1 で、自己ループや多重辺はなく、各人の友達は最大 15 人で、グラフは連結でなくても構いません。問題 18 の本文にあった 1 始まりの誤記は、元の制約と例に従って 0 始まりに修正しています。",
+    "output": "n 個の推薦 ID を、ユーザー 0..n−1 の順に出力してください。",
+    "explanation": "3 つの公開例の出力は順に、3 2 1 0 1、-1 -1 -1、2 2 0 です。これらの答えは、独立した全列挙または直接のシミュレーションで検証済みです。",
+    "hints": [
+      "各人の友達の友達を列挙して 2 ホップで到達した回数を数えます。ただし、本人と直接の友達は除きます。スコアが正の候補がない場合は、本人とその友達からなる集合に含まれない最小の ID を走査して探します。"
+    ]
+  },
+  "ko": {
+    "title": "공통 친구가 가장 많은 비친구 추천",
+    "description": "각 사람에게 본인도 직접 친구도 아닌 사용자를 추천합니다. 공통 친구가 가장 많은 사용자를 우선하고, 같으면 ID가 가장 작은 사용자를 고릅니다. 공통 친구가 0명인 사용자도 후보가 될 수 있으며, 비친구가 아예 없을 때만 −1을 반환합니다. 원본 OCR의 입력은 예전 정리 페이지의 행렬이 아니라 간선 목록이며, 원문의 형식적 조건은 공통 친구 수가 양수일 것을 요구하지 않습니다.\n\n입출력 프로토콜은 이 사이트에서 정리한 것이며, 빠져 있던 수치 범위와 원문 오타의 복원 내용은 모두 명시했습니다.",
+    "input": "첫 번째 줄에 n m이 주어지고, 이어지는 m개의 줄에 무방향 간선이 주어집니다. 같은 문제 전체의 원문 범위: 1≤n≤100000, 0≤m≤250000, ID는 0..n−1이며 자기 자신으로의 간선과 중복 간선은 없고, 한 사람당 친구는 최대 15명이며 그래프는 연결되어 있지 않을 수 있습니다. 18번 문제 본문의 1-기반 표기 오타는 원문 제약과 예제에 따라 0-기반으로 바로잡았습니다.",
+    "output": "사용자 0..n−1의 순서대로 추천 ID n개를 출력합니다.",
+    "explanation": "공개된 세 예제의 출력은 순서대로 3 2 1 0 1; -1 -1 -1; 2 2 0입니다. 이 답들은 독립적인 완전 탐색 또는 직접 시뮬레이션으로 검증했습니다.",
+    "hints": [
+      "각 사람의 친구들의 친구를 나열하여 두 단계 거리에 도달한 횟수를 세되, 본인과 직접 친구는 제외합니다. 점수가 양수인 후보가 없다면, 본인과 그 친구들로 이루어진 집합에 속하지 않는 가장 작은 ID를 탐색합니다."
+    ]
+  },
+  "vi": {
+    "title": "Gợi ý người chưa là bạn có nhiều bạn chung nhất",
+    "description": "Với mỗi người, hãy gợi ý một người dùng không phải chính người đó và không phải bạn trực tiếp, ưu tiên người có nhiều bạn chung nhất, sau đó đến ID nhỏ nhất. Người dùng có 0 bạn chung vẫn là ứng viên; chỉ trả về −1 khi hoàn toàn không có người nào chưa là bạn. Đầu vào OCR gốc là danh sách cạnh, không phải ma trận như trang đã biên soạn cũ; các điều kiện hình thức của đề gốc không yêu cầu số bạn chung phải dương.\n\nGiao thức đầu vào/đầu ra do trang này biên soạn; các cận số còn thiếu và việc khôi phục lỗi đánh máy của nguồn đều được nêu rõ.",
+    "input": "Dòng đầu tiên chứa n m, tiếp theo là m dòng mô tả các cạnh vô hướng. Khoảng gốc của cùng bài đầy đủ: 1≤n≤100000, 0≤m≤250000, ID từ 0..n−1; không có khuyên hay cạnh bội, mỗi người có tối đa 15 bạn, và đồ thị có thể không liên thông. Lỗi đánh máy theo chỉ số từ 1 trong phần thân của bài 18 được khôi phục về chỉ số từ 0 theo các ràng buộc và ví dụ gốc.",
+    "output": "In ra n ID được gợi ý, theo thứ tự người dùng 0..n−1.",
+    "explanation": "Đầu ra của ba ví dụ công khai lần lượt là: 3 2 1 0 1; -1 -1 -1; 2 2 0. Các đáp án này đã được kiểm chứng bằng liệt kê độc lập hoặc mô phỏng trực tiếp.",
+    "hints": [
+      "Liệt kê bạn của bạn của mỗi người để đếm số lần xuất hiện qua hai bước, loại trừ chính người đó và các bạn trực tiếp; nếu không có ứng viên nào có điểm dương, hãy quét tìm ID nhỏ nhất không thuộc tập gồm người đó và các bạn của họ."
+    ]
   }
 }

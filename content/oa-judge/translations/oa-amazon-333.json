@@ -13,5 +13,41 @@
       "A failed request must not change any state.",
       "A user who is already online fails to log in again, whether or not the password is correct."
     ]
+  },
+  "ja": {
+    "title": "Amazon OA #333: Sign In Pages",
+    "description": "3つのサインインページのエンドポイント、Register、Login、Logout を実装してください。n 個のリクエストを順に処理し、各リクエストの戻り値を出力します。\n\nregister username password:username が未登録なら、ユーザーを作成して Registered Successfully を返します(登録してもログイン状態にはなりません)。username がすでに存在する場合は Username already exists を返し、既存のパスワードとログイン状態は変更しません。\nlogin username password:ユーザーが存在し、パスワードが一致し、そのユーザーが現在ログインしていなければ、ログインに成功して Logged In Successfully を返します。それ以外は Login Unsuccessful を返します。ログイン中のユーザーが再度ログインすると必ず失敗し、元のセッションは有効なままです。\nlogout username:ユーザーが現在ログインしていれば、ログアウトさせて Logged Out Successfully を返します。ユーザーが存在しない、またはログインしていない場合は Logout Unsuccessful を返します。\n\n最初はユーザーが1人もいません。リクエストは入力順に実行されます。username と password は大文字と小文字を区別し、ユーザー同士の状態は互いに影響せず、失敗したリクエストは状態を変更しません。",
+    "input": "1行目に n が与えられます。続く n 行はそれぞれ1つのリクエストで、register username password、login username password、logout username のいずれかです。各フィールドは1つの空白で区切られます。1≤n≤10^6。username と password は長さ 1..10 の英数字(0-9、a-z、A-Z)の文字列です。",
+    "output": "n 行を出力してください。i 行目はリクエスト i の戻り値で、Registered Successfully、Username already exists、Logged In Successfully、Login Unsuccessful、Logged Out Successfully、Logout Unsuccessful のいずれかです。",
+    "explanation": "例 1:david と adam が登録に成功します。david は正しいパスワードでログインします。adam のパスワード 1adam1 は登録時の 1Adam1 と大文字小文字が異なるのでログインに失敗します。david はログイン中なのでログアウトに成功します。例 2:Bob の2回目の登録は失敗し、パスワードは上書きされません。pw2 でのログインは失敗し、pw1 では成功します。ログイン中に再度ログインすると失敗します。logout bob は大文字小文字が違うので失敗し、その後 Bob のログアウトは成功し、もう一度ログアウトすると失敗します。例 3:未登録のユーザーはログインもログアウトも失敗します。登録したばかりでログインしていないユーザーはログアウトに失敗します。",
+    "hints": [
+      "各ユーザーに必要な状態は2つだけです。パスワードと、オンラインかどうかです。",
+      "失敗したリクエストは、どんな状態も変更してはいけません。",
+      "すでにオンラインのユーザーは、パスワードが正しいかどうかにかかわらず、再度のログインに失敗します。"
+    ]
+  },
+  "ko": {
+    "title": "Amazon OA #333: Sign In Pages",
+    "description": "세 가지 로그인 페이지의 엔드포인트인 회원가입(Register), 로그인(Login), 로그아웃(Logout)을 구현하세요. n개의 요청을 순서대로 처리하고 각 요청의 반환값을 출력합니다.\n\nregister username password: username이 등록되어 있지 않으면 사용자를 생성하고 Registered Successfully를 반환합니다(등록은 로그인 상태로 만들지 않습니다). 이미 존재하면 Username already exists를 반환하며 기존 비밀번호와 로그인 상태는 바뀌지 않습니다.\nlogin username password: 사용자가 존재하고 비밀번호가 일치하며 현재 로그인 상태가 아니면 로그인에 성공하여 Logged In Successfully를 반환하고, 그 외에는 Login Unsuccessful을 반환합니다. 이미 로그인한 사용자가 다시 로그인하면 항상 실패하며 기존 세션은 그대로 유지됩니다.\nlogout username: 사용자가 현재 로그인 상태이면 로그아웃시키고 Logged Out Successfully를 반환하며, 사용자가 없거나 로그인 상태가 아니면 Logout Unsuccessful을 반환합니다.\n\n처음에는 사용자가 없습니다. 요청은 입력 순서대로 실행됩니다. username과 password는 대소문자를 구분하며, 사용자끼리는 서로의 상태에 영향을 주지 않고, 실패한 요청은 어떤 상태도 바꾸지 않습니다.",
+    "input": "첫째 줄에 n이 주어집니다. 이어지는 n개 줄 각각에 요청이 하나씩 주어지며, register username password, login username password, logout username 중 하나이고 필드는 공백 한 칸으로 구분됩니다. 1≤n≤10^6이며, username과 password는 길이 1..10인 영숫자 문자열(0-9, a-z, A-Z)입니다.",
+    "output": "n줄을 출력합니다. i번째 줄은 i번째 요청의 반환값이며 Registered Successfully, Username already exists, Logged In Successfully, Login Unsuccessful, Logged Out Successfully, Logout Unsuccessful 중 하나입니다.",
+    "explanation": "예제 1: david와 adam이 회원가입에 성공하고, david가 올바른 비밀번호로 로그인하며, adam은 비밀번호 1adam1이 가입 때 쓴 1Adam1과 대소문자가 달라 로그인에 실패하고, david는 로그인 상태이므로 로그아웃에 성공합니다. 예제 2: Bob의 중복 가입은 실패하고 비밀번호를 덮어쓰지 않으며, pw2로 로그인하면 실패하고 pw1로 하면 성공하며, 로그인 중에 다시 로그인하면 실패하고, logout bob은 대소문자가 달라 실패한 뒤 Bob은 로그아웃에 성공하고 다시 로그아웃하면 실패합니다. 예제 3: 가입하지 않은 사용자는 로그인도 로그아웃도 실패하고, 막 가입했지만 로그인하지 않은 사용자는 로그아웃에 실패합니다.",
+    "hints": [
+      "각 사용자는 비밀번호와 온라인 여부, 이렇게 두 가지 상태만 있으면 됩니다.",
+      "실패한 요청은 어떤 상태도 바꾸어서는 안 됩니다.",
+      "이미 온라인인 사용자는 비밀번호가 맞든 틀리든 다시 로그인할 수 없습니다."
+    ]
+  },
+  "vi": {
+    "title": "Amazon OA #333: Sign In Pages",
+    "description": "Cài đặt các điểm cuối của ba trang đăng nhập: Register, Login và Logout. Xử lý n yêu cầu theo thứ tự và in giá trị trả về của từng yêu cầu.\n\nregister username password: nếu username chưa được đăng ký, tạo người dùng và trả về Registered Successfully (đăng ký không đăng nhập người dùng); nếu username đã tồn tại, trả về Username already exists, giữ nguyên mật khẩu và trạng thái đăng nhập hiện có.\nlogin username password: nếu người dùng tồn tại, mật khẩu khớp và người dùng hiện chưa đăng nhập, đăng nhập thành công và trả về Logged In Successfully; ngược lại trả về Login Unsuccessful. Người dùng đã đăng nhập mà đăng nhập lại thì luôn thất bại, và phiên ban đầu vẫn còn hiệu lực.\nlogout username: nếu người dùng đang đăng nhập, đăng xuất họ và trả về Logged Out Successfully; nếu người dùng không tồn tại hoặc chưa đăng nhập, trả về Logout Unsuccessful.\n\nBan đầu không có người dùng nào. Các yêu cầu được thực hiện theo thứ tự đầu vào. Username và mật khẩu phân biệt hoa thường, các người dùng không ảnh hưởng đến trạng thái của nhau, và yêu cầu thất bại không thay đổi trạng thái nào.",
+    "input": "Dòng đầu chứa n. Mỗi dòng trong n dòng tiếp theo chứa một yêu cầu: register username password, login username password, hoặc logout username, các trường cách nhau bởi đúng một dấu cách. 1≤n≤10^6; username và password là các xâu chữ và số (0-9, a-z, A-Z) có độ dài 1..10.",
+    "output": "In n dòng; dòng i là giá trị trả về của yêu cầu i, là một trong các giá trị Registered Successfully, Username already exists, Logged In Successfully, Login Unsuccessful, Logged Out Successfully, Logout Unsuccessful.",
+    "explanation": "Ví dụ 1: david và adam đăng ký thành công; david đăng nhập với mật khẩu đúng; mật khẩu 1adam1 của adam khác hoa thường so với 1Adam1 dùng khi đăng ký, nên đăng nhập thất bại; david đang đăng nhập nên đăng xuất thành công. Ví dụ 2: đăng ký lại Bob thất bại và không ghi đè mật khẩu; đăng nhập với pw2 thất bại còn với pw1 thành công; đăng nhập lại khi đang đăng nhập thì thất bại; logout bob thất bại vì khác hoa thường, sau đó Bob đăng xuất thành công, và đăng xuất lần nữa thì thất bại. Ví dụ 3: người dùng chưa đăng ký thất bại cả khi đăng nhập lẫn đăng xuất; người dùng vừa đăng ký nhưng chưa đăng nhập thì đăng xuất thất bại.",
+    "hints": [
+      "Mỗi người dùng chỉ cần hai thông tin trạng thái: mật khẩu và việc có đang online hay không.",
+      "Yêu cầu thất bại không được thay đổi bất kỳ trạng thái nào.",
+      "Người dùng đã online mà đăng nhập lại thì thất bại, dù mật khẩu đúng hay sai."
+    ]
   }
 }

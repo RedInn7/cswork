@@ -11,5 +11,35 @@
     "hints": [
       "Scan in reverse, use a set to skip IDs already seen, and stop after collecting k; if there are not enough, report that it is infeasible."
     ]
+  },
+  "ja": {
+    "title": "直近の k 種類のリクエスト",
+    "description": "すべてのリクエストを受け取った後、直近の k 個の異なるリクエスト ID を、各 ID が最後に現れた時刻の新しい順に出力してください。元の例から、同じ ID が繰り返されても 1 回だけ報告することがわかります。異なる ID が k 個に満たない場合、本サイトの出力規則では -1 です。\n\n標準的な入出力形式と例は本サイトで整理したものです。本サイトのものと明記されている範囲は、元の問題文の制約ではありません。",
+    "input": "1 行目に n k、続く n 行にリクエスト ID が与えられます。元の問題には数値の範囲がありません。本サイトでは 1≤n,k≤100000 で、各 ID は改行以外の 1 から 20 個の Unicode スカラー値からなり、空白を含むことがあります。空白を取り除かずに、入力を 1 行ずつ読んでください。",
+    "output": "解がなければ -1 だけを出力します。そうでなければ、1 行目に k、続く k 行にリクエスト ID を新しい順に、空白を保ったまま出力してください。",
+    "explanation": "例の出力は、行ごとに、それぞれ 3、item3、item1、item2、次に -1、次に 2、a b、前後に空白のある a です。",
+    "hints": [
+      "後ろから走査し、集合で既出の ID を飛ばして、k 個集まったら止めます。足りなければ解なしと報告します。"
+    ]
+  },
+  "ko": {
+    "title": "가장 최근의 서로 다른 요청 k개",
+    "description": "모든 요청을 받은 뒤, 가장 최근의 서로 다른 요청 ID k개를 출력하세요. 각 ID가 마지막으로 나타난 시각을 기준으로 가장 최근인 것부터 오래된 순으로 정렬합니다. 원문 예제에서 반복된 ID는 한 번만 보고한다는 점이 분명합니다. 서로 다른 ID가 k개보다 적으면 이 사이트의 출력 규칙은 -1입니다.\n\n표준 입출력 형식과 예제는 이 사이트에서 정리한 것이며, 이 사이트의 범위라고 명시된 값은 원문의 제약 조건이 아닙니다.",
+    "input": "첫째 줄에 n k가 주어지고, 이어서 n개의 줄에 요청 ID가 주어집니다. 원문에는 수의 범위가 없으며, 이 사이트에서는 1≤n,k≤100000이고 각 ID는 개행이 아닌 유니코드 스칼라 문자 1~20개로 이루어지며 공백을 포함할 수 있습니다. 공백을 자르지 말고 줄 단위로 읽으세요.",
+    "output": "해가 없으면 -1만 출력합니다. 그렇지 않으면 첫째 줄에 k를 출력하고, 이어서 k개의 줄에 가장 최근인 것부터 오래된 순으로 요청 ID를 공백을 유지한 채 출력합니다.",
+    "explanation": "예제의 출력은 줄 단위로 각각 3, item3, item1, item2 / -1 / 2, a b, 앞뒤에 공백이 있는 a입니다.",
+    "hints": [
+      "뒤에서부터 훑으면서 집합으로 이미 본 ID를 건너뛰고, k개를 모으면 멈춥니다. 모자라면 불가능하다고 보고합니다."
+    ]
+  },
+  "vi": {
+    "title": "k yêu cầu khác nhau gần đây nhất",
+    "description": "Sau khi nhận hết các yêu cầu, hãy in ra k ID yêu cầu khác nhau gần đây nhất, sắp xếp từ gần nhất đến xa nhất theo lần cuối mỗi ID xuất hiện. Ví dụ gốc làm rõ rằng một ID lặp lại chỉ được báo cáo một lần. Nếu có ít hơn k ID khác nhau, quy ước đầu ra của trang này là -1.\n\nĐịnh dạng đầu vào/đầu ra chuẩn và các ví dụ do trang này biên soạn; các khoảng giá trị được đánh dấu là của trang này không phải ràng buộc gốc của nguồn.",
+    "input": "Dòng đầu chứa n k, tiếp theo là n dòng ID yêu cầu. Đề gốc không có giới hạn số; trên trang này 1≤n,k≤100000, và mỗi ID gồm 1 đến 20 ký tự Unicode scalar không phải xuống dòng và có thể chứa dấu cách; hãy đọc đầu vào từng dòng mà không cắt dấu cách.",
+    "output": "Nếu không có nghiệm, chỉ in -1; ngược lại in k ở dòng đầu, theo sau là k dòng ID yêu cầu từ gần nhất đến xa nhất, giữ nguyên dấu cách.",
+    "explanation": "Các ví dụ lần lượt in ra, từng dòng, 3, item3, item1, item2; -1; và 2, a b, a có dấu cách bao quanh.",
+    "hints": [
+      "Quét ngược, dùng một tập hợp để bỏ qua các ID đã thấy, và dừng sau khi gom đủ k; nếu không đủ thì báo là không khả thi."
+    ]
   }
 }

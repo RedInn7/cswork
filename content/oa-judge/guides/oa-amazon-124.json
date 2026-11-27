@@ -13,6 +13,21 @@
       "Comparing a subsequence with t lexicographically only depends on the first differing position: before it, the subsequence equals some prefix of t; a larger character makes it greater forever, and a smaller one makes it smaller forever.",
       "Process the characters of s from left to right, keeping dp[j] = number of choices equal to exactly the first j characters of t, and greater = number of choices already strictly greater than t. A choice that is already greater stays greater whether or not the current character is taken, and a choice equal to all of t becomes greater once any character is appended.",
       "Start with dp[0]=1 and greater=0. For each character c: first set greater = greater*2 + dp[m]; then for j from m-1 down to 0, if c > t[j] add dp[j] to greater, and if c == t[j] add dp[j] to dp[j+1] (going backwards keeps a position from being used twice); reduce everything modulo 1000000007. Print greater at the end."
+    ],
+    "ja": [
+      "部分列と t の辞書順の比較は、最初に異なる位置だけで決まります。それより前では、部分列は t の何らかの接頭辞と等しく、より大きい文字なら以後ずっと大きく、より小さい文字なら以後ずっと小さくなります。",
+      "s の文字を左から右へ処理し、dp[j] = t の先頭 j 文字とちょうど等しい選び方の個数、greater = すでに t より真に大きい選び方の個数を保持します。すでに大きい選び方は、現在の文字を取っても取らなくても大きいままです。t 全体と等しい選び方は、文字を 1 つでも追加すると大きくなります。",
+      "dp[0]=1、greater=0 から始めます。各文字 c について、まず greater = greater*2 + dp[m] とし、次に j を m-1 から 0 まで逆順に動かして、c > t[j] なら dp[j] を greater に加え、c == t[j] なら dp[j] を dp[j+1] に加えます（逆順にすることで同じ位置の二重使用を防ぎます）。すべて 1000000007 で剰余を取ります。最後に greater を出力します。"
+    ],
+    "ko": [
+      "부분 수열과 t의 사전순 비교는 처음으로 다른 위치에만 달려 있습니다. 그 앞에서는 부분 수열이 t의 어떤 접두사와 같고, 더 큰 문자가 나오면 영원히 더 크며, 더 작은 문자가 나오면 영원히 더 작습니다.",
+      "s의 문자를 왼쪽에서 오른쪽으로 처리하며 dp[j] = t의 처음 j개 문자와 정확히 같은 선택의 수, greater = 이미 t보다 엄격하게 큰 선택의 수를 유지합니다. 이미 큰 선택은 현재 문자를 고르든 말든 계속 크고, t 전체와 같은 선택은 문자가 하나라도 덧붙으면 커집니다.",
+      "dp[0]=1, greater=0으로 시작합니다. 각 문자 c에 대해 먼저 greater = greater*2 + dp[m]으로 두고, j를 m-1부터 0까지 내려가며 c > t[j]이면 dp[j]를 greater에 더하고 c == t[j]이면 dp[j]를 dp[j+1]에 더합니다(뒤에서부터 돌면 한 위치를 두 번 쓰지 않습니다). 모든 값은 1000000007로 나눈 나머지를 취하고 마지막에 greater를 출력합니다."
+    ],
+    "vi": [
+      "So sánh một dãy con với t theo thứ tự từ điển chỉ phụ thuộc vào vị trí khác biệt đầu tiên: trước đó, dãy con bằng một tiền tố nào đó của t; một ký tự lớn hơn khiến nó lớn hơn mãi mãi, và một ký tự nhỏ hơn khiến nó nhỏ hơn mãi mãi.",
+      "Xử lý các ký tự của s từ trái sang phải, giữ dp[j] = số cách chọn bằng đúng j ký tự đầu của t, và greater = số cách chọn đã lớn hơn nghiêm ngặt t. Một cách chọn đã lớn hơn vẫn lớn hơn dù có lấy ký tự hiện tại hay không, và một cách chọn bằng toàn bộ t trở nên lớn hơn khi thêm bất kỳ ký tự nào.",
+      "Bắt đầu với dp[0]=1 và greater=0. Với mỗi ký tự c: trước tiên đặt greater = greater*2 + dp[m]; sau đó với j từ m-1 xuống 0, nếu c > t[j] thì cộng dp[j] vào greater, và nếu c == t[j] thì cộng dp[j] vào dp[j+1] (đi ngược để một vị trí không bị dùng hai lần); lấy modulo 1000000007 cho mọi thứ. In greater ở cuối."
     ]
   },
   "explanationEn": "## Approach\n\nLet dp[j] count the subsequences currently equal to exactly the first j characters of t, and let greater count the choices that are already strictly greater. A new character can extend a greater state, or become greater at the first point of difference; update the match lengths from back to front to avoid using a position twice.\n\n## Correctness\n\nEvery subsequence falls into one of three groups according to its first difference from t so far: already greater, still equal to some prefix, or already smaller. The already-smaller ones can never recover and are ignored; the already-greater ones stay greater whether or not the character is appended. For a state equal to a prefix, taking the current character leads to exactly one of three cases: it matches, it becomes greater at the first difference, or it becomes smaller at the first difference. These transitions are mutually exclusive and exhaustive.\n\n## Complexity\n\nTime O(|s||t|), space O(|s|+|t|) including the input."

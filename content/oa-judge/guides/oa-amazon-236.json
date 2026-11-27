@@ -13,6 +13,21 @@
       "However the first segment is cut, it cannot pass the first position where a character repeats, and making the first segment as long as possible never makes the rest harder to split.",
       "Greedy: extend each segment as far as possible and cut only right before a character that already appears in the current segment.",
       "Keep the set of characters in the current segment (a 26-bit mask is enough) and start with one segment; scan the characters, and if a character is already in the set, add one segment and clear the set; then add the character; output the number of segments."
+    ],
+    "ja": [
+      "最初の区間をどう切っても、文字が重複する最初の位置を超えることはできません。また、最初の区間をできるだけ長くしても、残りの分割が難しくなることはありません。",
+      "貪欲法: 各区間を可能な限り伸ばし、現在の区間にすでにある文字の直前でのみ切ります。",
+      "現在の区間の文字の集合を保持し（26 ビットのマスクで十分です）、区間 1 つから始めます。文字を走査し、文字がすでに集合にあれば区間を 1 つ増やして集合をクリアし、その後に文字を追加します。区間の数を出力します。"
+    ],
+    "ko": [
+      "첫 구간을 어떻게 자르든 문자가 처음 반복되는 위치를 넘을 수 없고, 첫 구간을 가능한 한 길게 만들어도 나머지를 나누기가 더 어려워지지 않습니다.",
+      "그리디: 각 구간을 가능한 한 멀리 확장하고, 현재 구간에 이미 있는 문자 바로 앞에서만 자릅니다.",
+      "현재 구간의 문자 집합(26비트 마스크로 충분합니다)을 유지하고 구간 1개로 시작합니다. 문자를 훑다가 이미 집합에 있으면 구간 수를 1 늘리고 집합을 비웁니다. 그런 다음 문자를 추가합니다. 구간 수를 출력합니다."
+    ],
+    "vi": [
+      "Dù cắt đoạn đầu tiên thế nào, nó cũng không thể vượt qua vị trí đầu tiên có ký tự lặp, và làm đoạn đầu dài nhất có thể không bao giờ khiến phần còn lại khó tách hơn.",
+      "Tham lam: kéo dài mỗi đoạn xa nhất có thể và chỉ cắt ngay trước một ký tự đã xuất hiện trong đoạn hiện tại.",
+      "Giữ tập ký tự của đoạn hiện tại (một mặt nạ 26 bit là đủ) và bắt đầu với một đoạn; quét các ký tự, và nếu một ký tự đã có trong tập thì thêm một đoạn và xóa tập; sau đó thêm ký tự vào; in số đoạn."
     ]
   },
   "explanationEn": "## Approach\n\nMaintain the character set of the current segment; if the next character is a repeat, end the current segment and start a new one, otherwise add it.\n\n## Proof of correctness\n\nThe first segment cannot go past the first repeated position, so the longest valid prefix is no shorter than any other first segment. Extending the first segment of any optimal split to this prefix only removes or shortens later segments and does not increase the number of segments. Repeating the exchange argument on the remaining suffix shows that the greedy method reaches the minimum number of segments.\n\n## Complexity\n\nTime O(n), auxiliary space O(26)."

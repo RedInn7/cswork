@@ -11,5 +11,35 @@
     "hints": [
       "Process all edges with a union-find structure using path compression and union by size; for each query, read the set size stored at the root."
     ]
+  },
+  "ja": {
+    "title": "Social Connections (Visible Profiles per Query)",
+    "description": "無向のソーシャルグラフが与えられます。クエリされたユーザーは、自分自身を含め、連結成分内のすべてのユーザーを閲覧できます。各クエリについて、元の順序で、その連結成分のサイズを出力してください。\n\n入力形式、例、テストデータは CSWork が整理・作成したものです。元の出典と本サイトが追加した制限については問題文を参照してください。",
+    "input": "1 行目は `N E Q`、続く E 行はそれぞれ無向辺 `u v`、最後の行にクエリされるユーザー番号が Q 個あります。OAMaster の例ではユーザー番号は 1 始まりです。本サイトでは 1≤N≤200000、0≤E,Q≤200000 かつ E+Q≤200000 とし、すべての数は 1..N の範囲です。重複辺と自己ループは許されます(どちらも連結成分を変えません)。",
+    "output": "Q 個の整数を 1 行で出力します。各クエリについて、そのユーザーの連結成分の頂点数を順に出力します。",
+    "explanation": "上記のルールに従って入力を処理します。解法、正当性の証明、計算量については付属の解説を参照してください。",
+    "hints": [
+      "経路圧縮とサイズによる併合を使った Union-Find ですべての辺を処理します。各クエリでは、根に保存された集合のサイズを読みます。"
+    ]
+  },
+  "ko": {
+    "title": "Social Connections (Visible Profiles per Query)",
+    "description": "무방향 소셜 그래프가 주어집니다. 조회한 사용자는 자신을 포함해 같은 연결 요소에 속한 모든 사용자를 볼 수 있습니다. 각 쿼리에 대해 원래 순서대로 해당 연결 요소의 크기를 출력하세요.\n\n입력 형식, 예제, 테스트 데이터는 CSWork가 정리하여 작성했습니다. 원문 출처와 이 사이트에서 추가한 제한은 문제 설명을 참고하세요.",
+    "input": "첫 줄은 `N E Q`입니다. 이어서 E개의 줄에 무방향 간선 `u v`가 주어지고, 마지막 줄에 조회할 사용자 번호 Q개가 주어집니다. OAMaster 예제는 1부터 시작하는 사용자 번호를 사용하며, 이 사이트는 1≤N≤200000, 0≤E,Q≤200000이고 E+Q≤200000이며 모든 수는 1..N 범위라고 규정합니다. 중복 간선과 자기 루프가 허용됩니다(둘 다 연결 요소를 바꾸지 않습니다).",
+    "output": "한 줄에 Q개의 정수를 출력합니다. 각 쿼리에 대해 순서대로 해당 사용자의 연결 요소에 속한 정점의 수를 출력합니다.",
+    "explanation": "위 규칙에 따라 입력을 처리하세요. 풀이 방법, 정당성 증명, 복잡도는 함께 제공되는 설명을 참고하세요.",
+    "hints": [
+      "경로 압축과 크기 기준 합치기를 사용하는 유니온 파인드로 모든 간선을 처리하고, 각 쿼리에서는 루트에 저장된 집합 크기를 읽으세요."
+    ]
+  },
+  "vi": {
+    "title": "Social Connections (Visible Profiles per Query)",
+    "description": "Cho một đồ thị mạng xã hội vô hướng. Mỗi người dùng được truy vấn có thể thấy mọi người dùng trong thành phần liên thông của mình (kể cả chính họ); với mỗi truy vấn, theo thứ tự ban đầu, in ra kích thước của thành phần liên thông đó.\n\nĐịnh dạng đầu vào, ví dụ và dữ liệu kiểm thử do CSWork tổng hợp và biên soạn; xem đề bài để biết nguồn gốc và các giới hạn do trang này bổ sung.",
+    "input": "Dòng đầu là `N E Q`; tiếp theo là E dòng, mỗi dòng là một cạnh vô hướng `u v`; dòng cuối chứa Q số hiệu người dùng được truy vấn. Các ví dụ của OAMaster dùng số hiệu người dùng bắt đầu từ 1; trang này quy định 1≤N≤200000, 0≤E,Q≤200000 với E+Q≤200000, và mọi số nằm trong 1..N. Cho phép cạnh trùng lặp và khuyên (self-loop) (cả hai đều không làm thay đổi các thành phần liên thông).",
+    "output": "In ra một dòng gồm Q số nguyên: với mỗi truy vấn theo thứ tự, số đỉnh trong thành phần liên thông của người dùng đó.",
+    "explanation": "Xử lý đầu vào theo các quy tắc ở trên; xem phần ghi chú kèm theo để biết hướng tiếp cận, chứng minh tính đúng đắn và độ phức tạp.",
+    "hints": [
+      "Xử lý mọi cạnh bằng cấu trúc union-find với nén đường đi và hợp theo kích thước; với mỗi truy vấn, đọc kích thước tập lưu tại gốc."
+    ]
   }
 }

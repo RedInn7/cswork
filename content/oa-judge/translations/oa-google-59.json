@@ -11,5 +11,35 @@
     "hints": [
       "The total distance moved always equals the number of inversions. Each operation adds an extra 1, and the number of operations is at most the sum, over each original run of consecutive 0s, of the number of 1s to its left. While scanning, add the number of 1s seen so far for every 0, and add it once more if that 0 starts a run."
     ]
+  },
+  "ja": {
+    "title": "1 を右に動かす総コストの最大化",
+    "description": "直後に 0 が続いている 1 を 1 つ選び、それに続く連続する 0 の並び全体を越えて、文字列の末尾か、次の 1 の直前まで右へ動かします。各移動はできるだけ遠くまで行わなければならず、コストは移動した距離 + 1 です。すべての 1 を文字列の末尾へ動かしたときの、総コストの最大値を求めてください。\n\n入力・出力と例は CSWork が整理したものです。このサイトのものと明記した数値範囲は、このサイトの判定上の取り決めです。",
+    "input": "このサイトの標準入力: 長さ 1..100000 の 2 進文字列が 1 行で与えられます。",
+    "output": "問題で求められた答えを出力してください。",
+    "explanation": "例 1: まず中央の 1 つの 0 を越えるコスト 2 の操作を 2 回行い、次に最後の 2 つの 0 を越えるコスト 3 の操作を 3 回行って、合計 13 です。例 2: 最初の 1 は 3 つの 0 を越えてコスト 4 かかり、その後、残りの 2 つの 1 がそれぞれ末尾の 0 を越えてコスト 2 かかり、合計 8 です。例 3: すべての 1 がすでに右にあるので、コストは 0 です。",
+    "hints": [
+      "移動した距離の合計は、常に転倒数に等しくなります。各操作でさらに 1 が加わり、操作の回数は、元の連続する 0 の並びごとの、その左側にある 1 の個数の総和以下です。走査しながら、各 0 について、これまでに見た 1 の個数を加え、その 0 が並びの先頭ならさらにもう一度加えます。"
+    ]
+  },
+  "ko": {
+    "title": "1을 오른쪽으로 옮길 때의 최대 총비용",
+    "description": "바로 뒤에 0이 오는 1을 하나 골라, 그 뒤로 이어지는 연속한 0의 구간 전체를 건너 문자열의 끝 또는 다음 1 바로 앞까지 오른쪽으로 옮깁니다. 각 이동은 가능한 한 멀리 가야 하며 비용은 이동 거리 + 1입니다. 모든 1을 문자열의 끝으로 옮길 때 가능한 최대 총비용을 구하세요.\n\n입력/출력과 예제는 CSWork에서 정리한 것이며, 이 사이트의 것이라고 표시된 수치 범위는 이 사이트의 채점 기준입니다.",
+    "input": "이 사이트의 표준 입력: 길이 1..100000의 이진 문자열이 한 줄로 주어집니다.",
+    "output": "문제에서 요구하는 답을 출력합니다.",
+    "explanation": "예제 1: 먼저 비용 2인 연산 두 번으로 가운데의 0 하나를 건너고, 이어서 비용 3인 연산 세 번으로 마지막 두 0을 건너 총 13입니다. 예제 2: 첫 번째 1이 비용 4로 0 세 개를 건너고, 나머지 두 1이 각각 비용 2로 끝의 0을 건너 총 8입니다. 예제 3: 모든 1이 이미 오른쪽에 있으므로 비용은 0입니다.",
+    "hints": [
+      "이동 거리의 합은 항상 역전 쌍의 수와 같습니다. 각 연산은 추가로 1을 더하며, 연산 횟수는 원래 연속한 0 구간마다 그 왼쪽에 있는 1의 개수를 합한 값을 넘지 않습니다. 스캔하면서 모든 0마다 지금까지 본 1의 수를 더하고, 그 0이 구간의 시작이면 한 번 더 더합니다."
+    ]
+  },
+  "vi": {
+    "title": "Tổng chi phí lớn nhất khi dời các số 1 sang phải",
+    "description": "Chọn một số 1 ngay sau nó là số 0, và dời nó sang phải qua toàn bộ dãy các số 0 liên tiếp đứng sau, đến cuối xâu hoặc ngay trước số 1 tiếp theo; mỗi lần dời phải đi xa nhất có thể và tốn chi phí bằng quãng đường dời + 1. Dời tất cả các số 1 về cuối xâu, và tìm tổng chi phí lớn nhất có thể.\n\nPhần đầu vào/đầu ra và các ví dụ do CSWork biên soạn; các khoảng giá trị được ghi là của trang này là quy ước chấm bài của trang này.",
+    "input": "Đầu vào chuẩn của trang này: một dòng duy nhất chứa một xâu nhị phân có độ dài 1..100000.",
+    "output": "In ra đáp án theo yêu cầu của đề bài.",
+    "explanation": "Ví dụ 1: trước hết dùng hai thao tác chi phí 2 để vượt qua số 0 đơn lẻ ở giữa, rồi ba thao tác chi phí 3 để vượt qua hai số 0 cuối, tổng cộng 13. Ví dụ 2: số 1 đầu tiên vượt qua ba số 0 với chi phí 4, rồi hai số 1 còn lại mỗi số vượt qua số 0 ở cuối với chi phí 2, tổng cộng 8. Ví dụ 3: mọi số 1 đã ở bên phải, nên chi phí là 0.",
+    "hints": [
+      "Tổng quãng đường dời luôn bằng số nghịch thế. Mỗi thao tác cộng thêm 1, và số thao tác tối đa là tổng, theo từng dãy số 0 liên tiếp ban đầu, của số các số 1 ở bên trái nó. Khi quét, với mỗi số 0 cộng số các số 1 đã thấy, và cộng thêm một lần nữa nếu số 0 đó mở đầu một dãy."
+    ]
   }
 }

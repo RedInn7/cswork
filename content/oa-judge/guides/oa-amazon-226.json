@@ -13,6 +13,21 @@
       "Whether the kept boxes are valid depends only on their minimum and maximum; once those are fixed, every box in between can be kept as well.",
       "So an optimal kept set can be taken as a contiguous window of the sorted sizes, and the task becomes finding the longest window with maximum <= capacity times minimum.",
       "Sort the sizes ascending; advance the right end one by one, and while the right value exceeds capacity times the left value, move the left end right; update the best window length each step; the answer is n minus the longest length. The product can reach 5*10^14, so use 64-bit integers."
+    ],
+    "ja": [
+      "残した箱が有効かどうかは、その最小値と最大値だけで決まります。これらを固定すれば、その間にあるすべての箱も残せます。",
+      "したがって最適な残す集合は、ソートしたサイズの連続したウィンドウにできます。問題は、最大値 <= capacity × 最小値 を満たす最長のウィンドウを見つけることに帰着します。",
+      "サイズを昇順にソートします。右端を 1 つずつ進め、右の値が capacity × 左の値 を超える間は左端を右へ動かします。各ステップで最良のウィンドウ長を更新し、答えは n から最長の長さを引いた値です。積は 5*10^14 に達しうるので、64 ビット整数を使います。"
+    ],
+    "ko": [
+      "남긴 상자들이 유효한지는 최솟값과 최댓값에만 달려 있습니다. 둘이 정해지면 그 사이의 모든 상자도 남길 수 있습니다.",
+      "따라서 최적의 남길 집합은 정렬된 크기의 연속 윈도우로 잡을 수 있고, 문제는 최댓값 <= capacity × 최솟값인 가장 긴 윈도우를 찾는 것이 됩니다.",
+      "크기를 오름차순으로 정렬합니다. 오른쪽 끝을 하나씩 늘리면서, 오른쪽 값이 capacity × 왼쪽 값을 넘는 동안 왼쪽 끝을 오른쪽으로 옮깁니다. 매 단계 최대 윈도우 길이를 갱신하고, 정답은 n에서 최대 길이를 뺀 값입니다. 곱은 5*10^14까지 커질 수 있으므로 64비트 정수를 사용합니다."
+    ],
+    "vi": [
+      "Việc các hộp được giữ có hợp lệ hay không chỉ phụ thuộc vào giá trị nhỏ nhất và lớn nhất của chúng; một khi hai giá trị đó đã cố định, mọi hộp nằm giữa cũng có thể được giữ.",
+      "Vì vậy một tập giữ tối ưu có thể lấy là một cửa sổ liên tục của các kích thước đã sắp xếp, và bài toán trở thành tìm cửa sổ dài nhất có giá trị lớn nhất <= capacity lần giá trị nhỏ nhất.",
+      "Sắp xếp các kích thước tăng dần; dịch đầu phải từng bước, và khi giá trị bên phải vượt quá capacity lần giá trị bên trái thì dịch đầu trái sang phải; cập nhật độ dài cửa sổ tốt nhất ở mỗi bước; đáp án là n trừ độ dài dài nhất. Tích có thể đạt 5*10^14, nên hãy dùng số nguyên 64-bit."
     ]
   },
   "explanationEn": "## Approach\n\nSort, then use two pointers to keep the maximum at most capacity times the minimum, maximizing the window length.\n\n## Proof of correctness\n\nOnce the minimum and maximum of the kept set are fixed, every box between them can be kept without breaking the condition, so some optimal solution is a contiguous window of the sorted order. As the right end increases, the left end is moved until the condition holds; this gives the longest valid window for the current right end, and taking the maximum covers every possible optimum.\n\n## Complexity\n\nTime O(n log n), space O(n)."

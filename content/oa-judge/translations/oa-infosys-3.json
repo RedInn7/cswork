@@ -13,5 +13,41 @@
       "A single decrease may insert that position and delete a run of subsequent records.",
       "A position can be deleted and inserted repeatedly, but the total number of insertions does not exceed the number of queries."
     ]
+  },
+  "ja": {
+    "title": "点の減算後の先頭からの最小値の異なる個数",
+    "description": "配列 A と m 個のクエリ (L,x) が与えられます。各クエリはまず A[L−1]=A[L−1]−x を恒久的に実行し、その後に独立して B を計算します。B[0]=A[0]、B[i]=min(B[i−1],A[i]) です。この B に含まれる異なる整数の個数を出力してください。後のクエリは引き続き実際の A を変更し、B を A に書き戻してはいけません。x は正です。減算の後、A は 0 や負になることがあります。",
+    "input": "1 行目に n と m、2 行目に n 個の初期値 A[i]、続く m 行に、それぞれ 2 つの整数 L と x が与えられます。1≤n,m≤100000、1≤初期の A[i]≤1000000000、1≤x≤100000、1≤L≤n です。位置 L は 1 始まりです。L≤n は、元のテキストで A[L−1] が有効な添字であることから暗黙に含まれており、本サイトで明示しています。",
+    "output": "クエリの順に、m 個の整数をスペース区切りで出力してください。それぞれ、独立に計算された B に含まれる異なる値の個数です。変更後の値は 32 ビット符号付き整数の下限を下回ることがあるので、A は 64 ビット整数で保持してください。",
+    "explanation": "例 1 は元の入力を保っていますが、元の誤った出力 [2,3] を、形式的な操作に従って [2,2] に訂正しています。1 ステップ目の後は A=[5,7,-3,2,4]、B=[5,5,-3,-3,-3] で、2 ステップ目の後は A=[5,7,-3,2,0] となり、B は変わりません。元の説明は、(3,5) が定める減算を実行していませんでした。例 2 と例 3 は本サイトが追加したものです。例 2 では、実際の A の 2 番目の要素が 10 から 9、そして 4 へと下がるので、出力は 1 と 2 になります。例 3 では、先頭からの最小値が等しくても、異なる個数は増えません。",
+    "hints": [
+      "B に含まれる異なる値の個数は、厳密な先頭からの最小値になっている位置の個数に等しくなります。",
+      "1 回の減算で、その位置が挿入され、それ以降の連続したレコードが削除されることがあります。",
+      "位置は削除と挿入を繰り返し得ますが、挿入の総数はクエリの数を超えません。"
+    ]
+  },
+  "ko": {
+    "title": "점 감소 후 서로 다른 접두사 최솟값의 개수",
+    "description": "배열 A와 m개의 쿼리 (L,x)가 주어집니다. 각 쿼리는 먼저 A[L−1]=A[L−1]−x를 영구적으로 수행한 다음, B를 독립적으로 계산합니다. B[0]=A[0], B[i]=min(B[i−1],A[i])입니다. 이 B에 있는 서로 다른 정수의 개수를 출력합니다. 이후의 쿼리도 실제 A를 수정하며, B를 A에 다시 써서는 안 됩니다. x는 양수이고, 감소 후 A는 0이나 음수가 될 수 있습니다.",
+    "input": "첫 줄에 n과 m이, 둘째 줄에 n개의 초깃값 A[i]가, 다음 m개의 줄에 각각 정수 L과 x가 주어집니다. 1≤n,m≤100000, 1≤초기 A[i]≤1000000000, 1≤x≤100000, 1≤L≤n. 위치 L은 1-기반이며, L≤n은 원문에서 A[L−1]이 유효한 인덱스라는 데서 함축되어 있었고 이 사이트가 명시합니다.",
+    "output": "쿼리 순서대로 m개의 정수를 공백으로 구분해 출력하며, 각각은 독립적으로 계산한 그 B에 있는 서로 다른 값의 개수입니다. 수정된 값이 부호 있는 32비트 정수의 하한 아래로 내려갈 수 있으므로 A는 64비트 정수로 저장하세요.",
+    "explanation": "예제 1은 원래 입력을 유지하되, 원래의 잘못된 출력 [2,3]을 형식적인 연산에 따라 [2,2]로 정정했습니다. 첫 단계 후 A=[5,7,-3,2,4], B=[5,5,-3,-3,-3]이고, 두 번째 단계 후 A=[5,7,-3,2,0]이며 B는 바뀌지 않습니다. 원래 설명은 (3,5)로 정의된 감소를 수행하지 않았습니다. 예제 2와 3은 이 사이트에서 추가했습니다. 예제 2에서는 실제 A의 두 번째 항목이 10에서 9로, 다시 4로 떨어지므로 출력은 1과 2이고, 예제 3에서는 같은 접두사 값이 서로 다른 값의 개수를 늘리지 않습니다.",
+    "hints": [
+      "B에 있는 서로 다른 값의 개수는 엄격한 접두사 최솟값인 위치의 개수와 같습니다.",
+      "한 번의 감소로 그 위치가 삽입되고 뒤따르는 일련의 기록이 삭제될 수 있습니다.",
+      "한 위치가 반복해서 삭제되고 삽입될 수 있지만, 삽입의 총 횟수는 쿼리 수를 넘지 않습니다."
+    ]
+  },
+  "vi": {
+    "title": "Số giá trị phân biệt của các cực tiểu tiền tố sau khi giảm giá trị tại một điểm",
+    "description": "Bạn được cho một mảng A và m truy vấn (L,x). Mỗi truy vấn thực hiện vĩnh viễn A[L−1]=A[L−1]−x, sau đó tính độc lập B: B[0]=A[0], B[i]=min(B[i−1],A[i]). Xuất số lượng số nguyên phân biệt trong B này. Các truy vấn sau vẫn sửa A thật; B không được ghi ngược vào A. x là số dương; sau khi giảm, A có thể bằng 0 hoặc âm.",
+    "input": "Dòng đầu chứa n và m, dòng thứ hai chứa n giá trị ban đầu A[i], và mỗi dòng trong m dòng tiếp theo chứa hai số nguyên L và x. 1≤n,m≤100000, 1≤A[i] ban đầu≤1000000000, 1≤x≤100000, 1≤L≤n. Vị trí L bắt đầu từ 1; L≤n được ngầm hiểu từ việc A[L−1] là chỉ số hợp lệ trong văn bản gốc, và trang này nêu rõ điều đó.",
+    "output": "Xuất m số nguyên cách nhau bằng dấu cách theo thứ tự truy vấn, mỗi số cho biết số giá trị phân biệt trong B được tính độc lập đó. Các giá trị sau khi sửa có thể xuống dưới cận dưới của số nguyên có dấu 32 bit, vì vậy hãy lưu A bằng số nguyên 64 bit.",
+    "explanation": "Ví dụ 1 giữ nguyên đầu vào gốc nhưng sửa đầu ra gốc sai [2,3] thành [2,2] theo phép toán hình thức: sau bước đầu A=[5,7,-3,2,4] và B=[5,5,-3,-3,-3]; sau bước thứ hai A=[5,7,-3,2,0] và B không đổi. Lời giải thích gốc không thực hiện phép giảm được định nghĩa bởi (3,5). Ví dụ 2 và 3 do trang này bổ sung; trong ví dụ 2 phần tử thứ hai của A thật giảm từ 10 xuống 9 rồi xuống 4, nên đầu ra là 1 và 2; trong ví dụ 3 các giá trị tiền tố bằng nhau không làm tăng số giá trị phân biệt.",
+    "hints": [
+      "Số giá trị phân biệt trong B bằng số vị trí là cực tiểu tiền tố ngặt.",
+      "Một lần giảm có thể chèn vị trí đó vào và xóa một đoạn các bản ghi kế tiếp.",
+      "Một vị trí có thể bị xóa và chèn lại nhiều lần, nhưng tổng số lần chèn không vượt quá số truy vấn."
+    ]
   }
 }

@@ -11,5 +11,35 @@
     "hints": [
       "Enumerate the original price and the prices computed from all valid tags, and take the minimum for each item. A percentage gives `floor(price×(100−percent)/100)`; the fixed amount off is bounded by the item's original price, so negative prices cause no ambiguity."
     ]
+  },
+  "ja": {
+    "title": "Shopping Cart Billing",
+    "description": "各商品について、元の価格と有効なすべての割引のうち最も低い価格を選びます。パーセント割引は、カートの合計を計算する前に、商品ごとに切り捨てます。\n\n本サイトの標準入出力形式と補足の範囲は、この問題の記述に従います。",
+    "input": "1 行目に商品数 n と割引タグ数 d (≤1000) が与えられます。続く n 行は `price tagCount tag...` で、タグがない場合は tagCount=0 です。その後に d 行の `tag type amount` が続きます。type=0 は割引後の価格、1 はパーセント割引、2 は定額値引きです。",
+    "output": "すべての商品の最低価格の合計を出力してください。タグ名は一意で、割引の値は非負、パーセントは ≤100 であり、定額値引きが商品の元の価格を超えることはありません。",
+    "explanation": "元の価格と、有効なすべてのタグから計算した価格を列挙し、各商品について最小値をとります。パーセントは `floor(price×(100−percent)/100)` を与えます。定額値引きは商品の元の価格が上限なので、価格が負になることによる曖昧さはありません。",
+    "hints": [
+      "元の価格と、有効なすべてのタグから計算した価格を列挙し、各商品について最小値をとります。パーセントは `floor(price×(100−percent)/100)` を与えます。定額値引きは商品の元の価格が上限なので、価格が負になることによる曖昧さはありません。"
+    ]
+  },
+  "ko": {
+    "title": "Shopping Cart Billing",
+    "description": "각 상품에 대해 원래 가격과 유효한 모든 할인 중 가장 낮은 가격을 고르며, 퍼센트 할인은 장바구니 합계를 계산하기 전에 상품마다 내림 처리합니다.\n\n이 사이트의 표준 입출력 형식과 보충 범위는 이 문제의 지문을 따릅니다.",
+    "input": "첫째 줄에 상품 수 n과 할인 태그 수 d (≤1000)가 주어집니다. 다음 n줄은 `price tagCount tag...` 형식이며 태그가 없으면 tagCount=0입니다. 이어서 d줄에 `tag type amount`가 주어집니다. type=0은 할인된 가격, 1은 퍼센트 할인, 2는 정액 할인입니다.",
+    "output": "모든 상품의 최저 가격의 합을 출력합니다. 태그 이름은 고유하고, 할인 금액은 음이 아니며, 퍼센트는 ≤100이고, 정액 할인은 상품의 원래 가격을 넘지 않습니다.",
+    "explanation": "원래 가격과 모든 유효한 태그로 계산한 가격을 열거하여 상품마다 최솟값을 취합니다. 퍼센트는 `floor(price×(100−percent)/100)`를 줍니다. 정액 할인은 상품의 원래 가격 이하로 제한되므로 음수 가격으로 인한 모호함은 없습니다.",
+    "hints": [
+      "원래 가격과 모든 유효한 태그로 계산한 가격을 열거하여 상품마다 최솟값을 취합니다. 퍼센트는 `floor(price×(100−percent)/100)`를 줍니다. 정액 할인은 상품의 원래 가격 이하로 제한되므로 음수 가격으로 인한 모호함은 없습니다."
+    ]
+  },
+  "vi": {
+    "title": "Shopping Cart Billing",
+    "description": "Với mỗi mặt hàng, chọn giá thấp nhất trong số giá gốc và mọi ưu đãi hợp lệ; ưu đãi theo phần trăm được làm tròn xuống theo từng mặt hàng trước khi tính tổng giỏ hàng.\n\nĐịnh dạng nhập/xuất chuẩn và các cận bổ sung của trang này bám theo đề bài.",
+    "input": "Dòng đầu chứa số mặt hàng n và số thẻ ưu đãi d (≤1000). n dòng tiếp theo có dạng `price tagCount tag...`, với tagCount=0 khi không có thẻ; sau đó là d dòng `tag type amount`. type=0 là giá ưu đãi, 1 là giảm theo phần trăm, và 2 là giảm một số tiền cố định.",
+    "output": "In ra tổng các giá thấp nhất của mọi mặt hàng. Tên thẻ là duy nhất; số tiền ưu đãi không âm, phần trăm ≤100, và số tiền giảm cố định không vượt quá giá gốc của mặt hàng.",
+    "explanation": "Liệt kê giá gốc và các giá tính được từ mọi thẻ hợp lệ, rồi lấy giá nhỏ nhất cho mỗi mặt hàng. Một phần trăm cho `floor(price×(100−percent)/100)`; số tiền giảm cố định bị chặn bởi giá gốc của mặt hàng, nên giá âm không gây mơ hồ.",
+    "hints": [
+      "Liệt kê giá gốc và các giá tính được từ mọi thẻ hợp lệ, rồi lấy giá nhỏ nhất cho mỗi mặt hàng. Một phần trăm cho `floor(price×(100−percent)/100)`; số tiền giảm cố định bị chặn bởi giá gốc của mặt hàng, nên giá âm không gây mơ hồ."
+    ]
   }
 }

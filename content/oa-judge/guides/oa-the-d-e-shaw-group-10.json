@@ -13,6 +13,21 @@
       "Let y[i] = (-1)^i * (target[i] - source[i]). One operation adds +1, -1, +1, ... to source; seen on y, it adds the same constant to a whole even-length range, with the sign determined by the parity of the range's left end.",
       "Take adjacent differences z of y (with z[n] = -y[n-1] at the end). An operation changes the differences only at the left end l and at r + 1; these two positions have the same parity and opposite directions. So differences at even and at odd indices can be checked separately.",
       "Accumulate z over even indices in order: the prefix sum must always be >= 0 and end at 0. Accumulate z over odd indices: the prefix sum must always be <= 0 and end at 0. If any condition fails, output -1; otherwise the answer is the sum of max(0, z[i]) over all i. Use 64-bit integers."
+    ],
+    "ja": [
+      "y[i] = (-1)^i * (target[i] - source[i]) とします。1 回の操作は source に +1, -1, +1, ... を加えますが、y で見ると偶数長の範囲全体に同じ定数を加えることになり、その符号は範囲の左端の偶奇で決まります。",
+      "y の隣接差分 z を取ります(末尾は z[n] = -y[n-1] とします)。1 回の操作で差分が変わるのは左端 l と r + 1 の位置だけで、この 2 つの位置は偶奇が同じで、向きは逆です。したがって、偶数添字と奇数添字の差分は別々に確認できます。",
+      "偶数添字の z を順に累積します。累積和は常に >= 0 で、最後に 0 になる必要があります。奇数添字の z を累積する場合は、累積和が常に <= 0 で、最後に 0 になる必要があります。どれかの条件が破れたら -1 を出力し、そうでなければ答えはすべての i についての max(0, z[i]) の総和です。64 ビット整数を使ってください。"
+    ],
+    "ko": [
+      "y[i] = (-1)^i * (target[i] - source[i])로 둡니다. 연산 한 번은 source에 +1, -1, +1, ...을 더하는데, y에서 보면 짝수 길이 구간 전체에 같은 상수를 더하는 것이며 부호는 구간 왼쪽 끝의 홀짝으로 정해집니다.",
+      "y의 인접 차분 z를 구합니다(끝에서는 z[n] = -y[n-1]). 연산은 왼쪽 끝 l과 r + 1에서만 차분을 바꾸며, 이 두 위치는 홀짝이 같고 방향이 반대입니다. 따라서 짝수 인덱스와 홀수 인덱스의 차분을 따로 검사할 수 있습니다.",
+      "짝수 인덱스의 z를 순서대로 누적합니다. 접두합은 항상 >= 0이어야 하고 마지막에 0이어야 합니다. 홀수 인덱스의 z를 누적하면 접두합은 항상 <= 0이어야 하고 마지막에 0이어야 합니다. 어느 조건이든 어긋나면 -1을 출력하고, 그렇지 않으면 답은 모든 i에 대한 max(0, z[i])의 합입니다. 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Đặt y[i] = (-1)^i * (target[i] - source[i]). Một thao tác cộng +1, -1, +1, ... vào source; nhìn trên y, nó cộng cùng một hằng số lên cả một đoạn có độ dài chẵn, với dấu được xác định bởi tính chẵn lẻ của đầu trái của đoạn.",
+      "Lấy hiệu liên tiếp z của y (với z[n] = -y[n-1] ở cuối). Một thao tác chỉ thay đổi các hiệu tại đầu trái l và tại r + 1; hai vị trí này có cùng tính chẵn lẻ và hướng ngược nhau. Vì vậy có thể kiểm tra riêng các hiệu ở chỉ số chẵn và chỉ số lẻ.",
+      "Cộng dồn z trên các chỉ số chẵn theo thứ tự: tổng tiền tố phải luôn >= 0 và kết thúc bằng 0. Cộng dồn z trên các chỉ số lẻ: tổng tiền tố phải luôn <= 0 và kết thúc bằng 0. Nếu có điều kiện nào sai, in -1; nếu không, đáp án là tổng max(0, z[i]) trên mọi i. Dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nLet y[i] = (-1)^i * (target[i] - source[i]); then one legal operation adds a constant to an even-length range of y, with the constant determined by the parity of the range's left index. Taking adjacent differences of y, an operation produces one unit of change in a fixed direction at two boundaries of the same parity. Check, for each parity of boundaries, the direction of the prefix sums of the differences and their total; when feasible, the number of operations needed equals the number of positive difference units.\n\n## Proof of correctness\n\nThe range [l, r] has even length, and after the transformation every position in it increases by s = (-1)^l. The adjacent differences change only at l, increasing by s, and at r + 1, decreasing by s; since r + 1 - l is even, the two boundary indices have the same parity. For even boundaries, every operation puts +1 at the earlier end and -1 at the later end, so the sum of differences over any prefix must be non-negative; for odd boundaries the signs are reversed, so the prefix sums must be non-positive. The totals of both groups must also be zero. Conversely, if these conditions hold, scanning from left to right pairs every pending unit at an earlier end with a later opposite end; they have the same parity and are ordered, which uniquely determines a legal even-length range. Each operation supplies exactly one unit, so the total number of positive difference units is the minimum number of operations.\n\n## Complexity\n\nO(n) time and O(n) extra space."

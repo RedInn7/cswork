@@ -13,6 +13,21 @@
       "Different activity levels never interact; each level only cares about the largest and smallest heart rate inside its own group.",
       "Use a hash map keyed by level, record the minimum and maximum of each group in one pass, and finally take the largest range over all groups.",
       "For every record (heart rate v, level c): if c is new, store (v, v), otherwise update that group's min and max; after the scan compute max - min for each group and print the largest (a group with one record gives 0)."
+    ],
+    "ja": [
+      "異なる活動レベルは互いに影響しません。各レベルは、自分のグループの中の最大と最小の心拍数だけを気にします。",
+      "レベルをキーとするハッシュマップを使い、1 回の走査で各グループの最小値と最大値を記録し、最後にすべてのグループの最大の幅を取ります。",
+      "各レコード (心拍数 v、レベル c) について、c が新しければ (v, v) を保存し、そうでなければそのグループの最小値と最大値を更新します。走査後に各グループの max - min を計算し、最大のものを出力します (レコードが 1 つのグループは 0 になります)。"
+    ],
+    "ko": [
+      "서로 다른 활동 수준은 서로 영향을 주지 않습니다. 각 수준은 자기 그룹 안에서 가장 큰 심박수와 가장 작은 심박수만 신경 쓰면 됩니다.",
+      "수준을 키로 하는 해시 맵을 사용하여 한 번의 스캔으로 각 그룹의 최솟값과 최댓값을 기록하고, 마지막에 모든 그룹에 걸친 가장 큰 범위를 취합니다.",
+      "각 기록 (심박수 v, 수준 c)에 대해, c가 새로우면 (v, v)를 저장하고 그렇지 않으면 그 그룹의 최솟값과 최댓값을 갱신합니다. 스캔이 끝나면 각 그룹의 max - min을 계산하여 가장 큰 값을 출력합니다 (기록이 하나인 그룹은 0)."
+    ],
+    "vi": [
+      "Các mức hoạt động khác nhau không bao giờ tương tác với nhau; mỗi mức chỉ quan tâm nhịp tim lớn nhất và nhỏ nhất trong nhóm của chính nó.",
+      "Dùng một hash map với khóa là mức hoạt động, ghi lại giá trị nhỏ nhất và lớn nhất của mỗi nhóm trong một lượt duyệt, và cuối cùng lấy khoảng chênh lớn nhất trên mọi nhóm.",
+      "Với mỗi bản ghi (nhịp tim v, mức c): nếu c mới thì lưu (v, v), ngược lại cập nhật min và max của nhóm đó; sau khi duyệt, tính max - min cho mỗi nhóm và in giá trị lớn nhất (nhóm có một bản ghi cho 0)."
     ]
   },
   "explanationEn": "## Approach\n\nMaintain the minimum and maximum heart rate for each level, and finally take the largest range.\n\n## Correctness\n\nA single scan adds each record only to its own level, and the two updated extremes exactly cover all records of that group. Taking the maximum of max - min over the groups is exactly what the problem asks for.\n\n## Complexity\n\nExpected time O(n), space O(g), where g is the number of levels."

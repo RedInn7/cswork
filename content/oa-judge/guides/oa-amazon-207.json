@@ -13,6 +13,21 @@
       "Count expertise 1 as +1 and 0 as -1; a range has equal numbers of both types exactly when these values sum to 0 over it, that is, when the count-difference prefixes at its two ends are equal.",
       "With the right end fixed, the range's skill sum is the current skill prefix minus the left end's skill prefix; to maximize it, find the smallest skill prefix among earlier prefixes with the same count difference. Skills can be negative, so remembering only the earliest position is not enough.",
       "Use an array offset by n (or a hash map) holding the smallest skill prefix for each count difference, starting with difference 0 mapped to 0; for each employee update the difference and the skill prefix: if the difference was seen, update the answer with total minus the stored minimum and then the minimum, otherwise store total. Start the answer at 0 (choosing nobody is allowed) and use 64-bit integers."
+    ],
+    "ja": [
+      "専門分野 1 を +1、0 を -1 として数えると、ある区間で 2 種類の人数が等しいことと、その区間でこれらの値の和が 0 になることは同値であり、すなわち両端での人数差の接頭辞が等しいことと同値です。",
+      "右端を固定すると、その区間のスキル合計は、現在のスキル接頭辞和から左端のスキル接頭辞和を引いたものです。これを最大にするには、人数差が同じである以前の接頭辞のうち、スキル接頭辞和が最小のものを探します。スキルは負になり得るので、最も早い位置だけを覚えておくのでは足りません。",
+      "n だけオフセットした配列（またはハッシュマップ）に、各人数差に対するスキル接頭辞和の最小値を保持し、差 0 に 0 を対応させて始めます。各従業員について差とスキル接頭辞和を更新し、その差が既出なら、total から保存された最小値を引いたもので答えを更新してから最小値を更新します。既出でなければ total を保存します。答えは 0 から始め（誰も選ばないことが許されるため）、64 ビット整数を使います。"
+    ],
+    "ko": [
+      "전문 분야 1을 +1, 0을 −1로 세면, 구간에서 이 값들의 합이 0일 때, 즉 양 끝의 개수 차이 접두사가 같을 때 정확히 두 유형의 수가 같습니다.",
+      "오른쪽 끝을 고정하면 구간의 기술 합은 현재 기술 접두사에서 왼쪽 끝의 기술 접두사를 뺀 값이므로, 이를 최대화하려면 같은 개수 차이를 가진 앞선 접두사 중 기술 접두사가 가장 작은 것을 찾아야 합니다. 기술 값은 음수일 수 있으므로 가장 이른 위치만 기억해서는 충분하지 않습니다.",
+      "n만큼 오프셋을 둔 배열(또는 해시 맵)에 각 개수 차이별 최소 기술 접두사를 저장하고, 차이 0에 0을 대응시켜 시작합니다. 직원마다 차이와 기술 접두사를 갱신하여, 차이가 이미 등장했다면 total에서 저장된 최솟값을 뺀 값으로 정답을 갱신한 뒤 최솟값을 갱신하고, 아니면 total을 저장합니다. 정답은 0에서 시작하고(아무도 선택하지 않는 것이 허용됨) 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Tính chuyên môn 1 là +1 và 0 là -1; một đoạn có số lượng hai loại bằng nhau đúng khi các giá trị này có tổng bằng 0 trên đoạn đó, tức là khi các tiền tố hiệu số đếm ở hai đầu bằng nhau.",
+      "Khi đầu phải cố định, tổng kỹ năng của đoạn là tiền tố kỹ năng hiện tại trừ tiền tố kỹ năng của đầu trái; để cực đại hóa, hãy tìm tiền tố kỹ năng nhỏ nhất trong các tiền tố trước đó có cùng hiệu số đếm. Kỹ năng có thể âm, nên chỉ nhớ vị trí sớm nhất là chưa đủ.",
+      "Dùng một mảng lệch n (hoặc hash map) giữ tiền tố kỹ năng nhỏ nhất cho mỗi hiệu số đếm, bắt đầu với hiệu 0 ánh xạ tới 0; với mỗi nhân viên cập nhật hiệu và tiền tố kỹ năng: nếu hiệu đã thấy, cập nhật đáp án bằng total trừ giá trị nhỏ nhất đã lưu rồi cập nhật giá trị nhỏ nhất, nếu không thì lưu total. Bắt đầu đáp án ở 0 (được phép không chọn ai) và dùng số nguyên 64-bit."
     ]
   },
   "explanationEn": "## Approach\n\nCount expertise 1 as +1 and 0 as -1 and maintain the prefix count difference. For each count difference, store the minimum skill prefix sum, and update the answer with the current skill sum minus that minimum.\n\n## Proof of correctness\n\nEqual count-difference prefixes at the two ends mean exactly that the range has equal numbers of both types. With the right end fixed its skill prefix is fixed, so subtracting the smallest earlier skill prefix with the same count difference gives the largest range sum, and no other earlier point can do better. The initial answer 0 covers the empty team; because skills can be negative, storing only the earliest index would not be enough.\n\n## Complexity\n\nTime O(n), space O(n)."

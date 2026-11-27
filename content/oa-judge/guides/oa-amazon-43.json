@@ -13,6 +13,21 @@
       "The subsequence must keep its order, but the median only looks at the chosen values after sorting, so which positions you pick does not matter, only which values.",
       "Let j = ceil(k/2). The j-th smallest of any k chosen values can be no smaller than the j-th smallest of the whole array and no larger than its (n-k+j)-th smallest; the k smallest items and the k largest items reach these two bounds.",
       "Sort the array ascending and let middle = (k-1)/2 (0-based); the maximum median is a[n-k+middle] and the minimum median is a[middle]; print them in the order maximum, minimum."
+    ],
+    "ja": [
+      "部分列は順序を保たなければなりませんが、中央値は選んだ値をソートした後だけを見るので、どの位置を選ぶかは関係なく、どの値を選ぶかだけが問題です。",
+      "j = ceil(k/2) とします。選んだ k 個の値の j 番目に小さい値は、配列全体の j 番目に小さい値以上であり、(n-k+j) 番目に小さい値以下です。小さい方から k 個と大きい方から k 個を選ぶと、この 2 つの限界にそれぞれ到達します。",
+      "配列を昇順にソートし、middle = (k-1)/2（0 始まり）とします。中央値の最大値は a[n-k+middle]、最小値は a[middle] です。最大値、最小値の順に出力します。"
+    ],
+    "ko": [
+      "부분 수열은 순서를 유지해야 하지만, 중앙값은 정렬한 뒤 선택된 값만 보므로 어느 위치를 고르는지는 중요하지 않고 어떤 값을 고르는지만 중요합니다.",
+      "j = ceil(k/2)라 합시다. 선택한 k개 값 중 j번째로 작은 값은 배열 전체에서 j번째로 작은 값보다 작을 수 없고, (n-k+j)번째로 작은 값보다 클 수 없습니다. 가장 작은 k개 원소와 가장 큰 k개 원소가 각각 이 두 경계에 도달합니다.",
+      "배열을 오름차순으로 정렬하고 middle = (k-1)/2(0-기반)로 두면, 중앙값의 최댓값은 a[n-k+middle], 최솟값은 a[middle]입니다. 최댓값, 최솟값 순서로 출력합니다."
+    ],
+    "vi": [
+      "Dãy con phải giữ nguyên thứ tự, nhưng trung vị chỉ xét các giá trị được chọn sau khi sắp xếp, nên việc chọn vị trí nào không quan trọng, chỉ có giá trị nào được chọn mới quan trọng.",
+      "Đặt j = ceil(k/2). Phần tử nhỏ thứ j của k giá trị được chọn bất kỳ không thể nhỏ hơn phần tử nhỏ thứ j của cả mảng và không thể lớn hơn phần tử nhỏ thứ (n-k+j) của cả mảng; k phần tử nhỏ nhất và k phần tử lớn nhất đạt đúng hai cận này.",
+      "Sắp xếp mảng tăng dần và đặt middle = (k-1)/2 (đánh chỉ số từ 0); trung vị lớn nhất là a[n-k+middle] và trung vị nhỏ nhất là a[middle]; in theo thứ tự lớn nhất trước, nhỏ nhất sau."
     ]
   },
   "explanationEn": "## Approach\n\nSort the array. The minimum median comes from the k smallest items, and the maximum median comes from the k largest items.\n\n## Proof of correctness\n\nThe j-th smallest of any k items can be neither smaller than the global j-th smallest nor larger than the global (n-k+j)-th smallest. The k smallest items and the k largest items reach these two bounds respectively.\n\n## Complexity\n\nO(n log n) time and O(n) space."

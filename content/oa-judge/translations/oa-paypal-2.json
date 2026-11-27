@@ -11,5 +11,35 @@
     "hints": [
       "First pin down the boundaries according to the statement, then handle the validity or optimality conditions that are easiest to miss."
     ]
+  },
+  "ja": {
+    "title": "Count User Logins",
+    "description": "各ユーザー名が有効な日付ごとに何回ログインしたかを数えます。時刻または日付が無効な記録は破棄し、ユーザー名と日付の辞書順で出力します。元の例にある 2 つの説明は、サンプルの入出力の個数と一致しないので、本サイトは入力データと明示的なルールから再計算しています。出力のフィールドは、例および元の参照実装で使われている userX の形を維持しています。\n\n追加の制約と入出力形式はすべて本サイトによる追加であり、元のプラットフォームの形式であるとは主張しません。",
+    "input": "1 行目に n が与えられ、続く n 行はそれぞれ user<ID> HH:MM:SS YYYY-MM-DD です。本サイトによる追加：1≤n≤1000。ID は 0..10^9 の正規の 10 進非負整数。年は 2000..3000。時刻は 00:00:00..23:59:59 の範囲内で、日付は有効なグレゴリオ暦の日付でなければなりません。時刻／日付が無効な行は無視されます。",
+    "output": "まず k、つまり有効な (ユーザー, 日付) のグループの個数を出力します。続く k 行に、それぞれ user<ID> YYYY-MM-DD とそれに続くログイン回数を出力し、ユーザー名の文字列の昇順、次に日付の昇順に並べます。有効な記録が 1 つもなければ 0 を出力します。",
+    "explanation": "アルゴリズム、正当性の証明、計算量については付属の解説を参照してください。",
+    "hints": [
+      "まず問題文に従って境界を確定し、そのうえで、見落としやすい妥当性や最適性の条件を処理します。"
+    ]
+  },
+  "ko": {
+    "title": "Count User Logins",
+    "description": "각 사용자 이름이 유효한 날짜마다 몇 번 로그인했는지 세세요. 시간이나 날짜가 유효하지 않은 기록은 버리고, 사용자 이름과 날짜의 사전식 순서로 출력합니다. 원문 예제의 두 설명은 샘플 입출력의 횟수와 일치하지 않으므로, 이 사이트는 입력 데이터와 명시적 규칙에서 다시 계산했습니다. 출력 필드는 예제와 원문 참조 구현에서 쓰는 userX 형식을 유지합니다.\n\n추가 제약과 입출력 형식은 모두 이 사이트가 추가한 것이며 원래 플랫폼의 형식이라고 주장하지 않습니다.",
+    "input": "첫 번째 줄에 n이 주어지고, 이어지는 n줄은 각각 user<ID> HH:MM:SS YYYY-MM-DD 형식입니다. 이 사이트가 추가한 조건: 1≤n≤1000, ID는 0..10^9 범위의 표준 십진 음이 아닌 정수, 연도는 2000..3000. 시간은 00:00:00..23:59:59 범위 안에 있어야 하고 날짜는 유효한 그레고리력 날짜여야 합니다. 시간/날짜가 유효하지 않은 줄은 무시합니다.",
+    "output": "먼저 유효한 (사용자, 날짜) 그룹의 수 k를 출력하고, 이어서 k줄을 출력합니다. 각 줄은 user<ID> YYYY-MM-DD 다음에 로그인 횟수가 오며, 사용자 이름 문자열의 오름차순, 그다음 날짜의 오름차순으로 정렬합니다. 유효한 기록이 없으면 0을 출력합니다.",
+    "explanation": "알고리즘, 정당성 증명, 복잡도는 함께 제공되는 해설을 참고하세요.",
+    "hints": [
+      "먼저 문제 지문에 따라 경계를 확정한 뒤, 가장 놓치기 쉬운 유효성이나 최적성 조건을 처리하세요."
+    ]
+  },
+  "vi": {
+    "title": "Count User Logins",
+    "description": "Đếm mỗi tên người dùng đăng nhập bao nhiêu lần trong mỗi ngày hợp lệ; loại bỏ các bản ghi có thời gian hoặc ngày không hợp lệ, và xuất theo thứ tự từ điển của tên người dùng và ngày. Hai phần giải thích trong ví dụ gốc không khớp với các số đếm trong đầu vào/đầu ra mẫu, nên trang này tính lại từ dữ liệu đầu vào và các quy tắc tường minh; các trường đầu ra giữ dạng userX dùng trong các ví dụ và trong cài đặt tham chiếu của nguồn gốc.\n\nMọi ràng buộc bổ sung và định dạng vào/ra là phần bổ sung của trang này và không khẳng định là định dạng của nền tảng gốc.",
+    "input": "Dòng đầu chứa n; mỗi dòng trong n dòng tiếp theo có dạng user<ID> HH:MM:SS YYYY-MM-DD. Trang này bổ sung: 1≤n≤1000; ID là một số nguyên thập phân không âm ở dạng chuẩn trong 0..10^9; năm nằm trong 2000..3000. Thời gian phải nằm trong 00:00:00..23:59:59 và ngày phải là ngày lịch Gregorian hợp lệ; các dòng có thời gian/ngày không hợp lệ bị bỏ qua.",
+    "output": "Đầu tiên in k, số nhóm (người dùng, ngày) hợp lệ; sau đó in k dòng, mỗi dòng gồm user<ID> YYYY-MM-DD theo sau là số lần đăng nhập, sắp xếp theo xâu tên người dùng tăng dần, rồi theo ngày tăng dần. Nếu không có bản ghi hợp lệ, in 0.",
+    "explanation": "Xem phần lời giải đi kèm để biết thuật toán, chứng minh tính đúng đắn và độ phức tạp.",
+    "hints": [
+      "Trước hết hãy xác định rõ các biên theo đề bài, rồi xử lý các điều kiện về tính hợp lệ hoặc tính tối ưu dễ bị bỏ sót nhất."
+    ]
   }
 }

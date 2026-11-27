@@ -13,6 +13,21 @@
       "Adjacent values on the ring differ by at most 1, so the distinct values chosen must form a range of consecutive integers with no gaps.",
       "Going around the ring from the smallest value up to the largest and back passes every interior value twice, so each interior value needs at least 2 copies; each of the two end values needs only 1, and extra copies of a value can sit next to each other. When this holds, arranging values increasing then decreasing forms a valid ring.",
       "Count each value's frequency and scan the values in ascending order, keeping current, the best total for a valid range ending at the current value: reset it to the current frequency when the value is not consecutive; if it is consecutive but the previous value appears only once, the previous value can only be the left end, so current = previous count + current count; otherwise add the current frequency. Take the maximum of current."
+    ],
+    "ja": [
+      "リング上で隣り合う値の差は高々 1 なので、選ばれた異なる値は、隙間のない連続した整数の範囲をなさなければなりません。",
+      "最小値から最大値まで上って戻るようにリングを一周すると、内部のすべての値を 2 回通るので、内部の各値には少なくとも 2 個のコピーが必要です。両端の 2 つの値は 1 個で足ります。余分なコピーは同じ値の隣に置けます。これが満たされるとき、値を増加順、次に減少順に並べれば有効なリングになります。",
+      "各値の出現回数を数え、値を昇順に走査して、現在の値で終わる有効な範囲の最良の合計を current に保持します。値が連続していなければ現在の出現回数にリセットします。連続していても直前の値が 1 回しか現れないなら、直前の値は左端にしかなれないので、current = 直前の個数 + 現在の個数とします。そうでなければ現在の出現回数を加えます。current の最大値を取ります。"
+    ],
+    "ko": [
+      "링에서 인접한 값은 1 이하로 차이 나므로, 고른 서로 다른 값은 빈틈이 없는 연속한 정수 범위를 이루어야 합니다.",
+      "링을 따라 가장 작은 값에서 가장 큰 값까지 올라갔다가 되돌아오면 모든 내부 값을 두 번 지나므로 각 내부 값은 최소 2개가 필요합니다. 양 끝 값 두 개는 1개면 충분하고, 값이 같은 서버는 서로 옆에 놓을 수 있습니다. 이 조건이 성립하면 값을 증가 순서로 놓았다가 감소 순서로 놓아 유효한 링을 만들 수 있습니다.",
+      "각 값의 빈도를 세고 값을 오름차순으로 훑으며, 현재 값에서 끝나는 유효한 범위의 최대 합계를 current에 유지합니다. 값이 연속하지 않으면 current를 현재 빈도로 재설정하고, 연속하지만 이전 값이 한 번만 나타나면 이전 값은 왼쪽 끝일 수밖에 없으므로 current = 이전 개수 + 현재 개수로 두며, 그렇지 않으면 현재 빈도를 더합니다. current의 최댓값을 취하세요."
+    ],
+    "vi": [
+      "Các giá trị kề nhau trên vòng tròn chênh nhau không quá 1, nên các giá trị phân biệt được chọn phải tạo thành một dải số nguyên liên tiếp không có khoảng trống.",
+      "Đi vòng quanh vòng tròn từ giá trị nhỏ nhất lên lớn nhất rồi quay lại sẽ đi qua mọi giá trị ở giữa hai lần, nên mỗi giá trị ở giữa cần ít nhất 2 bản sao; mỗi giá trị ở hai đầu chỉ cần 1, và các bản sao thừa của một giá trị có thể nằm cạnh nhau. Khi điều này thỏa, sắp xếp các giá trị tăng dần rồi giảm dần tạo thành một vòng tròn hợp lệ.",
+      "Đếm tần suất của mỗi giá trị và quét các giá trị theo thứ tự tăng dần, giữ current là tổng tốt nhất cho một dải hợp lệ kết thúc tại giá trị hiện tại: đặt lại bằng tần suất hiện tại khi giá trị không liên tiếp; nếu liên tiếp nhưng giá trị trước chỉ xuất hiện một lần, thì giá trị trước chỉ có thể là đầu mút trái, nên current = số lượng trước + số lượng hiện tại; ngược lại cộng tần suất hiện tại. Lấy giá trị lớn nhất của current."
     ]
   },
   "explanationEn": "## Approach\n\nThe distinct values chosen must be consecutive, and every value except the two end values must appear at least twice. Count frequencies and scan consecutive keys: if the previous key has only 1 item, extending to a new key can only restart from that previous key; otherwise keep accumulating.\n\n## Proof of correctness\n\nThere can be no gap between consecutive values. An interior value separates the two sides, and a round trip around the ring passes at least two servers with that value, so it needs 2 copies; each end needs only 1, and the remaining duplicate values can be placed next to an equal value. When these conditions hold, a ring can be built by going up through the values and then back down, so the condition is necessary and sufficient. The scan maintains the largest total frequency of a valid range whose right end is the current value.\n\n## Complexity\n\nO(n log n) time and O(n) space."

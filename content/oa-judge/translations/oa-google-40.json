@@ -13,5 +13,41 @@
       "Operation 2 should be saved for the largest numbers in the window.",
       "The cost never decreases as the window grows, so you can use two pointers together with two ordered sets."
     ]
+  },
+  "ja": {
+    "title": "Google OA #40：最長の全ゼロ部分配列",
+    "description": "長さ n の非負整数配列 A と、整数 X、Y が与えられます。次の 2 つの操作が使えます。\n操作 1：任意の添字 i（0≤i<n）を選び、A[i]=A[i]−1 にする。\n操作 2：任意の添字 i を選び、A[i]=0 にする。\n操作 1 は高々 X 回、操作 2 は高々 Y 回使えます。操作後に、すべて 0 からなる連続部分配列の最大の長さを求めてください。",
+    "input": "1行目に 3 つの整数 n、X、Y が与えられ、2行目に n 個の整数 A[0..n−1] が与えられます。1≤n≤100000、0≤A[i]≤10^9、0≤X≤10^15、0≤Y≤n。",
+    "output": "整数を 1 つ出力します。すべて 0 の連続部分配列の最大の長さです（0 の場合もあります）。",
+    "explanation": "例 1：A=[4,3,0,1]、X=2、Y=1。添字 1 に操作 2 を使って [4,0,0,1] にし、次に添字 3 に操作 1 を 1 回使って [4,0,0,0] にします。すべて 0 の部分配列の長さは 3 です。\n例 2：操作 1 しか使えません。[1,0,3] には 4 回、[2,1,0] には 3 回必要なので、答えは 3 です。\n例 3：操作 2 を 2 回使って添字 0 と 1 を 0 にすると [0,0,0,5] になり、答えは 3 です。",
+    "hints": [
+      "窓の中の正の数は、それぞれ操作 2 を 1 回使うか、その値と同じ回数の操作 1 を使うかのどちらかのコストがかかります。",
+      "操作 2 は、窓の中で最も大きい数のために取っておくべきです。",
+      "窓が広がってもコストは減らないので、2 つのポインタと 2 つの順序付き集合を使えます。"
+    ]
+  },
+  "ko": {
+    "title": "Google OA #40: 가장 긴 전부 0인 부분 배열",
+    "description": "길이 n의 음이 아닌 정수 배열 A와 정수 X, Y가 주어집니다. 두 가지 연산을 사용할 수 있습니다.\n연산 1: 임의의 인덱스 i(0≤i<n)를 골라 A[i]=A[i]−1로 만듭니다.\n연산 2: 임의의 인덱스 i를 골라 A[i]=0으로 만듭니다.\n연산 1은 최대 X번, 연산 2는 최대 Y번 사용할 수 있습니다. 연산 후 전부 0으로 이루어진 연속 부분 배열의 최대 길이를 구하세요.",
+    "input": "첫째 줄에 세 정수 n, X, Y가 주어지고, 둘째 줄에 n개의 정수 A[0..n−1]이 주어집니다. 1≤n≤100000, 0≤A[i]≤10^9, 0≤X≤10^15, 0≤Y≤n.",
+    "output": "전부 0인 연속 부분 배열의 최대 길이를 나타내는 정수 하나를 출력합니다(0일 수 있음).",
+    "explanation": "예제 1: A=[4,3,0,1], X=2, Y=1. 인덱스 1에 연산 2를 적용하면 [4,0,0,1]이 되고, 인덱스 3에 연산 1을 한 번 적용하면 [4,0,0,0]이 됩니다. 전부 0인 부분 배열의 길이는 3입니다.\n예제 2: 연산 1만 사용할 수 있습니다. [1,0,3]은 4번, [2,1,0]은 3번이 필요하므로 답은 3입니다.\n예제 3: 연산 2를 두 번 사용하여 인덱스 0과 1을 0으로 만들면 [0,0,0,5]가 되므로 답은 3입니다.",
+    "hints": [
+      "윈도우 안의 양수 하나하나는 연산 2를 한 번 쓰거나, 그 값만큼 연산 1을 써야 합니다.",
+      "연산 2는 윈도우에서 가장 큰 수들에 아껴 써야 합니다.",
+      "윈도우가 커져도 비용은 줄어들지 않으므로 투 포인터와 두 개의 정렬된 집합을 함께 사용할 수 있습니다."
+    ]
+  },
+  "vi": {
+    "title": "Google OA #40: Mảng con toàn số 0 dài nhất",
+    "description": "Cho mảng số nguyên không âm A độ dài n, và các số nguyên X và Y. Có hai thao tác:\nThao tác 1: chọn một chỉ số i bất kỳ (0≤i<n) và đặt A[i]=A[i]−1;\nThao tác 2: chọn một chỉ số i bất kỳ và đặt A[i]=0.\nThao tác 1 được dùng tối đa X lần, và thao tác 2 tối đa Y lần. Tìm độ dài lớn nhất của một mảng con liên tiếp gồm toàn số 0 sau các thao tác.",
+    "input": "Dòng đầu chứa ba số nguyên n, X, Y; dòng thứ hai chứa n số nguyên A[0..n−1]. 1≤n≤100000, 0≤A[i]≤10^9, 0≤X≤10^15, 0≤Y≤n.",
+    "output": "Xuất một số nguyên, độ dài lớn nhất của mảng con liên tiếp toàn số 0 (có thể bằng 0).",
+    "explanation": "Ví dụ 1: A=[4,3,0,1], X=2, Y=1. Áp dụng thao tác 2 cho chỉ số 1 để được [4,0,0,1], rồi áp dụng thao tác 1 một lần cho chỉ số 3 để được [4,0,0,0]; mảng con toàn số 0 có độ dài 3.\nVí dụ 2: chỉ dùng được thao tác 1; [1,0,3] cần 4 lần dùng và [2,1,0] cần 3, nên đáp án là 3.\nVí dụ 3: hai lần dùng thao tác 2 đặt các chỉ số 0 và 1 thành 0, cho [0,0,0,5], nên đáp án là 3.",
+    "hints": [
+      "Mỗi số dương trong cửa sổ tốn hoặc một lần dùng thao tác 2, hoặc số lần dùng thao tác 1 bằng giá trị của nó.",
+      "Nên để dành thao tác 2 cho các số lớn nhất trong cửa sổ.",
+      "Chi phí không bao giờ giảm khi cửa sổ lớn lên, nên có thể dùng hai con trỏ cùng hai tập có thứ tự."
+    ]
   }
 }

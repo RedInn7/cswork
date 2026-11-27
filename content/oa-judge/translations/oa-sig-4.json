@@ -13,5 +13,41 @@
       "Counting by position means different positions holding the same value are distinguishable.",
       "For splits whose left and right parts are equal, exclude pairing a fragment with itself."
     ]
+  },
+  "ja": {
+    "title": "連結した断片がアクセスコードになる、位置の順序付きペア",
+    "description": "正の整数の断片と、正の整数 accessCode が与えられます。異なる位置にある 2 つの断片はどちらの順序で並べてもよく、それぞれの 10 進表記を直接連結します (足し算ではありません)。連結結果が accessCode に等しくなる、位置の順序付きペアの個数を数えてください。各断片の位置は 1 回しか使えません。同じ値の 2 つの断片の位置を入れ替えたものも、別の方法として数えます。",
+    "input": "1 行目に N と accessCode (1≤N≤100000、1≤accessCode≤10^18) が与えられます。2 行目に N 個の正の整数の断片が与えられ、それぞれ高々 10^9 です。整数は先頭にゼロのない標準的な 10 進表記で書かれています。",
+    "output": "accessCode を作る位置の順序付きペアの個数を出力してください。",
+    "explanation": "accessCode を空でない 2 つの部分に分けるすべての分割を列挙します。各分割で、左の断片と右の断片の出現回数を調べます。両側が同じ場合は、同じ位置を 2 回使うケースを引きます。",
+    "hints": [
+      "連結した数は、ターゲットの文字列の 1 つの分割点に対応します。",
+      "位置で数えるので、同じ値を持つ異なる位置は区別されます。",
+      "左右の部分が等しい分割では、断片を自分自身とペアにするケースを除きます。"
+    ]
+  },
+  "ko": {
+    "title": "이어 붙여 접근 코드가 되는 위치 쌍의 순서쌍 수",
+    "description": "양의 정수 조각들과 양의 정수 accessCode가 주어집니다. 서로 다른 위치의 두 조각을 어느 순서로든 놓을 수 있으며, 십진 표현을 (더하는 것이 아니라) 그대로 이어 붙입니다. 이어 붙인 결과가 accessCode와 같아지는 위치의 순서쌍을 모두 세세요. 각 조각 위치는 한 번만 사용할 수 있으며, 값이 같은 두 조각의 위치를 맞바꾸는 것도 다른 경우로 셉니다.",
+    "input": "첫 번째 줄에 N과 accessCode (1≤N≤100000, 1≤accessCode≤10^18)가 주어집니다. 두 번째 줄에 N개의 양의 정수 조각이 주어지며 각각 최대 10^9입니다. 정수는 앞에 0이 없는 표준 십진 형태로 쓰여 있습니다.",
+    "output": "accessCode를 만드는 위치의 순서쌍 수를 출력합니다.",
+    "explanation": "accessCode를 비어 있지 않은 두 부분으로 나누는 모든 분할을 열거합니다. 각 분할에 대해 왼쪽 조각과 오른쪽 조각의 출현 횟수를 찾아보고, 양쪽이 같은 경우에는 같은 위치를 두 번 사용하는 경우를 뺍니다.",
+    "hints": [
+      "이어 붙인 수는 목표 문자열의 분할 지점 하나에 대응합니다.",
+      "위치 기준으로 세므로 같은 값을 가진 서로 다른 위치는 구별됩니다.",
+      "왼쪽과 오른쪽이 같은 분할에서는 조각이 자기 자신과 짝지어지는 경우를 제외합니다."
+    ]
+  },
+  "vi": {
+    "title": "Các cặp vị trí có thứ tự mà các mảnh ghép lại thành mã truy cập",
+    "description": "Cho các mảnh là số nguyên dương và một số nguyên dương accessCode. Hai mảnh ở các vị trí khác nhau có thể được đặt theo thứ tự bất kỳ, và biểu diễn thập phân của chúng được nối trực tiếp (không phải cộng). Đếm tất cả các cặp vị trí có thứ tự mà phép nối bằng accessCode. Mỗi vị trí mảnh chỉ được dùng một lần; việc đổi chỗ hai mảnh có cùng giá trị cũng được tính là một cách khác.",
+    "input": "Dòng đầu chứa N và accessCode (1≤N≤100000, 1≤accessCode≤10^18). Dòng thứ hai chứa N mảnh là số nguyên dương, mỗi mảnh tối đa 10^9. Các số nguyên được viết ở dạng thập phân chuẩn, không có số 0 đứng đầu.",
+    "output": "In ra số cặp vị trí có thứ tự tạo thành accessCode.",
+    "explanation": "Liệt kê mọi cách tách accessCode thành hai phần khác rỗng. Với mỗi cách tách, tra số lần xuất hiện của mảnh trái và mảnh phải; khi hai bên giống nhau, trừ đi các trường hợp cùng một vị trí bị dùng hai lần.",
+    "hints": [
+      "Một số được nối tương ứng với một điểm tách của xâu đích.",
+      "Đếm theo vị trí nghĩa là các vị trí khác nhau chứa cùng một giá trị vẫn phân biệt được.",
+      "Với các điểm tách mà phần trái và phần phải bằng nhau, loại trừ trường hợp ghép một mảnh với chính nó."
+    ]
   }
 }

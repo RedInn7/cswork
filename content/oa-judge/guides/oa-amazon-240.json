@@ -13,6 +13,21 @@
       "For a fixed right end, moving the left end further left only adds distinct values, so the valid left ends form one contiguous range.",
       "As the right end moves right, the leftmost valid left end never moves back left, so a sliding window with two pointers works, with a frequency table holding each value's count in the window and the number of distinct values.",
       "Each time the right end adds a value, update its frequency and the distinct count; while the distinct count exceeds k, remove the left element, decreasing the distinct count when a frequency drops to 0; then add right-left+1; finally output the total modulo 1000000007."
+    ],
+    "ja": [
+      "右端を固定したとき、左端をさらに左へ動かすと異なる値が増えるだけなので、有効な左端は連続した範囲になります。",
+      "右端が右へ動くとき、有効な左端のうち最も左のものが左へ戻ることはありません。そのため 2 つのポインタによるスライディングウィンドウが使え、ウィンドウ内の各値の出現回数と異なる値の個数を頻度表で管理します。",
+      "右端が値を追加するたびに、その出現回数と異なる値の個数を更新します。異なる値の個数が k を超えている間は、左端の要素を取り除き、出現回数が 0 になったら異なる値の個数を減らします。その後 right-left+1 を加算し、最後に合計を 1000000007 で割った余りを出力します。"
+    ],
+    "ko": [
+      "오른쪽 끝을 고정하면 왼쪽 끝을 더 왼쪽으로 옮길수록 서로 다른 값이 늘어나기만 하므로, 유효한 왼쪽 끝은 하나의 연속 구간을 이룹니다.",
+      "오른쪽 끝이 오른쪽으로 이동하면 유효한 가장 왼쪽의 왼쪽 끝은 다시 왼쪽으로 돌아가지 않습니다. 따라서 두 포인터 슬라이딩 윈도우를 쓸 수 있으며, 윈도우 안의 각 값 개수와 서로 다른 값의 수를 빈도표로 관리합니다.",
+      "오른쪽 끝에서 값을 추가할 때마다 빈도와 서로 다른 값의 수를 갱신합니다. 서로 다른 값의 수가 k를 넘는 동안 왼쪽 원소를 제거하며, 빈도가 0이 되면 서로 다른 값의 수를 줄입니다. 그다음 right-left+1을 더하고, 마지막에 합계를 1000000007로 나눈 나머지를 출력합니다."
+    ],
+    "vi": [
+      "Với đầu phải cố định, dịch đầu trái sang trái thêm chỉ làm tăng số giá trị phân biệt, nên các đầu trái hợp lệ tạo thành một đoạn liên tục.",
+      "Khi đầu phải dịch sang phải, đầu trái hợp lệ ngoài cùng bên trái không bao giờ lùi lại, nên dùng được cửa sổ trượt hai con trỏ, với bảng tần suất lưu số lần xuất hiện của mỗi giá trị trong cửa sổ và số giá trị phân biệt.",
+      "Mỗi lần đầu phải thêm một giá trị, cập nhật tần suất của nó và số giá trị phân biệt; khi số giá trị phân biệt vượt quá k, loại phần tử bên trái và giảm số giá trị phân biệt nếu tần suất về 0; sau đó cộng right-left+1; cuối cùng in tổng theo modulo 1000000007."
     ]
   },
   "explanationEn": "## Approach\n\nMaintain each value's frequency in a sliding window and shrink the left end whenever there are more than k distinct values; each right end contributes the window length.\n\n## Proof of correctness\n\nFor a fixed right end, every start between the leftmost valid start and the right end is valid, and every earlier start is not. Moving the window right can only keep the earliest valid start from moving left, so two pointers find this boundary, and contributing right−left+1 counts every period exactly once by its right end.\n\n## Complexity\n\nTime O(n), space O(n)."

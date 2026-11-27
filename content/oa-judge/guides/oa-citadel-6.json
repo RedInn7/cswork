@@ -13,6 +13,21 @@
       "All three strings have at most 50 characters, so text has only about 1275 non-empty substrings and you can enumerate them all.",
       "For a candidate t, the prefix score is the largest k such that the first k characters of t equal the last k characters of prefixString; the suffix score likewise compares the last k characters of t with the first k characters of suffixString. k may not exceed the length of t, and the two parts may overlap.",
       "Enumerate substrings with two nested loops and, for each, enumerate k to get both scores; keep the highest total and its substring, and on a tie keep the lexicographically smaller one. The total cost is O(L^4), fast for L <= 50."
+    ],
+    "ja": [
+      "3 つの文字列はどれも最大 50 文字なので、text の空でない部分文字列は約 1275 個しかなく、すべて列挙できます。",
+      "候補 t について、接頭辞スコアは、t の先頭 k 文字が prefixString の末尾 k 文字と等しくなる最大の k です。接尾辞スコアも同様に、t の末尾 k 文字と suffixString の先頭 k 文字を比べます。k は t の長さを超えられず、2 つの部分は重なっても構いません。",
+      "2 重ループで部分文字列を列挙し、それぞれについて k を列挙して両方のスコアを求めます。最高の合計とその部分文字列を保持し、同点なら辞書順で小さい方を残します。全体のコストは O(L^4) で、L <= 50 なら高速です。"
+    ],
+    "ko": [
+      "세 문자열의 길이가 모두 50 이하이므로 text의 비어 있지 않은 부분 문자열은 약 1275개뿐이며 전부 열거할 수 있습니다.",
+      "후보 t에 대해 접두사 점수는 t의 첫 k글자가 prefixString의 마지막 k글자와 같은 가장 큰 k이고, 접미사 점수도 마찬가지로 t의 마지막 k글자를 suffixString의 처음 k글자와 비교합니다. k는 t의 길이를 넘을 수 없고 두 부분은 겹칠 수 있습니다.",
+      "이중 반복문으로 부분 문자열을 열거하고 각각에 대해 k를 열거하여 두 점수를 구합니다. 가장 높은 총점과 그 부분 문자열을 유지하며, 동점이면 사전순으로 더 작은 것을 유지합니다. 전체 비용은 O(L^4)이며 L <= 50에서 충분히 빠릅니다."
+    ],
+    "vi": [
+      "Cả ba xâu đều có tối đa 50 ký tự, nên text chỉ có khoảng 1275 xâu con không rỗng và bạn có thể liệt kê hết.",
+      "Với một ứng viên t, điểm tiền tố là k lớn nhất sao cho k ký tự đầu của t bằng k ký tự cuối của prefixString; điểm hậu tố cũng tương tự, so k ký tự cuối của t với k ký tự đầu của suffixString. k không được vượt quá độ dài của t, và hai phần có thể chồng lên nhau.",
+      "Liệt kê các xâu con bằng hai vòng lặp lồng nhau và, với mỗi xâu, liệt kê k để có cả hai điểm; giữ tổng điểm cao nhất cùng xâu con của nó, và khi hòa thì giữ xâu nhỏ hơn theo thứ tự từ điển. Tổng chi phí là O(L^4), nhanh với L <= 50."
     ]
   },
   "explanationEn": "## Approach\n\nEnumerate all non-empty candidate substrings; for each side, enumerate match lengths not exceeding the candidate's length, then find the maximum score and compare lexicographically.\n\n## Proof of correctness\n\nEvery possible answer is enumerated. All legal lengths of the candidate's prefix and suffix are checked one by one, and taking the maximum gives exactly the two scores defined by the problem; comparing all candidates by highest score and then smallest lexicographic order gives the unique required result. Characters outside the candidate must not be counted in a match.\n\n## Complexity\n\nWith the longest string length L <= 50, O(L^4) time and O(L) extra space, which covers the complete original domain."

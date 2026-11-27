@@ -13,6 +13,21 @@
       "Adjacent differences on the ring are ≤1, so the chosen values must form a run of consecutive integers [l, r]. Think about going from the minimum l to the maximum r and back around: how many copies does each intermediate value need?",
       "There are two paths around the ring from l to r, and each must pass through every value between l and r, so every value strictly in between must appear at least twice and the two endpoints at least once. That condition is enough to form a ring; extra copies of the same value just sit next to each other.",
       "Count each value's frequency, sort by value, and build prefix sums of the frequencies. Scan each value as the right end: if it is not consecutive with the previous value, reset the left end to itself; otherwise, if the previous value appears only once, it can only be an endpoint, so move the left end at least to the previous value. Update the answer with the total frequency in the window."
+    ],
+    "ja": [
+      "リング上の隣接差は ≤1 なので、選ばれた値は連続する整数の列 [l, r] をなします。最小値 l から最大値 r まで行き、また元に戻ることを考えてみてください。中間の各値は何個必要でしょうか。",
+      "リングには l から r への2つの経路があり、どちらも l と r の間のすべての値を通らなければなりません。したがって、真に間にある各値は少なくとも 2 回、両端は少なくとも 1 回現れる必要があります。この条件があればリングを作るには十分で、余分な同じ値は隣に並べるだけです。",
+      "各値の頻度を数え、値でソートし、頻度の累積和を作ります。各値を右端として走査します。直前の値と連続していなければ、左端を自分自身にリセットします。そうでなく、直前の値が 1 回しか現れないなら、それは端にしかなれないので、左端を少なくとも直前の値まで進めます。ウィンドウ内の頻度の合計で答えを更新します。"
+    ],
+    "ko": [
+      "링에서 인접한 원소의 차가 ≤1이므로 선택한 값들은 연속한 정수 [l, r]을 이루어야 합니다. 최솟값 l에서 최댓값 r까지 갔다가 다시 돌아오는 경로를 생각하면, 중간의 각 값은 몇 개가 필요할까요?",
+      "링에서 l에서 r까지 가는 경로는 두 갈래이고 각각이 l과 r 사이의 모든 값을 지나야 하므로, 엄밀히 사이에 있는 모든 값은 최소 두 번, 양 끝은 최소 한 번 등장해야 합니다. 이 조건만으로 링을 만들 수 있고, 남는 같은 값은 서로 옆에 놓으면 됩니다.",
+      "각 값의 빈도를 세고, 값 기준으로 정렬하고, 빈도의 누적 합을 구합니다. 각 값을 오른쪽 끝으로 삼아 훑습니다. 이전 값과 연속하지 않으면 왼쪽 끝을 자기 자신으로 초기화하고, 그렇지 않으면 이전 값이 한 번만 등장하는 경우 그 값은 끝점이 될 수밖에 없으므로 왼쪽 끝을 최소한 이전 값까지 옮깁니다. 윈도우 안의 총 빈도로 정답을 갱신합니다."
+    ],
+    "vi": [
+      "Hiệu của các phần tử kề nhau trên vòng không quá 1, nên các giá trị được chọn phải tạo thành một dãy các số nguyên liên tiếp [l, r]. Hãy nghĩ đến việc đi từ giá trị nhỏ nhất l đến giá trị lớn nhất r rồi quay trở lại: mỗi giá trị ở giữa cần bao nhiêu bản sao?",
+      "Có hai đường đi quanh vòng từ l đến r, và mỗi đường phải đi qua mọi giá trị giữa l và r, nên mọi giá trị nằm hẳn bên trong phải xuất hiện ít nhất hai lần và hai đầu mút ít nhất một lần. Điều kiện này là đủ để tạo thành vòng; các bản sao thừa của cùng một giá trị chỉ việc xếp cạnh nhau.",
+      "Đếm tần suất của mỗi giá trị, sắp xếp theo giá trị, và dựng tổng tiền tố của các tần suất. Quét từng giá trị làm đầu mút phải: nếu nó không liên tiếp với giá trị trước thì đặt lại đầu mút trái về chính nó; ngược lại, nếu giá trị trước chỉ xuất hiện một lần thì nó chỉ có thể là đầu mút, nên dịch đầu mút trái ít nhất đến giá trị trước. Cập nhật đáp án với tổng tần suất trong cửa sổ."
     ]
   },
   "explanationEn": "## Approach\n\nCount frequencies and sort by value. A valid range of values must be consecutive, with every interior value appearing at least twice and each endpoint at least once. Scan the right end: restart at a gap between values, and when the previous value has frequency 1, make it the new left end; maintain the window's total frequency and the maximum.\n\n## Proof of correctness\n\nIf the ring contains the minimum value l and the maximum value r, both paths around the ring between them must pass through every strictly intermediate value level by level, so each intermediate value needs at least two copies and no level can be missing. Conversely, use one copy of each level to walk from l to r and the other copy of each interior level to walk back to l; extra equal values can be inserted next to each other, so the condition is sufficient, and a single value is also valid. For a fixed right end, every earlier left end that violates the condition must be excluded, and the earliest remaining left end contains the most elements. The scan enumerates all optimal candidates.\n\n## Complexity\n\nTime O(n log n), space O(n)."

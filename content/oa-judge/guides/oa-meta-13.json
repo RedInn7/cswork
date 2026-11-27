@@ -13,6 +13,21 @@
       "The answer is just the number of uppercase letters minus the number of lowercase letters; digits, spaces and punctuation do not matter, and an empty string gives 0.",
       "There is no need to count the two kinds separately and subtract; keep one running value while scanning: an uppercase letter contributes +1, a lowercase letter -1, and anything else 0.",
       "Read the whole line as is (keep the spaces; do not split on whitespace and lose characters), check for each character whether it falls in A..Z or a..z and update the running value, then print it; the result may be negative."
+    ],
+    "ja": [
+      "答えは大文字の個数から小文字の個数を引いただけです。数字、スペース、句読点は関係なく、空文字列では 0 になります。",
+      "2 種類を別々に数えて引く必要はありません。走査しながら 1 つの値を持てば十分です。大文字は +1、小文字は -1、それ以外は 0 を寄与します。",
+      "行をそのまま読み込み（スペースを保ち、空白で split して文字を失わないでください）、各文字が A..Z か a..z かを調べて値を更新し、最後に出力します。結果は負になることがあります。"
+    ],
+    "ko": [
+      "답은 대문자의 개수에서 소문자의 개수를 뺀 값일 뿐이며, 숫자, 공백, 구두점은 상관없고 빈 문자열은 0입니다.",
+      "두 종류를 따로 세어 빼 줄 필요 없이, 훑으면서 하나의 누적 값만 유지하면 됩니다. 대문자는 +1, 소문자는 -1, 그 밖의 문자는 0을 기여합니다.",
+      "줄 전체를 그대로 읽고(공백 유지, 공백으로 나누어 문자를 잃지 말 것), 각 문자가 A..Z 또는 a..z에 속하는지 검사해 누적 값을 갱신한 뒤 출력합니다. 결과는 음수일 수 있습니다."
+    ],
+    "vi": [
+      "Đáp án chỉ là số chữ hoa trừ đi số chữ thường; chữ số, dấu cách và dấu câu không quan trọng, và xâu rỗng cho 0.",
+      "Không cần đếm riêng hai loại rồi trừ; chỉ cần giữ một giá trị đang chạy khi quét: chữ hoa đóng góp +1, chữ thường -1, và mọi thứ khác 0.",
+      "Đọc cả dòng như nó vốn có (giữ các dấu cách; đừng tách theo khoảng trắng làm mất ký tự), kiểm tra mỗi ký tự có nằm trong A..Z hay a..z không và cập nhật giá trị đang chạy, rồi in nó; kết quả có thể âm."
     ]
   },
   "explanationEn": "## Approach\n\nScan the characters: an uppercase letter adds one, a lowercase letter subtracts one, and other characters leave the running value unchanged.\n\n## Why it is correct\n\nEvery uppercase character contributes +1, every lowercase character contributes -1, and other characters contribute zero. Adding them up one by one gives exactly the difference between the two counts.\n\n## Complexity\n\nTime O(n), extra space O(1)."

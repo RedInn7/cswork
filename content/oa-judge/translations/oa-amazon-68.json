@@ -11,5 +11,35 @@
     "hints": [
       "Sort the packages by weight in descending order. Each time, take the truck with the largest current capacity; if it is enough, deliver and push the halved capacity back into the heap, otherwise fail."
     ]
+  },
+  "ja": {
+    "title": "使用のたびに容量が半分になるトラックでのパッケージ配送",
+    "description": "毎回、現在の容量が足りる任意のトラックで 1 つのパッケージを配送します。配送後、そのトラックの容量は現在の容量を 2 で割って切り捨てた値になります。パッケージは任意の順序で配送でき、すべてを配送できるかどうかを判定してください。本サイトの各テストケースは独立した 1 つのシナリオで、元の問題が持つ複数のシナリオのうちの 1 つに対応します。\n\n標準入出力、例、判定は本サイトが独自に作成しました。",
+    "input": "1 行目に n m（どちらも 1..100000）、2 行目に n 個の容量、3 行目に m 個の重さが与えられます。すべて 1..10⁹ です。",
+    "output": "答えとなる整数を 1 つ出力します。",
+    "explanation": "例 1: 唯一のトラックの容量は 8、4、2、1 と推移し、すべてを配送するのにちょうど足りるので、1 を出力します。例 2: 2 を配送した後は容量が 1 しかなく、2 つ目の 2 は配送できないので、0 を出力します。例 3: 容量 4 で重さ 4 を、容量 3 で重さ 3 を配送できるので、1 を出力します。",
+    "hints": [
+      "パッケージを重さの降順にソートします。毎回、現在の容量が最大のトラックを取り、足りれば配送して半分にした容量をヒープに戻し、足りなければ失敗です。"
+    ]
+  },
+  "ko": {
+    "title": "사용할 때마다 용량이 절반이 되는 트럭의 패키지 배송",
+    "description": "매번 현재 용량이 충분한 트럭 아무거나로 패키지 하나를 배송하며, 그 트럭의 용량은 현재 용량을 2로 나눈 몫(내림)으로 바뀝니다. 패키지는 어떤 순서로 배송해도 되며, 모든 패키지를 배송할 수 있는지 판정하세요. 이 사이트의 각 테스트 케이스는 독립된 시나리오 하나를 주며, 원문의 여러 시나리오 중 하나에 해당합니다.\n\n표준 입출력, 예제, 채점은 이 사이트가 독자적으로 작성했습니다.",
+    "input": "첫째 줄에 n m(둘 다 1..100000)이 주어지고, 둘째 줄에 n개의 용량이, 셋째 줄에 m개의 무게가 주어집니다. 모두 1..10⁹입니다.",
+    "output": "정수 하나로 답을 출력합니다.",
+    "explanation": "예제 1: 유일한 트럭의 용량이 8, 4, 2, 1로 변해 모든 패키지를 정확히 배송할 수 있으므로 1을 출력합니다. 예제 2: 2를 배송한 뒤 용량이 1뿐이라 두 번째 2를 배송할 수 없으므로 0을 출력합니다. 예제 3: 용량 4로 무게 4를, 용량 3으로 무게 3을 배송하므로 1을 출력합니다.",
+    "hints": [
+      "패키지를 무게의 내림차순으로 정렬합니다. 매번 현재 용량이 가장 큰 트럭을 꺼내 충분하면 배송하고 절반이 된 용량을 힙에 다시 넣고, 아니면 실패입니다."
+    ]
+  },
+  "vi": {
+    "title": "Giao hàng với sức chở giảm một nửa sau mỗi lần dùng",
+    "description": "Mỗi lần, giao một gói hàng bằng một xe tải bất kỳ có sức chở hiện tại đủ lớn; sau đó sức chở của xe đó trở thành sức chở hiện tại chia 2, làm tròn xuống. Các gói hàng có thể được giao theo thứ tự tùy ý; hãy xác định xem có giao được tất cả hay không. Mỗi bộ test trên trang này là một kịch bản độc lập, tương ứng với một kịch bản trong số nhiều kịch bản của đề gốc.\n\nTrang này tự viết độc lập phần vào/ra chuẩn, các ví dụ và phần chấm bài.",
+    "input": "Dòng đầu chứa n m (cả hai trong 1..100000), dòng thứ hai chứa n sức chở, dòng thứ ba chứa m khối lượng, tất cả trong 1..10⁹.",
+    "output": "In ra một số nguyên là đáp án.",
+    "explanation": "Ví dụ 1: sức chở của chiếc xe duy nhất đi qua 8, 4, 2, 1, vừa đủ để giao hết, nên in 1. Ví dụ 2: sau khi giao gói 2, sức chở chỉ còn 1, nên không giao được gói 2 thứ hai; in 0. Ví dụ 3: sức chở 4 giao gói nặng 4 và sức chở 3 giao gói nặng 3; in 1.",
+    "hints": [
+      "Sắp xếp các gói hàng theo khối lượng giảm dần. Mỗi lần lấy xe có sức chở hiện tại lớn nhất; nếu đủ thì giao và đẩy sức chở đã giảm một nửa trở lại heap, ngược lại thì thất bại."
+    ]
   }
 }

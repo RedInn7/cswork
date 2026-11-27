@@ -13,6 +13,21 @@
       "The result is only the last n lines, so while reading you just keep the most recent at most n lines and drop anything older.",
       "Use a queue: append each line at the back and pop the oldest from the front whenever the size exceeds n; after reading everything, the queue holds the answer in original order. With n = 0 the queue stays empty, and with n larger than the line count everything is kept.",
       "Parse the input as bytes: read a line holding the length L, take exactly the next L raw bytes (which may be empty or contain spaces, tabs or non-ASCII characters), and skip the newline right after them. Write the output the same way: the number of lines, then for each line its byte length on one line and its raw content on the next. Never split on whitespace or re-encode the text."
+    ],
+    "ja": [
+      "結果は末尾の n 行だけなので、読み込みながら直近の高々 n 行だけを保持し、それより古いものは捨てればよいです。",
+      "キューを使います。各行を末尾に追加し、サイズが n を超えるたびに先頭から最も古い行を取り出します。すべて読み終えたとき、キューには元の順序のまま答えが入っています。n = 0 ならキューは空のままで、n が行数より大きければすべて残ります。",
+      "入力はバイト列として解析します。長さ L が書かれた行を読み、次のちょうど L バイトを取り（空でも、スペース、タブ、非 ASCII 文字を含んでいてもかまいません）、直後の改行を読み飛ばします。出力も同様に、まず行数、続いて各行について、1 行にバイト長、次の行に生の内容を書きます。空白で分割したり、テキストを再エンコードしたりしてはいけません。"
+    ],
+    "ko": [
+      "결과는 마지막 n줄뿐이므로 입력을 읽으면서 가장 최근 최대 n줄만 유지하고 그보다 오래된 줄은 버리면 됩니다.",
+      "큐를 사용합니다. 각 줄을 뒤에 추가하고, 크기가 n을 넘으면 앞에서 가장 오래된 줄을 꺼냅니다. 모두 읽고 나면 큐에 원래 순서의 정답이 들어 있습니다. n = 0이면 큐는 계속 비어 있고, n이 줄 수보다 크면 모든 줄이 유지됩니다.",
+      "입력을 바이트로 파싱합니다. 길이 L이 적힌 줄을 읽고, 바로 다음의 정확히 L바이트(비어 있거나 공백, 탭, ASCII가 아닌 문자를 포함할 수 있음)를 가져온 뒤, 그 직후의 개행을 건너뜁니다. 출력도 같은 방식으로 씁니다. 줄 수를 쓰고, 각 줄마다 한 줄에 바이트 길이를, 다음 줄에 원본 내용을 씁니다. 공백으로 분리하거나 텍스트를 다시 인코딩하지 마세요."
+    ],
+    "vi": [
+      "Kết quả chỉ là n dòng cuối, nên khi đọc bạn chỉ cần giữ tối đa n dòng gần nhất và bỏ đi mọi dòng cũ hơn.",
+      "Dùng một hàng đợi: thêm mỗi dòng vào cuối và lấy dòng cũ nhất ở đầu ra mỗi khi kích thước vượt quá n; sau khi đọc xong, hàng đợi chứa đáp án theo thứ tự ban đầu. Với n = 0 hàng đợi luôn rỗng, và với n lớn hơn số dòng thì giữ lại tất cả.",
+      "Phân tích đầu vào ở dạng byte: đọc một dòng chứa độ dài L, lấy đúng L byte thô tiếp theo (có thể rỗng hoặc chứa dấu cách, tab hay ký tự không phải ASCII), rồi bỏ qua ký tự xuống dòng ngay sau đó. Ghi đầu ra theo cách tương tự: số dòng, sau đó với mỗi dòng ghi độ dài byte trên một dòng và nội dung thô ở dòng kế tiếp. Tuyệt đối không tách theo khoảng trắng hay mã hóa lại văn bản."
     ]
   },
   "explanationEn": "## Approach\n\nRead the length-prefixed strings in order and keep at most n items in a double-ended queue. Each item read is added at the back, and if the count exceeds n the front item is removed. When reading finishes, the queue holds the last n lines; when n=0 the queue is always empty. Serialization likewise writes the UTF-8 byte length, which preserves empty strings and spaces within lines exactly.\n\n## Correctness\n\nAfter the first i lines have been processed, the queue holds the last min(i,n) of these i lines in unchanged order: a new line is appended at the back, and the earliest item is removed when there are more than n, so the claim holds by induction. After all lines have been processed this is exactly what the problem asks for; the case n=0 is empty.\n\n## Complexity\n\nLet L be the total number of input content bytes and r the number of returned lines; time is O(L), auxiliary space is O(min(n,lineCount)) string references, and serializing the output needs another O(L_out)."

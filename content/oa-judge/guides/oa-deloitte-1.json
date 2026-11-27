@@ -13,6 +13,21 @@
       "Row symmetry ties (i, j) to (i, m-1-j), and column symmetry ties (i, j) to (n-1-i, j); together the two mirrors split the cells into small groups that constrain each other.",
       "Each group has at most 4 cells (fewer on the middle row or column), all cells in a group must end up the same color, and different groups are independent, so each group can be optimized on its own.",
       "Visit only the cells (i, j) of the top-left quarter, middle lines included. Take the deduplicated set {(i,j), (i,m-1-j), (n-1-i,j), (n-1-i,m-1-j)}, count its B cells b, and add min(b, group size - b) to the answer."
+    ],
+    "ja": [
+      "行の対称性は (i, j) を (i, m-1-j) に結びつけ、列の対称性は (i, j) を (n-1-i, j) に結びつけます。2つの鏡映を合わせると、セルは互いに制約し合う小さなグループに分かれます。",
+      "各グループのセルは高々4つ(中央の行や列では、それより少なく)で、グループ内のすべてのセルは最終的に同じ色にならなければなりません。異なるグループは独立なので、各グループを個別に最適化できます。",
+      "左上の4分の1(中央の線を含む)のセル (i, j) だけを訪れます。重複を除いた集合 {(i,j), (i,m-1-j), (n-1-i,j), (n-1-i,m-1-j)} を取り、その中の B のセル数 b を数え、答えに min(b, グループの大きさ - b) を加えます。"
+    ],
+    "ko": [
+      "행 대칭은 (i, j)를 (i, m-1-j)에 묶고 열 대칭은 (i, j)를 (n-1-i, j)에 묶습니다. 두 대칭을 합치면 칸들이 서로 제약하는 작은 묶음들로 나뉩니다.",
+      "각 묶음은 최대 4칸(중간 행이나 열에서는 더 적음)이며 한 묶음의 모든 칸은 같은 색이 되어야 합니다. 서로 다른 묶음은 독립이므로 묶음마다 따로 최적화할 수 있습니다.",
+      "왼쪽 위 사분면의 칸 (i, j)만, 중간 선을 포함하여 방문합니다. 중복을 제거한 집합 {(i,j), (i,m-1-j), (n-1-i,j), (n-1-i,m-1-j)}에서 B 칸의 수 b를 세고, 답에 min(b, 묶음 크기 - b)를 더합니다."
+    ],
+    "vi": [
+      "Đối xứng hàng buộc (i, j) với (i, m-1-j), và đối xứng cột buộc (i, j) với (n-1-i, j); cả hai phép gương cùng nhau chia các ô thành các nhóm nhỏ ràng buộc lẫn nhau.",
+      "Mỗi nhóm có tối đa 4 ô (ít hơn ở hàng hoặc cột giữa), mọi ô trong một nhóm phải kết thúc cùng màu, và các nhóm khác nhau độc lập, nên mỗi nhóm có thể tối ưu riêng.",
+      "Chỉ thăm các ô (i, j) của một phần tư phía trên bên trái, kể cả các đường giữa. Lấy tập đã khử trùng {(i,j), (i,m-1-j), (n-1-i,j), (n-1-i,m-1-j)}, đếm số ô B là b, và cộng min(b, group size - b) vào đáp án."
     ]
   },
   "explanationEn": "## Approach\n\nGroup the cells that constrain each other under the top-bottom and left-right mirrors into orbits of at most four cells; make each group uniform with its majority color.\n\n## Proof of correctness\n\nRow and column symmetry require all cells in the same orbit to be equal, and different orbits do not constrain each other. Choosing the majority color in each orbit needs the fewest flips, and adding the per-orbit optima gives the global optimum.\n\n## Complexity\n\nO(nm) time and O(nm) extra space."

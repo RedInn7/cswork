@@ -11,5 +11,35 @@
     "hints": [
       "Sort each day's remaining time in ascending order and the secondary tasks in ascending order. Repeatedly match the shortest unscheduled secondary task with the smallest remaining time that can hold it."
     ]
+  },
+  "ja": {
+    "title": "毎日 1 つの主タスクとともに実行できる副タスクの最大数",
+    "description": "n 個の主タスクを n 日間で、1 日にちょうど 1 つずつ完了します。各日の合計時間は limit を超えてはいけません。各日には副タスクも高々 1 つだけ入れられ、n 個の副タスクはそれぞれ高々 1 回しか使えません。完了できる副タスクの最大数を求めてください。スケジュールされない副タスクがあってもかまいません。\n\n標準入出力、例、解説は本サイトが独自に作成したものです。本サイトのものと明記された範囲は、元の問題の制約ではありません。",
+    "input": "1 行目に n と limit、2 行目に primary、3 行目に secondary が与えられます。元の問題文には数値の範囲がありませんでしたが、本サイトでは 1≤n≤200000、1≤limit≤10^9、1≤primary[i]≤limit、1≤secondary[i]≤10^9 とします。",
+    "output": "答えを表す整数を 1 つ出力してください。",
+    "explanation": "答えは 2、0、3 です。1 つ目の例では、余り容量 1 と 10 をそれぞれ 1 と 10 に対応させるべきです。最も大きい余り容量を、最も短いタスクのために先に無駄にしてはいけません。",
+    "hints": [
+      "各日の残り時間を昇順にソートし、副タスクも昇順にソートします。まだスケジュールされていない最短の副タスクを、それを収められる最小の残り時間に繰り返し対応させます。"
+    ]
+  },
+  "ko": {
+    "title": "하루에 주요 작업 하나와 함께 처리하는 보조 작업의 최대 개수",
+    "description": "n개의 주요 작업을 n일에 걸쳐 하루에 정확히 하나씩 완료합니다. 각 날의 총 시간은 limit을 넘을 수 없고, 하루에 보조 작업도 최대 하나까지 넣을 수 있으며, n개의 보조 작업은 각각 최대 한 번만 사용할 수 있습니다. 완료할 수 있는 보조 작업의 최대 개수를 구하세요. 일부 보조 작업은 일정에 넣지 않아도 됩니다.\n\n표준 입출력 형식, 예제, 해설은 본 사이트가 독자적으로 작성했습니다. 본 사이트의 범위라고 명시한 값은 원문의 제약 조건이 아닙니다.",
+    "input": "첫째 줄에 n limit이 주어지고, 둘째 줄에 primary, 셋째 줄에 secondary가 주어집니다. 원문에는 수치 범위가 없었으며, 본 사이트는 1≤n≤200000, 1≤limit≤10^9, 1≤primary[i]≤limit, 1≤secondary[i]≤10^9을 사용합니다.",
+    "output": "정수 하나, 즉 답을 출력합니다.",
+    "explanation": "답은 2, 0, 3입니다. 첫 번째 예제에서는 남는 용량 1과 10을 각각 1과 10에 맞춰야 하며, 가장 큰 남은 용량을 가장 짧은 작업에 먼저 낭비해서는 안 됩니다.",
+    "hints": [
+      "각 날의 남은 시간을 오름차순으로, 보조 작업도 오름차순으로 정렬합니다. 아직 배정되지 않은 가장 짧은 보조 작업을 그것을 담을 수 있는 가장 작은 남은 시간과 반복해서 짝짓습니다."
+    ]
+  },
+  "vi": {
+    "title": "Số tác vụ phụ nhiều nhất làm cùng một tác vụ chính mỗi ngày",
+    "description": "n tác vụ chính được hoàn thành trong n ngày, đúng một tác vụ mỗi ngày. Tổng thời gian mỗi ngày không được vượt quá limit; mỗi ngày cũng có thể làm tối đa một tác vụ phụ, và mỗi tác vụ trong n tác vụ phụ chỉ được dùng nhiều nhất một lần. Tìm số tác vụ phụ nhiều nhất có thể hoàn thành; một số tác vụ phụ có thể không được lên lịch.\n\nĐịnh dạng vào/ra chuẩn, các ví dụ và lời giải được trang này tự biên soạn độc lập; những khoảng giá trị được đánh dấu rõ là của trang này không phải ràng buộc gốc của đề nguồn.",
+    "input": "Dòng đầu chứa n và limit, dòng thứ hai chứa primary, và dòng thứ ba chứa secondary. Đề gốc không nêu giới hạn số; trang này dùng 1≤n≤200000, 1≤limit≤10^9, 1≤primary[i]≤limit, 1≤secondary[i]≤10^9.",
+    "output": "In ra một số nguyên duy nhất, là đáp án.",
+    "explanation": "Các đáp án là 2, 0 và 3. Ở ví dụ thứ nhất, các dung lượng còn lại 1 và 10 nên được ghép lần lượt với 1 và 10; không được lãng phí dung lượng còn lại lớn nhất cho tác vụ ngắn nhất trước.",
+    "hints": [
+      "Sắp xếp thời gian còn lại của mỗi ngày tăng dần và các tác vụ phụ tăng dần. Lặp lại việc ghép tác vụ phụ ngắn nhất chưa lên lịch với thời gian còn lại nhỏ nhất có thể chứa nó."
+    ]
   }
 }

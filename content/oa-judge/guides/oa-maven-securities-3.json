@@ -13,6 +13,21 @@
       "A gcd above 1 means the two numbers share a prime factor, so a direct connection can be rephrased as being linked through some prime, with no pairwise gcd computations.",
       "Use union-find: factor each server into its distinct primes and union it with the first server that had the same prime; all servers sharing a prime end up in one set, and transitivity gives the connected components for free.",
       "Sieve the smallest prime factor for 1..max and factor each value by repeatedly dividing out its smallest prime factor; remember the first owner of each prime and union with it; finally count each root's set size and print, per position, an array wrapped in square brackets with comma separators and no spaces. A value of 1 has no prime factors and forms a cluster of size 1."
+    ],
+    "ja": [
+      "gcd が 1 より大きいとは、2 つの数が素因数を共有するということです。したがって、直接の連結は、ある素数を通じたつながりとして言い換えられ、ペアごとの gcd の計算は不要です。",
+      "Union-Find を使います。各サーバーを異なる素数に分解し、同じ素数を最初に持っていたサーバーと併合します。素数を共有するすべてのサーバーが 1 つの集合になり、推移性により連結成分が自然に得られます。",
+      "1..max の最小素因数を篩で求め、各値を最小素因数で繰り返し割って素因数分解します。各素数の最初の持ち主を覚えておいて併合し、最後に各根の集合の大きさを数えて、各位置について角括弧で囲み、カンマ区切りで空白のない配列を出力します。値が 1 のものは素因数を持たず、大きさ 1 のクラスタになります。"
+    ],
+    "ko": [
+      "gcd가 1보다 크다는 것은 두 수가 소인수를 공유한다는 뜻이므로, 직접 연결을 어떤 소수를 통해 이어져 있다는 것으로 바꿔 말할 수 있고 쌍마다 gcd를 계산할 필요가 없습니다.",
+      "유니온-파인드를 사용합니다. 각 서버를 서로 다른 소인수로 분해하고, 같은 소수를 가졌던 첫 서버와 union합니다. 소수를 공유하는 모든 서버는 하나의 집합이 되며, 전이성 덕분에 연결 요소는 따로 계산하지 않아도 얻어집니다.",
+      "1..max에 대해 최소 소인수를 체로 구하고, 각 값을 최소 소인수로 반복해서 나누며 인수분해합니다. 각 소수의 첫 소유자를 기억해 두고 그 서버와 union하며, 마지막에 각 루트의 집합 크기를 세어 위치마다 대괄호로 감싸고 쉼표로 구분하고 공백이 없는 배열로 출력하세요. 값 1은 소인수가 없으므로 크기 1의 클러스터를 이룹니다."
+    ],
+    "vi": [
+      "gcd lớn hơn 1 nghĩa là hai số có chung một thừa số nguyên tố, nên kết nối trực tiếp có thể diễn đạt lại thành việc được liên kết qua một số nguyên tố nào đó, không cần tính gcd từng cặp.",
+      "Dùng union-find: phân tích mỗi máy chủ thành các số nguyên tố phân biệt và hợp nó với máy chủ đầu tiên có cùng số nguyên tố; mọi máy chủ chung một số nguyên tố sẽ nằm trong một tập, và tính bắc cầu cho ta các thành phần liên thông miễn phí.",
+      "Sàng ước nguyên tố nhỏ nhất cho 1..max và phân tích từng giá trị bằng cách chia liên tục cho ước nguyên tố nhỏ nhất của nó; nhớ chủ sở hữu đầu tiên của mỗi số nguyên tố và hợp với nó; cuối cùng đếm kích thước tập của mỗi gốc và in, theo từng vị trí, một mảng đặt trong ngoặc vuông với dấu phẩy phân tách và không có dấu cách. Giá trị 1 không có thừa số nguyên tố và tạo thành một cụm kích thước 1."
     ]
   },
   "explanationEn": "## Approach\n\nFactor each property into its distinct prime factors. Any two servers sharing a prime factor have a gcd greater than 1, so merging each of them with the first server where that prime factor appeared yields the same connected component; transitive merging covers every path. Finally, count the size of each union-find root and map it back to each position. A value of 1 has no prime factors and stays in its own cluster.\n\n## Proof of Correctness\n\nThe two endpoints of any edge in the original graph have a gcd greater than 1 if and only if they share some prime factor; that prime factor's representative merges the two endpoints. Conversely, every merge joins servers that really do share the current prime factor, so different connected components of the original graph are never merged. After merging for all distinct prime factors, the union-find groups are exactly the connected components of the original graph, and the root count is the size of each server's cluster. A value of 1 shares no prime factor and remains a single-node component.\n\n## Complexity\n\nLet V=1000000 and let M be the array length. Sieving smallest prime factors takes O(V loglogV), factorization takes a bounded O(M log V) of work in total, and union-find merging takes O(M α(M)); space is O(V+M)."

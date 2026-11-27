@@ -13,6 +13,21 @@
       "Only the most frequent letter forces idle slots: any two runs of it need at least cooldown other slots between them.",
       "Let f be the highest frequency and c the number of letters reaching it. Arranging them into f−1 blocks of length cooldown+1 plus a final round of c tasks gives one lower bound; the task count is another, and the answer is the larger of the two.",
       "Count the 26 letters, find f and c, and print max(number of tasks, (f−1)·(cooldown+1)+c)."
+    ],
+    "ja": [
+      "アイドルスロットを強制するのは最も頻出する文字だけです。その文字の2回の実行の間には、少なくとも cooldown 個の他のスロットが必要です。",
+      "f を最大出現回数、c を f に達する文字の種類数とします。長さ cooldown+1 のブロックを f−1 個並べ、最後に c 個のタスクのラウンドを置くと、1つの下界が得られます。タスク数がもう1つの下界で、答えはその大きい方です。",
+      "26文字を数えて f と c を求め、max(タスク数, (f−1)·(cooldown+1)+c) を出力します。"
+    ],
+    "ko": [
+      "유휴 슬롯을 강제하는 것은 가장 빈번한 문자뿐입니다. 이 문자를 두 번 실행하는 사이에는 최소 cooldown개의 다른 슬롯이 필요합니다.",
+      "f를 최대 빈도, c를 그 빈도에 도달한 문자 수라고 합시다. 길이 cooldown+1인 블록 f−1개와 마지막 라운드의 c개 작업으로 배치하면 하나의 하한이 나오고, 작업 수가 또 다른 하한이며, 답은 둘 중 큰 값입니다.",
+      "26개 문자를 세어 f와 c를 구한 뒤 max(작업 수, (f−1)·(cooldown+1)+c)를 출력합니다."
+    ],
+    "vi": [
+      "Chỉ chữ cái xuất hiện nhiều nhất mới buộc phải có khe nhàn rỗi: hai lần chạy của nó cần ít nhất cooldown khe khác nằm giữa.",
+      "Gọi f là tần suất cao nhất và c là số chữ cái đạt tần suất đó. Sắp chúng thành f−1 khối độ dài cooldown+1 cộng thêm một vòng cuối gồm c tác vụ sẽ cho một cận dưới; số lượng tác vụ là một cận khác, và đáp án là giá trị lớn hơn trong hai cận.",
+      "Đếm 26 chữ cái, tìm f và c, rồi in max(số tác vụ, (f−1)·(cooldown+1)+c)."
     ]
   },
   "explanationEn": "## Approach\n\nLet f be the highest frequency and c the number of letters that reach f. The answer is max(total number of tasks, (f−1)(cooldown+1)+c).\n\n## Proof of correctness\n\nThe total number of tasks is a necessary lower bound. Take the c task types with frequency f: consecutive rounds of the same letter must be cooldown+1 apart, and the last round needs at least c positions, which gives the second lower bound. Using the most frequent tasks, build f−1 blocks of length at least cooldown+1 followed by the final c tasks, and spread the other types evenly into the free slots of the earlier blocks; since their frequencies do not exceed f, no block contains the same letter twice. When the free slots run out, enlarge the blocks instead of idling, so all tasks can be laid out back to back; when there are enough free slots, fill the rest with idle slots. Therefore the total length is exactly the maximum of the two lower bounds.\n\n## Complexity\n\nO(n+26) time and O(26) space."

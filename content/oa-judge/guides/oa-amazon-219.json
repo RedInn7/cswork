@@ -13,6 +13,21 @@
       "The middle order does not matter; you only need the lightest block at the front and the heaviest at the end, and one adjacent swap usually moves only one of them one step toward its target.",
       "The only swap that advances both at once swaps the lightest and heaviest directly, which happens only when the lightest is to the right of the heaviest, and only once.",
       "Find the index l of the lightest and r of the heaviest; the answer is l + (n - 1 - r), minus 1 if l > r."
+    ],
+    "ja": [
+      "途中の順序は関係なく、最軽量を先頭、最重量を末尾に置くだけでよいのです。隣接スワップ 1 回で目標に近づけられるのは、通常どちらか一方を 1 歩ずつだけです。",
+      "両方を同時に進められる唯一のスワップは、最軽量と最重量を直接入れ替えるものです。これが起こるのは最軽量が最重量より右にあるときだけで、しかも 1 回だけです。",
+      "最軽量の添字 l と最重量の添字 r を求めます。答えは l + (n - 1 - r) で、l > r なら 1 を引きます。"
+    ],
+    "ko": [
+      "가운데 순서는 상관없습니다. 가장 가벼운 블록을 앞에, 가장 무거운 블록을 뒤에 두기만 하면 되고, 인접 교환 한 번은 보통 둘 중 하나만 목표 쪽으로 한 칸 옮깁니다.",
+      "둘을 동시에 전진시키는 교환은 가장 가벼운 블록과 가장 무거운 블록을 직접 맞바꾸는 경우뿐이며, 이는 가장 가벼운 블록이 가장 무거운 블록보다 오른쪽에 있을 때만, 그리고 한 번만 일어납니다.",
+      "가장 가벼운 블록의 인덱스 l과 가장 무거운 블록의 인덱스 r을 구하면, 정답은 l + (n - 1 - r)이고 l > r이면 1을 뺍니다."
+    ],
+    "vi": [
+      "Thứ tự ở giữa không quan trọng; chỉ cần khối nhẹ nhất ở đầu và khối nặng nhất ở cuối, và một lần hoán đổi kề thường chỉ đưa một trong hai khối tiến một bước về đích.",
+      "Lần hoán đổi duy nhất đưa cả hai tiến lên cùng lúc là đổi trực tiếp khối nhẹ nhất với khối nặng nhất, điều này chỉ xảy ra khi khối nhẹ nhất nằm bên phải khối nặng nhất, và chỉ một lần.",
+      "Tìm chỉ số l của khối nhẹ nhất và r của khối nặng nhất; đáp án là l + (n - 1 - r), trừ 1 nếu l > r."
     ]
   },
   "explanationEn": "## Approach\n\nThe index l of the lightest block plus the distance n-1-r of the heaviest from the end; if l > r the two would cross, so subtract 1.\n\n## Proof of correctness\n\nEach adjacent swap moves at most one extreme one step toward its target, except a direct swap of the two extremes, which reduces both distances at once. Exactly one such joint move is possible when their order is reversed, and none otherwise. Moving the lightest to the front first and then the heaviest to the end attains this lower bound.\n\n## Complexity\n\nTime O(n), space O(n) including the input."

@@ -11,5 +11,35 @@
     "hints": [
       "Compute, from right to left, the total from each starting point until leaving the array: dp[i]=a[i]+dp[i+k], where terms past the end count as 0; the maximum dp is the answer."
     ]
+  },
+  "ja": {
+    "title": "ネットワークから飛び出さなければならないときのセキュリティ値の最大和",
+    "description": "開始地点を選んでそのセキュリティ値を集め、そのあと +k ずつジャンプして着地した場所の値を集めることを繰り返し、次のジャンプが範囲外に出るときだけ止まります。途中で止めることも、何も選ばないこともできず、値は負になり得ます。最良の開始地点での合計を求めてください。\n\n入出力形式は当サイトが整理したもので、元の問題にない数値の制約は当サイトによる補足として明記しています。",
+    "input": "1行目に n k、続けて n 個のセキュリティ値が与えられます。元の制約は 1≤n≤1000000、1≤k≤n、−1000≤security[i]≤1000 です。",
+    "output": "整数を1つ出力します。",
+    "explanation": "3つの公開例の出力は順に次のとおりです: 7; -5; -2。これらの解答は、独立した全探索または直接シミュレーションで検証済みです。",
+    "hints": [
+      "各開始地点から配列の外に出るまでの合計を右から左へ計算します。dp[i]=a[i]+dp[i+k] で、範囲外の項は 0 とします。dp の最大値が答えです。"
+    ]
+  },
+  "ko": {
+    "title": "네트워크 밖으로 점프해야 할 때의 최대 보안 합",
+    "description": "시작점을 하나 골라 그 보안 값을 얻고, 이후 +k만큼 반복해서 점프하며 도착한 곳의 값을 얻습니다. 다음 점프가 범위를 벗어날 때에만 멈춥니다. 중간에 멈추거나 아무것도 선택하지 않을 수 없으며 값은 음수일 수 있습니다. 최적의 시작점에 대한 합계를 구하세요.\n\n이 사이트에서 입출력 형식을 정리했으며, 원문에 없던 수치 범위는 사이트에서 추가한 것임을 명시했습니다.",
+    "input": "첫 줄에 n k가 주어지고, 이어서 n개의 보안 값이 주어집니다. 원문 범위는 1≤n≤1000000, 1≤k≤n, −1000≤security[i]≤1000입니다.",
+    "output": "정수 하나를 출력합니다.",
+    "explanation": "세 개의 공개 예제의 출력은 순서대로 7; -5; -2입니다. 이 답들은 독립적인 전수 조사 또는 직접 시뮬레이션으로 검증되었습니다.",
+    "hints": [
+      "오른쪽에서 왼쪽으로 각 시작점에서 배열을 벗어날 때까지의 합을 계산합니다. dp[i]=a[i]+dp[i+k]이며 범위를 벗어난 항은 0으로 칩니다. 최대 dp가 답입니다."
+    ]
+  },
+  "vi": {
+    "title": "Tổng giá trị bảo mật lớn nhất khi buộc phải nhảy ra khỏi mạng",
+    "description": "Bạn phải chọn một điểm xuất phát và thu giá trị bảo mật của nó, rồi nhảy +k liên tiếp và thu giá trị tại chỗ tiếp đất, chỉ dừng khi bước nhảy kế tiếp sẽ ra ngoài biên. Bạn không thể dừng sớm hay không chọn gì, và các giá trị có thể âm; hãy tìm tổng của điểm xuất phát tốt nhất.\n\nGiao thức đầu vào/đầu ra do trang này biên soạn, và các giới hạn số còn thiếu được ghi rõ là phần trang bổ sung.",
+    "input": "Dòng đầu chứa n k, tiếp theo là n giá trị bảo mật; giới hạn gốc 1≤n≤1000000, 1≤k≤n, −1000≤security[i]≤1000.",
+    "output": "In ra một số nguyên là đáp án.",
+    "explanation": "Đầu ra của ba ví dụ công khai lần lượt là: 7; -5; -2. Các đáp án này đã được kiểm tra bằng vét cạn độc lập hoặc mô phỏng trực tiếp.",
+    "hints": [
+      "Tính từ phải sang trái tổng từ mỗi điểm xuất phát cho đến khi rời khỏi mảng: dp[i]=a[i]+dp[i+k], trong đó các số hạng vượt quá cuối tính là 0; dp lớn nhất là đáp án."
+    ]
   }
 }

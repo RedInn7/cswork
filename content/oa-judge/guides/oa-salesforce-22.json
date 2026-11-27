@@ -13,6 +13,21 @@
       "Give each character a weight: 1 for a normal character and 0 for a special one. The task becomes the longest contiguous subarray with sum at most k, and all weights are non-negative.",
       "Non-negative weights mean that shrinking a window never increases the count of normal characters, so for each right end the valid left ends form a contiguous range, and a sliding window works: the left end only moves right as the right end moves right.",
       "Move the right end from left to right, increasing the count whenever the character's charValue is 0. While the count exceeds k, advance the left end, decreasing the count when a normal character leaves. Update the maximum with right-left+1 at each step and print it."
+    ],
+    "ja": [
+      "各文字に重みを与えます。通常の文字は 1、特殊な文字は 0 です。すると、和が k 以下の連続部分配列の最長を求める問題になり、重みはすべて非負です。",
+      "重みが非負なので、窓を縮めても通常の文字の数は増えません。したがって、各右端について有効な左端は連続した範囲になり、スライディングウィンドウが使えます。右端が右へ動くと、左端も右へしか動きません。",
+      "右端を左から右へ動かし、その文字の charValue が 0 のたびに数を増やします。数が k を超えている間、左端を進め、通常の文字が抜けるときに数を減らします。各ステップで right-left+1 で最大値を更新し、それを出力します。"
+    ],
+    "ko": [
+      "각 문자에 가중치를 줍니다. 일반 문자는 1, 특수 문자는 0입니다. 문제는 합이 k 이하인 가장 긴 연속 부분 배열을 찾는 것이 되며, 모든 가중치는 음이 아닙니다.",
+      "가중치가 음이 아니므로 윈도우를 줄여도 일반 문자 수는 늘지 않습니다. 따라서 각 오른쪽 끝에 대해 유효한 왼쪽 끝은 연속된 범위를 이루고, 슬라이딩 윈도우를 쓸 수 있습니다. 오른쪽 끝이 오른쪽으로 갈 때 왼쪽 끝도 오른쪽으로만 움직입니다.",
+      "오른쪽 끝을 왼쪽에서 오른쪽으로 옮기며 문자의 charValue가 0이면 개수를 늘립니다. 개수가 k를 넘는 동안 왼쪽 끝을 전진시키고, 일반 문자가 빠져나갈 때 개수를 줄입니다. 매 단계 right-left+1로 최댓값을 갱신하고 출력합니다."
+    ],
+    "vi": [
+      "Gán cho mỗi ký tự một trọng số: 1 cho ký tự thường và 0 cho ký tự đặc biệt. Bài toán trở thành tìm mảng con liên tiếp dài nhất có tổng không quá k, và mọi trọng số đều không âm.",
+      "Trọng số không âm nghĩa là thu nhỏ cửa sổ không bao giờ làm tăng số ký tự thường, nên với mỗi đầu mút phải các đầu mút trái hợp lệ tạo thành một khoảng liên tiếp, và cửa sổ trượt dùng được: đầu mút trái chỉ dịch sang phải khi đầu mút phải dịch sang phải.",
+      "Dịch đầu mút phải từ trái sang phải, tăng số đếm mỗi khi charValue của ký tự bằng 0. Trong khi số đếm vượt quá k, dịch đầu mút trái, giảm số đếm khi một ký tự thường rời đi. Cập nhật giá trị lớn nhất bằng right-left+1 ở mỗi bước và in nó."
     ]
   },
   "explanationEn": "## Approach\n\nAdvance the right end while counting normal characters; when the count exceeds k, move the left end until the window is valid again.\n\n## Proof of correctness\n\nNormal characters contribute non-negative amounts, so shortening the window never increases the total. The smallest valid left end for each right end gives the longest valid substring for that right end; enumerating all right ends and taking the maximum gives the global optimum.\n\n## Complexity\n\nTime O(n), space O(1) apart from the input."

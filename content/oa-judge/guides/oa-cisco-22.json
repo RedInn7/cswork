@@ -13,6 +13,21 @@
       "Fix the later position j: the earlier element that gives the largest difference with it is the minimum before j.",
       "Scan left to right while keeping the smallest value seen so far, and pair each element only with that minimum.",
       "Start the answer at 0 (so the output is 0 when there is no positive difference); for each element v, if some element came before, update the answer with v - lowest, then set lowest = min(lowest, v); an empty array prints 0."
+    ],
+    "ja": [
+      "後ろの位置 j を固定すると、それとの差が最大になる前の要素は、j より前にある最小値です。",
+      "左から右へ走査しながらここまでに見た最小値を保持し、各要素をその最小値とだけ組にします。",
+      "答えを 0 から始め（正の差がなければ出力が 0 になるように）、各要素 v について、それより前に要素があれば v - lowest で答えを更新し、その後 lowest = min(lowest, v) とします。空の配列は 0 を出力します。"
+    ],
+    "ko": [
+      "뒤쪽 위치 j를 고정하면, 그것과의 차이를 가장 크게 하는 앞쪽 원소는 j 이전의 최솟값입니다.",
+      "왼쪽에서 오른쪽으로 스캔하며 지금까지 본 가장 작은 값을 유지하고, 각 원소를 그 최솟값하고만 짝지어 봅니다.",
+      "answer를 0으로 시작합니다(양의 차이가 없을 때 0이 출력되도록). 각 원소 v에 대해, 앞에 원소가 하나라도 있었으면 answer를 v - lowest로 갱신한 뒤 lowest = min(lowest, v)로 설정합니다. 빈 배열은 0을 출력합니다."
+    ],
+    "vi": [
+      "Cố định vị trí đứng sau j: phần tử đứng trước cho hiệu lớn nhất với nó là giá trị nhỏ nhất trước j.",
+      "Duyệt từ trái sang phải trong khi giữ giá trị nhỏ nhất đã gặp, và ghép mỗi phần tử chỉ với giá trị nhỏ nhất đó.",
+      "Bắt đầu với đáp án 0 (để đầu ra là 0 khi không có hiệu dương nào); với mỗi phần tử v, nếu đã có phần tử nào đứng trước thì cập nhật đáp án bằng v - lowest, rồi đặt lowest = min(lowest, v); mảng rỗng in 0."
     ]
   },
   "explanationEn": "## Approach\n\nScan from left to right, keeping the minimum so far, and pair each element only with that earlier minimum.\n\n## Proof of correctness\n\nWith the right end j fixed, the smallest left element produces the largest difference. Going through every right end covers every possibly optimal pair; starting the answer at 0 outputs 0, as agreed, when there is no strictly positive difference.\n\n## Complexity\n\nO(n) time and O(1) auxiliary space apart from the input."

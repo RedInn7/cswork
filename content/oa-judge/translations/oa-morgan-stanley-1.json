@@ -13,5 +13,41 @@
       "Use the largest savings first.",
       "A brick with strength 1 saves nothing, so no particular tie-breaking output should be forced."
     ]
+  },
+  "ja": {
+    "title": "2本のハンマーですべてのレンガを割る最小打撃回数",
+    "description": "1 から n の番号が付いた n 個のレンガがあり、互いに異なる正の整数 strength[i] が各レンガを割るのに必要な打撃の強さを表します。大ハンマーは任意のレンガを1回の打撃で割れますが、使えるのは最大 k 回までです。小ハンマーは1回の打撃で必要な強さを1だけ減らすので、小ハンマーだけで割るには strength[i] 回の打撃が必要です。すべてのレンガを割るのに必要な打撃の合計回数の最小値と、各ハンマーで割るレンガのインデックスを求めてください。各レンガはちょうど一方のハンマーの組に割り当てます。最適な分け方であればどれを返してもかまいません。強さ1のレンガはどちらのハンマーを使ってもよく、割り当て回数の上限を守り、合計打撃回数が最適であれば問題ありません。",
+    "input": "1行目に n と k が与えられます。2行目に互いに異なる n 個の整数 strength[i] が与えられます。1≤n≤200000、0≤k≤200000、1≤strength[i]≤1000000000。k は n より大きいことがあります。元の問題の範囲と、値が互いに異なるという保証はそのまま残しています。",
+    "output": "ちょうど3行を出力します。1行目は打撃の合計回数の最小値で、32 ビットを超えることがあります。2行目は大ハンマーの組の 1-based インデックスを狭義単調増加の順に並べたもので、大ハンマーを使わない場合は -1 です。3行目は小ハンマーの組の 1-based インデックスを狭義単調増加の順に並べたもので、小ハンマーを使わない場合は -1 です。2つの組は互いに素で、合わせてすべてのレンガを覆い、大ハンマーの組の大きさは k 以下でなければなりません。括弧や組の大きさは出力しません。これは元の問題の2次元の戻り値配列を1行ずつに直列化したものです。",
+    "explanation": "4つの公開例はすべて元の問題のものです。例1は大ハンマーの割り当てがなく、2回の打撃になります。例2は大ハンマーをレンガ 3、5、6、7 に使い、残りの小ハンマーのコストは 3+2+4=9 で、合計 13 回です。例3は割り当て回数が9で、レンガ数の8より多いため、すべてのレンガに大ハンマーを使え、合計 8 回です。例4は大ハンマーがなく、合計 1110000000 回です。",
+    "hints": [
+      "小ハンマーから大ハンマーに切り替えると、レンガ1個あたり何回の打撃を節約できるでしょうか。",
+      "節約量が大きいものから順に使います。",
+      "強さ1のレンガは何も節約できないので、同点の扱いについて出力を特定の形に強制する必要はありません。"
+    ]
+  },
+  "ko": {
+    "title": "망치 두 개로 모든 벽돌을 깨는 최소 타격 횟수",
+    "description": "1부터 n까지 번호가 붙은 벽돌 n개가 있고, 서로 다른 양의 정수 strength[i]는 각 벽돌을 깨기 위해 필요한 타격 강도입니다. 큰 망치는 어떤 벽돌이든 한 번에 깨며 최대 k번까지 사용할 수 있습니다. 작은 망치는 한 번 칠 때마다 필요한 강도가 1씩 줄어들므로, 작은 망치만으로 벽돌을 깨려면 strength[i]번 쳐야 합니다. 모든 벽돌을 깨는 데 필요한 최소 총 타격 횟수와, 각 망치로 깬 벽돌의 인덱스를 구하세요. 각 벽돌은 정확히 한 망치의 그룹에 속합니다. 최적인 분배 중 아무거나 반환해도 되며, 강도가 1인 벽돌은 어느 망치를 써도 됩니다. 단, 사용 횟수 제한을 지키고 총 타격 횟수가 최적이어야 합니다.",
+    "input": "첫째 줄에 n과 k가 주어집니다. 둘째 줄에 서로 다른 정수 n개 strength[i]가 주어집니다. 1≤n≤200000, 0≤k≤200000, 1≤strength[i]≤1000000000. k는 n보다 클 수 있습니다. 원래 문제의 범위와 값이 서로 다르다는 보장은 그대로 유지됩니다.",
+    "output": "정확히 세 줄을 출력합니다. 첫째 줄은 최소 총 타격 횟수이며 32비트를 넘을 수 있습니다. 둘째 줄은 큰 망치 그룹의 1-based 인덱스를 엄격히 증가하는 순서로 나열하며, 큰 망치를 쓰지 않으면 -1을 출력합니다. 셋째 줄은 작은 망치 그룹의 1-based 인덱스를 엄격히 증가하는 순서로 나열하며, 작은 망치를 쓰지 않으면 -1을 출력합니다. 두 그룹은 서로소여야 하고 합치면 모든 벽돌을 포함해야 하며, 큰 망치 그룹의 크기는 k 이하여야 합니다. 대괄호나 그룹 크기는 출력하지 않습니다. 이는 원래 문제의 2차원 반환 배열을 줄 단위로 직렬화한 것입니다.",
+    "explanation": "공개된 네 예제는 모두 원래 문제에서 가져온 것입니다. 예제 1은 큰 망치 사용 가능 횟수가 없어 2번 타격합니다. 예제 2는 벽돌 3, 5, 6, 7에 큰 망치를 쓰고 나머지 작은 망치 비용이 3+2+4=9이므로 총 13번입니다. 예제 3은 사용 가능 횟수가 9로 벽돌 수 8보다 많아 모든 벽돌에 큰 망치를 쓸 수 있고 총 8번입니다. 예제 4는 큰 망치가 없으므로 총 1110000000번입니다.",
+    "hints": [
+      "벽돌을 작은 망치에서 큰 망치로 바꾸면 타격 횟수가 얼마나 줄어드는지 생각해 보세요.",
+      "절약량이 큰 것부터 사용하세요.",
+      "강도가 1인 벽돌은 절약량이 없으므로 특정한 동점 처리 출력을 강제해서는 안 됩니다."
+    ]
+  },
+  "vi": {
+    "title": "Số nhát đập tối thiểu để phá hết gạch bằng hai chiếc búa",
+    "description": "Có n viên gạch đánh số từ 1 đến n, và các số nguyên dương đôi một khác nhau strength[i] cho biết lực đập mỗi viên gạch cần chịu. Búa lớn phá được bất kỳ viên gạch nào chỉ với một nhát và được dùng tối đa k lần; mỗi nhát búa nhỏ làm giảm lực cần thiết đi 1, nên chỉ dùng búa nhỏ để phá viên gạch thì mất strength[i] nhát. Hãy tìm tổng số nhát tối thiểu để phá hết các viên gạch, và đưa ra chỉ số các viên gạch bị phá bởi từng chiếc búa. Mỗi viên gạch thuộc đúng một nhóm của một chiếc búa. Trả về một cách chia tối ưu bất kỳ; viên gạch có strength bằng 1 có thể dùng búa nào cũng được, miễn là tuân thủ hạn mức và tổng số nhát là tối ưu.",
+    "input": "Dòng đầu chứa n và k. Dòng thứ hai chứa n số nguyên đôi một khác nhau strength[i]. 1≤n≤200000, 0≤k≤200000, 1≤strength[i]≤1000000000. k có thể lớn hơn n. Các khoảng giá trị của bài gốc và đảm bảo các giá trị đôi một khác nhau được giữ nguyên đầy đủ.",
+    "output": "In đúng ba dòng. Dòng đầu là tổng số nhát tối thiểu, có thể vượt quá 32 bit. Dòng thứ hai liệt kê các chỉ số (đánh số từ 1) của nhóm búa lớn theo thứ tự tăng ngặt, hoặc -1 nếu không dùng búa lớn. Dòng thứ ba liệt kê các chỉ số (đánh số từ 1) của nhóm búa nhỏ theo thứ tự tăng ngặt, hoặc -1 nếu không dùng búa nhỏ. Hai nhóm phải rời nhau và hợp lại phủ toàn bộ gạch, và nhóm búa lớn có kích thước tối đa k. Không in dấu ngoặc hay kích thước nhóm. Đây là cách tuần tự hóa theo từng dòng của mảng hai chiều mà bài gốc trả về.",
+    "explanation": "Cả bốn ví dụ công khai đều lấy từ bài gốc. Ví dụ 1 không có hạn mức búa lớn và mất 2 nhát. Ví dụ 2 dùng búa lớn cho các viên gạch 3, 5, 6, 7, và chi phí búa nhỏ còn lại là 3+2+4=9, tổng cộng 13 nhát. Ví dụ 3 có hạn mức 9, nhiều hơn 8 viên gạch, nên mọi viên đều dùng được búa lớn, tổng cộng 8 nhát. Ví dụ 4 không có búa lớn, tổng cộng 1110000000 nhát.",
+    "hints": [
+      "Chuyển một viên gạch từ búa nhỏ sang búa lớn thì tiết kiệm được bao nhiêu nhát?",
+      "Dùng mức tiết kiệm lớn nhất trước.",
+      "Viên gạch có strength bằng 1 không tiết kiệm được gì, vì vậy không nên ép buộc một cách phá cụ thể nào trong đầu ra."
+    ]
   }
 }

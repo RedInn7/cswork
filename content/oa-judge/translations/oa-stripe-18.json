@@ -11,5 +11,35 @@
     "hints": [
       "For each day, take the working periods of that weekday and enumerate candidates from each period's start in 30-minute steps; keep only complete slots whose start is not earlier than the range start and whose end is not later than the range end, then deduplicate and sort."
     ]
+  },
+  "ja": {
+    "title": "週次の勤務時間内で利用可能な時間枠を生成",
+    "description": "閉じた日時の範囲と、毎週繰り返す勤務時間帯が与えられます。範囲内に完全に収まる 30 分の時間枠をすべて出力してください。時間枠は範囲の内側で、かつ対応する勤務時間帯の内側に完全に収まらなければなりません。各勤務時間帯の枠の格子は時間帯の開始から始まり、30 分ごとに候補の時間枠を作ります。重複した時間帯から生成された同一の時間枠は 1 回だけ出力します。\n\n入力形式、例、テストデータは CSWork が作成しました。",
+    "input": "最初の 2 行は開始時刻と終了時刻で、形式は `YYYY-MM-DD HH:MM` です。3 行目に勤務時間帯の数 w があり、続く w 行が `weekday start end` です。weekday は 0（月曜）から 6（日曜）で、時刻は `HH:MM` 形式です。end は `24:00` と書かれることもあります。各時間帯は同じ日の半開区間 `[start,end)` で、start < end です。範囲は高々 366 日にわたり、0≤w≤1000 です。",
+    "output": "まず時間枠の数を出力します。続いて、時刻の昇順に 1 行ずつ `<start time>,<end time>` を出力します。利用可能な時間枠がない場合は、0 だけを出力します。",
+    "explanation": "上記の規則に従って入力を処理します。解法、正当性の証明、計算量については付属の解説を参照してください。",
+    "hints": [
+      "各日について、その曜日の勤務時間帯を取り出し、各時間帯の開始から 30 分刻みで候補を列挙します。開始が範囲の開始以降で、終了が範囲の終了以前である完全な枠だけを残し、重複を除いてソートします。"
+    ]
+  },
+  "ko": {
+    "title": "주간 근무 시간 내 가능한 시간 슬롯 생성",
+    "description": "닫힌 날짜-시간 범위와 매주 반복되는 근무 시간대가 주어지면, 범위 안의 완전한 30분 시간 슬롯을 모두 출력하세요. 슬롯은 범위 안에 완전히 들어가야 하고 해당하는 근무 시간대 안에도 완전히 들어가야 합니다. 각 근무 시간대의 슬롯 격자는 그 시간대의 시작에서 출발하여 30분마다 후보 슬롯을 만듭니다. 반복된 시간대에서 만들어진 동일한 슬롯은 한 번만 출력합니다.\n\n입력 형식, 예제, 테스트 데이터는 CSWork가 정리하여 작성했습니다.",
+    "input": "처음 두 줄은 시작 시각과 종료 시각이며 형식은 `YYYY-MM-DD HH:MM`입니다. 셋째 줄에는 근무 시간대의 수 w가 있고, 이어서 `weekday start end` 형식의 줄이 w개 주어집니다. weekday는 0(월요일)부터 6(일요일)까지이고, 시각은 `HH:MM`이며 종료는 `24:00`으로 쓸 수 있습니다. 각 시간대는 같은 날의 반개구간 `[start,end)`이며 start < end입니다. 범위는 최대 366일에 걸치며, 0≤w≤1000입니다.",
+    "output": "먼저 시간 슬롯의 수를 출력합니다. 그다음 시간순 오름차순으로 한 줄에 하나씩 `<start time>,<end time>`을 출력합니다. 가능한 슬롯이 없으면 0만 출력합니다.",
+    "explanation": "위의 규칙에 따라 입력을 처리하세요. 접근 방법, 정당성 증명, 복잡도는 함께 제공되는 풀이를 참고하세요.",
+    "hints": [
+      "각 날짜마다 그 요일의 근무 시간대를 가져와 시간대의 시작부터 30분 간격으로 후보를 나열하세요. 시작이 범위 시작보다 이르지 않고 종료가 범위 종료보다 늦지 않은 완전한 슬롯만 남기고, 중복을 제거한 뒤 정렬합니다."
+    ]
+  },
+  "vi": {
+    "title": "Sinh các khung giờ trống trong giờ làm việc hằng tuần",
+    "description": "Cho một khoảng ngày giờ đóng và các khoảng giờ làm việc lặp lại hằng tuần, hãy xuất mọi khung giờ 30 phút đầy đủ nằm trong khoảng đó. Một khung giờ phải nằm trọn trong khoảng và trong khoảng giờ làm việc tương ứng. Lưới khung giờ của mỗi khoảng làm việc bắt đầu từ thời điểm bắt đầu của khoảng và sinh ra một khung giờ ứng viên mỗi 30 phút; các khung giờ giống hệt nhau do các khoảng lặp sinh ra chỉ được xuất một lần.\n\nĐịnh dạng đầu vào, ví dụ và dữ liệu kiểm thử do CSWork biên soạn và viết.",
+    "input": "Hai dòng đầu là thời điểm bắt đầu và kết thúc, theo định dạng `YYYY-MM-DD HH:MM`; dòng thứ ba chứa số khoảng làm việc w, theo sau là w dòng `weekday start end`. weekday nằm từ 0 (Thứ Hai) đến 6 (Chủ Nhật); thời gian có dạng `HH:MM`, và thời điểm kết thúc có thể viết là `24:00`. Mỗi khoảng là một khoảng nửa mở `[start,end)` trong cùng một ngày với start < end. Khoảng ngày trải dài tối đa 366 ngày, và 0≤w≤1000.",
+    "output": "Trước tiên xuất số khung giờ; sau đó xuất mỗi dòng một `<start time>,<end time>` theo thứ tự thời gian tăng dần. Nếu không có khung giờ trống nào, chỉ xuất 0.",
+    "explanation": "Xử lý đầu vào theo các quy tắc trên; xem lời giải kèm theo để biết hướng tiếp cận, chứng minh tính đúng đắn và độ phức tạp.",
+    "hints": [
+      "Với mỗi ngày, lấy các khoảng làm việc của thứ trong tuần đó và liệt kê các ứng viên từ điểm bắt đầu của mỗi khoảng theo bước 30 phút; chỉ giữ các khung giờ đầy đủ có điểm bắt đầu không sớm hơn điểm bắt đầu của khoảng và điểm kết thúc không muộn hơn điểm kết thúc của khoảng, rồi loại trùng và sắp xếp."
+    ]
   }
 }

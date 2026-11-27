@@ -13,6 +13,21 @@
       "Every gain is positive, so add as many workdays as possible: min(k, number of 0s). What remains is where to place them to maximize the number of adjacent \"11\" pairs.",
       "If some workday already exists, each new day can be attached next to a work block and adds at least one adjacent pair; filling an entire run of 0s that sits between two work blocks joins them and adds one extra pair, regardless of the run's length. So fill the shortest interior runs first.",
       "Count the ones, the existing adjacent pairs and the lengths of all interior runs of 0s (runs with a 1 on both sides). Sort the run lengths and fill them in ascending order while the remaining added days suffice, counting extra. The answer is (ones + add) * fixedPay + (pairs + add + extra) * bonus. If the string is all 0s, place the add days contiguously for add * fixedPay + max(0, add - 1) * bonus. Use 64-bit integers."
+    ],
+    "ja": [
+      "利得はすべて正なので、できるだけ多くの出勤日を追加します。つまり min(k, 0 の個数) 日です。残る問題は、隣接する「11」のペアの数が最大になるように配置する場所を決めることです。",
+      "すでに出勤日が存在するなら、新しい日を勤務ブロックの隣に付ければ、少なくとも 1 組の隣接ペアが増えます。2 つの勤務ブロックの間にある 0 の連続区間を丸ごと埋めると、その長さに関係なく、2 つがつながって追加でもう 1 組のペアが増えます。したがって、最短の内部区間から先に埋めます。",
+      "1 の個数、既存の隣接ペアの数、そして内部の 0 の連続区間（両側が 1 のもの）すべての長さを数えます。区間の長さをソートし、残りの追加日で足りる限り昇順に埋めて、extra を数えます。答えは (ones + add) * fixedPay + (pairs + add + extra) * bonus です。文字列がすべて 0 の場合は、追加日を連続して置くので add * fixedPay + max(0, add - 1) * bonus です。64 ビット整数を使ってください。"
+    ],
+    "ko": [
+      "모든 이득이 양수이므로 최대한 많은 근무일, 즉 min(k, 0의 개수)일을 추가합니다. 남는 문제는 인접한 \"11\" 쌍의 수가 최대가 되도록 어디에 배치할지입니다.",
+      "이미 근무일이 하나라도 있다면 새로 추가한 날을 근무 블록 옆에 붙이면 적어도 인접 쌍이 하나 늘어납니다. 두 근무 블록 사이에 있는 0 구간을 전부 채우면 두 블록이 이어져 구간 길이와 관계없이 쌍이 하나 더 늘어납니다. 따라서 가장 짧은 내부 구간부터 채웁니다.",
+      "1의 개수, 기존 인접 쌍의 수, 모든 내부 0 구간(양쪽에 1이 있는 구간)의 길이를 셉니다. 구간 길이를 정렬하여 남은 추가일이 충분한 동안 오름차순으로 채우며 extra를 셉니다. 답은 (ones + add) * fixedPay + (pairs + add + extra) * bonus입니다. 문자열이 모두 0이면 add일을 연속으로 배치하여 add * fixedPay + max(0, add - 1) * bonus입니다. 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Mọi lợi ích đều dương, nên hãy thêm càng nhiều ngày làm việc càng tốt: min(k, số lượng số 0). Phần còn lại là chọn vị trí đặt chúng để tối đa hóa số cặp \"11\" liền kề.",
+      "Nếu đã có sẵn một ngày làm việc, mỗi ngày mới có thể gắn cạnh một khối làm việc và thêm ít nhất một cặp liền kề; lấp đầy toàn bộ một đoạn số 0 nằm giữa hai khối làm việc sẽ nối chúng và thêm một cặp nữa, bất kể độ dài đoạn đó. Vì vậy hãy lấp các đoạn bên trong ngắn nhất trước.",
+      "Đếm số số một, số cặp liền kề hiện có và độ dài của mọi đoạn số 0 bên trong (các đoạn có số 1 ở cả hai phía). Sắp xếp độ dài các đoạn và lấp chúng theo thứ tự tăng dần khi số ngày thêm còn lại đủ, đếm extra. Đáp án là (ones + add) * fixedPay + (pairs + add + extra) * bonus. Nếu xâu toàn 0, đặt các ngày add liên tiếp để được add * fixedPay + max(0, add - 1) * bonus. Dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nAll gains are positive, so add as many workdays as possible; first fill the shortest interior 0 segments to connect work blocks, then use the remaining added days to extend existing work blocks. If the string is all 0s, place the added days as one contiguous segment.\n\n## Proof of correctness\n\nTotal pay is determined by the number of workdays and the number of adjacent 11 pairs. When workdays already exist, each added day brings at least one adjacent 11 pair; completely filling an interior gap adds one more, and this gain does not depend on the gap's length. Therefore filling the shortest gaps first maximizes the number of completed gaps. Added days that do not complete a gap can be attached to the edge of an existing block and still reach the base gain. When the string is all 0s, k ones have at most k-1 adjacent pairs, which a contiguous placement achieves.\n\n## Complexity\n\nO(n log n) time and O(n) space; pay is computed with 64-bit integers."

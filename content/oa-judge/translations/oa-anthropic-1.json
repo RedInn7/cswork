@@ -11,5 +11,35 @@
     "hints": [
       "Compress all keys offline and store value IDs in a persistent segment tree. A modification copies only the root-to-leaf path, BACKUP saves the root ID, and RESTORE switches roots; value ID 0 means absent, and any other ID means present, even if it corresponds to the string NULL."
     ]
+  },
+  "ja": {
+    "title": "バックアップと復元ができる永続キーバリューデータベース",
+    "description": "SET key value、GET key、DELETE key、BACKUP、RESTORE id を実装してください。SET は上書きを行い OK を出力します。GET は値または NULL を出力します。DELETE はキーが存在すればそれを削除して OK を出力し、存在しなければ NULL を出力します。BACKUP は現在の状態を保存し、1 から増加して再利用されない ID を出力します。RESTORE は、有効な ID ならその状態を復元して OK を出力し、無効な ID なら NULL を出力して状態を変更しません。古いバックアップはいつでも復元でき、その後の変更でバックアップが壊れてはいけません。バックアップと復元では、データベース全体をコピーしてはいけません。\n\n入出力形式は本サイトが用意したものです。",
+    "input": "1 行目にコマンド数 n が与えられ、続く n 行にコマンドが与えられます。1≤n≤200000。元の問題では、文字列は空でなく空白を含まず、長さの制限はありません。本サイトでは、各 key/value は 1 〜 64 個の Unicode 文字 (各文字は UTF-8 で最大 4 バイト)、入力の合計は ≤16MiB、RESTORE の ID は 0 から 200000 の範囲です。",
+    "output": "各コマンドは、ちょうど 1 行を出力します。NULL も保存された有効な値になりえるため、存在しないキーと取り違えてはいけません。",
+    "explanation": "例 1 では、復元後に 1 を読み取ります。例 2 では文字列 NULL が実際に存在するため、最初の削除は OK を返し、2 回目の削除だけが NULL を返します。例 3 では、古いバージョンを復元してから変更しても、バックアップ 2 には影響せず、無効な復元でも現在の値は変わりません。",
+    "hints": [
+      "出現するすべてのキーをオフラインで圧縮し、値 ID を永続セグメント木に保存します。変更では根から葉までのパスだけをコピーし、BACKUP は根の ID を保存し、RESTORE は根を切り替えます。値 ID 0 は存在しないことを表し、それ以外の ID は、文字列 NULL に対応するものであっても、存在することを表します。"
+    ]
+  },
+  "ko": {
+    "title": "백업과 복원이 가능한 영속 키-값 데이터베이스",
+    "description": "SET key value, GET key, DELETE key, BACKUP, RESTORE id를 구현합니다. SET은 덮어쓰고 OK를 출력합니다. GET은 값 또는 NULL을 출력합니다. DELETE는 키가 존재하면 삭제하고 OK를, 아니면 NULL을 출력합니다. BACKUP은 현재 상태를 저장하고 1부터 증가하며 재사용되지 않는 ID를 출력합니다. 유효한 ID로 RESTORE하면 그 상태로 복원하고 OK를 출력하며, 유효하지 않은 ID이면 NULL을 출력하고 상태는 바뀌지 않습니다. 이전 백업은 언제든 복원할 수 있어야 하고, 이후의 수정이 백업을 손상시켜서는 안 됩니다. 백업과 복원은 데이터베이스 전체를 복사하지 않아야 합니다.\n\n입출력 형식은 이 사이트에서 마련했습니다.",
+    "input": "첫 번째 줄에 명령의 개수 n이 주어지고, 이어서 n줄의 명령이 주어집니다. 1≤n≤200000. 원래 문제에서 문자열은 비어 있지 않고 공백을 포함하지 않으며 길이 제한이 없습니다. 이 사이트에서는 각 key/value가 유니코드 문자 1~64개(각각 UTF-8로 최대 4바이트)이고, 전체 입력은 ≤16MiB이며, RESTORE ID의 범위는 0부터 200000까지입니다.",
+    "output": "각 명령은 정확히 한 줄을 출력합니다. NULL도 저장될 수 있는 유효한 값이므로 존재하지 않는 키와 혼동해서는 안 됩니다.",
+    "explanation": "예제 1은 복원 후 1을 읽습니다. 예제 2에서는 문자열 NULL이 실제로 존재하므로 첫 번째 삭제는 OK를 반환하고 두 번째 삭제만 NULL을 반환합니다. 예제 3에서는 오래된 버전을 복원한 뒤 수정해도 백업 2에 영향을 주지 않으며, 유효하지 않은 복원도 현재 값을 바꾸지 않습니다.",
+    "hints": [
+      "등장하는 모든 키를 오프라인으로 압축하고, 값 ID를 영속 세그먼트 트리에 저장합니다. 수정은 루트에서 리프까지의 경로만 복사하고, BACKUP은 루트 ID를 저장하며, RESTORE는 루트를 교체합니다. 값 ID 0은 없음을 뜻하고, 다른 ID는 문자열 NULL에 해당하더라도 존재함을 뜻합니다."
+    ]
+  },
+  "vi": {
+    "title": "Cơ sở dữ liệu key-value bền vững với sao lưu và khôi phục",
+    "description": "Cài đặt SET key value, GET key, DELETE key, BACKUP và RESTORE id. SET ghi đè và in OK; GET in giá trị hoặc NULL; DELETE xóa khóa và in OK nếu nó tồn tại, nếu không thì in NULL. BACKUP lưu trạng thái hiện tại và in ra một ID tăng dần từ 1 và không bao giờ được dùng lại; RESTORE với ID hợp lệ khôi phục trạng thái đó và in OK, còn ID không hợp lệ thì in NULL và giữ nguyên trạng thái. Các bản sao lưu cũ luôn có thể khôi phục, và các sửa đổi về sau không được làm hỏng bản sao lưu. Sao lưu và khôi phục không được sao chép toàn bộ cơ sở dữ liệu.\n\nĐịnh dạng nhập và xuất do trang này chuẩn bị.",
+    "input": "Dòng đầu chứa số lệnh n, tiếp theo là n dòng lệnh, 1≤n≤200000. Trong bài gốc, các chuỗi khác rỗng và không chứa khoảng trắng, không giới hạn độ dài; trên trang này mỗi key/value dài từ 1 đến 64 ký tự Unicode (mỗi ký tự tối đa 4 byte UTF-8), tổng đầu vào ≤16MiB, và các ID của RESTORE nằm trong khoảng từ 0 đến 200000.",
+    "output": "Mỗi lệnh in ra đúng một dòng. NULL cũng là một giá trị hợp lệ có thể được lưu và không được nhầm với khóa không tồn tại.",
+    "explanation": "Ví dụ 1 đọc ra 1 sau khi khôi phục. Ở ví dụ 2, chuỗi NULL thực sự tồn tại, nên lần xóa đầu tiên trả về OK và chỉ lần thứ hai mới trả về NULL. Ở ví dụ 3, khôi phục một phiên bản cũ rồi sửa đổi không ảnh hưởng đến bản sao lưu 2, và một lần khôi phục không hợp lệ cũng không thay đổi giá trị hiện tại.",
+    "hints": [
+      "Nén ngoại tuyến mọi khóa và lưu ID giá trị trong một segment tree bền vững (persistent). Mỗi thay đổi chỉ sao chép đường đi từ gốc đến lá, BACKUP lưu ID của gốc, và RESTORE chuyển gốc; ID giá trị 0 nghĩa là không tồn tại, mọi ID khác nghĩa là tồn tại, kể cả khi nó ứng với chuỗi NULL."
+    ]
   }
 }

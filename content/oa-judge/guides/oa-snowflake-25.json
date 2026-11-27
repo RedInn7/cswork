@@ -13,6 +13,21 @@
       "The last segment of an optimal split has length 1..threshold, and the prefix left after removing it must itself be split optimally, so a prefix DP works.",
       "Let dp[i] be the minimum cost of the first i elements, with dp[0] = 0. Enumerate the start j of the last segment backward from i - 1; its maximum can be maintained incrementally as j moves left.",
       "For each i, go j from i - 1 down to max(0, i - threshold): largest = max(largest, a[j]) and dp[i] = min(dp[i], dp[j] + largest). Elements may be negative, so start from a large sentinel and use 64-bit integers; print dp[n]."
+    ],
+    "ja": [
+      "最適な分割の最後の区間の長さは 1..threshold で、それを取り除いた残りの接頭辞も最適に分割されていなければならないので、接頭辞に対する DP が使えます。",
+      "dp[i] を先頭 i 要素の最小コストとし、dp[0] = 0 とします。最後の区間の開始位置 j を i - 1 から後ろ向きに列挙します。j を左へ動かすにつれて、その最大値を逐次維持できます。",
+      "各 i について、j を i - 1 から max(0, i - threshold) まで降順に回します。largest = max(largest, a[j])、dp[i] = min(dp[i], dp[j] + largest) とします。要素は負になりえるので、大きな番兵値から始め、64 ビット整数を使ってください。dp[n] を出力します。"
+    ],
+    "ko": [
+      "최적 분할의 마지막 구간은 길이가 1..threshold이고, 이를 떼어 낸 나머지 접두사도 최적으로 분할되어야 하므로 접두사 DP가 통합니다.",
+      "dp[i]를 앞 i개 원소의 최소 비용, dp[0] = 0이라 합니다. 마지막 구간의 시작 위치 j를 i - 1부터 거꾸로 열거하면, j가 왼쪽으로 움직일 때 구간의 최댓값을 점진적으로 유지할 수 있습니다.",
+      "각 i에 대해 j를 i - 1부터 max(0, i - threshold)까지 내려가며 largest = max(largest, a[j])와 dp[i] = min(dp[i], dp[j] + largest)를 갱신합니다. 원소가 음수일 수 있으므로 큰 센티널 값에서 시작하고 64비트 정수를 쓰며 dp[n]을 출력합니다."
+    ],
+    "vi": [
+      "Đoạn cuối của một cách chia tối ưu có độ dài 1..threshold, và tiền tố còn lại sau khi bỏ nó cũng phải được chia tối ưu, nên DP tiền tố là phù hợp.",
+      "Gọi dp[i] là chi phí nhỏ nhất của i phần tử đầu, với dp[0] = 0. Liệt kê điểm bắt đầu j của đoạn cuối lùi dần từ i - 1; giá trị lớn nhất của nó có thể được duy trì dần khi j dịch sang trái.",
+      "Với mỗi i, cho j chạy từ i - 1 xuống max(0, i - threshold): largest = max(largest, a[j]) và dp[i] = min(dp[i], dp[j] + largest). Các phần tử có thể âm, nên bắt đầu từ một giá trị canh lớn và dùng số nguyên 64-bit; in dp[n]."
     ]
   },
   "explanationEn": "## Approach\n\ndp[i] is the minimum cost of the first i items. Enumerate the start of the last segment backward while maintaining its maximum, and update dp[i].\n\n## Correctness\n\nThe last segment of an optimal split must have length in 1..threshold, and after removing it the prefix must also be optimal, otherwise it could be replaced to lower the total. Since all valid last segments are enumerated and the minimum is taken, the recurrence misses no optimal solution. Negative costs do not affect the recurrence over finite splits.\n\n## Complexity\n\nTime O(n×threshold), space O(n)."

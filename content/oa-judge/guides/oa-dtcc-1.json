@@ -13,6 +13,21 @@
       "In long division the next digit is determined entirely by the current remainder: multiply it by 10, divide by N to get the digit, and the new remainder is the modulus.",
       "Once a remainder repeats, the digits repeat from there on, so record how many digits had been produced when each remainder first appeared. When a remainder shows up again, the digits before that position are the non-repeating prefix and the rest is the cycle. A remainder of 0 means the decimal terminates, and the statement then treats the cycle as 0.",
       "Start with remainder 1 and loop: store the current remainder's position, multiply by 10, append the digit remainder / N, and reduce modulo N, until the remainder is 0 or repeats. Then print \"0.\" + prefix + cycle + a space + cycle; for example 1/8 prints 0.1250 0 and 1/9 prints 0.1 1."
+    ],
+    "ja": [
+      "筆算の割り算では、次の桁は現在の余りだけで決まります。余りを 10 倍して N で割ると桁が得られ、新しい余りはその剰余です。",
+      "余りが一度繰り返されると、その位置から桁が繰り返されるので、各余りが最初に現れたときにそこまでに何桁生成されていたかを記録します。余りが再び現れたとき、その位置より前の桁が循環しない部分で、残りが循環節です。余りが 0 なら小数は有限で終わり、問題文ではその場合の循環節を 0 とします。",
+      "余り 1 から始めてループします。現在の余りの位置を記録し、10 倍して、桁として余り / N を追加し、N で割った余りに更新することを、余りが 0 になるか繰り返されるまで続けます。その後 \"0.\" + 循環しない部分 + 循環節 + 空白 + 循環節を出力します。たとえば 1/8 は 0.1250 0、1/9 は 0.1 1 を出力します。"
+    ],
+    "ko": [
+      "장제법에서 다음 자릿수는 현재 나머지에 의해서만 결정됩니다. 나머지에 10을 곱해 N으로 나눈 몫이 자릿수이고, 새 나머지는 나머지 연산의 결과입니다.",
+      "나머지가 반복되면 그 지점부터 자릿수가 반복되므로, 각 나머지가 처음 나타났을 때까지 만든 자릿수의 개수를 기록합니다. 나머지가 다시 나타나면 그 위치 앞의 자릿수는 순환하지 않는 부분이고 나머지는 순환 마디입니다. 나머지가 0이면 소수가 유한하며, 이때 문제에서는 순환 마디를 0으로 봅니다.",
+      "나머지 1로 시작하여 반복합니다. 현재 나머지의 위치를 저장하고, 10을 곱한 뒤 자릿수 나머지 / N을 추가하고 N으로 나눈 나머지를 구하는 과정을, 나머지가 0이 되거나 반복될 때까지 합니다. 그런 다음 \"0.\" + 순환하지 않는 부분 + 순환 마디 + 공백 + 순환 마디를 출력합니다. 예를 들어 1/8은 0.1250 0, 1/9는 0.1 1을 출력합니다."
+    ],
+    "vi": [
+      "Trong phép chia dài, chữ số tiếp theo hoàn toàn được xác định bởi số dư hiện tại: nhân nó với 10, chia cho N để được chữ số, và số dư mới là phần dư.",
+      "Khi một số dư lặp lại, các chữ số cũng lặp lại từ đó trở đi, nên hãy ghi lại số chữ số đã sinh ra khi mỗi số dư xuất hiện lần đầu. Khi một số dư xuất hiện lại, các chữ số trước vị trí đó là phần không tuần hoàn và phần còn lại là chu kỳ. Số dư bằng 0 nghĩa là số thập phân hữu hạn, và khi đó đề bài coi chu kỳ là 0.",
+      "Bắt đầu với số dư 1 và lặp: lưu vị trí của số dư hiện tại, nhân với 10, nối thêm chữ số remainder / N, và rút gọn theo modulo N, cho đến khi số dư bằng 0 hoặc lặp lại. Sau đó in \"0.\" + phần không tuần hoàn + chu kỳ + một dấu cách + chu kỳ; ví dụ 1/8 in ra 0.1250 0 và 1/9 in ra 0.1 1."
     ]
   },
   "explanationEn": "## Approach\n\nTrack the remainders of the long division. The position where a remainder first appears is where the cycle of the decimal starts; when it appears again, the repeating cycle is determined. If the remainder becomes 0, the decimal terminates, and the cycle is then taken to be 0 as the statement says.\n\n## Note on the example format\n\nWrite the decimal as \"non-repeating prefix + one copy of the cycle\", then output the cycle once more after a space. So 1/8 = 0.125000... has prefix 125 and cycle 0, and the output is `0.1250 0`; 1/9 has an empty prefix and cycle 1, and the output is `0.1 1`. The two source examples together establish that a terminating decimal is represented with cycle 0, not with arbitrary zero padding.\n\n## Correctness\n\nEach step of decimal long division is determined uniquely by the current remainder. A remainder of 0 means all later digits are 0; there are at most N-1 nonzero remainders, and when one repeats, the digit sequence after it repeats with that period from then on. The first-occurrence position therefore gives the shortest non-repeating prefix and the corresponding cycle.\n\n## Complexity\n\nAt most N remainders are processed, so time and space are both O(N)."

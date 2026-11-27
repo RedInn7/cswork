@@ -13,6 +13,21 @@
       "All values are below 1024, so there are only 1024 possible OR results; for each OR value it is enough to remember the smallest last element of an increasing subsequence reaching it, since a smaller tail can be extended by more numbers later.",
       "Let last[mask] be the smallest final value of a strictly increasing subsequence whose OR is mask (the empty subsequence gives last[0] = 0); on reading v, every state with last[mask] < v can take v and moves to mask | v with tail v.",
       "Initialise every last to unreachable (for example 1024) and last[0] = 0; for each element v loop mask over 0..1023 and, if last[mask] < v, set last[mask | v] = min(last[mask | v], v) (the new state ends with v, so it cannot take v again in the same round); finally collect every reachable mask and print their count, then the values in ascending order (0 included)."
+    ],
+    "ja": [
+      "値はすべて 1024 未満なので、OR の結果は 1024 通りしかありません。各 OR 値について、増加部分列に到達できる最後の要素の最小値だけを覚えておけば十分です。末尾が小さいほど、後から多くの数で延長できるからです。",
+      "last[mask] を、OR がちょうど mask になる狭義増加部分列の最後の値の最小値とします（空の部分列は last[0] = 0）。v を読んだとき、last[mask] < v を満たすすべての状態は v を取り込め、末尾 v のまま mask | v に遷移します。",
+      "すべての last を到達不能（たとえば 1024）で初期化し、last[0] = 0 とします。各要素 v について mask を 0..1023 でループし、last[mask] < v なら last[mask | v] = min(last[mask | v], v) とします（新しい状態は v で終わるので、同じラウンド内で再び v を取ることはありません）。最後に到達可能な mask をすべて集め、その個数と、値を昇順（0 を含む）で出力します。"
+    ],
+    "ko": [
+      "모든 값이 1024 미만이므로 가능한 OR 결과는 1024가지뿐입니다. 같은 OR 값이라면 마지막 원소가 더 작을수록 이후에 더 많은 수를 이어 붙일 수 있으므로, OR 값마다 가장 작은 마지막 원소만 기억하면 충분합니다.",
+      "last[mask]를 OR가 mask인 순증가 부분 수열의 가장 작은 마지막 값으로 정의합니다(빈 부분 수열은 last[0] = 0). v를 읽을 때 last[mask] < v인 모든 상태는 v를 붙일 수 있고, mask | v로 이동하며 마지막 값은 v가 됩니다.",
+      "모든 last를 도달 불가능 값(예: 1024)으로 초기화하고 last[0] = 0으로 둡니다. 각 원소 v마다 mask를 0..1023까지 순회하며 last[mask] < v이면 last[mask | v] = min(last[mask | v], v)로 갱신합니다(새 상태는 v로 끝나므로 같은 라운드에서 v를 다시 쓸 수 없습니다). 마지막으로 도달 가능한 mask를 모아 개수를 출력한 뒤 0을 포함해 오름차순으로 출력합니다."
+    ],
+    "vi": [
+      "Mọi giá trị đều nhỏ hơn 1024 nên chỉ có 1024 kết quả OR có thể; với mỗi giá trị OR chỉ cần nhớ phần tử cuối nhỏ nhất của một dãy con tăng đạt tới nó, vì đuôi nhỏ hơn sau này có thể được nối thêm nhiều số hơn.",
+      "Gọi last[mask] là giá trị cuối nhỏ nhất của một dãy con tăng ngặt có OR bằng mask (dãy con rỗng cho last[0] = 0); khi đọc v, mọi trạng thái có last[mask] < v đều có thể nhận v và chuyển sang mask | v với đuôi là v.",
+      "Khởi tạo mọi last là không thể đạt (ví dụ 1024) và last[0] = 0; với mỗi phần tử v, duyệt mask từ 0..1023 và nếu last[mask] < v thì đặt last[mask | v] = min(last[mask | v], v) (trạng thái mới kết thúc bằng v nên không thể nhận lại v trong cùng một lượt); cuối cùng thu thập mọi mask đạt được và in số lượng của chúng, rồi các giá trị theo thứ tự tăng dần (bao gồm 0)."
     ]
   },
   "explanationEn": "## Approach\n\nFor each OR value keep only the smallest last value of a reachable increasing subsequence; on reading v, move from every state whose last value is < v to OR|v.\n\n## Proof of correctness\n\nFor the same OR value, a smaller last value means a larger set of numbers can be appended later, so keeping the smallest last value loses no future feasible plan. A state can take v only if its last value is < v, so the transition is exact; the new state has last value v, which can never again be strictly smaller than v in the same round, so the current position is not reused. The initial empty sequence can take any positive number, and induction covers all subsequences.\n\n## Complexity\n\nO(1024n) time, O(1024) space."

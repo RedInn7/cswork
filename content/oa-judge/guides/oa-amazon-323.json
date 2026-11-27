@@ -13,6 +13,21 @@
       "Every segment needs both a vowel and a consonant; to get as many segments as possible, each segment should be as short as possible.",
       "Greedy: go from left to right and cut as soon as the current segment contains both a vowel and a consonant. A leftover tail that cannot complete a segment can be merged into the previous one, which keeps it valid and does not change the count.",
       "Keep two flags for whether the current segment has seen a vowel and a consonant; update them for each character, and when both are true add 1 to the answer and reset the flags. The answer is that count (0 if a segment was never completed)."
+    ],
+    "ja": [
+      "どの区間にも母音と子音の両方が必要です。区間をできるだけ多くするには、各区間をできるだけ短くするべきです。",
+      "貪欲法: 左から右へ進み、現在の区間に母音と子音の両方が含まれた時点で切ります。区間を完成できない末尾の残りは直前の区間に併合でき、そうしても有効なままで個数は変わりません。",
+      "現在の区間が母音と子音を見たかどうかを表す2つのフラグを持ち、各文字でそれらを更新します。両方が真になったら答えに 1 を加えてフラグをリセットします。答えはその個数です(区間が一度も完成しなければ 0)。"
+    ],
+    "ko": [
+      "모든 구간에는 모음과 자음이 모두 필요합니다. 구간을 최대한 많이 만들려면 각 구간이 가능한 한 짧아야 합니다.",
+      "그리디: 왼쪽에서 오른쪽으로 가며 현재 구간에 모음과 자음이 모두 들어 있게 되는 즉시 자릅니다. 구간을 완성하지 못하는 남은 꼬리는 이전 구간에 합칠 수 있으며, 이는 유효성을 유지하고 개수를 바꾸지 않습니다.",
+      "현재 구간이 모음과 자음을 보았는지를 나타내는 두 플래그를 유지합니다. 각 문자마다 플래그를 갱신하고, 둘 다 참이 되면 답에 1을 더하고 플래그를 초기화합니다. 답은 그 개수입니다(구간이 한 번도 완성되지 않았다면 0)."
+    ],
+    "vi": [
+      "Mỗi đoạn cần cả nguyên âm lẫn phụ âm; để có nhiều đoạn nhất có thể, mỗi đoạn nên ngắn nhất có thể.",
+      "Tham lam: đi từ trái sang phải và cắt ngay khi đoạn hiện tại chứa cả nguyên âm lẫn phụ âm. Phần đuôi còn lại không thể hoàn thành một đoạn có thể được ghép vào đoạn trước, điều này giữ nó hợp lệ và không đổi số đếm.",
+      "Giữ hai cờ cho biết đoạn hiện tại đã thấy nguyên âm và phụ âm chưa; cập nhật chúng với mỗi ký tự, và khi cả hai đều đúng thì cộng 1 vào đáp án và đặt lại các cờ. Đáp án là số đếm đó (0 nếu chưa từng hoàn thành đoạn nào)."
     ]
   },
   "explanationEn": "## Approach\n\nScan from the left; as soon as the current segment has collected both a vowel and a consonant, end it and start counting again. A tail at the end that cannot form a valid segment joins the last valid segment and does not increase the count.\n\n## Proof of correctness\n\nAny valid first segment must extend at least to the position where both kinds of characters are first collected. Shrinking the first segment of an optimal split to this earliest position only moves extra characters into the next segment, which does not break the next segment's validity, so the total number of segments does not decrease; repeating this exchange gives the greedy cut points. The final tail can be merged into the previous segment, which still has both kinds; if no valid segment ever forms, the whole string is not valid either, and the answer is 0.\n\n## Complexity\n\nTime O(n), auxiliary space O(1)."

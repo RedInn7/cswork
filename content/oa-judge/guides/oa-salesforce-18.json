@@ -13,6 +13,21 @@
       "Development runs in unlimited parallel, so developing a set of features takes as long as the slowest one; integration is done serially by the lead, so it takes the sum of those integration times. Both run at the same time, and the schedule is the larger of the two.",
       "Choosing the method for every feature directly is awkward, so binary search the schedule length T instead: a feature whose developmentTime exceeds T must be integrated, and every other feature can simply be developed in parallel. Check whether the forced integration times sum to at most T. A larger T is always easier, so binary search applies.",
       "Binary search T over [0, max(developmentTime)]: add up integrationTime[i] for every developmentTime[i] > T (in 64 bits); if the sum is at most T, T is feasible and you move left, otherwise move right. Print the smallest feasible T."
+    ],
+    "ja": [
+      "開発は無制限に並列で行えるので、機能の集合を開発するのにかかる時間は最も遅いものの時間に等しくなります。統合はリーダーが直列に行うので、その統合時間の和がかかります。両者は同時に進み、スケジュールの長さは 2 つのうち大きいほうです。",
+      "各機能の方法を直接選ぶのは面倒なので、代わりにスケジュールの長さ T を二分探索します。developmentTime が T を超える機能は統合しなければならず、それ以外の機能はすべて並列に開発すれば済みます。強制的に統合される機能の統合時間の和が T 以下かを確認します。T が大きいほど常に簡単になるので、二分探索が使えます。",
+      "T を [0, max(developmentTime)] で二分探索します。developmentTime[i] > T であるすべての i について integrationTime[i] を (64 ビットで) 足し、和が T 以下なら T は実現可能なので左へ、そうでなければ右へ進みます。実現可能な最小の T を出力します。"
+    ],
+    "ko": [
+      "개발은 무제한 병렬이므로 기능 집합을 개발하는 데 걸리는 시간은 가장 느린 것과 같습니다. 통합은 리드가 순차적으로 하므로 해당 통합 시간의 합이 걸립니다. 둘은 동시에 진행되며 일정은 둘 중 큰 값입니다.",
+      "모든 기능의 방식을 직접 고르기는 번거로우므로 대신 일정 길이 T를 이분 탐색합니다. developmentTime이 T를 넘는 기능은 반드시 통합해야 하고, 나머지는 그냥 개발하면 됩니다. 이렇게 강제된 통합 시간의 합이 T 이하인지 확인합니다. T가 클수록 항상 더 쉬우므로 이분 탐색을 쓸 수 있습니다.",
+      "T를 [0, max(developmentTime)]에서 이분 탐색합니다. developmentTime[i] > T인 모든 i의 integrationTime[i]를 합산하고(64비트), 합이 T 이하이면 T는 가능하므로 왼쪽으로, 아니면 오른쪽으로 이동합니다. 가능한 가장 작은 T를 출력합니다."
+    ],
+    "vi": [
+      "Phát triển chạy song song không giới hạn, nên phát triển một tập tính năng mất thời gian bằng tính năng chậm nhất; tích hợp do trưởng nhóm làm tuần tự, nên mất tổng các thời gian tích hợp đó. Hai việc chạy cùng lúc, và lịch trình là giá trị lớn hơn trong hai giá trị.",
+      "Chọn phương pháp cho từng tính năng một cách trực tiếp thì rất rắc rối, nên hãy tìm kiếm nhị phân độ dài lịch trình T: tính năng có developmentTime vượt quá T buộc phải tích hợp, và mọi tính năng khác đơn giản là được phát triển song song. Kiểm tra xem tổng các thời gian tích hợp bắt buộc có không vượt quá T hay không. T lớn hơn luôn dễ hơn, nên tìm kiếm nhị phân áp dụng được.",
+      "Tìm kiếm nhị phân T trong [0, max(developmentTime)]: cộng integrationTime[i] cho mọi developmentTime[i] > T (trong 64 bit); nếu tổng không vượt quá T thì T khả thi và bạn dịch sang trái, ngược lại dịch sang phải. In T khả thi nhỏ nhất."
     ]
   },
   "explanationEn": "## Approach\n\nBinary search on the schedule length T. Features whose development time is >T must be integrated, and T is feasible when the sum of their integration times is <=T; all other features can simply be developed in parallel.\n\n## Correctness\n\nAny plan that finishes within T must integrate the features whose development exceeds T, so this sum being <=T is a necessary condition. If the condition holds, the team lead integrates those features serially while all others are developed simultaneously from time 0, everything finishes within T, so it is also sufficient. Feasibility is monotone in T, and the upper bound max(developmentTime) is reached by developing everything.\n\n## Complexity\n\nTime O(n log maxTime), space O(n)."

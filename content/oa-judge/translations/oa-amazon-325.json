@@ -11,5 +11,35 @@
     "hints": [
       "Scan with a monotonically increasing stack from the left and from the right separately, popping prices ≥ the current one, to get the nearest strictly lower position on each side; each query compares the two distances and takes the left one on a tie."
     ]
+  },
+  "ja": {
+    "title": "価格が厳密に安い最も近い日を問い合わせる",
+    "description": "1 始まりのクエリ日 i のそれぞれについて、他の日のうち価格がその日より厳密に低い最も近い日 j を求めてください。同じ距離の日が2つある場合は、日付番号が小さい方を選びます。厳密に安い日がなければ −1 を出力します。各クエリは独立で、価格を変更しません。\n\n標準入出力、例、解説は本サイトが独自に作成したものです。本サイト独自と明記した範囲は、出典の元の制約ではありません。",
+    "input": "1行目に n q、2行目に n 個の stockData、3行目に q 個の 1 始まりの日付が与えられます。元の制約は 1≤n,q≤100000、1≤stockData[i]≤10^9、1≤query≤n です。元データでは、HTML で失われていた条件 stockData[j]<stockData[i] と j≠i を復元しています。",
+    "output": "q 個の答えをクエリの順に、空白区切りで出力してください。",
+    "explanation": "答えは 5 4 8、1 −1、−1 −1 です。価格が等しいことは「低い」に含まれず、距離が等しい場合は左の日が優先されます。",
+    "hints": [
+      "左からと右からで別々に単調増加スタックを使って走査し、現在の価格以上の価格を取り除くことで、各側の厳密に低い最も近い位置を求めます。各クエリでは2つの距離を比較し、同じなら左を取ります。"
+    ]
+  },
+  "ko": {
+    "title": "가격이 엄격히 더 낮은 가장 가까운 날 조회하기",
+    "description": "1-indexed 조회 날짜 i마다, 다른 날들 중 가격이 그 날의 가격보다 엄격히 낮은 가장 가까운 날 j를 찾습니다. 거리가 같은 날이 두 개이면 날짜 번호가 작은 쪽을 택합니다. 엄격히 더 싼 날이 없으면 −1을 출력합니다. 각 조회는 독립적이며 가격을 바꾸지 않습니다.\n\n표준 입출력, 예제, 해설은 이 사이트에서 독자적으로 작성했습니다. 이 사이트가 직접 정했다고 표시된 범위는 원문의 제약 조건이 아닙니다.",
+    "input": "첫째 줄에 n q가, 둘째 줄에 n개의 stockData 값이, 셋째 줄에 q개의 1-indexed 날짜가 주어집니다. 원문의 범위는 1≤n,q≤100000, 1≤stockData[i]≤10^9, 1≤query≤n입니다. 원문 raw에는 HTML에서 사라졌던 조건 stockData[j]<stockData[i]와 j≠i가 복원되어 있습니다.",
+    "output": "q개의 답을 조회 순서대로 공백으로 구분해 출력합니다.",
+    "explanation": "정답은 각각 5 4 8, 1 −1, −1 −1입니다. 가격이 같은 것은 더 낮은 것이 아니며, 거리가 같으면 왼쪽 날짜가 우선합니다.",
+    "hints": [
+      "왼쪽에서 한 번, 오른쪽에서 한 번 각각 단조 증가 스택으로 훑으면서 현재 가격 이상인 가격을 팝하여 양쪽의 가장 가까운 엄격히 낮은 위치를 구합니다. 각 조회는 두 거리를 비교하고 동률이면 왼쪽을 택합니다."
+    ]
+  },
+  "vi": {
+    "title": "Truy vấn ngày gần nhất có giá thấp hơn hoàn toàn",
+    "description": "Với mỗi ngày truy vấn i (đánh chỉ số từ 1), hãy tìm trong các ngày khác ngày j gần nhất có giá thấp hơn hoàn toàn giá của ngày đó; nếu hai ngày gần như nhau, chọn số ngày nhỏ hơn. Nếu không có ngày nào rẻ hơn hoàn toàn, in −1. Mỗi truy vấn là độc lập và không thay đổi giá.\n\nĐầu vào/đầu ra chuẩn, các ví dụ và phần lời giải do trang này tự viết; các khoảng giá trị được đánh dấu rõ là của trang này không phải ràng buộc gốc của đề.",
+    "input": "Dòng đầu chứa n q, dòng thứ hai chứa n giá trị stockData, và dòng thứ ba chứa q ngày đánh chỉ số từ 1. Cận gốc là 1≤n,q≤100000, 1≤stockData[i]≤10^9, 1≤query≤n. Nguồn thô khôi phục các điều kiện stockData[j]<stockData[i] và j≠i mà HTML đã nuốt mất.",
+    "output": "In ra q đáp án theo thứ tự truy vấn, cách nhau bằng dấu cách.",
+    "explanation": "Các đáp án là 5 4 8; 1 −1; và −1 −1. Giá bằng nhau không phải là thấp hơn, và khi khoảng cách bằng nhau thì ngày bên trái thắng.",
+    "hints": [
+      "Quét bằng ngăn xếp đơn điệu tăng từ bên trái và từ bên phải riêng biệt, lấy ra các giá ≥ giá hiện tại, để có vị trí thấp hơn hoàn toàn gần nhất ở mỗi phía; mỗi truy vấn so sánh hai khoảng cách và chọn bên trái khi hòa."
+    ]
   }
 }

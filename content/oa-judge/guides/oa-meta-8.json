@@ -13,6 +13,21 @@
       "A new house can only join the run touching it on the left with the run touching it on the right; every other run is unaffected, and the longest length never decreases.",
       "Keep a hash map of occupied positions and store each run's length at both of its endpoints. A new position's left neighbor must be the right end of the left run and its right neighbor the left end of the right run, so their stored lengths can be used directly.",
       "For position x: if it is already occupied, the answer stays the same. Otherwise let left be the length stored at x−1 (0 if none), right the length at x+1, and total = left+right+1; store total at x, x−left and x+right, and update the maximum with total. After each step print the current maximum, separated by spaces."
+    ],
+    "ja": [
+      "新しい家は、左に接する連なりと右に接する連なりだけをつなげます。ほかの連なりは影響を受けず、最長の長さが減ることはありません。",
+      "占有された位置のハッシュマップを持ち、各連なりの長さをその両端に保存します。新しい位置の左隣は左の連なりの右端、右隣は右の連なりの左端に必ずなるので、そこに保存された長さをそのまま使えます。",
+      "位置 x について、すでに占有されているなら答えは変わりません。そうでなければ、left を x−1 に保存された長さ（なければ 0）、right を x+1 の長さ、total = left+right+1 とし、x、x−left、x+right に total を保存して、最大値を total で更新します。各ステップの後に現在の最大値を出力し、スペースで区切ります。"
+    ],
+    "ko": [
+      "새 집은 왼쪽에 맞닿은 구간과 오른쪽에 맞닿은 구간만 이을 수 있으며 다른 구간은 영향을 받지 않고, 가장 긴 길이는 줄어들지 않습니다.",
+      "점유된 위치의 해시 맵을 두고 각 구간의 길이를 양 끝점에 저장합니다. 새 위치의 왼쪽 이웃은 왼쪽 구간의 오른쪽 끝이고 오른쪽 이웃은 오른쪽 구간의 왼쪽 끝이어야 하므로, 저장된 길이를 바로 쓸 수 있습니다.",
+      "위치 x에 대해, 이미 점유되어 있으면 답은 그대로입니다. 아니면 left를 x−1에 저장된 길이(없으면 0), right를 x+1의 길이, total = left+right+1로 두고, x, x−left, x+right에 total을 저장하며 최댓값을 total로 갱신합니다. 매 단계 뒤에 현재 최댓값을 공백으로 구분하여 출력합니다."
+    ],
+    "vi": [
+      "Một ngôi nhà mới chỉ có thể nối dãy chạm nó ở bên trái với dãy chạm nó ở bên phải; mọi dãy khác không bị ảnh hưởng, và độ dài lớn nhất không bao giờ giảm.",
+      "Giữ một bảng băm các vị trí đã có nhà và lưu độ dài của mỗi dãy tại cả hai đầu mút của nó. Lân cận trái của một vị trí mới phải là đầu phải của dãy bên trái và lân cận phải của nó là đầu trái của dãy bên phải, nên có thể dùng trực tiếp các độ dài đã lưu của chúng.",
+      "Với vị trí x: nếu nó đã có nhà, đáp án giữ nguyên. Ngược lại gọi left là độ dài lưu tại x−1 (0 nếu không có), right là độ dài tại x+1, và total = left+right+1; lưu total tại x, x−left và x+right, và cập nhật giá trị lớn nhất bằng total. Sau mỗi bước in giá trị lớn nhất hiện tại, phân tách bằng dấu cách."
     ]
   },
   "explanationEn": "## Approach\n\nA hash map stores the occupied positions and the length recorded at both ends of each run. A new position merges the adjacent runs on its left and right, then updates both ends of the new run and the global maximum.\n\n## Why it works\n\nWhen the new position is not yet occupied, any occupied neighbor must be an endpoint of its run, so its recorded length can be used directly. The merged length is left length + 1 + right length; only the endpoints of the new run need updating for later lookups. A repeated insertion leaves the set unchanged.\n\n## Complexity\n\nExpected time O(n), extra space O(n)."

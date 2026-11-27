@@ -13,6 +13,21 @@
       "Filling the first k rows takes exactly 1 + 2 + ... + k = k(k+1)/2 coins, so the answer is the largest non-negative integer k with k(k+1)/2 <= n.",
       "Triangular numbers grow with k, so binary search k; to avoid floating-point rounding, compute k(k+1)/2 with integer multiplication in the test.",
       "For each n: start with hi = 1 and double it until hi(hi+1)/2 > n, with lo = 0; while lo + 1 < hi take mid, set lo = mid if mid(mid+1)/2 <= n, otherwise hi = mid; lo is the answer. Print all results in order, space-separated."
+    ],
+    "ja": [
+      "最初の k 行を埋めるのにちょうど 1 + 2 + ... + k = k(k+1)/2 枚のコインが必要なので、答えは k(k+1)/2 <= n を満たす最大の非負整数 k です。",
+      "三角数は k とともに増加するので、k に対して二分探索ができます。浮動小数点の丸め誤差を避けるため、判定での k(k+1)/2 の計算には整数の乗算を使います。",
+      "各 n について、hi = 1、lo = 0 から始め、hi(hi+1)/2 > n になるまで hi を 2 倍にします。lo + 1 < hi の間、mid をとり、mid(mid+1)/2 <= n なら lo = mid、そうでなければ hi = mid とします。lo が答えです。すべての結果を順に、空白区切りで出力します。"
+    ],
+    "ko": [
+      "처음 k줄을 채우는 데는 정확히 1 + 2 + ... + k = k(k+1)/2개의 동전이 필요하므로, 답은 k(k+1)/2 <= n을 만족하는 가장 큰 음이 아닌 정수 k입니다.",
+      "삼각수는 k에 따라 증가하므로 k에 대해 이분 탐색을 합니다. 부동소수점 반올림을 피하려면 검사에서 k(k+1)/2를 정수 곱셈으로 계산하세요.",
+      "각 n에 대해 hi = 1로 시작해 hi(hi+1)/2 > n이 될 때까지 두 배로 늘리고 lo = 0으로 둡니다. lo + 1 < hi인 동안 mid를 잡아 mid(mid+1)/2 <= n이면 lo = mid, 아니면 hi = mid로 둡니다. lo가 답입니다. 모든 결과를 순서대로 공백으로 구분해 출력합니다."
+    ],
+    "vi": [
+      "Lấp đầy k hàng đầu cần đúng 1 + 2 + ... + k = k(k+1)/2 đồng xu, nên đáp án là số nguyên không âm k lớn nhất thỏa k(k+1)/2 <= n.",
+      "Các số tam giác tăng theo k, nên tìm kiếm nhị phân k; để tránh sai số làm tròn số thực, hãy tính k(k+1)/2 bằng phép nhân số nguyên trong phép kiểm tra.",
+      "Với mỗi n: bắt đầu với hi = 1 và nhân đôi cho đến khi hi(hi+1)/2 > n, với lo = 0; trong khi lo + 1 < hi lấy mid, đặt lo = mid nếu mid(mid+1)/2 <= n, ngược lại hi = mid; lo là đáp án. In tất cả kết quả theo thứ tự, cách nhau bởi dấu cách."
     ]
   },
   "explanationEn": "## Approach\n\nFor each n, find the largest k with 1 + 2 + ... + k = k(k+1)/2 <= n. Binary search k, using integer multiplication in the test to avoid floating-point rounding.\n\n## Proof of correctness\n\nFilling k rows uses exactly k(k+1)/2 coins, so the number of rows that can be filled is exactly the largest non-negative integer satisfying this inequality. Binary searching the monotone triangular numbers determines each result uniquely.\n\n## Complexity\n\nWith N the array length: time O(N log C), space O(N), where C = max(coins)."

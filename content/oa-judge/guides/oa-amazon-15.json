@@ -13,6 +13,21 @@
       "The multiset can be huge, so never expand it. An item's contribution depends only on two things: its value and how many orders cover it.",
       "Use a difference array to get how many orders cover each position, sort the (value, coverage) pairs by value and take prefix sums of the coverage; the count strictly below t is the prefix sum up to the first value that is not below t, found by binary search.",
       "For each order add 1 at diff[l] and subtract 1 at diff[r+1]; a running sum gives each position's coverage. Sort the (value, coverage) pairs by value, let prefix[i] be the total coverage of the first i pairs, and for each query t find with lower_bound the first index j whose value is >= t and print prefix[j]. The sums can exceed 32-bit integers."
+    ],
+    "ja": [
+      "多重集合は巨大になり得るので、展開してはいけません。商品の寄与は、その値と、それを何件の注文がカバーしているかの 2 つだけで決まります。",
+      "差分配列で各位置をカバーする注文の数を求め、(値, カバー数) の組を値でソートしてカバー数の接頭辞和を取ります。t より厳密に小さい個数は、t より小さくない最初の値までの接頭辞和で、二分探索で見つけます。",
+      "各注文について diff[l] に 1 を加え、diff[r+1] から 1 を引きます。累積和が各位置のカバー数になります。(値, カバー数) の組を値でソートし、prefix[i] を最初の i 個の組のカバー数の合計とします。各クエリ t について、lower_bound で値が >= t となる最初のインデックス j を求め、prefix[j] を出力します。合計は 32 ビット整数を超えることがあります。"
+    ],
+    "ko": [
+      "다중집합은 매우 클 수 있으므로 절대 펼치지 마세요. 상품의 기여는 두 가지에만 달려 있습니다. 그 값과 그 상품을 덮는 주문의 수입니다.",
+      "차분 배열로 각 위치를 덮는 주문 수를 구하고, (값, 덮임 횟수) 쌍을 값 기준으로 정렬한 뒤 덮임 횟수의 접두사 합을 만듭니다. t보다 엄격하게 작은 원소의 개수는 t보다 작지 않은 첫 값까지의 접두사 합이며 이분 탐색으로 찾습니다.",
+      "각 주문마다 diff[l]에 1을 더하고 diff[r+1]에서 1을 뺍니다. 누적 합이 각 위치의 덮임 횟수가 됩니다. (값, 덮임 횟수) 쌍을 값 기준으로 정렬하고 prefix[i]를 처음 i개 쌍의 덮임 횟수 합이라 하며, 각 질의 t에 대해 lower_bound로 값이 >= t인 첫 인덱스 j를 찾아 prefix[j]를 출력합니다. 합은 32비트 정수를 넘을 수 있습니다."
+    ],
+    "vi": [
+      "Đa tập hợp có thể rất lớn, nên đừng bao giờ khai triển nó. Đóng góp của một mặt hàng chỉ phụ thuộc vào hai thứ: giá trị của nó và số đơn hàng phủ nó.",
+      "Dùng mảng hiệu để biết mỗi vị trí được bao nhiêu đơn hàng phủ, sắp xếp các cặp (giá trị, số lần phủ) theo giá trị và lấy tổng tiền tố của số lần phủ; số phần tử nhỏ hơn hẳn t là tổng tiền tố đến giá trị đầu tiên không nhỏ hơn t, tìm bằng tìm kiếm nhị phân.",
+      "Với mỗi đơn hàng, cộng 1 vào diff[l] và trừ 1 tại diff[r+1]; tổng chạy cho ra số lần phủ của mỗi vị trí. Sắp xếp các cặp (giá trị, số lần phủ) theo giá trị, đặt prefix[i] là tổng số lần phủ của i cặp đầu, và với mỗi truy vấn t, dùng lower_bound tìm chỉ số j đầu tiên có giá trị >= t rồi in prefix[j]. Các tổng có thể vượt quá số nguyên 32 bit."
     ]
   },
   "explanationEn": "## Approach\n\nUse a difference array to compute how many times each position is covered. Sort the items by value and accumulate the coverage counts; for each query, binary search for the first position whose value is not less than the query value.\n\n## Proof of correctness\n\nThe prefix sum of the range difference array equals the number of times each position is contributed. Sorting does not change the multiset; the items strictly smaller than the query value lie exactly before the lower_bound, and summing the weights of those positions gives the answer.\n\n## Complexity\n\nTime O((n+q) log n + m), space O(n+q)."

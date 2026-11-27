@@ -13,6 +13,21 @@
       "Every cell has at most one exit, so this is a functional graph: walking along exits from any cell either stops at −1 or eventually enters a cycle.",
       "Walk from each starting cell along its unique successor, remembering the position of every node on the current path; returning to a node on the current path cuts out a new cycle, while reaching an already processed node can never reveal a new one.",
       "For each unprocessed start, walk and record each node's index in the path until you hit −1, a processed node, or a node on the current path; in the last case, sum the node numbers from that node's index to the end of the path and update the maximum; then mark the whole path processed. Print −1 if there is no cycle; sums can reach about 2·10^10, so use 64-bit integers."
+    ],
+    "ja": [
+      "どのセルも出口は高々 1 つなので、これは関数グラフです。任意のセルから出口に沿って進むと、−1 で止まるか、いずれサイクルに入ります。",
+      "各開始セルから一意な後続をたどり、現在のパス上のすべてのノードの位置を覚えます。現在のパス上のノードに戻ると新しいサイクルが切り出されます。すでに処理済みのノードに達しても、新しいサイクルが見つかることはありません。",
+      "処理していない各開始点から、−1、処理済みのノード、現在のパス上のノードのいずれかに当たるまで、パス内の各ノードの添字を記録しながらたどります。最後の場合は、そのノードの添字からパスの末尾までのノード番号を合計して最大値を更新します。その後、パス全体を処理済みにします。サイクルがなければ −1 を出力します。和は約 2·10^10 に達し得るので、64 ビット整数を使います。"
+    ],
+    "ko": [
+      "모든 칸에는 출구가 최대 하나이므로 이는 함수형 그래프입니다. 어느 칸에서든 출구를 따라 걸으면 −1에서 멈추거나 결국 사이클에 들어갑니다.",
+      "각 시작 칸에서 유일한 후속 노드를 따라가며 현재 경로 위의 모든 노드의 위치를 기억합니다. 현재 경로 위의 노드로 돌아오면 새 사이클이 잘려 나오고, 이미 처리된 노드에 도달하면 새 사이클이 드러날 수 없습니다.",
+      "처리되지 않은 각 시작점에서, −1, 처리된 노드, 또는 현재 경로 위의 노드를 만날 때까지 걸으며 각 노드의 경로 내 인덱스를 기록합니다. 마지막 경우에는 그 노드의 인덱스부터 경로 끝까지 노드 번호를 합산하여 최댓값을 갱신합니다. 그 뒤 경로 전체를 처리 완료로 표시합니다. 사이클이 없으면 −1을 출력합니다. 합은 약 2·10^10까지 커질 수 있으므로 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Mỗi ô có nhiều nhất một lối ra, nên đây là một đồ thị hàm: đi dọc theo các lối ra từ bất kỳ ô nào hoặc dừng ở −1 hoặc cuối cùng đi vào một chu trình.",
+      "Đi từ mỗi ô xuất phát theo nút kế tiếp duy nhất của nó, nhớ vị trí của mọi nút trên đường đi hiện tại; quay lại một nút trên đường đi hiện tại cắt ra một chu trình mới, còn chạm tới một nút đã xử lý thì không bao giờ phát hiện thêm chu trình mới.",
+      "Với mỗi điểm xuất phát chưa xử lý, đi và ghi lại chỉ số của mỗi nút trong đường đi cho đến khi gặp −1, một nút đã xử lý, hoặc một nút trên đường đi hiện tại; trong trường hợp cuối, cộng các số hiệu nút từ chỉ số của nút đó đến cuối đường đi và cập nhật giá trị lớn nhất; sau đó đánh dấu cả đường đi là đã xử lý. In −1 nếu không có chu trình; các tổng có thể lên tới khoảng 2·10^10, nên hãy dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nFrom each starting point, follow the unique successor, recording the position of each node on the current path; when you reach a node already on the current path, compute the node sum of the new cycle. After the full walk, mark the path as processed.\n\n## Proof of correctness\n\nEvery node of the functional graph has out-degree at most 1. A repeated node on the current path cuts out exactly one directed cycle; walks that run into paths already finished cannot discover new cycles. Every node enters a working path only once, so every cycle is checked exactly once and the maximum is taken.\n\n## Complexity\n\nO(N) time and O(N) space."

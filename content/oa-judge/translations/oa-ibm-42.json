@@ -11,5 +11,35 @@
     "hints": [
       "Build a hash map with (key,timestamp) as a composite key and answer the queries one by one."
     ]
+  },
+  "ja": {
+    "title": "キーと書き込み時刻による厳密なキャッシュ検索",
+    "description": "キャッシュのエントリは timestamp、key、整数の value からなります。各クエリは key と timestamp を与え、その厳密に一致するエントリの値を返します。時刻が最も近い版ではありません。同じ時刻に同じ key が重複することはなく、すべてのクエリは必ずヒットします。\n\n標準的な入出力形式は本サイトが整備したものです。追加した数値の範囲や解なしの場合の表現は本サイト独自のものと明記しており、出典の元の制約ではありません。",
+    "input": "1 行目に n q、続く n 行に timestamp key value、その後の q 行に key timestamp が与えられます。1≤n,q≤100000、1≤value≤10^8。時刻は 8 文字の hh:mm:ss (時は 00..23、分と秒は 00..59)、key は英小文字と数字からなります。出典には key の長さの制限がなく、本サイトでは key の長さを 1..64 文字とします。",
+    "output": "クエリの順に、整数を q 行出力してください。",
+    "explanation": "例の答えはそれぞれ、490 と 352、1、9 と 8 です。",
+    "hints": [
+      "(key,timestamp) を複合キーとするハッシュマップを作り、クエリに 1 つずつ答えます。"
+    ]
+  },
+  "ko": {
+    "title": "키와 기록 시각으로 캐시를 정확히 조회하기",
+    "description": "캐시 항목은 timestamp, key, 정수 value로 이루어져 있습니다. 각 질의는 key와 timestamp를 주며, 시각이 가장 가까운 버전이 아니라 정확히 일치하는 항목의 값을 반환해야 합니다. 같은 시각에 같은 key가 반복되지 않으며, 모든 질의는 반드시 항목을 찾을 수 있습니다.\n\n표준 입출력 형식은 이 사이트에서 정리한 것이며, 추가한 수치 범위와 해가 없는 경우의 표현은 이 사이트의 기준임을 명시한 것으로 원문의 제약 조건이 아닙니다.",
+    "input": "첫 줄에 n q가 주어지고, 이어서 n개의 줄에 timestamp key value가, 그다음 q개의 줄에 key timestamp가 주어집니다. 1≤n,q≤100000, 1≤value≤10^8이며, 시각은 8자의 hh:mm:ss 형식입니다(시 00..23, 분과 초 00..59). key는 소문자와 숫자로 이루어집니다. 원문에는 key 길이의 제한이 없으며, 이 사이트에서는 key 길이를 1..64로 정했습니다.",
+    "output": "질의 순서대로 q개의 줄에 정수를 출력합니다.",
+    "explanation": "예제의 답은 각각 490과 352; 1; 9와 8입니다.",
+    "hints": [
+      "(key,timestamp)를 복합 키로 하는 해시 맵을 만들고 질의에 하나씩 답합니다."
+    ]
+  },
+  "vi": {
+    "title": "Tra cứu chính xác cache theo khóa và thời điểm ghi",
+    "description": "Một mục cache gồm timestamp, key và một giá trị nguyên; mỗi truy vấn cho key và timestamp và trả về giá trị của đúng mục đó, không phải phiên bản có thời điểm gần nhất. Các khóa không lặp lại tại cùng một thời điểm, và mọi truy vấn đều đảm bảo có kết quả.\n\nĐịnh dạng đầu vào/đầu ra chuẩn do trang này biên soạn; các giới hạn số được bổ sung và cách mã hóa trường hợp vô nghiệm đều được đánh dấu rõ, không phải ràng buộc gốc của đề.",
+    "input": "Dòng đầu chứa n q, tiếp theo là n dòng timestamp key value, rồi q dòng key timestamp. 1≤n,q≤100000, 1≤value≤10^8; thời gian có dạng hh:mm:ss gồm 8 ký tự (giờ 00..23, phút và giây 00..59); khóa gồm chữ cái thường và chữ số. Đề gốc không giới hạn độ dài khóa; trên trang này khóa dài 1..64 ký tự.",
+    "output": "In ra q dòng số nguyên theo thứ tự truy vấn.",
+    "explanation": "Các ví dụ lần lượt cho 490 và 352; 1; và 9 và 8.",
+    "hints": [
+      "Xây dựng một bảng băm với (key,timestamp) làm khóa ghép và trả lời lần lượt từng truy vấn."
+    ]
   }
 }

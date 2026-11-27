@@ -13,6 +13,21 @@
       "Classes need not keep original indices adjacent, so sort the skills first; in the class containing the smallest skill v, nobody can exceed v+maxSpread.",
       "Putting everyone with skill in [v, v+maxSpread] into that class is never worse, so classes can be opened greedily starting from the smallest unassigned student.",
       "Scan the sorted skills, remembering the starting skill of the current class; if the current skill minus the start exceeds maxSpread, open a new class starting at the current skill; output the number of classes."
+    ],
+    "ja": [
+      "クラスは元の添字が隣り合っている必要がないので、まずスキルをソートします。最小のスキル v を含むクラスでは、誰も v+maxSpread を超えられません。",
+      "スキルが [v, v+maxSpread] にある全員をそのクラスに入れても、悪くなることはありません。そのため、割り当て前の最小の生徒から始めて、貪欲にクラスを開けます。",
+      "ソート済みのスキルを走査しながら、現在のクラスの開始スキルを覚えておきます。現在のスキルから開始スキルを引いた値が maxSpread を超えたら、現在のスキルを開始とする新しいクラスを開きます。クラス数を出力します。"
+    ],
+    "ko": [
+      "반이 원래 인덱스에서 인접할 필요가 없으므로 먼저 실력을 정렬합니다. 가장 낮은 실력 v가 속한 반에서는 아무도 v+maxSpread를 넘을 수 없습니다.",
+      "실력이 [v, v+maxSpread]에 있는 모든 학생을 그 반에 넣어도 손해가 없으므로, 아직 배정되지 않은 가장 낮은 학생부터 탐욕적으로 반을 열 수 있습니다.",
+      "정렬된 실력을 순회하며 현재 반의 시작 실력을 기억합니다. 현재 실력에서 시작 실력을 뺀 값이 maxSpread를 넘으면 현재 실력에서 새 반을 시작합니다. 반의 개수를 출력합니다."
+    ],
+    "vi": [
+      "Các lớp không cần giữ chỉ số gốc liền kề, nên sắp xếp kỹ năng trước; trong lớp chứa kỹ năng nhỏ nhất v, không ai vượt quá v+maxSpread.",
+      "Đưa mọi người có kỹ năng trong [v, v+maxSpread] vào lớp đó không bao giờ tệ hơn, nên có thể mở lớp theo kiểu tham lam bắt đầu từ học sinh nhỏ nhất chưa được xếp.",
+      "Duyệt các kỹ năng đã sắp xếp, nhớ kỹ năng bắt đầu của lớp hiện tại; nếu kỹ năng hiện tại trừ đi kỹ năng bắt đầu vượt quá maxSpread thì mở lớp mới bắt đầu tại kỹ năng hiện tại; in ra số lớp."
     ]
   },
   "explanationEn": "## Approach\n\nSort the skills; each class starts from the smallest unassigned student and absorbs everyone whose skill is at most that skill plus maxSpread.\n\n## Proof of correctness\n\nThe class containing the smallest unassigned skill v cannot contain anyone above v+maxSpread. Moving all other students in this range into that class breaks no class constraint and does not increase the number of other classes, so some optimal solution uses the greedy first class. Recursing on the remaining students gives the minimum number of classes.\n\n## Complexity\n\nTime O(n log n), space O(n)."

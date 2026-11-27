@@ -13,6 +13,21 @@
       "For any longer valid substring, its prefix of length minLength also satisfies the character-variety limit, and every occurrence of the long substring brings an occurrence of that prefix, so the prefix occurs at least as often.",
       "Therefore the optimum is always reached by a substring of length exactly minLength, maxLength does not affect the answer, and only windows of length minLength need to be counted.",
       "Treat the string as a sequence of characters (code points) and enumerate every window of length minLength: if it has at most maxUnique distinct characters, increase that substring's count in a hash map; finally print the largest count, or 0 if no window is valid."
+    ],
+    "ja": [
+      "より長い有効な部分文字列について、その長さ minLength の接頭辞も文字種の制限を満たします。また、長い部分文字列が現れるたびにその接頭辞も現れるので、接頭辞は少なくとも同じ回数だけ出現します。",
+      "したがって、最適解は常に、長さちょうど minLength の部分文字列で達成されます。maxLength は答えに影響せず、長さ minLength のウィンドウだけを数えれば十分です。",
+      "文字列を文字(コードポイント)の列として扱い、長さ minLength のすべてのウィンドウを列挙します。異なる文字が maxUnique 個以下なら、その部分文字列の回数をハッシュマップで 1 増やします。最後に最大の回数を出力し、有効なウィンドウがなければ 0 を出力します。"
+    ],
+    "ko": [
+      "더 긴 유효한 부분 문자열의 길이 minLength짜리 접두사도 문자 종류 제한을 만족하며, 긴 부분 문자열이 나타날 때마다 이 접두사도 나타나므로 접두사는 적어도 그만큼 자주 나타납니다.",
+      "따라서 최적해는 항상 길이가 정확히 minLength인 부분 문자열로 달성되고, maxLength는 답에 영향을 주지 않으며 길이 minLength의 윈도우만 세면 됩니다.",
+      "문자열을 문자(코드 포인트)의 열로 보고 길이 minLength인 모든 윈도우를 열거합니다. 서로 다른 문자가 maxUnique 이하이면 해시 맵에서 그 부분 문자열의 개수를 증가시키고, 마지막에 가장 큰 개수를 출력합니다. 유효한 윈도우가 없으면 0입니다."
+    ],
+    "vi": [
+      "Với bất kỳ xâu con hợp lệ nào dài hơn, tiền tố độ dài minLength của nó cũng thỏa giới hạn số ký tự khác nhau, và mỗi lần xuất hiện của xâu dài kéo theo một lần xuất hiện của tiền tố đó, nên tiền tố xuất hiện không ít hơn.",
+      "Do đó giá trị tối ưu luôn đạt được bởi một xâu con có độ dài đúng minLength, maxLength không ảnh hưởng đến đáp án, và chỉ cần đếm các cửa sổ độ dài minLength.",
+      "Xem xâu như một dãy ký tự (code point) và duyệt mọi cửa sổ độ dài minLength: nếu nó có không quá maxUnique ký tự khác nhau thì tăng số đếm của xâu con đó trong bảng băm; cuối cùng in số đếm lớn nhất, hoặc 0 nếu không có cửa sổ nào hợp lệ."
     ]
   },
   "explanationEn": "## Approach\n\nCount only windows of length minLength, filter out windows with too many distinct characters, and accumulate frequencies in a hash map.\n\n## Proof of correctness\n\nFor any valid longer substring, its prefix of the fixed length minLength is still valid, and each occurrence of the long substring corresponds to one occurrence of this prefix, so the prefix's frequency is not smaller. Hence the global optimum can always be reached at the shortest length, and counting all windows of that length does not miss it.\n\n## Complexity\n\nTime O(n·minLength), space O(n·minLength), where minLength≤26."

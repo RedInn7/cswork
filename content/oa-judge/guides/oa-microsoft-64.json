@@ -13,6 +13,21 @@
       "A string that is both a proper prefix and a proper suffix is called a border; the task asks for the length of the longest proper border of the whole string, and the prefix and suffix may overlap.",
       "The KMP prefix function at position i is exactly the length of the longest proper border of s[0..i], so the answer is its last entry, computed in linear time.",
       "The prefix function starts with 0; let j be the current matched length. For i from 1 to n−1: while j>0 and s[i] differs from s[j], set j to the prefix function value at j−1; if s[i] equals s[j], increase j; store j as the value at i. Print the last value. The length can reach 10^6, so use a compact integer array and fast input."
+    ],
+    "ja": [
+      "真の接頭辞であり真の接尾辞でもある文字列は border と呼ばれます。この問題は、文字列全体の最長の真の border の長さを求めるもので、接頭辞と接尾辞は重なってもかまいません。",
+      "位置 i における KMP の接頭辞関数は、s[0..i] の最長の真の border の長さそのものなので、答えはその最後の値であり、線形時間で計算できます。",
+      "接頭辞関数は 0 から始め、j を現在の一致した長さとします。i を 1 から n−1 まで動かし、j>0 かつ s[i] が s[j] と異なる間は、j を j−1 での接頭辞関数の値にします。s[i] が s[j] と等しければ j を増やし、j を i での値として保存します。最後の値を出力します。長さは 10^6 に達しうるので、コンパクトな整数配列と高速な入力を使ってください。"
+    ],
+    "ko": [
+      "진 접두사이면서 진 접미사인 문자열을 border라고 합니다. 이 문제는 전체 문자열에서 가장 긴 진 border의 길이를 구하는 것이며, 접두사와 접미사는 겹칠 수 있습니다.",
+      "위치 i에서의 KMP prefix function 값은 정확히 s[0..i]의 가장 긴 진 border의 길이이므로, 답은 그 마지막 값이며 선형 시간에 계산됩니다.",
+      "prefix function은 0으로 시작하며, j를 현재 일치한 길이로 둡니다. i를 1부터 n−1까지 돌며, j>0이고 s[i]가 s[j]와 다르면 j를 j−1 위치의 prefix function 값으로 바꾸고, s[i]가 s[j]와 같으면 j를 1 늘린 뒤 j를 i 위치의 값으로 저장합니다. 마지막 값을 출력하세요. 길이가 10^6까지 가능하므로 compact한 정수 배열과 빠른 입력을 사용합니다."
+    ],
+    "vi": [
+      "Xâu vừa là tiền tố thực sự vừa là hậu tố thực sự gọi là border; bài toán yêu cầu độ dài của border thực sự dài nhất của cả xâu, và tiền tố với hậu tố có thể chồng lấn.",
+      "Hàm tiền tố KMP tại vị trí i chính là độ dài của border thực sự dài nhất của s[0..i], nên đáp án là phần tử cuối của nó, tính trong thời gian tuyến tính.",
+      "Hàm tiền tố bắt đầu bằng 0; gọi j là độ dài đang khớp. Với i từ 1 đến n−1: khi j>0 và s[i] khác s[j], đặt j bằng giá trị hàm tiền tố tại j−1; nếu s[i] bằng s[j], tăng j; lưu j làm giá trị tại i. In giá trị cuối cùng. Độ dài có thể đạt 10^6, nên hãy dùng mảng số nguyên gọn và đọc nhập nhanh."
     ]
   },
   "explanationEn": "## Approach\n\nCompute the KMP prefix function; its last entry is the length of the longest proper border of the whole string.\n\n## Correctness\n\nAt each position, the prefix function records the longest proper border of the prefix ending at that position. On a mismatch, the only possible fallback is to a shorter border of the already matched prefix, and following this chain of candidates exhausts every possibility, so the final entry is exactly what is asked.\n\n## Complexity\n\nTime O(N), space O(N), using a compact integer array."

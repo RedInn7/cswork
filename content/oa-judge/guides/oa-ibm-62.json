@@ -13,6 +13,21 @@
       "There are only two binary strings whose neighbours all differ: 0101... starting with 0 and 1010... starting with 1; once the first bit is fixed, every other bit is fixed too.",
       "For a fixed target string, every mismatched position must be flipped once, so the cost is the number of mismatches. The two targets are opposite at every position, so if the string mismatches 0101... in d places, it mismatches 1010... in n - d places.",
       "Read n and the string (there is no string when n = 0); for each index i, increase d if the digit differs from i mod 2; print the smaller of d and n - d, which is 0 for the empty string."
+    ],
+    "ja": [
+      "隣り合うすべてが異なる2進文字列は、0 で始まる 0101... と 1 で始まる 1010... の2つだけで、最初のビットが決まれば他のビットもすべて決まります。",
+      "目標の文字列を固定すると、不一致の位置はそれぞれちょうど1回反転する必要があるので、コストは不一致の個数です。2つの目標はすべての位置で互いに反対なので、文字列が 0101... と d か所で不一致なら、1010... とは n - d か所で不一致です。",
+      "n と文字列を読み込みます(n = 0 のときは文字列がありません)。各インデックス i について、その数字が i mod 2 と異なれば d を増やします。d と n - d の小さい方を出力します。空文字列では 0 です。"
+    ],
+    "ko": [
+      "이웃한 비트가 모두 다른 이진 문자열은 0으로 시작하는 0101...과 1로 시작하는 1010...의 두 가지뿐이며, 첫 비트가 정해지면 나머지 비트도 모두 정해집니다.",
+      "목표 문자열이 정해져 있으면 일치하지 않는 위치를 각각 한 번씩 뒤집어야 하므로 비용은 불일치 수입니다. 두 목표는 모든 위치에서 서로 반대이므로, 문자열이 0101...과 d곳에서 다르면 1010...과는 n - d곳에서 다릅니다.",
+      "n과 문자열을 읽습니다(n = 0이면 문자열이 없습니다). 각 인덱스 i에 대해 숫자가 i mod 2와 다르면 d를 늘립니다. d와 n - d 중 작은 값을 출력하며, 빈 문자열이면 0입니다."
+    ],
+    "vi": [
+      "Chỉ có hai xâu nhị phân mà mọi cặp kề nhau đều khác nhau: 0101... bắt đầu bằng 0 và 1010... bắt đầu bằng 1; khi bit đầu đã cố định thì mọi bit khác cũng cố định.",
+      "Với một xâu đích cố định, mỗi vị trí khác nhau phải được lật đúng một lần, nên chi phí là số vị trí khác nhau. Hai đích đối nhau ở mọi vị trí, nên nếu xâu khác 0101... ở d vị trí thì nó khác 1010... ở n - d vị trí.",
+      "Đọc n và xâu (khi n = 0 thì không có xâu); với mỗi chỉ số i, tăng d nếu chữ số khác i mod 2; in giá trị nhỏ hơn giữa d và n - d, bằng 0 với xâu rỗng."
     ]
   },
   "explanationEn": "## Approach\n\nOnce the first bit of an alternating string is fixed, all other bits are determined. Count the number of mismatches d against 0101...; the number of mismatches against the other target is n−d.\n\n## Proof of correctness\n\nEvery mismatch needs at least one flip, and flipping them one by one achieves that, so the number of operations for a given target is exactly its number of mismatches. A non-empty alternating string has only these two forms, so the smaller of the two is the global optimum; for the empty string both are 0.\n\n## Complexity\n\nTime O(n), O(1) extra besides the input."

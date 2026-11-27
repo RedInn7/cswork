@@ -11,5 +11,35 @@
     "hints": [
       "Let d=hi−lo+1. At least 3 positions are needed, and at most 2d−1. To make the first item as large as possible, use the shortest feasible rising phase: the number of rising edges is p=max(1,n−d); start at hi−p, increase one by one up to hi, then decrease one by one."
     ]
+  },
+  "ja": {
+    "title": "辞書順最大の厳密な山型数列",
+    "description": "範囲 [lo,hi] の整数 n 個からなる数列で、まず狭義単調増加し、その後狭義単調減少するものを構成します。頂点は両端にはなく、各フェーズには隣接する辺が少なくとも 1 本あります。条件を満たす数列のうち辞書順で最大のものを求め、解がなければ −1 を出力します。元の例 10,11,10,9,8 は、全体が減少するだけの 11,10,... ではなく、増加フェーズが空であることを禁止する根拠になっています。\n\n入出力形式は本サイトで整理したものです。",
+    "input": "1 行に n lo hi が与えられます。元の問題文には数値の範囲が書かれていないため、本サイトでは 1≤n≤200000、1≤lo≤hi≤10⁹ とします。",
+    "output": "解がない場合は −1 のみを出力します。解がある場合は、まず n を出力し、続けて数列の n 個の要素を出力します。",
+    "explanation": "結果はそれぞれ、解なし、[10,11,10,9,8]、[9,10,9,8,7,6] です。",
+    "hints": [
+      "d=hi−lo+1 とします。少なくとも 3 個、多くても 2d−1 個の位置が必要です。先頭を最大にするには、実現可能な最短の増加フェーズを使います。増加する辺の数は p=max(1,n−d) で、hi−p から hi まで 1 ずつ増やし、その後 1 ずつ減らします。"
+    ]
+  },
+  "ko": {
+    "title": "사전순으로 가장 큰 엄격한 산 모양 수열",
+    "description": "범위 [lo,hi] 안의 정수 n개로 이루어진 수열을 만듭니다. 수열은 먼저 엄격하게 증가하다가 엄격하게 감소해야 하며, 꼭대기는 양 끝에 있을 수 없고 각 구간에는 인접한 간선이 최소 하나 있어야 합니다. 이러한 수열 중 사전순으로 가장 큰 것을 구하고, 해가 없으면 −1을 출력합니다. 원문 예시 10,11,10,9,8이 모두 감소하는 11,10,...이 아니라는 점에서, 증가 구간이 비어 있는 경우는 허용되지 않음을 알 수 있습니다.\n\n입력/출력 형식은 본 사이트에서 정리한 것입니다.",
+    "input": "한 줄에 n lo hi가 주어집니다. 원문에는 수치 범위가 없으며, 본 사이트에서는 1≤n≤200000, 1≤lo≤hi≤10⁹로 정했습니다.",
+    "output": "해가 없으면 −1만 출력하고, 그렇지 않으면 먼저 n을 출력한 뒤 수열의 n개 원소를 출력합니다.",
+    "explanation": "세 결과는 순서대로 해 없음, [10,11,10,9,8], [9,10,9,8,7,6]입니다.",
+    "hints": [
+      "d=hi−lo+1이라 하겠습니다. 최소 3개의 위치가 필요하고 최대 2d−1개까지 가능합니다. 첫 항을 가능한 한 크게 만들려면 가장 짧은 증가 구간을 사용합니다. 증가 간선의 수는 p=max(1,n−d)이며, hi−p에서 시작해 1씩 hi까지 증가한 뒤 1씩 감소시킵니다."
+    ]
+  },
+  "vi": {
+    "title": "Dãy hình núi chặt có thứ tự từ điển lớn nhất",
+    "description": "Xây dựng n số nguyên trong đoạn [lo,hi] sao cho dãy tăng chặt trước rồi giảm chặt; đỉnh không nằm ở hai đầu, và mỗi pha có ít nhất một cạnh kề nhau. Tìm dãy có thứ tự từ điển lớn nhất; in −1 nếu không có nghiệm. Ví dụ gốc 10,11,10,9,8, chứ không phải dãy giảm hoàn toàn 11,10,..., cho thấy pha tăng không được rỗng.\n\nĐịnh dạng đầu vào/đầu ra do trang này biên soạn.",
+    "input": "Một dòng gồm n lo hi. Đề gốc không nêu giới hạn số; trên trang này 1≤n≤200000, 1≤lo≤hi≤10⁹.",
+    "output": "Nếu không có nghiệm, chỉ in −1; ngược lại, in n trước, rồi in n phần tử của dãy.",
+    "explanation": "Các kết quả lần lượt là: không có nghiệm, [10,11,10,9,8] và [9,10,9,8,7,6].",
+    "hints": [
+      "Đặt d=hi−lo+1. Cần ít nhất 3 vị trí và nhiều nhất 2d−1. Để phần tử đầu lớn nhất có thể, dùng pha tăng ngắn nhất khả thi: số cạnh tăng là p=max(1,n−d); bắt đầu từ hi−p, tăng từng đơn vị một đến hi, rồi giảm từng đơn vị một."
+    ]
   }
 }

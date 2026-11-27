@@ -13,6 +13,21 @@
       "n is at most 5000, so simulating every round directly takes only about n^2/2 additions, which is easily fast enough.",
       "Item i of the next round depends only on items i and i+1 of the previous round; overwriting in place from left to right leaves the old value on the right untouched until it is used, so no extra array is needed.",
       "Start with length = n; while length > 2, set a[i] = (a[i] + a[i+1]) mod 10 for i = 0..length-2 and then decrease length by one; finally print a[0] and a[1] as two characters next to each other, keeping a leading 0."
+    ],
+    "ja": [
+      "n は高々 5000 なので、各ラウンドを直接シミュレートしても加算は約 n^2/2 回で、十分高速です。",
+      "次のラウンドの要素 i は、前のラウンドの要素 i と i+1 だけに依存します。左から右へその場で上書きすれば、右側の古い値は使われるまで変更されないので、追加の配列は不要です。",
+      "length = n から始め、length > 2 の間、i = 0..length-2 について a[i] = (a[i] + a[i+1]) mod 10 とし、length を 1 減らします。最後に a[0] と a[1] を隣り合う 2 文字として出力し、先頭の 0 を保持します。"
+    ],
+    "ko": [
+      "n이 최대 5000이므로 매 라운드를 그대로 시뮬레이션해도 덧셈이 약 n^2/2번밖에 들지 않아 충분히 빠릅니다.",
+      "다음 라운드의 i번째 항목은 이전 라운드의 i번째와 i+1번째 항목에만 의존합니다. 왼쪽에서 오른쪽으로 제자리에서 덮어쓰면 오른쪽의 이전 값은 사용되기 전까지 그대로 남아 있으므로 추가 배열이 필요 없습니다.",
+      "length = n으로 시작해, length > 2인 동안 i = 0..length-2에 대해 a[i] = (a[i] + a[i+1]) mod 10으로 설정한 뒤 length를 1 줄입니다. 마지막으로 a[0]과 a[1]을 두 글자로 붙여서, 앞자리 0을 유지한 채 출력합니다."
+    ],
+    "vi": [
+      "n tối đa 5000, nên mô phỏng trực tiếp từng vòng chỉ tốn khoảng n^2/2 phép cộng, hoàn toàn đủ nhanh.",
+      "Phần tử i của vòng kế tiếp chỉ phụ thuộc vào các phần tử i và i+1 của vòng trước; ghi đè tại chỗ từ trái sang phải để giá trị cũ bên phải chưa bị đụng tới cho đến khi được dùng, nên không cần mảng phụ.",
+      "Bắt đầu với length = n; khi length > 2, đặt a[i] = (a[i] + a[i+1]) mod 10 với i = 0..length-2 rồi giảm length đi một; cuối cùng in a[0] và a[1] thành hai ký tự liền nhau, giữ số 0 đứng đầu."
     ]
   },
   "explanationEn": "## Approach\n\nIn each round, overwrite in place toward the left with the adjacent sums mod 10, shrinking the effective length until it is 2.\n\n## Correctness\n\nItem i of a round depends only on the old items i and i+1, and when updating from left to right the old value on the right has not been overwritten yet, so the in-place update matches the definition exactly; induction gives the final two digits.\n\n## Complexity\n\nTime O(n^2), space O(n)."

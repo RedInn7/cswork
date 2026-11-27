@@ -13,5 +13,41 @@
       "When clearing rows, delete only full rows; the other rows shift down unchanged.",
       "A row can be represented by a 10-bit integer."
     ]
+  },
+  "ja": {
+    "title": "DRW OA #1: 簡易テトリス",
+    "description": "簡易テトリスのエンジンを実装してください。盤面の幅は 10 列です。ピースは上から入り、重力に従ってまっすぐ下に落ち、ピースのどこかが盤面の底、またはすでに止まったピースに接した時点で止まります。各ピースは 4 つの単位正方形からなる剛体で、回転しません。2 つの正方形が同じ位置を占めることはありません。\n\nピースは次の固定された形の 7 種類です (各正方形の座標 (x,y) は、ピースの最も左の列を x=0、最も下の行を y=0 として与えます)。\nQ: (0,0)(1,0)(0,1)(1,1)\nZ: (1,0)(2,0)(0,1)(1,1)\nS: (0,0)(1,0)(1,1)(2,1)\nT: (1,0)(0,1)(1,1)(2,1)\nI: (0,0)(1,0)(2,0)(3,0)\nL: (0,0)(1,0)(0,1)(0,2)\nJ: (0,0)(1,0)(1,1)(1,2)\n\n行がすべて埋まると、その行は消え、その上のすべての行がまとめて空いた位置へ下がります。各行のパターンはそのままで、ピースが下の行の隙間を埋めることはありません。\n\n入力の各行は配置の列で、各行は空の盤面から始まります。その行のすべてのピースを処理した後に残っているピースの高さを求めてください。",
+    "input": "入力は複数行からなります (ファイルの終わりまで)。各行は配置のカンマ区切りのリストで、各項目はピースの文字の後ろに 1 桁の数字が続いたもので、その数字はピースが占める最も左の列 (0 から数える) です。入力は有効であることが保証されます。ピースが盤面の左右の端からはみ出すことはなく、処理中に高さが 100 を超えることもありません。行数は高々 200、各行のピース数は高々 1000 です。",
+    "output": "入力の各行について、その列が終わった後に残っているピースの高さを 1 行で出力してください。",
+    "explanation": "例 1: 1 行目の I0,I4,Q8 では、2 つの I が 0..7 列を埋め、Q が 8 列と 9 列を占めるので、最下行が埋まって消え、Q の上半分が残って高さは 1 です。2 行目では、Q0 が底まで落ち、高さは 2 です。\n例 2: T1,Z3,I4 ではどの行も完成せず、最終的な高さは 4 です。\n例 3: Q0,I2,I6 の後で最下行が消えます。その後 I0,I6,I6,Q2,Q4 を置くと 2 行目が埋まって消えます。行はまとめて下がり、隙間は埋まらないので、最終的な高さは 3 です。",
+    "hints": [
+      "ピースはまっすぐ上から落ちるため、止まる位置は各列で最も高い占有マスだけで決まります。",
+      "行を消すときは、埋まった行だけを削除します。他の行は変えずに下がります。",
+      "1 行は 10 ビットの整数で表せます。"
+    ]
+  },
+  "ko": {
+    "title": "DRW OA #1: 단순화된 테트리스",
+    "description": "단순화된 테트리스 엔진을 구현하세요. 격자의 너비는 10열입니다. 블록은 위에서 들어와 중력을 받은 것처럼 똑바로 아래로 떨어지며, 블록의 어느 부분이든 격자 바닥이나 이미 멈춘 블록에 닿으면 즉시 멈춥니다. 각 블록은 단위 정사각형 4개로 이루어지고, 단단하며, 회전하지 않습니다. 두 정사각형이 같은 위치를 차지할 수는 없습니다.\n\n블록은 다음과 같은 고정된 모양의 7종류가 있습니다(각 정사각형의 좌표 (x,y)는 블록의 가장 왼쪽 열을 x=0, 가장 아래 행을 y=0으로 하여 나타냅니다).\nQ: (0,0)(1,0)(0,1)(1,1)\nZ: (1,0)(2,0)(0,1)(1,1)\nS: (0,0)(1,0)(1,1)(2,1)\nT: (1,0)(0,1)(1,1)(2,1)\nI: (0,0)(1,0)(2,0)(3,0)\nL: (0,0)(1,0)(0,1)(0,2)\nJ: (0,0)(1,0)(1,1)(1,2)\n\n한 행이 완전히 채워질 때마다 그 행은 사라지고, 그 위의 모든 행이 통째로 비워진 자리로 내려옵니다. 각 행의 패턴은 그대로 유지되며, 블록이 아래 행의 빈틈을 메우지는 않습니다.\n\n입력의 각 줄은 하나의 배치 순서이며, 각 줄은 빈 격자에서 시작합니다. 그 줄의 모든 블록을 처리한 뒤 남아 있는 블록의 높이를 구하세요.",
+    "input": "입력은 여러 줄로 이루어집니다(파일 끝까지). 각 줄은 쉼표로 구분된 배치의 목록이며, 각 항목은 블록 문자 하나 뒤에 숫자 하나가 오는 형식으로, 숫자는 블록이 차지하는 가장 왼쪽 열(0부터 시작)입니다. 입력은 항상 유효함이 보장됩니다. 블록이 격자의 왼쪽이나 오른쪽 경계를 벗어나지 않으며, 진행 중 높이가 100을 넘지 않습니다. 줄은 최대 200개이고, 각 줄에는 블록이 최대 1000개 있습니다.",
+    "output": "입력의 각 줄마다, 그 순서가 끝난 뒤 남아 있는 블록의 높이를 담은 한 줄을 출력합니다.",
+    "explanation": "예제 1: 첫 번째 줄 I0,I4,Q8에서 I 두 개가 0..7열을 채우고 Q가 8열과 9열을 차지하므로 맨 아래 행이 채워져 사라지고, Q의 윗부분이 남아 높이는 1입니다. 두 번째 줄에서는 Q0이 바닥까지 떨어져 높이가 2입니다.\n예제 2: T1,Z3,I4는 어떤 행도 완성하지 못하며 최종 높이는 4입니다.\n예제 3: Q0,I2,I6 이후 맨 아래 행이 사라지고, 그 뒤 I0,I6,I6,Q2,Q4를 배치하면 두 번째 행이 채워져 사라집니다. 행은 빈틈을 메우지 않고 통째로 내려오며, 최종 높이는 3입니다.",
+    "hints": [
+      "블록은 위에서 똑바로 떨어지므로, 각 열에서 가장 높이 차 있는 칸에만 막힐 수 있습니다.",
+      "행을 지울 때는 가득 찬 행만 삭제하고, 나머지 행은 그대로 아래로 내려옵니다.",
+      "한 행은 10비트 정수로 나타낼 수 있습니다."
+    ]
+  },
+  "vi": {
+    "title": "DRW OA #1: Tetris đơn giản hóa",
+    "description": "Hãy cài đặt một engine Tetris đơn giản hóa. Lưới rộng 10 cột. Các mảnh đi vào từ phía trên và rơi thẳng xuống như dưới tác dụng của trọng lực, và một mảnh dừng lại ngay khi có bất kỳ phần nào của nó chạm đáy lưới hoặc một mảnh đã dừng. Mỗi mảnh gồm 4 ô vuông đơn vị, cứng, không xoay; không có hai ô nào được chiếm cùng một vị trí.\n\nCó 7 loại mảnh với các hình dạng cố định sau (tọa độ (x,y) của mỗi ô được cho với cột ngoài cùng bên trái của mảnh là x=0 và hàng dưới cùng là y=0):\nQ: (0,0)(1,0)(0,1)(1,1)\nZ: (1,0)(2,0)(0,1)(1,1)\nS: (0,0)(1,0)(1,1)(2,1)\nT: (1,0)(0,1)(1,1)(2,1)\nI: (0,0)(1,0)(2,0)(3,0)\nL: (0,0)(1,0)(0,1)(0,2)\nJ: (0,0)(1,0)(1,1)(1,2)\n\nMỗi khi một hàng được lấp đầy hoàn toàn, hàng đó biến mất và tất cả các hàng phía trên dịch xuống nguyên khối vào vị trí vừa trống; mẫu trong mỗi hàng giữ nguyên, và các mảnh không lấp vào các khoảng trống ở những hàng bên dưới.\n\nMỗi dòng của đầu vào là một dãy đặt mảnh, và mỗi dòng bắt đầu từ một lưới rỗng; hãy tìm chiều cao của phần các mảnh còn lại sau khi xử lý xong tất cả các mảnh trên dòng đó.",
+    "input": "Đầu vào gồm nhiều dòng (đến hết tệp). Mỗi dòng là danh sách các lần đặt mảnh cách nhau bởi dấu phẩy, và mỗi mục là một chữ cái tên mảnh theo sau là một chữ số, chính là cột ngoài cùng bên trái mà mảnh chiếm (tính từ 0). Đầu vào đảm bảo hợp lệ: các mảnh không bao giờ vượt quá biên trái hoặc phải của lưới, và chiều cao không bao giờ vượt quá 100 trong quá trình xử lý. Có tối đa 200 dòng, và mỗi dòng có tối đa 1000 mảnh.",
+    "output": "Với mỗi dòng của đầu vào, in ra một dòng chứa chiều cao của phần các mảnh còn lại sau khi dãy đó kết thúc.",
+    "explanation": "Ví dụ 1: ở dòng đầu tiên, I0,I4,Q8: hai mảnh I lấp các cột 0..7 và Q chiếm các cột 8 và 9, nên hàng dưới cùng được lấp đầy và bị xóa, để lại nửa trên của Q, với chiều cao 1; ở dòng thứ hai, Q0 rơi xuống đáy, với chiều cao 2.\nVí dụ 2: T1,Z3,I4 không hoàn thành hàng nào, và chiều cao cuối cùng là 4.\nVí dụ 3: sau Q0,I2,I6, hàng dưới cùng bị xóa; sau đó đặt tiếp I0,I6,I6,Q2,Q4, hàng thứ hai được lấp đầy và bị xóa; các hàng rơi xuống nguyên khối mà không lấp các khoảng trống, và chiều cao cuối cùng là 3.",
+    "hints": [
+      "Một mảnh rơi thẳng xuống từ phía trên và chỉ có thể bị chặn bởi ô cao nhất đã bị chiếm trong mỗi cột.",
+      "Khi xóa hàng, chỉ xóa các hàng đầy; các hàng còn lại dịch xuống mà không thay đổi.",
+      "Một hàng có thể được biểu diễn bằng một số nguyên 10 bit."
+    ]
   }
 }

@@ -13,6 +13,21 @@
       "The sizes are only n, x <= 1000, each round handles at most x elements, and there are x rounds, so simulating the queue exactly as described is fast enough.",
       "Each element must remember both its original index and its current value. Each round takes at most x elements from the front, picks the one with the largest value (ties go to the one closest to the front), decreases the others by one (not below 0), and puts them back at the end in their original order.",
       "Store (original index, value) in a deque; repeat x rounds: pop min(x, queue length) elements as a batch, scan it from front to back and update the maximum position only on a strictly larger value; record that element's original index and do not put it back; push the others back in order with value max(0, value - 1); finally print the x indices in selection order, separated by spaces."
+    ],
+    "ja": [
+      "サイズは n, x <= 1000 しかなく、各ラウンドで扱う要素は高々 x 個、ラウンド数は x 回なので、説明どおりにキューをそのままシミュレーションしても十分高速です。",
+      "各要素は、元の添字と現在の値の両方を持たなければなりません。各ラウンドで先頭から高々 x 個を取り出し、値が最大のもの（同値なら先頭に最も近いもの）を選び、残りを 1 減らして（0 未満にはしない）元の順序で末尾に戻します。",
+      "(元の添字, 値) を deque に保存し、x ラウンド繰り返します。min(x, キューの長さ) 個をまとめて取り出し、先頭から順に走査して、厳密に大きい値のときだけ最大位置を更新します。その要素の元の添字を記録して戻さず、残りは値を max(0, value - 1) にして順序どおりに押し戻します。最後に x 個の添字を選んだ順にスペース区切りで出力します。"
+    ],
+    "ko": [
+      "크기가 n, x <= 1000에 불과하고, 매 라운드 최대 x개의 원소를 처리하며, 라운드는 x번이므로 설명된 대로 큐를 그대로 시뮬레이션해도 충분히 빠릅니다.",
+      "각 원소는 원래 인덱스와 현재 값을 함께 기억해야 합니다. 매 라운드 앞에서 최대 x개를 꺼내 값이 가장 큰 것(동률이면 맨 앞에 가까운 것)을 고르고, 나머지는 1씩 줄이되(0 미만으로는 내리지 않음) 원래 순서대로 뒤에 다시 넣습니다.",
+      "(원래 인덱스, 값)을 deque에 저장하고 x 라운드를 반복합니다. min(x, 큐 길이)개를 한 묶음으로 꺼내 앞에서부터 훑으며 값이 엄격히 더 클 때만 최댓값 위치를 갱신하고, 그 원소의 원래 인덱스를 기록한 뒤 다시 넣지 않습니다. 나머지는 값을 max(0, value - 1)로 바꿔 순서대로 다시 push합니다. 마지막으로 x개의 인덱스를 선택된 순서대로 공백으로 구분해 출력합니다."
+    ],
+    "vi": [
+      "Kích thước chỉ là n, x <= 1000, mỗi vòng xử lý tối đa x phần tử và có x vòng, nên mô phỏng hàng đợi đúng như mô tả là đủ nhanh.",
+      "Mỗi phần tử phải nhớ cả chỉ số gốc lẫn giá trị hiện tại. Mỗi vòng lấy tối đa x phần tử từ đầu hàng, chọn phần tử có giá trị lớn nhất (khi bằng nhau thì chọn phần tử gần đầu nhất), giảm các phần tử còn lại đi một (không xuống dưới 0), và đặt chúng lại cuối hàng theo thứ tự ban đầu.",
+      "Lưu (chỉ số gốc, giá trị) trong một deque; lặp x vòng: lấy ra min(x, độ dài hàng đợi) phần tử thành một lô, quét từ đầu đến cuối và chỉ cập nhật vị trí lớn nhất khi gặp giá trị lớn hơn hẳn; ghi lại chỉ số gốc của phần tử đó và không đặt nó trở lại; đẩy các phần tử còn lại về theo thứ tự với giá trị max(0, value - 1); cuối cùng in x chỉ số theo thứ tự được chọn, cách nhau bằng dấu cách."
     ]
   },
   "explanationEn": "## Approach\n\nUse a deque holding each item's original index and value. Each round, pop the first min(x, queue length) items, scan them to find the first maximum and record its index; decrease the values of the other items in the batch by 1 with a lower bound of 0, and put them back at the end of the queue in their original order.\n\n## Proof of correctness\n\nThe batch taken in each round is exactly the at most x items at the front of the queue that the rules specify. The front-to-back scan updates the maximum position only when the value becomes strictly larger, so on ties the earliest item is kept. That item is recorded and not put back; each of the other items gets max(0,value−1) and is enqueued in the original order, exactly matching the operation in the statement. By induction on the number of rounds, both the queue state and the sequence of selected indices agree with the statement.\n\n## Complexity\n\nTime O(x²), space O(n+x); on this site x,n≤1000."

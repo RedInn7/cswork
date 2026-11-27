@@ -13,6 +13,21 @@
       "while (s++ < n) compares the old value with n before incrementing, so starting from s = 0 the loop body sees s = 1 to n, each value exactly once.",
       "The continue condition requires s to be below both thresholds, which is the same as s being below the smaller threshold; only values that fail this condition are printed.",
       "Read n, a, b and let cut be the smaller of a and b. Following the original loop, let s run from 1 to n, skip values with s < cut, and print the rest separated by spaces; that is, every integer from cut to n."
+    ],
+    "ja": [
+      "while (s++ < n) は、インクリメントの前の古い値を n と比較するので、s = 0 から始めると、ループ本体が見る s は 1 から n までで、各値がちょうど 1 回ずつ現れます。",
+      "continue の条件は s が両方のしきい値より小さいことを要求するので、これは s が小さいほうのしきい値より小さいことと同じです。この条件を満たさない値だけが出力されます。",
+      "n、a、b を読み込み、cut を a と b の小さいほうとします。元のループに従って s を 1 から n まで動かし、s < cut の値をスキップして、残りを空白区切りで出力します。つまり、cut から n までのすべての整数です。"
+    ],
+    "ko": [
+      "while (s++ < n)은 증가시키기 전에 이전 값을 n과 비교하므로, s = 0에서 시작하면 루프 본문은 s = 1부터 n까지를 각각 정확히 한 번씩 봅니다.",
+      "continue 조건은 s가 두 임계값보다 모두 작아야 한다는 것이며, 이는 s가 작은 쪽 임계값보다 작다는 것과 같습니다. 이 조건을 만족하지 않는 값만 출력됩니다.",
+      "n, a, b를 읽고 cut을 a와 b 중 작은 값으로 둡니다. 원래 루프를 따라 s를 1부터 n까지 돌리며 s < cut인 값은 건너뛰고 나머지를 공백으로 구분해 출력합니다. 즉 cut부터 n까지의 모든 정수입니다."
+    ],
+    "vi": [
+      "while (s++ < n) so sánh giá trị cũ với n trước khi tăng, nên bắt đầu từ s = 0, thân vòng lặp thấy s = 1 đến n, mỗi giá trị đúng một lần.",
+      "Điều kiện continue yêu cầu s nhỏ hơn cả hai ngưỡng, tức là s nhỏ hơn ngưỡng nhỏ hơn; chỉ các giá trị không thỏa điều kiện này mới được in.",
+      "Đọc n, a, b và đặt cut là giá trị nhỏ hơn trong a và b. Theo vòng lặp gốc, cho s chạy từ 1 đến n, bỏ qua các giá trị s < cut, và in phần còn lại cách nhau bằng khoảng trắng; tức là mọi số nguyên từ cut đến n."
     ]
   },
   "explanationEn": "## Approach\n\n`while (s++ < n)` checks the old value before incrementing on every iteration, so inside the loop body s takes the values 1 to n in order. The continue condition `s<a && s<b` is equivalent to `s<min(a,b)`; the remaining values are output in order.\n\n## Correctness\n\nThe loop body runs exactly once for each integer s in [1,n]. If s is below both thresholds, continue skips the print; otherwise the condition is false and s is printed. Since the conjunction is equivalent to s<min(a,b), the output set is exactly min(a,b) through n, in increasing order.\n\n## Complexity\n\nTime O(n), extra space O(n) (for buffering the output). This site parameterizes the original problem's constants but fully keeps the increment, the loop bound and the continue test."

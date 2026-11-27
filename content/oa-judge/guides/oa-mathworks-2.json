@@ -13,6 +13,21 @@
       "The number of integers in [1, A[i]] coprime to A[i] is Euler's totient phi(A[i]), and phi(x) = x times the product of (1 - 1/p) over the distinct primes p dividing x.",
       "Values are at most 10^5, so you can compute phi for all of 1..max(A) at once with a sieve, like the sieve of Eratosthenes, and then look values up in input order instead of factoring each one.",
       "Set phi[x] = x; for p increasing from 2, if phi[p] still equals p then p is prime, and for every multiple x of p subtract phi[x] / p from phi[x]; after the sieve output phi[A[i]] in input order separated by spaces, with phi[1] = 1."
+    ],
+    "ja": [
+      "[1, A[i]] のうち A[i] と互いに素な整数の個数は、オイラーのトーシェント関数 phi(A[i]) で、phi(x) は x に、x を割り切る相異なる素数 p すべてについての (1 - 1/p) の積を掛けたものです。",
+      "値は高々 10^5 なので、エラトステネスの篩のようにして 1..max(A) のすべてについて phi を一度に計算し、各値を個別に素因数分解する代わりに、入力順に値を引けばよいです。",
+      "phi[x] = x とし、p を 2 から増やしていきます。phi[p] がまだ p に等しければ p は素数で、p のすべての倍数 x について phi[x] から phi[x] / p を引きます。篩の後、phi[A[i]] を入力順に空白区切りで出力します。ただし phi[1] = 1 です。"
+    ],
+    "ko": [
+      "[1, A[i]]의 정수 중 A[i]와 서로소인 것의 개수는 오일러 피 함수 phi(A[i])이며, phi(x) = x에 x를 나누는 서로 다른 소수 p들에 대한 (1 - 1/p)의 곱을 곱한 값입니다.",
+      "값이 최대 10^5이므로 에라토스테네스의 체와 같은 방식으로 1..max(A)의 모든 phi를 한꺼번에 계산한 뒤, 각 값을 소인수분해하는 대신 입력 순서대로 조회할 수 있습니다.",
+      "phi[x] = x로 시작합니다. p를 2부터 증가시키며 phi[p]가 여전히 p이면 p는 소수이고, p의 모든 배수 x에 대해 phi[x]에서 phi[x] / p를 뺍니다. 체가 끝난 뒤 phi[A[i]]를 입력 순서대로 공백으로 구분하여 출력하며, phi[1] = 1입니다."
+    ],
+    "vi": [
+      "Số các số nguyên trong [1, A[i]] nguyên tố cùng nhau với A[i] là hàm phi Euler phi(A[i]), và phi(x) = x nhân tích của (1 - 1/p) trên các số nguyên tố p phân biệt chia hết x.",
+      "Các giá trị không quá 10^5, nên bạn có thể tính phi cho toàn bộ 1..max(A) một lần bằng một cái sàng, giống sàng Eratosthenes, rồi tra giá trị theo thứ tự nhập thay vì phân tích từng số ra thừa số.",
+      "Đặt phi[x] = x; với p tăng dần từ 2, nếu phi[p] vẫn bằng p thì p là số nguyên tố, và với mọi bội x của p trừ phi[x] / p khỏi phi[x]; sau khi sàng xong, in phi[A[i]] theo thứ tự nhập cách nhau bởi dấu cách, với phi[1] = 1."
     ]
   },
   "explanationEn": "## Approach\n\nSieve-style update: start with phi[x]=x; for each prime p, subtract phi[x]/p from phi[x] for each of its multiples, then read phi[A[i]] in input order.\n\n## Proof of correctness\n\nThe initial value of phi is x. For the multiples of each prime p, exactly the fraction 1/p containing the factor p can be excluded, so for the multiples of every prime we successively subtract 1/p of the current value; by the multiplicative property of Euler's function this yields every phi(x), which is the number of coprime integers required by the definition.\n\n## Complexity\n\nO(M log log M+n), where M=max(A); space O(M)."

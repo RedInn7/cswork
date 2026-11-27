@@ -13,6 +13,21 @@
       "Only the cumulative number of bookings matters. A check-out never lowers that count, so only the + records count, whatever state the room ends in.",
       "Count how many + records each room has, then pick a room by count descending and, on ties, room name ascending.",
       "Scan the records and add one to the room (floor digit plus letter) on each +. There are at most 260 rooms; among those with the largest count, output the lexicographically smallest name."
+    ],
+    "ja": [
+      "重要なのは累積の予約回数だけです。チェックアウトでその回数が減ることはないので、部屋の最終的な状態に関係なく、+ の記録だけが数えられます。",
+      "各部屋の + の記録の数を数え、回数の降順、同数なら部屋名の昇順で部屋を選びます。",
+      "記録を走査し、+ のたびに部屋（階の数字と文字）に 1 を加えます。部屋は高々 260 室です。回数が最大の部屋のうち、辞書順で最小の名前を出力します。"
+    ],
+    "ko": [
+      "누적 예약 횟수만 중요합니다. 체크아웃은 그 횟수를 줄이지 않으므로 + 기록만 세며, 객실이 마지막에 어떤 상태이든 상관없습니다.",
+      "각 객실의 + 기록 수를 센 뒤, 횟수 내림차순, 동점이면 객실 이름 오름차순으로 객실을 고릅니다.",
+      "기록을 스캔하며 + 마다 해당 객실(층 숫자와 글자)에 1을 더합니다. 객실은 최대 260개이며, 횟수가 가장 큰 것들 중 사전순으로 가장 작은 이름을 출력합니다."
+    ],
+    "vi": [
+      "Chỉ số lần đặt tích lũy là quan trọng. Một lần trả phòng không bao giờ làm giảm số đó, nên chỉ các bản ghi + được tính, bất kể trạng thái cuối cùng của phòng.",
+      "Đếm mỗi phòng có bao nhiêu bản ghi +, rồi chọn phòng theo số đếm giảm dần và, khi hòa, theo tên phòng tăng dần.",
+      "Quét các bản ghi và cộng một cho phòng (chữ số tầng cộng với chữ cái) ở mỗi dấu +. Có tối đa 260 phòng; trong những phòng có số đếm lớn nhất, in ra tên nhỏ nhất theo thứ tự từ điển."
     ]
   },
   "explanationEn": "## Idea\n\nCount only the rooms in + records, and pick the best room by booking count descending and room name ascending.\n\n## Correctness\n\nEvery + record is one real booking, independent of whether that room ends up free. Summing all + records gives the cumulative counts, and choosing the largest count and then the smallest name matches the two-level ordering rule exactly.\n\n## Complexity\n\nO(n+260) time, O(260) space."

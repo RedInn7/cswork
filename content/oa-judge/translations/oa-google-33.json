@@ -11,5 +11,35 @@
     "hints": [
       "Ignore the deleted edges, merge the remaining edges with a union-find, then count the size of each root and sort."
     ]
+  },
+  "ja": {
+    "title": "二分木の辺を削除した後の連結成分のサイズ",
+    "description": "ノード番号がすべて異なる二分木が与えられます。指定された親子の辺を削除し、残った各連結成分のノード数を求めてください。元の問題は成分の順序を定めていなかったため、本サイトでは成分の集合に固定の順序を与えるように、結果を昇順で出力します。\n\n標準の入出力・例・テストは CSWork が作成したものです。「本サイト」と記した範囲は採点上の取り決めであり、面接の原典の制約であると主張するものではありません。",
+    "input": "本サイトの標準入力：1行目に n k（1≤n≤100000、0≤k<n）が与えられます。続く n−1 行に親子の辺 u v が与えられます（根は 1 で、各ノードの子は高々 2 つ）。最後の k 行に削除する辺が与えられ、それぞれ存在することと互いに異なることが保証されています。",
+    "output": "まず成分の個数を出力し、続いて各成分のノード数を昇順に出力します。",
+    "explanation": "例 1：1—2 と 2—4 を削除すると、成分は {1,3}、{2,5}、{4} で、ソートしたサイズは 1, 2, 2 です。成分の個数 3 を先に出力します。例 2：ノード 1 つが、サイズ 1 の成分を 1 つなします。例 3：2 本とも削除するとサイズ 1 の成分が 3 つできます。",
+    "hints": [
+      "削除された辺を無視し、残りの辺を Union-Find で併合してから、各根のサイズを数えてソートします。"
+    ]
+  },
+  "ko": {
+    "title": "이진 트리 간선 삭제 후 컴포넌트 크기",
+    "description": "노드 번호가 서로 다른 이진 트리에서 지정된 부모-자식 간선을 삭제하고, 남은 각 연결 컴포넌트의 노드 수를 구합니다. 원 문제는 컴포넌트의 순서를 정하지 않았으므로, 이 사이트는 컴포넌트 집합에 고정된 순서를 주기 위해 결과를 오름차순으로 출력합니다.\n\n표준 입력/출력, 예제, 테스트는 CSWork가 작성했습니다. \"이 사이트\"로 표시된 범위는 채점 기준일 뿐이며, 실제 면접의 원래 제한이라고 주장하지 않습니다.",
+    "input": "이 사이트의 표준 입력: 첫째 줄에 n k(1≤n≤100000, 0≤k<n)가 주어지고, 이어서 n−1개의 줄에 부모-자식 간선 u v가 주어집니다. 루트는 1이고 각 노드의 자식은 최대 두 개입니다. 마지막으로 k개의 줄에 삭제할 간선이 주어지며, 각 간선은 존재하고 서로 다름이 보장됩니다.",
+    "output": "먼저 컴포넌트의 개수를 출력하고, 이어서 각 컴포넌트의 노드 수를 오름차순으로 출력합니다.",
+    "explanation": "예제 1: 1—2와 2—4를 삭제하면 컴포넌트는 {1,3}, {2,5}, {4}이며 정렬된 크기는 1, 2, 2입니다. 컴포넌트 수 3을 먼저 출력합니다. 예제 2: 노드 하나는 크기 1인 컴포넌트 하나를 이룹니다. 예제 3: 두 간선을 모두 삭제하면 크기 1인 컴포넌트 세 개가 됩니다.",
+    "hints": [
+      "삭제된 간선은 무시하고 남은 간선을 유니온 파인드로 합친 뒤, 각 루트의 크기를 세어 정렬합니다."
+    ]
+  },
+  "vi": {
+    "title": "Kích thước các thành phần sau khi xóa cạnh của cây nhị phân",
+    "description": "Cho một cây nhị phân có các số hiệu nút đôi một khác nhau, xóa các cạnh cha-con được chỉ định và tìm số nút của mỗi thành phần liên thông còn lại. Trang này xuất kết quả theo thứ tự tăng dần, nhằm cố định thứ tự cho tập các thành phần, điều mà đề gốc để không xác định thứ tự.\n\nĐầu vào/đầu ra chuẩn, các ví dụ và bộ test do CSWork biên soạn; các phạm vi được đánh dấu \"trang này\" là quy ước chấm bài, không được xem là giới hạn gốc của buổi phỏng vấn.",
+    "input": "Đầu vào chuẩn của trang này: dòng đầu chứa n k (1≤n≤100000, 0≤k<n); sau đó là n−1 dòng các cạnh cha-con u v, với gốc là 1 và mỗi nút có tối đa hai nút con; cuối cùng là k dòng các cạnh cần xóa, mỗi cạnh đảm bảo tồn tại và đôi một khác nhau.",
+    "output": "Trước hết xuất số thành phần, sau đó xuất số nút của mỗi thành phần theo thứ tự tăng dần.",
+    "explanation": "Ví dụ 1: sau khi xóa 1—2 và 2—4, các thành phần là {1,3}, {2,5}, {4}, có kích thước đã sắp xếp là 1, 2, 2; số thành phần 3 được xuất trước. Ví dụ 2: một nút đơn tạo thành một thành phần kích thước 1. Ví dụ 3: xóa cả hai cạnh cho ba thành phần kích thước 1.",
+    "hints": [
+      "Bỏ qua các cạnh bị xóa, hợp nhất các cạnh còn lại bằng union-find, rồi đếm kích thước mỗi gốc và sắp xếp."
+    ]
   }
 }

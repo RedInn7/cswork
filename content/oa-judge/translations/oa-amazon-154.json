@@ -11,5 +11,35 @@
     "hints": [
       "Changing an element to 1 is the most useful. Binary search the allowed length L; every window of length L+1 whose original GCD>1 must be hit by a changed position, so greedily, from left to right, change the right end of the first bad window not yet hit. A GCD sparse table answers window queries in O(1)."
     ]
+  },
+  "ja": {
+    "title": "限られた要素の変更後の GCD 脆弱性の最小長",
+    "description": "脆弱性係数とは、GCD が 1 より大きい空でない連続区間の最大長で、なければ 0 です。最大 maxChange 個の要素を任意の整数に変更できます。脆弱性係数を最小にしてください。1 つの要素も連続区間として数えます。\n\nこのサイトの標準入出力と解法は独自に作成したものです。このサイトの制約と明記された範囲は、元の出典の制約ではありません。",
+    "input": "1 行目に n maxChange（1≤n≤100000、0≤maxChange≤n）、2 行目に 1..10^9 の n 個の整数が与えられます。",
+    "output": "答えを表す整数を 1 つ出力してください。",
+    "explanation": "例 1: 中央の 4 を 1 に変更すると、最も長い悪い区間は 2, 2 と 9, 6 の長さ 2 になります。例 2: 中央を 1 に変更すると、左右に要素 1 つだけの悪い区間が残るので、答えは 1 です。例 3: どう 2 回変更しても、元の素数が要素 1 つの区間として残るので、最適値は出典の誤った 0 ではなく 1 です。",
+    "hints": [
+      "要素を 1 に変更するのが最も有効です。許容する長さ L を二分探索し、元の GCD>1 である長さ L+1 のすべての窓は、変更した位置に当たらなければなりません。したがって、左から右へ貪欲に、まだ当たっていない最初の悪い窓の右端を変更します。GCD のスパーステーブルで、窓のクエリを O(1) で答えられます。"
+    ]
+  },
+  "ko": {
+    "title": "제한된 개수의 원소를 바꾼 뒤 최소 GCD 취약 길이",
+    "description": "취약 계수는 GCD가 1보다 큰 비어 있지 않은 연속 구간의 최대 길이이며, 그런 구간이 없으면 0입니다. 최대 maxChange개의 원소를 임의의 정수로 바꿀 수 있을 때, 취약 계수를 최소화하세요. 원소 하나도 연속 구간으로 칩니다.\n\n표준 입출력과 풀이는 이 사이트에서 독자적으로 작성했으며, 이 사이트가 정한 것으로 표시된 범위는 원 출처의 제약 조건이 아닙니다.",
+    "input": "첫 번째 줄에 n maxChange(1≤n≤100000, 0≤maxChange≤n), 두 번째 줄에 1..10^9 범위의 정수 n개가 주어집니다.",
+    "output": "정수 하나를 출력합니다.",
+    "explanation": "예제 1: 가운데 4를 1로 바꾸면 가장 긴 취약 구간은 2, 2와 9, 6으로 길이 2가 남습니다. 예제 2: 가운데를 1로 바꾸면 좌우에 원소 하나짜리 취약 구간만 남으므로 답은 1입니다. 예제 3: 어떻게 두 개를 바꾸더라도 원래의 소수가 단일 원소로 남으므로 최적은 원 출처의 잘못된 0이 아니라 1입니다.",
+    "hints": [
+      "원소를 1로 바꾸는 것이 가장 유용합니다. 허용 길이 L을 이분 탐색하고, 원래 GCD>1인 길이 L+1의 모든 창은 바뀐 위치에 걸려야 하므로, 왼쪽에서부터 아직 걸리지 않은 첫 번째 취약한 창의 오른쪽 끝을 바꾸는 탐욕법을 씁니다. GCD 희소 테이블이 창 질의를 O(1)에 답해 줍니다."
+    ]
+  },
+  "vi": {
+    "title": "Độ dài lỗ hổng GCD tối thiểu sau khi đổi số phần tử giới hạn",
+    "description": "Hệ số lỗ hổng là độ dài lớn nhất của một đoạn liên tiếp khác rỗng có GCD lớn hơn 1, hoặc 0 nếu không có đoạn nào. Bạn có thể đổi tối đa maxChange phần tử thành các số nguyên bất kỳ; hãy cực tiểu hóa hệ số lỗ hổng. Một phần tử đơn lẻ cũng được tính là một đoạn liên tiếp.\n\nCách vào/ra chuẩn và lời giải do trang này tự viết; các phạm vi được đánh dấu là của trang này không phải ràng buộc gốc của đề.",
+    "input": "Dòng đầu chứa n maxChange (1≤n≤100000, 0≤maxChange≤n), dòng thứ hai chứa n số nguyên trong 1..10^9.",
+    "output": "Xuất một số nguyên duy nhất là đáp án.",
+    "explanation": "Ví dụ 1: đổi số 4 ở giữa thành 1, các đoạn xấu dài nhất còn lại là 2, 2 và 9, 6 có độ dài 2. Ví dụ 2: đổi phần tử giữa thành 1, chỉ còn các đoạn xấu một phần tử ở bên trái và bên phải, nên đáp án là 1. Ví dụ 3: sau bất kỳ hai lần đổi nào vẫn còn một số nguyên tố gốc là một phần tử đơn lẻ, nên giá trị tối ưu là 1, không phải 0 sai của đề gốc.",
+    "hints": [
+      "Đổi một phần tử thành 1 là hữu ích nhất. Tìm kiếm nhị phân độ dài cho phép L; mọi cửa sổ độ dài L+1 có GCD gốc>1 đều phải bị một vị trí đã đổi chạm tới, nên theo tham lam, từ trái sang phải, đổi đầu mút phải của cửa sổ xấu đầu tiên chưa bị chạm. Bảng thưa GCD trả lời truy vấn cửa sổ trong O(1)."
+    ]
   }
 }

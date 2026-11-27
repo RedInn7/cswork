@@ -13,6 +13,21 @@
       "A value that appears c times in a range forms at most floor(c/2) pairs that share no index, so the range's pair count is the sum of floor(c/2) over its values.",
       "With the left end fixed, moving the right end further right never lowers the pair count. So use two pointers: once the window reaches k pairs, the current left end works with the current right end and every right end beyond it.",
       "Move the right end one step at a time and increment the new value's count, adding one pair when the count becomes even. While the pair count is at least k, add N−right to the answer (right is 0-based), then drop the leftmost element, losing one pair if its count goes from even to odd, and check again."
+    ],
+    "ja": [
+      "ある区間に c 回現れる値は、添字を共有しないペアを最大 floor(c/2) 組作れます。したがって、区間のペア数は、その値すべてにわたる floor(c/2) の総和です。",
+      "左端を固定したとき、右端をさらに右へ動かしてもペア数は減りません。そこで 2 ポインタを使います。窓が k 組に達したら、現在の左端は、現在の右端およびそれより右のすべての右端と組み合わせて条件を満たします。",
+      "右端を 1 歩ずつ進め、新しい値の回数を増やし、回数が偶数になったらペアを 1 組加えます。ペア数が k 以上の間、答えに N−right (right は 0 始まり) を加え、最も左の要素を取り除きます。その回数が偶数から奇数になるときはペアが 1 組減ります。その後、再び確認します。"
+    ],
+    "ko": [
+      "구간에서 c번 나타나는 값은 인덱스를 공유하지 않는 쌍을 최대 floor(c/2)개 만들 수 있으므로, 구간의 쌍 개수는 각 값에 대한 floor(c/2)의 합입니다.",
+      "왼쪽 끝을 고정한 채 오른쪽 끝을 더 오른쪽으로 옮기면 쌍의 개수는 줄어들지 않습니다. 그래서 투 포인터를 씁니다. 윈도가 k개의 쌍에 도달하면 현재의 왼쪽 끝은 현재의 오른쪽 끝뿐 아니라 그 뒤의 모든 오른쪽 끝과도 유효합니다.",
+      "오른쪽 끝을 한 칸씩 옮기며 새 값의 횟수를 늘리고, 횟수가 짝수가 되면 쌍을 하나 더합니다. 쌍의 개수가 k 이상인 동안 답에 N−right(right는 0 기반)를 더하고, 가장 왼쪽 원소를 제거하며(그 횟수가 짝수에서 홀수가 되면 쌍이 하나 줄어듭니다) 다시 확인합니다."
+    ],
+    "vi": [
+      "Một giá trị xuất hiện c lần trong một đoạn tạo được tối đa floor(c/2) cặp không dùng chung chỉ số, nên số cặp của đoạn là tổng của floor(c/2) trên các giá trị của nó.",
+      "Với đầu trái cố định, dịch đầu phải xa hơn về bên phải không bao giờ làm giảm số cặp. Vì vậy dùng hai con trỏ: khi cửa sổ đạt k cặp, đầu trái hiện tại hợp lệ với đầu phải hiện tại và với mọi đầu phải xa hơn.",
+      "Dịch đầu phải từng bước và tăng số lần của giá trị mới, thêm một cặp khi số lần trở thành chẵn. Trong khi số cặp ít nhất là k, cộng N−right vào đáp án (right tính từ 0), rồi bỏ phần tử ngoài cùng bên trái, mất một cặp nếu số lần của nó chuyển từ chẵn sang lẻ, và kiểm tra lại."
     ]
   },
   "explanationEn": "## Approach\n\nMaintain a window with two pointers. A value that occurs c times can form at most floor(c/2) pairs of equal numbers that share no index. After a value enters the window, if its count becomes even, the pair count increases by one. As long as the current window has at least k pairs, count for the current left endpoint every subarray ending at the current right endpoint or further right, then remove the leftmost element and keep shrinking.\n\n## Correctness\n\nPairing each value independently, a value occurring c times yields at most floor(c/2) non-overlapping pairs, so the window's total pair count is exactly the sum of floor(freq/2) over all values. With the left endpoint fixed, moving the right endpoint further right only adds elements and never decreases the pair count. When the window first satisfies the condition, every subarray whose end is not smaller than the current right satisfies it, so N-right of them are counted at once. Then the left endpoint moves right; if the condition still holds, the corresponding suffix range is counted for this new left endpoint. Both pointers advance monotonically, so every qualifying left endpoint is handled exactly at its earliest feasible right endpoint, and every subarray is counted exactly once. When an element is removed, a pair is lost only when its count drops from even to odd.\n\n## Complexity\n\nTime O(N), space O(U), where U is the number of distinct values in the window.\n\n## Source and site conventions\n\nThe original example lists the three ranges for `[0,1,0,1,0], k=2`; the Python, Java and C++ solutions in the fixed snapshot all add a pair whenever a value's count reaches an even number, which defines the pairs as non-overlapping. The original snapshot's constraints are unknown; N, k and the value range follow this site's constraints in the statement. Source: https://oamaster.com/docs/companies/meta#30-enumerating-narrative-sections"

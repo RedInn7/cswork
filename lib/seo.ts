@@ -114,8 +114,9 @@ const OG_LOCALE: Record<Language, string> = {
  * the site card through app/opengraph-image.tsx.
  * `language`: the language of this URL (pages call lib/server/seo.ts pageMetadata, which reads it
  * from the request). Each language is its own canonical page, linked to the others by hreflang.
- * `localized`: the page has Japanese, Korean and Vietnamese copy; elsewhere those URLs show the
- * English interface and point to the English page as canonical.
+ * `localized`: the page has Japanese, Korean and Vietnamese copy (true), or copy in the listed
+ * ones only; elsewhere those URLs show the English interface and point to the English page as
+ * canonical.
  */
 export function seoMetadata({
   title,
@@ -130,9 +131,10 @@ export function seoMetadata({
   path: string;
   image?: string;
   language?: Language;
-  localized?: boolean;
+  localized?: boolean | readonly Language[];
 }): Metadata {
-  const offered = localized ? LANGUAGES.map((option) => option.value) : INTERFACE_LANGUAGES;
+  const offered =
+    localized === true ? LANGUAGES.map((option) => option.value) : [...INTERFACE_LANGUAGES, ...(localized || [])];
   const url = publicUrl(languagePath(offered.includes(language) ? language : 'en', path));
   const images = image ? [{ url: publicUrl(image), width: 1200, height: 630, alt: title }] : undefined;
   return {

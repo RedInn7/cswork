@@ -13,6 +13,21 @@
       "Two strings hold the same items exactly when every character occurs the same number of times in both, regardless of order; that is, their character multisets are equal.",
       "For each pair (box, template), count the frequency of the 26 letters in each; if the frequency tables differ, that box is a mismatch.",
       "Use one array of 26 counters: add one for each character of box and subtract one for each character of template; if any entry is non-zero, count a mismatch (sorting both strings and comparing works too). Each string has length at most 10, so the total time is O(n * 10). With n = 0, print 0."
+    ],
+    "ja": [
+      "2 つの文字列が同じ品目を持つのは、並び順に関係なく、すべての文字が両方で同じ回数だけ現れるとき、つまり文字の多重集合が等しいときです。",
+      "各組 (box, template) について、それぞれ 26 文字の出現頻度を数え、頻度表が異なればその箱は不一致です。",
+      "26 個のカウンタの配列を 1 つ使い、box の各文字で 1 を足し、template の各文字で 1 を引きます。0 でない要素があれば不一致として数えます（両方の文字列をソートして比較しても構いません）。各文字列の長さは高々 10 なので、全体の時間は O(n * 10) です。n = 0 のときは 0 を出力します。"
+    ],
+    "ko": [
+      "두 문자열이 정확히 같은 항목을 담고 있다는 것은 순서와 관계없이 모든 문자가 양쪽에서 같은 횟수만큼 나타난다는 뜻입니다. 즉, 문자 멀티셋이 같습니다.",
+      "각 쌍 (box, template)에 대해 알파벳 26개의 빈도를 각각 세세요. 빈도표가 다르면 그 상자는 불일치입니다.",
+      "카운터 26개짜리 배열 하나를 사용하세요. box의 각 문자는 1을 더하고 template의 각 문자는 1을 빼서, 0이 아닌 항목이 하나라도 있으면 불일치로 셉니다(두 문자열을 정렬하여 비교해도 됩니다). 각 문자열의 길이는 최대 10이므로 전체 시간은 O(n * 10)입니다. n = 0이면 0을 출력합니다."
+    ],
+    "vi": [
+      "Hai xâu chứa cùng các món khi và chỉ khi mỗi ký tự xuất hiện cùng số lần trong cả hai, bất kể thứ tự; nghĩa là các đa tập ký tự của chúng bằng nhau.",
+      "Với mỗi cặp (box, template), đếm tần suất của 26 chữ cái trong từng xâu; nếu hai bảng tần suất khác nhau thì hộp đó không khớp.",
+      "Dùng một mảng gồm 26 bộ đếm: cộng một cho mỗi ký tự của box và trừ một cho mỗi ký tự của template; nếu có phần tử khác 0 thì tính một hộp không khớp (sắp xếp cả hai xâu rồi so sánh cũng được). Mỗi xâu dài tối đa 10, nên tổng thời gian là O(n * 10). Khi n = 0, in 0."
     ]
   },
   "explanationEn": "## Approach\n\nFor each pair of strings, count the character frequencies separately; if the frequency maps differ, the box is a mismatch.\n\n## Correctness\n\nThe problem says the order of the items does not matter but the number of repeats must be preserved. A character frequency table is insensitive to permutation, and two tables are equal only when every character's count is equal, which is exactly equivalent to the multisets of items in the box being the same. Count pair by pair and add up.\n\n## Complexity\n\nEach string has length at most 10, so time O(n*10) and space O(26)."

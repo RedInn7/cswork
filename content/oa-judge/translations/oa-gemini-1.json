@@ -13,5 +13,41 @@
       "A monotonic stack that merges nodes of equal height avoids worst-case quadratic recursion.",
       "Use 64-bit intermediates when adding height differences to sub-segment costs."
     ]
+  },
+  "ja": {
+    "title": "Gemini OA #1: フェンスを塗る最小の操作回数",
+    "description": "幅 1 の垂直な板が n 枚並んでおり、高さは heights[i] です。垂直のストロークは 1 枚の板を下から上まで塗り、すでに塗られた部分を覆ってもかまいません。水平のストロークは連続する隣り合う板の 1 つの高さの 1 単位を塗り、まだ塗られていない部分しか覆えません。すべてを塗るための最小の操作回数を求めてください。高さ 0 の板は塗る必要がありません。",
+    "input": "入力には n と n 個の非負の高さが空白区切りで含まれます。LF/CRLF や直接の EOF も許されます。元の出典では n≥1 で、高さは非負で数値の上限はありません。本サイトでは int[] に基づいて高さを 0..2147483647 と定め、n は既存の 32MiB の標準入力の予算で制限され、それより小さい上限はありません。空の配列は受け付けません。",
+    "output": "最小の操作回数 (剰余をとらない厳密な整数で、高々 n) を出力してください。",
+    "explanation": "元の出典には例がなく、公開例はすべて本サイトが作成したものです。[1,2,1] は、最下層を水平に塗り、次に中央の板を垂直に塗って、合計 2 ストロークです。[0,0,0] は 0 ストロークです。高さ INT_MAX の 2 枚の板は、それぞれ垂直に 1 回ずつ塗って、合計 2 ストロークです。垂直のストロークは依然として板全体を塗ります。再塗装が禁じられているのは水平のストロークだけです。型の範囲と標準入力の予算は明示的な適応であり、元の問題の数値の上限ではありません。",
+    "hints": [
+      "ある範囲は、すべて垂直のストロークで塗るか、まず最小の高さまで水平に塗ることができます。",
+      "高さが等しいノードをまとめる単調スタックを使うと、最悪の場合に 2 乗になる再帰を避けられます。",
+      "高さの差を部分区間のコストに足すときは、64 ビットの中間値を使います。"
+    ]
+  },
+  "ko": {
+    "title": "Gemini OA #1: 울타리 칠하기 최소 작업 수",
+    "description": "너비가 1인 인접한 세로 판자 n개가 있으며 높이는 heights[i]입니다. 세로 칠은 한 판자 전체를 아래에서 위까지 칠하며 이미 칠한 부분을 덮어도 됩니다. 가로 칠은 한 높이 칸에서 연속한 인접 판자들에 걸쳐 한 단위 높이를 칠하며 아직 칠하지 않은 부분만 덮을 수 있습니다. 모든 것을 칠하는 데 필요한 최소 작업 수를 구하세요. 높이가 0인 판자는 칠할 필요가 없습니다.",
+    "input": "입력에는 n과 n개의 음이 아닌 높이가 공백으로 구분되어 주어지며, LF/CRLF나 바로 EOF로 끝나도 됩니다. 원문은 n≥1이고 높이는 음이 아니며 수치 상한이 없습니다. 본 사이트는 int[]를 기준으로 높이를 0..2147483647로 정하고, n은 기존 32MiB 표준 입력 예산에 의해서만 제한되며 더 작은 상한은 없습니다. 빈 배열은 허용되지 않습니다.",
+    "output": "최소 작업 수(모듈로 없는 정확한 정수)를 출력하며, 이 값은 n 이하입니다.",
+    "explanation": "원문에는 예제가 없으며 모든 공개 예제는 본 사이트에서 구성했습니다. [1,2,1]은 맨 아래 층을 가로로 칠한 뒤 가운데 판자를 세로로 칠해 모두 2번이 듭니다. [0,0,0]은 0번이 듭니다. 높이 INT_MAX인 판자 두 개는 각각 세로로 한 번씩 칠해 모두 2번이 듭니다. 세로 칠은 여전히 판자 전체를 칠하며, 가로 칠만 다시 칠하는 것이 금지됩니다. 자료형 범위와 표준 입력 예산은 명시적인 적응이며 원문의 수치 상한이 아닙니다.",
+    "hints": [
+      "구간은 전부 세로 칠로 칠하거나, 최소 높이까지 먼저 가로로 칠할 수 있습니다.",
+      "같은 높이의 노드를 합치는 단조 스택을 쓰면 최악의 경우 이차 재귀를 피할 수 있습니다.",
+      "높이 차이를 하위 구간 비용에 더할 때는 64비트 중간값을 사용하세요."
+    ]
+  },
+  "vi": {
+    "title": "Gemini OA #1: Số thao tác sơn hàng rào tối thiểu",
+    "description": "Có n tấm ván dọc kề nhau, mỗi tấm rộng 1, với chiều cao heights[i]. Một nét dọc sơn toàn bộ một tấm ván từ dưới lên trên và có thể phủ lên phần đã sơn; một nét ngang sơn một đơn vị chiều cao tại một mức trên các tấm ván liên tiếp kề nhau và chỉ được phủ lên phần chưa sơn. Hãy tìm số thao tác tối thiểu để sơn xong tất cả. Các tấm ván cao 0 không cần sơn.",
+    "input": "Đầu vào gồm n và n chiều cao không âm, cách nhau bởi khoảng trắng; cho phép LF/CRLF hoặc kết thúc tệp trực tiếp. Nguồn gốc có n≥1 và các chiều cao không âm mà không có cận trên số; dựa trên int[], trang này quy định chiều cao trong khoảng 0..2147483647, và n bị giới hạn bởi ngân sách đầu vào chuẩn 32MiB sẵn có mà không có cận nhỏ hơn; mảng rỗng không được chấp nhận.",
+    "output": "In ra số thao tác tối thiểu (một số nguyên chính xác, không lấy modulo), không vượt quá n.",
+    "explanation": "Nguồn gốc không có ví dụ; mọi ví dụ công khai đều do trang này dựng: với [1,2,1], sơn lớp dưới cùng bằng nét ngang rồi sơn tấm giữa bằng nét dọc, tổng cộng 2 nét; [0,0,0] tốn 0 nét; hai tấm ván cao INT_MAX mỗi tấm được sơn bằng một nét dọc, tổng cộng 2 nét. Một nét dọc vẫn sơn cả tấm ván; chỉ các nét ngang bị cấm sơn lại. Phạm vi kiểu dữ liệu và ngân sách đầu vào chuẩn là các điều chỉnh tường minh, không phải cận trên số của nguồn gốc.",
+    "hints": [
+      "Một đoạn có thể được sơn hoàn toàn bằng các nét dọc, hoặc được sơn ngang đến chiều cao nhỏ nhất của nó trước.",
+      "Một ngăn xếp đơn điệu gộp các nút có cùng chiều cao tránh được đệ quy bậc hai trong trường hợp xấu nhất.",
+      "Dùng các giá trị trung gian 64 bit khi cộng chênh lệch chiều cao vào chi phí các đoạn con."
+    ]
   }
 }

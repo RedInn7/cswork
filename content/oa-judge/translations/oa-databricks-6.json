@@ -11,5 +11,35 @@
     "hints": [
       "Read all insertion coordinates in advance and compress them, maintaining the inserted points with a Fenwick tree. For a query interval [x-size,x), use binary search and prefix sums to count the obstacles; the interval can be placed when the count is zero."
     ]
+  },
+  "ja": {
+    "title": "数直線上の障害物と区間配置クエリ",
+    "description": "整数の数直線上で、障害物を置く操作と、長さ size の区間を置けるかを尋ねる操作を順に処理します。`1 x` は座標 x に障害物を置きます(その座標にまだ障害物がないことが保証されます)。`2 x size` は整数座標 x-size から x-1 まで(両端を含む)を調べますが、実際には区間を置きません。\n\n標準入出力、このサイト独自の補足範囲、および例は、この問題の記述に従います。",
+    "input": "1 行目に q(1≤q≤60000)が与えられ、続く q 行に操作 `1 x` または `2 x size` が与えられます。−10⁹≤x≤10⁹、1≤size≤10⁹。挿入される座標はすでに使われていないことが保証されます。q の上限は、出力の長さをジャッジの制限内に収めるためにこのサイトが補足したものです。",
+    "output": "すべての `2 x size` の結果を順に連結し、0 と 1 からなる 1 つの文字列として出力します。区間に障害物がなければ 1、あれば 0 です。",
+    "explanation": "挿入される座標をすべて先読みして座標圧縮し、挿入済みの点を Fenwick tree で管理します。クエリ区間 [x-size,x) については、二分探索と累積和で障害物の個数を数え、個数が 0 なら配置可能です。",
+    "hints": [
+      "挿入される座標をすべて先読みして座標圧縮し、挿入済みの点を Fenwick tree で管理します。クエリ区間 [x-size,x) については、二分探索と累積和で障害物の個数を数え、個数が 0 なら配置可能です。"
+    ]
+  },
+  "ko": {
+    "title": "수직선 장애물과 구간 배치 질의",
+    "description": "정수 수직선에서 장애물을 놓거나, 길이 size인 구간을 놓을 수 있는지 묻는 연산을 순서대로 처리합니다. `1 x`는 x에 장애물을 놓습니다(해당 위치에 장애물이 없음이 보장됩니다). `2 x size`는 구간을 실제로 놓지 않고 정수 좌표 x-size부터 x-1까지(양 끝 포함)를 검사합니다.\n\n표준 입출력, 이 사이트의 보충 범위, 예제는 이 문제의 설명을 따릅니다.",
+    "input": "첫 번째 줄에 q (1≤q≤60000)가 주어지고, 이어서 q개의 줄에 연산 `1 x` 또는 `2 x size`가 주어집니다. −10⁹≤x≤10⁹, 1≤size≤10⁹입니다. 삽입되는 좌표에는 이미 장애물이 없음이 보장됩니다. q의 상한은 출력 길이를 채점기 제한 이내로 유지하기 위해 이 사이트에서 보충한 값입니다.",
+    "output": "모든 `2 x size`의 결과를 순서대로 이어 붙여 0과 1로 이루어진 하나의 문자열로 출력합니다. 구간에 장애물이 없으면 1, 있으면 0입니다.",
+    "explanation": "삽입될 모든 좌표를 미리 읽어 좌표 압축하고, 삽입된 점을 Fenwick tree로 관리합니다. 질의 구간 [x-size,x)에 대해 이분 탐색과 누적 합으로 장애물 수를 세며, 그 수가 0이면 구간을 놓을 수 있습니다.",
+    "hints": [
+      "삽입될 모든 좌표를 미리 읽어 좌표 압축하고, 삽입된 점을 Fenwick tree로 관리합니다. 질의 구간 [x-size,x)에 대해 이분 탐색과 누적 합으로 장애물 수를 세며, 그 수가 0이면 구간을 놓을 수 있습니다."
+    ]
+  },
+  "vi": {
+    "title": "Chướng ngại vật trên trục số và truy vấn đặt đoạn",
+    "description": "Trên trục số nguyên, xử lý lần lượt các thao tác: hoặc đặt một chướng ngại vật, hoặc hỏi xem có thể đặt một đoạn có độ dài size hay không. `1 x` đặt chướng ngại vật tại x (đảm bảo tại đó chưa có chướng ngại vật); `2 x size` kiểm tra các tọa độ nguyên từ x-size đến x-1 (bao gồm cả hai đầu) mà không thực sự đặt đoạn.\n\nĐầu vào/đầu ra chuẩn, các giới hạn bổ sung của trang này và các ví dụ đều theo mô tả của bài này.",
+    "input": "Dòng đầu chứa q (1≤q≤60000), tiếp theo là q dòng thao tác có dạng `1 x` hoặc `2 x size`. −10⁹≤x≤10⁹, 1≤size≤10⁹. Đảm bảo tọa độ được chèn chưa bị chiếm; cận trên của q là phần bổ sung của trang để độ dài đầu ra không vượt quá giới hạn của judge.",
+    "output": "Nối kết quả của mọi thao tác `2 x size` theo thứ tự thành một xâu gồm các ký tự 0 và 1: là 1 nếu đoạn không có chướng ngại vật, ngược lại là 0.",
+    "explanation": "Đọc trước tất cả tọa độ chèn và nén tọa độ, dùng cây Fenwick để duy trì các điểm đã chèn. Với đoạn truy vấn [x-size,x), dùng tìm kiếm nhị phân và tổng tiền tố để đếm số chướng ngại vật; đoạn đặt được khi số đếm bằng 0.",
+    "hints": [
+      "Đọc trước tất cả tọa độ chèn và nén tọa độ, dùng cây Fenwick để duy trì các điểm đã chèn. Với đoạn truy vấn [x-size,x), dùng tìm kiếm nhị phân và tổng tiền tố để đếm số chướng ngại vật; đoạn đặt được khi số đếm bằng 0."
+    ]
   }
 }

@@ -13,6 +13,21 @@
       "A position with modulus p can only produce values in 0..p-1; a smaller modulus has a smaller set of options, and the options of a small modulus are contained in those of a larger one.",
       "Process the moduli from small to large and keep the distinct values produced so far as compact as possible, namely 0..count-1: if the current modulus is greater than count, let it produce the new value count; otherwise every value it can produce is already used, so it can only repeat one.",
       "Sort the moduli ascending and start with count = 0; for each modulus p, increase count when p > count; print count at the end."
+    ],
+    "ja": [
+      "法 p の位置が出せる値は 0..p-1 だけです。小さい法ほど選択肢が少なく、小さい法の選択肢は大きい法の選択肢に含まれます。",
+      "法を小さい順に処理し、これまでに作った異なる値をできるだけ詰めて、つまり 0..count-1 に保ちます。現在の法が count より大きければ新しい値 count を出させ、そうでなければ出せる値はすべて使用済みなので、重複させることしかできません。",
+      "法を昇順にソートし、count = 0 から始めます。各法 p について、p > count なら count を増やし、最後に count を出力します。"
+    ],
+    "ko": [
+      "법이 p인 위치는 0..p-1의 값만 만들 수 있습니다. 법이 작을수록 선택지가 적으며, 작은 법의 선택지는 더 큰 법의 선택지에 포함됩니다.",
+      "법을 작은 것부터 큰 것 순서로 처리하며, 지금까지 만든 서로 다른 값을 가능한 한 촘촘하게 0..count-1로 유지합니다. 현재 법이 count보다 크면 새 값 count를 만들 수 있고, 그렇지 않으면 만들 수 있는 모든 값이 이미 사용되었으므로 하나를 반복할 수밖에 없습니다.",
+      "법을 오름차순으로 정렬하고 count = 0으로 시작합니다. 각 법 p에 대해 p > count이면 count를 늘립니다. 마지막에 count를 출력합니다."
+    ],
+    "vi": [
+      "Một vị trí có modulo p chỉ có thể tạo ra các giá trị trong 0..p-1; modulo nhỏ hơn có tập lựa chọn nhỏ hơn, và các lựa chọn của modulo nhỏ nằm trong lựa chọn của modulo lớn hơn.",
+      "Xử lý các modulo từ nhỏ đến lớn và giữ các giá trị phân biệt đã tạo ra càng gọn càng tốt, cụ thể là 0..count-1: nếu modulo hiện tại lớn hơn count, cho nó tạo giá trị mới count; ngược lại mọi giá trị nó có thể tạo ra đều đã được dùng, nên nó chỉ có thể lặp lại một giá trị.",
+      "Sắp xếp các modulo tăng dần và bắt đầu với count = 0; với mỗi modulo p, tăng count khi p > count; cuối cùng in count."
     ]
   },
   "explanationEn": "## Approach\n\nProcess the moduli in ascending order with 0..count-1 already constructed. If the modulus is greater than count, give the current position the new remainder count and increase the counter.\n\n## Proof of correctness\n\nThe usable sets of smaller moduli are nested inside those of larger moduli. If the current modulus is <= count, all its usable values already lie in 0..count-1, so it cannot add a new distinct value; otherwise the new value count is feasible. This most compact set of distinct values is the least restrictive for later constraints, and induction shows it is optimal.\n\n## Complexity\n\nO(n log n) time and O(n) space."

@@ -11,5 +11,35 @@
     "hints": [
       "Use a set to check whether there are houses on the left and right of the removed position. If both exist, one block splits into two, adding 1; if neither exists, an isolated block disappears, subtracting 1; if only one side exists, the count is unchanged."
     ]
+  },
+  "ja": {
+    "title": "家を取り壊した後の連続ブロック数",
+    "description": "互いに異なる家が整数座標に並んでおり、座標の差が 1 の家同士はつながっています。指定された家を 1 軒ずつ取り壊し、各ステップのあとに残っている連続ブロックの数を出力してください。有効なクエリでは、取り壊す家がまだ存在することが保証されています。元のサイトの 2 つの例の途中経過の個数は連続の定義と矛盾していたため、問題文に従って修正しています。\n\n本サイトでは標準入出力を明示しており、原典に範囲の記載がないものはすべて本サイト独自の取り決めとして示しています。",
+    "input": "1 行目に n q、2 行目に n 個の座標、3 行目に取り壊す q 個の座標が与えられます。1≤q≤n≤100000。原典には座標の範囲がないため、本サイトでは座標を −10⁹..10⁹ とします。",
+    "output": "取り壊しのたびに、ブロック数を 1 行で出力してください。",
+    "explanation": "例 1: 2、6、9 を順に取り壊すと、ブロックは {1},{3},{6,7},{9} で合計 4、次に {1},{3},{7},{9} で合計 4、最後に 3 になります。例 2: 5 を取り壊すと残りのブロックは 1、6、8、10 で合計 4、続いて 3、2 になります。元のサイトの 3, 3, 2 は定義に合いません。例 3: 最後の家を取り壊すと、ブロックは 0 個になります。",
+    "hints": [
+      "集合を使って、取り壊す位置の左右に家があるかを調べます。両側にあればブロックが 1 つから 2 つに分かれて 1 増え、どちらにもなければ孤立したブロックが消えて 1 減り、片側だけにあれば個数は変わりません。"
+    ]
+  },
+  "ko": {
+    "title": "집을 철거한 뒤 이어진 구역의 수",
+    "description": "서로 다른 집들이 정수 좌표에 있고, 좌표가 1 차이 나는 집끼리는 연결됩니다. 주어진 집들을 하나씩 철거하면서, 매 단계 뒤에 남은 이어진 구역의 수를 출력하세요. 유효한 질의에서는 철거할 집이 아직 존재함이 보장됩니다. 원 사이트 두 예제의 중간 값은 연속성의 정의와 맞지 않아, 문제 설명에 맞게 수정했습니다.\n\n이 사이트는 표준 입출력을 명시적으로 정했으며, 원문에 범위가 없는 부분은 모두 이 사이트의 규약으로 표시했습니다.",
+    "input": "첫 줄에 n q, 둘째 줄에 n개의 좌표, 셋째 줄에 철거할 q개의 좌표가 주어집니다. 1≤q≤n≤100000이며, 원문에는 좌표 범위가 없어 이 사이트에서는 좌표를 −10⁹..10⁹로 정했습니다.",
+    "output": "철거할 때마다 구역의 수를 한 줄에 출력합니다.",
+    "explanation": "예제 1: 2, 6, 9를 차례로 철거하면 구역은 {1},{3},{6,7},{9}로 모두 4개입니다. 다음은 {1},{3},{7},{9}로 4개이고, 마지막에는 3개입니다. 예제 2: 5를 철거하면 남은 구역은 1, 6, 8, 10으로 모두 4개이고, 이어서 3개, 2개가 됩니다. 원 사이트의 3, 3, 2는 정의와 맞지 않습니다. 예제 3: 마지막 집을 철거하면 구역은 0개입니다.",
+    "hints": [
+      "집합으로 철거하는 위치의 왼쪽과 오른쪽에 집이 있는지 확인합니다. 양쪽 모두 있으면 한 구역이 둘로 나뉘어 1이 늘고, 양쪽 모두 없으면 고립된 구역이 사라져 1이 줄며, 한쪽에만 있으면 개수는 그대로입니다."
+    ]
+  },
+  "vi": {
+    "title": "Số khối liên tiếp sau khi phá dỡ các ngôi nhà",
+    "description": "Các ngôi nhà phân biệt nằm tại các tọa độ nguyên, và những ngôi nhà có tọa độ chênh nhau 1 thì liên thông. Phá dỡ lần lượt từng ngôi nhà đã cho và sau mỗi bước in ra số khối liên tiếp còn lại. Truy vấn hợp lệ đảm bảo ngôi nhà cần phá dỡ vẫn còn tồn tại. Các kết quả trung gian trong cả hai ví dụ trên trang gốc mâu thuẫn với định nghĩa về tính liên tiếp và đã được sửa theo đề bài.\n\nTrang này nêu rõ định dạng đầu vào/đầu ra chuẩn; mọi giới hạn mà nguồn không cho đều được đánh dấu là quy ước của trang này.",
+    "input": "Dòng đầu tiên chứa n q, dòng thứ hai chứa n tọa độ, dòng thứ ba chứa q tọa độ cần phá dỡ. 1≤q≤n≤100000; nguồn không cho giới hạn tọa độ, nên trên trang này tọa độ nằm trong −10⁹..10⁹.",
+    "output": "Sau mỗi lần phá dỡ, in ra một dòng chứa số khối.",
+    "explanation": "Ví dụ 1: sau khi lần lượt phá dỡ 2, 6 và 9, các khối là {1},{3},{6,7},{9}, tổng cộng 4; rồi {1},{3},{7},{9}, tổng cộng 4; cuối cùng là 3. Ví dụ 2: sau khi phá dỡ 5, các khối còn lại là 1, 6, 8, 10, tổng cộng 4; rồi 3 và 2. Kết quả 3, 3, 2 của trang gốc không khớp với định nghĩa. Ví dụ 3: sau khi phá dỡ ngôi nhà cuối cùng, còn 0 khối.",
+    "hints": [
+      "Dùng một tập hợp để kiểm tra bên trái và bên phải vị trí bị phá có còn nhà hay không. Nếu cả hai bên đều có, một khối tách thành hai, cộng thêm 1; nếu cả hai bên đều không có, một khối đơn lẻ biến mất, trừ đi 1; nếu chỉ có một bên, số lượng không đổi."
+    ]
   }
 }

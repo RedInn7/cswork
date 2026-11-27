@@ -13,6 +13,21 @@
       "Every query must match both fields, key and timestamp, exactly, and the site guarantees that each pair is unique and that every query exists.",
       "Combine the pair (key, timestamp) into a single key in a hash map whose value is the record's value; each query is then a single lookup.",
       "Read the n records and store value under key + separator + timestamp (keeping the original strings); then look up each of the q queries in order and print the values joined by spaces on one line."
+    ],
+    "ja": [
+      "各クエリは、キーとタイムスタンプの両方のフィールドに完全に一致しなければなりません。サイトは、各組が一意であり、すべてのクエリが存在することを保証しています。",
+      "組 (key, timestamp) を 1 つのキーにまとめ、値をそのレコードの値とするハッシュマップに入れます。そうすれば、各クエリは 1 回の検索で済みます。",
+      "n 個のレコードを読み、key + 区切り文字 + timestamp（元の文字列のまま）をキーとして value を保存します。次に q 個のクエリを順に検索し、値を空白で連結して 1 行で出力します。"
+    ],
+    "ko": [
+      "모든 질의는 key와 timestamp 두 필드가 정확히 일치해야 하며, 사이트는 각 쌍이 유일하고 모든 질의가 존재함을 보장합니다.",
+      "쌍 (key, timestamp)를 하나의 키로 합쳐 값이 레코드의 값인 해시 맵에 넣으면, 각 질의는 한 번의 조회가 됩니다.",
+      "n개의 레코드를 읽어 key + 구분자 + timestamp(원래 문자열 유지)를 키로 value를 저장합니다. 그런 다음 q개의 질의를 순서대로 조회해 값들을 공백으로 이어 한 줄로 출력합니다."
+    ],
+    "vi": [
+      "Mỗi truy vấn phải khớp chính xác cả hai trường key và timestamp, và trang này đảm bảo mỗi cặp là duy nhất và mọi truy vấn đều tồn tại.",
+      "Gộp cặp (key, timestamp) thành một khóa duy nhất trong hash map với giá trị là value của bản ghi; khi đó mỗi truy vấn là một lần tra cứu.",
+      "Đọc n bản ghi và lưu value dưới khóa key + dấu phân tách + timestamp (giữ nguyên các xâu gốc); sau đó tra cứu từng truy vấn trong q truy vấn theo thứ tự và in các value nối bằng dấu cách trên một dòng."
     ]
   },
   "explanationEn": "## Approach\n\nUse (key, timestamp) as a dictionary key; for each query, look it up exactly and output the value.\n\n## Correctness\n\nThe site guarantees that every query exists and that keys are unique. A lookup on the full two-field key matches if and only if both fields match, so it finds the single corresponding record.\n\n## Complexity\n\nExpected time O(n+q), space O(n)."

@@ -13,6 +13,21 @@
       "Without changes, the score is the sum over positions of the length of the smooth run ending there. Changing position i only affects substrings that contain i; all other substrings keep their contribution.",
       "Precompute left[i], the longest smooth run ending at i, and right[i], the longest starting at i. The smooth substrings containing i number left[i] * right[i]; after replacing s[i] with a letter c, the left run left[i-1] joins when c is within 1 of its left neighbour, the right side likewise, and the new number is (l+1) * (r+1).",
       "Let baseline be the sum of left. For every position i and letter c: l = left[i-1] if i > 0 and c is within 1 of s[i-1], else 0; r = right[i+1] if i+1 < n and c is within 1 of s[i+1], else 0; the candidate is baseline - left[i]*right[i] + (l+1)*(r+1). Print the maximum of baseline and all candidates. Values reach about n^2/2, so use 64-bit integers."
+    ],
+    "ja": [
+      "変更しない場合の得点は、各位置で終わる滑らかな連続の長さの総和です。位置 i を変更すると影響を受けるのは i を含む部分文字列だけで、それ以外の部分文字列の寄与は変わりません。",
+      "left[i]（i で終わる最長の滑らかな連続）と right[i]（i から始まる最長のもの）を前計算します。i を含む滑らかな部分文字列は left[i] * right[i] 個です。s[i] を文字 c に置換すると、c が左隣と 1 以内なら左の連続 left[i-1] がつながり、右側も同様で、新しい個数は (l+1) * (r+1) になります。",
+      "baseline を left の総和とします。すべての位置 i と文字 c について、l は i > 0 かつ c が s[i-1] と 1 以内なら left[i-1]、そうでなければ 0、r は i+1 < n かつ c が s[i+1] と 1 以内なら right[i+1]、そうでなければ 0 とし、候補は baseline - left[i]*right[i] + (l+1)*(r+1) です。baseline とすべての候補の最大値を出力します。値は約 n^2/2 に達するので、64 ビット整数を使ってください。"
+    ],
+    "ko": [
+      "변경이 없다면 점수는 각 위치에서 끝나는 매끄러운 연속 구간의 길이의 합입니다. 위치 i를 바꾸면 i를 포함하는 부분 문자열만 영향을 받고, 다른 모든 부분 문자열은 기여분을 그대로 유지합니다.",
+      "i에서 끝나는 가장 긴 매끄러운 연속 구간 left[i]와 i에서 시작하는 가장 긴 구간 right[i]를 미리 계산합니다. i를 포함하는 매끄러운 부분 문자열은 left[i] * right[i]개입니다. s[i]를 문자 c로 바꾸면, c가 왼쪽 이웃과 1 이내일 때 왼쪽 구간 left[i-1]이 이어지고 오른쪽도 마찬가지이며, 새 개수는 (l+1) * (r+1)이 됩니다.",
+      "baseline을 left의 합으로 둡니다. 모든 위치 i와 문자 c에 대해, i > 0이고 c가 s[i-1]과 1 이내면 l = left[i-1], 아니면 0으로 하고, i+1 < n이고 c가 s[i+1]과 1 이내면 r = right[i+1], 아니면 0으로 합니다. 후보 값은 baseline - left[i]*right[i] + (l+1)*(r+1)입니다. baseline과 모든 후보 중 최댓값을 출력합니다. 값은 약 n^2/2까지 커지므로 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Khi không thay đổi, điểm là tổng trên các vị trí của độ dài đoạn mượt kết thúc tại đó. Đổi vị trí i chỉ ảnh hưởng đến các xâu con chứa i; mọi xâu con khác giữ nguyên đóng góp.",
+      "Tính trước left[i], đoạn mượt dài nhất kết thúc tại i, và right[i], đoạn dài nhất bắt đầu tại i. Số xâu con mượt chứa i là left[i] * right[i]; sau khi thay s[i] bằng chữ c, đoạn trái left[i-1] nối vào khi c chênh không quá 1 so với hàng xóm trái, bên phải tương tự, và số mới là (l+1) * (r+1).",
+      "Gọi baseline là tổng của left. Với mỗi vị trí i và chữ c: l = left[i-1] nếu i > 0 và c chênh không quá 1 so với s[i-1], nếu không thì 0; r = right[i+1] nếu i+1 < n và c chênh không quá 1 so với s[i+1], nếu không thì 0; ứng viên là baseline - left[i]*right[i] + (l+1)*(r+1). In ra giá trị lớn nhất của baseline và mọi ứng viên. Giá trị đạt khoảng n^2/2, nên dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nPrecompute, for each position, the maximum smooth run length extending to the left and to the right. A changed position only affects the substrings containing it; enumerate the 26 replacements and compute the new (left extension + 1)(right extension + 1) minus the old contribution.\n\n## Proof of correctness\n\nSubstrings not containing the changed position stay unchanged; for valid substrings containing it, how far to extend to the left and to the right can be chosen independently, which is exactly the product of the numbers of choices on the two sides. The adjacent edges decide whether the precomputed runs can be joined, and enumerating all positions and characters exhausts all allowed changes.\n\n## Complexity\n\nTime O(26n), space O(n)."

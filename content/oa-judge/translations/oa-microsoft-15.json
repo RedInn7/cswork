@@ -11,5 +11,35 @@
     "hints": [
       "A usable range of consecutive heights needs at least two people at every inner height, while the two endpoints may have just one. Use prefix sums of the frequencies and the next position with frequency ≤1 to find the largest range, then take one person of each height in ascending order and output the remaining people in descending order."
     ]
+  },
+  "ja": {
+    "title": "最大の均衡円陣を作る",
+    "description": "できるだけ多くの人を選び、隣り合う人の身長の差が高々 1 になるように円形に並べます。最初の人と最後の人も隣り合います。最大の人数となる有効な円陣を1つ出力してください。回転や向きは自由です。\n\n入力の形式、当サイトが追加した範囲、例、テストは、すべて CSWork が独自に作成したものです。",
+    "input": "1行目に n (1..200000)、2行目に n 個の身長 (1..200000) が与えられます。",
+    "output": "1行目に人数 k を出力し、2行目に k 個の身長を出力します。入力に実際に存在する人だけを使えます。最大の有効な円陣であれば、どれでも正解になります。",
+    "explanation": "例 1: 1, 1, 2, 2, 3 の5人を選び、1 2 3 2 1 と並べられます。より高い 3 の人は1人だけなので、より大きな円陣の内側のつなぎにはなれません。\n\n例 2: 2人の 5 は有効な円陣を作り、ほかの身長は少なくとも 2 離れているので、最大の人数は 2 です。\n\n例 3: 4 と 5 は隣り合い、2人の円陣になります。1 は加われないので、人数は 2 です。",
+    "hints": [
+      "使える連続した身長の範囲では、内側のすべての身長に少なくとも2人が必要で、両端は1人でも構いません。頻度の累積和と、頻度が ≤1 である次の位置を使って最大の範囲を求め、各身長から1人ずつを昇順に取り、残りの人を降順に出力します。"
+    ]
+  },
+  "ko": {
+    "title": "가장 큰 균형 원 만들기",
+    "description": "가능한 한 많은 사람을 골라 인접한 사람의 키 차이가 최대 1이 되도록 원형으로 배치하세요. 첫 번째와 마지막 사람도 인접합니다. 최대 크기의 유효한 원을 하나 출력하면 되며, 회전과 방향은 자유입니다.\n\n입력 형식, 이 사이트에서 추가한 범위, 예제, 테스트는 모두 CSWork가 독자적으로 작성했습니다.",
+    "input": "첫 줄에 n(1..200000)이 주어지고, 둘째 줄에 n개의 키(1..200000)가 주어집니다.",
+    "output": "첫 줄에 사람 수 k를 출력하고, 둘째 줄에 k개의 키를 출력합니다. 입력에 실제로 있는 사람만 사용할 수 있으며, 최대 크기의 유효한 원이면 어떤 것이든 정답으로 인정됩니다.",
+    "explanation": "예제 1: 1, 1, 2, 2, 3의 5명을 골라 1 2 3 2 1로 배치할 수 있습니다. 키 3인 사람은 한 명뿐이라 더 큰 원의 내부 연결 고리가 될 수 없습니다.\n\n예제 2: 5가 두 명이면 유효한 원이 되고, 다른 키들은 서로 2 이상 차이가 나므로 최대 크기는 2입니다.\n\n예제 3: 4와 5는 인접하여 2명의 원을 이루고, 1은 합류할 수 없으므로 크기는 2입니다.",
+    "hints": [
+      "사용할 수 있는 연속한 키 범위는 내부의 모든 키에 사람이 최소 두 명 필요하고, 양 끝 키는 한 명이어도 됩니다. 빈도의 누적 합과 빈도가 ≤1인 다음 위치를 이용해 가장 큰 범위를 찾고, 각 키에서 한 명씩 오름차순으로 뽑은 뒤 남은 사람을 내림차순으로 출력합니다."
+    ]
+  },
+  "vi": {
+    "title": "Xếp vòng tròn cân bằng lớn nhất",
+    "description": "Chọn càng nhiều người càng tốt và xếp họ thành một vòng tròn sao cho chiều cao của hai người kề nhau chênh lệch không quá 1; người đầu và người cuối cũng kề nhau. In ra một vòng tròn hợp lệ bất kỳ có kích thước lớn nhất; cho phép mọi phép xoay và mọi chiều.\n\nGiao thức đầu vào, các phạm vi do trang này bổ sung, các ví dụ và bộ test đều do CSWork tự viết độc lập.",
+    "input": "Dòng đầu chứa n (1..200000), dòng thứ hai chứa n chiều cao (1..200000).",
+    "output": "Dòng đầu in số người k; dòng thứ hai in k chiều cao. Chỉ được dùng những người thực sự có trong đầu vào; chấp nhận mọi vòng tròn hợp lệ có kích thước lớn nhất.",
+    "explanation": "Ví dụ 1: có thể chọn 5 người 1, 1, 2, 2, 3 và xếp thành 1 2 3 2 1; chiều cao 3 lớn hơn chỉ có một người nên không thể làm mắt xích bên trong của một vòng tròn lớn hơn.\n\nVí dụ 2: hai người cao 5 tạo thành một vòng tròn hợp lệ, các chiều cao còn lại cách nhau ít nhất 2, nên kích thước lớn nhất là 2.\n\nVí dụ 3: 4 và 5 kề nhau và tạo thành vòng tròn 2 người; 1 không thể tham gia, nên kích thước là 2.",
+    "hints": [
+      "Một khoảng chiều cao liên tiếp dùng được cần ít nhất hai người ở mỗi chiều cao bên trong, trong khi hai đầu mút chỉ cần một người. Dùng tổng tiền tố của các tần suất và vị trí kế tiếp có tần suất ≤1 để tìm khoảng lớn nhất, sau đó lấy một người cho mỗi chiều cao theo thứ tự tăng dần và in những người còn lại theo thứ tự giảm dần."
+    ]
   }
 }

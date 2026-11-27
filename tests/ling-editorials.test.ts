@@ -4,7 +4,8 @@ import { join } from 'node:path';
 import { test } from 'node:test';
 import editorials from '../lib/content/ling-editorials.json';
 import { curatedByNumber } from '../lib/ling-curated';
-import { lingEditorial } from '../lib/server/ling-editorials';
+import { lingEditorial, lingEditorialLocal } from '../lib/server/ling-editorials';
+import { TRANSLATED, scriptProblem } from '../scripts/oa-judge/text-checks.mjs';
 import { leetcodeContract } from '../lib/server/leetcode-mode';
 
 const FIELDS = ['cpp', 'go', 'ideaEn', 'ideaZh', 'java', 'nameEn', 'nameZh', 'python', 'space', 'time'];
@@ -99,4 +100,22 @@ void test('only the server loader imports the editorial file, so it stays out of
         /from ['"][^'"]*ling-editorials\.json['"]/.test(readFileSync(f, 'utf8')),
     );
   assert.deepEqual(importers, [join('lib', 'server', 'ling-editorials.ts')]);
+});
+
+void test('ja/ko/vi editorial files translate every approach of an existing editorial, in their own language', () => {
+  const file = editorials as Record<string, { approaches: unknown[] }>;
+  const bad: string[] = [];
+  for (const lang of TRANSLATED as ('ja' | 'ko' | 'vi')[]) {
+    const local = JSON.parse(readFileSync(`lib/content/ling-editorials.${lang}.json`, 'utf8')) as Record<string, { name: string; idea: string }[]>;
+    for (const [id, approaches] of Object.entries(local)) {
+      if (!Object.hasOwn(file, id)) bad.push(`${lang} ${id}: not in ling-editorials.json`);
+      else if (!Array.isArray(approaches) || approaches.length !== file[id].approaches.length) bad.push(`${lang} ${id}: approach count`);
+      else if (approaches.some((a) => Object.keys(a).sort().join() !== 'idea,name' || !a.name.trim() || a.name.length > MAX.name || !a.idea.trim() || a.idea.length > MAX.idea))
+        bad.push(`${lang} ${id}: each approach is { name, idea }, non-empty and within the length caps`);
+      else if (approaches.some((a) => scriptProblem(lang, a.idea))) bad.push(`${lang} ${id}: idea not written in ${lang}`);
+      else assert.deepEqual(lingEditorialLocal(id, lang), { language: lang, approaches });
+    }
+  }
+  assert.deepEqual(bad, []);
+  assert.equal(lingEditorialLocal('lc-999999', 'ja'), null);
 });

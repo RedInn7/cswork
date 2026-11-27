@@ -11,5 +11,35 @@
     "hints": [
       "Interval-cover dynamic programming: dp[x] is the minimum cost to cover [0,x]. When a sprinkler extends a covered prefix, the end of the prefix must lie within the sprinkler's coverage interval; use the upper bound on the radius to scan predecessors directly."
     ]
+  },
+  "ja": {
+    "title": "庭のスプリンクラーの最小コスト",
+    "description": "庭は連続区間 [0,N] で、位置 0 から N までのそれぞれに 1 つずつスプリンクラーがあります。位置 i にある射程 r のスプリンクラーは閉区間 [i-r,i+r] に水をまき、オンにするとそのコストが 1 回かかります。庭全体を覆うための最小の総コストを求めます。覆えない場合は -1 を出力します。",
+    "input": "N（1≤N≤10000）が与えられ、続いて N+1 個の射程（0..100）の行、N+1 個のコスト（0..10000）の行が与えられます。",
+    "output": "説明どおりに答えを出力します。配列の答えでは、値をスペースで区切ります。",
+    "explanation": "区間被覆の動的計画法：dp[x] を [0,x] を覆う最小コストとします。スプリンクラーが覆い済みの接頭辞を延ばすとき、接頭辞の端はそのスプリンクラーの被覆区間の中になければなりません。半径の上限を利用して、直前の状態を直接走査します。\n\n正しさ：最適な計画は、スプリンクラーをオンにする順に並べると、右へ延びていく重なり合う区間の列とみなせます。最後のスプリンクラーは、覆い済みの端 L≤x<R から続けて R まで覆えます。逆に、そのような延長はどれも接頭辞に隙間を作りません。したがって、右端を昇順に処理し、有効な直前の状態すべてにわたる dp の最小値を取り、最後のスプリンクラーの可能性をすべて列挙すれば、最適解が得られます。\n\n計算量：時間 O(N·201)、空間 O(N)。コストは非負で、答えは高々 100010000 です。",
+    "hints": [
+      "区間被覆の動的計画法：dp[x] を [0,x] を覆う最小コストとします。スプリンクラーが覆い済みの接頭辞を延ばすとき、接頭辞の端はそのスプリンクラーの被覆区間の中になければなりません。半径の上限を利用して、直前の状態を直接走査します。"
+    ]
+  },
+  "ko": {
+    "title": "정원 스프링클러의 최소 비용",
+    "description": "정원은 연속 구간 [0,N]이고, 위치 0부터 N까지 각 위치에 스프링클러가 하나씩 있습니다. 위치 i에서 범위가 r인 스프링클러는 닫힌 구간 [i-r,i+r]에 물을 뿌리며, 스프링클러를 켜면 그 비용이 한 번 듭니다. 정원 전체를 덮는 최소 총 비용을 구하고, 덮을 수 없으면 -1을 출력하세요.",
+    "input": "N(1≤N≤10000)이 주어지고, 이어서 N+1개의 범위(0..100)가 한 줄로, N+1개의 비용(0..10000)이 한 줄로 주어집니다.",
+    "output": "설명된 대로 답을 출력하며, 배열 형태의 답은 값들을 공백으로 구분합니다.",
+    "explanation": "구간 덮기 동적 계획법: dp[x]는 [0,x]를 덮는 최소 비용입니다. 스프링클러가 이미 덮인 접두 구간을 확장할 때, 접두 구간의 끝은 그 스프링클러의 커버 구간 안에 있어야 합니다. 반경의 상한을 이용해 이전 상태들을 직접 훑습니다.\n\n정당성: 최적 계획은 스프링클러를 켠 순서대로 보면 오른쪽으로 뻗어 가는 겹치는 구간들의 사슬로 볼 수 있습니다. 마지막 스프링클러는 이미 덮인 끝 L≤x<R에서 이어서 R까지 덮을 수 있고, 반대로 이러한 확장은 모두 접두 구간에 빈틈이 생기지 않게 유지합니다. 따라서 오른쪽 끝점을 증가하는 순서로 처리하며 유효한 모든 이전 상태에 대한 dp 값의 최솟값을 취하고 가능한 모든 마지막 스프링클러를 열거하면 최적해를 얻습니다.\n\n복잡도: 시간 O(N·201), 공간 O(N). 비용은 음이 아니며 답은 최대 100010000입니다.",
+    "hints": [
+      "구간 덮기 동적 계획법: dp[x]는 [0,x]를 덮는 최소 비용입니다. 스프링클러가 이미 덮인 접두 구간을 확장할 때, 접두 구간의 끝은 그 스프링클러의 커버 구간 안에 있어야 합니다. 반경의 상한을 이용해 이전 상태들을 직접 훑습니다."
+    ]
+  },
+  "vi": {
+    "title": "Chi phí tối thiểu cho các vòi phun nước trong vườn",
+    "description": "Khu vườn là đoạn liên tục [0,N], và có một vòi phun nước tại mỗi vị trí từ 0 đến N. Vòi tại vị trí i với bán kính r tưới nước cho đoạn đóng [i-r,i+r]; bật một vòi phải trả chi phí của nó một lần. Tìm tổng chi phí tối thiểu để phủ toàn bộ khu vườn, hoặc in -1 nếu không thể phủ.",
+    "input": "Đầu vào cho N (1≤N≤10000), sau đó là một dòng gồm N+1 bán kính (0..100), rồi một dòng gồm N+1 chi phí (0..10000).",
+    "output": "In ra đáp án như mô tả; với đáp án là mảng, các giá trị cách nhau bằng dấu cách.",
+    "explanation": "Quy hoạch động phủ đoạn: dp[x] là chi phí tối thiểu để phủ [0,x]. Khi một vòi phun mở rộng tiền tố đã được phủ, đầu mút của tiền tố phải nằm trong đoạn phủ của vòi đó; dùng cận trên của bán kính để duyệt trực tiếp các vị trí đứng trước.\n\nTính đúng đắn: mọi phương án tối ưu, xét theo thứ tự các vòi được bật, có thể xem như một chuỗi các đoạn chồng lên nhau mở rộng sang phải. Vòi cuối cùng có thể tiếp nối từ bất kỳ đầu mút đã phủ L≤x<R để phủ đến R; ngược lại, mọi mở rộng như vậy đều giữ tiền tố không có khe hở. Do đó, xử lý các đầu mút phải theo thứ tự tăng dần, lấy giá trị dp nhỏ nhất trên mọi vị trí đứng trước hợp lệ, và liệt kê mọi vòi cuối cùng có thể, sẽ cho phương án tối ưu.\n\nĐộ phức tạp: thời gian O(N·201), bộ nhớ O(N). Chi phí không âm, và đáp án tối đa là 100010000.",
+    "hints": [
+      "Quy hoạch động phủ đoạn: dp[x] là chi phí tối thiểu để phủ [0,x]. Khi một vòi phun mở rộng tiền tố đã được phủ, đầu mút của tiền tố phải nằm trong đoạn phủ của vòi đó; dùng cận trên của bán kính để duyệt trực tiếp các vị trí đứng trước."
+    ]
   }
 }

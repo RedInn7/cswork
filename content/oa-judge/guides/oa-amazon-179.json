@@ -13,6 +13,21 @@
       "All products have the same length w, so a concatenation cuts a stretch of history into p words of length w; a start position is valid exactly when those p words, as a multiset, equal the products.",
       "Split start positions into w classes by their remainder modulo w and slide a window of whole words within each class: an unknown word empties the window, which restarts after it; after adding a word whose count now exceeds its target, drop words from the left until it no longer does; whenever the window holds p words, count one.",
       "Count each product's target multiplicity. For offset from 0 to w-1, set left = offset and step right from offset by w: take the length-w word of history starting at right; if it is not a product, clear the counts and the word total and set left = right + w; otherwise add one to its count and to the word total, then, while its count exceeds the target, remove the word at left and advance left by w; when the word total equals p, add one to the answer."
+    ],
+    "ja": [
+      "すべての商品は同じ長さ w なので、連結は履歴のある区間を長さ w の p 個の単語に区切ります。開始位置が有効であるのは、その p 個の単語が多重集合として商品と等しいとき、かつそのときに限ります。",
+      "開始位置を w で割った余りで w 個のクラスに分け、各クラスの中で単語単位のウィンドウをスライドさせます。未知の単語が来たらウィンドウを空にして、その後ろから再開します。単語を追加してその個数が目標を超えたら、超えなくなるまで左から単語を取り除きます。窓が p 個の単語を含むたびに 1 を数えます。",
+      "各商品の目標の出現回数を数えます。offset を 0 から w-1 まで動かし、left = offset として、right を offset から w ずつ進めます。right から始まる履歴の長さ w の単語を取り出し、それが商品でなければ、カウントと単語の合計をクリアして left = right + w とします。そうでなければ、その単語のカウントと単語の合計にそれぞれ 1 を加え、そのカウントが目標を超えている間は left の位置の単語を取り除いて left を w ずつ進めます。単語の合計が p に等しくなったら、答えに 1 を加えます。"
+    ],
+    "ko": [
+      "모든 상품의 길이가 w로 같으므로, 이어 붙인 문자열은 이력의 한 구간을 길이 w인 단어 p개로 자릅니다. 이 p개 단어를 multiset으로 봤을 때 상품들과 같으면 그 시작 위치가 유효합니다.",
+      "시작 위치를 w로 나눈 나머지에 따라 w개의 클래스로 나누고, 각 클래스 안에서 단어 단위로 윈도우를 밉니다. 모르는 단어가 나오면 윈도우를 비우고 그 뒤에서 다시 시작합니다. 단어를 추가한 뒤 그 개수가 목표를 넘으면 목표 이하가 될 때까지 왼쪽에서 단어를 뺍니다. 윈도우에 단어가 p개 있을 때마다 1을 셉니다.",
+      "각 상품의 목표 개수를 셉니다. offset을 0부터 w-1까지 돌며 left = offset으로 두고, right를 offset에서 시작해 w씩 증가시킵니다. 이력에서 right에서 시작하는 길이 w의 단어를 꺼내, 상품이 아니면 개수와 단어 총수를 초기화하고 left = right + w로 둡니다. 상품이면 그 개수와 단어 총수에 1을 더하고, 개수가 목표를 넘는 동안 left의 단어를 제거하며 left를 w만큼 전진시킵니다. 단어 총수가 p와 같아지면 답에 1을 더합니다."
+    ],
+    "vi": [
+      "Mọi sản phẩm có cùng độ dài w, nên một phép ghép cắt một đoạn lịch sử thành p từ độ dài w; một vị trí bắt đầu hợp lệ đúng khi p từ đó, xét như một đa tập hợp, bằng các sản phẩm.",
+      "Chia các vị trí bắt đầu thành w lớp theo số dư khi chia cho w và trượt một cửa sổ gồm các từ nguyên vẹn trong mỗi lớp: gặp từ lạ thì làm rỗng cửa sổ, và cửa sổ bắt đầu lại sau đó; sau khi thêm một từ mà số lần của nó vượt mục tiêu, bỏ các từ từ bên trái cho đến khi không còn vượt; mỗi khi cửa sổ chứa p từ thì đếm một.",
+      "Đếm số lần mục tiêu của từng sản phẩm. Với offset từ 0 đến w-1, đặt left = offset và cho right bước từ offset với bước w: lấy từ độ dài w của history bắt đầu tại right; nếu nó không phải sản phẩm, xóa các bộ đếm và tổng số từ rồi đặt left = right + w; ngược lại cộng một vào bộ đếm của nó và vào tổng số từ, sau đó, khi bộ đếm của nó vượt mục tiêu, loại từ tại left và tăng left thêm w; khi tổng số từ bằng p, cộng một vào đáp án."
     ]
   },
   "explanationEn": "## Approach\n\nFor each remainder of the word length, maintain a sliding window that moves by whole words: reset it when an unrelated word appears, shrink its left end when some word is in excess, and count when the number of words in the window equals p.\n\n## Proof of correctness\n\nPartitioning start positions by their remainder modulo the word length covers every possible position. The window always contains only target words, none more often than in the target, so when its word count reaches p it equals the target multiset exactly. Shrinking only removes a surplus prefix that cannot belong to a valid full window, and every valid start is counted exactly once.\n\n## Complexity\n\nTime O(|history| * word length + total product length), space O(total product length + |history|)."

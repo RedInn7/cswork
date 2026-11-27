@@ -13,6 +13,21 @@
       "A number is a non-negative integer power of k exactly when dividing it by k over and over reaches 1; 1 itself is k^0 and must be counted too.",
       "For each number, divide by k as long as it is greater than 1 and divisible by k; k >= 2 guarantees it shrinks every time, so there are at most log_k(10^9) divisions and the total work is small.",
       "Read the values one by one, divide each by k repeatedly until it is no longer divisible or has become 1, and count it if it ends at exactly 1. Duplicates are counted separately; print the count."
+    ],
+    "ja": [
+      "数が k の非負整数乗であることと、k で繰り返し割ると 1 に到達することは同値です。1 自体は k^0 なので、これも数える必要があります。",
+      "各数について、1 より大きく k で割り切れる間は k で割ります。k >= 2 なので毎回必ず小さくなり、割る回数は高々 log_k(10^9) 回で、全体の作業量は小さくて済みます。",
+      "値を 1 つずつ読み、割り切れなくなるか 1 になるまで k で繰り返し割ります。最終的にちょうど 1 になれば数えます。重複は別々に数え、個数を出力します。"
+    ],
+    "ko": [
+      "어떤 수가 k의 음이 아닌 정수 거듭제곱인 것은 k로 계속 나누었을 때 1에 도달하는 경우와 정확히 같습니다. 1 자체도 k^0이므로 세어야 합니다.",
+      "각 수를 1보다 크고 k로 나누어떨어지는 동안 k로 나눕니다. k >= 2이므로 매번 값이 줄어들고, 나눗셈은 많아야 log_k(10^9)번이라 전체 작업량이 작습니다.",
+      "값을 하나씩 읽어 더 이상 나누어떨어지지 않거나 1이 될 때까지 k로 나누고, 정확히 1로 끝나면 셉니다. 중복은 따로 세며, 개수를 출력합니다."
+    ],
+    "vi": [
+      "Một số là lũy thừa nguyên không âm của k đúng khi chia nó cho k nhiều lần thì đạt 1; bản thân 1 là k^0 và cũng phải được đếm.",
+      "Với mỗi số, chia cho k chừng nào nó còn lớn hơn 1 và chia hết cho k; k >= 2 bảo đảm nó giảm sau mỗi lần chia, nên có tối đa log_k(10^9) phép chia và tổng công việc nhỏ.",
+      "Đọc từng giá trị, chia mỗi giá trị cho k liên tục cho đến khi không còn chia hết hoặc đã thành 1, và đếm nếu nó kết thúc đúng bằng 1. Các giá trị trùng được đếm riêng; in ra số đếm."
     ]
   },
   "explanationEn": "## Approach\n\nRepeatedly divide each number by the factor k, and count it when it finally equals 1.\n\n## Why it is correct\n\nk>=2, so every exact division strictly decreases the value. Dividing down to exactly 1 is equivalent to the original number being a non-negative integer power of k; 1 needs no division and is k^0.\n\n## Complexity\n\nTime O(n log_k M), extra space O(1)."

@@ -13,6 +13,21 @@
       "Choosing a type takes all of its servers, so the real decision unit is the type, and a type's value is the sum of all its health values.",
       "Health values are positive and types do not constrain each other; if you took a type but skipped another with a larger total, swapping them is never worse. So take the types with the largest totals.",
       "Accumulate health per type id; sort the type totals in descending order and add the first m (all of them if there are fewer than m types); print the 64-bit sum."
+    ],
+    "ja": [
+      "タイプを選ぶとそのすべてのサーバーが選ばれるので、実際の決定の単位はタイプで、タイプの価値はそのヘルス値の合計です。",
+      "ヘルス値は正で、タイプ同士は互いに制約しません。あるタイプを選び、より合計の大きい別のタイプを選ばなかったなら、入れ替えて悪くなることはありません。したがって、合計が最大のタイプを選びます。",
+      "タイプ ID ごとにヘルスを累積し、タイプの合計を降順にソートして、先頭の m 個を加算します（タイプが m 種類未満なら全部を加算します）。64 ビットの合計を出力します。"
+    ],
+    "ko": [
+      "유형을 고르면 그 유형의 모든 서버를 가져가므로 실제 결정의 단위는 유형이고, 유형의 가치는 그 유형의 모든 건강도 값의 합입니다.",
+      "건강도 값은 양수이고 유형끼리 서로 제약이 없습니다. 어떤 유형을 가져가고 합계가 더 큰 다른 유형을 건너뛰었다면 둘을 맞바꿔도 손해가 아닙니다. 따라서 합계가 가장 큰 유형들을 가져가면 됩니다.",
+      "유형 ID별로 건강도를 누적합니다. 유형별 합계를 내림차순으로 정렬해 앞의 m개를 더하고(유형이 m개보다 적으면 전부), 64비트 합을 출력합니다."
+    ],
+    "vi": [
+      "Chọn một loại là lấy tất cả máy chủ của nó, nên đơn vị quyết định thực sự là loại, và giá trị của một loại là tổng mọi giá trị sức khỏe của nó.",
+      "Các giá trị sức khỏe đều dương và các loại không ràng buộc lẫn nhau; nếu bạn lấy một loại mà bỏ qua một loại khác có tổng lớn hơn, đổi chúng không bao giờ tệ hơn. Vì vậy hãy lấy các loại có tổng lớn nhất.",
+      "Cộng dồn sức khỏe theo mã loại; sắp xếp các tổng theo loại giảm dần và cộng m tổng đầu (tất cả nếu có ít hơn m loại); in tổng 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nSum the health values per type, sort the type totals in descending order and take the first m types.\n\n## Proof of correctness\n\nEach type is either taken completely or not at all, there are no other constraints between types, and health values are positive. If a selected type had a smaller total than an unselected one, swapping them would not make things worse. So one can always take the at most m types with the largest totals.\n\n## Complexity\n\nTime O(n log n), space O(n)."

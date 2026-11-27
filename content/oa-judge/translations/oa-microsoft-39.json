@@ -11,5 +11,35 @@
     "hints": [
       "Use prefix sums to compute the sums of both segments, then subtract 3 times the sum of the overlap; enumerate both starting points and take the maximum."
     ]
+  },
+  "ja": {
+    "title": "重なり部分の符号が反転する 2 区間の最大スコア",
+    "description": "長さ K と長さ L の連続した区間を 2 つ選びます。重なってもかまいません。片方の区間だけに含まれる要素は元の値のまま数え、重なり部分の要素は符号を反転させて 1 回だけ数えます。タイトルの「重ならない」は問題文と矛盾するため、本サイトは問題文と 2 つの例で与えられた、重なり部分の符号反転のルールに従います。\n\n標準入出力、例、解法、テストは本サイトが独自に作成しました。",
+    "input": "本サイト独自の範囲です。1 行目に N K L（1≤N≤2000、1≤K,L≤N）、2 行目に N 個の整数（−10⁹..10⁹）が与えられます。",
+    "output": "答えを整数 1 つで出力します。",
+    "explanation": "例 1：添字 0..2 と 2..3 を選びます。−4 は 4 になり、合計は 1+3+4+2=10 です。\n\n例 2：配列全体と単一の要素 −5 が重なり、−5 は 5 になるので、合計は 5−3−4=−2 です。\n\n例 3：1 と 2 を重ならないように別々に選び、合計は 3 です。",
+    "hints": [
+      "累積和で 2 つの区間の和を求め、そこから重なり部分の和の 3 倍を引きます。2 つの開始位置を全列挙して最大値を取ります。"
+    ]
+  },
+  "ko": {
+    "title": "겹치는 구간의 부호를 뒤집는 두 구간의 최대 점수",
+    "description": "길이가 각각 K와 L인 연속 구간 두 개를 고릅니다. 두 구간은 겹칠 수 있습니다. 한 구간에만 속한 원소는 원래 값으로 계산하고, 겹치는 부분의 원소는 부호를 뒤집어 한 번만 계산합니다. 제목의 \"겹치지 않는\"은 설명과 모순되므로, 이 사이트는 설명과 두 예제가 제시한 겹침 부호 반전 규칙을 따릅니다.\n\n이 사이트에서 표준 입출력, 예제, 풀이, 테스트를 독자적으로 작성했습니다.",
+    "input": "이 사이트의 범위: 첫째 줄에 N K L (1≤N≤2000, 1≤K,L≤N)이 주어지고, 둘째 줄에 N개의 정수 (−10⁹..10⁹)가 주어집니다.",
+    "output": "정답을 나타내는 정수 하나를 출력합니다.",
+    "explanation": "예제 1: 인덱스 0..2와 2..3을 고르면 −4가 4가 되어 합은 1+3+4+2=10입니다.\n\n예제 2: 배열 전체가 원소 하나 −5와 겹치므로 −5가 5가 되어 합은 5−3−4=−2입니다.\n\n예제 3: 겹치지 않게 1과 2를 따로 고르면 합은 3입니다.",
+    "hints": [
+      "누적합으로 두 구간의 합을 구한 뒤 겹치는 부분의 합의 3배를 빼며, 두 시작점을 모두 열거해 최댓값을 취합니다."
+    ]
+  },
+  "vi": {
+    "title": "Điểm tối đa của hai đoạn với phần giao bị đổi dấu",
+    "description": "Chọn hai đoạn liên tiếp có độ dài K và L; chúng có thể chồng lên nhau. Phần tử chỉ thuộc một đoạn được tính theo giá trị gốc, còn phần tử ở phần giao chỉ được tính một lần với dấu bị đổi. Từ “không chồng nhau” trong tiêu đề mâu thuẫn với đề bài, nên trang này theo quy tắc đổi dấu phần giao được nêu trong đề bài và cả hai ví dụ.\n\nTrang này tự viết độc lập đầu vào/đầu ra chuẩn, các ví dụ, lời giải và bộ test.",
+    "input": "Phạm vi của trang này: dòng đầu chứa N K L (1≤N≤2000, 1≤K,L≤N), dòng thứ hai chứa N số nguyên (−10⁹..10⁹).",
+    "output": "In ra một số nguyên duy nhất, là đáp án.",
+    "explanation": "Ví dụ 1: chọn các chỉ số 0..2 và 2..3; −4 trở thành 4, tổng cộng 1+3+4+2=10.\n\nVí dụ 2: cả mảng chồng lên phần tử đơn −5, biến −5 thành 5, tổng cộng 5−3−4=−2.\n\nVí dụ 3: chọn 1 và 2 riêng rẽ không chồng nhau, tổng cộng 3.",
+    "hints": [
+      "Dùng tổng tiền tố để tính tổng của cả hai đoạn, rồi trừ đi 3 lần tổng của phần giao; liệt kê cả hai điểm bắt đầu và lấy giá trị lớn nhất."
+    ]
   }
 }

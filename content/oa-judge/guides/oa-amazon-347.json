@@ -13,6 +13,21 @@
       "A replacement only depends on how many elements currently equal old; there is no need to actually rewrite every position of the array.",
       "Keep a hash map from value to count plus the current sum: when old != new, take old's count c, add (new-old)*c to the sum, and merge c into new's count.",
       "Read the array, build the count table and the sum; for each query, if old == new just print the sum, otherwise remove old from the table to get c (0 if absent), update the sum and new's count, then print; when q=0 print an empty line. Use 64-bit integers for the sum."
+    ],
+    "ja": [
+      "置換が依存するのは、現在 old に等しい要素が何個あるかだけで、配列のすべての位置を実際に書き換える必要はありません。",
+      "値から個数へのハッシュマップと現在の合計を保持します。old != new のとき、old の個数 c を取り、合計に (new-old)*c を加え、c を new の個数に併合します。",
+      "配列を読み込み、個数の表と合計を作ります。各クエリについて、old == new なら合計をそのまま出力し、そうでなければ表から old を取り除いて c を得て(なければ 0)、合計と new の個数を更新してから出力します。q=0 のときは空行を出力します。合計には 64 ビット整数を使います。"
+    ],
+    "ko": [
+      "치환은 현재 old와 같은 원소가 몇 개인지에만 달려 있으므로, 배열의 모든 위치를 실제로 다시 쓸 필요가 없습니다.",
+      "값에서 개수로 가는 해시 맵과 현재 합을 유지합니다. old != new이면 old의 개수 c를 구하고, 합에 (new-old)*c를 더하고, c를 new의 개수에 합칩니다.",
+      "배열을 읽어 개수 표와 합을 만듭니다. 각 질의에서 old == new이면 합을 그대로 출력하고, 그렇지 않으면 표에서 old를 제거하여 c(없으면 0)를 얻고, 합과 new의 개수를 갱신한 뒤 출력합니다. q=0이면 빈 줄을 출력합니다. 합에는 64비트 정수를 사용합니다."
+    ],
+    "vi": [
+      "Một phép thay thế chỉ phụ thuộc vào số phần tử hiện bằng old; không cần thực sự viết lại mọi vị trí của mảng.",
+      "Giữ một bảng băm từ giá trị sang số đếm cùng tổng hiện tại: khi old != new, lấy số đếm c của old, cộng (new-old)*c vào tổng, và gộp c vào số đếm của new.",
+      "Đọc mảng, dựng bảng số đếm và tổng; với mỗi truy vấn, nếu old == new thì chỉ in tổng, ngược lại xóa old khỏi bảng để lấy c (0 nếu không có), cập nhật tổng và số đếm của new, rồi in; khi q=0 in một dòng trống. Dùng số nguyên 64 bit cho tổng."
     ]
   },
   "explanationEn": "## Approach\n\nUse a frequency table and the current sum. When old≠new, take out old's frequency c, increase the sum by (new−old)c, and merge c into new's frequency; when the two values are equal, keep the state as it is.\n\n## Proof of correctness\n\nExactly c items change in each query, and each changes the sum by new−old, so the sum update is exact. The whole frequency moves from old to new and all other values are unchanged, so the frequency table stays consistent with the current array. By induction every query is correct, including the zero change when the old value is not present.\n\n## Complexity\n\nExpected O(n+q) time, O(n+q) space."

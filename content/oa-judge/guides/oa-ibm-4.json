@@ -13,6 +13,21 @@
       "Only adjacent items of different parity can be swapped, so the relative order among the odd numbers, and among the even numbers, never changes.",
       "Conversely, every interleaving of the odd subsequence and the even subsequence can be reached by legal swaps, so the task becomes merging two fixed-order sequences into the lexicographically smallest result.",
       "Take the odd numbers and the even numbers in their original order and merge them with two pointers: each time compare the two heads (they have different parity, so they are never equal) and output the smaller one; when one sequence runs out, append the rest of the other."
+    ],
+    "ja": [
+      "偶奇が異なる隣り合う項目しか交換できないので、奇数同士、偶数同士の相対的な順序は変わりません。",
+      "逆に、奇数の部分列と偶数の部分列のどんなインターリーブも、合法な交換で到達できます。したがって、順序が固定された 2 つの列を辞書順最小にマージする問題になります。",
+      "奇数と偶数を元の順序で取り出し、2 つのポインタでマージします。毎回 2 つの先頭を比較し（偶奇が異なるので等しくなりません）、小さいほうを出力します。一方が尽きたら、もう一方の残りを追加します。"
+    ],
+    "ko": [
+      "홀짝이 다른 인접한 항목만 교환할 수 있으므로, 홀수끼리의 상대 순서와 짝수끼리의 상대 순서는 절대 바뀌지 않습니다.",
+      "반대로 홀수 부분 수열과 짝수 부분 수열의 모든 끼워 넣기(interleaving)는 합법적인 교환으로 도달할 수 있으므로, 문제는 순서가 고정된 두 수열을 사전순으로 가장 작게 병합하는 것이 됩니다.",
+      "홀수와 짝수를 각각 원래 순서대로 모아 두 포인터로 병합합니다. 매번 두 맨 앞 값을 비교하여(홀짝이 다르므로 같을 수 없습니다) 작은 쪽을 출력하고, 한쪽이 바닥나면 다른 쪽의 나머지를 붙입니다."
+    ],
+    "vi": [
+      "Chỉ có thể hoán đổi các phần tử liền kề khác tính chẵn lẻ, nên thứ tự tương đối giữa các số lẻ với nhau, và giữa các số chẵn với nhau, không bao giờ thay đổi.",
+      "Ngược lại, mọi cách xen kẽ của dãy con lẻ và dãy con chẵn đều đạt được bằng các hoán đổi hợp lệ, nên bài toán trở thành trộn hai dãy có thứ tự cố định thành kết quả nhỏ nhất theo thứ tự từ điển.",
+      "Lấy các số lẻ và các số chẵn theo thứ tự ban đầu và trộn chúng bằng hai con trỏ: mỗi lần so sánh hai phần tử đầu (chúng khác tính chẵn lẻ nên không bao giờ bằng nhau) và in phần tử nhỏ hơn; khi một dãy hết, nối phần còn lại của dãy kia."
     ]
   },
   "explanationEn": "## Approach\n\nTake the subsequences of odd digits and of even digits in their original order, and at each step take the smaller of the two heads.\n\n## Proof of correctness\n\nThe relative order of items with the same parity cannot change, and any interleaving of the two subsequences can be realized by legal swaps. The two heads have different parity and are therefore unequal; choosing the smaller head makes the current first difference as small as possible, and induction gives the globally lexicographically smallest sequence.\n\n## Complexity\n\nTime O(n), space O(n)."

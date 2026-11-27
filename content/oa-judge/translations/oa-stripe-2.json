@@ -11,5 +11,35 @@
     "hints": [
       "Initialize the score of each merchant and run the three rule passes strictly; count frequencies grouped by (merchant, customer) and by (merchant, customer, hour)."
     ]
+  },
+  "ja": {
+    "title": "加盟店の不正リスクスコアリング",
+    "description": "その日の取引、各取引に対応するルール、各加盟店の基本スコアが与えられます。各加盟店の最終リスクスコアを、互いに独立した 3 つのステップで計算します。まず金額に応じた乗数を適用し、次に顧客の取引頻度に対するボーナスを加え、最後に同一時間帯の頻度に対するペナルティを適用します。3 件目の取引で頻度のしきい値に達したとき、そのグループの最初の 3 件の取引それぞれの加算係数またはペナルティが遡って適用されます。4 件目以降は、その取引自身の値だけが適用されます。各ステップは取引リスト全体を独立に処理し、順序は乗数、ボーナス、ペナルティです。\n\n元の例の取引リストでは、4 番目と 5 番目の項目の間にカンマが抜けていました。本サイトはこの書式の誤りを修正し、取引 6 件とルール 6 件はそのままにしています。",
+    "input": "1 行目に n (1..1000) が与えられます。続く n 行が取引で、merchant_id,amount,customer_id,hour の形式です。その後に n 行のルールが続き、インデックスで取引と対応します。形式は min_transaction_amount,multiplicative_factor,additive_factor,penalty です。次に m (1..1000) の行があり、続く m 行が加盟店で、merchant_id,base_score の形式です。識別子は、カンマ以外の ASCII 文字 1..32 文字です。金額とルールの値は符号付き 64 ビット整数で、途中のスコアがオーバーフローしないことは保証されています。hour は 0..23、base_score は 1..50 です。すべての取引の merchant_id は加盟店リストに含まれ、加盟店 ID は重複しません。",
+    "output": "まず加盟店の数 m を出力します。続いて、merchant_id の辞書順に、1 行ずつ `merchant_id,<final score>` を出力します。",
+    "explanation": "3 ステップの計算、しきい値の境界、具体例の詳細は、付属の解説を参照してください。",
+    "hints": [
+      "各加盟店のスコアを初期化し、3 つのルールのパスを厳密に順番どおり実行します。頻度は (merchant, customer) と (merchant, customer, hour) でグループ化して数えます。"
+    ]
+  },
+  "ko": {
+    "title": "가맹점 사기 위험 점수 산정",
+    "description": "하루의 거래 목록, 각 거래에 대한 규칙, 각 가맹점의 기본 점수가 주어집니다. 서로 독립된 세 단계를 거쳐 각 가맹점의 최종 위험 점수를 계산하세요. 먼저 금액 배수를 적용하고, 그다음 고객별 거래 빈도 보너스를, 마지막으로 같은 시간대 빈도 페널티를 적용합니다. 3번째 거래에서 빈도 임계값에 도달하면 그 그룹의 처음 3개 거래 각각의 가산값 또는 페널티를 소급하여 적용하고, 4번째 거래부터는 해당 거래 자신의 값만 적용합니다. 각 단계는 전체 거래 목록을 독립적으로 처리하며, 순서는 배수, 보너스, 페널티입니다.\n\n원문 예제의 거래 목록에는 4번째와 5번째 항목 사이에 쉼표가 빠져 있었습니다. 이 사이트는 이 서식 오류를 수정하며, 거래 6개와 규칙 6개는 그대로 유지합니다.",
+    "input": "첫째 줄에 n(1..1000)이 주어집니다. 다음 n개의 줄은 거래이며 merchant_id,amount,customer_id,hour 형식입니다. 이어서 n개의 줄에 규칙이 주어지며 거래와 인덱스로 대응됩니다. 형식은 min_transaction_amount,multiplicative_factor,additive_factor,penalty입니다. 다음 줄에는 m(1..1000)이 있고, 이어서 m개의 줄에 가맹점이 merchant_id,base_score 형식으로 주어집니다. 식별자는 쉼표를 제외한 1..32자의 ASCII 문자이고, 금액과 규칙 값은 부호 있는 64비트 정수이며 모든 중간 점수는 오버플로하지 않음이 보장됩니다. hour는 0..23이고 base_score는 1..50입니다. 모든 거래의 merchant_id는 가맹점 목록에 있어야 하며, 가맹점 ID는 중복되지 않습니다.",
+    "output": "먼저 가맹점 수 m을 출력합니다. 그다음 merchant_id의 사전순으로 한 줄에 하나씩 `merchant_id,<final score>`를 출력합니다.",
+    "explanation": "세 단계 계산의 세부 사항, 임계값의 경계, 풀이 예시는 함께 제공되는 풀이를 참고하세요.",
+    "hints": [
+      "각 가맹점의 점수를 초기화하고 세 번의 규칙 패스를 엄격하게 수행하세요. 빈도는 (가맹점, 고객)과 (가맹점, 고객, 시간)으로 묶어서 집계합니다."
+    ]
+  },
+  "vi": {
+    "title": "Chấm điểm rủi ro gian lận của merchant",
+    "description": "Cho các giao dịch trong ngày, quy tắc cho từng giao dịch và điểm cơ sở của mỗi merchant, hãy tính điểm rủi ro cuối cùng của mỗi merchant qua ba bước độc lập: trước hết áp dụng các hệ số nhân theo số tiền, rồi đến phần thưởng theo tần suất giao dịch của khách hàng, và cuối cùng là phần phạt theo tần suất trong cùng một giờ. Khi giao dịch thứ 3 đạt ngưỡng tần suất, hệ số cộng hoặc khoản phạt của mỗi giao dịch trong 3 giao dịch đầu của nhóm được áp dụng hồi tố; từ giao dịch thứ 4 trở đi, chỉ áp dụng giá trị của chính giao dịch đó. Mỗi bước xử lý độc lập toàn bộ danh sách giao dịch, theo thứ tự hệ số nhân, phần thưởng, khoản phạt.\n\nDanh sách giao dịch trong ví dụ nguồn thiếu một dấu phẩy giữa mục 4 và 5; site này sửa lỗi định dạng đó và giữ nguyên 6 giao dịch và 6 quy tắc.",
+    "input": "Dòng đầu chứa n (1..1000). n dòng tiếp theo là các giao dịch: merchant_id,amount,customer_id,hour. Sau đó là n dòng quy tắc, được khớp với các giao dịch theo chỉ số: min_transaction_amount,multiplicative_factor,additive_factor,penalty. Tiếp theo là một dòng chứa m (1..1000), theo sau là m dòng merchant: merchant_id,base_score. Các định danh gồm 1..32 ký tự ASCII khác dấu phẩy; số tiền và các giá trị quy tắc là số nguyên 64 bit có dấu, và đảm bảo mọi điểm trung gian đều không tràn; hour là 0..23, và base_score là 1..50. merchant_id của mọi giao dịch phải nằm trong danh sách merchant, và không có ID merchant nào lặp lại.",
+    "output": "Trước tiên xuất số merchant m; sau đó xuất từng dòng `merchant_id,<final score>` theo thứ tự từ điển của merchant_id.",
+    "explanation": "Xem lời giải kèm theo để biết chi tiết về phép tính ba bước, các đầu mút của ngưỡng và các ví dụ minh hoạ.",
+    "hints": [
+      "Khởi tạo điểm của mỗi merchant và chạy chặt chẽ ba lượt quy tắc; đếm tần suất nhóm theo (merchant, customer) và theo (merchant, customer, hour)."
+    ]
   }
 }

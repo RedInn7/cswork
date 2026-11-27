@@ -11,5 +11,35 @@
     "hints": [
       "For each group, take the members' scores, sort them in descending order, and add up the first k."
     ]
+  },
+  "ja": {
+    "title": "映画グループの類似度スコア上位 k 件",
+    "description": "各映画について、ターゲット映画との類似度が分かっています。映画グループのスコアは、そのグループ内で類似度が高い上位 k 個の合計です。グループを並べ替えず、入力順のままスコアを返してください。\n\n入力と出力は本サイトが整理したものです。",
+    "input": "1行目に N G k が与えられ、2行目に N 個の類似度が与えられます。続く G 行では、各行にグループの大きさ m と、m 個の 0-based の映画インデックスが与えられます。元のスナップショットには数値の範囲がありません。本サイトでは N≤100000、G≤10000（どちらも1以上）とし、1≤k≤m≤N、各グループ内のインデックスは互いに異なり有効で、全グループのメンバー数の合計は 200000 以下です。スコアは [0,1] の範囲で、小数点以下は最大6桁、通常の10進表記で与えられます。",
+    "output": "まず G を出力し、続けて G 個のグループスコアを出力します。改行で区切ってもかまいません。各値は絶対誤差または相対誤差 1e-5 まで許容されます。同値な整数、小数、指数表記も受理され、小数点以下の桁数は固定されません。",
+    "explanation": "例1: 2つのグループの上位2つの値は 0.5+0.2=0.7 と 0.5+0.4=0.9 で、グループの順序は保たれます。例2: k=1 で、2つのグループの最大値は 1 と 0.5 です。例3: k がグループの大きさに等しいので、どちらのグループも3つの値をすべて足して 1.000002 になります。グループ内の順序はスコアに影響しません。",
+    "hints": [
+      "グループごとにメンバーのスコアを取り出し、降順に並べて、先頭 k 個を足します。"
+    ]
+  },
+  "ko": {
+    "title": "영화 그룹의 상위 k개 유사도 점수",
+    "description": "각 영화와 대상 영화 사이의 유사도가 주어집니다. 영화 그룹의 점수는 그룹 안에서 유사도가 가장 높은 k개의 합입니다. 그룹의 입력 순서대로 점수를 반환하세요. 그룹의 순서를 바꾸면 안 됩니다.\n\n입력과 출력은 이 사이트에서 정리한 것입니다.",
+    "input": "첫째 줄에 N G k가 주어지고, 둘째 줄에 N개의 유사도가 주어집니다. 이어서 G줄이 주어지며, 각 줄은 그룹 크기 m과 m개의 0-based 영화 인덱스입니다. 원래 스냅샷에는 수치 범위가 없으며, 이 사이트는 N≤100000, G≤10000(둘 다 1 이상)을 사용합니다. 1≤k≤m≤N이고, 각 그룹 안의 인덱스는 서로 다르며 유효하고, 모든 그룹의 구성원 수의 합은 200000 이하입니다. 점수는 [0,1] 범위이며 소수점 아래 최대 6자리이고 일반 십진수로 입력됩니다.",
+    "output": "먼저 G를 출력하고, 이어서 G개의 그룹 점수를 출력하며 각각 다른 줄에 써도 됩니다. 각 값은 절대 오차 또는 상대 오차 1e-5가 허용되며, 동등한 정수, 소수, 과학적 표기법이 허용되고 소수점 자릿수는 고정되지 않습니다.",
+    "explanation": "예제 1: 두 그룹의 상위 두 값은 0.5+0.2=0.7과 0.5+0.4=0.9이며 그룹 순서는 유지됩니다. 예제 2: k=1이고 두 그룹의 최댓값은 1과 0.5입니다. 예제 3: k가 그룹 크기와 같으므로 두 그룹 모두 세 값을 모두 더해 1.000002가 되며, 그룹 내 순서는 점수에 영향을 주지 않습니다.",
+    "hints": [
+      "각 그룹에서 구성원의 점수를 모아 내림차순으로 정렬하고 앞의 k개를 더하세요."
+    ]
+  },
+  "vi": {
+    "title": "Điểm tương đồng top-k của các nhóm phim",
+    "description": "Độ tương đồng của mỗi phim với phim mục tiêu đã biết. Điểm của một nhóm phim là tổng k độ tương đồng cao nhất trong nhóm. Trả về các điểm theo thứ tự đầu vào của các nhóm, không sắp xếp lại các nhóm.\n\nĐầu vào và đầu ra do trang này biên soạn.",
+    "input": "Dòng đầu chứa N G k; dòng thứ hai chứa N độ tương đồng; sau đó là G dòng, mỗi dòng cho kích thước nhóm m rồi m chỉ số phim (đánh số từ 0). Bản chụp gốc không cho cận số; trang này dùng N≤100000 và G≤10000, cả hai đều ≥1; 1≤k≤m≤N, các chỉ số trong mỗi nhóm đôi một khác nhau và hợp lệ, và tổng số thành viên của mọi nhóm ≤200000. Điểm nằm trong [0,1] với tối đa 6 chữ số thập phân, cho dưới dạng số thập phân thông thường.",
+    "output": "Trước hết in G, rồi in G điểm của các nhóm, có thể trên các dòng riêng. Mỗi giá trị được phép sai số tuyệt đối hoặc tương đối 1e-5; số nguyên, số thập phân và ký hiệu khoa học tương đương đều được chấp nhận, và không yêu cầu số chữ số thập phân cố định.",
+    "explanation": "Ví dụ 1: hai giá trị lớn nhất của hai nhóm là 0.5+0.2=0.7 và 0.5+0.4=0.9, giữ nguyên thứ tự nhóm. Ví dụ 2: k=1, và giá trị lớn nhất của hai nhóm là 1 và 0.5. Ví dụ 3: k bằng kích thước nhóm, nên cả hai nhóm đều cộng cả ba giá trị được 1.000002; thứ tự trong nhóm không ảnh hưởng đến điểm.",
+    "hints": [
+      "Với mỗi nhóm, lấy điểm của các thành viên, sắp xếp giảm dần rồi cộng k giá trị đầu."
+    ]
   }
 }

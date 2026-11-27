@@ -13,6 +13,21 @@
       "The landing cells are exactly the cells with an even 0-based index in the counterclockwise spiral order; the skip count carries across turns, so you only need the last cell with an even index.",
       "Simulate the spiral with four bounds top, bottom, left and right: go down the left column, right along the bottom row, up the right column, then left along the top row, shrinking the matching bound after each side.",
       "Keep a global counter idx and the answer (initially the top-left cell); on every visited cell update the answer when idx is even, then increment idx. Check left <= right before going up the right column and top <= bottom before going left along the top row, so a single remaining row or column is not visited twice; print the answer when the loop ends."
+    ],
+    "ja": [
+      "着地するマスは、反時計回りの螺旋の順序で 0 始まりの番号が偶数のマスとまさに一致します。飛ばす数え方は曲がり角をまたいで続くので、偶数の番号を持つ最後のマスだけが必要です。",
+      "top、bottom、left、right の 4 つの境界で螺旋をシミュレートします。左の列を下り、下の行を右へ、右の列を上り、上の行を左へ進み、各辺の後で対応する境界を縮めます。",
+      "通しカウンタ idx と答え（初期値は左上のマス）を保持し、訪れた各マスで idx が偶数なら答えを更新してから idx を増やします。右の列を上る前に left <= right、上の行を左へ進む前に top <= bottom を確認し、1 行または 1 列だけ残ったときに二重に訪れないようにします。ループが終わったら答えを出力します。"
+    ],
+    "ko": [
+      "착지하는 칸은 반시계 방향 나선 순서에서 0-기반 인덱스가 짝수인 칸과 정확히 일치합니다. 건너뛰기 횟수는 방향을 틀어도 이어지므로, 인덱스가 짝수인 마지막 칸만 구하면 됩니다.",
+      "top, bottom, left, right 네 경계로 나선을 시뮬레이션합니다. 왼쪽 열을 따라 내려가고, 아래 행을 따라 오른쪽으로 가고, 오른쪽 열을 따라 올라가고, 위 행을 따라 왼쪽으로 가며, 각 변이 끝날 때마다 해당 경계를 줄입니다.",
+      "전역 카운터 idx와 answer(처음에는 왼쪽 위 칸)를 유지합니다. 방문하는 각 칸에서 idx가 짝수이면 answer를 갱신한 뒤 idx를 증가시킵니다. 행이나 열이 하나만 남았을 때 두 번 방문하지 않도록, 오른쪽 열을 따라 올라가기 전에 left <= right를, 위 행을 따라 왼쪽으로 가기 전에 top <= bottom을 확인합니다. 루프가 끝나면 answer를 출력합니다."
+    ],
+    "vi": [
+      "Các ô hạ cánh chính xác là những ô có chỉ số chẵn (tính từ 0) trong thứ tự xoắn ốc ngược chiều kim đồng hồ; số lần bỏ qua được mang qua các chỗ rẽ, nên bạn chỉ cần ô cuối cùng có chỉ số chẵn.",
+      "Mô phỏng đường xoắn ốc với bốn biên top, bottom, left và right: đi xuống cột trái, sang phải dọc hàng dưới, đi lên cột phải, rồi sang trái dọc hàng trên, thu hẹp biên tương ứng sau mỗi cạnh.",
+      "Giữ một bộ đếm toàn cục idx và đáp án (ban đầu là ô trên bên trái); ở mỗi ô được thăm, cập nhật đáp án khi idx chẵn, rồi tăng idx. Kiểm tra left <= right trước khi đi lên cột phải và top <= bottom trước khi sang trái dọc hàng trên, để một hàng hoặc một cột còn sót lại không bị thăm hai lần; in đáp án khi vòng lặp kết thúc."
     ]
   },
   "explanationEn": "## Approach\n\nShrink the boundaries one side at a time along the four edges and give each visited cell a global index starting from 0; only even indices update the answer.\n\n## Proof of correctness\n\nEach round traverses exactly the current outer ring, with every cell appearing once, and the rectangle left after removing the ring continues in the same spiral direction. The single-row and single-column conditions prevent repeats. The global even indices correspond exactly to landing on every other cell as the statement requires, so the last updated value is the final landing cell.\n\n## Complexity\n\nO(NM) time and O(1) auxiliary space besides the input matrix."

@@ -13,5 +13,41 @@
       "Changing one price from its floor to its ceiling changes the error by 1−2×(fractional part).",
       "Parse the two-decimal prices as integers to avoid floating-point error."
     ]
+  },
+  "ja": {
+    "title": "Airbnb OA #8: 目標値に合わせて価格を丸める",
+    "description": "n 個の価格 prices=[x1,x2,…,xn] と目標値 target が与えられます。各価格を yi に丸めてください。yi は floor(xi) か ceil(xi) のどちらかで、y1+y2+…+yn=target を満たさなければなりません。この条件のもとで、丸め誤差 Σ|xi−yi| を最小にし、丸めた配列を出力してください。\n\nデータには、有効で一意な最適解が存在することが保証されています。",
+    "input": "1 行目に 2 つの整数 n と target、2 行目に n 個の価格が与えられます。各価格は小数点以下ちょうど 2 桁で書かれます (3.00 や 0.70 など)。1≤n≤100000、0≤xi≤1000000。",
+    "output": "n 個の整数 y1..yn を空白区切りで 1 行に出力します。",
+    "explanation": "例 1: prices=[1.20,4.30,5.80,6.40]、target=18。floor の合計は 16 なので、2 個を切り上げる必要があります。小数部が最大の 5.80 と 6.40 を選ぶと [1,4,6,7] となり、誤差は 1.3 です。\n例 2: prices=[0.70,2.80,4.90]、target=8。[0,3,5] の誤差は 0.7+0.2+0.1=1.0 で、[1,2,5] の 0.3+0.8+0.1=1.2 より小さくなります。\n例 3: prices=[3.00,4.50,5.20,3.25]、target=16。3.00 は整数なので、切り上げても変わりません。floor の合計は 15 なので、もう 1 個切り上げる必要があり、小数部が最大なのは 4.50 なので [3,5,5,3] となります。",
+    "hints": [
+      "まずすべてを切り捨て、まだ足りない分を計算します。",
+      "1 つの価格を floor から ceil に変えると、誤差は 1−2×(小数部) だけ変化します。",
+      "浮動小数点の誤差を避けるため、小数点以下 2 桁の価格は整数として解析します。"
+    ]
+  },
+  "ko": {
+    "title": "Airbnb OA #8: 목표 합이 되도록 가격 반올림하기",
+    "description": "n개의 가격 prices=[x1,x2,…,xn]과 목표값 target이 주어집니다. 각 가격을 yi로 반올림하되, yi는 floor(xi) 또는 ceil(xi)여야 하며 y1+y2+…+yn=target을 만족해야 합니다. 이 조건에서 반올림 오차 Σ|xi−yi|를 최소화하십시오. 반올림된 배열을 출력합니다.\n\n유효하고 유일한 최적 결과가 존재함이 데이터로 보장됩니다.",
+    "input": "첫째 줄에 두 정수 n과 target이 주어지고, 둘째 줄에 n개의 가격이 주어집니다. 각 가격은 소수점 아래 정확히 두 자리로 표기됩니다(예: 3.00 또는 0.70). 1≤n≤100000, 0≤xi≤1000000.",
+    "output": "n개의 정수 y1..yn을 공백으로 구분하여 한 줄로 출력합니다.",
+    "explanation": "예제 1: prices=[1.20,4.30,5.80,6.40], target=18. 내림의 합은 16이므로 2개를 대신 올림해야 합니다. 소수부가 가장 큰 5.80과 6.40을 고르면 [1,4,6,7]이 되고 오차는 1.3입니다.\n예제 2: prices=[0.70,2.80,4.90], target=8. [0,3,5]의 오차는 0.7+0.2+0.1=1.0으로, [1,2,5]의 0.3+0.8+0.1=1.2보다 좋습니다.\n예제 3: prices=[3.00,4.50,5.20,3.25], target=16. 3.00은 정수이므로 올림해도 변하지 않습니다. 내림의 합이 15이므로 1개를 더 올림해야 하고, 소수부가 가장 큰 것은 4.50이므로 [3,5,5,3]이 됩니다.",
+    "hints": [
+      "먼저 모두 내림하고, 아직 부족한 양을 계산하십시오.",
+      "한 가격을 내림에서 올림으로 바꾸면 오차는 1−2×(소수부)만큼 변합니다.",
+      "부동소수점 오차를 피하도록 소수점 아래 두 자리 가격을 정수로 파싱하십시오."
+    ]
+  },
+  "vi": {
+    "title": "Airbnb OA #8: Làm tròn giá để đạt tổng mục tiêu",
+    "description": "Cho n mức giá prices=[x1,x2,…,xn] và một giá trị mục tiêu target, hãy làm tròn mỗi mức giá thành yi, trong đó yi phải là floor(xi) hoặc ceil(xi), sao cho y1+y2+…+yn=target. Với điều kiện này, hãy cực tiểu hóa sai số làm tròn Σ|xi−yi|. In ra mảng đã làm tròn.\n\nDữ liệu đảm bảo tồn tại một kết quả tối ưu hợp lệ và duy nhất.",
+    "input": "Dòng đầu tiên chứa hai số nguyên n và target; dòng thứ hai chứa n mức giá, mỗi giá được viết với đúng hai chữ số thập phân (như 3.00 hoặc 0.70). 1≤n≤100000, 0≤xi≤1000000.",
+    "output": "In ra một dòng gồm n số nguyên y1..yn, cách nhau bởi dấu cách.",
+    "explanation": "Ví dụ 1: prices=[1.20,4.30,5.80,6.40], target=18. Tổng các giá trị làm tròn xuống là 16, nên phải làm tròn lên 2 giá; chọn 5.80 và 6.40, là hai giá có phần thập phân lớn nhất, cho [1,4,6,7] với sai số 1.3.\nVí dụ 2: prices=[0.70,2.80,4.90], target=8. Sai số của [0,3,5] là 0.7+0.2+0.1=1.0, tốt hơn 0.3+0.8+0.1=1.2 của [1,2,5].\nVí dụ 3: prices=[3.00,4.50,5.20,3.25], target=16. 3.00 là số nguyên, nên làm tròn lên không làm nó thay đổi; tổng các giá trị làm tròn xuống là 15, nên phải làm tròn lên thêm 1 giá, và phần thập phân lớn nhất thuộc về 4.50, cho [3,5,5,3].",
+    "hints": [
+      "Trước hết làm tròn tất cả xuống và tính xem còn thiếu bao nhiêu.",
+      "Việc đổi một mức giá từ làm tròn xuống sang làm tròn lên làm sai số thay đổi 1−2×(phần thập phân).",
+      "Phân tích các mức giá hai chữ số thập phân dưới dạng số nguyên để tránh sai số dấu phẩy động."
+    ]
   }
 }

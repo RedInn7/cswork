@@ -11,5 +11,35 @@
     "hints": [
       "Record each process's actual position and scan in the prescribed order; if the current position is less than the maximum actual position seen so far, at least one prerequisite runs after it."
     ]
+  },
+  "ja": {
+    "title": "前提となる処理がまだ実行されていないために失敗する回数",
+    "description": "2 つの配列はどちらも 1..n の順列で、それぞれ規定された順序と実際の実行順序を表します。ある処理が実行されるとき、規定でそれより前にある処理がまだ実行されていなければ、その処理は失敗します。すでに実行されて失敗した処理は、実行されていない処理としては数えないので、失敗は伝播しません。\n\n標準入出力と解答は本サイトが独自に作成したものです。本サイト独自とされている範囲は、元の問題の制約ではありません。",
+    "input": "1 行目に n (1..200000) が与えられ、続く 2 行に、規定された順列と実際の順列が与えられます。",
+    "output": "整数 1 つ（答え）を出力してください。",
+    "explanation": "例 1: 4 が最後に実行されるので、ほかの 5 つの処理はすべて前提の 4 が未実行のまま実行されます。答えは 5 です。例 2: 順序が一致しているので、答えは 0 です。例 3: 5 が実行されるとき 2 と 3 が未実行で、4 が実行されるとき 1 が未実行です。失敗するのはこの 2 つだけなので、答えは 2 です。",
+    "hints": [
+      "各処理の実際の位置を記録し、規定された順序で走査します。現在の位置がそれまでに見た実際の位置の最大値より小さければ、前提のうち少なくとも 1 つが後で実行されます。"
+    ]
+  },
+  "ko": {
+    "title": "선행 프로세스가 아직 실행되지 않아 실패하는 횟수",
+    "description": "두 배열은 각각 규정된 순서와 실제 실행 순서를 나타내는 1..n의 순열입니다. 프로세스가 실행될 때 규정상 그보다 앞선 프로세스 중 아직 실행되지 않은 것이 하나라도 있으면 실패합니다. 이미 실행되었다면 실패했더라도 더 이상 미실행으로 보지 않으므로 실패는 전파되지 않습니다.\n\n표준 입출력 형식과 풀이는 이 사이트가 독자적으로 작성했으며, 이 사이트의 것이라고 표시된 범위는 원문의 제약 조건이 아닙니다.",
+    "input": "첫째 줄에 n(1..200000)이 주어지고, 이어서 규정된 순열과 실제 순열이 각각 한 줄씩 주어집니다.",
+    "output": "정수 하나로 답을 출력합니다.",
+    "explanation": "예제 1: 4가 마지막에 실행되므로 나머지 다섯 프로세스는 모두 선행 프로세스 4가 없어 실패하며 답은 5입니다. 예제 2: 순서가 같으므로 답은 0입니다. 예제 3: 5가 실행될 때 2와 3이 없고 4가 실행될 때 1이 없으므로 이 두 프로세스만 실패하여 답은 2입니다.",
+    "hints": [
+      "각 프로세스의 실제 위치를 기록하고 규정된 순서대로 훑습니다. 현재 위치가 지금까지 본 실제 위치의 최댓값보다 작으면 선행 프로세스 중 하나가 그보다 뒤에 실행된다는 뜻입니다."
+    ]
+  },
+  "vi": {
+    "title": "Số tiến trình thất bại vì tiến trình tiên quyết chưa chạy",
+    "description": "Cả hai mảng đều là hoán vị của 1..n, lần lượt cho thứ tự quy định và thứ tự thực thi thực tế. Khi một tiến trình chạy, nó thất bại nếu có bất kỳ tiến trình nào được quy định đứng trước nó mà chưa chạy. Một tiến trình đã chạy nhưng thất bại thì không còn được coi là chưa chạy, nên lỗi không lan truyền.\n\nTrang này tự viết phần nhập/xuất chuẩn và lời giải; các khoảng giá trị được đánh dấu là của trang này không phải ràng buộc gốc của đề nguồn.",
+    "input": "Dòng đầu tiên chứa n (1..200000), tiếp theo là hai dòng: hoán vị quy định và hoán vị thực tế.",
+    "output": "In ra một số nguyên là đáp án.",
+    "explanation": "Ví dụ 1: tiến trình 4 chạy cuối cùng, nên năm tiến trình còn lại đều thiếu tiền đề 4; đáp án là 5. Ví dụ 2: hai thứ tự trùng nhau, nên đáp án là 0. Ví dụ 3: khi 5 chạy, thiếu 2 và 3, và khi 4 chạy, thiếu 1; chỉ hai tiến trình này thất bại, nên đáp án là 2.",
+    "hints": [
+      "Ghi lại vị trí thực tế của mỗi tiến trình và quét theo thứ tự quy định; nếu vị trí hiện tại nhỏ hơn vị trí thực tế lớn nhất đã thấy cho đến giờ, ít nhất một tiền đề chạy sau nó."
+    ]
   }
 }

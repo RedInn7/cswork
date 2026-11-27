@@ -13,6 +13,21 @@
       "A valid layout must satisfy all of these at once: every entry is a 4-digit sequence number immediately followed by a non-empty alphanumeric value; the sequence numbers are exactly 1..number of entries with no repeats; and the configuration values are all distinct. If any of them fails, the whole layout is invalid.",
       "n distinct sequence numbers that all lie in 1..n must cover 1..n exactly, so you only need to check the range and repeats, not missing numbers separately. Putting each value into an array of length n by its sequence number gives the output order directly.",
       "Split on the vertical bar (keep empty entries; empty input also counts as one empty entry). For each entry check that its length is ≥5, the first 4 characters are digits, the rest are ASCII letters or digits, the number is in 1..n, the number has not been used, and the value has not appeared; otherwise output [\"Invalid configuration\"] immediately. If everything passes, output the values in sequence-number order as a compact JSON array of strings."
+    ],
+    "ja": [
+      "有効なレイアウトは次のすべてを同時に満たす必要があります。各エントリが4桁の連番と、それに直接続く空でない英数字の値からなること。連番がちょうど 1..エントリ数 で重複がないこと。設定値がすべて異なること。どれか1つでも満たされなければ、レイアウト全体が無効です。",
+      "1..n の範囲にある n 個の異なる連番は、1..n をちょうど覆うので、範囲と重複だけを調べれば十分で、欠番を別に確認する必要はありません。各値を連番で長さ n の配列に入れれば、そのまま出力順になります。",
+      "縦棒で分割します(空のエントリも残し、空の入力も空のエントリ1つとして扱います)。各エントリについて、長さが 5 以上であること、最初の4文字が数字であること、残りが ASCII の英字または数字であること、番号が 1..n の範囲にあること、その番号が未使用であること、その値が未出現であることを検査します。どれかを満たさなければ直ちに [\"Invalid configuration\"] を出力します。すべて通れば、値を連番の順に、空白を含まない文字列の JSON 配列として出力します。"
+    ],
+    "ko": [
+      "유효한 layout은 다음을 모두 동시에 만족해야 합니다. 모든 항목은 4자리 순번 바로 뒤에 비어 있지 않은 영숫자 값이 이어져야 합니다. 순번은 정확히 1..항목 수이며 반복이 없어야 합니다. 설정값은 모두 서로 달라야 합니다. 하나라도 실패하면 layout 전체가 유효하지 않습니다.",
+      "1..n 범위에 있는 서로 다른 n개의 순번은 1..n을 정확히 덮으므로, 범위와 반복만 검사하면 되고 빠진 번호를 따로 검사할 필요가 없습니다. 각 값을 순번에 따라 길이 n의 배열에 넣으면 출력 순서가 바로 나옵니다.",
+      "세로 막대로 분할합니다(빈 항목은 유지하며, 빈 입력도 빈 항목 하나로 칩니다). 각 항목에 대해 길이가 ≥5이고, 앞 4자가 숫자이고, 나머지가 ASCII 영문자 또는 숫자이고, 번호가 1..n 안에 있고, 번호가 아직 사용되지 않았고, 값이 아직 나타나지 않았는지 확인하며, 그렇지 않으면 즉시 [\"Invalid configuration\"]을 출력합니다. 모두 통과하면 값을 순번 순서대로 간결한 문자열 JSON 배열로 출력합니다."
+    ],
+    "vi": [
+      "Một bố cục hợp lệ phải thỏa mãn đồng thời tất cả những điều sau: mỗi mục là số thứ tự 4 chữ số ngay sau đó là một giá trị chữ-số không rỗng; các số thứ tự đúng bằng 1..số mục và không lặp; và các giá trị cấu hình đôi một khác nhau. Nếu bất kỳ điều nào thất bại, toàn bộ bố cục không hợp lệ.",
+      "n số thứ tự phân biệt đều nằm trong 1..n thì phủ đúng 1..n, nên chỉ cần kiểm tra khoảng và sự lặp, không cần kiểm tra riêng các số bị thiếu. Đặt mỗi giá trị vào một mảng độ dài n theo số thứ tự của nó cho ra thứ tự in trực tiếp.",
+      "Tách theo dấu gạch đứng (giữ lại các mục rỗng; đầu vào rỗng cũng tính là một mục rỗng). Với mỗi mục kiểm tra độ dài ≥5, 4 ký tự đầu là chữ số, phần còn lại là chữ cái hoặc chữ số ASCII, số nằm trong 1..n, số chưa được dùng, và giá trị chưa xuất hiện; nếu không thì in ngay [\"Invalid configuration\"]. Nếu mọi thứ đều qua, in các giá trị theo thứ tự số thứ tự dưới dạng mảng JSON gọn gồm các chuỗi."
     ]
   },
   "explanationEn": "## Approach\n\nAfter splitting, check for each entry the four-digit sequence number, the ASCII configuration value, the sequence-number range 1..n, and uniqueness of both numbers and values; store the values in an array by sequence number and output it.\n\n## Proof of correctness\n\nAll n distinct sequence numbers lie in 1..n if and only if none is missing and they are consecutive. The format and character set of each entry are checked independently, and sets rule out both kinds of duplicates, so the layout is accepted if and only if it meets every formal validity requirement. Placing the values into the array by sequence number guarantees the returned order. The original constraints allowing duplicates in the input only mean that the input may be invalid; they do not cancel the uniqueness check in the body of the statement.\n\n## Complexity\n\nTime O(layout length+n), space O(layout length+n)."

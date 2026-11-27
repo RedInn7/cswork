@@ -13,6 +13,21 @@
       "To go around the ring from startIndex to a fixed position i, the shortest route keeps moving in one direction: with d=|i−startIndex|, going straight takes d steps and going the other way around the ring takes n−d steps. The target name may appear several times, and any of its positions can serve as the destination.",
       "Enumerate every position i whose name is exactly equal to target, take min(d, n−d) for each, and take the minimum over all of them; if there is no matching position at all, output -1. Names must be compared exactly, character by character, without ignoring case or whitespace, and the empty string can be a valid name and target.",
       "Parse the JSON array [tools, startIndex, target], decoding escapes in the strings correctly (including \\uXXXX and surrogate pairs) before comparing. Initialize the answer to n as the \"not found\" marker; go over tools, and whenever a name equals target, compute d=|i−startIndex| and update the answer with min(d, n−d). If the answer is still n at the end, output -1, otherwise output the answer. The time is O(total characters+n)."
+    ],
+    "ja": [
+      "startIndex から固定された位置 i まで円環上を進むとき、最短経路は一方向に進み続けるものです。d=|i−startIndex| とすると、まっすぐ進めば d 歩、反対向きに輪を回れば n−d 歩です。目的の名前は何度も現れ得て、そのどの位置も目的地になり得ます。",
+      "target と完全に等しい名前の位置 i をすべて列挙し、それぞれについて min(d, n−d) を求め、その最小値を取ります。一致する位置が 1 つもなければ -1 を出力します。名前は文字ごとに完全に比較し、大文字小文字や空白を無視してはいけません。空文字列も有効な名前および target になり得ます。",
+      "JSON 配列 [tools, startIndex, target] をパースし、比較する前に文字列中のエスケープ(\\uXXXX やサロゲートペアを含む)を正しくデコードします。答えを「見つからない」を表す印として n で初期化します。tools を走査し、名前が target に等しければ d=|i−startIndex| を計算して min(d, n−d) で答えを更新します。最後まで答えが n のままなら -1 を、そうでなければ答えを出力します。計算量は O(総文字数+n) です。"
+    ],
+    "ko": [
+      "원형에서 startIndex부터 고정된 위치 i까지 가는 가장 짧은 경로는 한 방향으로만 계속 움직이는 것입니다. d=|i−startIndex|라고 하면 그대로 가면 d번, 반대 방향으로 원을 돌아가면 n−d번이 걸립니다. 목표 이름은 여러 번 나올 수 있으며, 그 위치 중 어느 것이든 목적지가 될 수 있습니다.",
+      "이름이 target과 정확히 같은 모든 위치 i를 열거하여 각각 min(d, n−d)를 구하고, 그 모두에 대한 최솟값을 취합니다. 일치하는 위치가 전혀 없으면 -1을 출력합니다. 이름은 대소문자와 공백을 무시하지 않고 문자 단위로 정확히 비교해야 하며, 빈 문자열도 유효한 이름이자 target이 될 수 있습니다.",
+      "JSON 배열 [tools, startIndex, target]을 파싱하고, 비교하기 전에 문자열의 이스케이프(\\uXXXX와 서로게이트 쌍 포함)를 올바르게 디코딩합니다. 답을 \"찾지 못함\" 표시로 n으로 초기화합니다. tools를 훑으며 이름이 target과 같을 때마다 d=|i−startIndex|를 계산하고 min(d, n−d)로 답을 갱신합니다. 끝났을 때 답이 여전히 n이면 -1을, 아니면 답을 출력합니다. 시간 복잡도는 O(전체 문자 수+n)입니다."
+    ],
+    "vi": [
+      "Để đi vòng từ startIndex tới một vị trí i cố định, đường ngắn nhất cứ đi mãi theo một hướng: với d=|i−startIndex|, đi thẳng mất d bước và đi hướng ngược lại quanh vòng mất n−d bước. Tên đích có thể xuất hiện nhiều lần, và bất kỳ vị trí nào của nó đều có thể làm điểm đến.",
+      "Duyệt mọi vị trí i có tên đúng bằng target, lấy min(d, n−d) cho mỗi vị trí, rồi lấy giá trị nhỏ nhất trên tất cả; nếu không có vị trí nào khớp, in -1. Tên phải được so sánh chính xác từng ký tự, không bỏ qua chữ hoa/thường hay khoảng trắng, và xâu rỗng có thể là tên hợp lệ cũng như target hợp lệ.",
+      "Phân tích mảng JSON [tools, startIndex, target], giải mã đúng các chuỗi thoát trong xâu (bao gồm \\uXXXX và cặp surrogate) trước khi so sánh. Khởi tạo đáp án bằng n làm dấu hiệu \"không tìm thấy\"; duyệt tools, và mỗi khi một tên bằng target, tính d=|i−startIndex| và cập nhật đáp án bằng min(d, n−d). Nếu cuối cùng đáp án vẫn là n, in -1, ngược lại in đáp án. Thời gian là O(tổng số ký tự+n)."
     ]
   },
   "explanationEn": "## Approach\n\nGo over every position i where a name matches, take the smaller of the straight index distance d and the wrap-around distance n−d, then take the minimum over all target positions.\n\n## Proof of correctness\n\nFix a target i: the shortest path can only go along one of the two directions of the ring without repeating edges, and the two paths have lengths d and n−d. Enumerating all positions where the target occurs covers every possible endpoint, so the global minimum is correct.\n\n## Complexity\n\nTime O(total name characters+n), space O(input bytes+n). The worst-case ASCII-escaped name input is about 19.5MB, below the 32MiB input limit."

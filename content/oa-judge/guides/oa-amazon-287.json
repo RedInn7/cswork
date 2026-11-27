@@ -13,6 +13,21 @@
       "Each operation ships at most two items, so at least ⌈n/2⌉ operations are needed; items from one location ship at most one per operation, so at least as many operations as that location's count are needed. The answer is at least the larger of the two.",
       "This bound is always reachable: if the most frequent location has f items, more than all other items combined, pair it with the others one by one and ship the leftovers alone, f operations in total; otherwise always take one item from each of the two currently largest locations, keeping the largest count at most the rest plus 1, until 0 or 1 item remains.",
       "Count the occurrences of each location, take the maximum frequency f, and print max(f, (n+1) divided by 2 and rounded down)."
+    ],
+    "ja": [
+      "1 回の操作で出荷できるのは高々 2 品なので、少なくとも ⌈n/2⌉ 回の操作が必要です。また、同じ場所の品物は 1 回に 1 つずつしか出荷できないので、その場所の個数以上の操作回数が必要です。答えはこの 2 つのうち大きいほう以上です。",
+      "この下限は常に達成できます。最頻の場所の品物が f 個で、他の品物の合計より多い場合は、それを他の品物と 1 つずつ組み合わせ、余りを単独で出荷すれば、合計 f 回です。そうでない場合は、常にその時点で最も多い 2 つの場所から 1 品ずつ取れば、最大の個数は残りの合計 + 1 以下に保たれ、残りが 0 個または 1 個になるまで続けられます。",
+      "各場所の出現回数を数え、最大頻度 f を求めて、max(f, (n+1) を 2 で割った商) を出力します。"
+    ],
+    "ko": [
+      "한 번의 작업으로 최대 두 개를 출하하므로 최소 ⌈n/2⌉번의 작업이 필요합니다. 한 위치의 물품은 작업당 최대 하나만 출하되므로 그 위치의 개수만큼의 작업도 필요합니다. 답은 이 둘 중 큰 값 이상입니다.",
+      "이 하한은 항상 달성 가능합니다. 가장 빈번한 위치의 물품이 f개이고 나머지 전체보다 많다면, 나머지와 하나씩 짝지어 출하하고 남은 것은 혼자 출하해 총 f번이 됩니다. 그렇지 않으면 항상 현재 가장 많은 두 위치에서 하나씩 꺼내 최대 개수가 나머지 합 + 1 이하를 유지하게 하며, 0개 또는 1개가 남을 때까지 반복합니다.",
+      "각 위치의 등장 횟수를 세어 최대 빈도 f를 구하고, max(f, (n+1)을 2로 나눈 몫)을 출력합니다."
+    ],
+    "vi": [
+      "Mỗi thao tác gửi tối đa hai món, nên cần ít nhất ⌈n/2⌉ thao tác; các món từ cùng một địa điểm mỗi thao tác gửi tối đa một, nên cần ít nhất bằng số lượng của địa điểm đó. Đáp án ít nhất bằng giá trị lớn hơn trong hai cận này.",
+      "Cận này luôn đạt được: nếu địa điểm xuất hiện nhiều nhất có f món, nhiều hơn tổng tất cả các món còn lại, hãy ghép nó lần lượt với các món khác rồi gửi riêng phần còn lại, tổng cộng f thao tác; ngược lại, luôn lấy một món từ mỗi địa điểm trong hai địa điểm lớn nhất hiện tại, giữ số lượng lớn nhất không quá phần còn lại cộng 1, cho đến khi còn 0 hoặc 1 món.",
+      "Đếm số lần xuất hiện của mỗi địa điểm, lấy tần suất lớn nhất f, và in ra max(f, (n+1) chia 2 làm tròn xuống)."
     ]
   },
   "explanationEn": "## Approach\n\nLet f be the highest frequency of a location; the answer is max(f,ceil(n/2)).\n\n## Proof of correctness\n\nEach operation ships at most two items, so at least ceil(n/2) operations are needed; one location ships at most one item per operation, so at least f operations are needed. If f exceeds the total of all other locations, pair that location with the others one by one and ship the rest alone, for exactly f operations. Otherwise you can always pair the two currently most frequent locations until 0 or 1 item remains; the invariant that the highest frequency is at most the rest plus 1 guarantees that ceil(n/2) operations are reached.\n\n## Complexity\n\nTime O(n), space O(number of distinct locations)."

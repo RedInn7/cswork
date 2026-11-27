@@ -11,5 +11,35 @@
     "hints": [
       "Let y[i]=(-1)^i·(target[i]−source[i]); then one valid operation adds a constant to an even-length range of y as a whole, and the constant is determined by the parity of the range's left endpoint index. In the adjacent differences of y, this produces a one-unit change with a fixed direction at two boundaries of the same parity. Check the direction of the prefix differences and the total separately for each boundary parity; when feasible, the required number of operations equals the number of positive difference units."
     ]
+  },
+  "ja": {
+    "title": "偶数長の区間に +1/−1 を交互に加える最小操作回数",
+    "description": "1 回の操作では、空でない偶数長の連続部分配列を任意に選び、その要素に左から順に +1、−1、+1、−1 を加えます。同じ範囲に繰り返し操作してもよく、異なる範囲を選んでもかまいません。source を target にするための最小操作回数を求めてください。不可能な場合は −1 を出力します。\n\n標準入出力、本サイトで追加した範囲、および例は、この問題の説明に従っています。元の問題で範囲が欠けている箇所は、本サイトの追加であることを明示しています。",
+    "input": "1 行目に n(元の問題: 1≤n≤10^5)、続く 2 行にそれぞれ n 個の source の値と n 個の target の値が与えられます(元の問題: −10^9≤要素≤10^9)。",
+    "output": "最小操作回数を出力してください。target に到達できない場合は −1 を出力します。",
+    "explanation": "y[i]=(-1)^i·(target[i]−source[i]) とすると、1 回の有効な操作は y の偶数長の範囲全体に定数を加えることになり、その定数は範囲の左端の添字の偶奇で決まります。y の隣接差分では、これは偶奇が同じ 2 つの境界での、向きが決まった 1 単位の変化になります。境界の偶奇ごとに、差分の累積和の向きと合計を別々に確認します。実現可能なとき、必要な操作回数は正の差分単位の総数に等しくなります。",
+    "hints": [
+      "y[i]=(-1)^i·(target[i]−source[i]) とすると、1 回の有効な操作は y の偶数長の範囲全体に定数を加えることになり、その定数は範囲の左端の添字の偶奇で決まります。y の隣接差分では、これは偶奇が同じ 2 つの境界での、向きが決まった 1 単位の変化になります。境界の偶奇ごとに、差分の累積和の向きと合計を別々に確認します。実現可能なとき、必要な操作回数は正の差分単位の総数に等しくなります。"
+    ]
+  },
+  "ko": {
+    "title": "짝수 길이 구간에 +1/−1을 번갈아 적용하는 최소 연산 횟수",
+    "description": "한 번의 연산에서 길이가 짝수인 비어 있지 않은 연속 부분 배열을 임의로 고르고, 그 원소들에 왼쪽에서 오른쪽으로 차례로 +1, −1, +1, −1을 적용합니다. 같은 구간에 연산을 반복할 수 있고 서로 다른 구간을 골라도 됩니다. source를 target으로 만드는 최소 연산 횟수를 구하고, 불가능하면 −1을 출력하세요.\n\n표준 입출력, 이 사이트가 추가한 범위, 예시는 이 문제의 설명을 따릅니다. 원문에 범위가 없는 부분은 이 사이트에서 추가한 것임을 명시합니다.",
+    "input": "첫째 줄에 n이 주어지고(원래 문제: 1≤n≤10^5), 다음 두 줄에 각각 n개의 source 값과 n개의 target 값이 주어집니다(원래 문제: −10^9≤원소≤10^9).",
+    "output": "최소 연산 횟수를 출력하며, target에 도달할 수 없으면 −1을 출력합니다.",
+    "explanation": "y[i]=(-1)^i·(target[i]−source[i])로 두면 유효한 연산 한 번은 y의 짝수 길이 구간 전체에 같은 상수를 더하는 것이며, 그 상수는 구간 왼쪽 끝 인덱스의 홀짝으로 결정됩니다. y의 인접 차분에서는 홀짝이 같은 두 경계에 방향이 고정된 1 단위 변화가 생깁니다. 경계 홀짝마다 접두 차분의 방향과 총합을 따로 확인하고, 가능하다면 필요한 연산 횟수는 양의 차분 단위의 개수와 같습니다.",
+    "hints": [
+      "y[i]=(-1)^i·(target[i]−source[i])로 두면 유효한 연산 한 번은 y의 짝수 길이 구간 전체에 같은 상수를 더하는 것이며, 그 상수는 구간 왼쪽 끝 인덱스의 홀짝으로 결정됩니다. y의 인접 차분에서는 홀짝이 같은 두 경계에 방향이 고정된 1 단위 변화가 생깁니다. 경계 홀짝마다 접두 차분의 방향과 총합을 따로 확인하고, 가능하다면 필요한 연산 횟수는 양의 차분 단위의 개수와 같습니다."
+    ]
+  },
+  "vi": {
+    "title": "Số thao tác tối thiểu cộng/trừ 1 xen kẽ trên đoạn có độ dài chẵn",
+    "description": "Mỗi thao tác, chọn một đoạn con liên tiếp không rỗng có độ dài chẵn và lần lượt áp dụng +1, −1, +1, −1 lên các phần tử của nó từ trái sang phải. Có thể thao tác nhiều lần trên cùng một đoạn, và cũng có thể chọn các đoạn khác nhau. Hãy tìm số thao tác tối thiểu để biến source thành target; in −1 nếu không thể.\n\nGiao thức đầu vào/đầu ra chuẩn, các giới hạn do trang này bổ sung và các ví dụ đều theo mô tả của đề này; chỗ nào đề gốc thiếu giới hạn thì được đánh dấu rõ là phần bổ sung của trang này.",
+    "input": "Dòng đầu chứa n (đề gốc: 1≤n≤10^5); hai dòng tiếp theo lần lượt chứa n giá trị của source và n giá trị của target (đề gốc: −10^9≤phần tử≤10^9).",
+    "output": "In ra số thao tác tối thiểu; in −1 nếu không thể đạt được target.",
+    "explanation": "Đặt y[i]=(-1)^i·(target[i]−source[i]); khi đó một thao tác hợp lệ cộng cùng một hằng số lên cả một đoạn có độ dài chẵn của y, và hằng số đó được xác định bởi tính chẵn lẻ của chỉ số đầu trái của đoạn. Trong hiệu liên tiếp của y, điều này tạo ra thay đổi một đơn vị theo hướng cố định tại hai biên có cùng tính chẵn lẻ. Kiểm tra riêng hướng của tổng tiền tố các hiệu và tổng toàn bộ cho từng tính chẵn lẻ của biên; khi khả thi, số thao tác cần thiết bằng số đơn vị hiệu dương.",
+    "hints": [
+      "Đặt y[i]=(-1)^i·(target[i]−source[i]); khi đó một thao tác hợp lệ cộng cùng một hằng số lên cả một đoạn có độ dài chẵn của y, và hằng số đó được xác định bởi tính chẵn lẻ của chỉ số đầu trái của đoạn. Trong hiệu liên tiếp của y, điều này tạo ra thay đổi một đơn vị theo hướng cố định tại hai biên có cùng tính chẵn lẻ. Kiểm tra riêng hướng của tổng tiền tố các hiệu và tổng toàn bộ cho từng tính chẵn lẻ của biên; khi khả thi, số thao tác cần thiết bằng số đơn vị hiệu dương."
+    ]
   }
 }

@@ -13,6 +13,21 @@
       "Each day adds one occupied house, which can only join the run directly to its left and the run directly to its right; other runs are unaffected.",
       "Store the run length only at the two endpoints of every run. When position x is added, read the lengths at x-1 and x+1 (exactly the right end of the left run and the left end of the right run) and combine them into the new run length.",
       "Use an array length of size N+2; on day d occupying x: left = length[x-1], right = length[x+1], total = left + right + 1; write total to length[x], length[x-left] and length[x+right]; print d the first time total >= M."
+    ],
+    "ja": [
+      "毎日入居する家は 1 軒増えますが、それは直接左にある区間と直接右にある区間にだけつながり、ほかの区間には影響しません。",
+      "各区間の長さを、その両端の 2 点にだけ保存します。位置 x を追加するときは、x-1 と x+1 の長さ（ちょうど左の区間の右端と右の区間の左端）を読み、それらを合わせて新しい区間の長さにします。",
+      "サイズ N+2 の配列 length を使います。d 日目に x が入居するとき、left = length[x-1]、right = length[x+1]、total = left + right + 1 とし、total を length[x]、length[x-left]、length[x+right] に書き込みます。初めて total >= M になった d を出力します。"
+    ],
+    "ko": [
+      "매일 집 한 채가 입주하며, 이 집은 바로 왼쪽의 구간과 바로 오른쪽의 구간에만 이어질 수 있고 다른 구간은 영향을 받지 않습니다.",
+      "각 구간의 길이를 양 끝점에만 저장합니다. 위치 x가 추가되면 x-1과 x+1의 길이(각각 왼쪽 구간의 오른쪽 끝과 오른쪽 구간의 왼쪽 끝)를 읽어 새 구간 길이로 합칩니다.",
+      "크기 N+2의 배열 length를 사용합니다. d일째에 x가 입주하면 left = length[x-1], right = length[x+1], total = left + right + 1로 두고, total을 length[x], length[x-left], length[x+right]에 씁니다. total >= M이 처음 되는 d를 출력합니다."
+    ],
+    "vi": [
+      "Mỗi ngày thêm một ngôi nhà được lấp đầy, và nó chỉ có thể nối với đoạn ngay bên trái và đoạn ngay bên phải; các đoạn khác không bị ảnh hưởng.",
+      "Chỉ lưu độ dài đoạn tại hai đầu mút của mỗi đoạn. Khi vị trí x được thêm, đọc độ dài tại x-1 và x+1 (đúng là đầu phải của đoạn trái và đầu trái của đoạn phải) và ghép chúng thành độ dài đoạn mới.",
+      "Dùng một mảng length kích thước N+2; vào ngày d lấp đầy x: left = length[x-1], right = length[x+1], total = left + right + 1; ghi total vào length[x], length[x-left] và length[x+right]; in d ở lần đầu tiên total >= M."
     ]
   },
   "explanationEn": "## Approach\n\nRecord the run length at the two endpoints of every occupied run. When a new position x is added, read the run lengths of its left and right neighbours, form the new run and update its two outer endpoints.\n\n## Correctness\n\nIf the positions to the left and right of the new position are occupied, those neighbours must be the right endpoint of the left run and the left endpoint of the right run, so the stored run lengths are accurate. The new occupation can only join these two runs and itself, and does not affect other runs. The first day a run of length at least M is formed is the earliest day that satisfies the condition.\n\n## Complexity\n\nTime O(N), space O(N)."

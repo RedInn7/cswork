@@ -13,6 +13,21 @@
       "Coordinates are integers, so for two colliding objects each coordinate difference is −1, 0 or 1; an object can only collide with objects on the nine surrounding lattice points.",
       "Process objects in input order with a hash map from coordinate to the number of objects already seen there. When an object arrives, look up how many objects sit on its nine neighboring coordinates, so each pair is counted once, when its later object arrives.",
       "For each object (x,y), let dx and dy each range over −1, 0, 1 and add the stored count at (x+dx,y+dy) to the answer; then increment the count at (x,y). Several objects on the same coordinate are handled by the counts. Print the answer at the end."
+    ],
+    "ja": [
+      "座標は整数なので、衝突する 2 つの物体では各座標の差が −1、0、1 のいずれかです。物体は周囲 9 個の格子点上にある物体とだけ衝突しえます。",
+      "物体を入力順に処理し、座標から、そこにすでに見た物体の個数への対応をハッシュマップで持ちます。物体が到着したら、その周囲 9 個の座標にある物体の個数を調べるので、各ペアは後から来る物体の到着時に 1 回だけ数えられます。",
+      "各物体 (x,y) について、dx と dy をそれぞれ −1、0、1 とし、(x+dx,y+dy) に保存された個数を答えに加えます。そのあと (x,y) の個数を 1 増やします。同じ座標に複数の物体があっても、個数で処理できます。最後に答えを出力します。"
+    ],
+    "ko": [
+      "좌표는 정수이므로 충돌하는 두 물체의 각 좌표 차이는 −1, 0 또는 1입니다. 물체는 주변의 아홉 개 격자점에 있는 물체와만 충돌할 수 있습니다.",
+      "물체를 입력 순서대로 처리하며, 좌표에서 이미 본 물체 수로 가는 해시 맵을 둡니다. 물체가 들어오면 이웃한 아홉 개 좌표에 있는 물체 수를 조회하므로, 각 쌍은 나중에 들어온 물체가 도착할 때 한 번만 세어집니다.",
+      "각 물체 (x,y)에 대해 dx와 dy를 각각 −1, 0, 1로 바꿔 가며 (x+dx,y+dy)에 저장된 수를 답에 더한 뒤, (x,y)의 수를 1 증가시킵니다. 같은 좌표에 여러 물체가 있는 경우는 수로 처리됩니다. 마지막에 답을 출력합니다."
+    ],
+    "vi": [
+      "Tọa độ là số nguyên, nên với hai vật thể va chạm, hiệu của mỗi tọa độ là −1, 0 hoặc 1; một vật thể chỉ có thể va chạm với các vật thể ở chín điểm lưới xung quanh.",
+      "Xử lý các vật thể theo thứ tự đầu vào với một bảng băm từ tọa độ sang số vật thể đã thấy ở đó. Khi một vật thể đến, tra xem có bao nhiêu vật thể ở chín tọa độ lân cận của nó, nhờ đó mỗi cặp được đếm một lần, khi vật thể đến sau xuất hiện.",
+      "Với mỗi vật thể (x,y), cho dx và dy chạy từng giá trị −1, 0, 1 và cộng số đếm lưu tại (x+dx,y+dy) vào đáp án; sau đó tăng số đếm tại (x,y). Nhiều vật thể cùng tọa độ được xử lý nhờ các số đếm. In đáp án ở cuối."
     ]
   },
   "explanationEn": "## Approach\n\nRead the coordinates one by one, add up the number of already-recorded objects at the nine neighboring integer coordinates, then record the current object.\n\n## Why it works\n\nWith integer coordinates, the allowed differences on each axis can only be −1, 0 or 1. The nine coordinate lookups cover exactly the earlier objects that collide with the current one. Each pair is counted once, when its later object is added, and repeated coordinates are handled by the frequency counts.\n\n## Complexity\n\nTime O(n), extra space O(n)."

@@ -13,6 +13,21 @@
       "To maximise the sum of k elements: whenever a chosen element is smaller than an unchosen one, swapping them increases the sum.",
       "So the optimal choice is the k largest elements; equal values at different indices count separately, and swapping equal values does not change the answer.",
       "Sort the array in descending order, add up the first k values and print the sum; it can reach 10^14, so 64-bit integers are required."
+    ],
+    "ja": [
+      "k 個の要素の合計を最大化するには、選んだ要素が選ばなかった要素より小さい場合、それらを入れ替えると合計が増えます。",
+      "したがって最適な選択は、大きい方から k 個の要素です。異なる添字の同じ値は別々に数え、同じ値の入れ替えは答えを変えません。",
+      "配列を降順にソートし、先頭の k 個の値を足して合計を出力します。合計は 10^14 に達しうるので、64 ビット整数が必要です。"
+    ],
+    "ko": [
+      "k개 원소의 합을 최대화하려면, 선택한 원소가 선택하지 않은 원소보다 작을 때마다 서로 맞바꾸면 합이 늘어납니다.",
+      "따라서 최적의 선택은 가장 큰 k개입니다. 서로 다른 인덱스의 같은 값은 따로 세며, 같은 값끼리 바꿔도 답은 변하지 않습니다.",
+      "배열을 내림차순으로 정렬하고 처음 k개의 값을 더해 합을 출력합니다. 합이 10^14까지 커질 수 있으므로 64비트 정수가 필요합니다."
+    ],
+    "vi": [
+      "Để tối đa hóa tổng của k phần tử: bất cứ khi nào một phần tử được chọn nhỏ hơn một phần tử chưa chọn, hoán đổi chúng sẽ làm tăng tổng.",
+      "Vì vậy lựa chọn tối ưu là k phần tử lớn nhất; các giá trị bằng nhau tại những chỉ số khác nhau được tính riêng, và việc hoán đổi các giá trị bằng nhau không đổi đáp án.",
+      "Sắp xếp mảng giảm dần, cộng k giá trị đầu và in tổng; nó có thể đạt 10^14, nên cần số nguyên 64-bit."
     ]
   },
   "explanationEn": "## Approach\n\nSort in descending order and sum the first k values using 64-bit integers.\n\n## Correctness\n\nIf a chosen element is smaller than an unchosen element, swapping them increases the total. Therefore an optimal plan can and must take the k largest values (swapping equal values does not affect the answer).\n\n## Complexity\n\nTime O(n log n), space O(n)."

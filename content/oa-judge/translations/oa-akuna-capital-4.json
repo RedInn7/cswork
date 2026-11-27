@@ -13,5 +13,41 @@
       "Choose at most k of the largest positive weights, and remember that the center itself may be negative.",
       "Enumerate every center, and also allow isolated nodes and 0 arms."
     ]
+  },
+  "ja": {
+    "title": "腕が高々 k 本の最大ノード重みスター部分グラフ",
+    "description": "各ノードに整数の重みがある無向単純グラフが与えられます。空でないスター部分グラフを選んでください。中心を 1 つ選び、直接の隣接ノードを葉として高々 k 個選び、中心からそれらの葉への辺だけを使います。ノードの重みの和の最大値を求めてください。葉は選ばなくてもよいですが、中心は必要です。スターは誘導部分グラフである必要はないので、元のグラフで葉同士に辺があっても選択の妨げにはなりません。",
+    "input": "1 行目に n m k、2 行目に n 個の重み values[0..n−1] が与えられます。続く m 行には、無向辺を表す u v が 1 行ずつ与えられます。元の制約の全体: 2≤n≤100000、1≤m≤100000、0≤k≤100000、−1000≤values[i]≤1000、0≤u,v<n かつ u≠v、無向辺の重複なし。本サイトでは、元の 012 の制約と 013 の公式例にある 0 始まりの番号付けで統一しています。元の 007 の図示例の 1 始まりの端点はすべて 1 減らし、重みとの対応は保っています。",
+    "output": "重みの和の最大値を整数で出力してください。k は腕の本数の上限であり、ノード数の上限ではありません。k=0 のときは中心だけが許されます。すべての重みが負のとき、空のグラフを表す 0 を出力することはできません。",
+    "explanation": "公開例 1 は 007 のグラフを番号付けを統一して使っており、答えは 120 です。例 2 は 013 の入力と 014 の答え 16 をそのまま使っていますが、実際の選択は中心 3 で葉は 1 と 4 です。014 にある葉 2 という表記は誤記です。例 3 はカタログの入力をそのまま使い、元の 11 を 12 に訂正しています。中心 1 が重み 5 と 3 を選びます。初期の番号付けの違いは単なる付け替えであり、グラフにも目的関数にも影響しません。すべての出典と訂正は解説に開示しています。",
+    "hints": [
+      "中心を固定すると、重みが正の隣接ノードだけが意味を持ちます。",
+      "正の重みのうち大きい方から高々 k 個を選びます。中心自身の重みが負になりうることを忘れないでください。",
+      "すべての中心を列挙し、孤立ノードと腕 0 本の場合も許します。"
+    ]
+  },
+  "ko": {
+    "title": "팔이 최대 k개인 노드 가중치 최대 스타 부분 그래프",
+    "description": "각 노드에 정수 가중치가 있는 무방향 단순 그래프가 주어집니다. 비어 있지 않은 스타 부분 그래프를 하나 고르세요. 중심 노드 하나와 서로 다른 직접 이웃 최대 k개를 잎으로 고르고, 중심에서 그 잎들로 가는 간선만 사용합니다. 노드 가중치 합의 최댓값을 구하세요. 잎은 선택 사항이지만 중심은 반드시 있어야 합니다. 스타가 유도 부분 그래프일 필요는 없으므로, 원래 그래프에서 잎들 사이에 간선이 있어도 그 스타를 고르는 데 문제가 없습니다.",
+    "input": "첫째 줄에 n m k가 주어지고, 둘째 줄에 n개의 가중치 values[0..n−1]가 주어지며, 이어지는 m개의 줄에 각각 무방향 간선 u v가 주어집니다. 원본 전체 제약 조건: 2≤n≤100000, 1≤m≤100000, 0≤k≤100000, −1000≤values[i]≤1000, 0≤u,v<n이며 u≠v이고, 중복된 무방향 간선은 없습니다. 이 사이트는 원본 012 제약 조건과 013 공식 예제의 0-기반 번호 체계를 일관되게 사용하며, 원본 007 예시의 1-기반 끝점은 모두 1씩 줄이고 가중치 대응은 그대로 유지합니다.",
+    "output": "가중치 합의 최댓값을 정수로 출력합니다. k는 팔의 개수의 상한이며 노드 개수의 상한이 아닙니다. k=0이면 중심 하나만 허용됩니다. 모든 가중치가 음수일 때 빈 그래프를 뜻하는 0을 출력해서는 안 됩니다.",
+    "explanation": "공개 예제 1은 007의 그래프를 번호만 통일해 그대로 사용하며 답은 120입니다. 예제 2는 013의 입력과 014의 답 16을 유지하지만, 실제 선택은 중심 3과 잎 1, 4이며 014의 잎 2라는 표기는 오타입니다. 예제 3은 카탈로그의 입력을 유지하되 원래의 11을 12로 바로잡았습니다. 중심 1이 가중치 5와 3을 고릅니다. 초기 번호 체계의 차이는 단순한 이름 바꿈일 뿐 그래프와 목적 함수를 바꾸지 않습니다. 모든 출처와 정정 내용은 해설에 공개되어 있습니다.",
+    "hints": [
+      "중심이 정해지면 가중치가 양수인 이웃만 의미가 있습니다.",
+      "양수 가중치 중 가장 큰 것을 최대 k개 고르세요. 중심 자체는 음수일 수 있다는 점을 기억하세요.",
+      "모든 노드를 중심으로 열거하고, 고립된 노드와 팔이 0개인 경우도 허용하세요."
+    ]
+  },
+  "vi": {
+    "title": "Đồ thị con hình sao có tổng trọng số nút lớn nhất với tối đa k nhánh",
+    "description": "Cho một đồ thị vô hướng đơn, mỗi nút có một trọng số nguyên, hãy chọn một đồ thị con hình sao không rỗng: chọn một tâm và tối đa k nút kề trực tiếp phân biệt làm lá, và chỉ lấy các cạnh từ tâm đến các lá đó. Hãy tìm tổng trọng số nút lớn nhất. Lá là tùy chọn, nhưng phải có một tâm; hình sao không cần là đồ thị con cảm sinh, nên các cạnh giữa các lá trong đồ thị gốc không ngăn cản việc chọn nó.",
+    "input": "Dòng đầu tiên chứa n m k; dòng thứ hai chứa n trọng số values[0..n−1]; mỗi dòng trong m dòng tiếp theo chứa u v, một cạnh vô hướng. Ràng buộc gốc đầy đủ: 2≤n≤100000, 1≤m≤100000, 0≤k≤100000, −1000≤values[i]≤1000, 0≤u,v<n với u≠v, và không có cạnh vô hướng trùng lặp. Trang này nhất quán dùng cách đánh số từ 0 của ràng buộc gốc 012 và ví dụ chính thức 013; các đầu mút đánh số từ 1 trong minh họa gốc 007 đều được giảm đi 1, giữ nguyên sự tương ứng với trọng số.",
+    "output": "In ra tổng trọng số lớn nhất dưới dạng số nguyên. k là cận trên của số nhánh, không phải của số nút; k=0 cho phép chỉ lấy một mình tâm. Khi mọi trọng số đều âm, bạn không thể in 0 để biểu thị đồ thị rỗng.",
+    "explanation": "Ví dụ công khai 1 giữ đồ thị 007 với cách đánh số thống nhất, cho kết quả 120. Ví dụ 2 giữ đầu vào 013 và đáp án 16 của 014, nhưng lựa chọn thực tế là tâm 3 với các lá 1 và 4; nhãn lá 2 trong 014 là lỗi đánh máy. Ví dụ 3 giữ đầu vào của catalog, và 11 gốc được sửa thành 12: tâm 1 chọn các trọng số 5 và 3. Sự khác biệt trong cách đánh số ban đầu chỉ là đổi nhãn, không thay đổi đồ thị hay hàm mục tiêu; mọi nguồn và chỗ sửa đều được nêu rõ trong lời giải.",
+    "hints": [
+      "Khi tâm đã cố định, chỉ các nút kề có trọng số dương mới quan trọng.",
+      "Chọn tối đa k trọng số dương lớn nhất, và nhớ rằng bản thân tâm có thể âm.",
+      "Duyệt mọi tâm, và cũng cho phép các nút cô lập và 0 nhánh."
+    ]
   }
 }

@@ -13,6 +13,21 @@
       "A reference never changes the command that finally runs: what !j executes is exactly what entry j finally executes. There are no cycles, so every reference chain ends at a real command.",
       "Follow the reference chain until you reach a real command or an entry that is already resolved, then mark every position on that path with the same result. This way each position is traced in full only once.",
       "Start with resolved filled with -1. For each position i, walk from it: while the current entry is unresolved, add it to the path; if it is cmdK, resolve it to K and stop; otherwise jump to the referenced entry. Then set every position on the path to the result at the end of the walk. Finally count the three commands and print the counts."
+    ],
+    "ja": [
+      "参照によって、最終的に実行されるコマンドは変わりません。!j が実行するものは、エントリ j が最終的に実行するものにほかなりません。循環はないので、どの参照の連鎖も実際のコマンドで終わります。",
+      "参照の連鎖を、実際のコマンドか、すでに解決済みのエントリに達するまでたどり、その経路上のすべての位置に同じ結果を記録します。こうすれば、各位置を完全にたどるのは 1 回だけで済みます。",
+      "resolved を -1 で埋めて始めます。各位置 i から歩き始め、現在のエントリが未解決の間は、それを経路に追加します。cmdK なら、それを K と解決して止まり、そうでなければ参照先のエントリへ移ります。歩き終えたら、経路上のすべての位置にその結果を設定します。最後に 3 つのコマンドを数えて出力します。"
+    ],
+    "ko": [
+      "참조는 최종적으로 실행되는 명령을 바꾸지 않습니다. !j가 실행하는 것은 j번째 항목이 최종적으로 실행하는 것과 정확히 같습니다. 사이클이 없으므로 모든 참조 사슬은 실제 명령에서 끝납니다.",
+      "실제 명령이나 이미 확정된 항목에 도달할 때까지 참조 사슬을 따라가고, 그 경로 위의 모든 위치에 같은 결과를 표시합니다. 이렇게 하면 각 위치는 전체를 한 번만 추적합니다.",
+      "resolved를 -1로 채워 시작합니다. 각 위치 i에서 출발해, 현재 항목이 미확정인 동안 경로에 추가하고, cmdK이면 K로 확정한 뒤 멈추며, 아니면 참조된 항목으로 이동합니다. 그런 다음 경로의 모든 위치를 걷기가 끝난 지점의 결과로 설정합니다. 마지막으로 세 명령의 개수를 세어 출력합니다."
+    ],
+    "vi": [
+      "Một tham chiếu không bao giờ thay đổi lệnh cuối cùng được chạy: thứ mà !j thực thi chính xác là thứ mà mục j cuối cùng thực thi. Không có chu trình, nên mọi chuỗi tham chiếu đều kết thúc ở một lệnh thật.",
+      "Đi theo chuỗi tham chiếu cho đến khi gặp một lệnh thật hoặc một mục đã được xác định, rồi đánh dấu mọi vị trí trên đường đó bằng cùng một kết quả. Như vậy mỗi vị trí chỉ phải truy vết đầy đủ một lần.",
+      "Bắt đầu với resolved được điền -1. Với mỗi vị trí i, đi từ nó: trong khi mục hiện tại chưa được xác định, thêm nó vào đường đi; nếu nó là cmdK, xác định nó là K và dừng; ngược lại nhảy tới mục được tham chiếu. Sau đó đặt mọi vị trí trên đường đi bằng kết quả ở cuối lượt đi. Cuối cùng đếm ba lệnh và in các số đếm."
     ]
   },
   "explanationEn": "## Approach\n\nFollow the reference chain until a result that is already resolved, then mark every position on the path with that result. Finally add up the command category of each position.\n\n## Correctness\n\nThere are no cycles and every chain reaches an actual command, so the tracing always terminates. A reference does not change the final command, so filling back along the path is correct. Memoization ensures each position appears in an unresolved path at most once.\n\n## Complexity\n\nTime O(n), space O(n)."

@@ -11,5 +11,35 @@
     "hints": [
       "After splitting, check for each entry the four-digit sequence number, the ASCII configuration value, the sequence-number range 1..n, and uniqueness of both numbers and values; store the values in an array by sequence number and output it."
     ]
+  },
+  "ja": {
+    "title": "バーコードスキャナー設定の検証と並べ替え",
+    "description": "設定エントリは縦棒で区切られ、各エントリは4桁の10進数の連番と、それに直接続く空でない設定値からなります。有効なレイアウトであるためには、連番がちょうど 1..エントリ数 であり、重複も欠番もなく、設定値が ASCII の英字と数字だけを含み、かつすべて異なる必要があります。設定値を連番の順に出力してください。いずれかの検査に失敗した場合は [\"Invalid configuration\"] を出力します。検証対象の入力には重複した値が含まれることがありますが、そのような入力は無効です。\n\n標準入出力、例、解説は本サイトが独自に作成したものです。本サイト独自と明記した範囲は、出典の元の制約ではありません。",
+    "input": "layout が1行で与えられます。元の問題文では、注文と連番の範囲は 1..9999 で、入力には欠番や重複した番号が含まれることがあります。無効な入力については、本サイトでは 0..9999 個の区切られたエントリを許し、エントリの長さは 0..104、空白を含まない表示可能な ASCII 文字からなるものとします。有効な設定値には本サイトで 1..100 文字という制限を加えています。4桁の連番は ASCII の数字でなければなりません。空の入力も、検証すべき無効なレイアウトです。",
+    "output": "レイアウトが有効なら、連番の順に並べた文字列の JSON 配列を空白を含まない形式で出力してください。そうでなければ [\"Invalid configuration\"] を出力します。",
+    "explanation": "出力は [\"AA\",\"BB\"]、[\"Invalid configuration\"]、[\"Invalid configuration\"] です。2つ目の例では、出典のコードが省いている設定値の一意性チェックを明示しています。連番が異なるからといって、重複した値を受け入れることはできません。",
+    "hints": [
+      "分割した後、各エントリについて、4桁の連番、ASCII の設定値、連番の範囲 1..n、そして番号と値の両方の一意性を検査します。値は連番ごとに配列へ格納し、それを出力します。"
+    ]
+  },
+  "ko": {
+    "title": "바코드 스캐너 설정 검증 및 재정렬",
+    "description": "설정 항목은 세로 막대로 구분되며, 각 항목은 4자리 십진수 순번 바로 뒤에 비어 있지 않은 설정값이 이어진 형태입니다. 유효한 구성이 되려면 순번이 정확히 1..항목 수여야 하고(중복이나 빠진 번호가 없어야 함), 설정값은 ASCII 영문자와 숫자만 포함해야 하며 모두 서로 달라야 합니다. 설정값을 순번 순서대로 출력하고, 검사 중 하나라도 실패하면 [\"Invalid configuration\"]을 출력합니다. 검증 대상 입력에 중복된 값이 있을 수 있지만 그런 입력은 유효하지 않습니다.\n\n표준 입출력, 예제, 해설은 이 사이트에서 독자적으로 작성했습니다. 이 사이트가 직접 정했다고 표시된 범위는 원문의 제약 조건이 아닙니다.",
+    "input": "한 줄에 layout이 주어집니다. 원문에서 orders와 순번의 범위는 1..9999이며, 입력에는 빠지거나 중복된 번호가 있을 수 있습니다. 유효하지 않은 입력에 대해서는 이 사이트에서 공백 없는 출력 가능한 ASCII 문자로 이루어진 0..9999개의 구분된 항목을 허용하며, 항목의 길이는 0..104입니다. 유효한 설정값에는 이 사이트에서 1..100자를 추가했습니다. 4자리 순번은 ASCII 숫자로 이루어져야 합니다. 빈 입력도 검증해야 할 유효하지 않은 layout입니다.",
+    "output": "layout이 유효하면 순번 순서대로 문자열을 나열한 간결한 JSON 배열을 출력하고, 그렇지 않으면 [\"Invalid configuration\"]을 출력합니다.",
+    "explanation": "출력은 각각 [\"AA\",\"BB\"], [\"Invalid configuration\"], [\"Invalid configuration\"]입니다. 두 번째 예제는 원문 코드에는 빠져 있던 설정값의 유일성 검사를 분명히 보여 줍니다. 순번이 다르다고 해서 중복된 값을 받아들일 수는 없습니다.",
+    "hints": [
+      "분할한 뒤 각 항목에 대해 4자리 순번, ASCII 설정값, 순번 범위 1..n, 그리고 순번과 값의 유일성을 검사하고, 값을 순번에 따라 배열에 저장하여 출력합니다."
+    ]
+  },
+  "vi": {
+    "title": "Kiểm tra và sắp xếp lại cấu hình máy quét mã vạch",
+    "description": "Các mục cấu hình được phân tách bằng dấu gạch đứng; mỗi mục là một số thứ tự thập phân bốn chữ số ngay sau đó là một giá trị cấu hình không rỗng. Một bố cục hợp lệ phải có các số thứ tự đúng bằng 1..số mục, không trùng lặp và không thiếu, và các giá trị cấu hình chỉ chứa chữ cái và chữ số ASCII và đôi một khác nhau. Hãy in các giá trị cấu hình theo thứ tự số thứ tự; nếu bất kỳ kiểm tra nào thất bại, in [\"Invalid configuration\"]. Các giá trị trùng có thể xuất hiện trong đầu vào cần kiểm tra, nhưng đầu vào như vậy là không hợp lệ.\n\nĐầu vào/đầu ra chuẩn, các ví dụ và phần lời giải do trang này tự viết; các khoảng giá trị được đánh dấu rõ là của trang này không phải ràng buộc gốc của đề.",
+    "input": "Một dòng chứa layout. Trong đề gốc, cận của orders và số thứ tự là 1..9999; đầu vào có thể thiếu hoặc trùng số. Với các đầu vào không hợp lệ, trang này cũng cho phép 0..9999 mục được phân tách với độ dài mỗi mục 0..104, gồm các ký tự ASCII in được không có khoảng trắng; trang này bổ sung 1..100 ký tự cho các giá trị cấu hình hợp lệ. Số thứ tự bốn chữ số phải gồm các chữ số ASCII. Đầu vào rỗng cũng là một bố cục không hợp lệ cần được kiểm tra.",
+    "output": "Nếu bố cục hợp lệ, in một mảng JSON gọn gồm các chuỗi theo thứ tự số thứ tự; ngược lại in [\"Invalid configuration\"].",
+    "explanation": "Các đầu ra là [\"AA\",\"BB\"], [\"Invalid configuration\"] và [\"Invalid configuration\"]. Ví dụ thứ hai thể hiện công khai việc kiểm tra tính duy nhất của các giá trị cấu hình mà mã nguồn gốc bỏ qua; các giá trị trùng không thể được chấp nhận chỉ vì số thứ tự của chúng khác nhau.",
+    "hints": [
+      "Sau khi tách, với mỗi mục kiểm tra số thứ tự bốn chữ số, giá trị cấu hình ASCII, khoảng số thứ tự 1..n, và tính duy nhất của cả số thứ tự lẫn giá trị; lưu các giá trị vào một mảng theo số thứ tự rồi in ra."
+    ]
   }
 }

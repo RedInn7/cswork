@@ -13,6 +13,21 @@
       "In any valid split the last block has length 1 or 2: a single digit must be 1 to 9, and a two-digit block must be between 10 and 26 (a two-digit block starting with 0 is invalid).",
       "Let dp[i] be the number of decodings of the first i digits. A one-digit last block comes from dp[i-1] and a two-digit last block from dp[i-2]; the two cases never overlap.",
       "Set dp[0] = 1; for i from 1 to n: if digit i is not 0, add dp[i-1] to dp[i]; if i >= 2 and digits i-1 and i form a number between 10 and 26, also add dp[i-2]; print dp[n]. The length can reach 1000, so the count is huge and needs big integers (built into Python; use BigInteger or hand-written addition elsewhere)."
+    ],
+    "ja": [
+      "有効な分割では、最後のブロックの長さは 1 か 2 です。1 桁のブロックは 1 から 9 でなければならず、2 桁のブロックは 10 から 26 の間でなければなりません（0 で始まる 2 桁のブロックは無効です）。",
+      "dp[i] を先頭 i 桁のデコード方法の個数とします。最後のブロックが 1 桁の場合は dp[i-1] から、2 桁の場合は dp[i-2] から来ます。この 2 つの場合は重なりません。",
+      "dp[0] = 1 とし、i を 1 から n まで動かします。i 桁目が 0 でなければ dp[i-1] を dp[i] に加えます。i >= 2 で、i-1 桁目と i 桁目が 10 から 26 の数をなすなら、dp[i-2] も加えます。最後に dp[n] を出力します。長さは 1000 に達しうるので、個数は非常に大きくなり、多倍長整数が必要です（Python では組み込み。他の言語では BigInteger または手書きの加算を使います）。"
+    ],
+    "ko": [
+      "유효한 분할에서 마지막 블록의 길이는 1 또는 2입니다. 한 자리 블록은 1에서 9 사이여야 하고, 두 자리 블록은 10에서 26 사이여야 합니다(0으로 시작하는 두 자리 블록은 유효하지 않습니다).",
+      "dp[i]를 앞의 i개 숫자를 해독하는 방법의 수라고 합시다. 마지막 블록이 한 자리이면 dp[i-1]에서, 두 자리이면 dp[i-2]에서 오며, 두 경우는 겹치지 않습니다.",
+      "dp[0] = 1로 두고 i를 1부터 n까지 진행합니다. i번째 숫자가 0이 아니면 dp[i]에 dp[i-1]을 더하고, i >= 2이며 i-1번째와 i번째 숫자가 10에서 26 사이의 수를 이루면 dp[i-2]도 더합니다. 마지막에 dp[n]을 출력합니다. 길이가 1000에 이를 수 있으므로 값이 매우 커서 큰 정수가 필요합니다(Python은 내장되어 있고, 다른 언어에서는 BigInteger나 직접 구현한 덧셈을 사용하세요)."
+    ],
+    "vi": [
+      "Trong mọi cách tách hợp lệ, khối cuối cùng có độ dài 1 hoặc 2: khối một chữ số phải từ 1 đến 9, và khối hai chữ số phải nằm giữa 10 và 26 (khối hai chữ số bắt đầu bằng 0 là không hợp lệ).",
+      "Gọi dp[i] là số cách giải mã i chữ số đầu tiên. Khối cuối một chữ số đến từ dp[i-1] và khối cuối hai chữ số đến từ dp[i-2]; hai trường hợp không bao giờ trùng nhau.",
+      "Đặt dp[0] = 1; với i từ 1 đến n: nếu chữ số thứ i khác 0 thì cộng dp[i-1] vào dp[i]; nếu i >= 2 và các chữ số i-1 và i tạo thành số từ 10 đến 26 thì cộng thêm dp[i-2]; in dp[n]. Độ dài có thể đạt 1000 nên số cách rất lớn và cần số nguyên lớn (có sẵn trong Python; ở ngôn ngữ khác dùng BigInteger hoặc tự viết phép cộng)."
     ]
   },
   "explanationEn": "## Approach\n\nDynamic programming: dp[i] is the number of decodings of the first i digits. When the last digit is not 0 it can be decoded on its own; when the last two digits are in 10..26 they can be decoded together.\n\n## Proof of correctness\n\nThe last block of any valid split has length 1 or 2. A one-character block contributes dp[i−1] and must not be 0; a two-character block contributes dp[i−2] and its value must be in 10..26. The two cases are mutually exclusive and cover every valid split.\n\n## Complexity\n\nO(n) time, O(n) space."

@@ -13,6 +13,21 @@
       "Replacing one character is one edge in a graph, so the minimum number of replacements is a shortest path in an unweighted graph: use BFS. Words of different lengths can never reach each other, and when start and target are equal the answer is 0.",
       "Two words of the same length differ in exactly one position if and only if they are equal after deleting that position. Bucket words by (deleted position, remaining text): words in one bucket are pairwise adjacent, which avoids trying every letter and works for arbitrary Unicode characters.",
       "Handle special cases first: start equal to target gives 0; a target missing from the list or of another length gives -1. Put the start word and all words of its length in a set and build the buckets; BFS from the start: for a popped word, go over every deleted position and take out its bucket (remove it so each bucket is expanded once); if the target is in it, print the current distance plus one, otherwise enqueue unvisited words; if the queue empties, print -1. Treat characters as code points, not bytes or UTF-16 units."
+    ],
+    "ja": [
+      "1 文字の置換はグラフの辺 1 本に当たるので、置換の最小回数は重みなしグラフの最短経路です。BFS を使います。長さの異なる単語同士は決して到達できず、開始と目標が等しければ答えは 0 です。",
+      "同じ長さの 2 つの単語がちょうど 1 か所で異なるのは、その位置を削除すると等しくなるときであり、かつそのときに限ります。単語を (削除した位置, 残りのテキスト) でバケットに分けます。同じバケットの単語は互いに隣接しているので、すべての文字を試す必要がなく、任意の Unicode 文字でも動作します。",
+      "まず特殊なケースを処理します。開始が目標に等しければ 0、目標がリストにない、または長さが違えば -1 です。開始の単語と、同じ長さのすべての単語を集合に入れ、バケットを作ります。開始から BFS を行います。取り出した単語について、削除する位置ごとにそのバケットを取り出し (各バケットを 1 回だけ展開するよう削除します)、中に目標があれば現在の距離に 1 を加えて出力し、そうでなければ未訪問の単語をキューに入れます。キューが空になったら -1 を出力します。文字はバイトや UTF-16 単位ではなく、コードポイントとして扱ってください。"
+    ],
+    "ko": [
+      "한 글자를 바꾸는 것은 그래프의 간선 하나이므로, 최소 교체 횟수는 가중치 없는 그래프에서의 최단 경로입니다. BFS를 사용하십시오. 길이가 다른 단어끼리는 서로 도달할 수 없고, 시작과 목표가 같으면 답은 0입니다.",
+      "길이가 같은 두 단어가 정확히 한 위치에서만 다른 것은, 그 위치를 삭제했을 때 서로 같아지는 것과 필요충분조건입니다. 단어를 (삭제한 위치, 남은 텍스트)로 버킷에 나누면 한 버킷의 단어들은 서로 모두 인접합니다. 이렇게 하면 모든 글자를 시도하지 않아도 되고 임의의 유니코드 문자에도 동작합니다.",
+      "특수한 경우를 먼저 처리합니다. 시작이 목표와 같으면 0, 목표가 목록에 없거나 길이가 다르면 -1입니다. 시작 단어와 같은 길이의 모든 단어를 집합에 넣고 버킷을 만듭니다. 시작에서 BFS를 하며, 꺼낸 단어마다 삭제 위치를 모두 훑어 그 버킷을 꺼냅니다(각 버킷이 한 번만 확장되도록 제거). 목표가 그 안에 있으면 현재 거리 + 1을 출력하고, 아니면 방문하지 않은 단어를 큐에 넣습니다. 큐가 비면 -1을 출력합니다. 문자는 바이트나 UTF-16 단위가 아니라 코드 포인트로 다루십시오."
+    ],
+    "vi": [
+      "Thay một ký tự là một cạnh trong đồ thị, nên số lần thay thế tối thiểu là đường đi ngắn nhất trong đồ thị không trọng số: dùng BFS. Các từ khác độ dài không bao giờ đến được nhau, và khi từ bắt đầu bằng từ đích thì đáp án là 0.",
+      "Hai từ cùng độ dài khác nhau đúng một vị trí khi và chỉ khi chúng bằng nhau sau khi xóa vị trí đó. Phân thùng các từ theo (vị trí bị xóa, văn bản còn lại): các từ trong cùng một thùng đôi một kề nhau, tránh phải thử mọi chữ cái và hoạt động với ký tự Unicode bất kỳ.",
+      "Xử lý các trường hợp đặc biệt trước: từ bắt đầu bằng từ đích cho 0; từ đích không có trong danh sách hoặc khác độ dài cho -1. Đưa từ bắt đầu và mọi từ cùng độ dài với nó vào một tập hợp rồi dựng các thùng; BFS từ từ bắt đầu: với mỗi từ được lấy ra, duyệt mọi vị trí bị xóa và lấy thùng của nó ra (xóa nó đi để mỗi thùng chỉ được mở rộng một lần); nếu từ đích nằm trong đó thì in khoảng cách hiện tại cộng một, ngược lại đưa các từ chưa thăm vào hàng đợi; nếu hàng đợi cạn thì in -1. Coi ký tự là code point, không phải byte hay đơn vị UTF-16."
     ]
   },
   "explanationEn": "## Approach\n\nBucket words of the same length by (deleted position, text after deletion), and during BFS expand each bucket only once; the bucket uses a structural key instead of treating some ordinary character as the only wildcard.\n\n## Proof of correctness\n\nTwo words of the same length differ in exactly one position if and only if the corresponding deleted position and remaining text are equal. So bucket edges cover exactly the single-replacement steps. The first time BFS reaches a word it uses the fewest edges, and once a bucket is expanded at its earliest distance all of its members are reachable, so expanding it again could not be better.\n\n## Complexity\n\nO(nL^2) construction time and O(nL^2) space for string buckets, with L <= 20; each bucket is expanded at most once."

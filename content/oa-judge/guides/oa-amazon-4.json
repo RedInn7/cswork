@@ -13,6 +13,21 @@
       "Adding or subtracting 1 on a whole prefix keeps the differences inside the prefix unchanged; only the difference between the prefix's last element and the next element changes.",
       "Append a 0 and let d[i]=a[i]−a[i+1]: an operation on the prefix of length i+1 changes exactly d[i], so the differences are independent.",
       "Each difference needs at least |d[i]| operations and that is achievable, so the answer is |a[n−1]|+Σ|a[i]−a[i+1]|; it can exceed 32 bits, so accumulate in 64 bits."
+    ],
+    "ja": [
+      "接頭辞全体に 1 を加えたり引いたりしても、接頭辞内部の差は変わりません。変わるのは、接頭辞の最後の要素とその次の要素との差だけです。",
+      "末尾に 0 を付け加え、d[i]=a[i]−a[i+1] とします。長さ i+1 の接頭辞への操作は d[i] だけを変えるので、各差分は互いに独立です。",
+      "各差分には少なくとも |d[i]| 回の操作が必要で、それは実際に達成できます。したがって答えは |a[n−1]|+Σ|a[i]−a[i+1]| です。32 ビットを超えることがあるので、64 ビットで累積してください。"
+    ],
+    "ko": [
+      "접두사 전체에 1을 더하거나 빼도 접두사 내부의 차분은 변하지 않습니다. 바뀌는 것은 접두사의 마지막 원소와 그 다음 원소 사이의 차이뿐입니다.",
+      "0을 하나 덧붙이고 d[i]=a[i]−a[i+1]로 두면, 길이 i+1인 접두사에 대한 연산은 정확히 d[i] 하나만 바꾸므로 각 차분은 서로 독립입니다.",
+      "각 차분에는 최소 |d[i]|번의 연산이 필요하고 그만큼으로 달성할 수 있으므로 답은 |a[n−1]|+Σ|a[i]−a[i+1]|입니다. 32비트를 넘을 수 있으니 64비트로 누적하세요."
+    ],
+    "vi": [
+      "Cộng hoặc trừ 1 trên cả một tiền tố giữ nguyên các hiệu bên trong tiền tố; chỉ hiệu giữa phần tử cuối của tiền tố và phần tử kế tiếp thay đổi.",
+      "Thêm một số 0 vào cuối và đặt d[i]=a[i]−a[i+1]: một thao tác trên tiền tố độ dài i+1 chỉ thay đổi đúng d[i], nên các hiệu độc lập với nhau.",
+      "Mỗi hiệu cần ít nhất |d[i]| thao tác và con số đó đạt được, nên đáp án là |a[n−1]|+Σ|a[i]−a[i+1]|; có thể vượt 32 bit, hãy cộng dồn bằng 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nThink from right to left: the last element needs |arr[n−1]| operations on the whole array; after that, the absolute differences of adjacent values determine how many more operations on shorter prefixes are needed. The answer is |arr[n−1]|+Σ|arr[i]−arr[i+1]|.\n\n## Why it is correct\n\nAppend a 0 at the end and define the differences d[i]=arr[i]−arr[i+1]. Adding or subtracting 1 on the prefix of length i+1 changes only d[i] and leaves the other differences unchanged. Therefore each difference needs at least |d[i]| operations, and eliminating the differences one by one reaches this lower bound.\n\n## Complexity\n\nO(n) time and O(1) extra space besides the input."

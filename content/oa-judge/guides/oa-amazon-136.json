@@ -13,6 +13,21 @@
       "First ask how small the maximum load can be: original packages cannot be removed, so it is at least the original maximum; and spreading the total over n vehicles, it is at least the average rounded up.",
       "Take the cap C = max(original maximum, ceil((original total + P)/n)). Since nC minus the original total is at least P, filling each vehicle up to C is guaranteed to place all new packages, and the maximum then equals the lower bound, so it is optimal.",
       "Compute C; walk the vehicles in input order and add min(remaining P, C - current load) to each, subtracting it from P until P reaches 0; print the final loads (any optimal answer is accepted). Totals reach around 10^14, so use 64-bit integers."
+    ],
+    "ja": [
+      "まず、最大積載量をどこまで小さくできるかを考えます。元の荷物は取り除けないので、少なくとも元の最大値以上です。また、合計を n 台に均等に分けても、少なくとも平均を切り上げた値以上です。",
+      "上限を C = max(元の最大値, ceil((元の合計 + P)/n)) とします。nC から元の合計を引いた値は P 以上なので、各車両を C まで埋めれば、すべての新しい荷物を必ず置けます。このとき最大値は下限と一致するので最適です。",
+      "C を計算し、入力順に車両をたどって、各車両に min(残りの P, C - 現在の積載量) を加え、その分を P から引きます。P が 0 になるまで続け、最終的な積載量を出力します（最適解であればどれでも受理されます）。合計は 10^14 程度になるので、64 ビット整数を使います。"
+    ],
+    "ko": [
+      "먼저 최대 적재량이 얼마나 작아질 수 있는지 생각해 봅니다. 기존 패키지는 뺄 수 없으므로 최소한 기존 최댓값 이상이고, 전체를 n대에 고르게 나눈다고 해도 최소한 평균을 올림한 값 이상입니다.",
+      "상한을 C = max(기존 최댓값, ceil((기존 합 + P)/n))으로 둡니다. nC에서 기존 합을 뺀 값이 P 이상이므로, 각 차량을 C까지 채우면 새 패키지를 모두 놓을 수 있음이 보장되고, 이때 최댓값이 하한과 같으므로 최적입니다.",
+      "C를 계산한 뒤 입력 순서대로 차량을 돌며 각각에 min(남은 P, C - 현재 적재량)을 더하고 그만큼 P에서 뺍니다. P가 0이 될 때까지 반복한 뒤 최종 적재량을 출력합니다(최적 답이면 어느 것이든 허용). 합이 약 10^14까지 커지므로 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Trước hết hãy hỏi tải lớn nhất có thể nhỏ đến mức nào: không bỏ được các kiện ban đầu, nên nó ít nhất bằng tải lớn nhất ban đầu; và khi dàn tổng tải đều lên n xe, nó ít nhất bằng trung bình làm tròn lên.",
+      "Lấy ngưỡng C = max(tải lớn nhất ban đầu, ceil((tổng tải ban đầu + P)/n)). Vì nC trừ tổng tải ban đầu không nhỏ hơn P, việc lấp mỗi xe lên đến C chắc chắn chứa hết các kiện mới, và khi đó giá trị lớn nhất bằng cận dưới nên là tối ưu.",
+      "Tính C; duyệt các xe theo thứ tự đầu vào và cộng min(P còn lại, C - tải hiện tại) vào mỗi xe, đồng thời trừ nó khỏi P cho đến khi P bằng 0; in các tải cuối cùng (chấp nhận mọi đáp án tối ưu). Tổng có thể lên đến khoảng 10^14, nên dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nThe optimal cap C is the larger of the original maximum and the total load averaged and rounded up. Fill each vehicle up to C in input order as far as possible, until the added packages run out.\n\n## Correctness\n\nIn any plan the maximum is at least the original maximum, and at least the total divided by n rounded up. Taking C as the larger of these two, the total remaining capacity nC - (original total) is >= P, so filling vehicle by vehicle always finishes. The resulting maximum reaches a lower bound that cannot be beaten, so the plan is optimal.\n\n## Complexity\n\nTime O(n), space O(n)."

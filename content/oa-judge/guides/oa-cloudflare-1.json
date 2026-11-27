@@ -13,6 +13,21 @@
       "Data can be split and moved freely, so a set of kept partitions works if and only if their total capacity is at least the total used amount; where the data originally lives does not matter.",
       "For a fixed number t of partitions, the largest total capacity comes from the t largest partitions. So add capacities in descending order; the count at the moment the sum first reaches the total usage is the answer.",
       "Compute the total usage need and print 0 if it is 0. Otherwise sort the capacities in descending order, accumulate them while counting, and stop when the sum is at least need. Totals can reach 2 * 10^14, so use 64-bit integers."
+    ],
+    "ja": [
+      "データは自由に分割して移動できるので、残すパーティションの集合が条件を満たすのは、その容量の合計が使用量の合計以上であるとき、かつそのときに限ります。データが元々どこにあるかは関係ありません。",
+      "パーティション数 t を固定すると、容量の合計が最大になるのは容量の大きい t 個を選んだときです。したがって容量を降順に加えていき、合計が初めて使用量の合計に達した時点の個数が答えです。",
+      "使用量の合計 need を求め、0 なら 0 を出力します。そうでなければ容量を降順にソートし、個数を数えながら累積して、合計が need 以上になったら止めます。合計は 2 * 10^14 に達し得るため、64 ビット整数を使います。"
+    ],
+    "ko": [
+      "데이터를 자유롭게 쪼개어 옮길 수 있으므로, 유지할 파티션 집합이 유효할 필요충분조건은 그 용량의 합이 전체 사용량 이상인 것입니다. 데이터가 원래 어디에 있었는지는 상관없습니다.",
+      "파티션 개수 t를 고정하면 가장 큰 용량의 합은 가장 큰 t개의 파티션에서 나옵니다. 따라서 용량을 내림차순으로 더해 가다가, 합이 처음으로 전체 사용량에 도달했을 때의 개수가 답입니다.",
+      "전체 사용량 need를 계산하고, 0이면 0을 출력합니다. 그렇지 않으면 용량을 내림차순으로 정렬한 뒤 개수를 세면서 누적하고, 합이 need 이상이 되면 멈춥니다. 합계는 2 * 10^14까지 커질 수 있으므로 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Dữ liệu có thể chia và chuyển tự do, nên một tập phân vùng được giữ lại là hợp lệ khi và chỉ khi tổng dung lượng của chúng không nhỏ hơn tổng lượng đã dùng; vị trí ban đầu của dữ liệu không quan trọng.",
+      "Với số lượng t phân vùng cố định, tổng dung lượng lớn nhất đạt được khi chọn t phân vùng lớn nhất. Vì vậy hãy cộng dung lượng theo thứ tự giảm dần; số phân vùng tại thời điểm tổng lần đầu đạt tổng lượng đã dùng chính là đáp án.",
+      "Tính tổng lượng đã dùng need và in 0 nếu need bằng 0. Nếu không, sắp xếp dung lượng giảm dần, cộng dồn và đếm, dừng khi tổng không nhỏ hơn need. Tổng có thể lên tới 2 * 10^14 nên hãy dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nThe total used amount does not change; sort the capacities in descending order and take the shortest prefix whose total capacity reaches the total usage.\n\n## Proof of correctness\n\nData can be split, so a kept subset is feasible if and only if its total capacity is sufficient. For a fixed number of partitions, the maximum total capacity is obtained from the largest capacities, so the length of the first prefix that is sufficient is the minimum feasible count.\n\n## Complexity\n\nO(n log n) time and O(n) space; totals use 64-bit integers."

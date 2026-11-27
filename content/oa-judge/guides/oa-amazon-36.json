@@ -13,6 +13,21 @@
       "Look at two centers and two destinations: which is shorter in total, a crossing pairing or pairing them in sorted order?",
       "For a≤b and x≤y, |a−x|+|b−y| ≤ |a−y|+|b−x|, so any crossing can be swapped away without getting worse; the optimum pairs elements by sorted position.",
       "Sort both lists and sum the absolute differences between the i-th smallest center and the i-th smallest destination; the total can exceed 32 bits."
+    ],
+    "ja": [
+      "2 つのセンターと 2 つの目的地に注目してください。交差する組み方と、ソート順に組む組み方では、どちらが合計が短いでしょうか。",
+      "a≤b かつ x≤y のとき |a−x|+|b−y| ≤ |a−y|+|b−x| なので、交差はどれも悪化させずに解消できます。最適解は、ソート後の位置どうしで要素を組みます。",
+      "2 つのリストをソートし、i 番目に小さいセンターと i 番目に小さい目的地の差の絶対値を合計します。合計は 32 ビットを超え得ます。"
+    ],
+    "ko": [
+      "센터 두 개와 목적지 두 개를 생각해 보세요. 교차하는 매칭과 정렬된 순서대로의 매칭 중 총 거리가 더 짧은 것은 무엇일까요?",
+      "a≤b이고 x≤y이면 |a−x|+|b−y| ≤ |a−y|+|b−x|이므로, 교차는 나빠지지 않게 항상 풀 수 있고 최적해는 정렬된 위치로 짝짓습니다.",
+      "두 목록을 모두 정렬하고, i번째로 작은 센터와 i번째로 작은 목적지의 차의 절댓값을 모두 더하세요. 총합은 32비트를 넘을 수 있습니다."
+    ],
+    "vi": [
+      "Hãy xét hai trung tâm và hai điểm đến: cách ghép chéo nhau hay ghép theo thứ tự đã sắp xếp thì tổng ngắn hơn?",
+      "Với a≤b và x≤y, |a−x|+|b−y| ≤ |a−y|+|b−x|, nên mọi cặp chéo nhau đều có thể được hoán đổi mà không tệ hơn; phương án tối ưu ghép các phần tử theo vị trí đã sắp xếp.",
+      "Sắp xếp cả hai danh sách và cộng các hiệu tuyệt đối giữa trung tâm nhỏ thứ i và điểm đến nhỏ thứ i; tổng có thể vượt quá 32 bit."
     ]
   },
   "explanationEn": "## Approach\n\nSort both coordinate lists and pair the elements at the same sorted position.\n\n## Proof of correctness\n\nFor a≤b and x≤y, |a−x|+|b−y|≤|a−y|+|b−x|. Hence any crossing pair can be swapped into an order-preserving pair without increasing the cost; removing inversions repeatedly yields the sorted pairing.\n\n## Complexity\n\nO(n log n) time and O(n) space."

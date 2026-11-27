@@ -13,6 +13,21 @@
       "The cost depends only on how many times each letter occurs, not on positions; when a letter occurs f times, removing one more of it lowers the cost by f^2 - (f-1)^2 = 2f - 1.",
       "That drop grows with f, so every step should remove one candle of the letter that currently occurs most often; if some step removed a less frequent letter instead, switching to the most frequent one never makes the result worse.",
       "Count the 26 letter frequencies and put the non-zero ones into a max-heap; repeat min(M, N) times: pop the largest frequency f and push f - 1 back if f > 1; finally print the sum of the squares of all frequencies left in the heap (in 64-bit integers)."
+    ],
+    "ja": [
+      "コストは各文字が何回現れるかだけに依存し、位置には依存しません。ある文字が f 回現れるとき、それをもう 1 本取り除くとコストは f^2 - (f-1)^2 = 2f - 1 だけ下がります。",
+      "この減少量は f が大きいほど大きいので、毎回、現在最も多く現れる文字から 1 本取り除くべきです。もしあるステップで出現の少ない文字を取り除いていたなら、最も多い文字に切り替えても結果が悪くなることはありません。",
+      "26 個の文字の出現回数を数え、0 でないものを最大ヒープに入れます。min(M, N) 回繰り返します：最大の出現回数 f を取り出し、f > 1 なら f - 1 を戻します。最後に、ヒープに残ったすべての出現回数の 2 乗の和を（64 ビット整数で）出力します。"
+    ],
+    "ko": [
+      "비용은 각 문자가 몇 번 나오는지에만 의존하고 위치와는 무관합니다. 문자가 f번 나올 때 하나를 더 제거하면 비용이 f^2 - (f-1)^2 = 2f - 1만큼 줄어듭니다.",
+      "이 감소량은 f가 클수록 커지므로 매 단계에서 현재 가장 많이 나타나는 문자의 초를 하나 제거해야 합니다. 어떤 단계에서 덜 자주 나오는 문자를 제거했다면, 가장 자주 나오는 문자로 바꿔도 결과가 나빠지지 않습니다.",
+      "26개 문자의 빈도를 세어 0이 아닌 것들을 최대 힙에 넣습니다. min(M, N)번 반복하며 가장 큰 빈도 f를 꺼내고 f > 1이면 f - 1을 다시 넣습니다. 마지막으로 힙에 남은 모든 빈도의 제곱 합을 출력합니다(64비트 정수 사용)."
+    ],
+    "vi": [
+      "Chi phí chỉ phụ thuộc vào số lần mỗi chữ cái xuất hiện, không phụ thuộc vị trí; khi một chữ cái xuất hiện f lần, bỏ thêm một cây của nó làm chi phí giảm f^2 - (f-1)^2 = 2f - 1.",
+      "Mức giảm đó tăng theo f, nên mỗi bước nên bỏ một cây nến của chữ cái hiện đang xuất hiện nhiều nhất; nếu có bước nào bỏ chữ cái ít xuất hiện hơn, đổi sang chữ cái xuất hiện nhiều nhất không bao giờ làm kết quả tệ hơn.",
+      "Đếm tần suất của 26 chữ cái và đưa các giá trị khác không vào một max-heap; lặp min(M, N) lần: lấy ra tần suất lớn nhất f và đẩy f - 1 trở lại nếu f > 1; cuối cùng in tổng bình phương của mọi tần suất còn lại trong heap (bằng số nguyên 64 bit)."
     ]
   },
   "explanationEn": "## Approach\n\nRemoving one candle of the character with the currently highest frequency gives the largest marginal gain each time; there are always 26 letter kinds, and the heap simulation runs at most min(M,N) times.\n\n## Proof of correctness\n\nRemoving one more candle of a character with frequency f lowers the cost by f²−(f−1)²=2f−1. This marginal gain increases with f, so if some step removes a lower-frequency character instead of the current highest-frequency one, swapping that step's choice does not increase the cost. Repeating this greedy step simulates exactly the optimal sequence of at most M removals.\n\n## Complexity\n\nTime O(M log 26), space O(26)."

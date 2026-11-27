@@ -13,6 +13,21 @@
       "Each operation flips the signs of two numbers at once, so the parity of the number of negative values never changes.",
       "With an even number of negatives you can flip them in pairs until everything is non-negative; with an odd number at least one value stays negative, and leaving the one with the smallest absolute value loses the least (it can be paired with each remaining negative to clear the rest).",
       "Compute S, the sum of absolute values, the count of negatives, and m, the minimum absolute value; print S if the count is even, otherwise S−2m. The sum reaches 2×10¹⁴, so use 64-bit integers."
+    ],
+    "ja": [
+      "1 回の操作で 2 つの数の符号が同時に反転するので、負の数の個数の偶奇は変わりません。",
+      "負の数が偶数個なら、2 つずつ反転してすべて非負にできます。奇数個なら少なくとも 1 つは負のまま残り、絶対値が最小のものを残すのが最も損失が小さくなります(残りの各負数とペアにして消せるため)。",
+      "絶対値の和 S、負の数の個数、絶対値の最小値 m を求め、個数が偶数なら S、奇数なら S−2m を出力します。和は 2×10¹⁴ に達するため 64 ビット整数を使ってください。"
+    ],
+    "ko": [
+      "한 번의 연산이 두 수의 부호를 동시에 뒤집으므로, 음수 개수의 홀짝은 절대 변하지 않습니다.",
+      "음수가 짝수 개이면 둘씩 짝지어 뒤집어 모두 0 이상으로 만들 수 있습니다. 홀수 개이면 최소 하나는 음수로 남는데, 절대값이 가장 작은 값을 남기면 손실이 가장 적습니다(남은 음수들과 하나씩 짝지어 나머지를 모두 없앨 수 있습니다).",
+      "절대값의 합 S, 음수의 개수, 절대값의 최솟값 m을 구합니다. 음수 개수가 짝수이면 S를, 홀수이면 S−2m을 출력합니다. 합이 2×10¹⁴까지 커지므로 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Mỗi thao tác đổi dấu của hai số cùng lúc, nên tính chẵn lẻ của số lượng giá trị âm không bao giờ thay đổi.",
+      "Nếu số lượng số âm là chẵn thì có thể lật chúng theo từng cặp cho đến khi tất cả không âm; nếu là lẻ thì ít nhất một giá trị vẫn âm, và giữ lại giá trị có trị tuyệt đối nhỏ nhất thì mất ít nhất (có thể ghép nó với từng số âm còn lại để xóa hết các số âm đó).",
+      "Tính S là tổng các trị tuyệt đối, số lượng số âm, và m là trị tuyệt đối nhỏ nhất; in S nếu số lượng số âm chẵn, ngược lại in S−2m. Tổng có thể đạt 2×10¹⁴ nên phải dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nA sign flip changes two positions at a time, so the parity of the number of negatives does not change. If the number of negatives is even, all of them can be flipped to positive; if it is odd, keep the element with the smallest absolute value negative.\n\n## Correctness\n\nThe parity of the minus signs is an invariant of the operation. An even number of minus signs can be cancelled in pairs; an odd number leaves at least one. The element with the smallest absolute value causes the smallest loss, so the answer is the sum of absolute values, or that sum minus twice the smallest absolute value.\n\n## Complexity\n\nTime O(n), space O(1)."

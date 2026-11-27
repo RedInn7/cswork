@@ -13,6 +13,21 @@
       "At most two vehicles are on the bridge at once and they enter in queue order, so the real constraints are just: every kept vehicle is not overweight by itself, and every pair of adjacent kept vehicles weighs at most U in total.",
       "Scan from left to right and remember only the weight of the last kept vehicle. If a new vehicle conflicts with it, at least one of the two must go; keeping the lighter one as the last vehicle is never worse for any later vehicle.",
       "Keep last (the weight of the last kept vehicle, initially none) and a removal count answer; for each vehicle v: if v > U, remove it and count it; otherwise, if last is none or last + v <= U, keep it and set last = v; otherwise increment the count and set last = min(last, v); print answer."
+    ],
+    "ja": [
+      "橋の上には同時に高々 2 台しかおらず、車両は待ち行列の順に入ります。したがって実際の制約は、残した車両がどれも単独で重量オーバーでないこと、そして隣り合う残した車両のどの組も重さの合計が高々 U であることだけです。",
+      "左から右へ走査し、最後に残した車両の重さだけを覚えます。新しい車両がそれと衝突するなら、少なくとも 1 台は取り除かなければなりません。軽い方を最後の車両として残すと、後続のどの車両にとっても悪くなりません。",
+      "last (最後に残した車両の重さ。初期値はなし) と取り除いた数 answer を保持します。各車両 v について、v > U なら取り除いて数えます。そうでなければ、last がなしか last + v <= U なら、残して last = v とします。そうでなければ数を 1 増やして last = min(last, v) とします。最後に answer を出力します。"
+    ],
+    "ko": [
+      "다리 위에는 동시에 최대 두 대만 있고 차량은 대기 순서대로 진입하므로, 실제 제약은 두 가지뿐입니다. 유지하는 모든 차량은 혼자서 과중하지 않아야 하고, 유지하는 인접한 모든 차량 쌍의 무게 합은 U 이하여야 합니다.",
+      "왼쪽에서 오른쪽으로 훑으며 마지막으로 유지한 차량의 무게만 기억합니다. 새 차량이 그것과 충돌하면 둘 중 적어도 하나는 빠져야 하며, 더 가벼운 쪽을 마지막 차량으로 두는 것이 이후 어떤 차량에게도 손해가 되지 않습니다.",
+      "last(마지막으로 유지한 차량의 무게, 처음에는 없음)와 제거 횟수 answer를 유지합니다. 각 차량 v에 대해, v > U이면 제거하고 센다. 그렇지 않고 last가 없거나 last + v <= U이면 유지하고 last = v로 둡니다. 그렇지 않으면 횟수를 1 늘리고 last = min(last, v)로 둡니다. answer를 출력합니다."
+    ],
+    "vi": [
+      "Trên cầu có tối đa hai xe cùng lúc và chúng vào theo thứ tự hàng đợi, nên các ràng buộc thật sự chỉ là: mọi xe được giữ tự nó không quá tải, và mọi cặp xe được giữ kề nhau có tổng trọng lượng nhiều nhất là U.",
+      "Quét từ trái sang phải và chỉ nhớ trọng lượng của xe được giữ cuối cùng. Nếu một xe mới xung đột với nó, ít nhất một trong hai phải bị loại; giữ xe nhẹ hơn làm xe cuối cùng không bao giờ tệ hơn cho bất kỳ xe nào sau đó.",
+      "Giữ last (trọng lượng của xe được giữ cuối cùng, ban đầu là không có) và bộ đếm số xe bị loại answer; với mỗi xe v: nếu v > U, loại nó và đếm; nếu không, nếu last là không có hoặc last + v <= U, giữ nó và đặt last = v; nếu không thì tăng bộ đếm và đặt last = min(last, v); in answer."
     ]
   },
   "explanationEn": "## Approach\n\nKeep track of the last vehicle of the kept sequence; if the new vehicle overloads the bridge together with it, remove the heavier of the two. A vehicle that is overweight by itself is removed directly.\n\n## Proof of correctness\n\nA valid kept sequence requires exactly that no single vehicle is overweight and every pair of adjacent kept vehicles weighs at most U. At least one of two conflicting vehicles must be removed, and keeping the lighter one as the last vehicle is never worse for any future vehicle, while it does not break any earlier adjacency constraint. An exchange argument shows that each step preserves both the optimal count and the most favorable last vehicle.\n\n## Complexity\n\nO(n) time and O(1) space apart from the input."

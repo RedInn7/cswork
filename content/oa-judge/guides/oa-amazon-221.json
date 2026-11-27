@@ -13,6 +13,21 @@
       "Only +1 is allowed, so first compute how much each position still needs: d[i] = target[i] - source[i]; a prefix operation adds 1 to some left part and a suffix operation to some right part.",
       "If d[i] > d[i+1], that drop can only be covered by prefix operations ending exactly at i, at least d[i] - d[i+1] of them, and every prefix operation also counts toward d[0]. With D the sum of all drops, d[0] >= D is necessary; when it holds, the remaining demand can be completed by suffix operations.",
       "Compute d and D = sum of max(0, d[i] - d[i+1]); print -1 if d[0] < D, otherwise print d[n-1] + D. Use 64-bit integers throughout."
+    ],
+    "ja": [
+      "許されるのは +1 だけなので、まず各位置であといくつ必要かを d[i] = target[i] - source[i] として求めます。接頭辞操作は左側のある部分に 1 を加え、接尾辞操作は右側のある部分に 1 を加えます。",
+      "d[i] > d[i+1] のとき、その下がりは、ちょうど i で終わる接頭辞操作でしか埋められず、少なくとも d[i] - d[i+1] 回必要です。しかも接頭辞操作はすべて d[0] にも寄与します。下がりの総和を D とすると、d[0] >= D が必要で、これが成り立てば残りの需要は接尾辞操作で満たせます。",
+      "d と D = max(0, d[i] - d[i+1]) の総和を計算します。d[0] < D なら -1 を、そうでなければ d[n-1] + D を出力します。全体を通して 64 ビット整数を使います。"
+    ],
+    "ko": [
+      "+1만 허용되므로 먼저 각 위치에 필요한 증가량 d[i] = target[i] - source[i]를 구합니다. 접두사 연산은 왼쪽 일부에, 접미사 연산은 오른쪽 일부에 1을 더합니다.",
+      "d[i] > d[i+1]인 감소 구간은 정확히 i에서 끝나는 접두사 연산으로만 메울 수 있으며 최소 d[i] - d[i+1]번 필요하고, 모든 접두사 연산은 d[0]에도 기여합니다. 감소량의 총합을 D라 하면 d[0] >= D가 필요조건이고, 성립하면 나머지 필요량은 접미사 연산으로 채울 수 있습니다.",
+      "d와 D = sum of max(0, d[i] - d[i+1])를 구합니다. d[0] < D이면 -1, 아니면 d[n-1] + D를 출력합니다. 모든 계산에 64비트 정수를 사용합니다."
+    ],
+    "vi": [
+      "Chỉ được phép +1, nên trước hết tính mỗi vị trí còn cần bao nhiêu: d[i] = target[i] - source[i]; một phép toán tiền tố cộng 1 cho một phần bên trái và một phép toán hậu tố cộng 1 cho một phần bên phải.",
+      "Nếu d[i] > d[i+1], mức giảm đó chỉ có thể được đảm nhận bởi các phép toán tiền tố kết thúc đúng tại i, ít nhất d[i] - d[i+1] phép, và mỗi phép toán tiền tố cũng được tính vào d[0]. Với D là tổng mọi mức giảm, d[0] >= D là điều kiện cần; khi nó thỏa, phần nhu cầu còn lại có thể được hoàn tất bằng các phép toán hậu tố.",
+      "Tính d và D = tổng của max(0, d[i] - d[i+1]); in -1 nếu d[0] < D, ngược lại in d[n-1] + D. Dùng số nguyên 64-bit xuyên suốt."
     ]
   },
   "explanationEn": "## Approach\n\nLet d = target - source and let D be the sum of all adjacent drops. If d[0] < D there is no solution; otherwise the answer is d[n-1] + D.\n\n## Proof of correctness\n\nEach adjacent drop d[i] - d[i+1] > 0 can only be produced by prefix operations that end at i, so at least D such operations are needed, and every one of them also adds to the first element; hence d[0] >= D is necessary. After placing prefixes for all drops, the remaining demand is non-negative and non-decreasing, and suffix operations can supply it by its increments; the total count is D + d[n-1]. Using any extra prefixes and suffixes that cancel each other only increases the count, so the lower bound is attained.\n\n## Complexity\n\nTime O(n), space O(n)."

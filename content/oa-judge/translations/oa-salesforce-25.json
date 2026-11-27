@@ -11,5 +11,35 @@
     "hints": [
       "dp[j] stores the longest contiguous string ending at the j-th character of Y that can be a subsequence of the processed prefix of X. For each character of X read, update the matching positions in decreasing order of j to max(old value, dp[j−1]+1)."
     ]
+  },
+  "ja": {
+    "title": "X の部分列かつ Y の部分文字列となる最大共通長",
+    "description": "X の部分列であり、かつ Y の連続部分文字列でもある文字列を見つけ、その最大の長さを返してください。X の文字は飛ばしてもかまいませんが、Y の文字は飛ばせません。共通する文字がないときは 0 を出力します。\n\n本サイトが不足している範囲を補った点と、元の誤記の復元については、入力プロトコルに記載されています。",
+    "input": "入力は JSON 配列 [X,Y] です。元の問題文には数値や文字の範囲が書かれていないため、本サイトでは、各文字列を 0..1000 個の Unicode スカラー値とし、空文字列、空白、制御文字、BMP 外の文字を許可します。孤立したサロゲートは含みません。UTF-8 でエンコードした JSON 入力の合計は ≤25000 バイトです。",
+    "output": "整数の答えを 1 つ出力します。",
+    "explanation": "3 つの公開例の出力は順に 3、7、0 です。独立した列挙または直接のシミュレーションにより確認済みです。",
+    "hints": [
+      "dp[j] は、Y の j 番目の文字で終わる最長の連続文字列のうち、X の処理済みの接頭辞の部分列になりうるものの長さを保持します。X の文字を 1 つ読むたびに、一致する位置を j の降順に max(旧値, dp[j−1]+1) へ更新します。"
+    ]
+  },
+  "ko": {
+    "title": "X의 부분 수열이자 Y의 부분 문자열인 최대 공통 길이",
+    "description": "X의 부분 수열이면서 동시에 Y의 연속 부분 문자열인 문자열을 찾아 그 최대 길이를 반환합니다. X의 문자는 건너뛸 수 있지만 Y의 문자는 건너뛸 수 없으며, 공통 문자가 없으면 0을 출력합니다.\n\n본 사이트가 빠진 범위를 보충하고 원문 오타를 복원한 내용은 입력 규약에 설명되어 있습니다.",
+    "input": "입력은 JSON 배열 [X,Y]입니다. 원문에는 수치 또는 문자 범위가 없으며, 본 사이트에서는 각 문자열이 0..1000개의 유니코드 스칼라 값을 가지며 빈 문자열, 공백, 제어 문자, 비 BMP 문자가 허용되고 단독 서로게이트는 포함하지 않는 것으로 정했습니다. UTF-8로 인코딩한 JSON 입력 전체는 25000바이트 이하입니다.",
+    "output": "정수 하나, 답을 출력합니다.",
+    "explanation": "세 공개 예시의 출력은 순서대로 3; 7; 0입니다. 독립적인 열거 또는 직접 시뮬레이션으로 검증했습니다.",
+    "hints": [
+      "dp[j]에는 처리한 X의 접두사의 부분 수열이 될 수 있는, Y의 j번째 문자로 끝나는 가장 긴 연속 문자열의 길이를 저장합니다. X의 문자를 읽을 때마다 일치하는 위치를 j가 감소하는 순서로 max(이전 값, dp[j−1]+1)로 갱신합니다."
+    ]
+  },
+  "vi": {
+    "title": "Độ dài chung lớn nhất của dãy con của X và xâu con của Y",
+    "description": "Tìm một xâu vừa là dãy con (subsequence) của X vừa là xâu con liên tiếp (substring) của Y, và trả về độ dài lớn nhất của nó. Các ký tự của X có thể bị bỏ qua, nhưng các ký tự của Y thì không; khi không có ký tự chung nào, in 0.\n\nCác phạm vi mà trang này bổ sung cho các cận bị thiếu và việc khôi phục lỗi đánh máy của nguồn được mô tả trong giao thức đầu vào.",
+    "input": "Đầu vào là một mảng JSON [X,Y]. Đề gốc không nêu miền số hay miền ký tự; trang này bổ sung rằng mỗi xâu có 0..1000 giá trị vô hướng Unicode, và cho phép xâu rỗng, khoảng trắng, ký tự điều khiển và ký tự ngoài BMP; không bao gồm surrogate lẻ. Tổng đầu vào JSON mã hoá UTF-8 ≤25000 byte.",
+    "output": "In một số nguyên là đáp án.",
+    "explanation": "Đầu ra của ba ví dụ công khai lần lượt là: 3; 7; 0. Chúng đã được kiểm tra bằng liệt kê độc lập hoặc mô phỏng trực tiếp.",
+    "hints": [
+      "dp[j] lưu xâu liên tiếp dài nhất kết thúc tại ký tự thứ j của Y mà có thể là dãy con của tiền tố đã xử lý của X. Với mỗi ký tự của X được đọc, cập nhật các vị trí khớp theo thứ tự giảm dần của j thành max(giá trị cũ, dp[j−1]+1)."
+    ]
   }
 }

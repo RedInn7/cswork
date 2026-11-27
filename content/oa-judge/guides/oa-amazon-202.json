@@ -13,6 +13,21 @@
       "Cut any arrangement at every non-increasing step to get strictly increasing segments; the number of increasing positions is n minus the number of segments, so you want as few segments as possible.",
       "The same value cannot appear twice in one strictly increasing segment, so there are at least F segments, where F is the largest multiplicity of a single value; this lower bound can always be reached.",
       "Count each score with an array, take the largest frequency F, and print n - F. (Construction: spread the occurrences of each value over F rows, at most one per row, sort each row and concatenate the rows.)"
+    ],
+    "ja": [
+      "任意の並びを、非増加となる各ステップで切ると、狭義単調増加の区間に分かれます。上昇している位置の数は n から区間数を引いたものなので、区間数を最小にしたいことになります。",
+      "同じ値は 1 つの狭義単調増加区間に 2 回現れないため、区間は少なくとも F 個必要です。ここで F は 1 つの値の最大の重複数です。この下界は必ず達成できます。",
+      "各スコアを配列で数え、最大の出現回数 F を取り、n - F を出力します。（構成方法：各値の出現を、1 行に高々 1 つずつになるよう F 行に振り分け、各行をソートして行を連結します。）"
+    ],
+    "ko": [
+      "어떤 배열이든 증가하지 않는 모든 지점에서 자르면 엄격히 증가하는 구간들로 나뉩니다. 증가하는 위치의 개수는 n에서 구간의 수를 뺀 값이므로 구간 수를 최소화해야 합니다.",
+      "같은 값은 하나의 엄격히 증가하는 구간에 두 번 나타날 수 없으므로 구간은 최소 F개입니다(F는 한 값의 최대 중복 횟수). 이 하한은 항상 달성할 수 있습니다.",
+      "배열로 각 점수의 횟수를 세어 최대 빈도 F를 구하고 n - F를 출력합니다. (구성: 각 값의 등장을 F개의 행에 행당 최대 하나씩 분배하고, 각 행을 정렬한 뒤 행들을 이어 붙입니다.)"
+    ],
+    "vi": [
+      "Cắt bất kỳ cách sắp xếp nào tại mọi bước không tăng để được các đoạn tăng ngặt; số vị trí tăng bằng n trừ đi số đoạn, nên bạn muốn có càng ít đoạn càng tốt.",
+      "Cùng một giá trị không thể xuất hiện hai lần trong một đoạn tăng ngặt, nên có ít nhất F đoạn, với F là số lần lặp lớn nhất của một giá trị; cận dưới này luôn đạt được.",
+      "Đếm mỗi điểm số bằng một mảng, lấy tần suất lớn nhất F, và in n - F. (Cách dựng: rải các lần xuất hiện của mỗi giá trị vào F hàng, mỗi hàng nhiều nhất một lần, sắp xếp từng hàng rồi nối các hàng lại.)"
     ]
   },
   "explanationEn": "## Approach\n\nThe answer is n minus the largest number of occurrences of a single value.\n\n## Proof of correctness\n\nCut the arrangement at its non-increasing steps into strictly increasing segments; equal values cannot share a segment, so there are at least F segments, where F is the largest frequency, and at most n-F increasing positions. Distribute the occurrences of each value over F rows, at most once per row, and sort each row; a value with frequency F appears in every row, so the last item of a row is at least that value, which is at least the first item of the next row, and no increasing position appears between rows. This gives exactly n-F and attains the upper bound.\n\n## Complexity\n\nTime O(n), space O(n)."

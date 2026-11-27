@@ -11,5 +11,35 @@
     "hints": [
       "Track the number of available threads in order; when a request arrives, decrement it if a thread is available, otherwise count a drop."
     ]
+  },
+  "ja": {
+    "title": "スレッドが尽きたときに破棄されるリクエスト",
+    "description": "正のイベントはその数だけスレッドを追加し、−1 はリクエストを表します。リクエストは 1 つのスレッドを消費して破棄し、利用できるスレッドがなければ破棄(ドロップ)されます。ドロップされたリクエストの総数を求めてください。これはスライディングウィンドウによるレート制限ではありません。\n\n入出力プロトコルは本サイトで作成したもので、欠けている数値の範囲は本サイトによる補足であることを明記しています。",
+    "input": "1 行目に n、続いてイベントの配列が与えられます。1≤n≤100000、各要素は −1 または 1..10000 です。",
+    "output": "整数 1 つ(答え)を出力してください。",
+    "explanation": "3 つの公開サンプルの出力は順に 1; 2; 0 です。これらの答えは独立した全探索または直接シミュレーションで確認済みです。",
+    "hints": [
+      "利用可能なスレッドの数を順に追跡します。リクエストが来たとき、利用可能なら 1 減らし、そうでなければドロップを数えます。"
+    ]
+  },
+  "ko": {
+    "title": "스레드가 부족할 때 버려지는 요청 수",
+    "description": "양수 이벤트는 그만큼의 스레드를 추가하고, −1은 요청을 나타냅니다. 요청은 스레드 하나를 소비하여 소멸시키며, 사용할 수 있는 스레드가 없으면 버려집니다. 버려진 요청의 총 수를 구하세요. 이는 슬라이딩 윈도 속도 제한 문제가 아닙니다.\n\n입출력 규약은 이 사이트에서 작성했으며, 누락된 수치 범위는 사이트가 추가한 것임을 명시했습니다.",
+    "input": "첫 번째 줄에 n이 주어지고, 이어서 이벤트 배열이 주어집니다. 1≤n≤100000이며 각 원소는 −1 또는 1..10000입니다.",
+    "output": "정수 하나를 정답으로 출력합니다.",
+    "explanation": "공개 예제 3개의 출력은 순서대로 1; 2; 0입니다. 이 답들은 독립적인 전수 조사 또는 직접 시뮬레이션으로 검증했습니다.",
+    "hints": [
+      "사용 가능한 스레드 수를 순서대로 추적합니다. 요청이 오면 스레드가 있을 때 하나 줄이고, 없으면 버려진 수를 셉니다."
+    ]
+  },
+  "vi": {
+    "title": "Số yêu cầu bị bỏ khi hết luồng",
+    "description": "Một sự kiện dương thêm đúng chừng đó luồng, và −1 biểu diễn một yêu cầu. Một yêu cầu tiêu thụ và hủy một luồng, và bị bỏ nếu không còn luồng nào; hãy tìm tổng số yêu cầu bị bỏ. Đây không phải là giới hạn tốc độ theo cửa sổ trượt.\n\nGiao thức đầu vào/đầu ra do trang này biên soạn, và những ràng buộc số còn thiếu được đánh dấu rõ là phần trang bổ sung.",
+    "input": "Dòng đầu chứa n, tiếp theo là mảng sự kiện; 1≤n≤100000, và mỗi phần tử là −1 hoặc 1..10000.",
+    "output": "In ra một số nguyên là đáp án.",
+    "explanation": "Đầu ra của ba ví dụ công khai lần lượt là: 1; 2; 0. Các kết quả này đã được kiểm tra bằng liệt kê độc lập hoặc mô phỏng trực tiếp.",
+    "hints": [
+      "Theo dõi số luồng khả dụng theo thứ tự; khi có yêu cầu thì giảm đi một nếu còn luồng, ngược lại tính một yêu cầu bị bỏ."
+    ]
   }
 }

@@ -13,6 +13,21 @@
       "Buying only from the ends looks restrictive but is not: any chosen even-sized set of books can all be pair-bought by first buying the unchosen books at the ends one by one, then pair-buying the two outermost chosen books.",
       "So you only need to decide the number j of pair purchases; for a fixed j, pair-buy the 2j most expensive books and buy the rest at full price.",
       "Sort prices descending and compute the total; for j from 1 to min(k, n/2), let saved be the sum of the first 2j prices, the candidate cost is total - saved + j * pairCost; take the minimum together with the total for j = 0; use 64-bit integers."
+    ],
+    "ja": [
+      "端からしか買えないのは制約が厳しいように見えますが、実はそうではありません。偶数個の本の集合を選んだとき、選ばなかった本を端から 1 冊ずつ買ってから、選んだ本のうち最も外側の 2 冊をまとめ買いすれば、すべてまとめ買いにできます。",
+      "したがって、決めるのはまとめ買いの回数 j だけです。j を固定したとき、最も高い 2j 冊をまとめ買いし、残りを定価で買います。",
+      "価格を降順にソートして総和を求めます。j を 1 から min(k, n/2) まで動かし、saved を最初の 2j 個の価格の和として、候補コストは total - saved + j * pairCost です。j = 0 のときの total とあわせて最小値を取ります。64 ビット整数を使います。"
+    ],
+    "ko": [
+      "양 끝에서만 산다는 제약은 제한적으로 보이지만 실제로는 그렇지 않습니다. 짝수 크기의 어떤 집합이든, 먼저 선택되지 않은 책을 양 끝에서 하나씩 사고 나서 가장 바깥쪽의 선택된 두 책을 함께 사는 식으로 모두 쌍으로 살 수 있습니다.",
+      "따라서 쌍으로 사는 횟수 j만 정하면 됩니다. j를 고정하면 가장 비싼 2j권을 쌍으로 사고 나머지는 정가로 삽니다.",
+      "가격을 내림차순으로 정렬하고 총합을 구합니다. j를 1부터 min(k, n/2)까지 돌리며 saved를 앞의 2j개 가격의 합으로 두면 후보 비용은 total - saved + j * pairCost입니다. j = 0일 때의 total과 함께 최솟값을 취하며, 64비트 정수를 사용합니다."
+    ],
+    "vi": [
+      "Chỉ mua từ hai đầu có vẻ hạn chế nhưng thực ra không: mọi tập sách chọn có kích thước chẵn đều có thể mua theo cặp bằng cách trước tiên mua lần lượt các cuốn không được chọn ở hai đầu, rồi mua cặp hai cuốn được chọn ngoài cùng.",
+      "Vì vậy bạn chỉ cần quyết định số lần mua cặp j; với j cố định, mua cặp 2j cuốn đắt nhất và mua phần còn lại giá đầy đủ.",
+      "Sắp xếp giá giảm dần và tính tổng; với j từ 1 đến min(k, n/2), gọi saved là tổng của 2j giá đầu tiên, chi phí ứng viên là total - saved + j * pairCost; lấy giá trị nhỏ nhất cùng với total cho j = 0; dùng số nguyên 64-bit."
     ]
   },
   "explanationEn": "## Approach\n\nSort the prices and enumerate the number j of pair purchases; pair-buy the 2j most expensive books, for a cost of the total minus the sum of those 2j books plus j*pairCost.\n\n## Proof of correctness\n\nAny chosen set with an even number of books can be pair-bought: first buy all unchosen books at the two ends individually, then pair-buy the two outermost chosen books, and repeat. So for a fixed j, pair-buying the 2j most expensive books is optimal, and enumerating j over 0..min(k, n//2) gives the optimum.\n\n## Complexity\n\nTime O(n log n), space O(n)."

@@ -13,6 +13,21 @@
       "Pairs are deduplicated by value, not counted by index, so how many times a value occurs only matters for whether it can pair with itself.",
       "Count the occurrences of each value. Every valid unordered value pair has a unique smaller end a, so counting only from the smaller end never double-counts.",
       "For each distinct value a, let b = target - a: if a <= b, b occurs, and either a != b or a occurs at least twice, add one to the answer. target can reach 5×10^9, so use 64-bit integers."
+    ],
+    "ja": [
+      "ペアは値で重複を除き、インデックスでは数えないので、値の出現回数が意味を持つのは、その値が自分自身とペアになれるかどうかだけです。",
+      "各値の出現回数を数えます。有効な順序なしの値のペアには、小さい側の端 a が一意に決まるので、小さい側からだけ数えれば二重に数えません。",
+      "異なる各値 a について b = target - a とし、a <= b で、b が出現し、さらに a != b であるか a が 2 回以上出現していれば、答えに 1 を加えます。target は 5×10^9 に達しうるので、64 ビット整数を使ってください。"
+    ],
+    "ko": [
+      "쌍은 인덱스가 아니라 값 기준으로 중복이 제거되므로, 어떤 값이 몇 번 나오는지는 자기 자신과 짝을 이룰 수 있는지에만 중요합니다.",
+      "각 값의 등장 횟수를 셉니다. 유효한 순서 없는 값 쌍은 작은 쪽 끝 a가 유일하게 정해지므로, 작은 쪽에서만 세면 이중으로 세지 않습니다.",
+      "서로 다른 각 값 a에 대해 b = target - a라 할 때, a <= b이고 b가 존재하며 a != b이거나 a가 두 번 이상 등장하면 답에 1을 더합니다. target은 5×10^9까지 될 수 있으므로 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Các cặp được loại trùng theo giá trị chứ không đếm theo chỉ số, vì vậy số lần một giá trị xuất hiện chỉ quan trọng ở chỗ nó có thể ghép với chính nó hay không.",
+      "Đếm số lần xuất hiện của mỗi giá trị. Mỗi cặp giá trị không có thứ tự hợp lệ có một đầu nhỏ hơn a duy nhất, nên chỉ đếm từ đầu nhỏ hơn thì không bao giờ đếm trùng.",
+      "Với mỗi giá trị a phân biệt, đặt b = target - a: nếu a <= b, b có xuất hiện, và hoặc a != b hoặc a xuất hiện ít nhất hai lần, thì cộng một vào đáp án. target có thể lên tới 5×10^9, nên hãy dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nCount the frequencies and enumerate each distinct a; count it only when a≤target−a and the complement exists; when the two are equal, check that the frequency is at least 2.\n\n## Proof of Correctness\n\nEvery valid unordered value pair has a unique smaller end a, so nothing is counted twice and nothing is missed; the frequency constraint guarantees exactly that two distinct indices can be chosen.\n\n## Complexity\n\nTime O(n), space O(n)."

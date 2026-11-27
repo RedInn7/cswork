@@ -13,6 +13,21 @@
       "To cover all of [0, N], order the chosen sprinklers by how far right they extend: each new sprinkler must pick up the end of the prefix covered so far, otherwise a gap is left.",
       "Let dp[x] be the minimum cost to cover [0, x]. A sprinkler covering [L, R] can extend any prefix already covered up to x (L <= x < R) to R and to every position to its left; ranges are at most 100, so each position only needs nearby sprinklers and nearby predecessors.",
       "dp[0] = 0; for right = 1..N: first take suffix minima of dp from right - 1 down to max(0, right - 200), base[x] = min(dp[x..right-1]); then enumerate the sprinklers at positions in [right - 100, right + 100] whose interval [max(0, i - r), min(N, i + r)] ends at or after right and starts before right, and update dp[right] with base[start] + cost; finally print -1 if dp[N] is unreachable, otherwise dp[N]."
+    ],
+    "ja": [
+      "[0, N] 全体を覆うには、選んだスプリンクラーを右へどこまで延びるかの順に並べます。新しいスプリンクラーは、それまでに覆った接頭辞の端を拾わなければならず、さもないと隙間が残ります。",
+      "dp[x] を [0, x] を覆う最小コストとします。[L, R] を覆うスプリンクラーは、x（L <= x < R）まで覆い済みの接頭辞を R まで、またその左側のすべての位置まで延ばせます。射程は高々 100 なので、各位置では近くのスプリンクラーと近くの直前状態だけを見ればよいことになります。",
+      "dp[0] = 0 とし、right = 1..N について：まず right - 1 から max(0, right - 200) まで下りながら dp の後方最小値を取り、base[x] = min(dp[x..right-1]) とします。次に、位置が [right - 100, right + 100] にあり、区間 [max(0, i - r), min(N, i + r)] が right 以降で終わり right より前で始まるスプリンクラーを列挙し、base[start] + cost で dp[right] を更新します。最後に、dp[N] に到達できなければ -1、そうでなければ dp[N] を出力します。"
+    ],
+    "ko": [
+      "[0, N] 전체를 덮으려면, 선택한 스프링클러들을 오른쪽으로 얼마나 뻗는지에 따라 정렬해 봅니다. 새 스프링클러는 지금까지 덮인 접두 구간의 끝을 포함해야 하며, 그렇지 않으면 빈틈이 생깁니다.",
+      "dp[x]를 [0, x]를 덮는 최소 비용이라고 합니다. [L, R]을 덮는 스프링클러는 x까지 이미 덮인 접두 구간(L <= x < R)을 R까지, 그리고 그 왼쪽의 모든 위치까지 확장할 수 있습니다. 범위가 최대 100이므로 각 위치에는 가까운 스프링클러와 가까운 이전 상태만 필요합니다.",
+      "dp[0] = 0으로 두고 right = 1..N에 대해, 먼저 right - 1부터 max(0, right - 200)까지 dp의 접미 최솟값 base[x] = min(dp[x..right-1])를 구합니다. 그다음 위치가 [right - 100, right + 100]에 있고 구간 [max(0, i - r), min(N, i + r)]이 right 이상에서 끝나며 right 이전에서 시작하는 스프링클러를 열거하여 dp[right]를 base[start] + cost로 갱신합니다. 마지막으로 dp[N]에 도달할 수 없으면 -1을, 아니면 dp[N]을 출력합니다."
+    ],
+    "vi": [
+      "Để phủ toàn bộ [0, N], sắp xếp các vòi được chọn theo mức độ vươn sang phải: mỗi vòi mới phải nối tiếp đầu mút của tiền tố đã phủ, nếu không sẽ để lại một khe hở.",
+      "Gọi dp[x] là chi phí tối thiểu để phủ [0, x]. Một vòi phủ [L, R] có thể mở rộng bất kỳ tiền tố đã được phủ đến x (L <= x < R) ra R và mọi vị trí bên trái của nó; bán kính tối đa là 100, nên mỗi vị trí chỉ cần xét các vòi lân cận và các vị trí đứng trước lân cận.",
+      "dp[0] = 0; với right = 1..N: trước hết lấy min hậu tố của dp từ right - 1 xuống max(0, right - 200), base[x] = min(dp[x..right-1]); sau đó liệt kê các vòi tại các vị trí trong [right - 100, right + 100] có đoạn [max(0, i - r), min(N, i + r)] kết thúc tại hoặc sau right và bắt đầu trước right, và cập nhật dp[right] bằng base[start] + cost; cuối cùng in -1 nếu dp[N] không đạt được, ngược lại in dp[N]."
     ]
   },
   "explanationEn": "## Approach\n\nInterval-cover dynamic programming: dp[x] is the minimum cost to cover [0,x]. When a sprinkler extends an already covered prefix, the end of that prefix must lie within the sprinkler's coverage interval; using the upper bound on the radius, scan the predecessors directly.\n\n## Proof of correctness\n\nAny optimal solution, taken in the order the sprinklers are turned on, can be viewed as a chain of mutually overlapping intervals extending to the right. The last sprinkler can continue from any covered end point L≤x<R and cover up to R; conversely, each such extension keeps the prefix free of gaps. Therefore, taking the lowest dp value over all valid predecessors in increasing order of right end, and enumerating every possible last sprinkler, gives the optimum.\n\n## Complexity\n\nTime O(N·201), space O(N). Costs are non-negative, and the answer is at most 100010000."

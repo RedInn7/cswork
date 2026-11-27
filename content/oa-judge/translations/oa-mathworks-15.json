@@ -11,5 +11,35 @@
     "hints": [
       "Let d[i]=target[i]−source[i], which must be non-negative everywhere. Each drop from d[i−1] to d[i] needs at least one prefix operation ending at that boundary. If the total drop N exceeds d[0], it is impossible; otherwise, N prefix operations plus some suffix/whole-array operations make up the rest, and the minimum number of operations is d[n−1]+N."
     ]
+  },
+  "ja": {
+    "title": "Minimum Operations to Make Arrays Equal",
+    "description": "同じ長さの整数配列 source と target が与えられます。1 回の操作では、prefix または suffix を 1 つ選び、その中のすべての要素に 1 を加えます。操作回数の最小値を求め、source を target に変換できない場合は −1 を出力してください。\n\nこのサイトでは標準入出力形式を使用します。",
+    "input": "1 行目に n、2 行目に source、3 行目に target が与えられます。1≤n≤100000、各要素の絶対値は ≤10^13 です。",
+    "output": "最小操作回数、または −1 を出力してください。",
+    "explanation": "d[i]=target[i]−source[i] とすると、すべての i で非負でなければなりません。d[i−1] から d[i] への減少ごとに、その境界で終わる prefix 操作が少なくとも 1 回必要です。減少の合計 N が d[0] を超えるなら不可能です。そうでなければ、N 回の prefix 操作と、残りを担う suffix/配列全体への操作で構成でき、最小操作回数は d[n−1]+N です。",
+    "hints": [
+      "d[i]=target[i]−source[i] とすると、すべての i で非負でなければなりません。d[i−1] から d[i] への減少ごとに、その境界で終わる prefix 操作が少なくとも 1 回必要です。減少の合計 N が d[0] を超えるなら不可能です。そうでなければ、N 回の prefix 操作と、残りを担う suffix/配列全体への操作で構成でき、最小操作回数は d[n−1]+N です。"
+    ]
+  },
+  "ko": {
+    "title": "Minimum Operations to Make Arrays Equal",
+    "description": "길이가 같은 정수 배열 source와 target이 주어집니다. 한 번의 연산은 접두사 또는 접미사를 하나 골라 그 안의 모든 원소에 1을 더하는 것입니다. 최소 연산 횟수를 구하고, source를 target으로 만들 수 없으면 −1을 출력하세요.\n\n이 사이트는 표준 입출력 방식을 사용합니다.",
+    "input": "첫 번째 줄에 n이 주어지고, 두 번째 줄에 source, 세 번째 줄에 target이 주어집니다. 1≤n≤100000이며 모든 원소의 절댓값은 ≤10^13입니다.",
+    "output": "최소 연산 횟수 또는 −1을 출력합니다.",
+    "explanation": "d[i]=target[i]−source[i]라 하면 모든 위치에서 음이 아니어야 합니다. d[i−1]에서 d[i]로 줄어드는 지점마다 그 경계에서 끝나는 접두사 연산이 최소 한 번 필요합니다. 줄어드는 양의 총합 N이 d[0]을 넘으면 불가능하고, 그렇지 않으면 N번의 접두사 연산에 접미사/전체 배열 연산 몇 번을 더해 나머지를 채우며, 최소 연산 횟수는 d[n−1]+N입니다.",
+    "hints": [
+      "d[i]=target[i]−source[i]라 하면 모든 위치에서 음이 아니어야 합니다. d[i−1]에서 d[i]로 줄어드는 지점마다 그 경계에서 끝나는 접두사 연산이 최소 한 번 필요합니다. 줄어드는 양의 총합 N이 d[0]을 넘으면 불가능하고, 그렇지 않으면 N번의 접두사 연산에 접미사/전체 배열 연산 몇 번을 더해 나머지를 채우며, 최소 연산 횟수는 d[n−1]+N입니다."
+    ]
+  },
+  "vi": {
+    "title": "Minimum Operations to Make Arrays Equal",
+    "description": "Cho hai mảng số nguyên source và target có cùng độ dài. Mỗi thao tác chọn một tiền tố hoặc một hậu tố và cộng 1 vào mọi phần tử của nó. Hãy tìm số thao tác tối thiểu; in −1 nếu không thể biến source thành target.",
+    "input": "Dòng đầu chứa n; dòng thứ hai chứa source; dòng thứ ba chứa target. 1≤n≤100000, và giá trị tuyệt đối của mọi phần tử ≤10^13.",
+    "output": "In ra số thao tác tối thiểu, hoặc −1.",
+    "explanation": "Đặt d[i]=target[i]−source[i], giá trị này phải không âm ở mọi vị trí. Mỗi lần giảm từ d[i−1] xuống d[i] cần ít nhất một thao tác tiền tố kết thúc tại ranh giới đó. Nếu tổng mức giảm N vượt quá d[0] thì không thể thực hiện; ngược lại, N thao tác tiền tố cùng một số thao tác hậu tố/toàn mảng sẽ bù phần còn lại, và số thao tác tối thiểu là d[n−1]+N.",
+    "hints": [
+      "Đặt d[i]=target[i]−source[i], giá trị này phải không âm ở mọi vị trí. Mỗi lần giảm từ d[i−1] xuống d[i] cần ít nhất một thao tác tiền tố kết thúc tại ranh giới đó. Nếu tổng mức giảm N vượt quá d[0] thì không thể thực hiện; ngược lại, N thao tác tiền tố cùng một số thao tác hậu tố/toàn mảng sẽ bù phần còn lại, và số thao tác tối thiểu là d[n−1]+N."
+    ]
   }
 }

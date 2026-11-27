@@ -13,6 +13,21 @@
       "The return must be strictly later than the departure (j > i), so simply adding the minimums of the two arrays is wrong.",
       "For a fixed departure day i, the best return fare is the minimum of returning[i+1..n-1]; scanning from right to left maintains that suffix minimum in O(1) per step.",
       "Start with the suffix minimum equal to the last day's return fare and the answer equal to the second-to-last day's departure fare plus it; then for i from n-2 down to 0, first update the suffix minimum with returning[i+1], then update the answer with departing[i] plus the suffix minimum. Fares can be negative; use 64-bit sums."
+    ],
+    "ja": [
+      "帰着は出発より厳密に後 (j > i) でなければならないので、2 つの配列の最小値を単純に足すのは誤りです。",
+      "出発日 i を固定したとき、最良の復路運賃は returning[i+1..n-1] の最小値です。右から左へ走査すれば、この接尾辞の最小値を 1 ステップあたり O(1) で保持できます。",
+      "接尾辞の最小値を最終日の復路運賃で、答えを最後から 2 日目の往路運賃とその値の和で初期化します。その後 i を n-2 から 0 まで下げながら、まず returning[i+1] で接尾辞の最小値を更新し、次に departing[i] とその接尾辞の最小値の和で答えを更新します。運賃は負になりえるので、合計には 64 ビット整数を使います。"
+    ],
+    "ko": [
+      "귀환은 출발보다 엄격하게 늦어야 하므로(j > i) 두 배열의 최솟값을 단순히 더하면 틀립니다.",
+      "출발일 i를 고정하면 최적의 귀환 요금은 returning[i+1..n-1]의 최솟값이며, 오른쪽에서 왼쪽으로 훑으면 이 접미사 최솟값을 단계당 O(1)에 유지할 수 있습니다.",
+      "접미사 최솟값을 마지막 날의 귀환 요금으로, 답을 끝에서 두 번째 날의 출발 요금과 그 합으로 초기화합니다. 이후 i를 n-2부터 0까지 내려가며 먼저 returning[i+1]로 접미사 최솟값을 갱신하고, 그다음 departing[i]와 접미사 최솟값의 합으로 답을 갱신합니다. 요금은 음수일 수 있으므로 64비트 합을 사용하세요."
+    ],
+    "vi": [
+      "Ngày về phải sau ngày đi một cách chặt chẽ (j > i), nên chỉ cộng hai giá trị nhỏ nhất của hai mảng là sai.",
+      "Với ngày đi i cố định, giá vé về tốt nhất là giá trị nhỏ nhất của returning[i+1..n-1]; quét từ phải sang trái duy trì giá trị nhỏ nhất của hậu tố này với O(1) mỗi bước.",
+      "Bắt đầu với giá trị nhỏ nhất của hậu tố bằng giá vé về của ngày cuối và đáp án bằng giá vé đi của ngày áp chót cộng với nó; sau đó với i từ n-2 xuống 0, trước hết cập nhật giá trị nhỏ nhất của hậu tố bằng returning[i+1], rồi cập nhật đáp án bằng departing[i] cộng giá trị nhỏ nhất của hậu tố. Giá vé có thể âm; dùng tổng 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nWhen iterating over the departure day i, the return must come later, so only returning[i+1..n-1] is considered. Scan from right to left while maintaining the minimum fare in that range, add it to departing[i], and update the answer.\n\n## Proof of correctness\n\nFor any fixed departure day i, the valid return days are exactly j>i; the suffix minimum is exactly the minimum among these valid return fares, so adding it to departing[i] gives the optimal valid cost for that i. Taking the minimum after iterating over every i covers all valid departure days, so the global optimum is obtained.\n\n## Complexity\n\nTime O(n), extra space O(1) (excluding the input arrays).\n\n## Source and site conventions\n\nThe fixed OAMaster snapshot (https://oamaster.com/docs/companies/meta#24-get-minimum-round-trip-cost, content fingerprint a593c760ead9bffff0c1e7bdc69f17028ece67e9f8641d955b24c057c08bd53c) gives the array definitions and the original example but omits the return-day restriction; its example solutions in three languages take the minimum of each array separately and ignore the order of the days. The 1Point3Acres report of the same problem explicitly requires j>i: https://www.1point3acres.com/interview/problems/meta-solve-transportation-problem. Under this strict condition the original example is still 2 (outbound fare 1 on day 0, return fare 1 on day 3). The snapshot gives no constraints; n, the fare range, and the stdin/stdout protocol on this site are all supplementary conventions."

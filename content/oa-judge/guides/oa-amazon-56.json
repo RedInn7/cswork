@@ -13,6 +13,21 @@
       "The number of 1s, k, in a valid substring cannot be 0 (otherwise there would be no 0s either and the substring would be empty); once k is fixed, the number of 0s is k^2 and the length is fixed at k^2 + k.",
       "Since k^2+k <= n, there are only about sqrt(n) values of k; for each k, check every window of length k^2+k for exactly k ones, which a prefix count of 1s answers in O(1).",
       "Build the prefix count of 1s; for k = 1, 2, ... while k^2+k <= n, let length = k^2+k and go over every end = length..n, counting the window when prefix[end] - prefix[end-length] == k; the total work is O(n sqrt n), and the answer should be a 64-bit integer."
+    ],
+    "ja": [
+      "条件を満たす部分文字列の 1 の個数 k は 0 にはなりえません（0 だと 0 の個数も 0 になり、部分文字列が空になります）。k を固定すると、0 の個数は k^2、長さは k^2 + k に固定されます。",
+      "k^2+k <= n なので、k の候補は約 sqrt(n) 個しかありません。各 k について、長さ k^2+k のすべての窓がちょうど k 個の 1 を含むかを、1 の累積カウントで O(1) で判定します。",
+      "1 の累積カウントを作ります。k = 1, 2, ... について k^2+k <= n の間、length = k^2+k とし、end = length..n のすべてについて、prefix[end] - prefix[end-length] == k のときその窓を数えます。全体の計算量は O(n sqrt n) で、答えは 64 ビット整数にします。"
+    ],
+    "ko": [
+      "유효한 부분 문자열의 1의 개수 k는 0일 수 없습니다(그러면 0도 없어 부분 문자열이 비게 됩니다). k가 정해지면 0의 개수는 k^2이고 길이는 k^2 + k로 고정됩니다.",
+      "k^2+k <= n이므로 k의 값은 약 sqrt(n)개뿐입니다. 각 k에 대해 길이 k^2+k의 모든 창에서 1이 정확히 k개인지 확인하며, 1의 누적 개수로 O(1)에 답할 수 있습니다.",
+      "1의 누적 개수를 만들고, k = 1, 2, ...에 대해 k^2+k <= n인 동안 length = k^2+k로 두고 end = length..n을 모두 돌며 prefix[end] - prefix[end-length] == k이면 그 창을 셉니다. 전체 작업량은 O(n sqrt n)이며 답은 64비트 정수로 다루세요."
+    ],
+    "vi": [
+      "Số chữ số 1, k, trong một xâu con hợp lệ không thể bằng 0 (nếu không thì cũng không có chữ số 0 và xâu con sẽ rỗng); khi k đã cố định, số chữ số 0 là k^2 và độ dài cố định là k^2 + k.",
+      "Vì k^2+k <= n, chỉ có khoảng sqrt(n) giá trị của k; với mỗi k, kiểm tra mọi cửa sổ có độ dài k^2+k xem có đúng k chữ số 1 hay không, điều mà tổng tiền tố các chữ số 1 trả lời được trong O(1).",
+      "Dựng mảng đếm tiền tố các chữ số 1; với k = 1, 2, ... khi k^2+k <= n, đặt length = k^2+k và duyệt mọi end = length..n, đếm cửa sổ khi prefix[end] - prefix[end-length] == k; tổng công việc là O(n sqrt n), và đáp án nên là số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nIf there are k ones, the substring length must be k^2 + k. Enumerate every k >= 1 for which this length is <= n, and use the prefix count of 1s to check all windows of that fixed length.\n\n## Proof of correctness\n\nA non-empty valid substring cannot have zero 1s, because then it would also have to have zero 0s. Every valid substring has a unique positive integer k and a unique length k^2 + k; the prefix sum condition ensures there are exactly k ones, so the other k^2 characters are all 0. Hence the enumeration counts every valid substring exactly once.\n\n## Complexity\n\nO(n sqrt n) time and O(n) space."

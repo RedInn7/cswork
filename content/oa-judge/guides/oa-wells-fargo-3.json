@@ -13,6 +13,21 @@
       "First compute each cell's Manhattan distance to the nearest obstacle; since the grid is 4-connected and every cell is walkable, that distance is the BFS step count from all * cells at once.",
       "A path's safety value is the minimum distance along it, so maximizing it is a widest (maximum-bottleneck) path problem: run Dijkstra with a max-heap and let the new value be min(current value, neighbor's distance).",
       "Get d with a multi-source BFS; push best[S] = d[S] into a max-heap; repeatedly pop the cell with the largest value, skip it if the value is no longer that cell's best, and stop with the answer when E is popped; for each of the 4 neighbors set nv = min(v, d[neighbor]) and update and push it if it beats best."
+    ],
+    "ja": [
+      "まず、各セルから最も近い障害物までのマンハッタン距離を計算します。グリッドは4方向に連結しており、すべてのセルが歩けるので、この距離はすべての * セルから同時に始める BFS のステップ数と一致します。",
+      "パスの安全値はパス上の距離の最小値なので、これを最大化する問題は widest path(最大ボトルネックパス)問題です。最大ヒープを使った Dijkstra を実行し、新しい値を min(現在の値, 隣接セルの距離) とします。",
+      "多始点 BFS で d を求めます。best[S] = d[S] を最大ヒープに push します。値が最大のセルを繰り返し pop し、その値がもうそのセルの best でなければスキップします。E が pop されたらそれが答えです。4つの隣接セルそれぞれについて nv = min(v, d[neighbor]) とし、best を上回るなら更新して push します。"
+    ],
+    "ko": [
+      "먼저 각 칸에서 가장 가까운 장애물까지의 맨해튼 거리를 계산합니다. 격자는 4방향 연결이고 모든 칸을 지나갈 수 있으므로, 이 거리는 모든 * 칸에서 동시에 출발한 BFS의 단계 수와 같습니다.",
+      "경로의 안전도는 경로를 따라 나온 거리의 최솟값이므로 이를 최대화하는 것은 최대 병목 경로(widest path) 문제입니다. 최대 힙을 쓰는 Dijkstra를 실행하고 새 값은 min(현재 값, 이웃의 거리)로 둡니다.",
+      "다중 시작점 BFS로 d를 구합니다. best[S] = d[S]를 최대 힙에 넣고, 가장 큰 값의 칸을 반복해서 꺼내되 그 값이 더 이상 해당 칸의 best가 아니면 건너뜁니다. E가 꺼내지면 그 값이 답입니다. 4개의 이웃마다 nv = min(v, d[neighbor])로 두고 best보다 크면 갱신하여 힙에 넣습니다."
+    ],
+    "vi": [
+      "Trước hết tính khoảng cách Manhattan từ mỗi ô đến chướng ngại vật gần nhất; vì lưới liên thông 4 hướng và ô nào cũng đi được, khoảng cách đó chính là số bước BFS xuất phát đồng thời từ mọi ô *.",
+      "Giá trị an toàn của một đường đi là khoảng cách nhỏ nhất dọc theo nó, nên cực đại hóa nó là bài toán đường đi rộng nhất (nút thắt lớn nhất): chạy Dijkstra với max-heap và đặt giá trị mới là min(giá trị hiện tại, khoảng cách của ô lân cận).",
+      "Tính d bằng BFS đa nguồn; đẩy best[S] = d[S] vào max-heap; lặp lại việc lấy ô có giá trị lớn nhất ra, bỏ qua nếu giá trị đó không còn là best của ô, và dừng với đáp án khi lấy E ra; với mỗi ô trong 4 ô lân cận, đặt nv = min(v, d[neighbor]) rồi cập nhật và đẩy vào nếu nó tốt hơn best."
     ]
   },
   "explanationEn": "## Approach\n\nA multi-source BFS gives every cell's Manhattan distance to the nearest *; then run a maximum-bottleneck path search: when expanding to a neighbor, the safety value is the smaller of the current value and the neighbor's distance, and keep the best known safety value for each cell.\n\n## Correctness\n\nIn an unweighted 4-neighbor grid, a multi-source BFS gives the shortest distance to the nearest obstacle, which equals the Manhattan distance (the whole grid is walkable). For a path prefix, the best safety value transitions to the minimum of the prefix's bottleneck and the new cell's distance. The max-heap always takes the state with the largest current value; no unprocessed state can produce a bottleneck exceeding the heap top through later expansion, so the first time E is popped its value is the global optimum.\n\n## Complexity\n\nV = rows×cols. Time O(V log V), space O(V)."

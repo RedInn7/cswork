@@ -13,6 +13,21 @@
       "A pair of equal adjacent letters can turn the next letter into the same letter, which forms a new pair, so it can keep moving right and change every different letter of the suffix to its right one by one.",
       "Order matters: let the pair further right finish converting its suffix first; when a pair further left then spreads to the right, every letter there that differs from it can be changed once more. Processing the pairs from right to left uses every opportunity.",
       "Scan from right to left, keeping the count of each letter in the current suffix s[i..]. When s[i] equals s[i+1], every letter different from s[i] in the suffix of length n−i−1 to its right can be changed once, so add that length minus the count of s[i] in it, then reset the counts to the whole suffix being s[i]. At every step also count s[i] itself. The answer may exceed 32 bits."
+    ],
+    "ja": [
+      "隣り合って等しい2文字の組は、次の文字を同じ文字に変えて新しい組を作れるので、右へ進み続けながら、右側の接尾辞にある異なる文字を1つずつすべて変えられます。",
+      "順序が重要です。より右にある組に先に接尾辞を変換させ、そのあとでより左にある組が右へ広がると、そこにある自分と異なる文字をもう一度変えられます。組を右から左へ処理すれば、すべての機会を使い切れます。",
+      "右から左へ走査し、現在の接尾辞 s[i..] に含まれる各文字の個数を保持します。s[i] が s[i+1] と等しいとき、右側の長さ n−i−1 の接尾辞にある s[i] と異なる文字はそれぞれ1回ずつ変えられるので、その長さから s[i] の個数を引いた値を加算し、その後、接尾辞全体が s[i] になったとして個数をリセットします。各ステップで s[i] 自身も数えます。答えは32ビットを超えることがあります。"
+    ],
+    "ko": [
+      "같은 인접 문자 쌍은 다음 문자를 같은 문자로 바꿀 수 있고, 그러면 새로운 쌍이 생기므로 계속 오른쪽으로 이동하면서 오른쪽 접미사의 서로 다른 문자들을 하나씩 모두 바꿀 수 있습니다.",
+      "순서가 중요합니다. 더 오른쪽에 있는 쌍이 먼저 자기 접미사를 모두 변환하게 하고, 그 뒤에 더 왼쪽의 쌍이 오른쪽으로 퍼지면 그 구간에서 자신과 다른 모든 문자를 한 번 더 바꿀 수 있습니다. 쌍을 오른쪽에서 왼쪽으로 처리하면 모든 기회를 활용할 수 있습니다.",
+      "오른쪽에서 왼쪽으로 스캔하면서 현재 접미사 s[i..]의 각 문자 개수를 유지합니다. s[i]가 s[i+1]과 같으면 오른쪽 길이 n−i−1의 접미사에서 s[i]와 다른 모든 문자를 한 번씩 바꿀 수 있으므로, 그 길이에서 접미사 안의 s[i] 개수를 뺀 값을 더하고, 개수를 전체 접미사가 s[i]인 상태로 초기화합니다. 매 단계에서 s[i] 자신도 개수에 포함합니다. 답은 32비트를 넘을 수 있습니다."
+    ],
+    "vi": [
+      "Một cặp chữ cái kề nhau bằng nhau có thể biến chữ cái kế tiếp thành cùng chữ cái đó, tạo ra một cặp mới, nhờ vậy nó cứ dịch sang phải và lần lượt đổi mọi chữ cái khác trong hậu tố bên phải.",
+      "Thứ tự rất quan trọng: để cặp nằm xa hơn về bên phải chuyển đổi xong hậu tố của nó trước; khi cặp nằm bên trái hơn lan sang phải, mọi chữ cái ở đó khác với nó lại có thể được đổi thêm một lần nữa. Xử lý các cặp từ phải sang trái tận dụng được mọi cơ hội.",
+      "Duyệt từ phải sang trái, giữ số lượng từng chữ cái trong hậu tố hiện tại s[i..]. Khi s[i] bằng s[i+1], mọi chữ cái khác s[i] trong hậu tố dài n−i−1 bên phải nó đều có thể được đổi một lần, nên cộng độ dài đó trừ đi số lượng s[i] trong hậu tố, rồi đặt lại bộ đếm sao cho toàn bộ hậu tố là s[i]. Ở mỗi bước cũng đếm cả chính s[i]. Đáp án có thể vượt quá 32 bit."
     ]
   },
   "explanationEn": "## Approach\n\nScan from right to left. Whenever you meet a pair of equal adjacent characters, every different character in the suffix to its right can be changed to it one at a time; add the number of differing characters and reset the suffix frequencies.\n\n## Proof of correctness\n\nA pair of equal characters further left can spread step by step over the whole suffix to its right. Finishing the operations the right side can produce before letting the left character spread loses none of the left side's spreading ability and keeps every opportunity on the right; reordering the operations yields this optimal right-to-left order. Each character in the suffix that differs requires, and can contribute, exactly one operation each time.\n\n## Complexity\n\nTime O(N), letter-count space O(26)."

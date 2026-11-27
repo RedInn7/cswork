@@ -13,6 +13,21 @@
       "Each inversion is created exactly once, when its right-hand character is appended to the merged string. So when appending characters one by one, the new inversions equal the number of already placed characters strictly greater than it, which covers inversions inside each original string as well as across them.",
       "The placed characters depend only on how much of each string has been used: the first i and the first j. Let dp[i][j] be the fewest inversions when merging the first i characters of the first string with the first j of the second; the next character comes from one string or the other, and its cost is the total number of strictly greater characters in the two used prefixes.",
       "Precompute for each string, for every letter c and every prefix length, how many characters in the prefix are strictly greater than c; fill row 0 of dp using the second string alone; then each dp[i][j] is the smaller of appending the first string's next character to dp[i−1][j] and appending the second string's next character to dp[i][j−1], with each increment read from the tables; keep a single rolling row and print dp[n][m]."
+    ],
+    "ja": [
+      "転倒は、その右側の文字がマージ後の文字列に追加されるときに、ちょうど 1 回だけ生じます。したがって、1 文字ずつ追加するとき、新しく増える転倒数は、すでに置かれた文字のうち、その文字より厳密に大きいものの個数に等しく、これは各元の文字列の内部の転倒も、文字列間の転倒も含みます。",
+      "置かれた文字は、各文字列がどこまで使われたか、つまり先頭の i 文字と j 文字だけで決まります。dp[i][j] を、1 つ目の文字列の先頭 i 文字と 2 つ目の先頭 j 文字をマージしたときの転倒数の最小値とします。次の文字はどちらかの文字列から来て、そのコストは、使用済みの 2 つの接頭辞に含まれる厳密に大きい文字の総数です。",
+      "各文字列について、各文字 c と各接頭辞の長さごとに、接頭辞中で c より厳密に大きい文字の個数を前計算します。2 つ目の文字列だけで dp の 0 行目を埋めます。そのあと各 dp[i][j] は、dp[i−1][j] に 1 つ目の文字列の次の文字を追加した場合と、dp[i][j−1] に 2 つ目の文字列の次の文字を追加した場合の小さいほうで、増分は表から読み取ります。ローリング配列を 1 本だけ持ち、dp[n][m] を出力します。"
+    ],
+    "ko": [
+      "각 역전은 오른쪽 문자가 병합 문자열에 추가될 때 정확히 한 번 생깁니다. 따라서 문자를 하나씩 이어 붙일 때 새로 생기는 역전의 수는 이미 놓인 문자 중 그 문자보다 엄격하게 큰 것의 개수이며, 각 원래 문자열 내부의 역전과 문자열 사이의 역전을 모두 포함합니다.",
+      "놓인 문자들은 각 문자열을 얼마나 사용했는지, 즉 처음 i개와 처음 j개에만 의존합니다. dp[i][j]를 첫 번째 문자열의 처음 i개와 두 번째의 처음 j개를 병합할 때의 최소 역전 수라고 하면, 다음 문자는 어느 한 문자열에서 오며 그 비용은 사용된 두 접두사에서 엄격하게 더 큰 문자의 총 개수입니다.",
+      "각 문자열에 대해 모든 문자 c와 모든 접두사 길이마다 접두사 안에서 c보다 엄격하게 큰 문자의 개수를 미리 계산합니다. dp의 0번 행은 두 번째 문자열만으로 채웁니다. 이후 dp[i][j]는 dp[i−1][j]에 첫 번째 문자열의 다음 문자를 붙이는 경우와 dp[i][j−1]에 두 번째 문자열의 다음 문자를 붙이는 경우 중 작은 값이며, 각 증가분은 표에서 읽습니다. 롤링 행 하나만 유지하고 dp[n][m]을 출력합니다."
+    ],
+    "vi": [
+      "Mỗi nghịch thế được tạo ra đúng một lần, khi ký tự bên phải của nó được thêm vào xâu đã trộn. Vì vậy khi thêm từng ký tự, số nghịch thế mới bằng số ký tự đã đặt lớn hơn ngặt nó, bao gồm cả các nghịch thế trong từng xâu gốc lẫn giữa hai xâu.",
+      "Các ký tự đã đặt chỉ phụ thuộc vào đã dùng bao nhiêu của mỗi xâu: i ký tự đầu và j ký tự đầu. Gọi dp[i][j] là số nghịch thế ít nhất khi trộn i ký tự đầu của xâu thứ nhất với j ký tự đầu của xâu thứ hai; ký tự tiếp theo đến từ xâu này hoặc xâu kia, và chi phí của nó là tổng số ký tự lớn hơn ngặt trong hai tiền tố đã dùng.",
+      "Tính trước cho mỗi xâu, với mỗi chữ cái c và mỗi độ dài tiền tố, có bao nhiêu ký tự trong tiền tố lớn hơn ngặt c; điền hàng 0 của dp chỉ dùng xâu thứ hai; khi đó mỗi dp[i][j] là giá trị nhỏ hơn giữa việc thêm ký tự tiếp theo của xâu thứ nhất vào dp[i−1][j] và thêm ký tự tiếp theo của xâu thứ hai vào dp[i][j−1], với mỗi lượng tăng đọc từ các bảng; giữ một hàng cuốn chiếu duy nhất và in dp[n][m]."
     ]
   },
   "explanationEn": "## Approach\n\nFor each letter, precompute for both strings the number of strictly greater characters in every prefix. dp[i][j] is the minimum number of inversions after merging the first i and j characters; appending the next character of either string adds the total number of strictly greater characters in the two used prefixes. Solve it with rolling rows.\n\n## Proof of correctness\n\nEach inversion pair is counted exactly once, when its right character is appended. So the cost accumulated step by step for any merge order is exactly the total number of inversions, both inside the original strings and across them. The last character must come from the end of one of the two prefixes; removing it gives the corresponding optimal predecessor subproblem, so the transitions exhaust all valid merges without changing either string's internal order.\n\n## Complexity\n\nTime O(nm+26(n+m)), space O(n+m) (the alphabet size 26 is a constant)."

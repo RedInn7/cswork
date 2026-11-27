@@ -13,6 +13,21 @@
       "After a group of K equal characters is removed, the two sides may join and form a new removable group. This chain reaction resembles bracket matching and is handled well by a stack scanned from left to right.",
       "Instead of pushing single characters, push groups of the form (character, consecutive count). When the new character equals the top's character, just increase the count; when the count reaches K, pop the whole group. After a pop, the next character is compared with the new top, which handles chained removals.",
       "Scan from left to right: if the stack is non-empty and its top character equals the current one, increase the top count and pop it when the count equals K; otherwise push (current character, 1). At the end, expand each group by its count and concatenate them to get the final word."
+    ],
+    "ja": [
+      "K 個の同じ文字のグループが削除されると、両側がつながって新たに削除可能なグループができることがあります。この連鎖反応は括弧の対応に似ており、左から右へ走査するスタックでうまく処理できます。",
+      "1 文字ずつ push する代わりに、(文字, 連続する個数) の形のグループを push します。新しい文字が先頭の文字と等しければ個数を増やすだけにし、個数が K に達したらグループごと pop します。pop の後は、次の文字を新しい先頭と比較するので、連鎖的な削除も扱えます。",
+      "左から右へ走査し、スタックが空でなく先頭の文字が現在の文字と等しければ、先頭の個数を増やし、個数が K に等しくなったら pop します。そうでなければ (現在の文字, 1) を push します。最後に、各グループをその個数ぶん展開して連結すると、最終的な単語が得られます。"
+    ],
+    "ko": [
+      "K개의 같은 문자 묶음이 제거되면 양쪽이 이어져 새로 제거 가능한 묶음이 생길 수 있습니다. 이런 연쇄 반응은 괄호 짝 맞추기와 비슷하며, 왼쪽에서 오른쪽으로 스캔하는 스택으로 잘 처리됩니다.",
+      "문자 하나씩이 아니라 (문자, 연속 개수) 형태의 묶음을 push합니다. 새 문자가 top의 문자와 같으면 개수만 늘리고, 개수가 K에 도달하면 묶음 전체를 pop합니다. pop한 뒤에는 다음 문자를 새 top과 비교하므로 연쇄 제거가 처리됩니다.",
+      "왼쪽에서 오른쪽으로 스캔합니다. 스택이 비어 있지 않고 top 문자가 현재 문자와 같으면 top의 개수를 늘리고 K가 되면 pop하며, 아니면 (현재 문자, 1)을 push합니다. 마지막에 각 묶음을 개수만큼 펼쳐서 이어 붙이면 최종 단어가 됩니다."
+    ],
+    "vi": [
+      "Sau khi xóa một nhóm K ký tự bằng nhau, hai phía có thể nối lại và tạo thành một nhóm xóa được mới. Phản ứng dây chuyền này giống việc khớp ngoặc và được xử lý tốt bằng ngăn xếp duyệt từ trái sang phải.",
+      "Thay vì push từng ký tự, hãy push các nhóm dạng (ký tự, số lần liên tiếp). Khi ký tự mới bằng ký tự ở đỉnh, chỉ cần tăng số đếm; khi số đếm đạt K, pop cả nhóm. Sau khi pop, ký tự tiếp theo được so với đỉnh mới, xử lý được các lần xóa dây chuyền.",
+      "Duyệt từ trái sang phải: nếu ngăn xếp không rỗng và ký tự ở đỉnh bằng ký tự hiện tại, tăng số đếm ở đỉnh và pop khi số đếm bằng K; ngược lại push (ký tự hiện tại, 1). Cuối cùng, khai triển mỗi nhóm theo số đếm của nó và nối lại để được từ cuối cùng."
     ]
   },
   "explanationEn": "## Approach\n\nScan the characters from left to right, maintaining a stack of `(character, consecutive count)`. When a count reaches K, pop that group; after popping, later characters naturally merge with the new stack top, which handles chained deletions.\n\n## Correctness\n\nAt any prefix of the scan, the stack represents the unique stable result of repeatedly deleting from that prefix according to the rules, and adjacent character groups in the stack are different. When a new character is read, if it equals the stack top it can only extend that group; once the length reaches K, one group is deleted immediately, giving the stable result of the prefix. If the character is different, a new group is created. By induction on the prefix length, expanding the stack at the end gives the stable result of the whole string; the statement guarantees the result is unique, so it does not depend on the order of operations.\n\n## Complexity\n\nLet n be the length of word. Time O(n), space O(n)."

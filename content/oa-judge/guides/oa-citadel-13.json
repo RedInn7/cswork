@@ -13,6 +13,21 @@
       "f is the smallest number of occurrences among users in the whole array; the window you want has every user count <= f inside it, and at least one user with exactly f occurrences.",
       "Count global frequencies to get f, then slide a window: after adding the right element, if some user exceeds f, advance the left end until it no longer does; also track how many users have exactly f occurrences in the window.",
       "Keep counts and at (users with count exactly f): before changing a count, decrement at if it was f, and after the change increment at if it is now f; after adding v at the right, remove left elements while counts[v] > f; after each right end, if at > 0 update the answer with the window length; print the answer."
+    ],
+    "ja": [
+      "f は配列全体でのユーザーの最小の出現回数です。求めるウィンドウは、中のすべてのユーザーのカウントが <= f で、かつ少なくとも 1 人のユーザーの出現回数がちょうど f です。",
+      "全体の頻度を数えて f を求めてから、ウィンドウをスライドさせます。右の要素を追加した後、あるユーザーが f を超えたら、超えなくなるまで左端を進めます。同時に、ウィンドウ内で出現回数がちょうど f のユーザーが何人いるかも追跡します。",
+      "counts と at（カウントがちょうど f のユーザー数）を保持します。カウントを変える前に、それが f だったら at を減らし、変更後に f になったら at を増やします。右に v を追加した後、counts[v] > f の間は左の要素を取り除きます。各右端の後、at > 0 ならウィンドウの長さで答えを更新し、最後に答えを出力します。"
+    ],
+    "ko": [
+      "f는 배열 전체에서 사용자의 등장 횟수 중 최솟값입니다. 원하는 윈도우는 안의 모든 사용자 횟수가 <= f이고, 정확히 f번 등장하는 사용자가 적어도 한 명 있어야 합니다.",
+      "전체 빈도를 세어 f를 구한 뒤 윈도우를 밀어 나갑니다. 오른쪽 원소를 추가한 후 어떤 사용자가 f를 넘으면 더 이상 넘지 않을 때까지 왼쪽 끝을 전진시키고, 윈도우 안에서 정확히 f번 등장하는 사용자의 수도 추적합니다.",
+      "counts와 at(횟수가 정확히 f인 사용자의 수)을 유지합니다. 횟수를 바꾸기 전에 그 횟수가 f였다면 at을 줄이고, 바꾼 후에 f가 되었다면 at을 늘립니다. 오른쪽에 v를 추가한 뒤 counts[v] > f인 동안 왼쪽 원소를 제거합니다. 오른쪽 끝마다 at > 0이면 윈도우 길이로 답을 갱신하고, 마지막에 답을 출력합니다."
+    ],
+    "vi": [
+      "f là số lần xuất hiện nhỏ nhất của một người dùng trong toàn mảng; cửa sổ bạn muốn có mọi số đếm người dùng <= f bên trong, và ít nhất một người dùng có đúng f lần xuất hiện.",
+      "Đếm tần suất toàn cục để có f, rồi trượt cửa sổ: sau khi thêm phần tử bên phải, nếu có người dùng vượt quá f thì dịch đầu trái cho đến khi không còn; đồng thời theo dõi có bao nhiêu người dùng có đúng f lần xuất hiện trong cửa sổ.",
+      "Giữ counts và at (số người dùng có số đếm đúng bằng f): trước khi đổi một số đếm, giảm at nếu nó bằng f, và sau khi đổi, tăng at nếu nó giờ bằng f; sau khi thêm v ở bên phải, loại các phần tử bên trái khi counts[v] > f; sau mỗi đầu phải, nếu at > 0 thì cập nhật đáp án bằng độ dài cửa sổ; in đáp án."
     ]
   },
   "explanationEn": "## Approach\n\nFirst compute f. Use a sliding window that keeps every user's count <= f, and additionally maintain the number of users whose count is exactly f; update the longest length only when that number is non-zero.\n\n## Proof of correctness\n\nAdding the right end can only push that one user above f; moving the left end until it is <= f again makes all counts <= f. A non-zero number of users with count f is exactly what guarantees that the window's maximum frequency equals f. For each right end the left pointer is as far left as possible, so no shorter valid window can be better; if the widest window has no user reaching f, its sub-windows only have smaller frequencies and are invalid as well.\n\n## Complexity\n\nO(n) time, O(number of distinct users) space."

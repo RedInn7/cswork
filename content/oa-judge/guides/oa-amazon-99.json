@@ -13,6 +13,21 @@
       "A server needs ceil(health/k) seconds to shut down and contributes request requests every second until then. Treat it as a job of length p and weight request; the total is the sum of completion time times weight over all jobs, plus 1.",
       "Interleaving attacks never makes any server shut down earlier, so servers can be handled one after another and only the order matters. For two adjacent servers i and j, the cost difference between the two orders depends on p_i*w_j versus p_j*w_i.",
       "Sort by p/request in ascending order, comparing with integer cross products to avoid floating-point error. Then accumulate: add p to the elapsed time and add elapsed time times request to the answer; finally add 1. Use 64-bit integers for the answer."
+    ],
+    "ja": [
+      "サーバーを停止させるには ceil(health/k) 秒かかり、停止するまで毎秒 request 個のリクエストを送ります。これを長さ p、重み request のジョブとみなすと、合計は全ジョブの（完了時刻 × 重み）の総和に 1 を足したものです。",
+      "攻撃をインターリーブしても、どのサーバーも早く停止することはないので、サーバーは 1 台ずつ順に処理でき、問題は順序だけです。隣り合う 2 台 i と j の 2 通りの順序によるコストの差は、p_i*w_j と p_j*w_i の比較で決まります。",
+      "p/request の昇順にソートし、浮動小数点の誤差を避けるため整数の交差積で比較します。その後、累積します。経過時間に p を加え、経過時間 × request を答えに加え、最後に 1 を足します。答えは 64 ビット整数で持ってください。"
+    ],
+    "ko": [
+      "서버를 종료시키는 데는 ceil(health/k)초가 걸리고, 그때까지 매초 request개의 요청을 보냅니다. 이를 길이 p, 가중치 request인 작업으로 보면, 총합은 모든 작업의 (완료 시각 × 가중치)의 합에 1을 더한 값입니다.",
+      "공격을 번갈아 해도 어떤 서버도 더 일찍 종료되지 않으므로, 서버를 하나씩 차례로 처리하면 되고 순서만 중요합니다. 인접한 두 서버 i와 j의 두 순서 사이의 비용 차이는 p_i*w_j와 p_j*w_i의 비교에 달려 있습니다.",
+      "p/request가 작은 순으로 정렬하되, 부동소수점 오차를 피하려고 정수 교차곱으로 비교합니다. 그런 다음 누적합니다. 경과 시간에 p를 더하고 답에 (경과 시간 × request)를 더하며, 마지막에 1을 더합니다. 답에는 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Một máy chủ cần ceil(health/k) giây để ngừng hoạt động và đóng góp request yêu cầu mỗi giây cho đến lúc đó. Hãy coi nó là một công việc có độ dài p và trọng số request; tổng là tổng của thời điểm hoàn thành nhân trọng số trên mọi công việc, cộng thêm 1.",
+      "Đan xen các đòn tấn công không bao giờ làm máy chủ nào ngừng sớm hơn, nên có thể xử lý các máy chủ lần lượt từng cái một và chỉ có thứ tự là quan trọng. Với hai máy chủ kề nhau i và j, chênh lệch chi phí giữa hai thứ tự phụ thuộc vào p_i*w_j so với p_j*w_i.",
+      "Sắp xếp theo p/request tăng dần, so sánh bằng tích chéo số nguyên để tránh sai số dấu phẩy động. Sau đó cộng dồn: cộng p vào thời gian đã trôi qua và cộng thời gian đã trôi qua nhân request vào đáp án; cuối cùng cộng 1. Dùng số nguyên 64 bit cho đáp án."
     ]
   },
   "explanationEn": "## Approach\n\nA server needs p=ceil(health/k) attacks and has weight request. Process the servers consecutively in ascending order of p/request, comparing the ratios with integer cross products.\n\n## Proof of Correctness\n\nAny interleaved attack plan can be rearranged to process the servers consecutively in order of completion without making any server finish later, so an optimal solution without interleaving exists. For adjacent jobs i and j, the cost saved by putting i before j instead of the reverse is determined by p_i w_j−p_j w_i; sorting by this ratio removes every inversion and is therefore optimal. The total number of requests is Σ completion time×request, plus the final 1.\n\n## Complexity\n\nTime O(n log n), space O(n)."

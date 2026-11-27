@@ -13,6 +13,21 @@
       "The output has two phases: first all favourites in favourite-list order, then all non-favourite images in original order, and NULL after that.",
       "You only need a set of favourites and two cursors: phase one advances the favourite cursor; phase two advances the cursor over the original list and skips images in the favourite set. Cursors only move forward, so nothing is returned twice.",
       "Put the favourite ids in a hash set; for each of the q calls: if the favourite cursor is not exhausted, output the next favourite; otherwise move the original-list cursor past favourites, output the next image and advance if one exists, or output NULL; print the results separated by spaces."
+    ],
+    "ja": [
+      "出力は 2 つの段階に分かれます。まずお気に入りをすべてお気に入りリストの順に、次にお気に入りでない画像をすべて元の順に出力し、そのあとは NULL です。",
+      "必要なのはお気に入りの集合と 2 つのカーソルだけです。第 1 段階ではお気に入りのカーソルを進め、第 2 段階では元のリスト上のカーソルを進めて、お気に入りの集合に含まれる画像を飛ばします。カーソルは前にしか進まないので、同じものを二度返すことはありません。",
+      "お気に入りの識別子をハッシュ集合に入れます。q 回の呼び出しのそれぞれで、お気に入りのカーソルが尽きていなければ次のお気に入りを出力します。尽きていれば、元のリストのカーソルをお気に入りの先まで進め、次の画像があればそれを出力して進め、なければ NULL を出力します。結果は空白区切りで出力します。"
+    ],
+    "ko": [
+      "출력은 두 단계로 이루어집니다. 먼저 즐겨찾기 목록 순서대로 모든 즐겨찾기를, 그다음 원래 순서대로 즐겨찾기가 아닌 모든 이미지를 반환하고, 그 후에는 NULL입니다.",
+      "필요한 것은 즐겨찾기 집합과 커서 두 개뿐입니다. 첫 단계에서는 즐겨찾기 커서를 진행하고, 둘째 단계에서는 원래 목록의 커서를 진행하며 즐겨찾기 집합에 있는 이미지를 건너뜁니다. 커서는 앞으로만 움직이므로 같은 이미지를 두 번 반환하지 않습니다.",
+      "즐겨찾기 id를 해시 집합에 넣습니다. q번의 호출마다, 즐겨찾기 커서가 소진되지 않았다면 다음 즐겨찾기를 출력합니다. 그렇지 않으면 원래 목록 커서를 즐겨찾기 너머로 옮기고, 다음 이미지가 있으면 출력하고 진행하며 없으면 NULL을 출력합니다. 결과는 공백으로 구분하여 출력합니다."
+    ],
+    "vi": [
+      "Đầu ra có hai giai đoạn: trước hết tất cả ảnh yêu thích theo thứ tự trong danh sách yêu thích, rồi tất cả ảnh không yêu thích theo thứ tự gốc, và NULL sau đó.",
+      "Bạn chỉ cần một tập các ảnh yêu thích và hai con trỏ: giai đoạn một tiến con trỏ yêu thích; giai đoạn hai tiến con trỏ trên danh sách gốc và bỏ qua các ảnh nằm trong tập yêu thích. Các con trỏ chỉ tiến lên, nên không bao giờ trả về một ảnh hai lần.",
+      "Đưa các id yêu thích vào một hash set; với mỗi trong q lần gọi: nếu con trỏ yêu thích chưa hết thì xuất ảnh yêu thích kế tiếp; ngược lại dịch con trỏ danh sách gốc qua các ảnh yêu thích, xuất ảnh kế tiếp và tiến lên nếu còn, hoặc xuất NULL; in các kết quả cách nhau bằng dấu cách."
     ]
   },
   "explanationEn": "## Approach\n\nAt construction time only build the set of favourites and keep two cursors. First advance the favourite cursor; after that, scan the original list skipping favourites, and output NULL once everything is exhausted.\n\n## Correctness\n\nThe first phase outputs exactly all favourites in favourite order. The second phase scans in the original order; the set check excludes every favourite that was already output, and every non-favourite is output once. Because the cursors only move forward, later calls never repeat an image or go out of bounds.\n\n## Complexity\n\nConstruction O(m), all q calls together O(n + m + q), extra space O(m) (not counting input and output)."

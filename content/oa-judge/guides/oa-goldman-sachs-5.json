@@ -13,6 +13,21 @@
       "Every palindromic substring has a center: for odd length it is a character, and for even length it is the gap between two adjacent characters.",
       "Enumerate all 2n-1 centers and expand outwards from each; as long as the left and right characters match you have found one more palindrome and keep expanding, and you stop at the first mismatch.",
       "Start the count at 0; for each position c: set both pointers to c, and while both are in range with equal characters, increment the count and move each pointer one step outwards; then do the same with the left pointer at c and the right one at c+1; print the total. With n <= 5000, O(n^2) is enough."
+    ],
+    "ja": [
+      "回文である部分文字列にはそれぞれ中心があります。奇数長なら 1 文字、偶数長なら隣り合う 2 文字の間の隙間です。",
+      "2n-1 個の中心をすべて列挙し、それぞれから外側へ広げます。左右の文字が一致している間は回文が 1 つ増えるので数えて広げ続け、最初に不一致になった時点で止めます。",
+      "カウントを 0 から始めます。各位置 c について、左右のポインタを c にし、両方が範囲内で文字が等しい間、カウントを増やして両ポインタを 1 つずつ外側へ動かします。次に、左を c、右を c+1 として同じ処理を行います。最後に合計を出力します。n <= 5000 なので、O(n^2) で十分です。"
+    ],
+    "ko": [
+      "모든 회문 부분 문자열에는 중심이 있습니다. 길이가 홀수이면 문자 하나가, 짝수이면 인접한 두 문자 사이의 틈이 중심입니다.",
+      "2n-1개의 모든 중심을 열거하고 각각에서 바깥쪽으로 확장합니다. 왼쪽과 오른쪽 문자가 일치하는 동안은 회문을 하나 더 찾은 것이므로 계속 확장하고, 처음으로 불일치하면 멈춥니다.",
+      "카운트를 0으로 시작합니다. 각 위치 c에 대해 두 포인터를 모두 c로 두고, 둘 다 범위 안에 있고 문자가 같은 동안 카운트를 1 늘리며 각 포인터를 한 칸씩 바깥으로 옮깁니다. 이어서 왼쪽 포인터를 c, 오른쪽 포인터를 c+1로 두고 같은 과정을 반복합니다. 마지막에 총합을 출력합니다. n <= 5000이므로 O(n^2)이면 충분합니다."
+    ],
+    "vi": [
+      "Mỗi xâu con đối xứng đều có một tâm: với độ dài lẻ đó là một ký tự, với độ dài chẵn đó là khoảng trống giữa hai ký tự liền kề.",
+      "Duyệt tất cả 2n-1 tâm và mở rộng ra ngoài từ mỗi tâm; chừng nào ký tự bên trái và bên phải còn khớp nhau thì bạn tìm thêm được một xâu đối xứng và tiếp tục mở rộng, và dừng ở lần không khớp đầu tiên.",
+      "Bắt đầu đếm từ 0; với mỗi vị trí c: đặt cả hai con trỏ tại c, và khi cả hai còn trong phạm vi với ký tự bằng nhau, tăng biến đếm và dịch mỗi con trỏ một bước ra ngoài; sau đó làm tương tự với con trỏ trái tại c và con trỏ phải tại c+1; in tổng. Với n <= 5000, O(n^2) là đủ."
     ]
   },
   "explanationEn": "## Approach\n\nUse each character position and each gap between adjacent characters as a palindrome center and expand to both sides; every time the left and right characters are equal, one palindromic substring has been found.\n\n## Proof of correctness\n\nThe center of any palindromic substring is either a character or the gap between two adjacent characters. Expanding around all centers of these two kinds enumerates every palindromic substring, and each exactly once.\n\n## Complexity\n\nO(n²) time, O(1) extra space (not counting the input)."

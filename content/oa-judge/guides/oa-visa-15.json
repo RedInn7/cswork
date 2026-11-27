@@ -13,6 +13,21 @@
       "Side s is feasible exactly when some s consecutive buildings all have height at least s; a larger s only makes this harder, so feasibility is monotone.",
       "Binary search on the side length: to check a given k, ask whether some window of length k has minimum ≥ k, which a monotonic deque computes as a sliding-window minimum.",
       "Search k in [0, min(n, max h)]; check(k) scans with a deque of indices of increasing heights, popping expired indices from the front and indices with height ≥ the current one from the back, and returns true once a full window of size k has front height ≥ k; print the largest feasible k squared (as a 64-bit value)."
+    ],
+    "ja": [
+      "辺 s が実現可能であるのは、高さがすべて s 以上の連続する s 棟が存在するときに限ります。s を大きくするほど難しくなるだけなので、実現可能性は単調です。",
+      "辺の長さで二分探索します。ある k を判定するには、長さ k のウィンドウで最小値が k 以上のものがあるかを調べます。これは単調 deque によるスライディングウィンドウ最小値で求められます。",
+      "k を [0, min(n, max h)] で探索します。check(k) は高さが増加する順にインデックスを保持する deque で走査し、期限切れのインデックスを先頭から、現在の高さ以上のインデックスを末尾から取り除きます。サイズ k のウィンドウが埋まった時点で先頭の高さが k 以上なら true を返します。実現可能な最大の k の 2 乗を(64 ビット値として)出力します。"
+    ],
+    "ko": [
+      "한 변의 길이 s가 가능한 것은 높이가 모두 s 이상인 연속된 건물 s개가 존재할 때뿐입니다. s가 커질수록 조건이 더 까다로워지므로 가능 여부는 단조성을 가집니다.",
+      "변의 길이에 대해 이분 탐색을 합니다. 주어진 k를 확인하려면 길이 k인 구간 중 최솟값이 k 이상인 구간이 있는지 보면 되고, 이는 단조 덱으로 슬라이딩 윈도우 최솟값을 구해 계산할 수 있습니다.",
+      "k를 [0, min(n, max h)] 범위에서 탐색합니다. check(k)는 높이가 증가하는 인덱스를 담은 덱으로 스캔하면서, 앞쪽에서는 범위를 벗어난 인덱스를, 뒤쪽에서는 높이가 현재 값 이상인 인덱스를 제거합니다. 크기 k의 윈도우가 채워진 뒤 앞쪽 높이가 k 이상이면 true를 반환합니다. 가능한 가장 큰 k의 제곱을 (64비트 값으로) 출력합니다."
+    ],
+    "vi": [
+      "Cạnh s khả thi đúng khi có s tòa nhà liên tiếp đều cao ít nhất s; s càng lớn càng khó, nên tính khả thi có tính đơn điệu.",
+      "Tìm kiếm nhị phân theo độ dài cạnh: để kiểm tra một k cho trước, hỏi xem có cửa sổ độ dài k nào có giá trị nhỏ nhất ≥ k hay không, việc này tính được bằng deque đơn điệu như cực tiểu của cửa sổ trượt.",
+      "Tìm k trong [0, min(n, max h)]; check(k) duyệt với một deque chứa chỉ số của các chiều cao tăng dần, loại các chỉ số hết hạn ở đầu và các chỉ số có chiều cao ≥ chiều cao hiện tại ở cuối, và trả về true khi có một cửa sổ đầy kích thước k mà chiều cao ở đầu deque ≥ k; in ra bình phương của k khả thi lớn nhất (dưới dạng giá trị 64 bit)."
     ]
   },
   "explanationEn": "## Approach\n\nWhether a square of side k fits can be decided with a sliding-window minimum: is there a window of width k whose lowest building is ≥ k? Feasibility is monotone in k, so binary search the largest side and square it.\n\n## Correctness\n\nAny square of side k must rest on at least k consecutive buildings, each of height ≥ k; conversely, a window satisfying this condition really does hold a k×k square. So the window test is necessary and sufficient. Increasing k only makes the condition harder, so the largest k can be binary searched.\n\n## Complexity\n\nEach check takes O(n), the binary search takes O(log min(n, max(h))) rounds, and space is O(n)."

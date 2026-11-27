@@ -13,5 +13,41 @@
       "There are only six distinct ordered pairs of target values.",
       "Count the center only once; the background must be a single value different from the shape's."
     ]
+  },
+  "ja": {
+    "title": "行列で指定された 3 本線の形にするための最少セル変更数",
+    "description": "値が 0、1、2 のいずれかである奇数次の n×n 行列が与えられます。1 回の操作で、セルを別の値に変更できます。m=n//2 とし、0 始まりの座標を使います。指定された形は、次の座標の和集合です。0≤t≤m について (t,t) と (t,n−1−t)、m≤t<n について (t,m)。つまり、上半分の 2 本の対角線が中心で出会い、そこから中心の真下に向かって下端まで縦線が伸びます。形の内側のセルはすべて 1 つの値 a に、形の外側のセルはすべて別の 1 つの値 b にしなければなりません。a,b∈{0,1,2} かつ a≠b です。変更するセルの最小数を求めてください。中心は 1 つのセルとして数えます。元の OCR のタイトルにある文字は誤りで、この問題では文字 L や X からパターンを推測するのではなく、明示された座標の定義に従います。",
+    "input": "1 行目に奇数 n が与えられ、続く n 行にそれぞれ n 個の整数が与えられます。n は 3,5,7,…,99 の値を取り、行列の値は 0..2 です。範囲の出典は明確です。同じ問題の fastprep 版では奇数の 5..99 とされており、両方の出典の元の例には n=3 も含まれているため、このサイトでは 2 つの和集合を使います。OCR 自体には数値の上限がなく、このサイトは裏づけのない n=1 を追加しません。",
+    "output": "変更するセルの最小数を整数で出力します。形と背景には、異なる値を使わなければなりません。",
+    "explanation": "最初の 2 つの例は元の OCR のもので、答えは 2 と 8 のまま維持しています。例 1 は (0,0) を 2 に、(1,0) を 0 に変更します。例 2 は背景の 8 個の 0 を 1 に変更します。fastprep の入力は 4 行目 [0,0,2,1,1] を欠いていますが、このサイトは OCR021/022 から元の 5×5 行列を完全な形で復元しています。3 つ目の例、すべて 0 の 3×3 行列は、このサイトが追加したものです。形の 4 つのセルを別の値に変更すれば足りるので、答えは 4 です。",
+    "hints": [
+      "形の内側と背景で、0、1、2 の個数をそれぞれ別々に数えます。",
+      "目標値の順序つきの組は、異なるものがちょうど 6 通りしかありません。",
+      "中心は 1 回だけ数えます。背景は、形とは異なる 1 つの値でなければなりません。"
+    ]
+  },
+  "ko": {
+    "title": "행렬에서 세 부분 모양을 만들기 위한 최소 변경 칸 수",
+    "description": "원소가 0, 1, 2뿐인 홀수 차수의 n×n 행렬이 주어집니다. 한 번의 연산은 한 칸을 다른 값으로 바꿉니다. m=n//2이고 0 기반 좌표를 쓸 때, 지정된 모양은 다음 좌표들의 합집합입니다. 0≤t≤m에 대한 (t,t)와 (t,n−1−t), 그리고 m≤t<n에 대한 (t,m). 즉 위쪽의 두 반 대각선이 중심에서 만나고, 중심에서 아래쪽 가장자리까지 수직선이 이어집니다. 모양 안의 모든 칸은 하나의 값 a로, 모양 밖의 모든 칸은 그와 다른 하나의 값 b로 바뀌어야 하며, a,b∈{0,1,2}, a≠b입니다. 바꿔야 하는 칸의 최소 개수를 구하세요. 중심은 한 칸으로 셉니다. 원본 OCR 제목의 글자는 잘못되었으므로, 이 문제는 L이나 X 글자에서 모양을 추측하지 않고 명시된 좌표 정의를 따릅니다.",
+    "input": "첫 번째 줄에 홀수 n이 주어지고, 이어서 n개의 줄에 각각 정수 n개가 주어집니다. n은 3,5,7,…,99의 값을 가지며 행렬의 값은 0..2입니다. 범위의 출처는 명확합니다. 같은 문제의 fastprep 버전은 홀수 5..99를 제시하고 두 출처의 원본 예제에는 n=3도 포함되어 있으므로 이 사이트는 둘의 합집합을 사용합니다. OCR 자체에는 숫자 상한이 없으며, 이 사이트는 근거 없는 n=1을 추가하지 않습니다.",
+    "output": "바꿔야 하는 칸의 최소 개수를 정수로 출력합니다. 모양과 배경은 서로 다른 값을 사용해야 합니다.",
+    "explanation": "앞의 두 예제는 원본 OCR에서 온 것이며 답은 각각 2와 8로 유지됩니다. 예제 1은 (0,0)을 2로, (1,0)을 0으로 바꿉니다. 예제 2는 배경의 0 8개를 1로 바꿉니다. fastprep 입력에는 4행 [0,0,2,1,1]이 빠져 있으며, 이 사이트는 OCR021/022에서 완전한 원본 5×5 행렬을 복원했습니다. 세 번째 예제인 모두 0인 3×3 행렬은 이 사이트가 추가한 것으로, 모양의 4칸을 다른 값으로 바꾸면 충분하므로 답은 4입니다.",
+    "hints": [
+      "모양 안과 배경에서 0, 1, 2의 개수를 각각 따로 셉니다.",
+      "서로 다른 목표 값의 순서쌍은 6가지뿐입니다.",
+      "중심은 한 번만 세며, 배경은 모양의 값과 다른 단일 값이어야 합니다."
+    ]
+  },
+  "vi": {
+    "title": "Số ô tối thiểu cần đổi để tạo hình ba đoạn trong ma trận",
+    "description": "Cho một ma trận n×n cấp lẻ mà các phần tử chỉ có thể là 0, 1 hoặc 2. Một thao tác đổi một ô sang giá trị khác. Đặt m=n//2 và dùng tọa độ tính từ 0; hình được chỉ định là hợp của các tọa độ sau: (t,t) và (t,n−1−t) với 0≤t≤m, và (t,m) với m≤t<n. Nghĩa là hai nửa đường chéo phía trên gặp nhau ở tâm, rồi một đường thẳng đứng kéo dài từ tâm xuống mép dưới. Mọi ô trong hình phải trở thành một giá trị a, và mọi ô ngoài hình phải trở thành một giá trị b khác, với a,b∈{0,1,2} và a≠b. Tìm số ô tối thiểu cần đổi. Tâm chỉ được tính là một ô. Chữ cái trong tiêu đề OCR gốc là sai; bài này theo định nghĩa tọa độ tường minh của nó thay vì đoán hình từ chữ L hay X.",
+    "input": "Dòng đầu chứa số lẻ n, tiếp theo là n dòng, mỗi dòng n số nguyên. n nhận các giá trị 3,5,7,…,99, và giá trị ma trận là 0..2. Nguồn của miền giá trị là tường minh: phiên bản fastprep của cùng bài cho n lẻ từ 5..99, và các ví dụ gốc của cả hai nguồn cũng gồm n=3, nên trang này dùng hợp của hai miền; bản thân OCR không có cận trên bằng số, và trang này không thêm n=1 vì không có cơ sở.",
+    "output": "In ra số ô tối thiểu cần đổi, dưới dạng một số nguyên. Hình và nền phải dùng các giá trị khác nhau.",
+    "explanation": "Hai ví dụ đầu đến từ OCR gốc, với đáp án giữ nguyên là 2 và 8. Ví dụ 1 đổi (0,0) thành 2 và (1,0) thành 0. Ví dụ 2 đổi 8 số 0 của nền thành 1; đầu vào fastprep bỏ sót hàng 4 [0,0,2,1,1], và trang này khôi phục ma trận 5×5 gốc đầy đủ từ OCR021/022. Ví dụ thứ ba, ma trận 3×3 toàn số 0, do trang này thêm vào: chỉ cần đổi 4 ô của hình sang một giá trị khác, nên đáp án là 4.",
+    "hints": [
+      "Đếm riêng số chữ số 0, 1 và 2 bên trong hình và ở nền.",
+      "Chỉ có sáu cặp giá trị đích có thứ tự khác nhau.",
+      "Chỉ đếm tâm một lần; nền phải là một giá trị duy nhất khác với giá trị của hình."
+    ]
   }
 }

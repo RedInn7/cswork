@@ -13,6 +13,21 @@
       "A leaf without data never needs to be visited and can be deleted; and since standing at a node collects everything within distance 2, even the leaves that hold data do not have to be reached.",
       "First repeatedly delete leaves without data, like a topological peel; afterwards every leaf of the remaining tree holds data, so peel off two layers of leaves, each layer removing all current leaves at once. Every edge that is still left must be walked once in each direction.",
       "Use a degree array and a queue: in phase one enqueue nodes with degree <= 1 and no data, update neighbor degrees on deletion, and enqueue a neighbor once it becomes a data-free leaf; in phase two enqueue the remaining degree-1 nodes and process two rounds, each limited to the queue length at its start; the answer is the sum of degrees of the remaining nodes, i.e., twice the remaining edge count."
+    ],
+    "ja": [
+      "データのない葉は訪れる必要がないので削除できます。また、ノードに立てば距離 2 以内のすべてが収集できるので、データを持つ葉であっても、そこまで到達する必要はありません。",
+      "まず、データのない葉をトポロジカルソートのように繰り返し削除します。その後、残った木のすべての葉はデータを持つので、葉を 2 層はがします。各層では、その時点のすべての葉を一度に取り除きます。残った辺は、それぞれ各方向に 1 回ずつ歩く必要があります。",
+      "次数配列とキューを使います。第 1 段階では、次数 <= 1 でデータのないノードをキューに入れ、削除時に隣接ノードの次数を更新し、隣接ノードがデータのない葉になったらキューに入れます。第 2 段階では、残った次数 1 のノードをキューに入れ、2 ラウンド処理します。各ラウンドは開始時のキューの長さに限定します。答えは残ったノードの次数の合計、つまり残った辺の数の 2 倍です。"
+    ],
+    "ko": [
+      "데이터가 없는 리프는 방문할 필요가 없으므로 삭제할 수 있습니다. 또한 노드에 서 있으면 거리 2 이내의 모든 것을 수집하므로, 데이터가 있는 리프조차 직접 도달할 필요가 없습니다.",
+      "먼저 위상 정렬처럼 데이터가 없는 리프를 반복해서 삭제합니다. 그 뒤 남은 트리의 모든 리프에는 데이터가 있으므로 리프를 두 층 벗겨내며, 각 층에서는 현재의 모든 리프를 한꺼번에 제거합니다. 남아 있는 모든 간선은 양방향으로 한 번씩 지나가야 합니다.",
+      "차수 배열과 큐를 사용합니다. 1단계에서는 차수가 <= 1이고 데이터가 없는 노드를 큐에 넣고, 삭제할 때 이웃의 차수를 갱신하며, 이웃이 데이터 없는 리프가 되면 큐에 넣습니다. 2단계에서는 남은 차수 1인 노드를 큐에 넣고 두 라운드를 처리하되 각 라운드는 시작 시점의 큐 길이로 제한합니다. 답은 남은 노드의 차수의 합, 즉 남은 간선 수의 두 배입니다."
+    ],
+    "vi": [
+      "Một lá không có dữ liệu không bao giờ cần ghé thăm và có thể bị xóa; và vì đứng tại một nút thu thập mọi thứ trong khoảng cách 2, ngay cả các lá chứa dữ liệu cũng không cần phải đến tận nơi.",
+      "Trước hết liên tục xóa các lá không có dữ liệu, như bóc lớp theo thứ tự tô pô; sau đó mọi lá của cây còn lại đều chứa dữ liệu, nên bóc hai lớp lá, mỗi lớp xóa cùng lúc mọi lá hiện tại. Mọi cạnh còn lại phải được đi một lần theo mỗi chiều.",
+      "Dùng mảng bậc và hàng đợi: ở pha một, đưa vào hàng đợi các nút có bậc <= 1 và không có dữ liệu, cập nhật bậc của các nút kề khi xóa, và đưa một nút kề vào hàng đợi khi nó trở thành lá không có dữ liệu; ở pha hai, đưa vào hàng đợi các nút bậc 1 còn lại và xử lý hai vòng, mỗi vòng giới hạn theo độ dài hàng đợi lúc bắt đầu; đáp án là tổng bậc của các nút còn lại, tức hai lần số cạnh còn lại."
     ]
   },
   "explanationEn": "## Approach\n\nFirst repeatedly delete leaves without data, then delete the two outermost layers of leaves of the remaining tree at the same time. Each remaining edge is traversed twice.\n\n## Correctness\n\nA leaf branch without data contains no target that must be collected, so it can be deleted. Every remaining leaf end holds data, and since data can be collected from distance 2, after removing two layers of edges from each end, all targets can be covered from the core. Any edge that still remains has, on each side, targets that cannot be collected from the other side within two steps, so a closed walk must cross that edge and come back, at least twice. A depth-first traversal of the core tree attains this lower bound; if the core has no edges, a single node is enough.\n\n## Complexity\n\nTime O(n), space O(n); deep chains are not traversed recursively."

@@ -13,5 +13,41 @@
       "Number IPs in order of first appearance, and use a pointer that only moves forward to skip invalidated IPs.",
       "An empty answer still produces a line of output."
     ]
+  },
+  "ja": {
+    "title": "Uber OA #39: First Unique IP Hitting the Server",
+    "description": "サーバーは一連のコマンドを順に受け取り、次の 2 つの操作に対応しなければなりません。\n\nADD ip: ip からの訪問を 1 回記録します。\nFIRST_UNIQUE: これまでのすべての訪問のうち、ちょうど 1 回だけ現れ、最も早く現れた IP を返します。存在しなければ空文字列を返します。\n\nIP は形式の検証をしないただの文字列として扱い、大文字・小文字が異なる IP は別の IP です。すべてのコマンドを順に処理し、各 FIRST_UNIQUE の結果を出力してください。",
+    "input": "1 行目にコマンド数 q が与えられます。続く q 行はそれぞれ ADD ip または FIRST_UNIQUE です。1≤q≤1.5×10^6 で、FIRST_UNIQUE は少なくとも 1 つあり、異なる IP の数は高々 10^6 です。各 ip は、表示可能な ASCII 文字(コード 33..126)からなる長さ 1..15 の文字列です。",
+    "output": "各 FIRST_UNIQUE について、その結果を順に 1 行ずつ出力してください。結果が空文字列のときは空行を出力します。最後の行を含むすべての行を改行で終え、出力は期待される答えとバイト単位で一致しなければなりません。",
+    "explanation": "例 1: 3 回の ADD のあと、1.1.1.1 は 2 回現れ、ユニークなのは 2.2.2.2 です。例 2: 最初のクエリではユニークな IP は 2.2.2.2 と 3.3.3.3 で、最も早いのは 2.2.2.2 です。2.2.2.2 をもう一度 ADD するとユニークではなくなるので、答えは 3.3.3.3 になります。例 3: 最初のクエリの時点ではまだ訪問がないので空行を出力します。ADD 1.1.1.1 のあとの答えは 1.1.1.1 で、2 回目に現れたあとは再び空行です。次に x が答えになり、X は別の IP で、x が再び現れると答えは X になります。",
+    "hints": [
+      "IP が 2 回目に現れたら、その IP は二度とユニークになりません。",
+      "IP を最初に現れた順に番号付けし、無効になった IP を飛ばすために、前にしか進まないポインタを使います。",
+      "答えが空でも、1 行は出力されます。"
+    ]
+  },
+  "ko": {
+    "title": "Uber OA #39: First Unique IP Hitting the Server",
+    "description": "서버는 명령 시퀀스를 순서대로 받아 두 가지 연산을 지원해야 합니다.\n\nADD ip: ip로부터의 접속을 한 번 기록합니다.\nFIRST_UNIQUE: 지금까지의 모든 접속 중 정확히 한 번만 나타난 IP 가운데 가장 먼저 나타난 IP를 반환하며, 없으면 빈 문자열을 반환합니다.\n\nIP는 형식 검증 없는 일반 문자열로 취급하며, 대소문자가 다른 IP는 서로 다른 IP입니다. 모든 명령을 순서대로 처리하고 각 FIRST_UNIQUE의 결과를 출력하세요.",
+    "input": "첫 줄에 명령의 수 q가 주어집니다. 다음 q줄은 각각 ADD ip 또는 FIRST_UNIQUE입니다. 1≤q≤1.5×10^6이고 FIRST_UNIQUE는 최소 한 번 있으며, 서로 다른 IP의 수는 최대 10^6입니다. 각 ip는 출력 가능한 ASCII 문자(코드 33..126)로 이루어진 길이 1..15의 문자열입니다.",
+    "output": "각 FIRST_UNIQUE의 결과를 순서대로 한 줄에 하나씩 출력하며, 결과가 빈 문자열이면 빈 줄을 출력합니다. 마지막 줄을 포함한 모든 줄은 개행으로 끝나야 하고, 출력은 기대 답과 바이트 단위로 일치해야 합니다.",
+    "explanation": "예제 1: ADD가 세 번 나온 뒤 1.1.1.1은 두 번 나타났고 고유한 것은 2.2.2.2입니다. 예제 2: 첫 질의에서 고유한 IP는 2.2.2.2와 3.3.3.3이고 가장 먼저 나온 것은 2.2.2.2입니다. ADD 2.2.2.2가 한 번 더 있으면 더 이상 고유하지 않으므로 답은 3.3.3.3입니다. 예제 3: 첫 질의 시점에는 접속이 없으므로 빈 줄을 출력합니다. ADD 1.1.1.1 후에는 답이 1.1.1.1이고, 두 번째로 나타나면 다시 빈 줄이 됩니다. 이어서 x가 답이 되고, X는 다른 IP이며, x가 다시 나타나면 답은 X가 됩니다.",
+    "hints": [
+      "IP가 두 번째로 나타나면 다시는 고유해질 수 없습니다.",
+      "IP에 처음 나타난 순서대로 번호를 붙이고, 앞으로만 움직이는 포인터로 무효가 된 IP를 건너뜁니다.",
+      "답이 비어 있어도 출력은 한 줄이 생깁니다."
+    ]
+  },
+  "vi": {
+    "title": "Uber OA #39: First Unique IP Hitting the Server",
+    "description": "Một máy chủ nhận một dãy lệnh theo thứ tự và phải hỗ trợ hai thao tác:\n\nADD ip: ghi nhận một lượt truy cập từ ip.\nFIRST_UNIQUE: trong tất cả các lượt truy cập cho đến nay, tìm IP xuất hiện đúng một lần và xuất hiện sớm nhất rồi trả về nó; nếu không có thì trả về xâu rỗng.\n\nCoi IP là các xâu thông thường, không kiểm tra định dạng; các IP khác nhau về chữ hoa/chữ thường là các IP khác nhau. Xử lý tất cả các lệnh theo thứ tự và in ra kết quả của từng FIRST_UNIQUE.",
+    "input": "Dòng đầu tiên chứa q, số lượng lệnh. Mỗi dòng trong q dòng tiếp theo là ADD ip hoặc FIRST_UNIQUE. 1≤q≤1.5×10^6, và có ít nhất một FIRST_UNIQUE; số IP phân biệt tối đa là 10^6; mỗi ip là một xâu độ dài 1..15 gồm các ký tự ASCII in được (mã 33..126).",
+    "output": "Với mỗi FIRST_UNIQUE, in ra một dòng chứa kết quả của nó, theo thứ tự; khi kết quả là xâu rỗng, in ra một dòng trống. Mọi dòng, kể cả dòng cuối, đều kết thúc bằng ký tự xuống dòng, và đầu ra phải khớp đáp án mong đợi từng byte.",
+    "explanation": "Ví dụ 1: sau ba lệnh ADD, 1.1.1.1 xuất hiện hai lần và IP duy nhất là 2.2.2.2. Ví dụ 2: tại truy vấn đầu tiên các IP duy nhất là 2.2.2.2 và 3.3.3.3, và IP sớm nhất là 2.2.2.2; sau khi ADD 2.2.2.2 thêm một lần nữa thì nó không còn duy nhất, nên đáp án là 3.3.3.3. Ví dụ 3: tại truy vấn đầu tiên chưa có lượt truy cập nào, nên in một dòng trống; sau ADD 1.1.1.1 đáp án là 1.1.1.1, và sau lần xuất hiện thứ hai của nó lại là dòng trống; sau đó x trở thành đáp án, X là một IP khác, và sau khi x xuất hiện lần nữa đáp án trở thành X.",
+    "hints": [
+      "Một khi IP xuất hiện lần thứ hai, nó không bao giờ duy nhất trở lại.",
+      "Đánh số các IP theo thứ tự xuất hiện lần đầu, và dùng một con trỏ chỉ tiến về phía trước để bỏ qua các IP đã bị vô hiệu.",
+      "Đáp án rỗng vẫn tạo ra một dòng đầu ra."
+    ]
   }
 }

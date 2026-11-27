@@ -13,6 +13,21 @@
       "Every roof cell belongs to exactly one 4-connected component (one house), and a house's area is the number of its cells; diagonal cells are not connected.",
       "Running one BFS or DFS from each unvisited 1 visits its whole house and counts its cells.",
       "Scan the grid with a visited array; at each unvisited 1, expand only up, down, left and right to unvisited cells with value 1, count them and update the maximum. With no 1 the answer is 0. The grid has up to 2×10^5 cells, so use a queue or an explicit stack instead of deep recursion."
+    ],
+    "ja": [
+      "屋根のマスはどれも、ちょうど 1 つの 4 連結成分(1 軒の家)に属し、家の面積はそのマスの数です。斜めのマスは連結ではありません。",
+      "未訪問の 1 から BFS または DFS を 1 回行うと、その家全体を訪れてマスの数を数えられます。",
+      "visited 配列を使ってグリッドを走査します。未訪問の 1 を見つけるたびに、上下左右の未訪問で値が 1 のマスにだけ広げながら数え、最大値を更新します。1 がなければ答えは 0 です。グリッドは最大 2×10^5 マスあるので、深い再帰ではなくキューか明示的なスタックを使ってください。"
+    ],
+    "ko": [
+      "모든 지붕 칸은 정확히 하나의 4방향 연결 요소(하나의 집)에 속하며, 집의 넓이는 그 칸의 수입니다. 대각선 칸은 연결되지 않습니다.",
+      "방문하지 않은 각 1에서 BFS 또는 DFS를 한 번씩 실행하면 그 집 전체를 방문하고 칸 수를 셀 수 있습니다.",
+      "방문 배열을 두고 격자를 스캔하세요. 방문하지 않은 1에서 위, 아래, 왼쪽, 오른쪽의 방문하지 않은 값 1인 칸으로만 확장하며 개수를 세고 최댓값을 갱신합니다. 1이 없으면 답은 0입니다. 격자는 최대 2×10^5칸이므로 깊은 재귀 대신 큐나 명시적 스택을 사용하세요."
+    ],
+    "vi": [
+      "Mỗi ô mái nhà thuộc đúng một thành phần liên thông 4 hướng (một ngôi nhà), và diện tích của ngôi nhà là số ô của nó; các ô chéo không liên thông.",
+      "Chạy một BFS hoặc DFS từ mỗi ô 1 chưa thăm sẽ duyệt hết ngôi nhà của nó và đếm các ô của nó.",
+      "Quét lưới với một mảng visited; tại mỗi ô 1 chưa thăm, chỉ mở rộng lên, xuống, trái, phải sang các ô chưa thăm có giá trị 1, đếm chúng và cập nhật giá trị lớn nhất. Nếu không có ô 1 thì đáp án là 0. Lưới có tới 2×10^5 ô, nên hãy dùng hàng đợi hoặc ngăn xếp tường minh thay vì đệ quy sâu."
     ]
   },
   "explanationEn": "## Idea\n\nRun a 4-directional BFS/DFS from every 1 not yet visited, count the size of that connected component and update the maximum.\n\n## Proof of correctness\n\nEvery 1 belongs to exactly one 4-connected component, and the BFS visits exactly that component; the maximum of all component sizes is what the problem asks for.\n\n## Complexity\n\nO(nm) time, O(nm) space.\n\n## Source and additions\n\nhttps://oamaster.com/docs/companies/hsbc#3-find-largest-house-area; the connectivity rule of the original problem is clear; this site adds the grid size and the result for a grid without houses."

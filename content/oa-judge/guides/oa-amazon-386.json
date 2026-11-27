@@ -13,6 +13,21 @@
       "Deleting a middle element merges its two neighbors, which are 2 apart in the original array; look at which original elements end up in a merged value.",
       "Every final value is a sum of original elements with the same index parity, and conversely any non-empty subset of one parity can be merged together with a suitable deletion order.",
       "Sum the positive values at even indices and at odd indices separately and take the larger; if both are 0 (no positive values), the answer is the maximum element. Sums reach 5×10^13, so use 64 bits."
+    ],
+    "ja": [
+      "途中の要素を削除すると、元の配列で 2 離れた左右の隣接要素が併合されます。併合された値にどの元の要素が入るかに注目してください。",
+      "最終的な値はすべて、添字の偶奇が同じ元の要素の和です。逆に、同じ偶奇の空でない部分集合は、適切な削除順序で併合できます。",
+      "偶数添字と奇数添字の正の値を別々に合計し、大きい方を取ります。両方が 0 (正の値がない) なら、答えは最大要素です。合計は 5×10^13 に達するので 64 ビットを使います。"
+    ],
+    "ko": [
+      "가운데 원소를 삭제하면 원래 배열에서 2칸 떨어진 두 이웃이 병합됩니다. 병합된 값에 어떤 원래 원소들이 들어가는지 살펴보세요.",
+      "모든 최종 값은 같은 인덱스 홀짝을 가진 원래 원소들의 합입니다. 반대로 한 홀짝에 속한 비어 있지 않은 임의의 부분집합은 적절한 삭제 순서로 함께 병합될 수 있습니다.",
+      "짝수 인덱스와 홀수 인덱스의 양수 값 합을 각각 구해 더 큰 것을 취합니다. 둘 다 0이면 (양수가 없으면) 답은 최대 원소입니다. 합은 5×10^13까지 커지므로 64비트를 씁니다."
+    ],
+    "vi": [
+      "Xóa một phần tử ở giữa sẽ gộp hai phần tử kề của nó, vốn cách nhau 2 trong mảng gốc; hãy xem những phần tử gốc nào kết thúc trong một giá trị đã gộp.",
+      "Mọi giá trị cuối cùng là tổng của các phần tử gốc có cùng tính chẵn lẻ chỉ số, và ngược lại mọi tập con khác rỗng của một lớp chẵn lẻ có thể được gộp lại với nhau bằng một thứ tự xóa phù hợp.",
+      "Tính riêng tổng các giá trị dương ở chỉ số chẵn và ở chỉ số lẻ rồi lấy giá trị lớn hơn; nếu cả hai đều bằng 0 (không có giá trị dương), đáp án là phần tử lớn nhất. Tổng đạt 5×10^13, nên dùng 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nSum the positive numbers at original odd indices and at original even indices separately and take the larger; if there are no positive numbers, take the maximum of the original array.\n\n## Proof of correctness\n\nA merge always skips over one element, so every surviving merged value consists only of original elements with the same index parity, which gives the larger of the two parity sums of positive numbers as an upper bound. Any non-empty chosen subset of one parity can be realized: first cut off the ends outside the chosen range; between two adjacent chosen items, if there are still unchosen items of the same parity, delete those first, which merges their neighbors of the other parity; in the end only one item of the other parity separates them, and deleting it merges the two chosen values, so by induction every subset can be realized. Hence when positive numbers exist, choosing all positive numbers of one parity reaches the bound; when there are none, no non-empty sum exceeds the largest single item, which can be kept by cutting off the ends.\n\n## Complexity\n\nO(n) time and O(1) space besides the input; the answer is at most 5×10^13."

@@ -13,6 +13,21 @@
       "Repeatedly replacing a number with the sum of its digits ends at its digital root. A number is congruent to its digit sum modulo 9, so there is no need to simulate the process.",
       "The digital root of a positive integer x is 1 + (x - 1) mod 9, and the digital root of 0 is 0. Count how often each digit 0..9 appears as a root, then pick the most frequent, preferring the larger digit on ties.",
       "Use a count array of size 10. For each number, count 0 if it is 0, otherwise count 1 + (x - 1) mod 9. Go through the digits 0 to 9 and update the answer when a digit has a higher count, or the same count and a larger value. Print the answer."
+    ],
+    "ja": [
+      "数を各桁の和で繰り返し置き換えると、最終的に数字根になります。数はその桁の和と 9 を法として合同なので、この過程をシミュレーションする必要はありません。",
+      "正の整数 x の数字根は 1 + (x - 1) mod 9、0 の数字根は 0 です。各数字 0..9 が数字根として現れる回数を数え、最も多いものを選びます。同数なら大きい数字を優先します。",
+      "大きさ 10 の個数配列を使います。各数について、0 なら 0 を、そうでなければ 1 + (x - 1) mod 9 を数えます。数字 0 から 9 まで順に見て、個数が多い、または個数が同じで値が大きい場合に答えを更新します。答えを出力します。"
+    ],
+    "ko": [
+      "수를 자릿수 합으로 반복해서 바꾸면 결국 그 수의 디지털 루트에서 끝납니다. 수는 자릿수 합과 9로 나눈 나머지가 같으므로 이 과정을 직접 시뮬레이션할 필요가 없습니다.",
+      "양의 정수 x의 디지털 루트는 1 + (x - 1) mod 9이고, 0의 디지털 루트는 0입니다. 각 숫자 0..9가 루트로 몇 번 나타나는지 센 뒤, 가장 자주 나온 것을 고르되 동률이면 더 큰 숫자를 택합니다.",
+      "크기 10의 카운트 배열을 사용합니다. 각 수에 대해 0이면 0을, 아니면 1 + (x - 1) mod 9를 셉니다. 숫자 0부터 9까지 훑으며 횟수가 더 많거나, 횟수가 같고 값이 더 크면 정답을 갱신합니다. 정답을 출력합니다."
+    ],
+    "vi": [
+      "Thay một số bằng tổng các chữ số của nó nhiều lần sẽ kết thúc ở căn số học của nó. Một số đồng dư với tổng các chữ số của nó theo modulo 9, nên không cần mô phỏng quá trình này.",
+      "Căn số học của số nguyên dương x là 1 + (x - 1) mod 9, và căn số học của 0 là 0. Đếm mỗi chữ số 0..9 xuất hiện làm căn bao nhiêu lần, rồi chọn chữ số nhiều nhất, ưu tiên chữ số lớn hơn khi hòa.",
+      "Dùng một mảng đếm kích thước 10. Với mỗi số, đếm 0 nếu nó bằng 0, ngược lại đếm 1 + (x - 1) mod 9. Duyệt các chữ số từ 0 đến 9 và cập nhật đáp án khi một chữ số có số đếm cao hơn, hoặc cùng số đếm và giá trị lớn hơn. In đáp án."
     ]
   },
   "explanationEn": "## Approach\n\nThe digital root of a positive integer is 1+(x−1)%9, and 0 maps to 0 separately. Count the frequencies of the ten results, then compare by count and by digit.\n\n## Correctness\n\nA decimal number is congruent modulo 9 to the sum of its digits, and repeated reduction keeps this congruence; a positive number ends up in 1..9, which is uniquely given by the formula above, and 0 stays 0. Comparing by maximum frequency and then by the larger digit implements the requirement.\n\n## Complexity\n\nTime O(n), extra space O(10)."

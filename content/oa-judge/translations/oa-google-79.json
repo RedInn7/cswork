@@ -12,5 +12,38 @@
       "First scan for paired `%KEY%` placeholders.",
       "A replacement value may contain further keys; resolve them with DFS and keep track of the current visiting path."
     ]
+  },
+  "ja": {
+    "title": "再帰的なテンプレート置換",
+    "description": "substitutions のマッピングと template 文字列が与えられます。各 `%KEY%` は KEY に対応する文字列に置き換えられます。置換後の値自体にプレースホルダが含まれていてもよく、その場合は再帰的に展開します。最終的な文字列を出力してください。\n\n本サイトが追加した有効な入力の範囲：キーは 1〜32 文字の英字・数字・アンダースコアからなり、英字で始まります。キーは高々 100 個。テンプレートと値は印字可能な ASCII のみからなり、長さは 4096 文字以下です。プレースホルダはすべて対応が取れていて、参照先は必ず存在し、参照グラフは非巡回です。すべてのマッピング値の再帰的な展開結果と最終出力は、それぞれ印字可能な ASCII で 1,048,576 文字以下です。これらは本サイトが対応する範囲であり、元の問題のものではありません。\n\n出典：https://oamaster.com/docs/companies/google#79-substitute-templates（固定されたスナップショットの内容フィンガープリント 52e27b41843a195a3dd50b45a513e3eea530c013e7e57e3d1f10171b8c0c5435）。",
+    "input": "入力は、ちょうど 2 つのフィールド `substitutions` と `template` を持つ JSON オブジェクト 1 行です。`substitutions` はキーも値もすべて文字列のオブジェクトで、`template` は文字列です。",
+    "output": "再帰的な置換後の結果を内容とする JSON 文字列を出力します。",
+    "explanation": "各プレースホルダをマッピング値への参照として扱い、参照先の値を再帰的に解決してから、テンプレートに戻して連結します。参照グラフは非巡回でなければならず、すべてのマッピング値の展開結果と最終出力は、本サイトの上限を超えてはいけません。",
+    "hints": [
+      "まず、対応の取れた `%KEY%` プレースホルダを走査します。",
+      "置換後の値にさらにキーが含まれることがあります。DFS で解決し、現在の訪問経路を記録してください。"
+    ]
+  },
+  "ko": {
+    "title": "재귀적 템플릿 치환",
+    "description": "substitutions 매핑과 template 문자열이 주어집니다. 각 `%KEY%`는 KEY에 대응하는 문자열로 치환되며, 치환 값 자체에 placeholder가 들어 있을 수 있고 이는 재귀적으로 확장됩니다. 최종 문자열을 출력하세요.\n\n이 사이트의 유효 입력 추가 범위: 키는 영문자, 숫자, 밑줄로 이루어진 1~32자이며 영문자로 시작합니다. 키는 최대 100개입니다. 템플릿과 값은 출력 가능한 ASCII 문자만 포함하며 길이는 최대 4096자입니다. 모든 placeholder는 짝이 맞아야 하고, 모든 참조는 존재해야 하며, 참조 그래프는 비순환이어야 합니다. 모든 매핑 값의 재귀 확장 결과와 최종 출력은 각각 출력 가능한 ASCII 문자 최대 1,048,576자입니다. 이는 이 사이트가 지원하는 범위이며 원본 문제의 것이 아닙니다.\n\n원문 출처: https://oamaster.com/docs/companies/google#79-substitute-templates (고정된 스냅샷 내용 지문 52e27b41843a195a3dd50b45a513e3eea530c013e7e57e3d1f10171b8c0c5435).",
+    "input": "입력은 `substitutions`와 `template` 두 필드만 가진 JSON 객체 한 줄입니다. `substitutions`는 키와 값이 모두 문자열인 객체이고, `template`은 문자열입니다.",
+    "output": "재귀 치환을 마친 결과를 내용으로 하는 JSON 문자열을 출력합니다.",
+    "explanation": "각 placeholder를 매핑 값에 대한 참조로 보고, 참조된 값을 재귀적으로 해결한 뒤 템플릿에 다시 이어 붙입니다. 참조 그래프는 비순환이어야 하고, 모든 매핑 값의 확장 결과와 최종 출력은 이 사이트의 제한을 넘지 않아야 합니다.",
+    "hints": [
+      "먼저 짝이 맞는 `%KEY%` placeholder를 스캔합니다.",
+      "치환 값에 다른 키가 들어 있을 수 있습니다. DFS로 해결하되 현재 방문 중인 경로를 추적하세요."
+    ]
+  },
+  "vi": {
+    "title": "Thay thế mẫu đệ quy",
+    "description": "Cho một ánh xạ substitutions và một xâu mẫu template. Mỗi `%KEY%` được thay bằng xâu mà KEY ánh xạ tới; các giá trị thay thế bản thân chúng có thể chứa placeholder, và được mở rộng đệ quy. In ra xâu cuối cùng.\n\nCác giới hạn đầu vào hợp lệ bổ sung của trang này: khóa gồm 1–32 chữ cái tiếng Anh/chữ số/dấu gạch dưới và bắt đầu bằng một chữ cái; có tối đa 100 khóa; template và các giá trị chỉ chứa ký tự ASCII in được và dài tối đa 4096 ký tự; mọi placeholder phải được ghép cặp, mọi tham chiếu phải tồn tại, và đồ thị tham chiếu phải không có chu trình; phần mở rộng đệ quy của mọi giá trị ánh xạ và đầu ra cuối cùng mỗi cái có tối đa 1,048,576 ký tự ASCII in được. Đây là các khoảng được trang này hỗ trợ và không thuộc về đề gốc.\n\nNguồn gốc: https://oamaster.com/docs/companies/google#79-substitute-templates (dấu vân tay nội dung snapshot đã ghim 52e27b41843a195a3dd50b45a513e3eea530c013e7e57e3d1f10171b8c0c5435).",
+    "input": "Đầu vào là một dòng chứa một đối tượng JSON với đúng hai trường, `substitutions` và `template`; `substitutions` là một đối tượng có khóa và giá trị đều là xâu, và `template` là một xâu.",
+    "output": "In ra một xâu JSON mà nội dung là kết quả sau khi thay thế đệ quy.",
+    "explanation": "Coi mỗi placeholder là một tham chiếu đến một giá trị ánh xạ; giải quyết đệ quy các giá trị được tham chiếu, rồi ghép chúng lại vào template. Đồ thị tham chiếu phải không có chu trình, và phần mở rộng của mọi giá trị ánh xạ cũng như đầu ra cuối cùng không được vượt quá giới hạn của trang này.",
+    "hints": [
+      "Trước tiên quét tìm các placeholder `%KEY%` đã ghép cặp.",
+      "Một giá trị thay thế có thể chứa thêm các khóa khác; giải quyết chúng bằng DFS và theo dõi đường đi đang thăm hiện tại."
+    ]
   }
 }

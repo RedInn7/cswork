@@ -11,5 +11,35 @@
     "hints": [
       "Merge endpoints in increasing order of edge weight; the weight of the first edge that puts the start and the end in the same connected component is the answer. Compress the nodes that appear with a dictionary, and never allocate arrays by N."
     ]
+  },
+  "ja": {
+    "title": "ノードのラベルが巨大でまばらなグラフでの最小ボトルネック経路",
+    "description": "無向グラフにおける経路のコストは、経路上の最大の辺の重みです。始点から終点までの最小コストを求め、連結でなければ −1 を出力してください。本サイトでの追加仕様: source=destination のとき、空の経路のコストは 0 です。自己ループや多重辺が現れることがあります。\n\n本サイトが不足している範囲を補った点と、元の誤記の復元については、入力プロトコルに記載されています。",
+    "input": "N M が与えられ、続く M 行に u v weight、最後に source と destination が与えられます。元の範囲は、M が 1..100000、辺の重みが 0..10^9、ラベルが 1..N です。元の N の上限は 10<sup>5</sup>5 と書かれており、余分な 5 が付いています。本サイトは、この壊れた表記の一般的な読み方をすべて含められるよう、緩い上限 1≤N≤10^55 を明示的に採用しており、これが元の問題の確定した上限だと主張するものではありません。大きなラベルは 10 進整数として読み、出現するノードだけを保持します。",
+    "output": "整数の答えを 1 つ出力します。",
+    "explanation": "3 つの公開例の出力は順に 20、-1、0 です。独立した列挙または直接のシミュレーションにより確認済みです。",
+    "hints": [
+      "辺を重みの小さい順に端点を併合していき、始点と終点が初めて同じ連結成分に入る辺の重みが答えです。出現するノードは辞書で圧縮し、N に比例する配列は決して確保しません。"
+    ]
+  },
+  "ko": {
+    "title": "거대하고 희소한 노드 레이블을 가진 그래프의 최소 병목 경로",
+    "description": "무방향 그래프에서 경로의 비용은 경로 위의 가장 큰 간선 가중치입니다. source에서 destination까지의 최소 비용을 구하고, 연결되어 있지 않으면 −1을 출력합니다. 본 사이트에서 추가한 규칙: source=destination이면 빈 경로의 비용은 0입니다. 자기 루프와 평행 간선이 나타날 수 있습니다.\n\n본 사이트가 빠진 범위를 보충하고 원문 오타를 복원한 내용은 입력 규약에 설명되어 있습니다.",
+    "input": "입력으로 N M이 주어지고, 이어서 M개의 줄에 u v weight가, 마지막에 source와 destination이 주어집니다. 원문 범위: M은 1..100000, 간선 가중치는 0..10^9, 레이블은 1..N입니다. 원문의 N 상한은 10<sup>5</sup>5처럼 5가 하나 더 붙어 표기되어 있었습니다. 본 사이트는 이 훼손된 표기의 일반적인 해석을 모두 포함하도록 느슨한 상한 1≤N≤10^55를 공개적으로 채택하며, 이것이 원문의 확정적인 원래 상한이라고 주장하지는 않습니다. 큰 레이블은 십진 정수로 읽으며, 등장하는 노드만 저장합니다.",
+    "output": "정수 하나, 답을 출력합니다.",
+    "explanation": "세 공개 예시의 출력은 순서대로 20; -1; 0입니다. 독립적인 열거 또는 직접 시뮬레이션으로 검증했습니다.",
+    "hints": [
+      "간선을 가중치가 증가하는 순서로 끝점을 병합하며, 시작점과 끝점이 처음으로 같은 연결 요소에 속하게 만드는 간선의 가중치가 답입니다. 등장하는 노드는 딕셔너리로 압축하고, N으로 배열을 할당하지 마세요."
+    ]
+  },
+  "vi": {
+    "title": "Đường đi có nút thắt cổ chai nhỏ nhất trong đồ thị với nhãn nút khổng lồ và thưa",
+    "description": "Chi phí của một đường đi trong đồ thị vô hướng là trọng số cạnh lớn nhất trên đường đi đó; tìm chi phí tối thiểu từ nguồn đến đích, và in −1 nếu chúng không liên thông. Do trang này bổ sung: khi source=destination, đường đi rỗng có chi phí 0. Có thể xuất hiện khuyên và cạnh song song.\n\nCác phạm vi mà trang này bổ sung cho các cận bị thiếu và việc khôi phục lỗi đánh máy của nguồn được mô tả trong giao thức đầu vào.",
+    "input": "Đầu vào gồm N M, rồi M dòng u v weight, sau đó là source và destination. Giới hạn gốc: M là 1..100000, trọng số cạnh là 0..10^9, và nhãn là 1..N. Cận trên gốc của N được viết là 10<sup>5</sup>5, với một số 5 thừa; trang này công khai chấp nhận cận trên nới lỏng 1≤N≤10^55 để bao phủ các cách đọc phổ biến của ký hiệu bị hỏng đó, mà không khẳng định đó là cận gốc chính xác của nguồn. Các nhãn lớn được đọc như số nguyên thập phân, và chỉ các nút xuất hiện mới được lưu.",
+    "output": "In một số nguyên là đáp án.",
+    "explanation": "Đầu ra của ba ví dụ công khai lần lượt là: 20; -1; 0. Chúng đã được kiểm tra bằng liệt kê độc lập hoặc mô phỏng trực tiếp.",
+    "hints": [
+      "Gộp các đầu mút theo thứ tự tăng dần của trọng số cạnh; trọng số của cạnh đầu tiên đặt điểm bắt đầu và điểm kết thúc vào cùng một thành phần liên thông chính là đáp án. Nén các nút xuất hiện bằng một từ điển, và không bao giờ cấp phát mảng theo N."
+    ]
   }
 }

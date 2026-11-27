@@ -13,5 +13,41 @@
       "Build the border string once and reuse it in the loop.",
       "Do not forget the closing border at the end of the table, or the n=0 case."
     ]
+  },
+  "ja": {
+    "title": "Airbnb OA #6: 文を表として出力する",
+    "description": "n 個の文と、表の内容の固定幅 width が与えられます。各文を、罫線付きの表の 1 行として出力してください。\n\n罫線の行は `+`、続いて width+2 個の `-`、続いて `+` です。文の行は `| `、続いて文そのものを、内容がちょうど width 文字になるよう空白で埋めたもの、続いて ` |` です。\n\n各文について順に、罫線の行とその文の行を出力し、最後にもう 1 本の罫線の行で終えます。n=0 のときは何も出力しません。",
+    "input": "1 行目に 2 つの整数 n と width が与えられます。続く n 行にはそれぞれ 1 つの文が入ります (行全体が文の内容で、空白を含んでもよく、空行でもかまいません)。\n\n0≤n≤100000、1≤width≤300。文は印字可能な ASCII 文字と空白からなり、長さは width 以下です。",
+    "output": "n>0 のときは 2n+1 行の表を、各行を改行で終えて出力します。n=0 のときは出力が空です。出力は文字単位で比較されるので、文の先頭と末尾の空白を正確に保持しなければなりません。",
+    "explanation": "例 1: width=55 なので、罫線はどれも + に 57 個の - が続き、さらに + が続きます。各文の行は、文を空白で 55 文字に埋めます。\n例 2: n=0 なので、出力はありません。\n例 3: 1 つ目の文の先頭の 2 個の空白、2 つ目の空の文、3 つ目の文の末尾の空白は、すべてそのまま内容の幅に数えます。",
+    "hints": [
+      "各文は行全体として読み込みます。空白で分割してはいけません。",
+      "罫線の文字列は 1 度だけ作り、ループの中で使い回します。",
+      "表の最後の閉じの罫線や、n=0 のケースを忘れないでください。"
+    ]
+  },
+  "ko": {
+    "title": "Airbnb OA #6: 문장을 표로 출력하기",
+    "description": "문장 n개와 고정된 표 내용 너비 width가 주어집니다. 각 문장을 테두리가 있는 표의 한 행으로 출력하십시오.\n\n테두리 줄은 `+`, `-` width+2개, `+`로 이루어집니다. 문장 줄은 `| `, 문장 자체(내용이 정확히 width자가 되도록 공백으로 채움), ` |`로 이루어집니다.\n\n각 문장마다 순서대로 테두리 줄 하나와 그 문장 줄을 출력하고, 마지막에 테두리 줄을 하나 더 출력하여 끝냅니다. n=0이면 아무것도 출력하지 않습니다.",
+    "input": "첫째 줄에 두 정수 n과 width가 주어집니다. 이어지는 n줄에는 각각 문장 하나가 주어집니다(줄 전체가 문장의 내용이며, 공백을 포함할 수 있고 빈 줄일 수도 있습니다).\n\n0≤n≤100000, 1≤width≤300이며, 문장은 출력 가능한 ASCII 문자와 공백으로 이루어지고 길이는 width 이하입니다.",
+    "output": "n>0이면 2n+1줄로 된 표를 출력하며 각 줄은 줄바꿈으로 끝납니다. n=0이면 출력은 비어 있습니다. 출력은 문자 단위로 비교하므로 문장의 앞뒤 공백을 정확히 그대로 유지해야 합니다.",
+    "explanation": "예제 1: width=55이므로 모든 테두리는 +, - 57개, +입니다. 각 문장 줄은 문장을 공백으로 채워 55자로 맞춥니다.\n예제 2: n=0이므로 출력이 없습니다.\n예제 3: 첫 문장의 앞 공백 2개, 둘째 문장의 빈 문자열, 셋째 문장의 뒤 공백 1개는 모두 그대로 내용 너비에 포함됩니다.",
+    "hints": [
+      "각 문장을 줄 전체로 읽으십시오. 공백 기준으로 나누지 마십시오.",
+      "테두리 문자열을 한 번만 만들어 반복문에서 재사용하십시오.",
+      "표 끝의 닫는 테두리나 n=0인 경우를 잊지 마십시오."
+    ]
+  },
+  "vi": {
+    "title": "Airbnb OA #6: In các câu dưới dạng bảng",
+    "description": "Cho n câu và một độ rộng nội dung bảng cố định width, hãy in mỗi câu thành một hàng của bảng có viền.\n\nMột dòng viền là `+`, theo sau là width+2 ký tự `-`, rồi `+`. Một dòng câu là `| `, theo sau là chính câu đó, được đệm thêm dấu cách sao cho phần nội dung chiếm đúng width ký tự, rồi ` |`.\n\nVới mỗi câu theo thứ tự, in một dòng viền rồi dòng câu của nó; kết thúc bằng thêm một dòng viền nữa. Khi n=0, không in gì.",
+    "input": "Dòng đầu tiên chứa hai số nguyên n và width. Mỗi dòng trong n dòng tiếp theo chứa một câu (toàn bộ dòng là nội dung câu; có thể chứa dấu cách và có thể là dòng rỗng).\n\n0≤n≤100000, 1≤width≤300; các câu gồm các ký tự ASCII in được và dấu cách, với độ dài tối đa width.",
+    "output": "Khi n>0, in một bảng gồm 2n+1 dòng, mỗi dòng kết thúc bằng một ký tự xuống dòng; khi n=0, đầu ra rỗng. Đầu ra được so sánh từng ký tự, nên các dấu cách ở đầu và cuối của câu phải được giữ nguyên chính xác.",
+    "explanation": "Ví dụ 1: width=55, nên mỗi viền là + theo sau là 57 ký tự - rồi +; mỗi dòng câu đệm câu bằng dấu cách cho đủ 55 ký tự.\nVí dụ 2: n=0, nên không có đầu ra.\nVí dụ 3: hai dấu cách ở đầu của câu thứ nhất, câu thứ hai rỗng, và dấu cách ở cuối của câu thứ ba đều được tính nguyên vẹn vào độ rộng nội dung.",
+    "hints": [
+      "Đọc mỗi câu như một dòng nguyên vẹn; đừng tách nó theo khoảng trắng.",
+      "Dựng chuỗi viền một lần và dùng lại trong vòng lặp.",
+      "Đừng quên dòng viền đóng ở cuối bảng, và trường hợp n=0."
+    ]
   }
 }

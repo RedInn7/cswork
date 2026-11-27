@@ -13,6 +13,21 @@
       "Every row and column being a palindrome is the same as every cell having the same color as its horizontal, vertical and diagonal mirror images; those cells form a group, and different groups are disjoint.",
       "Each group ends up all B or all W, costing its number of W cells or its number of B cells respectively; groups are independent, so add up the smaller cost of each.",
       "Enumerate the cells (i,j) of the top-left quarter (i below (N+1)/2, j below (M+1)/2). Take (i,j), (N−1−i,j), (i,M−1−j) and (N−1−i,M−1−j), removing duplicates (they repeat on a middle row or column), count the B cells among them, and add min(B count, group size minus B count) to the answer."
+    ],
+    "ja": [
+      "すべての行と列が回文であることは、各セルがその水平・垂直・対角方向の鏡像のセルと同じ色であることと同じです。それらのセルが1つのグループをなし、異なるグループは互いに素です。",
+      "各グループは最終的にすべて B かすべて W になり、そのコストはそれぞれ W のセルの数か B のセルの数です。グループは独立しているので、各グループの小さいほうのコストを足し合わせます。",
+      "左上の4分の1にあるセル (i,j) を列挙します（i は (N+1)/2 未満、j は (M+1)/2 未満）。(i,j)、(N−1−i,j)、(i,M−1−j)、(N−1−i,M−1−j) を重複を除いて取り（中央の行や列では重複します）、その中の B のセルを数え、答えに min(B の個数, グループの大きさ − B の個数) を加えます。"
+    ],
+    "ko": [
+      "모든 행과 열이 팰린드롬이라는 것은 모든 칸이 가로, 세로, 대각선 대칭 칸과 같은 색이라는 것과 같습니다. 이 칸들이 하나의 그룹을 이루며, 서로 다른 그룹은 겹치지 않습니다.",
+      "각 그룹은 결국 전부 B 또는 전부 W가 되며, 그 비용은 각각 W 칸의 수 또는 B 칸의 수입니다. 그룹은 서로 독립이므로 각 그룹의 더 작은 비용을 더합니다.",
+      "왼쪽 위 사분면의 칸 (i,j)를 열거합니다(i는 (N+1)/2 미만, j는 (M+1)/2 미만). (i,j), (N−1−i,j), (i,M−1−j), (N−1−i,M−1−j)를 취하고 중복을 제거한 뒤(가운데 행이나 열에서는 반복됨), 그 안의 B 칸 수를 세어 min(B 개수, 그룹 크기 − B 개수)를 답에 더합니다."
+    ],
+    "vi": [
+      "Mọi hàng và cột là palindrome tương đương với việc mỗi ô có cùng màu với các ô đối xứng ngang, dọc và chéo của nó; các ô đó tạo thành một nhóm, và các nhóm khác nhau rời nhau.",
+      "Mỗi nhóm cuối cùng thành toàn B hoặc toàn W, với chi phí lần lượt là số ô W hoặc số ô B của nó; các nhóm độc lập với nhau, nên cộng chi phí nhỏ hơn của từng nhóm.",
+      "Duyệt các ô (i,j) của một phần tư phía trên bên trái (i nhỏ hơn (N+1)/2, j nhỏ hơn (M+1)/2). Lấy (i,j), (N−1−i,j), (i,M−1−j) và (N−1−i,M−1−j), loại bỏ các ô trùng (chúng lặp lại trên hàng hoặc cột giữa), đếm số ô B trong đó, và cộng min(số B, kích thước nhóm trừ số B) vào đáp án."
     ]
   },
   "explanationEn": "## Approach\n\nEach cell belongs to one group with its horizontal and vertical mirror images; each group becomes all B or all W, so flip the cells of the less frequent color.\n\n## Proof of correctness\n\nEvery row and column being a palindrome is equivalent to every mirror equivalence class having a single color. The classes are disjoint, and within a class the costs of the two targets are the number of B cells and the number of W cells, so taking the smaller one independently and summing is optimal.\n\n## Complexity\n\nTime O(NM), extra space O(1)."

@@ -13,6 +13,21 @@
       "Cells on the same diagonal share the same row-plus-column sum d, which runs from 0 to R+C-2, giving R+C-1 diagonals to handle in increasing order of d.",
       "For diagonal d the valid rows run from max(0, d-C+1) to min(R-1, d), and the column is d minus the row; all that remains is deciding whether to walk those rows forward or backward.",
       "For even d go from bottom-left to top-right, so rows decrease; for odd d go from top-right to bottom-left, so rows increase; collect the elements in this order and print them separated by spaces."
+    ],
+    "ja": [
+      "同じ対角線上のセルは、行と列の和 d が同じです。d は 0 から R+C-2 まで動くので、d の昇順に処理する対角線は R+C-1 本あります。",
+      "対角線 d で有効な行は max(0, d-C+1) から min(R-1, d) までで、列は d から行を引いた値です。あとはその行を順方向に歩くか逆方向に歩くかを決めるだけです。",
+      "d が偶数のときは左下から右上へ進むので行は減り、奇数のときは右上から左下へ進むので行は増えます。この順に要素を集め、スペースで区切って出力します。"
+    ],
+    "ko": [
+      "같은 대각선의 칸은 행과 열의 합 d가 같으며, d는 0부터 R+C-2까지이므로 d가 커지는 순서로 처리할 대각선은 R+C-1개입니다.",
+      "대각선 d에서 유효한 행은 max(0, d-C+1)부터 min(R-1, d)까지이고 열은 d에서 행을 뺀 값입니다. 남은 일은 그 행들을 정방향으로 걸을지 역방향으로 걸을지 정하는 것뿐입니다.",
+      "d가 짝수이면 왼쪽 아래에서 오른쪽 위로 가므로 행이 감소하고, d가 홀수이면 오른쪽 위에서 왼쪽 아래로 가므로 행이 증가합니다. 이 순서로 원소를 모아 공백으로 구분하여 출력합니다."
+    ],
+    "vi": [
+      "Các ô trên cùng một đường chéo có chung tổng hàng cộng cột d, chạy từ 0 đến R+C-2, cho R+C-1 đường chéo cần xử lý theo thứ tự tăng dần của d.",
+      "Với đường chéo d, các hàng hợp lệ chạy từ max(0, d-C+1) đến min(R-1, d), và cột là d trừ đi hàng; chỉ còn phải quyết định đi các hàng này xuôi hay ngược.",
+      "Với d chẵn đi từ dưới-trái lên trên-phải, nên các hàng giảm dần; với d lẻ đi từ trên-phải xuống dưới-trái, nên các hàng tăng dần; thu thập các phần tử theo thứ tự này và in chúng cách nhau bằng dấu cách."
     ]
   },
   "explanationEn": "## Approach\n\nEnumerate the row-plus-column index sum d and determine the valid row index range for that diagonal. For even d iterate the row indices in reverse; for odd d iterate them forward.\n\n## Why it is correct\n\nEvery cell belongs to exactly one diagonal d=i+j, and the valid row range guarantees no out-of-bounds access and complete coverage. Increasing d and alternating the row direction matches the given traversal rule exactly.\n\n## Complexity\n\nTime and output space O(RC)."

@@ -13,6 +13,21 @@
       "Existing parcels cannot move, so the maximum load is at least the original maximum; with a fixed total, it is also at least the average load rounded up.",
       "Take M as the larger of these two bounds: everyone can still be filled up to M, and the free space nM - original total is at least extra, so the new parcels always fit.",
       "Sum the original loads and track the maximum, add extra to the total, compute the rounded-up average (total+n-1)/n, and output the larger of it and the original maximum; the total can reach about 10^15, so use 64-bit integers."
+    ],
+    "ja": [
+      "既存の荷物は動かせないので、最大負荷は元の最大値以上です。また、総数が決まっているので、平均負荷を切り上げた値以上でもあります。",
+      "この 2 つの下限のうち大きいほうを M とします。全員を M まで増やすことは可能で、空き容量 nM - 元の合計 は extra 以上なので、新しい荷物は必ず収まります。",
+      "元の負荷の合計と最大値を求め、合計に extra を加え、切り上げ平均 (total+n-1)/n を計算して、元の最大値との大きいほうを出力します。合計は約 10^15 に達し得るので、64 ビット整数を使ってください。"
+    ],
+    "ko": [
+      "기존 소포는 옮길 수 없으므로 최대 부하는 기존 최댓값 이상입니다. 또한 총합이 고정되어 있으므로 평균 부하의 올림 이상이기도 합니다.",
+      "이 두 하한 중 큰 값을 M이라 하면, 모든 배달원을 M까지 채울 수 있고 남는 여유 공간 nM - 기존 합계는 extra 이상이므로 새 소포는 항상 들어갑니다.",
+      "기존 부하를 합산하면서 최댓값을 추적하고, 합계에 extra를 더한 뒤 올림 평균 (total+n-1)/n을 계산하여 이 값과 기존 최댓값 중 큰 쪽을 출력합니다. 합계가 약 10^15까지 될 수 있으므로 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Các kiện hàng hiện có không thể di chuyển, nên tải lớn nhất ít nhất bằng tải lớn nhất ban đầu; với tổng cố định, nó cũng ít nhất bằng tải trung bình làm tròn lên.",
+      "Lấy M là giá trị lớn hơn trong hai cận này: mọi người vẫn có thể được lấp đến M, và chỗ trống nM - tổng ban đầu ít nhất bằng extra, nên các kiện mới luôn vừa.",
+      "Cộng các tải ban đầu và theo dõi giá trị lớn nhất, cộng extra vào tổng, tính trung bình làm tròn lên (total+n-1)/n, rồi xuất giá trị lớn hơn giữa nó và tải lớn nhất ban đầu; tổng có thể đạt khoảng 10^15, nên dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nThe answer is the larger of the original maximum load and the total number of parcels divided by n, rounded up.\n\n## Proof of correctness\n\nThe maximum cannot be lower than the original maximum load, nor lower than the average load rounded up. Taking M as the larger of the two, every initial value is ≤M and the remaining capacity nM−sum(a)≥extra; filling it parcel by parcel accommodates all the new parcels, so the lower bound is attainable.\n\n## Complexity\n\nTime O(n), space O(1) apart from the input."

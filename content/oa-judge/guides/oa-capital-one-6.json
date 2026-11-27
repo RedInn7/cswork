@@ -13,6 +13,21 @@
       "The number of index pairs depends only on how often each value appears on each side, so two value-to-frequency tables are enough; updating a[i] just moves one count from the old value to the new one.",
       "For a query x, walk the frequency table with fewer distinct values and, for each value v in it, add its count times the frequency of x - v in the other table.",
       "Build freqA and freqB; for update 0 i x decrement freqA[a[i]] (delete the entry when it reaches 0 so the distinct count stays exact), do a[i] += x and increment freqA[a[i]]; for query 1 x pick the side with fewer distinct values and sum cnt[v] * other[x - v] in 64-bit integers; print the answers in order separated by spaces (an empty line when there are no queries)."
+    ],
+    "ja": [
+      "添字ペアの個数は、各側で各値が何回現れるかだけで決まるので、値から頻度への2つのテーブルがあれば十分です。a[i] の更新は、1つのカウントを古い値から新しい値に移すだけです。",
+      "クエリ x では、異なる値の個数が少ない方の頻度テーブルを走査し、その各値 v について、そのカウントと、もう一方のテーブルでの x - v の頻度との積を加えます。",
+      "freqA と freqB を構築します。更新 0 i x では、freqA[a[i]] を減らし(0になったらエントリを削除して、異なる値の個数を正確に保つ)、a[i] += x として、freqA[a[i]] を増やします。クエリ 1 x では、異なる値の個数が少ない側を選び、cnt[v] * other[x - v] の合計を64ビット整数で求めます。答えを順に空白区切りで出力します(クエリがなければ空行)。"
+    ],
+    "ko": [
+      "인덱스 쌍의 개수는 각 값이 양쪽에 몇 번 나타나는지에만 의존하므로, 값→빈도 테이블 두 개면 충분합니다. a[i]를 갱신하는 것은 빈도 하나를 이전 값에서 새 값으로 옮기는 것과 같습니다.",
+      "쿼리 x에 대해, 서로 다른 값이 더 적은 쪽의 빈도 테이블을 순회하면서 각 값 v마다 그 빈도에 다른 테이블의 x - v 빈도를 곱해 더합니다.",
+      "freqA와 freqB를 만듭니다. 갱신 0 i x에서는 freqA[a[i]]를 감소시키고(0이 되면 항목을 삭제하여 서로 다른 값의 개수가 정확하도록 함), a[i] += x를 한 뒤 freqA[a[i]]를 증가시킵니다. 쿼리 1 x에서는 서로 다른 값이 더 적은 쪽을 골라 cnt[v] * other[x - v]를 64비트 정수로 합산합니다. 답은 순서대로 공백으로 구분하여 출력합니다(쿼리가 없으면 빈 줄)."
+    ],
+    "vi": [
+      "Số cặp chỉ số chỉ phụ thuộc vào tần suất xuất hiện của mỗi giá trị ở từng phía, nên hai bảng giá trị-tần suất là đủ; cập nhật a[i] chỉ chuyển một đơn vị đếm từ giá trị cũ sang giá trị mới.",
+      "Với truy vấn x, hãy duyệt bảng tần suất có ít giá trị phân biệt hơn và với mỗi giá trị v trong đó, cộng số lần xuất hiện của nó nhân với tần suất của x - v ở bảng còn lại.",
+      "Xây freqA và freqB; với cập nhật 0 i x, giảm freqA[a[i]] (xóa mục khi nó về 0 để số giá trị phân biệt luôn chính xác), thực hiện a[i] += x và tăng freqA[a[i]]; với truy vấn 1 x, chọn phía có ít giá trị phân biệt hơn và tính tổng cnt[v] * other[x - v] bằng số nguyên 64 bit; in các đáp án theo thứ tự, cách nhau bởi dấu cách (dòng trống nếu không có truy vấn)."
     ]
   },
   "explanationEn": "## Approach\n\nKeep the value frequencies of both a and b. An update decrements the count of a's old value and increments the count of the new value. For a query with target x, walk the side with fewer distinct values and add up `freqA[v] * freqB[x-v]`.\n\n## Correctness\n\nEvery index pair (i,j) corresponds to exactly one pair of complementary values in the two arrays. Walking every distinct value v of the smaller frequency table and multiplying by the frequency of the target minus v on the other side counts exactly all pairs that satisfy the condition, so nothing is missed and nothing is counted twice.\n\n## Complexity\n\nLet Da and Db be the numbers of distinct values on the two sides at the time of a query. An update takes O(1) expected time and a query O(min(Da,Db)); this site guarantees that this quantity summed over all queries is at most 10^7. Space is O(n+m)."

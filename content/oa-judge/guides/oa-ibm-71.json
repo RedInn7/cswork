@@ -13,6 +13,21 @@
       "The number of users someone can see is the size of their connected component (themselves included), so an isolated user's answer is 1; connections chain over multiple hops, and self-loops or repeated edges do not change connectivity.",
       "Use a disjoint-set union to merge the sets of the two endpoints of every edge, keeping the set size on each root; after all edges, a query only needs the user's root and the size stored there.",
       "Initialize parent[i] = i and size[i] = 1; for each edge find the roots of both endpoints, and if they differ attach the smaller set under the larger one and add the sizes (union by size), compressing paths during find; finally print size[find(v)] for every query, separated by spaces."
+    ],
+    "ja": [
+      "あるユーザーから見えるユーザー数は、そのユーザーの連結成分の大きさ(自分自身を含む)なので、孤立したユーザーの答えは 1 です。接続は複数のホップにわたって連なり、自己ループや重複した辺は連結性を変えません。",
+      "素集合データ構造(Union-Find)を使い、すべての辺について2つの端点の集合を併合し、各根に集合のサイズを保持します。すべての辺を処理した後、クエリには、そのユーザーの根と、そこに保存されたサイズだけが必要です。",
+      "parent[i] = i、size[i] = 1 で初期化します。各辺について両端点の根を求め、異なっていれば小さい集合を大きい集合の下につなぎ、サイズを足します(サイズによる併合)。find の間にパスを圧縮します。最後に、各クエリについて size[find(v)] を空白区切りで出力します。"
+    ],
+    "ko": [
+      "어떤 사용자가 볼 수 있는 사용자의 수는 (본인을 포함한) 그 사용자의 연결 요소의 크기이므로 고립된 사용자의 답은 1입니다. 연결은 여러 홉에 걸쳐 이어지며, 자기 루프나 반복된 간선은 연결성을 바꾸지 않습니다.",
+      "서로소 집합(disjoint-set union)을 사용해 모든 간선의 두 끝점의 집합을 합치고 각 루트에 집합의 크기를 유지합니다. 모든 간선을 처리한 뒤 질의에서는 해당 사용자의 루트와 거기에 저장된 크기만 필요합니다.",
+      "parent[i] = i, size[i] = 1로 초기화합니다. 각 간선에 대해 두 끝점의 루트를 찾고 서로 다르면 작은 집합을 큰 집합 아래에 붙이고 크기를 더합니다(크기 기준 합치기). find 중에는 경로를 압축합니다. 마지막으로 모든 질의에 대해 size[find(v)]를 공백으로 구분해 출력합니다."
+    ],
+    "vi": [
+      "Số người dùng mà ai đó nhìn thấy là kích thước thành phần liên thông của họ (kể cả họ), nên đáp án của người dùng cô lập là 1; các kết nối nối tiếp qua nhiều bước, còn khuyên hay cạnh lặp không làm đổi tính liên thông.",
+      "Dùng cấu trúc tập hợp rời nhau để gộp các tập của hai đầu mút của mọi cạnh, giữ kích thước tập ở mỗi gốc; sau khi xử lý hết các cạnh, một truy vấn chỉ cần gốc của người dùng và kích thước lưu ở đó.",
+      "Khởi tạo parent[i] = i và size[i] = 1; với mỗi cạnh tìm gốc của cả hai đầu mút, và nếu khác nhau thì gắn tập nhỏ hơn vào dưới tập lớn hơn và cộng các kích thước (hợp theo kích thước), nén đường đi trong find; cuối cùng in size[find(v)] cho mọi truy vấn, cách nhau bởi dấu cách."
     ]
   },
   "explanationEn": "## Approach\n\nUse a disjoint-set union with union by size and path compression, maintaining the component size at each root; a query returns the size stored at its root.\n\n## Proof of correctness\n\nInitially every user forms a component of their own with size 1. Each edge can only merge the two connected components of its endpoints; if they already share a root, no new users are added. By induction the DSU groups are exactly the connected components of the processed edges, and the root sizes are exact. After all edges are processed, the root size for each query is the number of visible users including the user themselves.\n\n## Complexity\n\nTime O((n+m+q)α(n)), extra DSU space O(n); including input and output storage, O(n+m+q)."

@@ -11,5 +11,35 @@
     "hints": [
       "Let dp[i] be the minimum cost of the first i items. Enumerate the start of the last segment backward while maintaining its maximum, and update dp[i]."
     ]
+  },
+  "ja": {
+    "title": "各区間の最大値を支払う最適な分割",
+    "description": "整数配列全体を、元の順序のまま、長さが ≤threshold の空でない連続した区間に分割します。各区間のコストはその最大値です。すべての区間の合計コストの最小値を求めてください。負の整数も許され、区間の長さが上限に等しい必要はありません。\n\n入出力の形式と、明示した補足の制約は本サイトで整備したものであり、出題元の解答は実行していません。",
+    "input": "1 行目に n threshold、2 行目に配列が与えられます。出題元には数値の範囲の記載がないため、本サイトでは 1≤threshold≤n≤5000、−10⁹≤要素≤10⁹ を追加しています。",
+    "output": "問題が求める整数を 1 つ出力してください。",
+    "explanation": "3 つの公開例の答えは順に 10、-6、20 です。例は、独立した全探索、状態探索、または直接のシミュレーションで再確認しています。",
+    "hints": [
+      "dp[i] を先頭 i 個の最小コストとします。最後の区間の開始位置を後ろ向きに列挙しながらその最大値を保持し、dp[i] を更新します。"
+    ]
+  },
+  "ko": {
+    "title": "구간별 최댓값을 비용으로 내는 최적 분할",
+    "description": "정수 배열 전체를 원래 순서를 유지한 채 길이가 threshold 이하인 비어 있지 않은 연속 구간들로 자릅니다. 한 구간의 비용은 그 구간의 최댓값입니다. 모든 구간의 비용 합의 최솟값을 구하세요. 음수도 허용되며 구간의 길이가 제한과 같을 필요는 없습니다.\n\n입출력 규약과 명시적으로 표시된 보충 제약은 이 사이트에서 정리한 것이며, 원 출처의 풀이는 실행하지 않습니다.",
+    "input": "첫 줄에 n threshold가, 둘째 줄에 배열이 주어집니다. 원문에는 수의 범위가 없어 이 사이트에서 1≤threshold≤n≤5000, −10⁹≤원소≤10⁹을 추가했습니다.",
+    "output": "문제가 요구하는 정수 하나를 출력합니다.",
+    "explanation": "공개 예제 3개의 답은 순서대로 10; -6; 20입니다. 예제는 독립적인 완전 탐색, 상태 탐색 또는 직접 시뮬레이션으로 다시 확인했습니다.",
+    "hints": [
+      "dp[i]를 앞 i개 항목의 최소 비용이라 합니다. 마지막 구간의 시작 위치를 거꾸로 열거하면서 그 구간의 최댓값을 유지하고 dp[i]를 갱신합니다."
+    ]
+  },
+  "vi": {
+    "title": "Cách chia tối ưu trả giá trị lớn nhất của mỗi đoạn",
+    "description": "Cắt toàn bộ mảng số nguyên, giữ nguyên thứ tự, thành các đoạn liên tiếp không rỗng, mỗi đoạn có độ dài ≤threshold; chi phí của một đoạn là giá trị lớn nhất của nó. Tìm tổng chi phí nhỏ nhất trên mọi đoạn. Cho phép số nguyên âm, và độ dài các đoạn không bắt buộc bằng giới hạn.\n\nGiao thức đầu vào/đầu ra và các ràng buộc bổ sung được đánh dấu rõ do trang này biên soạn; lời giải của nguồn gốc không được chạy.",
+    "input": "Dòng đầu tiên chứa n threshold, dòng thứ hai chứa mảng. Văn bản gốc không cho cận số; trang này bổ sung 1≤threshold≤n≤5000 và −10⁹≤phần tử≤10⁹.",
+    "output": "In ra một số nguyên là đáp án.",
+    "explanation": "Đáp án của ba ví dụ công khai lần lượt là: 10; -6; 20. Các ví dụ đã được kiểm tra lại bằng liệt kê độc lập, tìm kiếm trạng thái hoặc mô phỏng trực tiếp.",
+    "hints": [
+      "Gọi dp[i] là chi phí nhỏ nhất của i phần tử đầu. Liệt kê điểm bắt đầu của đoạn cuối theo chiều lùi trong khi duy trì giá trị lớn nhất của nó, và cập nhật dp[i]."
+    ]
   }
 }

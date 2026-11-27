@@ -13,6 +13,21 @@
       "All four parts being equal means the two arrays must have equal totals, and each array's prefix before the split must be exactly half of its total.",
       "Compare the totals first: if they differ or are odd, the answer is 0. Otherwise accumulate both prefix sums together and count the split points where both equal half of the total.",
       "Compute the totals sa and sb; print 0 if sa≠sb or sa is odd. Otherwise let half = sa/2 and, for i from 0 to N−2, add A[i] and B[i] to the two running prefixes, counting the positions where both equal half (only splits with non-empty sides). Values can be large, so use 64-bit integers."
+    ],
+    "ja": [
+      "4つの部分がすべて等しいということは、2つの配列の合計が等しく、分割より前の各配列の接頭辞が、その合計のちょうど半分でなければならないということです。",
+      "まず合計を比較します。異なるか奇数なら、答えは 0 です。そうでなければ、両方の接頭辞和を同時に累積し、両方が合計の半分に等しくなる分割点を数えます。",
+      "合計 sa と sb を計算し、sa≠sb または sa が奇数なら 0 を出力します。そうでなければ half = sa/2 とし、i を 0 から N−2 まで動かして、A[i] と B[i] を2つの累積接頭辞に加え、両方が half に等しい位置を数えます（両側が空でない分割だけです）。値は大きくなることがあるので、64ビット整数を使います。"
+    ],
+    "ko": [
+      "네 부분이 모두 같다는 것은 두 배열의 총합이 같아야 하고, 각 배열에서 분할 앞의 접두사가 정확히 총합의 절반이어야 한다는 뜻입니다.",
+      "총합을 먼저 비교하여 다르거나 홀수이면 답은 0입니다. 그렇지 않으면 두 접두사 합을 함께 누적하며 둘 다 총합의 절반인 분할 지점을 셉니다.",
+      "총합 sa와 sb를 계산하고 sa≠sb이거나 sa가 홀수이면 0을 출력합니다. 그렇지 않으면 half = sa/2로 두고, i를 0부터 N−2까지 올리며 두 누적 접두사에 A[i]와 B[i]를 더한 뒤 둘 다 half인 위치를 셉니다(양쪽이 비어 있지 않은 분할만). 값이 클 수 있으므로 64비트 정수를 사용합니다."
+    ],
+    "vi": [
+      "Bốn phần bằng nhau nghĩa là hai mảng phải có tổng bằng nhau, và tiền tố của mỗi mảng trước chỗ chia phải đúng bằng một nửa tổng của nó.",
+      "So sánh tổng trước: nếu chúng khác nhau hoặc lẻ thì đáp án là 0. Ngược lại cộng dồn đồng thời cả hai tổng tiền tố và đếm các điểm chia mà cả hai đều bằng một nửa tổng.",
+      "Tính các tổng sa và sb; in 0 nếu sa≠sb hoặc sa lẻ. Ngược lại đặt half = sa/2 và, với i từ 0 đến N−2, cộng A[i] và B[i] vào hai tiền tố đang chạy, đếm các vị trí mà cả hai đều bằng half (chỉ các cách chia có hai phía không rỗng). Các giá trị có thể lớn, vì vậy hãy dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nFirst compare the two array totals, which must be equal and even; then accumulate both prefixes together and count the positions where both equal half of the total.\n\n## Proof of correctness\n\nFour equal parts force the two totals to be equal and each prefix to be half of its total. Conversely, when both prefixes reach the same half value, both suffixes also equal that value, so the condition is necessary and sufficient. Only non-empty splits are checked.\n\n## Complexity\n\nTime O(N), extra space O(1)."

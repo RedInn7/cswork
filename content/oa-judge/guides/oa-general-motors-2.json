@@ -13,6 +13,21 @@
       "Z is at most 500 and the target digit sum 2*digitSum(Z) is small, so the valid X is never far above Z.",
       "Since you want the smallest X greater than Z, just check numbers upward from Z+1; the first one with the required digit sum is the answer.",
       "Compute target = 2 times the digit sum of Z; set X = Z + 1 and loop: compute the digit sum of X (repeatedly take the last digit and divide by 10); if it differs from target increment X, otherwise print X."
+    ],
+    "ja": [
+      "Z は高々 500 で、目標の桁和 2*digitSum(Z) も小さいので、条件を満たす X が Z よりずっと大きくなることはありません。",
+      "Z より大きい最小の X を求めるので、Z+1 から上に向かって順に調べ、必要な桁和を最初に満たした数が答えです。",
+      "target = Z の桁和の 2 倍を計算します。X = Z + 1 とし、ループします。X の桁和を計算し（最後の桁を取って 10 で割ることを繰り返します）、target と異なれば X をインクリメントし、等しければ X を出力します。"
+    ],
+    "ko": [
+      "Z는 최대 500이고 목표 자릿수 합 2*digitSum(Z)도 작으므로, 유효한 X는 Z보다 크게 멀지 않습니다.",
+      "Z보다 큰 가장 작은 X를 원하므로 Z+1부터 위로 차례로 검사하면 됩니다. 필요한 자릿수 합을 갖는 첫 번째 수가 정답입니다.",
+      "target = Z의 자릿수 합의 2배로 계산하고 X = Z + 1로 두어 반복합니다. X의 자릿수 합을 (마지막 자릿수를 꺼내고 10으로 나누는 것을 반복해) 구해서 target과 다르면 X를 증가시키고, 같으면 X를 출력합니다."
+    ],
+    "vi": [
+      "Z không quá 500 và tổng chữ số mục tiêu 2*digitSum(Z) nhỏ, nên X hợp lệ không bao giờ lớn hơn Z quá nhiều.",
+      "Vì bạn muốn X nhỏ nhất lớn hơn Z, hãy kiểm tra các số tăng dần từ Z+1; số đầu tiên có tổng chữ số yêu cầu chính là đáp án.",
+      "Tính target = 2 lần tổng chữ số của Z; đặt X = Z + 1 và lặp: tính tổng chữ số của X (liên tục lấy chữ số cuối và chia cho 10); nếu khác target thì tăng X, ngược lại in X."
     ]
   },
   "explanationEn": "## Approach\n\nEnumerate upward from Z+1 and check the digit sum.\n\n## Proof of correctness\n\nThe enumeration order is strictly increasing, so the first number that satisfies the condition is the smallest; exhaustive search over the whole domain confirms that a solution always exists in range.\n\n## Complexity\n\nO((X−Z)·digits) time, O(1) space."

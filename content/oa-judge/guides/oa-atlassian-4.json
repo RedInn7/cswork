@@ -13,6 +13,21 @@
       "Standard Roman numerals can be viewed as 13 denominations: M, CM, D, CD, C, XC, L, XL, X, IX, V, IV, I, treating the six subtractive forms as symbols of their own.",
       "Go greedily from large to small: use each large denomination as many times as possible and leave the rest to smaller ones. Thousands can only be written with M, and every other digit is split into exactly its standard form.",
       "Prepare the 13 (value, symbol) pairs from 1000 down to 1. For each number, use integer division to get how many times each symbol repeats, append the symbols and subtract their value; print one line per number."
+    ],
+    "ja": [
+      "標準のローマ数字は、M、CM、D、CD、C、XC、L、XL、X、IX、V、IV、I の13の単位と見なせます。6つの減算形はそれ自体を1つの記号として扱います。",
+      "大きいほうから貪欲に進みます。大きい単位をできるだけ多く使い、残りを小さい単位に任せます。千の位は M だけで書け、それ以外の桁は標準の形にちょうど分割されます。",
+      "1000 から 1 までの13組の (値, 記号) を用意します。各数について、整数除算で各記号の繰り返し回数を求め、記号を追加して値を引きます。1つの数につき1行出力します。"
+    ],
+    "ko": [
+      "표준 로마 숫자는 13개의 단위 M, CM, D, CD, C, XC, L, XL, X, IX, V, IV, I로 볼 수 있으며, 여섯 가지 감산형을 각각 하나의 기호로 취급합니다.",
+      "큰 것부터 탐욕적으로 갑니다. 큰 단위를 가능한 한 많이 쓰고 나머지는 작은 단위에 맡깁니다. 천의 자리는 M으로만 쓸 수 있고 나머지 자릿수는 정확히 표준 형태로 나뉩니다.",
+      "1000부터 1까지 13개의 (값, 기호) 쌍을 준비합니다. 각 수에 대해 정수 나눗셈으로 각 기호가 몇 번 반복되는지 구하고, 기호를 이어 붙이며 그 값을 뺍니다. 수마다 한 줄씩 출력합니다."
+    ],
+    "vi": [
+      "Chữ số La Mã chuẩn có thể xem như 13 mệnh giá: M, CM, D, CD, C, XC, L, XL, X, IX, V, IV, I, coi sáu dạng trừ là các ký hiệu riêng.",
+      "Tham lam từ lớn đến nhỏ: dùng mỗi mệnh giá lớn nhiều lần nhất có thể và để phần còn lại cho các mệnh giá nhỏ hơn. Hàng nghìn chỉ có thể viết bằng M, và mọi chữ số khác được tách đúng thành dạng chuẩn của nó.",
+      "Chuẩn bị 13 cặp (giá trị, ký hiệu) từ 1000 xuống 1. Với mỗi số, dùng phép chia nguyên để biết mỗi ký hiệu lặp lại bao nhiêu lần, nối các ký hiệu vào và trừ đi giá trị của chúng; in mỗi số trên một dòng."
     ]
   },
   "explanationEn": "## Approach\n\nUsing the 13 standard symbol values from 1000 down to 1, determine each repeat count by integer division from largest to smallest and subtract the corresponding value.\n\n## Proof of Correctness\n\nThe thousands can only use M, and the hundreds, tens, and ones are each uniquely represented by the largest available symbol together with the prescribed subtractive combinations; taking values from largest to smallest realizes exactly the standard representation of each digit without affecting the remaining lower digits, and induction over the digits gives the unique result.\n\n## Complexity\n\nAt most 15 characters per number, O(n) time, and O(n) space to store the results; stdout ≤1600000 bytes."

@@ -13,5 +13,41 @@
       "Use a hash map to record the first commit in which each (path, identifier) appears, and merge with union-find.",
       "Check for ambiguity only after all merges are done; sort each component by (timestamp, id) and use binary search for queries."
     ]
+  },
+  "ja": {
+    "title": "Headlands OA #1: 災害復旧",
+    "description": "移行の破損後、複数のリポジトリにまたがるコミットを記録した単一のグローバルログだけが残っています。有効なログの行の形式は `id <commitId> timestamp <ts>` で、その後に 0 組以上の「ファイルパスと不透明な識別子」の組が続き、すべての単語は 1 つの空白で区切られます。\n\n有効な行は次のすべてを満たさなければなりません。単語の数が偶数で 4 以上であること。1 番目の単語が id で 3 番目の単語が timestamp であること。commitId と ts が非負の 10 進整数であること。1 行内のキー (id、timestamp、および各組のファイルパス) が互いに異なること。いずれかを満たさない行は不正な行であり、破棄されます。コミットをつなぐことも曖昧さを生じさせることもありません。\n\n2 つの有効なコミットがまったく同じ (ファイルパス、不透明な識別子) の組を含む場合、それらは同じリポジトリに属します。この関係は推移的で、リポジトリはその結果得られる連結成分です。同じファイルパスが 1 つの連結成分内で 2 つの異なる不透明な識別子とともに現れる場合、入力全体が曖昧です。\n\nすべてのログを処理した後、クエリ `start end path opaqueId` に答えてください。(path, opaqueId) を含むリポジトリを見つけ、そのコミットのうちタイムスタンプが閉区間 [start, end] にあるものについて、その id を、タイムスタンプの昇順、同じなら commit id の昇順で出力します。入力が曖昧な場合は、すべてのクエリを無視し、AMBIGUOUS INPUT! の 1 行だけを出力します。",
+    "input": "1 行目に整数 N が与えられ、続く N 行にそれぞれログの行 (空でなく、単語はちょうど 1 つの空白で区切られ、先頭と末尾に空白はない) が与えられます。次の行に整数 R が与えられ、続く R 行にそれぞれクエリ `start end path opaqueId` が与えられます。\n\n0≤N≤200000、0≤R≤100000 で、入力の合計の長さは 3·10^7 バイトを超えません。各単語は可視の ASCII 文字からなります。数字だけからなる単語には余分な先頭の 0 がなく、2^63−1 を超えません。有効な行の commitId は互いに異なります (不正な行の id はそれと重なってもかまいません)。どのクエリでも、start と end は 0..2^63−1 の整数で、(path, opaqueId) は少なくとも 1 つの有効なログの行に現れます。入力が曖昧でない場合、全クエリで出力される id の総数は 2·10^6 を超えません。",
+    "output": "入力が曖昧な場合は、AMBIGUOUS INPUT! の 1 行だけを出力してください。そうでなければ R 行を出力し、i 行目に i 番目のクエリのコミット id を順に並べ、各 id の直後に空白を付けてください。条件を満たすコミットがなければ空行を出力してください。出力は 1 文字ずつ比較されます。",
+    "explanation": "例 1: コミット 0 と 1 は bar b を共有していて同じリポジトリに属し、コミット 2 は単独でリポジトリをなします。1 つ目のクエリは \"0 1 \" を出力し、2 つ目のクエリの区間 [0,12] にはコミット 0 だけが含まれ、3 つ目は \"2 \" を出力します。\n例 2: 3 つのコミットは bar b と baz c でつながっていますが、foo が a と x の両方に対応するので、入力は曖昧です。\n例 3: 2 行目は最初の単語が ID、4 行目はタイムスタンプが数値でなく、5 行目はキー lib が重複し、6 行目は単語数が奇数なので、すべて破棄されます。コミット 7 と 9 は src/a.go v1 を共有しているのでつながります。2 つ目のクエリの区間 [6,6] にコミットはなく、3 つ目のクエリは start>end なので、どちらも空行を出力します。",
+    "hints": [
+      "まず各行が有効かを厳密に確認し、その後で連結性を扱います。",
+      "ハッシュマップで、各 (パス、識別子) が最初に現れたコミットを記録し、Union-Find で併合します。",
+      "曖昧さの確認は、すべての併合が終わってから行います。各成分を (タイムスタンプ、id) でソートし、クエリには二分探索を使います。"
+    ]
+  },
+  "ko": {
+    "title": "Headlands OA #1: 재해 복구",
+    "description": "손상된 마이그레이션 이후, 여러 저장소에 걸친 커밋을 기록한 단 하나의 전역 로그만 남아 있습니다. 유효한 로그 줄의 형식은 `id <commitId> timestamp <ts>`이며, 그 뒤에 \"파일 경로 불투명 식별자\" 쌍이 0개 이상 이어지고, 모든 단어는 공백 하나로 구분됩니다.\n\n유효한 줄은 다음을 모두 만족해야 합니다. 단어의 수가 짝수이며 4 이상입니다. 첫 번째 단어는 id이고 세 번째 단어는 timestamp입니다. commitId와 ts는 음이 아닌 십진 정수입니다. 한 줄 안의 키(id, timestamp, 각 쌍의 파일 경로)는 서로 모두 다릅니다. 이 중 하나라도 어기는 줄은 잘못된 형식의 줄이며 버려지고, 어떤 커밋도 연결하지 않으며 모호성도 일으키지 않습니다.\n\n유효한 두 커밋이 정확히 같은 (파일 경로, 불투명 식별자) 쌍을 포함하면 같은 저장소에 속합니다. 이 관계는 전이적이며, 저장소는 그 결과로 생기는 연결 요소입니다. 하나의 연결 요소 안에서 같은 파일 경로가 서로 다른 두 불투명 식별자와 함께 나타나면 전체 입력이 모호합니다.\n\n모든 로그를 처리한 뒤 질의 `start end path opaqueId`에 답하세요. (path, opaqueId)를 포함하는 저장소를 찾아, 타임스탬프가 닫힌 구간 [start, end]에 있는 커밋의 id를 타임스탬프 오름차순, 같으면 커밋 id 오름차순으로 정렬하여 출력합니다. 입력이 모호하면 모든 질의를 무시하고 AMBIGUOUS INPUT! 한 줄만 출력합니다.",
+    "input": "첫 번째 줄에 정수 N이 주어지고, 이어서 N개의 줄에 각각 로그 줄 하나(비어 있지 않고, 단어는 정확히 공백 하나로 구분되며, 앞뒤 공백 없음)가 주어집니다. 그다음 줄에 정수 R이 주어지고, 이어서 R개의 줄에 각각 질의 `start end path opaqueId`가 주어집니다.\n\n0≤N≤200000, 0≤R≤100000이며, 입력의 전체 길이는 3·10^7바이트를 넘지 않습니다. 각 단어는 눈에 보이는 ASCII 문자로 이루어지며, 숫자로만 이루어진 단어에는 불필요한 앞자리 0이 없고 2^63−1을 넘지 않습니다. 유효한 줄의 commitId 값은 서로 다릅니다(잘못된 형식의 줄의 id는 중복될 수 있음). 모든 질의에서 start와 end는 0..2^63−1 범위의 정수이고, (path, opaqueId)는 적어도 하나의 유효한 로그 줄에 나타납니다. 입력이 모호하지 않으면, 모든 질의에서 출력되는 id의 총 수는 2·10^6을 넘지 않습니다.",
+    "output": "입력이 모호하면 AMBIGUOUS INPUT! 한 줄만 출력합니다. 그렇지 않으면 R개의 줄을 출력합니다. i번째 줄에는 i번째 질의에 대한 커밋 id를 순서대로 나열하며, 각 id 바로 뒤에 공백이 하나 따릅니다. 조건에 맞는 커밋이 없으면 빈 줄을 출력합니다. 출력은 문자 단위로 비교됩니다.",
+    "explanation": "예제 1: 커밋 0과 1은 bar b를 공유하여 같은 저장소에 속하고, 커밋 2는 혼자서 저장소를 이룹니다. 첫 번째 질의는 \"0 1 \"을 출력하고, 두 번째 질의의 구간 [0,12]에는 커밋 0만 들어 있으며, 세 번째는 \"2 \"를 출력합니다.\n예제 2: 세 커밋은 bar b와 baz c를 통해 연결되지만 foo가 a와 x 양쪽에 대응하므로 입력은 모호합니다.\n예제 3: 2번째 줄은 첫 단어가 ID이고, 4번째 줄은 타임스탬프가 숫자가 아니며, 5번째 줄은 키 lib가 반복되고, 6번째 줄은 단어 수가 홀수이므로 모두 버려집니다. 커밋 7과 9는 src/a.go v1을 공유하여 연결됩니다. 두 번째 질의의 구간 [6,6]에는 커밋이 없고 세 번째 질의는 start>end이므로 둘 다 빈 줄을 출력합니다.",
+    "hints": [
+      "먼저 각 줄이 유효한지를 엄격하게 검사한 다음 연결성을 처리하세요.",
+      "해시 맵으로 각 (경로, 식별자)가 처음 나타난 커밋을 기록하고, 유니온 파인드로 병합하세요.",
+      "모호성은 모든 병합이 끝난 뒤에만 검사하세요. 각 요소를 (타임스탬프, id)로 정렬하고 질의에는 이분 탐색을 사용하세요."
+    ]
+  },
+  "vi": {
+    "title": "Headlands OA #1: Khôi phục sau thảm họa",
+    "description": "Sau một lần di chuyển dữ liệu bị hỏng, chỉ còn lại một nhật ký toàn cục duy nhất ghi lại các commit trên nhiều kho mã. Một dòng nhật ký hợp lệ có định dạng `id <commitId> timestamp <ts>`, theo sau là không hoặc nhiều cặp \"đường dẫn tệp - định danh mờ\", với mọi từ cách nhau bởi một dấu cách.\n\nMột dòng hợp lệ phải thỏa mãn tất cả các điều kiện sau: số từ là số chẵn và ít nhất 4; từ thứ 1 là id và từ thứ 3 là timestamp; commitId và ts là các số nguyên thập phân không âm; các khóa trong cùng một dòng (id, timestamp, và đường dẫn tệp của mỗi cặp) đôi một phân biệt. Một dòng vi phạm bất kỳ điều kiện nào là dòng lỗi và bị loại bỏ; nó không nối bất kỳ commit nào và cũng không gây mơ hồ.\n\nNếu hai commit hợp lệ chứa chính xác cùng một cặp (đường dẫn tệp, định danh mờ), chúng thuộc cùng một kho; quan hệ này có tính bắc cầu, và các kho là các thành phần liên thông thu được. Nếu cùng một đường dẫn tệp xuất hiện với hai định danh mờ khác nhau trong cùng một thành phần liên thông, thì toàn bộ đầu vào là mơ hồ.\n\nSau khi xử lý toàn bộ nhật ký, hãy trả lời các truy vấn `start end path opaqueId`: tìm kho chứa (path, opaqueId), lấy các commit của nó có mốc thời gian nằm trong khoảng đóng [start, end], và in id của chúng sắp xếp theo mốc thời gian tăng dần, hòa thì theo id commit tăng dần. Nếu đầu vào mơ hồ, hãy bỏ qua mọi truy vấn và chỉ in một dòng AMBIGUOUS INPUT!.",
+    "input": "Dòng đầu tiên chứa một số nguyên N, theo sau là N dòng, mỗi dòng chứa một dòng nhật ký (không rỗng, các từ cách nhau đúng một dấu cách, không có dấu cách ở đầu hay cuối). Sau đó một dòng chứa số nguyên R, theo sau là R dòng, mỗi dòng chứa một truy vấn `start end path opaqueId`.\n\n0≤N≤200000, 0≤R≤100000, và tổng độ dài đầu vào không vượt quá 3·10^7 byte. Mỗi từ gồm các ký tự ASCII hiển thị được; một từ chỉ gồm các chữ số không có số 0 thừa ở đầu và không vượt quá 2^63−1. Các giá trị commitId trên các dòng hợp lệ là phân biệt (id trên các dòng lỗi có thể trùng với chúng). Trong mỗi truy vấn, start và end là các số nguyên trong khoảng 0..2^63−1, và (path, opaqueId) xuất hiện trên ít nhất một dòng nhật ký hợp lệ. Nếu đầu vào không mơ hồ, tổng số id được in ra trên tất cả các truy vấn không vượt quá 2·10^6.",
+    "output": "Nếu đầu vào mơ hồ, chỉ in một dòng AMBIGUOUS INPUT!. Ngược lại in R dòng; dòng thứ i liệt kê các id commit của truy vấn thứ i theo thứ tự, mỗi id theo sau ngay bởi một dấu cách; in một dòng trống nếu không có commit nào thỏa. Đầu ra được so sánh từng ký tự một.",
+    "explanation": "Ví dụ 1: các commit 0 và 1 cùng có bar b và thuộc cùng một kho; commit 2 tự tạo thành một kho. Truy vấn đầu tiên in \"0 1 \", khoảng [0,12] của truy vấn thứ hai chỉ chứa commit 0, và truy vấn thứ ba in \"2 \".\nVí dụ 2: ba commit được nối với nhau qua bar b và baz c, nhưng foo ánh xạ tới cả a lẫn x, nên đầu vào là mơ hồ.\nVí dụ 3: dòng 2 có ID là từ đầu tiên, dòng 4 có mốc thời gian không phải số, dòng 5 lặp lại khóa lib, và dòng 6 có số từ lẻ, nên tất cả đều bị loại. Các commit 7 và 9 được nối vì cùng có src/a.go v1; khoảng [6,6] của truy vấn thứ hai không chứa commit nào và truy vấn thứ ba có start>end, nên cả hai đều in dòng trống.",
+    "hints": [
+      "Trước hết kiểm tra nghiêm ngặt từng dòng có hợp lệ không, rồi mới xử lý tính liên thông.",
+      "Dùng một hash map ghi lại commit đầu tiên mà mỗi cặp (đường dẫn, định danh) xuất hiện, và gộp bằng union-find.",
+      "Chỉ kiểm tra tính mơ hồ sau khi đã gộp xong; sắp xếp mỗi thành phần theo (mốc thời gian, id) và dùng tìm kiếm nhị phân cho các truy vấn."
+    ]
   }
 }

@@ -13,6 +13,21 @@
       "Once the number of bundles z is fixed, the rest only needs single items to cover each shortfall: max(0,x−z) of A and max(0,y−z) of B, so the total cost is a function of z.",
       "This cost is piecewise linear in z with breakpoints only at z=x and z=y, and going beyond max(x,y) only costs more; a linear piece reaches its minimum at an endpoint.",
       "Just compute the cost z·costAB + max(0,x−z)·costA + max(0,y−z)·costB for z=0, z=min(x,y) and z=max(x,y), and take the minimum. Values can reach about 2×10^18, so use 64-bit integers."
+    ],
+    "ja": [
+      "セットの個数 z を固定すると、残りは不足分を単品で補うだけで済みます。必要なのは A が max(0,x−z) 個、B が max(0,y−z) 個なので、総費用は z の関数になります。",
+      "この費用は z について区分線形で、折れ点は z=x と z=y だけです。max(x,y) を超えて買っても費用が増えるだけです。線形な区間の最小値は端点で取られます。",
+      "z=0、z=min(x,y)、z=max(x,y) について、費用 z·costAB + max(0,x−z)·costA + max(0,y−z)·costB を計算し、最小値を取ります。値は約 2×10^18 に達しうるので、64 ビット整数を使ってください。"
+    ],
+    "ko": [
+      "묶음 개수 z를 고정하면 나머지는 부족한 만큼만 낱개로 채우면 됩니다. 즉 A는 max(0,x−z)개, B는 max(0,y−z)개이므로 총비용은 z에 대한 함수입니다.",
+      "이 비용은 z에 대한 구간별 선형 함수이며 꺾이는 점은 z=x와 z=y뿐이고, max(x,y)를 넘기면 비용만 늘어납니다. 선형 구간의 최솟값은 구간의 끝점에서 얻어집니다.",
+      "z=0, z=min(x,y), z=max(x,y)에 대해 비용 z·costAB + max(0,x−z)·costA + max(0,y−z)·costB를 계산하여 최솟값을 취하면 됩니다. 값이 약 2×10^18까지 커질 수 있으므로 64비트 정수를 사용해야 합니다."
+    ],
+    "vi": [
+      "Khi đã cố định số gói z, phần còn lại chỉ cần mua lẻ để bù từng phần thiếu: max(0,x−z) món A và max(0,y−z) món B, nên tổng chi phí là hàm của z.",
+      "Chi phí này là hàm tuyến tính từng khúc theo z với các điểm gãy chỉ tại z=x và z=y, và vượt quá max(x,y) chỉ làm tốn thêm; mỗi khúc tuyến tính đạt cực tiểu tại một đầu mút.",
+      "Chỉ cần tính chi phí z·costAB + max(0,x−z)·costA + max(0,y−z)·costB với z=0, z=min(x,y) và z=max(x,y), rồi lấy giá trị nhỏ nhất. Giá trị có thể lên tới khoảng 2×10^18 nên hãy dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nEnumerate bundle counts 0, min(x,y) and max(x,y), make up the missing single items for each, and take the minimum cost.\n\n## Proof of correctness\n\nAfter fixing the bundle count z, single items only need to cover each shortfall. The total cost is a piecewise linear function of z whose only breakpoints are x and y, and buying beyond max(x,y) only increases the cost. The minimum of each linear piece is at an endpoint, so the three candidates cover the optimum.\n\n## Complexity\n\nTime O(1), space O(1), using 64-bit integers."

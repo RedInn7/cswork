@@ -13,6 +13,21 @@
       "A stack is last in, first out; pouring one stack entirely into another reverses the order once, bringing the earliest element to the top.",
       "Use an incoming stack for new elements and an outgoing stack for pop and peek. Pour the incoming stack over only when the outgoing stack is empty, so older elements always leave before newer ones.",
       "push: push onto the incoming stack and output null. empty: output true only when both stacks are empty. pop and peek: if the outgoing stack is empty, move every element from the incoming stack onto it one by one; then pop removes and outputs the outgoing top while peek just outputs it. Print all return values on one line separated by spaces."
+    ],
+    "ja": [
+      "スタックは後入れ先出しです。一方のスタックの中身をもう一方へすべて移すと、順序が 1 回反転し、最も古い要素が先頭に来ます。",
+      "新しい要素用の入力スタックと、pop と peek 用の出力スタックを使います。入力スタックを移し替えるのは出力スタックが空のときだけにすると、古い要素が常に新しい要素より先に出ていきます。",
+      "push：入力スタックに積み、null を出力します。empty：両方のスタックが空のときだけ true を出力します。pop と peek：出力スタックが空なら、入力スタックのすべての要素を 1 つずつそこへ移し、その後 pop は出力スタックの先頭を取り除いて出力し、peek は先頭を出力するだけです。すべての戻り値を 1 行に空白区切りで出力します。"
+    ],
+    "ko": [
+      "스택은 후입선출입니다. 한 스택의 원소를 다른 스택으로 모두 옮기면 순서가 한 번 뒤집혀 가장 먼저 들어온 원소가 top에 놓입니다.",
+      "새 원소는 입력 스택에 쌓고, pop과 peek은 출력 스택에서 처리합니다. 출력 스택이 비어 있을 때만 입력 스택을 옮기면 오래된 원소가 항상 새 원소보다 먼저 나갑니다.",
+      "push: 입력 스택에 넣고 null을 출력합니다. empty: 두 스택이 모두 비어 있을 때만 true를 출력합니다. pop과 peek: 출력 스택이 비어 있으면 입력 스택의 모든 원소를 하나씩 옮깁니다. 그 후 pop은 출력 스택의 top을 제거하고 출력하며, peek은 제거하지 않고 출력합니다. 모든 반환값을 한 줄에 공백으로 구분해 출력합니다."
+    ],
+    "vi": [
+      "Ngăn xếp là vào sau ra trước; đổ hoàn toàn một ngăn xếp sang ngăn xếp khác đảo ngược thứ tự một lần, đưa phần tử cũ nhất lên đỉnh.",
+      "Dùng một ngăn xếp vào cho các phần tử mới và một ngăn xếp ra cho pop và peek. Chỉ đổ ngăn xếp vào sang khi ngăn xếp ra rỗng, nhờ đó phần tử cũ luôn rời đi trước phần tử mới.",
+      "push: đẩy vào ngăn xếp vào và in null. empty: in true chỉ khi cả hai ngăn xếp đều rỗng. pop và peek: nếu ngăn xếp ra rỗng, chuyển lần lượt mọi phần tử từ ngăn xếp vào sang nó; sau đó pop lấy ra và in đỉnh của ngăn xếp ra, còn peek chỉ in nó. In tất cả giá trị trả về trên một dòng, cách nhau bởi dấu cách."
     ]
   },
   "explanationEn": "## Approach\n\nThe incoming stack records new elements; when the outgoing stack is empty, pour the whole incoming stack into it, and pop and peek work on the top of the outgoing stack.\n\n## Proof of correctness\n\nPouring reverses the most recent enqueue order, so the earliest element becomes the top of the outgoing stack. Pouring only when the outgoing stack is empty guarantees that older elements always leave before newer ones, and each element is moved at most once.\n\n## Complexity\n\nAmortized O(1) per operation, space O(Q)."

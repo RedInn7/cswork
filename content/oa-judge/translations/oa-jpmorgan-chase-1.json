@@ -13,5 +13,41 @@
       "For range [l,r], XOR 1 into the difference array at both l−1 and r.",
       "Take prefix XORs from left to right, and negate wherever the result is odd."
     ]
+  },
+  "ja": {
+    "title": "JPMorgan Chase OA #1: 区間符号反転の更新",
+    "description": "データアナリストは、n 日分のデータを表す長さ n の配列 data を持っています。彼は k 回の更新を順に行います。各更新は [l, r] で、インデックス l から r まで(両端を含む、1 始まり)のすべての要素の符号を反転します(x は −x になります)。\n\nすべての更新を終えた後の配列を求めてください。",
+    "input": "1 行目に整数 n、2 行目に n 個の整数 data[1..n] が与えられます。3 行目に整数 k、続く k 行に 2 つの整数 l r が与えられます。\n\n1≤n≤10^6、1≤k≤10^6、|data[i]|≤10^9、1≤l≤r≤n。",
+    "output": "最終的な配列の n 個の整数を、空白区切りで 1 行に出力してください。",
+    "explanation": "例 1:最初の更新 [2,4] の後の配列は [1,4,5,−2] で、2 番目の更新 [1,2] の後は [−1,−4,5,−2] です。\n例 2:[1,3] の後は [−1,−2,−3,4,5] で、[2,4] の後は [−1,2,3,−4,5] です。\n例 3:[1,3] を 2 回適用しても何も変わらず、その後 2 番目の要素の符号が反転されます。0 の符号を反転しても 0 のままです。",
+    "hints": [
+      "2 回符号を反転すると元に戻るので、各位置が何回覆われたかの偶奇だけが必要です。",
+      "範囲 [l,r] に対して、差分配列の l−1 と r の両方に 1 を XOR します。",
+      "左から右へ累積 XOR を取り、結果が奇数の位置の符号を反転します。"
+    ]
+  },
+  "ko": {
+    "title": "JPMorgan Chase OA #1: 구간 부호 반전 업데이트",
+    "description": "데이터 분석가에게 n일치 데이터를 나타내는 길이 n의 배열 data가 있습니다. 그는 k번의 업데이트를 순서대로 수행하며, 각 업데이트 [l, r]은 인덱스 l부터 r까지(양 끝 포함, 1부터 시작)의 모든 원소의 부호를 반전합니다(x가 −x가 됨).\n\n모든 업데이트를 마친 뒤의 배열을 구하세요.",
+    "input": "첫 번째 줄에 정수 n이 주어지고, 두 번째 줄에 n개의 정수 data[1..n]이 주어집니다. 세 번째 줄에는 정수 k가 주어지고, 이어서 l r 두 정수가 담긴 k개의 줄이 주어집니다.\n\n1≤n≤10^6, 1≤k≤10^6, |data[i]|≤10^9, 1≤l≤r≤n.",
+    "output": "최종 배열의 n개의 정수를 공백으로 구분하여 한 줄에 출력합니다.",
+    "explanation": "예제 1: 첫 번째 업데이트 [2,4] 뒤에 배열은 [1,4,5,−2]이고, 두 번째 업데이트 [1,2] 뒤에는 [−1,−4,5,−2]입니다.\n예제 2: [1,3] 뒤에는 [−1,−2,−3,4,5]이고, [2,4] 뒤에는 [−1,2,3,−4,5]입니다.\n예제 3: [1,3]을 두 번 적용해도 변하지 않고, 이후 2번째 원소의 부호를 반전합니다. 0의 부호를 반전해도 0입니다.",
+    "hints": [
+      "두 번 반전하면 값이 그대로이므로, 각 위치가 몇 번 덮였는지의 홀짝만 필요합니다.",
+      "구간 [l,r]에 대해 차분 배열의 l−1과 r에 각각 1을 XOR합니다.",
+      "왼쪽에서 오른쪽으로 누적 XOR을 취하고, 결과가 홀수인 곳의 부호를 반전합니다."
+    ]
+  },
+  "vi": {
+    "title": "JPMorgan Chase OA #1: Cập nhật đảo dấu theo đoạn",
+    "description": "Một nhà phân tích dữ liệu có mảng data độ dài n biểu diễn dữ liệu của n ngày. Anh ta thực hiện k lần cập nhật theo thứ tự; mỗi lần cập nhật là [l, r], nghĩa là mọi phần tử từ chỉ số l đến r (bao gồm cả hai đầu, chỉ số tính từ 1) bị đổi dấu (x trở thành −x).\n\nHãy tìm mảng sau khi mọi lần cập nhật hoàn tất.",
+    "input": "Dòng đầu chứa một số nguyên n, dòng thứ hai chứa n số nguyên data[1..n]. Dòng thứ ba chứa một số nguyên k, tiếp theo là k dòng, mỗi dòng gồm hai số nguyên l r.\n\n1≤n≤10^6, 1≤k≤10^6, |data[i]|≤10^9, 1≤l≤r≤n.",
+    "output": "In ra một dòng gồm n số nguyên của mảng cuối cùng, cách nhau bằng dấu cách.",
+    "explanation": "Ví dụ 1: sau lần cập nhật đầu tiên [2,4] mảng là [1,4,5,−2], và sau lần cập nhật thứ hai [1,2] nó là [−1,−4,5,−2].\nVí dụ 2: sau [1,3] mảng là [−1,−2,−3,4,5], và sau [2,4] nó là [−1,2,3,−4,5].\nVí dụ 3: áp dụng [1,3] hai lần không làm thay đổi gì, sau đó phần tử thứ 2 bị đổi dấu; đổi dấu 0 vẫn cho 0.",
+    "hints": [
+      "Đổi dấu hai lần thì giá trị không đổi, nên chỉ cần tính tính chẵn lẻ của số lần mỗi vị trí được phủ.",
+      "Với đoạn [l,r], XOR 1 vào mảng hiệu tại cả l−1 và r.",
+      "Lấy XOR tiền tố từ trái sang phải, và đổi dấu ở những vị trí có kết quả lẻ."
+    ]
   }
 }

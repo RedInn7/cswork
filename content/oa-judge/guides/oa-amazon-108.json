@@ -13,6 +13,21 @@
       "Every day the leftmost and rightmost packages are shipped, so package i (0-based) can be chosen no later than day min(i+1, n-i). The task becomes: pick one per day, each package has a deadline, maximize the chosen weight.",
       "This is weighted scheduling of unit jobs with deadlines: add candidates in order of deadline, and whenever the number chosen exceeds the current day, drop the lightest one. A min-heap does this efficiently.",
       "For day = 1..ceil(n/2): push the packages whose deadline is day (a[day-1] and a[n-day], only once when they are the same package) into a min-heap; while the heap is larger than day, pop its minimum; finally print the sum of the heap, using 64-bit integers."
+    ],
+    "ja": [
+      "毎日、最も左と最も右の荷物が出荷されるので、荷物 i（0 始まり）は遅くとも min(i+1, n-i) 日目までに選ぶ必要があります。問題は、1 日 1 つ選び、各荷物には締め切りがあり、選んだ重さを最大化することになります。",
+      "これは締め切り付き単位ジョブの重み付きスケジューリングです。候補を締め切り順に追加し、選んだ数が現在の日数を超えたら最も軽いものを捨てます。最小ヒープで効率的にできます。",
+      "day = 1..ceil(n/2) について、締め切りが day である荷物（a[day-1] と a[n-day]。同じ荷物のときは 1 回だけ）を最小ヒープに入れます。ヒープが day より大きい間は最小値を取り出します。最後にヒープの合計を出力します。64 ビット整数を使ってください。"
+    ],
+    "ko": [
+      "매일 가장 왼쪽과 가장 오른쪽 패키지가 출하되므로, 패키지 i(0-기반)는 늦어도 min(i+1, n-i)일째까지 골라야 합니다. 문제는 하루에 하나씩 고르되, 각 패키지에 마감 기한이 있을 때 고른 무게를 최대화하는 것이 됩니다.",
+      "이것은 마감 기한이 있는 단위 작업의 가중치 스케줄링입니다. 마감 기한 순으로 후보를 추가하고, 고른 수가 현재 일수를 넘으면 가장 가벼운 것을 버립니다. 최소 힙으로 효율적으로 처리할 수 있습니다.",
+      "day = 1..ceil(n/2)에 대해 마감 기한이 day인 패키지(a[day-1]과 a[n-day]이며, 같은 패키지이면 한 번만)를 최소 힙에 넣습니다. 힙이 day보다 크면 최솟값을 꺼내고, 마지막에 힙의 합을 64비트 정수로 출력합니다."
+    ],
+    "vi": [
+      "Mỗi ngày các kiện ngoài cùng bên trái và bên phải bị xuất kho, nên kiện i (đánh số từ 0) có thể được chọn chậm nhất vào ngày min(i+1, n-i). Bài toán trở thành: mỗi ngày chọn một kiện, mỗi kiện có hạn chót, cực đại hóa khối lượng đã chọn.",
+      "Đây là bài toán xếp lịch có trọng số cho các công việc đơn vị với hạn chót: thêm các ứng viên theo thứ tự hạn chót, và bất cứ khi nào số đã chọn vượt quá ngày hiện tại thì bỏ kiện nhẹ nhất. Một min-heap làm việc này hiệu quả.",
+      "Với day = 1..ceil(n/2): đẩy các kiện có hạn chót là day (a[day-1] và a[n-day], chỉ một lần khi chúng là cùng một kiện) vào min-heap; trong khi heap lớn hơn day, lấy phần tử nhỏ nhất ra; cuối cùng in tổng của heap, dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nPackage i can be chosen no later than day min(i+1, n-i), which makes this a weighted selection of unit-time jobs with deadlines. Add jobs to a min-heap in increasing order of deadline, and whenever the heap exceeds the current day count, remove the smallest weight.\n\n## Proof of correctness\n\nAt most d chosen packages can have deadlines <= d, and this condition is enough to guarantee a schedule in deadline order. When the capacity is exceeded while scanning tasks with the same deadline, removing the smallest weight is a choice that is no worse by exchange; every deadline prefix stays feasible, and the heap's total is maximal. Non-negative weights mean the final selection can fill all the days.\n\n## Complexity\n\nTime O(n log n), space O(n)."

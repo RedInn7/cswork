@@ -13,6 +13,21 @@
       "Characters may be discarded and rearranged, so only how many of each digit the query needs matters; reading always starts at the beginning, so what has been read is a prefix of s.",
       "A prefix can form the query exactly when, for every digit c, it contains at least r copies of c, where r is the count of c in the query; that is, it reaches the position of the r-th occurrence of c.",
       "Precompute the 1-based positions of each digit in order; for each query count the demand for each of the 10 digits; if some digit occurs too few times the answer is -1, otherwise it is the largest r-th occurrence position over the needed digits, and 0 for an empty query. Print q and then the answers."
+    ],
+    "ja": [
+      "文字は捨てても並べ替えてもよいので、重要なのはクエリが各数字を何個必要とするかだけです。読み取りは常に先頭から始まるので、読んだ部分は s の接頭辞です。",
+      "接頭辞がクエリを作れるのは、すべての数字 c について、c を少なくとも r 個含むときです。ここで r はクエリ中の c の個数です。つまり、c の r 番目の出現位置に届いている必要があります。",
+      "各数字の 1-based の出現位置を順に前計算します。クエリごとに、10 個の数字それぞれの必要数を数えます。ある数字の出現回数が足りなければ答えは -1、そうでなければ、必要な数字についての r 番目の出現位置の最大値が答えで、空のクエリなら 0 です。q と答えを出力してください。"
+    ],
+    "ko": [
+      "문자는 버리거나 재배열할 수 있으므로 쿼리가 각 숫자를 몇 개 필요로 하는지만 중요하고, 읽기는 항상 맨 앞에서 시작하므로 읽은 부분은 s의 접두사입니다.",
+      "접두사가 쿼리를 만들 수 있는 것은 모든 숫자 c에 대해 그 접두사가 c를 최소 r개 포함할 때 정확히 성립합니다. 여기서 r은 쿼리에서 c의 개수이며, 이는 c의 r번째 등장 위치까지 도달한다는 뜻입니다.",
+      "각 숫자의 등장 위치(1부터 시작)를 순서대로 미리 계산합니다. 쿼리마다 10개 숫자 각각의 필요 개수를 세고, 어떤 숫자의 등장 횟수가 부족하면 -1입니다. 그렇지 않으면 필요한 숫자들의 r번째 등장 위치 중 가장 큰 값이 답이며, 빈 쿼리는 0입니다. q를 출력하고 이어서 답들을 출력합니다."
+    ],
+    "vi": [
+      "Các ký tự có thể bị bỏ và sắp xếp lại, nên chỉ số lượng mỗi chữ số mà truy vấn cần mới quan trọng; việc đọc luôn bắt đầu từ đầu, nên phần đã đọc là một tiền tố của s.",
+      "Một tiền tố có thể tạo ra truy vấn chính xác khi, với mọi chữ số c, nó chứa ít nhất r bản sao của c, trong đó r là số lần c xuất hiện trong truy vấn; tức là nó đến vị trí của lần xuất hiện thứ r của c.",
+      "Tính trước các vị trí đánh chỉ số từ 1 của mỗi chữ số theo thứ tự; với mỗi truy vấn đếm nhu cầu của từng chữ số trong 10 chữ số; nếu một chữ số xuất hiện quá ít thì đáp án là -1, ngược lại nó là vị trí lần xuất hiện thứ r lớn nhất trong các chữ số cần dùng, và là 0 với truy vấn rỗng. In q rồi các đáp án."
     ]
   },
   "explanationEn": "## Approach\n\nRecord the positions of each digit. If a query needs digit c r times, reading must reach at least the position of the r-th occurrence of c; the answer is the maximum of all these positions.\n\n## Correctness\n\nSequential access means the characters read are exactly some prefix. A prefix contains the demand if and only if, for every digit, it has reached that digit's r-th occurrence. Therefore the maximum of these positions is both a necessary lower bound and enough to hold every demand.\n\n## Complexity\n\nTime O(|s|+total query length+10q), space O(|s|+q)."

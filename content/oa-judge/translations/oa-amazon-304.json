@@ -11,5 +11,35 @@
     "hints": [
       "If k>n or n>2k, there is no solution. Otherwise there must be p=n−k two-game groups. After sorting, pair the smallest 2p games from both ends, put each remaining larger game in a group by itself, and take the maximum load over all groups."
     ]
+  },
+  "ja": {
+    "title": "子ども 1 人につきゲーム 1 つまたは 2 つのときの最小容量(割り当て版)",
+    "description": "すべてのゲームをちょうど k 人の子どもに割り当てます。各子どもは少なくとも 1 つ、多くても 2 つのゲームを受け取り、各ゲームは 1 人の子どもにだけ渡ります。どの子どもも同じ容量のストレージを持っています。割り当てが可能になる最小の容量、つまり、どの子どもが受け取るゲームの合計サイズも最大になる値を最小化したものを求めてください。\n\n標準入出力・例・解説は当サイトが独自に作成したものです。当サイトのものと明記した範囲は、元の問題の制約ではありません。",
+    "input": "1 行目に n k、2 行目にゲームのサイズが与えられます。元の問題文には値の範囲がありません。当サイトでは 1≤n,k≤200000、1≤size[i]≤10^9 を追加しています。解のない入力は除外せず、当サイトでは解がない場合の出力を −1 と定めています。",
+    "output": "答えを表す整数を 1 つ出力してください。",
+    "explanation": "答えは 9、11、−1 です。1 つ目の例では、2 と 4 が 1 つのグループになり、6 と 9 はそれぞれ単独のグループになります。最大のゲーム 9 を組み合わせるのは最適ではありません。元の 304 には終了しないプレースホルダーのループがあり、305 も大きいゲームの組み合わせが正しくありません。当サイトのコードは独自のものです。",
+    "hints": [
+      "k>n または n>2k なら解はありません。そうでなければ、2 つのゲームのグループがちょうど p=n−k 個必要です。ソート後、最小の 2p 個のゲームを両端から組み合わせ、残りの大きいゲームはそれぞれ単独のグループに入れて、すべてのグループの最大の負荷を取ります。"
+    ]
+  },
+  "ko": {
+    "title": "아이당 게임 한두 개를 배정할 때의 최소 용량(배정 버전)",
+    "description": "모든 게임을 정확히 k명의 아이에게 배정합니다. 각 아이는 최소 한 개, 최대 두 개의 게임을 받으며 각 게임은 한 아이에게만 갑니다. 모든 아이의 저장 용량은 같습니다. 배정이 가능해지는 최소 용량, 즉 어떤 아이가 받는 게임 크기 합의 최댓값을 최소화하세요.\n\n표준 입출력 형식, 예제, 해설은 본 사이트가 독자적으로 작성했습니다. 본 사이트의 범위라고 명시한 값은 원문의 제약 조건이 아닙니다.",
+    "input": "첫째 줄에 n k, 둘째 줄에 게임 크기가 주어집니다. 원문에는 값의 범위가 없으며 본 사이트는 1≤n,k≤200000, 1≤size[i]≤10^9를 추가합니다. 해가 없는 입력도 제외하지 않으며, 해가 없을 때의 출력은 −1로 정합니다.",
+    "output": "정수 하나, 즉 답을 출력합니다.",
+    "explanation": "답은 순서대로 9, 11, −1입니다. 첫 번째 예제에서는 2와 4가 한 그룹이고 6과 9는 각각 혼자인 그룹입니다. 가장 큰 게임 9를 짝짓는 것은 최적이 아닙니다. 원문 304에는 끝나지 않는 자리표시자 루프가 있고 305도 큰 게임을 잘못 짝짓습니다. 본 사이트의 코드는 독자적으로 작성했습니다.",
+    "hints": [
+      "k>n 또는 n>2k이면 해가 없습니다. 그렇지 않으면 두 게임 그룹이 정확히 p=n−k개 있어야 합니다. 정렬한 뒤 가장 작은 2p개의 게임을 양 끝에서 짝짓고, 남은 더 큰 게임은 각각 혼자인 그룹에 넣은 뒤 모든 그룹의 최대 부하를 구합니다."
+    ]
+  },
+  "vi": {
+    "title": "Dung lượng tối thiểu khi mỗi trẻ nhận một hoặc hai trò chơi (bản phân phối)",
+    "description": "Phân phối tất cả các trò chơi cho đúng k đứa trẻ; mỗi đứa nhận ít nhất một và nhiều nhất hai trò chơi, và mỗi trò chơi chỉ thuộc về một đứa trẻ. Mọi đứa trẻ có cùng dung lượng lưu trữ. Tìm dung lượng nhỏ nhất để việc phân phối khả thi, tức là tối thiểu hóa tổng kích thước lớn nhất của các trò chơi mà một đứa trẻ nhận được.\n\nĐầu vào/đầu ra chuẩn, các ví dụ và phần lời giải do trang này tự viết; các khoảng giá trị được đánh dấu rõ là của trang này không phải ràng buộc gốc của đề.",
+    "input": "Dòng đầu chứa n k và dòng thứ hai chứa các kích thước trò chơi. Đề gốc không cho cận giá trị nào; trang này bổ sung 1≤n,k≤200000, 1≤size[i]≤10^9. Các đầu vào vô nghiệm không bị loại trừ, và trang này quy định in ra −1 khi không có nghiệm.",
+    "output": "In ra một số nguyên duy nhất, là đáp án.",
+    "explanation": "Các đáp án lần lượt là 9, 11 và −1. Ở ví dụ đầu, 2 và 4 tạo thành một nhóm, còn 6 và 9 mỗi số một nhóm riêng; ghép trò chơi lớn nhất 9 không tối ưu. Nguồn 304 chứa một vòng lặp giữ chỗ không bao giờ kết thúc, và 305 cũng ghép sai các trò chơi lớn; mã của trang này là tự viết.",
+    "hints": [
+      "Nếu k>n hoặc n>2k thì không có nghiệm. Ngược lại phải có p=n−k nhóm hai trò chơi. Sau khi sắp xếp, ghép 2p trò chơi nhỏ nhất từ hai đầu, đặt mỗi trò chơi lớn hơn còn lại vào một nhóm riêng, và lấy tải lớn nhất trong mọi nhóm."
+    ]
   }
 }

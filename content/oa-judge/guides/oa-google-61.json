@@ -13,6 +13,21 @@
       "With translation only, two islands have the same shape exactly when all their cells have the same offsets from a consistent reference cell.",
       "Give every island the same kind of reference point, for example the first cell found in a row-major scan. Subtract it from every cell of the island; the sorted list of relative coordinates is the shape's signature.",
       "Scan the grid in row-major order. At each unvisited land cell, traverse its whole component with a stack or queue and record each cell's (dr, dc) relative to that start. Sort the offsets, put them in a hash set (encoded as integers or a string), and output the set size."
+    ],
+    "ja": [
+      "平行移動だけを考えるなら、2 つの島の形が同じであることと、すべてのセルが一貫した基準セルからの同じオフセットを持つことは同値です。",
+      "すべての島に同じ種類の基準点を与えます。たとえば、行優先の走査で最初に見つかったセルです。それをすべての島のセルから引き、ソートした相対座標のリストをその形のシグネチャとします。",
+      "グリッドを行優先の順に走査します。未訪問の陸地のセルごとに、スタックまたはキューでその成分全体をたどり、各セルの開始セルに対する (dr, dc) を記録します。オフセットをソートし、ハッシュ集合に入れ（整数または文字列にエンコード）、集合のサイズを出力します。"
+    ],
+    "ko": [
+      "평행 이동만 허용하면, 두 섬의 모양이 같은 것은 일관된 기준 칸에 대한 모든 칸의 오프셋이 같을 때입니다.",
+      "모든 섬에 같은 종류의 기준점을 부여합니다. 예를 들어 행 우선 스캔에서 처음 발견한 칸입니다. 섬의 모든 칸에서 이를 빼면, 상대 좌표를 정렬한 리스트가 그 모양의 시그니처가 됩니다.",
+      "격자를 행 우선 순서로 스캔합니다. 방문하지 않은 땅 칸마다 스택이나 큐로 그 연결 요소 전체를 순회하며 시작 칸에 대한 각 칸의 (dr, dc)를 기록합니다. 오프셋을 정렬하여 해시 집합에 넣고(정수나 문자열로 인코딩), 집합의 크기를 출력합니다."
+    ],
+    "vi": [
+      "Chỉ xét phép tịnh tiến, hai hòn đảo có cùng hình dạng chính xác khi mọi ô của chúng có cùng độ lệch so với một ô tham chiếu nhất quán.",
+      "Cho mỗi hòn đảo cùng một loại điểm tham chiếu, chẳng hạn ô đầu tiên tìm thấy khi quét theo thứ tự hàng trước. Trừ nó khỏi mọi ô của hòn đảo; danh sách đã sắp xếp của các tọa độ tương đối là chữ ký của hình dạng.",
+      "Quét lưới theo thứ tự hàng trước. Tại mỗi ô đất chưa thăm, duyệt toàn bộ thành phần của nó bằng stack hoặc hàng đợi và ghi lại (dr, dc) của mỗi ô so với ô xuất phát đó. Sắp xếp các độ lệch, đưa vào một hash set (mã hóa thành số nguyên hoặc xâu), và in kích thước của tập."
     ]
   },
   "explanationEn": "## Idea\n\nTraverse each connected component, subtract the first visited coordinate from every coordinate in the component, sort, and use the tuple as the shape signature.\n\n## Correctness\n\nThe component traversals are complete and never overlap. Islands of the same shape have identical relative coordinates after translation; conversely, equal signatures mean that one translation vector maps every cell of one island onto the other one to one.\n\n## Complexity\n\nO(rc log(rc)) time, O(rc) space."

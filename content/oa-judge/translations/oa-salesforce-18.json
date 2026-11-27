@@ -11,5 +11,35 @@
     "hints": [
       "Binary search on the schedule length T. Features whose development time is >T must be integrated, and T is feasible when the sum of their integration times is ≤T; all other features can simply be developed in parallel."
     ]
+  },
+  "ja": {
+    "title": "並列開発と直列統合の無制限な作業での最短スケジュール",
+    "description": "各機能は 2 通りのうちちょうど 1 つの方法で処理されます。開発には developmentTime[i]、統合には integrationTime[i] かかります。開発は必要な人数で同時に進められますが、統合はチームリーダーが 1 人で順番に行い、2 種類の作業は並行して進められます。すべてを終えるまでの最短時間を求めてください。並列・直列の条件は元の HTML から復元したものです。\n\n入出力形式は本サイトで整理したものです。",
+    "input": "1 行目に n が与えられ、続く 2 行にそれぞれ開発時間と統合時間が与えられます。元の問題文には数値の範囲が書かれていないため、本サイトでは 1≤n≤200000 とし、どちらの時間も 1..10⁹ とします。",
+    "output": "最短のスケジュールの長さを出力します。統合時間の途中の和には 64 ビットが必要です。",
+    "explanation": "答えは 6、3、1 です。2 つ目の例では、開発と統合は並行して進むので、2 と 3 を足してはいけません。",
+    "hints": [
+      "スケジュールの長さ T を二分探索します。開発時間が >T の機能は統合しなければならず、それらの統合時間の和が ≤T であれば T は実現可能です。他の機能はすべて並列に開発すれば済みます。"
+    ]
+  },
+  "ko": {
+    "title": "무제한 병렬 개발과 직렬 통합을 하는 최단 일정",
+    "description": "각 기능은 정확히 두 방식 중 하나로 처리됩니다. 개발에는 developmentTime[i]가, 통합에는 integrationTime[i]가 걸립니다. 개발은 필요한 만큼의 팀원이 동시에 수행하고, 통합은 팀 리드 혼자 순차적으로 수행하며, 두 종류의 작업은 겹칠 수 있습니다. 모든 작업을 끝내는 최단 시간을 구하세요. 병렬/직렬 조건은 원본 HTML에서 복원했습니다.\n\n입력/출력 형식은 본 사이트에서 정리한 것입니다.",
+    "input": "첫 줄에 n이 주어지고, 이어지는 두 줄에 각각 개발 시간과 통합 시간이 주어집니다. 원문에는 수치 범위가 없으며, 본 사이트에서는 1≤n≤200000이고 두 종류의 시간 모두 1..10⁹입니다.",
+    "output": "최단 일정 길이를 출력합니다. 통합 시간의 중간 합계에는 64비트가 필요합니다.",
+    "explanation": "답은 6, 3, 1입니다. 두 번째 예시에서 개발과 통합이 병렬로 진행되므로 2와 3을 더하면 안 됩니다.",
+    "hints": [
+      "일정 길이 T에 대해 이분 탐색합니다. 개발 시간이 T보다 큰 기능은 반드시 통합해야 하며, 그 통합 시간의 합이 ≤T이면 T는 가능합니다. 나머지 기능은 그냥 병렬로 개발하면 됩니다."
+    ]
+  },
+  "vi": {
+    "title": "Lịch trình ngắn nhất với phát triển song song không giới hạn và tích hợp tuần tự",
+    "description": "Mỗi tính năng được xử lý theo đúng một trong hai cách: phát triển mất developmentTime[i], còn tích hợp mất integrationTime[i]. Việc phát triển được thực hiện đồng thời bởi bao nhiêu thành viên tuỳ ý, còn việc tích hợp do trưởng nhóm tự làm tuần tự; hai loại công việc có thể chồng lên nhau. Tìm thời gian ngắn nhất để hoàn thành mọi thứ. Các điều kiện song song/tuần tự được khôi phục từ HTML gốc.\n\nĐịnh dạng đầu vào/đầu ra do trang này biên soạn.",
+    "input": "Dòng đầu chứa n, tiếp theo là hai dòng lần lượt cho thời gian phát triển và thời gian tích hợp. Đề gốc không nêu giới hạn số; trên trang này 1≤n≤200000, và cả hai loại thời gian nằm trong 1..10⁹.",
+    "output": "In độ dài lịch trình ngắn nhất. Tổng trung gian của các thời gian tích hợp cần 64 bit.",
+    "explanation": "Các đáp án là 6, 3 và 1; trong ví dụ thứ hai, phát triển và tích hợp chạy song song, nên không được cộng 2 và 3.",
+    "hints": [
+      "Tìm kiếm nhị phân theo độ dài lịch trình T. Các tính năng có thời gian phát triển >T buộc phải tích hợp, và T khả thi khi tổng thời gian tích hợp của chúng ≤T; mọi tính năng khác đơn giản là được phát triển song song."
+    ]
   }
 }

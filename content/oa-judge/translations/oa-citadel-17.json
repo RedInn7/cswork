@@ -11,5 +11,35 @@
     "hints": [
       "Binary search on the number of rounds t: treat each task's base progress as t·y; for the shortfall, each turn as the primary task contributes an extra x−y, and the pool can be finished if the total number of primary turns needed is ≤t."
     ]
+  },
+  "ja": {
+    "title": "並列タスクプールを空にする最小ラウンド数",
+    "description": "各ラウンドで、未完了のタスクを 1 つ主タスクとして選び x 秒間実行し、それ以外の未完了のタスクはすべて y 秒間実行します（y<x）。タスクは十分な量を実行した時点で退出します。タスクプールを空にするのに必要な最小ラウンド数を求めてください。\n\n入出力の形式は本サイトが整理したものです。欠けていた数値の範囲と、原文の誤記の修正はすべて明示しています。",
+    "input": "1 行目に n x y、続けて n 個の実行量が与えられます。元の範囲は、1≤n≤300000、1≤実行量≤10^9、1≤y<x≤10^9 です。問題 17 は元の上限 300,000 をそのまま保ち、問題 7 の 100,000 は流用しません。",
+    "output": "答えを整数 1 つで出力してください。",
+    "explanation": "3 つの公開例の出力は順に、3、3、3 です。これらの答えは、独立した全列挙または直接のシミュレーションで検証済みです。",
+    "hints": [
+      "ラウンド数 t で二分探索します。各タスクの基本の進捗を t·y とし、不足分については、主タスクになった各ターンが追加で x−y を寄与します。必要な主タスクのターン数の合計が ≤t なら、プールを空にできます。"
+    ]
+  },
+  "ko": {
+    "title": "병렬 작업 풀을 끝내는 최소 라운드 수",
+    "description": "매 라운드마다 완료되지 않은 작업 하나를 주 작업으로 골라 x초 동안 실행하고, 나머지 완료되지 않은 모든 작업은 y초씩 실행합니다. 단, y<x입니다. 작업은 필요한 만큼 실행되는 즉시 풀에서 빠집니다. 작업 풀을 비우는 데 필요한 최소 라운드 수를 구하세요.\n\n입출력 프로토콜은 이 사이트에서 정리한 것이며, 빠져 있던 수치 범위와 원문 오타의 복원 내용은 모두 명시했습니다.",
+    "input": "첫 번째 줄에 n x y가 주어지고, 이어서 실행량 n개가 주어집니다. 원문 전체 범위: 1≤n≤300000, 1≤실행량≤10^9, 1≤y<x≤10^9. 17번 문제는 원문 그대로 300,000을 상한으로 유지하며 7번 문제의 100,000을 공유하지 않습니다.",
+    "output": "정답을 나타내는 정수 하나를 출력합니다.",
+    "explanation": "공개된 세 예제의 출력은 순서대로 3; 3; 3입니다. 이 답들은 독립적인 완전 탐색 또는 직접 시뮬레이션으로 검증했습니다.",
+    "hints": [
+      "라운드 수 t에 대해 이분 탐색을 합니다. 각 작업의 기본 진행량을 t·y로 보고, 부족분은 주 작업이 되는 한 번마다 추가로 x−y만큼 채워집니다. 필요한 주 작업 횟수의 합이 ≤t이면 풀을 끝낼 수 있습니다."
+    ]
+  },
+  "vi": {
+    "title": "Số vòng tối thiểu để hoàn thành nhóm tác vụ song song",
+    "description": "Trong mỗi vòng, chọn một tác vụ chưa hoàn thành làm tác vụ chính và thực thi nó trong x giây, trong khi mọi tác vụ chưa hoàn thành khác thực thi trong y giây, với y<x. Một tác vụ rời đi ngay khi nó đã thực thi đủ; hãy tìm số vòng tối thiểu để làm rỗng nhóm tác vụ.\n\nGiao thức đầu vào/đầu ra do trang này biên soạn; các cận số còn thiếu và việc khôi phục lỗi đánh máy của nguồn đều được nêu rõ.",
+    "input": "Dòng đầu tiên chứa n x y, tiếp theo là n lượng thực thi. Cận gốc đầy đủ: 1≤n≤300000, 1≤lượng thực thi≤10^9, 1≤y<x≤10^9; bài 17 giữ nguyên cận gốc 300,000 của nó và không dùng lại 100,000 của bài 7.",
+    "output": "In ra một số nguyên duy nhất, là đáp án.",
+    "explanation": "Đầu ra của ba ví dụ công khai lần lượt là: 3; 3; 3. Các đáp án này đã được kiểm chứng bằng liệt kê độc lập hoặc mô phỏng trực tiếp.",
+    "hints": [
+      "Chặt nhị phân theo số vòng t: coi tiến độ cơ bản của mỗi tác vụ là t·y; với phần còn thiếu, mỗi lượt làm tác vụ chính đóng góp thêm x−y, và nhóm có thể hoàn thành nếu tổng số lượt làm tác vụ chính cần thiết ≤t."
+    ]
   }
 }

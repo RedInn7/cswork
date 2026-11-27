@@ -13,6 +13,21 @@
       "A single-server batch has efficiency 0, and every batch with at least two servers contributes exactly one maximum minus one minimum. So first count how many such batches there are; call it q.",
       "The total efficiency can never exceed the sum of the q largest capacities minus the sum of the q smallest, and this bound is reachable: give each multi-server batch one of the large values as its maximum and one of the small values as its minimum; all other capacities lie between them, so filling the remaining slots with them does not change any extreme.",
       "Count q, the number of group sizes that are at least 2. Sort the capacities. The answer is the sum of the last q values minus the sum of the first q values, in a 64-bit integer."
+    ],
+    "ja": [
+      "サーバー 1 台のバッチの効率は 0 で、2 台以上のサーバーを持つバッチは、それぞれ最大値 1 つ引く最小値 1 つをちょうど寄与します。そこで、そのようなバッチの数をまず数え、q とします。",
+      "効率の合計は、大きいほうから q 個の容量の和から小さいほうから q 個の和を引いた値を超えることはなく、この上界は達成可能です。複数台のバッチそれぞれに、最大値として大きい値を 1 つ、最小値として小さい値を 1 つ与えます。他の容量はすべてその間にあるので、残りの枠をそれらで埋めても、どの端点も変わりません。",
+      "サイズが 2 以上のグループの数 q を数えます。容量をソートします。答えは、後ろの q 個の値の和から先頭の q 個の値の和を引いたもので、64 ビット整数で計算します。"
+    ],
+    "ko": [
+      "서버가 하나뿐인 배치의 효율은 0이고, 서버가 두 개 이상인 배치는 각각 정확히 최댓값 하나 빼기 최솟값 하나를 기여합니다. 따라서 먼저 그런 배치의 수를 세고 그것을 q라 하겠습니다.",
+      "총 효율은 가장 큰 q개의 용량의 합에서 가장 작은 q개의 합을 뺀 값을 넘을 수 없으며, 이 상한은 달성할 수 있습니다. 서버가 여럿인 각 배치에 큰 값 하나를 최댓값으로, 작은 값 하나를 최솟값으로 주면 됩니다. 나머지 용량은 모두 그 사이에 있으므로 남은 자리를 채워도 어떤 극값도 바뀌지 않습니다.",
+      "크기가 2 이상인 그룹 크기의 개수 q를 셉니다. 용량을 정렬합니다. 답은 마지막 q개 값의 합에서 처음 q개 값의 합을 뺀 값이며, 64비트 정수로 계산합니다."
+    ],
+    "vi": [
+      "Lô chỉ có một máy chủ có hiệu suất 0, và mỗi lô có ít nhất hai máy chủ đóng góp đúng một giá trị lớn nhất trừ một giá trị nhỏ nhất. Vì vậy trước hết hãy đếm có bao nhiêu lô như thế; gọi là q.",
+      "Tổng hiệu suất không bao giờ vượt quá tổng q dung lượng lớn nhất trừ tổng q dung lượng nhỏ nhất, và cận này đạt được: cho mỗi lô nhiều máy chủ một giá trị lớn làm giá trị lớn nhất và một giá trị nhỏ làm giá trị nhỏ nhất; mọi dung lượng khác nằm giữa chúng, nên điền các vị trí còn lại bằng chúng không làm thay đổi bất kỳ cực trị nào.",
+      "Đếm q, số kích thước nhóm ít nhất là 2. Sắp xếp các dung lượng. Đáp án là tổng q giá trị cuối trừ tổng q giá trị đầu, trong số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nLet q be the number of groups of size at least 2; use the q largest capacities overall as the group maxima and the q smallest as the group minima, and fill the remaining slots with the other elements.\n\n## Correctness\n\nEach non-singleton group contributes exactly one maximum and one minimum, so the total is at most the sum of the q largest values minus the sum of the q smallest values. Assign one of each kind of extreme value to every non-singleton group; all remaining capacities lie between the extremes, so filling the required remaining slots in any way does not change the extremes, and singleton groups take the leftover items, reaching the upper bound.\n\n## Complexity\n\nTime O(n log n), space O(n)."

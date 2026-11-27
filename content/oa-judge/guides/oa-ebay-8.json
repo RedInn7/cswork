@@ -13,6 +13,21 @@
       "Houses are only added and their positions are distinct, so a new house x can only join the run ending at x-1 and the run starting at x+1; every other run is unaffected.",
       "Keep the endpoints of every maximal run in two hash maps: starts[l] = r and ends[r] = l. A new house then finds its left and right neighbor runs in O(1) and merges them. Runs only grow and never split, so the largest length seen so far is the current answer.",
       "To insert x, set left = right = x; if ends contains x-1, take its left endpoint as left and remove that run's entries; if starts contains x+1, take its right endpoint as right and remove its entries. Record starts[left] = right and ends[right] = left, update the maximum with right - left + 1, and print it, one line per insertion."
+    ],
+    "ja": [
+      "家は追加されるだけで位置もすべて異なるので、新しい家 x が結びつくのは、x-1 で終わる run と x+1 から始まる run だけです。他のすべての run は影響を受けません。",
+      "極大な各 run の端点を2つのハッシュマップ starts[l] = r と ends[r] = l に保持します。すると、新しい家は O(1) で左右の隣接 run を見つけて併合できます。run は伸びるだけで分割されないので、これまでに見た最大の長さが現在の答えです。",
+      "x を挿入するには、left = right = x とします。ends に x-1 があれば、その左端を left とし、その run のエントリを削除します。starts に x+1 があれば、その右端を right とし、そのエントリを削除します。starts[left] = right と ends[right] = left を記録し、right - left + 1 で最大値を更新して、挿入ごとに1行ずつ出力します。"
+    ],
+    "ko": [
+      "집은 추가만 되고 위치도 모두 다르므로, 새 집 x는 x-1에서 끝나는 구간과 x+1에서 시작하는 구간에만 합쳐질 수 있으며, 다른 구간은 영향을 받지 않습니다.",
+      "모든 극대 구간의 끝점을 두 해시 맵 starts[l] = r과 ends[r] = l에 저장합니다. 그러면 새 집은 O(1)에 왼쪽과 오른쪽 이웃 구간을 찾아 병합할 수 있습니다. 구간은 커지기만 하고 쪼개지지 않으므로, 지금까지 본 가장 큰 길이가 곧 현재의 답입니다.",
+      "x를 삽입하려면 left = right = x로 두고, ends에 x-1이 있으면 그 구간의 왼쪽 끝을 left로 하고 해당 구간의 항목을 제거합니다. starts에 x+1이 있으면 그 구간의 오른쪽 끝을 right로 하고 해당 항목을 제거합니다. starts[left] = right와 ends[right] = left를 기록하고 right - left + 1로 최댓값을 갱신해 삽입 하나당 한 줄씩 출력합니다."
+    ],
+    "vi": [
+      "Các ngôi nhà chỉ được thêm vào và vị trí đều khác nhau, nên một ngôi nhà mới x chỉ có thể nối với đoạn kết thúc tại x-1 và đoạn bắt đầu tại x+1; mọi đoạn khác không bị ảnh hưởng.",
+      "Giữ các đầu mút của mọi đoạn tối đại trong hai bảng băm: starts[l] = r và ends[r] = l. Khi đó một ngôi nhà mới tìm được các đoạn lân cận trái và phải trong O(1) và hợp nhất chúng. Các đoạn chỉ lớn lên và không bao giờ bị tách, nên độ dài lớn nhất đã thấy cho đến nay chính là đáp án hiện tại.",
+      "Để chèn x, đặt left = right = x; nếu ends chứa x-1, lấy đầu mút trái của nó làm left và xóa các mục của đoạn đó; nếu starts chứa x+1, lấy đầu mút phải của nó làm right và xóa các mục của nó. Ghi starts[left] = right và ends[right] = left, cập nhật giá trị lớn nhất bằng right - left + 1, và in nó, mỗi lần chèn một dòng."
     ]
   },
   "explanationEn": "## Approach\n\nUse two hash maps to record the left and right endpoints of the contiguous runs: `starts[l]=r` and `ends[r]=l`. When inserting x, if `ends` contains x-1, absorb the left run; if `starts` contains x+1, absorb the right run. Register the merged run and update the historical maximum length.\n\n## Correctness\n\nBefore the insertion, every built house belongs to exactly one contiguous run. The new position x can only connect the left run ending at x-1 and the right run starting at x+1; after checking and removing these two endpoints and registering the merged run, the other runs are unchanged. Therefore the run tables always describe the maximal contiguous runs of all houses exactly. Since houses are only added, the historical maximum never decreases.\n\n## Complexity\n\nEach insertion performs a constant number of hash-map operations, for expected O(q) time and O(q) space."

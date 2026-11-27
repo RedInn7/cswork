@@ -13,6 +13,21 @@
       "One operation halves every value currently equal to some even number c at the same time, so equal values always move together; what matters is which distinct values appear, not how many copies each has.",
       "Every even value that ever appears must be processed exactly once: it has to be halved to become odd, and if its half is still even, that creates a new state. The answer is the number of distinct even values reachable from the initial values by repeated halving.",
       "Keep a set of all values seen and a max-heap of even values waiting to be processed. Repeatedly take the largest even value, add one operation, and add its half to the set; if the half is an even value not seen before, push it onto the heap. Print the count when the heap is empty. Processing larger values first ensures that once a value is processed, no larger value can produce it again by halving."
+    ],
+    "ja": [
+      "1回の操作は、現在ある偶数 c に等しい値をすべて同時に半分にするので、等しい値は常に一緒に動きます。重要なのは各値が何個あるかではなく、どの異なる値が現れるかです。",
+      "現れる偶数の値は、どれもちょうど1回ずつ処理する必要があります。奇数にするには半分にしなければならず、半分にしてもまだ偶数なら新しい状態が生まれます。答えは、初期値から半分にすることを繰り返して到達できる異なる偶数の値の個数です。",
+      "出現した値の集合と、処理待ちの偶数の最大ヒープを持ちます。最大の偶数を取り出し、操作回数を1増やし、その半分を集合に加えます。半分の値が未出現の偶数ならヒープに積みます。ヒープが空になったら回数を出力します。大きい値から先に処理すれば、ある値を処理した後に、それより大きい値が半分にされて再びその値を作ることはありません。"
+    ],
+    "ko": [
+      "한 번의 연산은 현재 어떤 짝수 c와 같은 모든 값을 동시에 절반으로 만들므로, 같은 값은 항상 함께 움직입니다. 중요한 것은 각 값이 몇 개 있는지가 아니라 서로 다른 값이 무엇인지입니다.",
+      "등장하는 모든 짝수 값은 정확히 한 번씩 처리되어야 합니다. 홀수가 되려면 반드시 절반으로 나눠야 하고, 그 절반이 여전히 짝수이면 새로운 상태가 생기기 때문입니다. 답은 초기 값에서 반복적으로 절반으로 나누어 도달할 수 있는 서로 다른 짝수 값의 개수입니다.",
+      "본 모든 값의 집합과, 처리를 기다리는 짝수 값의 최대 힙을 유지합니다. 가장 큰 짝수 값을 꺼낼 때마다 연산 횟수를 1 늘리고 그 절반을 집합에 추가하며, 절반이 이전에 본 적 없는 짝수이면 힙에 넣습니다. 힙이 비면 횟수를 출력합니다. 큰 값부터 처리하면, 한 값을 처리한 뒤에는 더 큰 값이 절반 나누기로 그 값을 다시 만들어 낼 수 없습니다."
+    ],
+    "vi": [
+      "Một thao tác chia đôi tất cả các giá trị đang bằng một số chẵn c nào đó cùng lúc, nên các giá trị bằng nhau luôn di chuyển cùng nhau; điều quan trọng là những giá trị phân biệt nào xuất hiện, không phải mỗi giá trị có bao nhiêu bản sao.",
+      "Mỗi giá trị chẵn từng xuất hiện phải được xử lý đúng một lần: nó phải được chia đôi để thành số lẻ, và nếu một nửa của nó vẫn chẵn thì sinh ra một trạng thái mới. Đáp án là số giá trị chẵn phân biệt có thể đạt được từ các giá trị ban đầu bằng cách chia đôi lặp lại.",
+      "Giữ một tập các giá trị đã thấy và một max-heap các giá trị chẵn đang chờ xử lý. Lặp lại việc lấy giá trị chẵn lớn nhất, cộng một thao tác, và thêm một nửa của nó vào tập; nếu nửa đó là giá trị chẵn chưa từng thấy thì đẩy vào heap. In bộ đếm khi heap rỗng. Xử lý giá trị lớn trước đảm bảo rằng khi một giá trị đã được xử lý, không giá trị lớn hơn nào có thể sinh ra nó lần nữa bằng cách chia đôi."
     ]
   },
   "explanationEn": "## Approach\n\nOperate only once on each distinct current even value, because all layers with the same value are transformed together.\n\n## Proof of correctness\n\nEvery even state that appears must be processed once; each processing halves all layers of that value together, so iterating over the set of states counts exactly the necessary operations.\n\n## Complexity\n\nO(n log A) time, O(n) space."

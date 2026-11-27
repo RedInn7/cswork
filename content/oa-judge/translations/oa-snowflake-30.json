@@ -11,5 +11,35 @@
     "hints": [
       "Maintain dp[value][j], the longest length ending with value using at most j changes, and the global best best[j] for each j. Update j in decreasing order, taking the better of extending the same value and best[j−1]+1."
     ]
+  },
+  "ja": {
+    "title": "隣接する値の変化が限られた良い部分列",
+    "description": "隣り合う値が異なる組の個数が高々 k である、最長の部分列を選んでください。元の配列の要素は飛ばしてもかまいません。\n\n入出力の形式と、明示した補足の制約は本サイトで整備したものであり、出題元の解答は実行していません。",
+    "input": "1 行目に n k、2 行目に n 個の値が与えられます。元の制約は 1≤n≤500、1≤value≤10⁹、0≤k≤min(n,25) です。",
+    "output": "問題が求める整数を 1 つ出力してください。",
+    "explanation": "3 つの公開例の答えは順に 5、3、1 です。例は、独立した全探索、状態探索、または直接のシミュレーションで再確認しています。",
+    "hints": [
+      "dp[value][j]（value で終わり、変化が高々 j 回の最長の長さ）と、各 j についての全体の最良値 best[j] を管理します。j を降順に更新し、同じ値を延長する場合と best[j−1]+1 のうち良い方を採用します。"
+    ]
+  },
+  "ko": {
+    "title": "인접한 변화가 제한된 좋은 부분 수열",
+    "description": "서로 인접한 값이 다른 쌍의 수가 최대 k개인 가장 긴 부분 수열을 고르세요. 원래 배열의 원소는 건너뛸 수 있습니다.\n\n입출력 규약과 명시적으로 표시된 보충 제약은 이 사이트에서 정리한 것이며, 원 출처의 풀이는 실행하지 않습니다.",
+    "input": "첫 줄에 n k가, 둘째 줄에 n개의 값이 주어집니다. 원문 제약 조건: 1≤n≤500, 1≤value≤10⁹, 0≤k≤min(n,25).",
+    "output": "문제가 요구하는 정수 하나를 출력합니다.",
+    "explanation": "공개 예제 3개의 답은 순서대로 5; 3; 1입니다. 예제는 독립적인 완전 탐색, 상태 탐색 또는 직접 시뮬레이션으로 다시 확인했습니다.",
+    "hints": [
+      "dp[value][j]를 value로 끝나고 변화가 최대 j번인 가장 긴 길이로, best[j]를 각 j에 대한 전역 최댓값으로 둡니다. j를 감소하는 순서로 갱신하며, 같은 값을 이어 붙이는 경우와 best[j−1]+1 중 더 좋은 쪽을 택합니다."
+    ]
+  },
+  "vi": {
+    "title": "Dãy con tốt với số lần đổi liền kề bị giới hạn",
+    "description": "Chọn dãy con dài nhất sao cho số cặp liền kề có giá trị khác nhau không quá k. Có thể bỏ qua các phần tử của mảng gốc.\n\nGiao thức đầu vào/đầu ra và các ràng buộc bổ sung được đánh dấu rõ do trang này biên soạn; lời giải của nguồn gốc không được chạy.",
+    "input": "Dòng đầu tiên chứa n k, dòng thứ hai chứa n giá trị. Ràng buộc gốc: 1≤n≤500, 1≤giá trị≤10⁹, 0≤k≤min(n,25).",
+    "output": "In ra một số nguyên là đáp án.",
+    "explanation": "Đáp án của ba ví dụ công khai lần lượt là: 5; 3; 1. Các ví dụ đã được kiểm tra lại bằng liệt kê độc lập, tìm kiếm trạng thái hoặc mô phỏng trực tiếp.",
+    "hints": [
+      "Duy trì dp[value][j], độ dài lớn nhất của dãy kết thúc bằng value với tối đa j lần đổi, và giá trị tốt nhất toàn cục best[j] cho mỗi j. Cập nhật j theo thứ tự giảm dần, lấy giá trị tốt hơn giữa việc nối tiếp cùng giá trị và best[j−1]+1."
+    ]
   }
 }

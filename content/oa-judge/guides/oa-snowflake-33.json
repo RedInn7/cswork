@@ -13,6 +13,21 @@
       "Networks are independent. If x servers are upgraded in the end, those x cannot be sold, while the other n - x can all be sold for money.",
       "Feasibility is x * upgrade <= money + (n - x) * sell, i.e., x * (upgrade + sell) <= money + n * sell; whenever it holds, selling the servers that will not be upgraded first and then upgrading achieves it.",
       "Each network's answer is min(n, floor((money + n * sell) / (upgrade + sell))). Print the number of networks, then each answer in order."
+    ],
+    "ja": [
+      "ネットワークは互いに独立です。最終的に x 台をアップグレードするなら、その x 台は売却できず、残りの n - x 台はすべて売却して資金にできます。",
+      "実現可能な条件は x * upgrade <= money + (n - x) * sell、すなわち x * (upgrade + sell) <= money + n * sell です。これが成り立つなら、アップグレードしないサーバーを先に売却してからアップグレードすれば達成できます。",
+      "各ネットワークの答えは min(n, floor((money + n * sell) / (upgrade + sell))) です。ネットワーク数を出力し、続けて各答えを順に出力してください。"
+    ],
+    "ko": [
+      "네트워크들은 서로 독립적입니다. 최종적으로 x대를 업그레이드한다면 그 x대는 판매할 수 없고, 나머지 n - x대는 모두 판매하여 자금으로 쓸 수 있습니다.",
+      "가능 조건은 x * upgrade <= money + (n - x) * sell, 즉 x * (upgrade + sell) <= money + n * sell입니다. 이 조건이 성립하면 업그레이드하지 않을 서버를 먼저 판매한 뒤 업그레이드하여 달성할 수 있습니다.",
+      "각 네트워크의 답은 min(n, floor((money + n * sell) / (upgrade + sell)))입니다. 네트워크의 수를 먼저 출력하고, 이어서 각 답을 순서대로 출력합니다."
+    ],
+    "vi": [
+      "Các mạng độc lập với nhau. Nếu cuối cùng x máy chủ được nâng cấp thì x máy đó không thể bán, còn n - x máy còn lại đều có thể bán lấy tiền.",
+      "Điều kiện khả thi là x * upgrade <= money + (n - x) * sell, tức x * (upgrade + sell) <= money + n * sell; khi điều kiện này đúng, chỉ cần bán trước những máy sẽ không nâng cấp rồi mới nâng cấp là đạt được x.",
+      "Đáp án của mỗi mạng là min(n, floor((money + n * sell) / (upgrade + sell))). In số mạng, rồi in lần lượt từng đáp án."
     ]
   },
   "explanationEn": "## Approach\n\nWhen x servers are kept and upgraded, at most n-x can be sold. Therefore x<=n and x(upgrade+sell)<=money+n×sell; just round down.\n\n## Correctness\n\nA necessary condition is that the funds needed to upgrade x servers do not exceed the maximum funds available after selling all the servers that are not upgraded; when it holds, selling the non-upgraded servers first and then upgrading achieves it, so the inequality is also sufficient. Taking the largest allowed integer gives the optimum.\n\n## Complexity\n\nTime O(q), space O(q) for the output."

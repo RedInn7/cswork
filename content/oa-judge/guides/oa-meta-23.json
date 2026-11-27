@@ -13,6 +13,21 @@
       "Two neighboring windows differ by one element leaving and one entering, so there is no need to re-add every window; when the window is longer than the array there is no complete window and the output is just 0.",
       "Keep the exact integer sum of each window with a sliding sum; an average only needs six decimal places, so the rounding can be done with integer arithmetic, avoiding binary floating-point error and never producing NaN or infinity.",
       "Sum the first w numbers, then repeatedly subtract the element that leaves and add the one that enters. For each sum take its absolute value, compute the value scaled by 10^6 and rounded using the quotient and remainder separately, then print it as the integer part, a dot and six decimals, with a minus sign when the sum is negative and the result is non-zero; the first line is the window count n-w+1."
+    ],
+    "ja": [
+      "隣り合う窓の違いは、要素が 1 つ出て 1 つ入るだけです。したがって、窓ごとに全要素を足し直す必要はありません。窓長が配列より長い場合、完全な窓はなく、出力は 0 だけです。",
+      "各窓の正確な整数の合計をスライディングサムで保持します。平均は小数点以下 6 桁あれば十分なので、丸めを整数演算で行えば、2 進浮動小数点誤差を避けられ、NaN や無限大も出ません。",
+      "最初の w 個を合計し、その後は出ていく要素を引き、入ってくる要素を足すことを繰り返します。各合計について絶対値を取り、10^6 倍した値を商と剰余を別々に使って丸めて求めます。それを整数部、ドット、小数 6 桁として出力し、合計が負で結果が 0 でない場合は負号を付けます。1 行目は窓の個数 n-w+1 です。"
+    ],
+    "ko": [
+      "이웃한 두 윈도는 원소 하나가 빠지고 하나가 들어올 뿐이므로 윈도마다 처음부터 다시 더할 필요가 없습니다. 윈도가 배열보다 길면 완전한 윈도가 없으므로 출력은 0뿐입니다.",
+      "슬라이딩 합으로 각 윈도의 정확한 정수 합을 유지합니다. 평균은 소수점 여섯 자리만 필요하므로 정수 연산으로 반올림하면 이진 부동소수점 오차를 피하고 NaN이나 무한대도 생기지 않습니다.",
+      "처음 w개의 수를 더한 뒤, 빠져나가는 원소를 빼고 들어오는 원소를 더하기를 반복합니다. 각 합의 절댓값에 대해 10^6을 곱하고 몫과 나머지를 따로 사용해 반올림한 값을 계산한 뒤, 정수 부분, 점, 소수 여섯 자리로 출력합니다. 합이 음수이고 결과가 0이 아니면 마이너스 부호를 붙입니다. 첫 줄은 윈도의 개수 n-w+1입니다."
+    ],
+    "vi": [
+      "Hai cửa sổ liền kề chỉ khác nhau một phần tử rời đi và một phần tử đi vào, nên không cần cộng lại cả cửa sổ; khi cửa sổ dài hơn mảng thì không có cửa sổ đầy đủ nào và kết quả chỉ là 0.",
+      "Giữ tổng nguyên chính xác của mỗi cửa sổ bằng tổng trượt; một giá trị trung bình chỉ cần sáu chữ số thập phân, nên có thể làm tròn bằng số học số nguyên, tránh sai số dấu phẩy động nhị phân và không bao giờ sinh ra NaN hay vô cực.",
+      "Cộng w số đầu tiên, rồi lần lượt trừ phần tử rời đi và cộng phần tử đi vào. Với mỗi tổng, lấy giá trị tuyệt đối, tính giá trị nhân 10^6 rồi làm tròn bằng thương và số dư tách riêng, sau đó in dưới dạng phần nguyên, dấu chấm và sáu chữ số thập phân, kèm dấu trừ khi tổng âm và kết quả khác không; dòng đầu là số cửa sổ n-w+1."
     ]
   },
   "explanationEn": "## Approach\n\nUpdate the window total with a sliding sum. Scale the absolute value of the total by 10^6 and use integer division and the remainder to round to six decimal places, avoiding binary floating-point error.\n\n## Proof of correctness\n\nThe first window is summed directly; when moving right, subtract the element that leaves and add the element that enters, keeping the exact window total. Dividing by w gives the average; after integer scaling, add one depending on whether the remainder is at least w/2, which gives six decimal places; the rounding error is at most 0.5x10^-6, which satisfies the allowed absolute error.\n\n## Complexity\n\nTime O(n), space O(1) excluding input and output."

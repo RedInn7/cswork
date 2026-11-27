@@ -13,6 +13,21 @@
       "Watching more movies only ends later, so exactly one movie per genre is watched; what remains is which genre goes first and which movies.",
       "If one genre goes first, the second movie ends at max(end of the first, release of the second)+duration, which never decreases as the first one ends later, so the first movie should be the earliest-finishing one of its genre.",
       "Compute each genre's earliest solo finish time, first and second; over every drama j take max(first, c[j])+e[j], over every comedy i take max(second, a[i])+b[i], and output the overall minimum."
+    ],
+    "ja": [
+      "映画を増やすと終了が遅くなるだけなので、観るのは各ジャンル 1 本ずつです。残る問題は、どちらのジャンルを先にするかと、どの映画を観るかです。",
+      "一方のジャンルを先に観るとき、2 本目の終了時刻は max(1 本目の終了, 2 本目の公開)+上映時間 です。これは 1 本目の終了が遅いほど減ることがないので、1 本目はそのジャンルで最も早く終わる映画にします。",
+      "各ジャンルの単独での最も早い終了時刻を、先に観る場合と後に観る場合について求めます。すべてのドラマ j について max(first, c[j])+e[j]、すべてのコメディ i について max(second, a[i])+b[i] を計算し、全体の最小値を出力します。"
+    ],
+    "ko": [
+      "영화를 더 보면 끝나는 시각만 늦어지므로 장르마다 정확히 한 편씩만 봅니다. 남은 문제는 어느 장르를 먼저 볼지와 어느 영화를 볼지입니다.",
+      "한 장르를 먼저 보면 두 번째 영화는 max(첫 번째의 종료 시각, 두 번째의 개봉 시각)+상영 시간에 끝나며, 이는 첫 번째가 늦게 끝날수록 줄어들지 않습니다. 따라서 첫 번째 영화는 그 장르에서 가장 일찍 끝나는 것이어야 합니다.",
+      "각 장르의 단독 최단 종료 시각 first와 second를 구합니다. 모든 드라마 j에 대해 max(first, c[j])+e[j]를, 모든 코미디 i에 대해 max(second, a[i])+b[i]를 구해 전체 최솟값을 출력합니다."
+    ],
+    "vi": [
+      "Xem thêm phim chỉ làm kết thúc muộn hơn, nên chỉ xem đúng một phim mỗi thể loại; còn lại là chọn thể loại nào đi trước và chọn phim nào.",
+      "Nếu một thể loại đi trước, phim thứ hai kết thúc tại max(thời điểm kết thúc của phim đầu, thời điểm phát hành của phim thứ hai)+thời lượng, giá trị này không bao giờ giảm khi phim đầu kết thúc muộn hơn, nên phim đầu phải là phim kết thúc sớm nhất của thể loại đó.",
+      "Tính thời điểm kết thúc sớm nhất khi xem riêng của mỗi thể loại, first và second; với mọi phim chính kịch j lấy max(first, c[j])+e[j], với mọi phim hài i lấy max(second, a[i])+b[i], và in giá trị nhỏ nhất tổng thể."
     ]
   },
   "explanationEn": "## Approach\n\nCompute the earliest finish time of each genre on its own. Assuming that genre is watched first, take its earliest finish time and go over the other genre, computing max(finish of the first genre, release of this movie)+duration; take the minimum over both orders.\n\n## Proof of correctness\n\nWatching more movies cannot finish earlier, so one movie of each genre suffices. For a fixed second movie, its end time is non-decreasing in the finish time of the first movie, so the first genre only needs to keep its earliest-finishing movie. Enumerating the second movie and both orders covers every possible optimum.\n\n## Complexity\n\nO(n+m) time and O(n+m) space including the input."

@@ -13,6 +13,21 @@
       "A pair is good exactly when its two endpoints are in different connected components. Counting cross-component pairs directly is awkward, so count the complement.",
       "There are N(N-1)/2 unordered pairs in total; subtract s(s-1)/2 for every component of size s, and what remains are the pairs whose endpoints lie in different components. Get the component sizes with union-find; duplicate edges and self-loops do not change anything.",
       "Start union-find with every node alone, merge along each edge (union by size with path compression) and add up sizes when merging; finally loop over the roots and subtract size(size-1)/2 from N(N-1)/2. Node IDs are 1-based, and the result needs a 64-bit integer."
+    ],
+    "ja": [
+      "ペアが良いのは、両端点が異なる連結成分にあるときだけです。成分をまたぐペアを直接数えるのは面倒なので、余事象を数えます。",
+      "順序なしのペアは全部で N(N-1)/2 個あります。サイズ s の成分ごとに s(s-1)/2 を引くと、残るのが両端点が異なる成分にあるペアです。成分サイズは Union-Find で求められ、多重辺や自己ループは結果に影響しません。",
+      "Union-Find をすべての頂点が単独の状態で初期化し、各辺に沿って併合します（サイズによる併合とパス圧縮）。併合のたびにサイズを足し合わせます。最後に根を走査して、N(N-1)/2 から size(size-1)/2 を引いていきます。頂点番号は 1 始まりで、結果には 64 ビット整数が必要です。"
+    ],
+    "ko": [
+      "두 끝점이 서로 다른 연결 요소에 있을 때만 좋은 쌍입니다. 요소를 가로지르는 쌍을 직접 세기는 번거로우므로 여집합을 세는 것이 좋습니다.",
+      "순서 없는 쌍은 전체 N(N-1)/2개이고, 크기가 s인 요소마다 s(s-1)/2를 빼면 남는 것이 끝점이 서로 다른 요소에 있는 쌍입니다. 요소 크기는 유니온 파인드로 구하며, 중복 간선과 자기 루프는 결과에 영향을 주지 않습니다.",
+      "유니온 파인드를 모든 노드가 혼자인 상태로 시작해 각 간선을 따라 병합하고(크기 기준 합치기와 경로 압축), 병합할 때 크기를 더합니다. 마지막으로 루트마다 size(size-1)/2를 N(N-1)/2에서 뺍니다. 노드 번호는 1-기반이며 결과는 64비트 정수가 필요합니다."
+    ],
+    "vi": [
+      "Một cặp là tốt khi và chỉ khi hai đầu nằm ở hai thành phần liên thông khác nhau. Đếm trực tiếp các cặp khác thành phần khá rắc rối, nên hãy đếm phần bù.",
+      "Tổng cộng có N(N-1)/2 cặp không có thứ tự; với mỗi thành phần kích thước s, trừ đi s(s-1)/2, phần còn lại chính là các cặp có hai đầu ở hai thành phần khác nhau. Lấy kích thước các thành phần bằng union-find; cạnh trùng và khuyên không ảnh hưởng gì.",
+      "Khởi tạo union-find với mỗi nút đứng riêng, gộp theo từng cạnh (union by size kèm path compression) và cộng dồn kích thước khi gộp; cuối cùng duyệt các gốc và trừ size(size-1)/2 khỏi N(N-1)/2. Chỉ số nút bắt đầu từ 1, và kết quả cần số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nUse union-find to build the connected component sizes; subtract the number of pairs within each connected component from the total number of unordered node pairs. An independent oracle builds the graph, runs DFS, and then enumerates the node pairs directly.\n\n## Proof of correctness\n\nAfter union-find merges along the edges, each root represents exactly one connected component. Subtracting the number of pairs inside each component from the total number of unordered pairs leaves exactly the pairs whose endpoints are in different components.\n\n## Complexity\n\nNodes are numbered 1..N; edges are undirected; the result can reach N(N-1)/2, so a 64-bit integer is needed.\n\nO((N+M) alpha(N)) time and O(N) space.\n\n## Reference implementation\n\n```python\ndef solve(raw):\n z=list(map(int,raw.split()));n,m=z[:2];p=list(range(n));sz=[1]*n\n def find(x):\n  while p[x]!=x:p[x]=p[p[x]];x=p[x]\n  return x\n for i in range(m):\n  a,b=z[2+2*i]-1,z[3+2*i]-1;a=find(a);b=find(b)\n  if a!=b:\n   if sz[a]<sz[b]:a,b=b,a\n   p[b]=a;sz[a]+=sz[b]\n ans=n*(n-1)//2\n for i in range(n):\n  if p[i]==i:ans-=sz[i]*(sz[i]-1)//2\n return str(ans)\n```"

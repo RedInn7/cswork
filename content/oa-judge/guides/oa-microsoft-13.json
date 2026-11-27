@@ -13,6 +13,21 @@
       "The robot's next move depends only on its current cell and direction, and the map never changes; once a (cell, direction) state repeats, the motion loops forever.",
       "There are only 4×N×M states, so simulate directly until a state repeats, and use a separate marker array to count the distinct cells visited.",
       "Start at (0,0) facing right, with an array of size 4NM for seen states. Each step: stop if the current state was seen; otherwise mark it, and count the cell if it is visited for the first time; move forward if the cell ahead is inside the grid and empty, otherwise turn 90 degrees clockwise. Print the count at the end."
+    ],
+    "ja": [
+      "ロボットの次の動きは現在のセルと向きだけで決まり、地図は変わりません。(セル, 向き) の状態が一度繰り返されると、動きは永遠にループします。",
+      "状態は 4×N×M 個しかないので、状態が繰り返されるまで直接シミュレートし、訪れた異なるセルは別のマーカー配列で数えます。",
+      "(0,0) から右向きに出発し、既出の状態を記録する大きさ 4NM の配列を用意します。各ステップで、現在の状態がすでに出ていれば停止し、そうでなければ印を付け、そのセルを初めて訪れたなら数えます。前のセルがグリッド内にあり空いていれば前進し、そうでなければ時計回りに90度回転します。最後に数を出力します。"
+    ],
+    "ko": [
+      "로봇의 다음 동작은 현재 칸과 방향에만 의존하고 지도는 변하지 않으므로, (칸, 방향) 상태가 한 번 반복되면 움직임은 영원히 순환합니다.",
+      "상태는 4×N×M개뿐이므로, 상태가 반복될 때까지 그대로 시뮬레이션하고, 방문한 서로 다른 칸은 별도의 표시 배열로 셉니다.",
+      "(0,0)에서 오른쪽을 바라보며 시작하고, 본 상태를 기록하는 크기 4NM의 배열을 둡니다. 매 단계에서 현재 상태를 이미 봤다면 멈추고, 아니면 표시한 뒤 그 칸을 처음 방문했으면 셉니다. 앞칸이 격자 안에 있고 비어 있으면 전진하고, 아니면 시계 방향으로 90도 회전합니다. 마지막에 센 값을 출력합니다."
+    ],
+    "vi": [
+      "Nước đi kế tiếp của robot chỉ phụ thuộc vào ô và hướng hiện tại, còn bản đồ không bao giờ đổi; khi một trạng thái (ô, hướng) lặp lại, chuyển động sẽ lặp mãi mãi.",
+      "Chỉ có 4×N×M trạng thái, nên cứ mô phỏng trực tiếp đến khi một trạng thái lặp lại, và dùng một mảng đánh dấu riêng để đếm các ô phân biệt đã thăm.",
+      "Bắt đầu tại (0,0) quay mặt sang phải, với một mảng kích thước 4NM để lưu các trạng thái đã thấy. Mỗi bước: dừng nếu trạng thái hiện tại đã thấy; ngược lại đánh dấu nó, và đếm ô nếu đây là lần đầu thăm; đi thẳng nếu ô phía trước nằm trong lưới và trống, nếu không thì quay 90 độ theo chiều kim đồng hồ. Cuối cùng in số đếm."
     ]
   },
   "explanationEn": "## Approach\n\nRecord states made of position and direction and stop when a state repeats; use a separate marker to record the distinct visited cells.\n\n## Proof of correctness\n\nThe motion is fully determined by the current position, the direction and the fixed map, so after a repeated state it cycles and finds no new cells. There are only 4NM states in total, so all cleaned cells are obtained after a finite simulation.\n\n## Complexity\n\nTime O(NM), space O(NM), using compact byte arrays."

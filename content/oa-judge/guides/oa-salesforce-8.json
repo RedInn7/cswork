@@ -13,6 +13,21 @@
       "Folds along the two directions do not affect each other, so compute them separately and add. After one fold the length is at least half of the original, and it can be any length in [L/2, L).",
       "For one dimension, t folds can bring the length down to original/2^t at best, so target * 2^t >= original is required; conversely, when it holds, fold in half first and make the last fold off-center to land exactly on target.",
       "For height and width separately: while target < original, double target and count one fold; the sum of the two counts is the answer. Double with 64-bit integers instead of using floating-point logarithms."
+    ],
+    "ja": [
+      "2 方向の折りは互いに影響しないので、別々に計算して足します。1 回折ると長さは元の少なくとも半分になり、[L/2, L) の任意の長さにできます。",
+      "1 つの寸法について、t 回の折りで下げられるのは、最良でも 元の長さ/2^t までなので、target * 2^t >= original が必要です。逆に、これが成り立てばまず半分に折っていき、最後の 1 回を中心からずらして折れば、ちょうど目標に着地できます。",
+      "高さと幅それぞれについて、target < original の間、target を 2 倍して折り 1 回を数えます。2 つの回数の和が答えです。浮動小数点の対数ではなく、64 ビット整数で倍々にします。"
+    ],
+    "ko": [
+      "두 방향의 접기는 서로 영향을 주지 않으므로 따로 계산해 더합니다. 한 번 접으면 길이는 원래의 절반 이상이 되며, [L/2, L) 안의 임의의 길이가 될 수 있습니다.",
+      "한 치수에서 t번 접으면 길이는 최선의 경우 original/2^t까지 줄어들므로 target * 2^t >= original이어야 합니다. 반대로 이 조건이 성립하면 먼저 절반으로 접고 마지막 접기를 가운데에서 벗어나게 하여 정확히 target에 맞출 수 있습니다.",
+      "높이와 너비 각각에 대해 target < original인 동안 target을 두 배로 하고 접기 횟수를 1 늘립니다. 두 횟수의 합이 답입니다. 부동소수점 로그 대신 64비트 정수로 두 배 연산을 하세요."
+    ],
+    "vi": [
+      "Các lần gấp theo hai hướng không ảnh hưởng lẫn nhau, nên tính riêng rồi cộng lại. Sau một lần gấp, độ dài còn ít nhất một nửa độ dài ban đầu, và có thể là bất kỳ độ dài nào trong [L/2, L).",
+      "Với một chiều, t lần gấp tốt nhất có thể đưa độ dài xuống original/2^t, nên cần target * 2^t >= original; ngược lại, khi điều này đúng, gấp đôi trước rồi lần gấp cuối gấp lệch tâm để đạt đúng target.",
+      "Với chiều cao và chiều rộng riêng biệt: trong khi target < original, nhân đôi target và đếm một lần gấp; tổng hai bộ đếm là đáp án. Nhân đôi bằng số nguyên 64 bit thay vì dùng logarit dấu phẩy động."
     ]
   },
   "explanationEn": "## Approach\n\nFor each dimension separately, find the smallest t such that target*2^t>=original, then add the two; use integer doubling to avoid floating-point error.\n\n## Correctness\n\nOne fold keeps at least half of the original length, so after t folds the length is at least original/2^t, which gives a necessary condition. Conversely, first fold in half t-1 times; the current length is then at most twice the target and still larger than the target, so a final off-center fold reaches the target exactly. Operations on the two dimensions cannot replace each other, so adding them is optimal.\n\n## Complexity\n\nTime O(log h+log w), space O(1)."

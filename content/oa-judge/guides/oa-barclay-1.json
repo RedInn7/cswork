@@ -13,6 +13,21 @@
       "If index i is replaced by X, the new overall GCD is gcd(GCD of the other elements, X), which is always a divisor of the GCD of the other elements and is at most X <= R.",
       "Let g_i be the GCD of all elements except a_i. The best result from replacing i is the largest divisor of g_i that does not exceed R (choose X equal to that divisor). Do not forget the overall GCD without any operation, which may be larger than R.",
       "Get every g_i in O(1) from prefix and suffix GCD arrays; if g_i <= R take g_i, otherwise enumerate divisor pairs up to the square root of g_i and keep the largest divisor not above R. The answer is the maximum of the overall GCD and all these values."
+    ],
+    "ja": [
+      "インデックス i を X に置き換えると、新しい全体の GCD は gcd(他の要素の GCD, X) になります。これは常に他の要素の GCD の約数で、X <= R 以下です。",
+      "g_i を a_i を除くすべての要素の GCD とします。i を置き換えて得られる最良の結果は、g_i の約数のうち R を超えない最大のものです (X をその約数に等しく選びます)。操作をしない場合の全体の GCD が R より大きくなりうることも忘れないでください。",
+      "接頭辞と接尾辞の GCD 配列から、各 g_i を O(1) で得ます。g_i <= R なら g_i を採用し、そうでなければ g_i の平方根までで約数のペアを列挙して、R を超えない最大の約数を保持します。答えは、全体の GCD とこれらすべての値の最大値です。"
+    ],
+    "ko": [
+      "인덱스 i를 X로 교체하면 새 전체 GCD는 gcd(나머지 원소들의 GCD, X)이며, 이는 항상 나머지 원소들의 GCD의 약수이고 X <= R 이하입니다.",
+      "g_i를 a_i를 제외한 모든 원소의 GCD라 합시다. i를 교체해서 얻을 수 있는 최선의 결과는 R을 넘지 않는 g_i의 가장 큰 약수입니다(X를 그 약수로 선택). 연산을 하지 않았을 때의 전체 GCD가 R보다 클 수도 있으므로 이를 잊지 마세요.",
+      "접두사와 접미사 GCD 배열로 모든 g_i를 O(1)에 얻습니다. g_i <= R이면 g_i를 택하고, 아니면 g_i의 제곱근까지 약수 쌍을 열거하여 R을 넘지 않는 가장 큰 약수를 유지합니다. 답은 전체 GCD와 이 모든 값의 최댓값입니다."
+    ],
+    "vi": [
+      "Nếu chỉ số i được thay bằng X, GCD tổng thể mới là gcd(GCD của các phần tử còn lại, X), luôn là một ước của GCD của các phần tử còn lại và không vượt quá X <= R.",
+      "Gọi g_i là GCD của mọi phần tử trừ a_i. Kết quả tốt nhất khi thay i là ước lớn nhất của g_i không vượt quá R (chọn X bằng ước đó). Đừng quên GCD tổng thể khi không thực hiện thao tác nào, có thể lớn hơn R.",
+      "Lấy mọi g_i trong O(1) từ các mảng GCD tiền tố và hậu tố; nếu g_i <= R thì lấy g_i, ngược lại liệt kê các cặp ước đến căn bậc hai của g_i và giữ ước lớn nhất không vượt quá R. Đáp án là giá trị lớn nhất giữa GCD tổng thể và tất cả các giá trị này."
     ]
   },
   "explanationEn": "## Problem\n\nAn array A and an integer R. At most once (possibly not at all), replace some element with any integer X in 1..R. Find the maximum possible GCD of the whole array.\n\n## Approach\n\nWithout an operation the answer is the overall gcd. If index i is replaced, let g_i be the gcd of the other elements; the new gcd is gcd(g_i,X), which must be a divisor of g_i, and for any divisor d≤R of g_i, choosing X=d achieves d. So the largest value obtainable by replacing i is the largest divisor of g_i not exceeding R. Get each g_i in O(1) with prefix and suffix gcds, then enumerate divisors up to √g_i to find the largest divisor not exceeding R (when g_i≤R it is g_i itself).\n\n## Correctness\n\ngcd(g_i,X) divides g_i, and when X≤R, gcd(g_i,X)≤X≤R, so it is a divisor of g_i not exceeding R; conversely, every such divisor is reachable. The answer is the maximum of not operating and all i. Note that the overall gcd may be greater than R, in which case not operating is better.\n\n## Complexity\n\nO(n√V), V=10^5.\n\n## Independent Verification\n\nThe oracle enumerates the replaced position i and every X∈[1,R] and computes the gcd of the whole array directly, also considering no replacement (O(n²R), small data only), without using the prefix/suffix and divisor reasoning. All combinations with length 2..3, elements 1..6, and R=1..6 were enumerated exhaustively, and the reference program was actually run on each of them. The wrong solutions cover a mandatory replacement, taking min(g,R), replacing only the largest element, and only being able to replace with R."

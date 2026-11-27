@@ -13,5 +13,41 @@
       "The intervals do not overlap, so you only need to find the interval that covers K.",
       "N is very large, so you cannot actually build the array."
     ]
+  },
+  "ja": {
+    "title": "兵士の ID を求める",
+    "description": "N 人の兵士が一列に並んでおり、ID は 1 から N まで昇順です。兵士たちは Q 回の操作からなる訓練に参加します。i 回目の操作で、少佐が 2 つの数 row_i と col_i を呼びます。位置 row_i と col_i の兵士が入れ替わり、次に位置 row_i+1 と col_i−1 の兵士が入れ替わり、以降も内側へ進み、(row_i+m)<(col_i−m) が成り立たなくなるまで続きます。各位置は、高々 1 つの操作の区間 [row_i,col_i] にしか含まれません。\n\nすべての操作が終わった後の、位置 K にいる兵士の ID を求めてください。",
+    "input": "1 行目に整数 num(兵士の人数 N)が与えられます。2 行目に 2 つの整数 actions と numSoldiers が与えられます。操作の回数 Q と、毎回呼ばれる数の個数 S(S=2)です。続く Q 行にはそれぞれ S 個の整数 row_i と col_i が与えられます。最後の行には整数 posSoldier、つまり K が与えられます。1≤posSoldier≤num≤10^9、1≤actions≤10^5、1≤row_i≤col_i≤num で、操作の区間は重なりません。",
+    "output": "位置 K にいる兵士の ID を 1 つの整数で出力します。",
+    "explanation": "例 1:N=10 のとき、1 回目の操作の後の並びは 5 4 3 2 1 6 7 8 9 10、2 回目の後は 5 4 3 2 1 10 9 8 7 6 となるので、位置 1 は 5 です。\n例 2:位置 5 はどの区間にも含まれないので、ID は 5 のままです。\n例 3:区間 [3,8] を反転した後、位置 4 には元の位置 3+8−4=7 にいた兵士がいるので、ID は 7 です。",
+    "hints": [
+      "内側へ向かってペアを入れ替えていく操作は、区間全体を反転するのと同じ効果を持ちます。",
+      "区間は重ならないので、K を含む区間だけを見つければ十分です。",
+      "N は非常に大きいので、実際に配列を作ることはできません。"
+    ]
+  },
+  "ko": {
+    "title": "HSBC OA #2: 병사의 ID 찾기",
+    "description": "N명의 병사가 일렬로 서 있고 ID는 1부터 N까지 오름차순입니다. 이들은 Q번의 연산으로 이루어진 훈련에 참여합니다. i번째 연산에서 소령이 두 수 row_i와 col_i를 외치면, 위치 row_i와 col_i의 병사가 자리를 바꾸고, 이어서 위치 row_i+1과 col_i−1의 병사가 자리를 바꾸며, (row_i+m)<(col_i−m)이 더 이상 성립하지 않을 때까지 안쪽으로 계속합니다. 각 위치는 최대 하나의 연산의 구간 [row_i,col_i]에만 포함됩니다.\n\n모든 연산이 끝난 뒤 위치 K에 있는 병사의 ID를 구하세요.",
+    "input": "첫째 줄에 정수 num, 즉 병사 수 N이 주어집니다. 둘째 줄에는 두 정수 actions와 numSoldiers가 주어지며, 각각 연산 횟수 Q와 매번 외치는 수의 개수 S(S=2)입니다. 다음 Q개의 줄에는 각각 S개의 정수 row_i와 col_i가 주어집니다. 마지막 줄에는 K인 정수 posSoldier가 주어집니다. 1≤posSoldier≤num≤10^9, 1≤actions≤10^5, 1≤row_i≤col_i≤num이며, 연산 구간은 서로 겹치지 않습니다.",
+    "output": "위치 K에 있는 병사의 ID를 정수 하나로 출력합니다.",
+    "explanation": "예제 1: N=10이며 첫 번째 연산 후 순서는 5 4 3 2 1 6 7 8 9 10, 두 번째 연산 후 5 4 3 2 1 10 9 8 7 6이므로 위치 1에는 5가 있습니다.\n예제 2: 위치 5는 어떤 구간에도 속하지 않으므로 ID는 그대로 5입니다.\n예제 3: 구간 [3,8]을 뒤집은 후 위치 4에는 원래 위치 3+8−4=7에 있던 병사가 오므로 ID는 7입니다.",
+    "hints": [
+      "안쪽으로 이동하며 쌍을 교환하는 것은 구간 전체를 뒤집는 것과 같은 효과입니다.",
+      "구간이 겹치지 않으므로 K를 포함하는 구간만 찾으면 됩니다.",
+      "N이 매우 크므로 실제로 배열을 만들 수 없습니다."
+    ]
+  },
+  "vi": {
+    "title": "HSBC OA #2: Tìm ID của người lính",
+    "description": "N người lính đứng thành một hàng với ID từ 1 đến N theo thứ tự tăng dần. Họ tham gia một buổi diễn tập gồm Q thao tác. Ở thao tác thứ i, thiếu tá hô hai số row_i và col_i: người lính ở vị trí row_i và col_i đổi chỗ cho nhau; sau đó người lính ở vị trí row_i+1 và col_i−1 đổi chỗ cho nhau; và cứ thế tiến vào trong cho đến khi (row_i+m)<(col_i−m) không còn đúng. Mỗi vị trí nằm trong khoảng [row_i,col_i] của nhiều nhất một thao tác.\n\nHãy tìm ID của người lính ở vị trí K sau khi mọi thao tác kết thúc.",
+    "input": "Dòng đầu chứa một số nguyên num, số lượng lính N. Dòng thứ hai chứa hai số nguyên actions và numSoldiers: số thao tác Q và số giá trị được hô mỗi lần S (S=2). Mỗi dòng trong Q dòng tiếp theo chứa S số nguyên row_i và col_i. Dòng cuối chứa một số nguyên posSoldier, chính là K. 1≤posSoldier≤num≤10^9, 1≤actions≤10^5, 1≤row_i≤col_i≤num, và các khoảng thao tác không chồng lấn.",
+    "output": "In ra một số nguyên, ID của người lính ở vị trí K.",
+    "explanation": "Ví dụ 1: N=10; sau thao tác thứ 1 thứ tự là 5 4 3 2 1 6 7 8 9 10, và sau thao tác thứ 2 là 5 4 3 2 1 10 9 8 7 6, nên vị trí 1 là 5.\nVí dụ 2: vị trí 5 không nằm trong khoảng nào, nên ID vẫn là 5.\nVí dụ 3: sau khi đảo ngược khoảng [3,8], vị trí 4 chứa người lính ban đầu ở vị trí 3+8−4=7, có ID là 7.",
+    "hints": [
+      "Đổi chỗ từng cặp khi tiến vào trong có tác dụng giống hệt việc đảo ngược cả khoảng.",
+      "Các khoảng không chồng lấn, nên chỉ cần tìm khoảng chứa K.",
+      "N rất lớn, nên không thể thực sự dựng mảng."
+    ]
   }
 }

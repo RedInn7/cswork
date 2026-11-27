@@ -13,6 +13,21 @@
       "An interval XOR cannot be applied to an interval sum directly. But if each number is split into its 20 binary bits, then XORing a whole interval at bit b turns the count of 1s at that bit into the interval length minus the old count, and the interval sum follows from those counts.",
       "Use a segment tree with lazy propagation: each node stores the count of 1s at each of the 20 bits and the interval sum, and the lazy tag is a 20-bit XOR mask. Flipping the same bit twice cancels out, so tags combine by XOR.",
       "Build leaves from each value's bits and sum the children for internal nodes. To XOR a whole node by z, for every set bit b of z set cnt[b]=len-cnt[b], add (len-2*oldcnt[b])*2^b to the sum, and XOR z into the lazy tag; push tags down before visiting children. A query adds up the sums of the covering nodes; use 64-bit integers."
+    ],
+    "ja": [
+      "区間の XOR を区間の合計にそのまま適用することはできません。しかし各数を 20 個の 2 進ビットに分解すれば、区間全体をビット b で XOR したとき、そのビットの 1 の個数は「区間長 − 元の個数」になり、区間の合計はこれらの個数から求まります。",
+      "遅延伝播付きセグメント木を使います。各ノードは 20 ビットそれぞれの 1 の個数と区間の合計を持ち、遅延タグは 20 ビットの XOR マスクです。同じビットを 2 回反転すると元に戻るので、タグは XOR で合成できます。",
+      "葉は各値のビットから構築し、内部ノードは子の値を足し合わせます。ノード全体を z で XOR するには、z の立っているビット b それぞれについて cnt[b]=len-cnt[b] とし、合計に (len-2*oldcnt[b])*2^b を加え、遅延タグに z を XOR します。子を訪れる前にタグを下へ伝播させます。質問では、区間を覆うノードの合計を足し合わせます。64 ビット整数を使ってください。"
+    ],
+    "ko": [
+      "구간 XOR은 구간 합에 바로 적용할 수 없습니다. 하지만 각 수를 20개의 이진 비트로 나누면, 구간 전체를 비트 b에 대해 XOR할 때 그 비트의 1의 개수는 구간 길이에서 이전 개수를 뺀 값이 되고, 구간 합은 이 개수들로부터 구할 수 있습니다.",
+      "lazy propagation 세그먼트 트리를 사용합니다. 각 노드는 20개 비트별 1의 개수와 구간 합을 저장하고, lazy 태그는 20비트 XOR 마스크입니다. 같은 비트를 두 번 뒤집으면 원래대로 돌아오므로 태그는 XOR로 합칩니다.",
+      "각 값의 비트로 리프를 만들고 내부 노드는 자식의 값을 더해 구성합니다. 노드 전체를 z로 XOR할 때는 z의 켜진 비트 b마다 cnt[b]=len-cnt[b]로 바꾸고, 합에 (len-2*oldcnt[b])*2^b를 더하고, lazy 태그에 z를 XOR합니다. 자식을 방문하기 전에 태그를 아래로 내립니다. 조회는 구간을 덮는 노드들의 합을 더하며, 64비트 정수를 사용합니다."
+    ],
+    "vi": [
+      "Không thể áp dụng XOR trên đoạn trực tiếp vào tổng của đoạn. Nhưng nếu tách mỗi số thành 20 bit nhị phân, thì khi XOR cả đoạn tại bit b, số bit 1 tại bit đó trở thành độ dài đoạn trừ đi số cũ, và tổng của đoạn suy ra được từ các số đếm này.",
+      "Dùng segment tree với lazy propagation: mỗi nút lưu số bit 1 tại từng bit trong 20 bit và tổng của đoạn, còn lazy tag là một mặt nạ XOR 20 bit. Lật cùng một bit hai lần thì triệt tiêu nhau, nên các tag hợp nhất bằng XOR.",
+      "Xây các lá từ các bit của mỗi giá trị và cộng các nút con cho nút trong. Để XOR cả một nút với z, với mỗi bit b được bật trong z, đặt cnt[b]=len-cnt[b], cộng (len-2*oldcnt[b])*2^b vào tổng, rồi XOR z vào lazy tag; đẩy tag xuống trước khi duyệt các nút con. Một truy vấn cộng tổng của các nút phủ đoạn; dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nDecompose the rock masses into 20 binary bits. Each segment tree node maintains the number of 1s at each bit, the interval sum, and a 20-bit lazy XOR mask. When a whole segment is XORed, for every bit set in the mask, flip that bit's count to the interval length minus the original count; the sum is adjusted by the corresponding change of 2^bit. An interval sum query reads the node sums directly. Lazy tags can be combined by XOR, because flipping the same bit twice restores it.\n\n## Correctness\n\nFor a leaf, the bit counts exactly describe the single mass. Merging nodes adds the counts, so internal nodes are exact as well. If a whole segment is XORed at some bit, items that had 0 become 1 and items that had 1 become 0, so the new number of 1s is the length minus the original number of 1s; the sum is updated simultaneously from the change of each bit. Combining XOR masks is associative and self-inverse, so after a push the children's state is equivalent to applying the operation to the whole segment. Hence after every update the tree always represents the current array, and a range query combining the covering nodes gives the exact sum.\n\n## Complexity\n\nBuilding takes O(20n); each operation takes O(20 log n) in the worst case; space O(20n). Masses and z are below 2^20, so after XOR they can still be represented with 20 bits; interval sums use Python's arbitrary-precision integers."

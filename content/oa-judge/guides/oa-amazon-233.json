@@ -13,6 +13,21 @@
       "The weights 1..n increase: if a larger value sits at a smaller weight, swapping the two raises the gain, so in an optimal permutation the values must be in ascending order.",
       "Swapping equal values does not change the gain; for the lexicographically smallest answer, equal values should appear in increasing order of original index.",
       "Sort the indices by (value, original index) ascending and output them as 1-based indices; the output is original array indices, not values or ranks."
+    ],
+    "ja": [
+      "重み 1..n は増加します。大きな値が小さな重みの位置にあれば、2 つを入れ替えると利得が上がるので、最適な順列では値が昇順に並ばなければなりません。",
+      "等しい値を入れ替えても利得は変わりません。辞書順最小の答えを得るには、等しい値は元の添字の昇順に現れるべきです。",
+      "添字を (値, 元の添字) の昇順にソートし、1 始まりの添字として出力します。出力は元の配列の添字であり、値や順位ではありません。"
+    ],
+    "ko": [
+      "가중치 1..n은 증가합니다. 더 큰 값이 더 작은 가중치에 놓여 있으면 둘을 바꿔 이득을 늘릴 수 있으므로, 최적 순열에서 값은 오름차순이어야 합니다.",
+      "값이 같은 원소를 바꿔도 이득은 변하지 않습니다. 사전순으로 가장 작은 답을 위해서는 같은 값들을 원래 인덱스가 증가하는 순서로 놓아야 합니다.",
+      "인덱스를 (값, 원래 인덱스)의 오름차순으로 정렬해 1-기반 인덱스로 출력합니다. 출력은 값이나 순위가 아니라 원래 배열 인덱스입니다."
+    ],
+    "vi": [
+      "Các trọng số 1..n tăng dần: nếu một giá trị lớn hơn nằm ở trọng số nhỏ hơn, việc hoán đổi hai vị trí sẽ làm tăng độ lợi, nên trong một hoán vị tối ưu các giá trị phải theo thứ tự tăng dần.",
+      "Hoán đổi các giá trị bằng nhau không làm thay đổi độ lợi; để có đáp án nhỏ nhất theo thứ tự từ điển, các giá trị bằng nhau nên xuất hiện theo thứ tự chỉ số gốc tăng dần.",
+      "Sắp xếp các chỉ số theo (giá trị, chỉ số gốc) tăng dần và in ra dưới dạng chỉ số từ 1; đầu ra là các chỉ số của mảng gốc, không phải giá trị hay thứ hạng."
     ]
   },
   "explanationEn": "## Approach\n\nSort the original indices by (data[i], i) in ascending order and output them as 1-based indices.\n\n## Proof of correctness\n\nIf a larger value sits at a smaller weight, swapping the two increases the gain by (weight difference)*(value difference), so an optimal arrangement must have the values in ascending order. Swapping equal values does not change the gain, and placing them by ascending original index gives the lexicographically smallest permutation within each block of equal values.\n\n## Complexity\n\nTime O(n log n), space O(n)."

@@ -11,5 +11,35 @@
     "hints": [
       "Sort all intervals by start and maintain the current merged segment: if the new start does not exceed the current right end, extend the right end; otherwise start a new segment."
     ]
+  },
+  "ja": {
+    "title": "重ならない区間からなる 2 つのリストのマージ",
+    "description": "閉区間のリストが 2 つ与えられ、各リスト内の区間は互いに重なりません。両方のリストの区間を合わせ、交差するすべての区間をマージして、開始位置の昇順に出力してください。端点が等しい場合も重なりとみなします。例えば [1,2] と [2,3] は [1,3] にマージされ、[1,2] と [3,4] はマージできません。\n\n標準入力、本サイトの制約、サンプル、テストデータは CSWork が独自に作成・整理したものです。",
+    "input": "本サイトの入力: 1 行目に n m (0..100000)、続く n 行が X、その後の m 行が Y で、各行は l r (−10⁹≤l≤r≤10⁹) です。各リスト内の区間は重なりませんが、ソートされていないことがあります。",
+    "output": "1 行目はマージ後の区間数 k、続く k 行に開始位置の昇順で l r を出力します。すべて空の場合は 0 を出力します。",
+    "explanation": "サンプル 1: 1..5 と 2..6 は 1..6 にマージされます。8..10、10..14、11..20、16..18 はつながっていて、8..20 にマージされます。\n\nサンプル 2: 閉区間が端点 2 で接しているので、区間 1 3 が 1 つだけ出力されます。\n\nサンプル 3: どちらのリストも空なので、マージ後の区間数は 0 です。",
+    "hints": [
+      "すべての区間を開始位置でソートし、現在マージ中の区間を保持します。新しい開始位置が現在の右端以下なら右端を伸ばし、そうでなければ新しい区間を始めます。"
+    ]
+  },
+  "ko": {
+    "title": "겹치지 않는 구간으로 이루어진 두 리스트 병합",
+    "description": "닫힌 구간의 리스트 두 개가 주어지며, 각 리스트 안의 구간끼리는 겹치지 않습니다. 두 리스트의 구간을 합쳐 서로 교차하는 구간을 모두 병합하고, 시작점의 오름차순으로 출력하세요. 끝점이 같은 경우도 겹치는 것으로 봅니다. 예를 들어 [1,2]와 [2,3]은 [1,3]으로 병합되지만 [1,2]와 [3,4]는 병합할 수 없습니다.\n\n표준 입력, 이 사이트의 제약 조건, 예제, 테스트 데이터는 CSWork에서 독자적으로 정리하여 작성했습니다.",
+    "input": "이 사이트의 입력입니다. 첫 줄에 n m (0..100000)이 주어지고, 이어서 X를 나타내는 n개의 줄, Y를 나타내는 m개의 줄이 주어지며 각 줄은 l r (−10⁹≤l≤r≤10⁹)입니다. 각 리스트 안의 구간은 겹치지 않지만 정렬되어 있지 않을 수 있습니다.",
+    "output": "첫 줄에 병합된 구간의 개수 k를 출력하고, 이어서 k개의 줄에 l r을 시작점의 오름차순으로 출력합니다. 모두 비어 있으면 0을 출력합니다.",
+    "explanation": "예제 1: 1..5와 2..6은 1..6으로 병합되고, 8..10, 10..14, 11..20, 16..18은 서로 이어져 8..20으로 병합됩니다.\n\n예제 2: 닫힌 구간이 끝점 2에서 맞닿으므로 구간 하나 1 3을 출력합니다.\n\n예제 3: 두 리스트가 모두 비어 있으므로 병합된 개수는 0입니다.",
+    "hints": [
+      "모든 구간을 시작점 기준으로 정렬하고 현재 병합 중인 구간을 유지합니다. 새 구간의 시작점이 현재의 오른쪽 끝을 넘지 않으면 오른쪽 끝을 확장하고, 그렇지 않으면 새 구간을 시작합니다."
+    ]
+  },
+  "vi": {
+    "title": "Gộp hai danh sách khoảng không giao nhau",
+    "description": "Cho hai danh sách khoảng đóng, trong đó các khoảng trong mỗi danh sách không giao nhau. Kết hợp các khoảng của cả hai danh sách, gộp mọi khoảng có giao nhau, và in ra theo thứ tự tăng dần của điểm đầu. Các đầu mút bằng nhau cũng được coi là chồng lấn: chẳng hạn [1,2] và [2,3] gộp thành [1,3], còn [1,2] và [3,4] thì không gộp được.\n\nĐầu vào chuẩn, các ràng buộc của trang này, các ví dụ và dữ liệu kiểm thử do CSWork tự biên soạn.",
+    "input": "Đầu vào của trang này: dòng đầu chứa n m (0..100000), tiếp theo là n dòng cho X rồi m dòng cho Y, mỗi dòng có dạng l r (−10⁹≤l≤r≤10⁹). Các khoảng trong mỗi danh sách không giao nhau nhưng có thể chưa sắp xếp.",
+    "output": "Dòng đầu là số lượng k các khoảng sau khi gộp, tiếp theo là k dòng l r theo thứ tự tăng dần của điểm đầu; nếu tất cả đều rỗng thì in 0.",
+    "explanation": "Ví dụ 1: 1..5 và 2..6 gộp thành 1..6; 8..10, 10..14, 11..20 và 16..18 nối liền nhau và gộp thành 8..20.\n\nVí dụ 2: các khoảng đóng chạm nhau ở đầu mút 2, nên in ra một khoảng duy nhất 1 3.\n\nVí dụ 3: cả hai danh sách đều rỗng, nên số khoảng sau khi gộp là 0.",
+    "hints": [
+      "Sắp xếp mọi khoảng theo điểm đầu và duy trì đoạn đang gộp hiện tại: nếu điểm đầu mới không vượt quá đầu mút phải hiện tại thì mở rộng đầu mút phải; ngược lại bắt đầu một đoạn mới."
+    ]
   }
 }

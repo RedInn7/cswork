@@ -13,6 +13,21 @@
       "First fix the multiplier k. For k(A+X) = B+Y with Y >= 0 you need k(A+X) >= B, so the smallest X is max(0, ceil(B/k) - A); once X is fixed, Y is determined by the equation. So every k has one well-defined optimal cost.",
       "k can be large, so you cannot try them all. The cost depends on k mainly through ceil(B/k), and ceil(B/k) takes only O(sqrt B) distinct values: enumerate small k directly, group large k by that quotient and check one representative per group. Also check separately the k at which X just becomes 0.",
       "Let r = floor(sqrt B) + 2. Compute the cost for k = 1..min(B, r); for q = 1..r compute it for k = ceil(B/q); then also check k = max(1, ceil(B/A)). The cost is X + k(A+X) - B with X = max(0, ceil(B/k) - A). Output the minimum over all candidates, using 64-bit integers for intermediate values."
+    ],
+    "ja": [
+      "まず倍数 k を固定します。Y >= 0 で k(A+X) = B+Y となるには k(A+X) >= B が必要なので、最小の X は max(0, ceil(B/k) - A) です。X が決まれば、Y は式から決まります。したがって、どの k にも最適なコストが 1 つ定まります。",
+      "k は大きくなりうるので、すべてを試すことはできません。コストは主に ceil(B/k) を通じて k に依存し、ceil(B/k) の取りうる値は O(sqrt B) 種類だけです。小さい k は直接列挙し、大きい k はその商でグループ化して、各グループの代表を 1 つ調べます。X がちょうど 0 になる k も別に調べてください。",
+      "r = floor(sqrt B) + 2 とします。k = 1..min(B, r) についてコストを計算し、q = 1..r について k = ceil(B/q) でも計算します。さらに k = max(1, ceil(B/A)) も調べます。コストは、X = max(0, ceil(B/k) - A) として X + k(A+X) - B です。すべての候補の最小値を出力し、途中の値には 64 ビット整数を使ってください。"
+    ],
+    "ko": [
+      "먼저 배수 k를 고정합니다. Y >= 0일 때 k(A+X) = B+Y가 성립하려면 k(A+X) >= B가 필요하므로, 가장 작은 X는 max(0, ceil(B/k) - A)입니다. X가 정해지면 Y는 식으로 결정됩니다. 따라서 각 k에는 잘 정의된 최적 비용이 하나 있습니다.",
+      "k는 클 수 있으므로 모두 시도할 수는 없습니다. 비용은 주로 ceil(B/k)를 통해 k에 의존하며, ceil(B/k)는 서로 다른 값을 O(sqrt B)개만 가집니다. 작은 k는 직접 열거하고, 큰 k는 그 몫으로 묶어 그룹마다 대표 하나를 확인하세요. 또한 X가 막 0이 되는 k도 따로 확인하세요.",
+      "r = floor(sqrt B) + 2로 두고, k = 1..min(B, r)에 대해 비용을 계산하고, q = 1..r에 대해 k = ceil(B/q)로 계산한 뒤, k = max(1, ceil(B/A))도 확인합니다. 비용은 X + k(A+X) - B이며 X = max(0, ceil(B/k) - A)입니다. 모든 후보 중 최솟값을 출력하며, 중간 값에는 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Trước hết cố định hệ số nhân k. Để k(A+X) = B+Y với Y >= 0 cần k(A+X) >= B, nên X nhỏ nhất là max(0, ceil(B/k) - A); khi X đã cố định, Y được xác định bởi phương trình. Như vậy mỗi k có đúng một chi phí tối ưu xác định.",
+      "k có thể rất lớn nên không thể thử hết. Chi phí phụ thuộc vào k chủ yếu qua ceil(B/k), và ceil(B/k) chỉ nhận O(sqrt B) giá trị phân biệt: duyệt trực tiếp các k nhỏ, nhóm các k lớn theo thương đó và kiểm tra một đại diện cho mỗi nhóm. Ngoài ra kiểm tra riêng giá trị k mà tại đó X vừa bằng 0.",
+      "Đặt r = floor(sqrt B) + 2. Tính chi phí cho k = 1..min(B, r); với q = 1..r tính cho k = ceil(B/q); rồi kiểm tra thêm k = max(1, ceil(B/A)). Chi phí là X + k(A+X) - B với X = max(0, ceil(B/k) - A). In ra giá trị nhỏ nhất trên mọi ứng viên, dùng số nguyên 64 bit cho các giá trị trung gian."
     ]
   },
   "explanationEn": "## Approach\n\nOnce the integer k is fixed, the smallest non-negative x is `max(0, ceil(B/k)−A)`; then set `y=k(A+x)−B`, and the cost is x+y. Small k are enumerated directly; for large k, the quotient `ceil(B/k)` takes only O(√B) distinct values, so k can be enumerated by quotient intervals, and the boundary where x=0 is checked separately.\n\n## Proof of Correctness\n\nFor a fixed k, any smaller x would make `k(A+x)<B`, which violates the condition; with this smallest x, y is uniquely determined by the equation, so the cost is optimal for that k. Small k are enumerated one by one, and large k are enumerated merged by equal values of `ceil(B/k)`, so every possible optimal quotient is covered; the smallest of these costs is the global optimum.\n\n## Complexity\n\nTime O(√B), space O(1). Random small values are also checked against an oracle that enumerates every k."

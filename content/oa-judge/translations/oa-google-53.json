@@ -11,5 +11,35 @@
     "hints": [
       "Manage busy cars in a min-heap keyed by return time, and idle cars in a min-heap keyed by number. For each request, first release every car that has been returned, then take the smallest idle number or a new car."
     ]
+  },
+  "ja": {
+    "title": "レンタカー予約の標準形の最小台数割り当て",
+    "description": "各リクエストは [pickup,return) で、ある時刻に返却された車は、すぐに新しいリクエストに使えます。リクエストを pickup の昇順、次に return の昇順で処理します。空いている車があれば番号が最小のものを使い、なければ次の番号（0 から開始）で新しい車を作ります。車の番号の昇順で、標準形の割り当てを出力してください。\n\n入力・出力と例は CSWork が整理したものです。このサイトのものと明記した数値範囲は、このサイトの判定上の取り決めです。",
+    "input": "1 行目に n（1..200000）、続く n 行に pickup return（0≤pickup<return≤10⁹）が与えられます。",
+    "output": "1 行目に車の台数を出力し、その後は車ごとに carId: (p1,r1) (p2,r2) ... の形式で 1 行ずつ出力してください。括弧の中にスペースは入れず、その車が担当する順にリクエストを並べます。",
+    "explanation": "例 1: 車 0 が (1,4) を担当し、車 1 が (2,3) と (3,5) を担当して、合計 2 台です。例 2: 同じ時刻に返却された車は再利用できるので、車 0 が 3 件すべてを担当します。例 3: pickup が同じリクエストは return の時刻でソートします。まず車 0 が (0,3) を担当し、車 1 が (0,5) を担当し、その後 (3,4) は車 0 を再利用します。",
+    "hints": [
+      "使用中の車を返却時刻をキーとする最小ヒープで、空いている車を番号をキーとする最小ヒープで管理します。各リクエストについて、まず返却済みの車をすべて解放し、その後、空き車の中で最小の番号を取るか、新しい車を作ります。"
+    ]
+  },
+  "ko": {
+    "title": "렌터카 요청에 대한 표준 최소 차량 배정",
+    "description": "각 요청은 [pickup,return)이며, 어떤 시각에 반납된 차량은 즉시 새 요청에 사용할 수 있습니다. 요청을 pickup 오름차순, 같으면 return 오름차순으로 처리합니다. 놀고 있는 차량이 있으면 번호가 가장 작은 차량을 사용하고, 없으면 다음 번호(0부터 시작)의 새 차량을 만듭니다. 차량 번호 오름차순으로 표준 배정을 출력하세요.\n\n입력/출력과 예제는 CSWork에서 정리한 것이며, 이 사이트의 것이라고 표시된 수치 범위는 이 사이트의 채점 기준입니다.",
+    "input": "첫째 줄에 n (1..200000)이 주어지고, 이어서 n개의 줄에 pickup return (0≤pickup<return≤10⁹)이 주어집니다.",
+    "output": "첫째 줄에 차량 수를 출력하고, 이어서 차량마다 한 줄씩 carId: (p1,r1) (p2,r2) ... 형식으로 출력합니다. 괄호 안에는 공백이 없으며, 그 차량이 처리하는 순서대로 요청을 나열합니다.",
+    "explanation": "예제 1: 0번 차량이 (1,4)를 처리하고, 1번 차량이 (2,3)과 (3,5)를 처리하여 차량은 2대입니다. 예제 2: 같은 시각에 반납된 차량을 재사용할 수 있으므로 0번 차량이 세 주문을 모두 처리합니다. 예제 3: pickup이 같은 요청은 return 시각으로 정렬되므로, 0번 차량이 먼저 (0,3)을 맡고 1번 차량이 (0,5)를 맡으며, 이후 (3,4)는 0번 차량을 재사용합니다.",
+    "hints": [
+      "사용 중인 차량은 반납 시각을 키로 하는 최소 힙으로, 놀고 있는 차량은 번호를 키로 하는 최소 힙으로 관리합니다. 각 요청마다 먼저 반납된 모든 차량을 해제한 뒤, 가장 작은 놀고 있는 번호를 쓰거나 새 차량을 만듭니다."
+    ]
+  },
+  "vi": {
+    "title": "Phân bổ xe tối thiểu chuẩn tắc cho các yêu cầu thuê xe",
+    "description": "Mỗi yêu cầu là [pickup,return), và một chiếc xe được trả tại một thời điểm có thể được dùng ngay cho yêu cầu mới. Xử lý các yêu cầu theo pickup tăng dần, rồi theo return tăng dần; nếu có xe đang rảnh thì dùng xe có số nhỏ nhất, nếu không thì tạo xe mới với số tiếp theo (bắt đầu từ 0). In ra phân bổ chuẩn tắc theo thứ tự tăng dần của số xe.\n\nPhần đầu vào/đầu ra và các ví dụ do CSWork biên soạn; các khoảng giá trị được ghi là của trang này là quy ước chấm bài của trang này.",
+    "input": "Dòng đầu chứa n (1..200000), tiếp theo là n dòng pickup return (0≤pickup<return≤10⁹).",
+    "output": "Dòng đầu in số xe; sau đó in mỗi xe một dòng theo định dạng carId: (p1,r1) (p2,r2) ..., không có dấu cách bên trong dấu ngoặc, liệt kê các yêu cầu theo thứ tự xe đó phục vụ.",
+    "explanation": "Ví dụ 1: xe 0 phục vụ (1,4), và xe 1 phục vụ (2,3) và (3,5), tổng cộng 2 xe. Ví dụ 2: một chiếc xe được trả tại cùng thời điểm có thể được dùng lại, nên xe 0 xử lý cả ba đơn. Ví dụ 3: các yêu cầu có cùng pickup được sắp xếp theo thời gian trả; xe 0 nhận (0,3) trước, xe 1 nhận (0,5), và sau đó (3,4) dùng lại xe 0.",
+    "hints": [
+      "Quản lý các xe đang bận bằng một min-heap theo thời gian trả, và các xe rảnh bằng một min-heap theo số xe. Với mỗi yêu cầu, trước hết giải phóng mọi xe đã được trả, rồi lấy số rảnh nhỏ nhất hoặc một xe mới."
+    ]
   }
 }

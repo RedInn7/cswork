@@ -11,5 +11,35 @@
     "hints": [
       "First pin down how each operation affects the state, then choose between direct simulation and a data structure that supports range counting."
     ]
+  },
+  "ja": {
+    "title": "Chairs Requirement",
+    "description": "従業員の出入りを表す複数のシミュレーションについて、それぞれ購入しなければならない椅子の最小数を求めてください。最初、椅子は 1 脚もありません。従業員は常に空いている椅子を優先して使い、空いている椅子がなければ 1 脚購入します。C は新しい従業員の入室、R は従業員が一時的に会議室へ行くこと、U は従業員が会議室から戻ること、L は従業員が完全に退出することを表します。本サイトの追加条件として、どのシミュレーションも有効なイベント列であり、R/L を実行するときにはオフィスに少なくとも 1 人の従業員がいて、U を実行するときには会議室に少なくとも 1 人の従業員がいます。従業員は区別されず、上記の人数の状態だけを守ればかまいません。\n\n入力プロトコルと「本サイトの追加」と明示された範囲は本サイトが作成したもので、元の問題の追加条件ではありません。\n\n問題の意味、関数、制約は、元の Goldman Sachs #24 の問題文と同じです。どのシミュレーション列も有効であるという保証は、出力を一意にするために本サイトが追加した入力の保証で、元の問題文にある条件ではありません。以下の公開された例は本サイトが作成したもので、原文由来ではありません。",
+    "input": "1 行目に n が与えられ、続く n 行にそれぞれ C, R, U, L のみからなるシミュレーションの文字列が 1 つずつ与えられます。1≤n≤100、各文字列の長さは 1 以上 10000 以下です。",
+    "output": "n 個の整数を入力順にスペース区切りで出力します。それぞれが、そのシミュレーションで購入する椅子の最小数です。",
+    "explanation": "解法、正当性の証明、計算量は付属の解説を参照してください。",
+    "hints": [
+      "まず各操作が状態にどう影響するかを確定させます。そのうえで、直接の模擬と、範囲の個数を数えられるデータ構造のどちらにするかを選びます。"
+    ]
+  },
+  "ko": {
+    "title": "Chairs Requirement",
+    "description": "직원들이 오가는 여러 시뮬레이션이 주어질 때, 각 시뮬레이션마다 구매해야 하는 최소 의자 수를 구하세요. 처음에는 의자가 없으며, 직원은 항상 빈 의자를 먼저 사용하고, 빈 의자가 없을 때마다 의자를 하나 구매합니다. C는 새 직원이 입장함, R은 직원이 잠시 회의실로 감, U는 직원이 회의실에서 돌아옴, L은 직원이 완전히 떠남을 뜻합니다. 이 사이트의 추가 조건: 모든 시뮬레이션은 유효한 이벤트 열이며, R/L을 수행할 때 사무실에 직원이 최소 한 명 있고, U를 수행할 때 회의실에 직원이 최소 한 명 있습니다. 직원은 서로 구별하지 않으며 위의 인원 상태만 지키면 됩니다.\n\n입력 규약과 \"이 사이트의 추가\"라고 명시된 범위는 이 사이트가 구성한 것이며 원 문제의 추가 조건이 아닙니다.\n\n문제의 의미, 함수, 제약은 원래 Goldman Sachs #24 문제와 같습니다. 모든 시뮬레이션 열이 유효하다는 보장은 출력을 유일하게 만들기 위해 이 사이트가 추가한 입력 보장이며 원문에 명시된 조건이 아닙니다. 아래의 공개 예제는 이 사이트가 구성한 것으로 원본에서 가져온 것이 아닙니다.",
+    "input": "첫 번째 줄에 n이 주어지고, 이어지는 n개의 줄에 C, R, U, L로만 이루어진 시뮬레이션 문자열이 하나씩 주어집니다. 1≤n≤100, 각 문자열의 길이는 1 이상 10000 이하입니다.",
+    "output": "입력 순서대로 n개의 정수를 공백으로 구분하여 출력합니다. 각 정수는 해당 시뮬레이션에서 구매해야 하는 최소 의자 수입니다.",
+    "explanation": "접근 방식, 정당성 증명, 복잡도는 함께 제공되는 풀이를 참고하세요.",
+    "hints": [
+      "먼저 각 연산이 상태에 어떤 영향을 주는지 정확히 파악한 다음, 직접 시뮬레이션할지 구간 개수 질의를 지원하는 자료구조를 쓸지 선택하세요."
+    ]
+  },
+  "vi": {
+    "title": "Chairs Requirement",
+    "description": "Cho nhiều mô phỏng nhân viên đến và đi, hãy tìm số ghế tối thiểu phải mua cho mỗi mô phỏng. Ban đầu không có ghế nào; nhân viên luôn dùng ghế trống trước, và một chiếc ghế được mua mỗi khi không còn ghế trống. C nghĩa là một nhân viên mới vào, R nghĩa là một nhân viên tạm thời đi đến phòng họp, U nghĩa là một nhân viên trở về từ phòng họp, và L nghĩa là một nhân viên rời đi vĩnh viễn. Trang này bổ sung: mọi mô phỏng đều là chuỗi sự kiện hợp lệ; khi thực hiện R/L, ít nhất một nhân viên đang ở văn phòng, và khi thực hiện U, ít nhất một nhân viên đang ở phòng họp. Các nhân viên không được phân biệt; chỉ cần tuân theo các trạng thái số người nêu trên.\n\nGiao thức đầu vào và các khoảng giá trị được đánh dấu rõ là \"do trang này bổ sung\" do trang này biên soạn và không phải điều kiện bổ sung của bài gốc.\n\nÝ nghĩa bài toán, hàm và các ràng buộc giống với đề Goldman Sachs #24 gốc. Đảm bảo mọi chuỗi mô phỏng đều hợp lệ là một đảm bảo đầu vào do trang này thêm vào để đầu ra là duy nhất, không phải điều kiện nêu trong bản gốc. Các ví dụ công khai bên dưới do trang này biên soạn và không đến từ nguồn gốc.",
+    "input": "Dòng đầu chứa n; mỗi dòng trong n dòng tiếp theo chứa một xâu mô phỏng chỉ gồm C, R, U, L. 1≤n≤100, 1≤độ dài mỗi xâu≤10000.",
+    "output": "In ra n số nguyên theo thứ tự đầu vào, cách nhau bằng dấu cách; mỗi số là số ghế tối thiểu cần mua cho mô phỏng đó.",
+    "explanation": "Xem lời giải đi kèm để biết ý tưởng, chứng minh tính đúng đắn và độ phức tạp.",
+    "hints": [
+      "Trước tiên hãy xác định mỗi thao tác ảnh hưởng đến trạng thái thế nào, rồi chọn giữa mô phỏng trực tiếp và một cấu trúc dữ liệu hỗ trợ đếm theo khoảng."
+    ]
   }
 }

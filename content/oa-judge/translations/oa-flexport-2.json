@@ -13,5 +13,41 @@
       "When appending the current letter, subtract the set already produced the last time the same letter was appended.",
       "Keep the empty string, and exclude any move that leaves 0..n at any step."
     ]
+  },
+  "vi": {
+    "title": "Các dãy con di chuyển phân biệt trên trục số có biên",
+    "description": "Cho một xâu s chỉ gồm l/r, hãy chọn một dãy con của nó. Bắt đầu từ x, l giảm vị trí đi 1 và r tăng vị trí lên 1. Điểm xuất phát, vị trí sau mỗi bước và điểm kết thúc đều phải nằm trong trục số có biên 0..n, và đường đi phải kết thúc tại y. Đếm các dãy ký tự phân biệt: cùng một dãy ký tự nhận được từ các chỉ số khác nhau chỉ được tính một lần. Trả về số lượng đó theo modulo 1000000007. Không được phản xạ lại ở biên, đứng yên thay vì vượt biên, hoặc rời khỏi miền rồi quay lại.",
+    "input": "Dòng đầu tiên chứa s, dòng thứ hai chứa n x y. Các giới hạn gốc đầy đủ: 1≤|s|≤1000, s chỉ chứa l/r, 0≤n,x,y≤2500. Đề gốc không đảm bảo x,y≤n, và trang này giữ lại các đầu vào như vậy: nếu điểm xuất phát hoặc điểm kết thúc nằm ngoài 0..n thì không có đường đi hợp lệ và đáp án là 0.",
+    "output": "In ra một số nguyên trong khoảng 0..1000000006. Có thể xóa tất cả ký tự, nên khi x=y hợp lệ thì dãy con rỗng đóng góp 1; với n=0,x=y=0 đáp án là 1, và mọi điểm cuối nằm ngoài miền khác đều cho 0. Miền có biên lấy từ đề gốc của Flexport; dãy con rỗng theo định nghĩa thông thường của dãy con, được củng cố bởi định nghĩa xóa phần tử rõ ràng trong phiên bản Meesho của cùng bài toán, và không yêu cầu thêm điều kiện khác rỗng.",
+    "explanation": "Ví dụ đầu tiên giữ nguyên đầu vào gốc của Flexport là rrlrr,6,1,4 nhưng sửa đáp án gốc 3 thành 2: chỉ có rrr và rrlrr hợp lệ, được chứng minh bằng cách liệt kê cả 32 tập chỉ số; hình ảnh trên máy cục bộ không truy cập được nên không dùng làm bằng chứng. Hai ví dụ cuối do trang này suy ra: rr từ 0 đến 1 chỉ tính r một lần; rl từ 0 quay về 0 tính cả xâu rỗng và rl. Bản thân Flexport đã cho đầy đủ các ràng buộc số; các định nghĩa loại trùng ký tự và xóa phần tử từ phiên bản Meesho của cùng bài toán chỉ đóng vai trò giải thích bổ trợ và không được trình bày như ghi chú chi tiết trong đề của Flexport.",
+    "hints": [
+      "Cách chọn lấy/bỏ theo vị trí thông thường sẽ đếm cùng một xâu nhiều hơn một lần.",
+      "Khi thêm ký tự hiện tại vào, hãy trừ đi tập đã được tạo ra ở lần gần nhất thêm cùng ký tự đó.",
+      "Giữ lại xâu rỗng, và loại bỏ mọi bước đi làm rời khỏi 0..n ở bất kỳ bước nào."
+    ]
+  },
+  "ja": {
+    "title": "有界な数直線上の異なる移動部分列",
+    "description": "l と r だけからなる文字列 s が与えられ、その部分列を 1 つ選びます。x から始め、l は位置を 1 減らし、r は位置を 1 増やします。開始位置、各ステップ後の位置、終了位置はすべて有界な数直線 0..n の範囲内にあり、終了位置は y でなければなりません。異なる文字列の個数を数えてください。異なる添字から同じ文字列が得られても 1 回だけ数えます。個数を 1000000007 で割った余りを返してください。境界での反射、境界を越えずにその場に留まること、領域の外に出てから戻ってくることは認められません。",
+    "input": "1 行目に s、2 行目に n x y が与えられます。元の範囲の全体は 1≤|s|≤1000、s は l/r のみ、0≤n,x,y≤2500 です。元の問題は x,y≤n を保証していませんが、本サイトはそのような入力も維持します。開始位置または終了位置が 0..n の外にある場合、有効な経路はなく答えは 0 です。",
+    "output": "0..1000000006 の整数を出力してください。すべての文字を削除してもよいので、x=y が有効なら空の部分列が 1 を寄与します。n=0、x=y=0 のとき答えは 1 で、それ以外の領域外の端点は答えが 0 になります。有界な領域は Flexport の元の問題によるものです。空の部分列は部分列の通常の定義に従うもので、同じ問題の Meesho 版にある削除の明示的な定義が裏付けており、空でないことは追加で要求しません。",
+    "explanation": "最初の例は Flexport の元の入力 rrlrr,6,1,4 を保持していますが、元の答え 3 を 2 に訂正しています。条件を満たすのは rrr と rrlrr だけであり、32 個の添字部分集合をすべて列挙して証明しました。ローカルマシンの画像は参照できないため、根拠には使っていません。残りの 2 つの例は本サイトが導出したものです。0 から 1 への rr は r を 1 回だけ数え、0 から 0 に戻る rl は空文字列と rl を数えます。Flexport 自体は数値の制約を完全に示しており、同じ問題の Meesho 版にある文字列の重複排除と削除の定義は補足的な説明として用い、Flexport の問題文の詳細な注記としては提示していません。",
+    "hints": [
+      "位置ごとの単純な「取る・取らない」の選択では、同一の文字列を複数回数えてしまいます。",
+      "現在の文字を追加するときは、同じ文字を前回追加したときに生成された集合を引きます。",
+      "空文字列を残し、途中で 0..n から出る移動は除外してください。"
+    ]
+  },
+  "ko": {
+    "title": "유한한 수직선 위 이동 부분 수열의 서로 다른 개수",
+    "description": "l/r로만 이루어진 문자열 s에서 부분 수열 하나를 고릅니다. x에서 시작하여 l은 위치를 1 감소시키고 r은 위치를 1 증가시킵니다. 시작점, 매 단계 후의 위치, 끝점이 모두 유한한 수직선 0..n 안에 있어야 하고 y에서 끝나야 합니다. 서로 다른 문자 수열의 개수를 세며, 서로 다른 인덱스로 얻은 같은 문자 수열은 한 번만 셉니다. 개수를 1000000007로 나눈 나머지를 반환하세요. 경계에서 반사되거나, 넘지 않고 제자리에 머무르거나, 범위를 벗어났다가 돌아오는 것은 허용되지 않습니다.",
+    "input": "첫째 줄에 s, 둘째 줄에 n x y가 주어집니다. 원래의 전체 범위는 1≤|s|≤1000, s는 l/r로만 구성, 0≤n,x,y≤2500입니다. 원문은 x,y≤n을 보장하지 않으며 이 사이트는 이런 입력도 유지합니다. 시작점이나 끝점이 0..n 밖에 있으면 유효한 경로가 없으므로 답은 0입니다.",
+    "output": "0..1000000006 범위의 정수를 출력합니다. 모든 문자를 삭제할 수 있으므로 x=y가 유효하면 빈 부분 수열이 1을 기여합니다. n=0,x=y=0이면 답은 1이고, 그 밖에 범위 밖의 끝점이 있으면 답은 0입니다. 유한한 범위는 Flexport 원문에서 온 것이며, 빈 부분 수열은 부분 수열의 일반적인 정의를 따릅니다. 이는 같은 문제의 Meesho 버전에 있는 명시적인 삭제 정의로 뒷받침되며, 비어 있지 않아야 한다는 조건은 추가하지 않습니다.",
+    "explanation": "첫 번째 예제는 Flexport 원문 입력 rrlrr,6,1,4를 유지하되 원래 답 3을 2로 정정합니다. rrr과 rrlrr만 가능하며, 이는 32개의 모든 인덱스 부분 집합을 열거하여 증명했습니다. 로컬 컴퓨터의 이미지는 접근할 수 없으므로 근거로 사용하지 않았습니다. 뒤의 두 예제는 이 사이트가 유도한 것입니다. rr은 0에서 1로 가는 경우 r만 한 번 셉니다. rl은 0에서 0으로 돌아오는 경우 빈 문자열과 rl을 셉니다. Flexport 원문 자체는 완전한 수치 제약을 제공하며, 같은 문제의 Meesho 버전에 있는 문자 중복 제거와 삭제 정의는 보충 설명으로만 사용하고 Flexport 문제 설명의 상세 노트로 제시하지 않습니다.",
+    "hints": [
+      "위치별로 단순히 고르기/건너뛰기를 선택하면 같은 문자열을 여러 번 세게 됩니다.",
+      "현재 문자를 덧붙일 때, 같은 문자를 마지막으로 덧붙였을 때 만들어진 집합을 빼 주세요.",
+      "빈 문자열은 유지하고, 어느 단계에서든 0..n을 벗어나는 이동은 제외하세요."
+    ]
   }
 }

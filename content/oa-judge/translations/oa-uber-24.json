@@ -11,5 +11,35 @@
     "hints": [
       "Follow the reference chain until you reach an already resolved result, then mark every position on the path with that result. Finally, tally the command type of each position."
     ]
+  },
+  "ja": {
+    "title": "参照されたコマンドの最終的な実行回数",
+    "description": "各エントリは cmd1、cmd2、cmd3、または !j のいずれかで、!j は j 番目のエントリが表すコマンドを実行することを意味します。すべてのエントリを通して、3 つのコマンドが最終的にそれぞれ何回実行されるかを数えてください。本サイトの有効な入力では、すべての参照の連鎖が最終的に実際のコマンドに到達することが保証されます。前方参照も後方参照も許され、参照の循環はありません。\n\n本サイトでは標準入出力を明示しています。元の問題で与えられていない範囲は、すべて本サイトのプロトコルとして明記しています。",
+    "input": "1 行目に n、続いて n 個のコマンドのトークンが与えられます。1≤n≤100000（本サイトの範囲）で、!j の j は 1..n です。",
+    "output": "cmd1、cmd2、cmd3 の実行回数を空白区切りで出力します。",
+    "explanation": "例 1: cmd1、cmd2、cmd3 はそれぞれ 3、2、2 回実行されます。例 2: 最初の 2 つのエントリはどちらも最終的に 3 番目のエントリ cmd2 を参照するので、出力は 0 3 0 です。例 3: cmd3 は 1 つだけなので、出力は 0 0 1 です。",
+    "hints": [
+      "参照の連鎖を、すでに解決済みの結果に達するまでたどり、経路上のすべての位置にその結果を記録します。最後に、各位置のコマンドの種類を集計します。"
+    ]
+  },
+  "ko": {
+    "title": "참조된 명령의 최종 실행 횟수",
+    "description": "각 항목은 cmd1, cmd2, cmd3 또는 !j 중 하나이며, !j는 j번째 항목이 나타내는 명령을 실행한다는 뜻입니다. 모든 항목을 거쳐 세 명령이 최종적으로 각각 몇 번 실행되는지 세세요. 이 사이트의 유효한 입력에서는 모든 참조 사슬이 결국 실제 명령에 도달함이 보장됩니다. 앞쪽 참조와 뒤쪽 참조가 모두 허용되지만 참조 사이클은 없습니다.\n\n이 사이트의 표준 입출력은 명시적으로 정의되어 있으며, 원문에서 주어지지 않은 범위는 모두 이 사이트의 규약으로 표시합니다.",
+    "input": "첫째 줄에 n이 주어지고 이어서 n개의 명령 토큰이 주어집니다. 1≤n≤100000(이 사이트의 범위)이며 !j의 j는 1..n입니다.",
+    "output": "cmd1, cmd2, cmd3의 실행 횟수를 공백으로 구분해 출력합니다.",
+    "explanation": "예제 1: cmd1, cmd2, cmd3는 각각 3번, 2번, 2번 실행됩니다. 예제 2: 앞의 두 항목은 모두 결국 세 번째 항목인 cmd2를 참조하므로 출력은 0 3 0입니다. 예제 3: cmd3가 하나뿐이므로 출력은 0 0 1입니다.",
+    "hints": [
+      "이미 확정된 결과에 도달할 때까지 참조 사슬을 따라가고, 그 경로 위의 모든 위치에 그 결과를 표시합니다. 마지막에 각 위치의 명령 종류를 집계합니다."
+    ]
+  },
+  "vi": {
+    "title": "Số lần thực thi cuối cùng của các lệnh được tham chiếu",
+    "description": "Mỗi mục là một trong cmd1, cmd2, cmd3 hoặc !j, nghĩa là thực thi lệnh do mục thứ j biểu diễn. Hãy đếm xem mỗi lệnh trong ba lệnh cuối cùng được thực thi bao nhiêu lần trên tất cả các mục. Đầu vào hợp lệ trên trang này đảm bảo mọi chuỗi tham chiếu cuối cùng đều dẫn đến một lệnh thực sự; cho phép tham chiếu tới và tham chiếu lùi, nhưng không có chu trình tham chiếu.\n\nĐầu vào/đầu ra chuẩn của trang này được nêu rõ; những phạm vi mà nguồn không cho đều được đánh dấu là giao thức của trang này.",
+    "input": "Dòng đầu chứa n, tiếp theo là n token lệnh, 1≤n≤100000 (phạm vi của trang này); j trong !j nằm trong 1..n.",
+    "output": "In ra số lần thực thi của cmd1, cmd2 và cmd3, cách nhau bằng khoảng trắng.",
+    "explanation": "Ví dụ 1: cmd1, cmd2 và cmd3 lần lượt được thực thi 3, 2 và 2 lần. Ví dụ 2: hai mục đầu tiên đều cuối cùng tham chiếu đến mục thứ ba, cmd2, nên đầu ra là 0 3 0. Ví dụ 3: chỉ có một cmd3, nên đầu ra là 0 0 1.",
+    "hints": [
+      "Đi theo chuỗi tham chiếu cho đến khi gặp một kết quả đã được xác định, rồi đánh dấu mọi vị trí trên đường đi bằng kết quả đó. Cuối cùng, thống kê loại lệnh của từng vị trí."
+    ]
   }
 }

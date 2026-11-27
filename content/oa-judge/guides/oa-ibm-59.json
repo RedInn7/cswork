@@ -13,6 +13,21 @@
       "One operation changes only one digit of one integer, with no carrying and no moving digits, so different digits are completely independent.",
       "Look at a single digit: going from digit x to y moves at most 1 closer per operation, so it needs at least |x - y| operations, and stepping straight toward the target uses exactly that many. The answer is the sum of the absolute differences of all corresponding digits.",
       "For each index treat arr1[i] and arr2[i] as digit strings of equal length, add the absolute difference of each pair of corresponding digits to a running total (use a 64-bit integer), and print the total after all n pairs."
+    ],
+    "ja": [
+      "1回の操作で変わるのは、ある整数の1つの桁だけで、繰り上がりも桁の移動もないため、異なる桁どうしは完全に独立です。",
+      "1つの桁に注目すると、桁 x から y へは1回の操作で最大 1 しか近づけないため、少なくとも |x - y| 回必要で、目標へ向かってまっすぐ進めばちょうどその回数で済みます。答えは、対応するすべての桁の絶対差の総和です。",
+      "各インデックスについて arr1[i] と arr2[i] を同じ長さの桁文字列として扱い、対応する各桁の絶対差を合計(64ビット整数を使う)に加えます。n 個のペアすべてを処理したら合計を出力します。"
+    ],
+    "ko": [
+      "한 번의 연산은 한 정수의 숫자 하나만 바꾸며 올림도 자리 이동도 없으므로, 서로 다른 자릿수는 완전히 독립적입니다.",
+      "한 자릿수만 보면, 숫자 x에서 y로 가는 데 연산 한 번당 최대 1만큼 가까워지므로 최소 |x - y|번이 필요하고, 목표를 향해 곧장 가면 정확히 그만큼만 듭니다. 따라서 답은 대응하는 모든 자릿수의 절댓값 차이의 합입니다.",
+      "각 인덱스에서 arr1[i]와 arr2[i]를 길이가 같은 숫자 문자열로 보고, 대응하는 숫자 쌍의 절댓값 차이를 누적 합에 더합니다(64비트 정수를 사용합니다). n개의 쌍을 모두 처리한 뒤 합계를 출력합니다."
+    ],
+    "vi": [
+      "Một thao tác chỉ đổi một chữ số của một số nguyên, không nhớ và không dịch chữ số, nên các chữ số hoàn toàn độc lập với nhau.",
+      "Xét riêng một chữ số: đi từ chữ số x đến y, mỗi thao tác chỉ tiến gần được nhiều nhất 1, nên cần ít nhất |x - y| thao tác, và cứ bước thẳng về phía đích thì đúng bằng số đó. Đáp án là tổng các hiệu tuyệt đối của mọi chữ số tương ứng.",
+      "Với mỗi chỉ số, xem arr1[i] và arr2[i] là hai xâu chữ số cùng độ dài, cộng hiệu tuyệt đối của từng cặp chữ số tương ứng vào tổng chạy (dùng số nguyên 64 bit), và in tổng sau khi xử lý hết n cặp."
     ]
   },
   "explanationEn": "## Approach\n\nFor each number, add up digit by digit the absolute differences of the corresponding digit characters.\n\n## Proof of correctness\n\nEach operation can move one digit at most 1 closer to its target, so that digit needs at least as many operations as the absolute difference of the two digits. Changing each digit step by step toward its target reaches exactly this lower bound; digits are independent and there is no carrying, so the sum of all lower bounds is optimal.\n\n## Complexity\n\nTime O(10n), extra space O(1)."

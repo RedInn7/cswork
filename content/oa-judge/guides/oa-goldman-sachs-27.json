@@ -13,6 +13,21 @@
       "After every operation you need the current minimum and maximum of a multiset; insertion is easy, and the difficulty is that after removing an arbitrary value, a heap top may no longer be in the set.",
       "Keep a frequency table of how many copies of each value are present, plus a min-heap and a max-heap. A pop only decrements the frequency and does not delete from the heaps; before reading the answer, pop heap tops whose frequency has dropped to 0 (lazy deletion).",
       "push x: increment its frequency and add x to both the min-heap and the max-heap; pop x: decrement its frequency; after every operation clean values with frequency 0 off both heap tops; if the set is empty output 0, otherwise output the product of the two tops (up to 10^18, use 64 bits). There are many output lines, so buffer the output."
+    ],
+    "ja": [
+      "各操作の後に、多重集合の現在の最小値と最大値が必要です。挿入は簡単で、難しいのは、任意の値を取り除いた後に、ヒープの先頭がすでに集合に含まれていない可能性があることです。",
+      "各値が現在何個あるかの頻度表と、最小ヒープ、最大ヒープを保持します。pop は頻度を減らすだけで、ヒープからは削除しません。答えを読む前に、頻度が 0 になったヒープの先頭を取り除きます（遅延削除）。",
+      "push x: 頻度を増やし、x を最小ヒープと最大ヒープの両方に追加します。pop x: 頻度を減らします。各操作の後に、両方のヒープの先頭から頻度が 0 の値を掃除します。集合が空なら 0 を出力し、そうでなければ 2 つの先頭の積（最大 10^18、64 ビットを使います）を出力します。出力行が多いので、出力はバッファリングします。"
+    ],
+    "ko": [
+      "매 연산 후 다중집합의 현재 최솟값과 최댓값이 필요합니다. 삽입은 쉽지만, 임의의 값을 제거한 뒤에는 힙의 top이 더 이상 집합에 없을 수 있다는 점이 어렵습니다.",
+      "각 값의 사본이 몇 개 있는지를 기록하는 빈도 표와 함께 최소 힙, 최대 힙을 유지합니다. pop은 빈도만 줄이고 힙에서 삭제하지 않으며, 답을 읽기 전에 빈도가 0이 된 힙 top을 꺼냅니다(지연 삭제).",
+      "push x는 빈도를 1 늘리고 x를 최소 힙과 최대 힙에 모두 추가합니다. pop x는 빈도를 1 줄입니다. 매 연산 후 두 힙의 top에서 빈도가 0인 값을 정리하고, 집합이 비어 있으면 0을, 아니면 두 top의 곱(최대 10^18이므로 64비트 사용)을 출력합니다. 출력 줄이 많으므로 출력을 버퍼링하세요."
+    ],
+    "vi": [
+      "Sau mỗi thao tác bạn cần giá trị nhỏ nhất và lớn nhất hiện tại của một đa tập; việc chèn thì dễ, và khó khăn là sau khi xóa một giá trị tùy ý, đỉnh heap có thể không còn thuộc tập.",
+      "Giữ một bảng tần suất cho biết có bao nhiêu bản sao của mỗi giá trị đang có, cùng một min-heap và một max-heap. Một pop chỉ giảm tần suất và không xóa khỏi các heap; trước khi đọc đáp án, hãy pop các đỉnh heap có tần suất đã giảm xuống 0 (xóa lười).",
+      "push x: tăng tần suất của nó và thêm x vào cả min-heap và max-heap; pop x: giảm tần suất của nó; sau mỗi thao tác dọn các giá trị có tần suất 0 khỏi cả hai đỉnh heap; nếu tập rỗng thì in 0, ngược lại in tích của hai đỉnh (tối đa 10^18, dùng 64 bit). Có nhiều dòng đầu ra, nên hãy đệm (buffer) đầu ra."
     ]
   },
   "explanationEn": "## Approach\n\nMaintain the element frequencies, a min-heap and a max-heap. On push, increment the frequency and push x and −x onto the two heaps respectively; on pop, only decrement the frequency. Before reading the answer, repeatedly remove heap tops whose frequency is already 0. The two heap tops give the current minimum and maximum, and their product is the answer; when the set is empty, output 0 as the source code does.\n\n## Correctness\n\nThe frequency table records exactly how many copies of each value the multiset holds. With lazy deletion, heap elements whose frequency is 0 do not belong to the current set, and after cleaning, the valid tops of the min-heap and max-heap are the current minimum and maximum respectively, so the product is correct. If the frequency table is empty, all three source implementations return 0, and the candidate follows the same rule.\n\n## Complexity\n\nEach operation inserts at most once into each heap, and each heap element is popped at most once, giving O(n log n) time and O(n) space. The original n≤100000 and x≤10^9 are fully supported; the product is at most 10^18, so a 64-bit signed integer suffices. At most 100000 lines of 19 digits plus a newline make 2000000 bytes, below this problem's 8192 KiB output limit. Independent verification uses a direct list oracle and a compressed Fenwick order-statistics oracle, and the full-size cases are additionally cross-checked against closed-form expectations."

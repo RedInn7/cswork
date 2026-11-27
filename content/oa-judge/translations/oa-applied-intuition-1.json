@@ -11,5 +11,35 @@
     "hints": [
       "Kahn topological sort, using a min-heap to decide which module to pick among those available at the same moment."
     ]
+  },
+  "ja": {
+    "title": "Compilation Order with Topological Sort",
+    "description": "依存関係 [module, prerequisite] は、prerequisite を先にコンパイルすることを意味します。毎回、その時点でコンパイル可能なモジュールのうち辞書順で最小のものを選びます。循環が存在する場合は IMPOSSIBLE を返してください。\n\nこのサイトで追加された標準入出力の規約と制約については「入力」を参照してください。",
+    "input": "モジュール名は互いに異なり、空白を含みません。n,m≤200000 で、依存関係はペアとして与えられます。",
+    "output": "コンパイル順序、または IMPOSSIBLE を出力してください。",
+    "explanation": "Kahn のトポロジカルソートを使い、同時に選べるモジュールのうちどれを選ぶかを min-heap で決めます。",
+    "hints": [
+      "Kahn のトポロジカルソートを使い、同時に選べるモジュールのうちどれを選ぶかを min-heap で決めます。"
+    ]
+  },
+  "ko": {
+    "title": "Compilation Order with Topological Sort",
+    "description": "의존성 [module, prerequisite]는 prerequisite를 먼저 컴파일한다는 뜻입니다. 매번 현재 컴파일할 수 있는 모듈 중 사전순으로 가장 작은 것을 선택합니다. 사이클이 있으면 IMPOSSIBLE을 반환하세요.\n\n이 사이트에서 추가한 표준 입출력 규칙과 제약 조건은 \"입력\" 항목을 참고하세요.",
+    "input": "모듈 이름은 서로 다르며 공백을 포함하지 않습니다. n,m≤200000이며, 의존성은 쌍으로 주어집니다.",
+    "output": "컴파일 순서 또는 IMPOSSIBLE을 출력합니다.",
+    "explanation": "Kahn 위상 정렬을 쓰되, 같은 시점에 선택할 수 있는 모듈 중 무엇을 고를지는 최소 힙으로 결정합니다.",
+    "hints": [
+      "Kahn 위상 정렬을 쓰되, 같은 시점에 선택할 수 있는 모듈 중 무엇을 고를지는 최소 힙으로 결정합니다."
+    ]
+  },
+  "vi": {
+    "title": "Compilation Order with Topological Sort",
+    "description": "Một phụ thuộc [module, prerequisite] nghĩa là prerequisite được biên dịch trước; mỗi lần, chọn module nhỏ nhất theo thứ tự từ điển trong số các module hiện có thể biên dịch. Nếu tồn tại chu trình, trả về IMPOSSIBLE.\n\nXem phần \"Đầu vào\" để biết quy ước nhập/xuất chuẩn và các ràng buộc do trang này bổ sung.",
+    "input": "Tên module đôi một khác nhau và không chứa khoảng trắng; n,m≤200000, và các phụ thuộc được cho dưới dạng các cặp.",
+    "output": "In ra thứ tự biên dịch hoặc IMPOSSIBLE.",
+    "explanation": "Sắp xếp tô-pô Kahn, dùng min-heap để quyết định chọn module nào trong số các module khả dụng cùng một thời điểm.",
+    "hints": [
+      "Sắp xếp tô-pô Kahn, dùng min-heap để quyết định chọn module nào trong số các module khả dụng cùng một thời điểm."
+    ]
   }
 }

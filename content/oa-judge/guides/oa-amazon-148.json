@@ -13,6 +13,21 @@
       "Whether a character occurs only once depends on its total count in the whole string, not on where it sits; know how often each letter occurs first, then look for the earliest one.",
       "Make two passes: the first counts the 26 letters, the second walks the string in its original order and stops at the first character whose count is 1.",
       "Count with an array of 26; then go through the indices i from left to right, and at the first character whose count is 1 print i+1 (positions are 1-based) and stop; if the walk ends without one, print -1."
+    ],
+    "ja": [
+      "文字が 1 回しか現れないかどうかは、文字列全体での総出現回数で決まり、位置には依存しません。まず各文字が何回現れるかを調べ、それから最も早いものを探します。",
+      "2 回の走査を行います。1 回目で 26 文字を数え、2 回目で元の順序で文字列をたどり、回数が 1 の最初の文字で止まります。",
+      "26 要素の配列で数えます。その後、添字 i を左から右にたどり、回数が 1 の最初の文字で i+1 を出力して終了します（位置は 1 始まり）。見つからずに終わったら -1 を出力します。"
+    ],
+    "ko": [
+      "문자가 한 번만 나오는지는 문자열 전체에서의 등장 횟수로 결정되며 그 문자가 어디에 있는지와는 무관합니다. 먼저 각 글자가 몇 번 나오는지 알아낸 다음 가장 앞선 것을 찾으세요.",
+      "두 번의 패스를 합니다. 첫 번째는 26개 글자를 세고, 두 번째는 문자열을 원래 순서대로 훑으며 개수가 1인 첫 문자에서 멈춥니다.",
+      "크기 26의 배열로 센 뒤, 인덱스 i를 왼쪽부터 훑다가 개수가 1인 첫 문자에서 i+1을 출력하고(위치는 1부터 시작) 멈춥니다. 하나도 없이 끝나면 -1을 출력합니다."
+    ],
+    "vi": [
+      "Việc một ký tự chỉ xuất hiện một lần phụ thuộc vào tổng số lần của nó trong cả chuỗi, không phụ thuộc vào vị trí; hãy biết trước mỗi chữ cái xuất hiện bao nhiêu lần, rồi mới tìm chữ cái sớm nhất.",
+      "Duyệt hai lượt: lượt đầu đếm 26 chữ cái, lượt thứ hai đi qua chuỗi theo thứ tự ban đầu và dừng ở ký tự đầu tiên có số lần bằng 1.",
+      "Đếm bằng một mảng 26 phần tử; sau đó duyệt các chỉ số i từ trái sang phải, và ở ký tự đầu tiên có số lần bằng 1 thì in i+1 (vị trí tính từ 1) rồi dừng; nếu duyệt xong mà không có, in -1."
     ]
   },
   "explanationEn": "## Approach\n\nFirst count the frequency of each character, then scan in the original order for the first character whose frequency is 1.\n\n## Proof of correctness\n\nThe frequency table decides uniqueness exactly, and the first unique character met in the original order is exactly the earliest position asked for.\n\n## Complexity\n\nTime O(n), auxiliary space O(26)."

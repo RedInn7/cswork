@@ -11,5 +11,35 @@
     "hints": [
       "Each mutation character consumes, one by one, the run of ordinary characters to its left up to the previous mutation character. The answer is the maximum length of the ordinary run before any mutation character; the trailing ordinary run is never consumed."
     ]
+  },
+  "ja": {
+    "title": "変異文字が左隣を同時に削除するとき、安定するまでのラウンド数",
+    "description": "各ラウンドで、直前の左隣が通常文字である変異文字はすべて、その左隣を削除します。削除はすべて同時に行われ、変異文字同士が削除し合うことはありません。これ以上削除が起こらなくなるまでのラウンド数を求めてください。削除が一度も起こらない場合は 0 です。\n\n標準入出力・例・判定は CSWork が独自に作成したものです。このサイト独自の規約は、元の問題の制約としては扱っていません。",
+    "input": "1 行目に小文字のゲノム（長さ 1..100000）、2 行目に小文字 1 文字の変異文字が与えられます。",
+    "output": "整数 1 つ（答え）を出力してください。",
+    "explanation": "例 1: 1 ラウンド目で 2 つの m がそれぞれ a と e を削除して tmm になり、2 ラウンド目で最初の m が t を削除して mm が残るので、答えは 2 です。例 2: 変異文字がないので 0 ラウンドです。例 3: 最後の m が先に b、次に a を削除し、2 ラウンドで mmm が残ります。",
+    "hints": [
+      "各変異文字は、直前の変異文字との間にある通常文字の連続部分を、1 つずつ左から削っていきます。答えは、変異文字の前にある通常文字の連続部分の最大長で、末尾の通常文字の連続部分は削られません。"
+    ]
+  },
+  "ko": {
+    "title": "변이 문자가 왼쪽 이웃을 동시에 삭제할 때 안정될 때까지의 라운드 수",
+    "description": "각 라운드에서, 바로 왼쪽 이웃이 변이 문자가 아닌 모든 변이 문자가 그 이웃을 삭제하며 모든 삭제는 동시에 일어납니다. 변이 문자끼리는 서로를 삭제하지 않습니다. 더 이상 삭제가 일어나지 않을 때까지의 라운드 수를 구하세요. 삭제가 한 번도 일어나지 않으면 0입니다.\n\n표준 입출력 형식, 예제, 채점은 이 사이트가 독자적으로 작성했습니다.",
+    "input": "첫째 줄에 소문자로 이루어진 genome(길이 1..100000)이, 둘째 줄에 소문자 변이 문자 하나가 주어집니다.",
+    "output": "정수 하나로 답을 출력합니다.",
+    "explanation": "예제 1: 첫 번째 라운드에서 두 m이 각각 a와 e를 삭제하여 tmm이 되고, 두 번째 라운드에서 첫 번째 m이 t를 삭제하여 mm이 남으므로 답은 2입니다. 예제 2: 변이 문자가 없으므로 0라운드입니다. 예제 3: 마지막 m이 먼저 b를, 이어서 a를 삭제하여 두 라운드 후 mmm이 남습니다.",
+    "hints": [
+      "각 변이 문자는 자기 왼쪽의, 이전 변이 문자까지 이어지는 일반 문자 구간을 한 글자씩 소비합니다. 답은 어떤 변이 문자 앞에 있는 일반 문자 구간의 최대 길이이며, 끝에 있는 일반 문자 구간은 소비되지 않습니다."
+    ]
+  },
+  "vi": {
+    "title": "Số vòng để ổn định khi các ký tự đột biến cùng lúc xóa hàng xóm bên trái",
+    "description": "Trong mỗi vòng, mọi ký tự đột biến mà hàng xóm ngay bên trái là một ký tự không đột biến sẽ xóa hàng xóm đó, và mọi lần xóa diễn ra đồng thời; các ký tự đột biến không bao giờ xóa lẫn nhau. Hãy tìm số vòng cho đến khi không còn lần xóa nào xảy ra, hoặc 0 nếu không có lần xóa nào xảy ra.\n\nĐầu vào/đầu ra chuẩn, các ví dụ và bộ chấm do CSWork tự biên soạn độc lập; những quy ước được ghi là của trang này không được trình bày như ràng buộc gốc của đề.",
+    "input": "Dòng đầu tiên chứa genome gồm chữ cái thường (độ dài 1..100000), và dòng thứ hai chứa một chữ cái thường là ký tự đột biến.",
+    "output": "In ra một số nguyên duy nhất là đáp án.",
+    "explanation": "Ví dụ 1: ở vòng đầu, hai chữ m lần lượt xóa a và e, còn lại tmm; ở vòng hai, chữ m đầu tiên xóa t, còn lại mm, nên đáp án là 2. Ví dụ 2: không có ký tự đột biến, 0 vòng. Ví dụ 3: chữ m cuối cùng xóa b trước rồi đến a, còn lại mmm sau hai vòng.",
+    "hints": [
+      "Mỗi ký tự đột biến lần lượt nuốt từng ký tự của đoạn ký tự thường bên trái nó cho tới ký tự đột biến trước đó. Đáp án là độ dài lớn nhất của đoạn ký tự thường đứng trước một ký tự đột biến; đoạn ký tự thường ở cuối không bao giờ bị nuốt."
+    ]
   }
 }

@@ -13,6 +13,21 @@
       "No prefix can have a MEX larger than the MEX of the whole remaining array, so the best first value in each round is the remaining array's MEX, and any prefix containing 0..MEX-1 achieves it.",
       "Once that value is reached, delete as little as possible: keeping more elements lets the result grow longer and lexicographically larger. When the MEX is 0, delete one element at a time to get as many zeros as possible.",
       "Count frequencies to get the initial MEX; each round let target be the current MEX and delete elements one by one: when a frequency drops to 0 lower MEX to min(MEX, v); if v < target and it is new in this round count it, and end the round when the count reaches target (after one element if target is 0). Mark seen values with the round number instead of clearing a set. Finally print the result length and the sequence."
+    ],
+    "ja": [
+      "どの接頭辞の MEX も、残りの配列全体の MEX より大きくはなれません。したがって各ラウンドで最善の最初の値は残りの配列の MEX であり、0..MEX-1 を含む接頭辞ならどれでもそれを達成できます。",
+      "その値に達したら、できるだけ少なく削除します。多く残すほど結果が長くなり、辞書順でも大きくなりえます。MEX が 0 のときは、0 をできるだけ多く得るために 1 要素ずつ削除します。",
+      "出現頻度を数えて最初の MEX を求めます。各ラウンドで target を現在の MEX とし、要素を 1 つずつ削除します。出現頻度が 0 になったら MEX を min(MEX, v) に下げます。v < target でこのラウンドで初めて現れた値ならカウントし、カウントが target に達したらそのラウンドを終えます（target が 0 なら 1 要素で終えます）。集合をクリアする代わりに、見た値はラウンド番号でマークします。最後に結果の長さと列を出力してください。"
+    ],
+    "ko": [
+      "어떤 접두사의 MEX도 남은 배열 전체의 MEX보다 클 수 없으므로 매 라운드의 최선의 첫 값은 남은 배열의 MEX이고, 0..MEX-1을 모두 포함하는 접두사면 이를 달성합니다.",
+      "그 값에 도달했다면 가능한 한 적게 삭제합니다. 더 많은 원소를 남겨야 결과가 더 길어지고 사전순으로도 더 커지기 때문입니다. MEX가 0일 때는 0을 최대한 많이 얻도록 한 번에 원소 하나씩 삭제합니다.",
+      "빈도를 세어 초기 MEX를 구합니다. 매 라운드에서 target을 현재 MEX로 두고 원소를 하나씩 삭제하면서, 빈도가 0이 되면 MEX를 min(MEX, v)로 낮춥니다. v < target이고 이번 라운드에서 처음 본 값이면 개수를 세고, 개수가 target에 도달하면(target이 0이면 원소 하나 뒤에) 라운드를 끝냅니다. 집합을 비우는 대신 라운드 번호로 본 값을 표시합니다. 마지막으로 결과의 길이와 수열을 출력합니다."
+    ],
+    "vi": [
+      "Không tiền tố nào có MEX lớn hơn MEX của cả mảng còn lại, nên giá trị đầu tiên tốt nhất của mỗi vòng là MEX của mảng còn lại, và mọi tiền tố chứa 0..MEX-1 đều đạt được nó.",
+      "Khi đã đạt giá trị đó, hãy xóa càng ít càng tốt: giữ lại nhiều phần tử hơn giúp kết quả dài hơn và lớn hơn theo từ điển. Khi MEX bằng 0, hãy xóa từng phần tử một để có càng nhiều số 0 càng tốt.",
+      "Đếm tần suất để có MEX ban đầu; ở mỗi vòng, gọi target là MEX hiện tại và xóa từng phần tử: khi một tần suất về 0 thì hạ MEX xuống min(MEX, v); nếu v < target và nó mới trong vòng này thì đếm nó, và kết thúc vòng khi số đếm đạt target (sau một phần tử nếu target bằng 0). Đánh dấu các giá trị đã thấy bằng số thứ tự vòng thay vì xóa tập. Cuối cùng in độ dài kết quả và dãy."
     ]
   },
   "explanationEn": "## Approach\n\nPrecompute the suffix frequencies and the MEX; in each round take the MEX of the remaining array and cut the shortest prefix that first covers 0..MEX-1. When the MEX is 0, delete only one element. When a frequency drops to zero, update the suffix MEX downward.\n\n## Correctness\n\nThe MEX of any prefix cannot exceed the MEX of the whole remaining array, and covering all smaller numbers achieves this optimal first item. Once it is achieved, ending earlier keeps more elements, and any plan that deletes more is compatible with the first part of the kept array, so it cannot improve the lexicographic order; the optimal solution of the remainder therefore applies recursively. When the MEX is 0, keeping the most elements maximizes the number of zero items. Each element is consumed only once, and the total initialization length of the required sets does not exceed n.\n\n## Complexity\n\nTime O(n), space O(n)."

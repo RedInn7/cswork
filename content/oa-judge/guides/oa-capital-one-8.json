@@ -13,6 +13,21 @@
       "A segment is complete at some moment exactly when every offset of [start, start + length) has arrived; once complete it stays complete and is counted only once.",
       "Keep the set of arrived offsets and a done flag per segment; after each byte, check every unfinished segment to see whether its whole range is now covered.",
       "Mark arrived offsets in a boolean array; for the i-th byte mark it, then go through all unfinished segments and check each position of the range (stopping at the first missing one); if all are present mark the segment done and increase the count; append the current count after each byte and print the m numbers separated by spaces."
+    ],
+    "ja": [
+      "セグメントがある時点で完了しているとは、[start, start + length) のすべてのオフセットが到着していることにほかなりません。一度完了すれば完了のままで、数えるのは1回だけです。",
+      "到着したオフセットの集合と、セグメントごとの完了フラグを持ちます。各バイトの後、未完了のセグメントそれぞれについて、範囲全体が埋まったかを調べます。",
+      "到着したオフセットを真偽値の配列に記録します。i 番目のバイトを記録した後、未完了のセグメントをすべて調べ、範囲の各位置を確認します(最初に欠けている位置で打ち切る)。すべて揃っていればそのセグメントを完了とし、カウントを増やします。各バイトの後に現在のカウントを追加し、m 個の数を空白区切りで出力します。"
+    ],
+    "ko": [
+      "구간이 어느 시점에 완성되었다는 것은 [start, start + length)의 모든 오프셋이 도착했다는 것과 정확히 같습니다. 한번 완성되면 계속 완성 상태이며 한 번만 셉니다.",
+      "도착한 오프셋의 집합과 구간별 완료 플래그를 유지합니다. 바이트가 하나 도착할 때마다 아직 끝나지 않은 모든 구간에 대해 전체 범위가 이제 채워졌는지 확인합니다.",
+      "도착한 오프셋을 불리언 배열에 표시합니다. i번째 바이트를 표시한 뒤 끝나지 않은 모든 구간을 훑으며 범위의 각 위치를 확인합니다(처음으로 빠진 곳에서 중단). 모두 있으면 구간을 완료로 표시하고 개수를 증가시킵니다. 바이트마다 현재 개수를 기록하고 m개의 수를 공백으로 구분하여 출력합니다."
+    ],
+    "vi": [
+      "Một đoạn hoàn chỉnh tại một thời điểm đúng khi mọi offset của [start, start + length) đã đến; khi đã hoàn chỉnh thì luôn hoàn chỉnh và chỉ được đếm một lần.",
+      "Giữ tập các offset đã đến và một cờ done cho mỗi đoạn; sau mỗi byte, kiểm tra từng đoạn chưa xong xem toàn bộ khoảng của nó đã được phủ chưa.",
+      "Đánh dấu các offset đã đến trong một mảng boolean; với byte thứ i, đánh dấu nó rồi duyệt mọi đoạn chưa xong và kiểm tra từng vị trí của khoảng (dừng ở vị trí thiếu đầu tiên); nếu đủ cả thì đánh dấu đoạn đó done và tăng số đếm; thêm số đếm hiện tại sau mỗi byte và in m số cách nhau bởi dấu cách."
     ]
   },
   "explanationEn": "## Approach\n\nKeep the set of offsets received so far. Each time an offset arrives, check, for every segment not yet complete, whether every position of its half-open range has appeared; a completed segment is counted only once.\n\n## Proof of correctness\n\nThe range contains exactly the byte positions the segment requires, so the subset check is equivalent to the segment having been received in full. All unfinished segments are re-checked at every moment, so the running count of completed segments is exact.\n\n## Complexity\n\nO(mL) time, where L is the total length of all segments; O(L+m) space.\n\n## Source notes\n\nThe original text explicitly uses `[start,start+length)`; this site adds the stdin/stdout protocol and the size limits."

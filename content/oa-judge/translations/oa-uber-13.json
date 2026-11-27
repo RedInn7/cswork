@@ -11,5 +11,35 @@
     "hints": [
       "Build the current line string paragraph by paragraph; when the next entry does not fit, output the current line and start a new one. Pad one side with spaces according to the tag and add the border."
     ]
+  },
+  "ja": {
+    "title": "段落ごとに左寄せ・右寄せを指定する星枠付きテキストボックス",
+    "description": "各段落には LEFT または RIGHT の揃えタグが付いています。元の順序のまま、各行にできるだけ多くのエントリを貪欲に詰め、エントリの間に空白を 1 つ入れます。エントリを分割してはいけません。行の余った空白は、LEFT なら右側、RIGHT なら左側に置きます。外枠の各行の幅は width+2 で、上下の行はすべて * です。内容の各行は両端に * を 1 つずつ付け、余分な詰め物は入れません。元の例の「Please look」のように空白を含むエントリは、1 つのエントリとしてそのまま扱います。\n\n本サイトでは標準入出力を明示しています。元の問題で与えられていない範囲は、本サイトの取り決めとして明記しています。",
+    "input": "1 行目に幅 width と段落数 P が与えられます。各段落は align wordCount の行で始まり、続く wordCount 行にエントリが 1 つずつ書かれています。5≤width≤100、1≤P≤50 です。元の問題にはエントリ数や文字数の範囲がありません。本サイトでは、1 段落あたりのエントリ数を 1..100、各エントリの長さを 1..width とし、可視 ASCII 文字と内部の空白からなり、先頭と末尾に空白はないものとします。",
+    "output": "星枠付きのテキストボックス全体を出力します。行数は出力しません。各行はちょうど width+2 文字で、空白はすべて残し、最終行の後にも改行を付けます。",
+    "explanation": "例 1: 出力は 18 文字の行が 7 行です。hello world は右に空白 5 つが詰められ、How areYou doing はちょうど 16 桁を埋め、最後の 3 つのエントリはそれぞれ 1 行ずつで、左にそれぞれ空白 5、7、8 個が詰められます。例 2: a b c は内容の 5 桁をちょうど埋めるので、詰め物は不要です。例 3: a b と cc を一緒にすると 6 桁必要になるので 2 行に分かれ、左にそれぞれ空白 2 つと 3 つが詰められます。",
+    "hints": [
+      "段落ごとに現在の行の文字列を組み立て、次のエントリが入らなくなったら現在の行を出力して新しい行を始めます。タグに応じて片側を空白で埋め、枠を付けます。"
+    ]
+  },
+  "ko": {
+    "title": "문단별 좌/우 정렬이 있는 별 테두리 텍스트 상자",
+    "description": "각 문단에는 LEFT 또는 RIGHT 정렬 태그가 있습니다. 원래 순서대로 한 줄에 가능한 한 많은 항목을 탐욕적으로 담고, 항목 사이에는 공백 하나를 둡니다. 항목은 쪼개지 않습니다. 줄에서 남는 공간은 LEFT이면 오른쪽에, RIGHT이면 왼쪽에 둡니다. 바깥 틀의 각 줄은 너비가 width+2이며, 위아래 줄은 모두 *이고, 각 내용 줄은 양 끝에 *가 하나씩 있으며 추가 패딩은 넣지 않습니다. 원문 예제의 \"Please look\"처럼 공백이 들어 있는 항목은 하나의 항목으로 그대로 유지합니다.\n\n이 사이트의 표준 입출력은 명시적으로 정의되어 있으며, 원문 문제에서 주어지지 않은 범위는 이 사이트의 규약으로 표시합니다.",
+    "input": "첫째 줄에 너비 width와 문단 수 P가 주어집니다. 각 문단은 align wordCount가 적힌 줄로 시작하고, 이어서 wordCount개의 줄에 항목이 하나씩 주어집니다. 5≤width≤100, 1≤P≤50입니다. 원문은 항목 수와 문자 수의 범위를 주지 않으며, 이 사이트에서는 문단당 1..100개의 항목, 각 항목의 길이는 1..width, 보이는 ASCII 문자와 내부 공백으로 이루어지고 앞뒤 공백은 없습니다.",
+    "output": "별 테두리 텍스트 상자 전체를 줄 수 없이 출력합니다. 각 줄은 정확히 width+2자이며 모든 공백을 그대로 유지하고, 마지막 줄 뒤에도 개행을 붙입니다.",
+    "explanation": "예제 1: 출력은 18자짜리 7줄입니다. hello world는 오른쪽에 공백 5개가 채워지고, How areYou doing은 16열을 정확히 채우며, 마지막 세 항목은 각각 한 줄씩 차지하고 왼쪽에 공백이 각각 5개, 7개, 8개 채워집니다. 예제 2: a b c는 내용 열 5개를 정확히 채우므로 패딩이 필요 없습니다. 예제 3: a b와 cc를 한 줄에 놓으면 6열이 필요하므로 두 줄로 나뉘어야 하고, 왼쪽에 각각 공백 2개와 3개가 채워집니다.",
+    "hints": [
+      "문단별로 현재 줄 문자열을 만들어 가다가 다음 항목이 들어가지 않으면 현재 줄을 출력하고 새 줄을 시작합니다. 태그에 따라 한쪽에 공백을 채우고 테두리를 붙입니다."
+    ]
+  },
+  "vi": {
+    "title": "Khung văn bản viền dấu sao với căn trái/phải theo từng đoạn",
+    "description": "Mỗi đoạn có một thẻ căn lề LEFT hoặc RIGHT. Theo thứ tự ban đầu, xếp tham lam càng nhiều mục càng tốt vào mỗi dòng, giữa các mục có một khoảng trắng và không bao giờ tách một mục. Phần chỗ trống còn lại của dòng nằm ở bên phải (LEFT) hoặc bên trái (RIGHT). Mỗi dòng của khung ngoài rộng width+2; dòng trên và dòng dưới toàn là *, mỗi dòng nội dung có một * ở hai đầu, và không thêm đệm nào khác. Các mục chứa khoảng trắng, như \"Please look\" trong ví dụ gốc, được giữ nguyên như một mục trọn vẹn.\n\nĐầu vào/đầu ra chuẩn của trang này được nêu rõ; những phạm vi mà bài gốc không cho đều được đánh dấu là quy ước của trang này.",
+    "input": "Dòng đầu chứa width P; mỗi đoạn bắt đầu bằng một dòng align wordCount, tiếp theo là wordCount dòng, mỗi dòng một mục. 5≤width≤100, 1≤P≤50. Bài gốc không cho phạm vi số mục hay số ký tự; trang này dùng 1..100 mục mỗi đoạn, mỗi mục dài 1..width, gồm các ký tự ASCII nhìn thấy được và khoảng trắng ở giữa, không có khoảng trắng ở đầu hay cuối.",
+    "output": "In ra toàn bộ khung văn bản viền dấu sao, không kèm số dòng; mỗi dòng có đúng width+2 ký tự, giữ nguyên mọi khoảng trắng, và sau dòng cuối có ký tự xuống dòng.",
+    "explanation": "Ví dụ 1: đầu ra có 7 dòng, mỗi dòng 18 ký tự; hello world được đệm thêm 5 khoảng trắng bên phải, How areYou doing lấp đầy đúng 16 cột, và ba mục cuối mỗi mục một dòng, được đệm bên trái lần lượt 5, 7 và 8 khoảng trắng. Ví dụ 2: a b c lấp đầy đúng 5 cột nội dung, nên không cần đệm. Ví dụ 3: đặt a b và cc cùng nhau sẽ cần 6 cột, nên phải chia thành hai dòng, đệm bên trái lần lượt 2 và 3 khoảng trắng.",
+    "hints": [
+      "Dựng chuỗi của dòng hiện tại theo từng đoạn; khi mục tiếp theo không vừa, in dòng hiện tại và bắt đầu dòng mới. Đệm khoảng trắng về một phía theo thẻ và thêm viền."
+    ]
   }
 }

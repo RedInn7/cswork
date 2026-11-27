@@ -13,6 +13,21 @@
       "Whether two strings are anagrams depends only on how many times each letter appears, not on order; if the lengths differ, no replacement can make them anagrams.",
       "Compare the 26 letter counts of the two strings: every surplus letter in one string must be replaced by a letter the other string has in surplus, and each replacement fixes exactly one surplus and one shortage.",
       "If the lengths differ, output −1; otherwise sum the absolute differences of the letter counts over all 26 letters and divide by 2. When reading, a line containing only - means an empty string."
+    ],
+    "ja": [
+      "2 つの文字列がアナグラムかどうかは、各文字の出現回数だけで決まり、順序には依存しません。長さが異なれば、どんな置き換えでもアナグラムにはできません。",
+      "2 つの文字列の 26 文字の出現回数を比較します。一方に余っている文字は、もう一方で不足している文字に置き換える必要があり、1 回の置き換えで、余りと不足がちょうど 1 つずつ解消されます。",
+      "長さが異なれば −1 を出力します。そうでなければ、26 文字すべてについて出現回数の差の絶対値を合計し、2 で割ります。読み込むときは、- だけの行が空文字列を表します。"
+    ],
+    "ko": [
+      "두 문자열이 애너그램인지는 각 문자가 몇 번 나타나는지에만 달려 있고 순서와는 무관합니다. 길이가 다르면 어떤 치환으로도 애너그램을 만들 수 없습니다.",
+      "두 문자열의 26개 문자 개수를 비교합니다. 한쪽에 남는 문자는 다른 쪽에서 남는 문자로 바꿔야 하고, 치환 한 번은 정확히 하나의 초과와 하나의 부족을 해소합니다.",
+      "길이가 다르면 −1을 출력합니다. 같으면 26개 문자에 대해 개수 차이의 절댓값을 모두 더한 뒤 2로 나눕니다. 입력을 읽을 때 -만 있는 줄은 빈 문자열을 뜻합니다."
+    ],
+    "vi": [
+      "Hai xâu có phải anagram hay không chỉ phụ thuộc vào số lần mỗi chữ cái xuất hiện, không phụ thuộc thứ tự; nếu độ dài khác nhau thì không có phép thay thế nào biến chúng thành anagram.",
+      "So sánh số lượng của 26 chữ cái ở hai xâu: mỗi chữ cái dư ở xâu này phải được thay bằng một chữ cái mà xâu kia đang dư, và mỗi phép thay thế khắc phục đúng một chữ cái dư và một chữ cái thiếu.",
+      "Nếu độ dài khác nhau, in −1; ngược lại cộng các hiệu tuyệt đối của số lượng chữ cái trên cả 26 chữ cái rồi chia cho 2. Khi đọc dữ liệu, một dòng chỉ chứa - nghĩa là xâu rỗng."
     ]
   },
   "explanationEn": "## Approach\n\nIf the lengths differ, no amount of replacing (which keeps the length) can make them anagrams: print -1.\n\nWith equal lengths only the letter counts matter. Let `ca[ch]` and `cb[ch]` be how often `ch` occurs in each string. The answer is\n\n`sum |ca[ch] - cb[ch]| / 2`.\n\nIntuitively, every surplus letter of `a` (where `ca > cb`) has to be replaced by a letter `a` is short of. Since the strings have the same length, the total surplus equals the total shortage, and each is half the sum of differences.\n\n## Proof of correctness\n\nLet `D = sum |ca - cb|`.\n\n- Lower bound: one replacement turns some `x` into `y`, decreasing `ca[x]` by 1 and increasing `ca[y]` by 1, so `D` drops by at most 2. The goal is `D = 0`, hence at least `D/2` replacements.\n- Achievability: equal lengths give `sum (ca - cb) = 0`, so total surplus equals total shortage, both `D/2`. Replacing one surplus letter of `a` with a missing letter lowers `D` by exactly 2; after `D/2` such steps the counts match and the strings are anagrams.\n\nThe bounds meet, so the answer is `D/2`.\n\n## Complexity\n\nO(|a| + |b| + 26) time per query, O(26) extra space.\n\n## Pitfalls\n\n- An empty string is given as a line containing `-`; turn it back into the empty string. Two empty strings give 0.\n- Replacing on one side is enough; do not count the differences of both sides separately."

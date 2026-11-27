@@ -11,5 +11,35 @@
     "hints": [
       "Enumerate the right endpoint and take that whole pile; moving left, take min(this pile's capacity,amount taken by the right neighbor−1) each time, stop once it reaches 0, and record the maximum running total."
     ]
+  },
+  "ja": {
+    "title": "連続する山から狭義増加に取り出す場合の取得総数の最大値",
+    "description": "空でない連続範囲を選び、各山から、その山の容量以下の正の整数個を取ります。取る個数は左から右へ狭義単調増加でなければなりません。取り出せるアイテムの最大数を求めてください。0 個を取る接頭辞は総数に寄与せず、単に除けばよいので、最適な答えには影響しません。\n\n標準入出力、例、解説は本サイトが独自に作成したものです。本サイトのものと明記された範囲は、元の問題の制約ではありません。",
+    "input": "1 行目に n、2 行目に山の容量が与えられます。1≤n≤5000、1≤capacity≤10^9 です。",
+    "output": "答えを表す整数を 1 つ出力してください。",
+    "explanation": "答えは 12、16、20 です。",
+    "hints": [
+      "右端を全探索し、その山をすべて取ります。左へ進みながら、毎回 min(その山の容量, 右隣で取った量−1) を取り、これが 0 になったら止めて、累積合計の最大値を記録します。"
+    ]
+  },
+  "ko": {
+    "title": "엄격히 증가하는 개수로 연속한 더미에서 가져오는 최대 총합",
+    "description": "비어 있지 않은 연속 구간을 고르고, 각 더미에서 그 더미의 용량을 넘지 않는 양의 정수 개수만큼 가져옵니다. 가져오는 양은 왼쪽에서 오른쪽으로 엄격히 증가해야 합니다. 가져올 수 있는 물건의 최대 개수를 구하세요. 0개를 가져오는 접두사는 총합에 기여하지 않고 그냥 버리면 되므로 최적 답에 영향을 주지 않습니다.\n\n표준 입출력, 예제, 해설은 본 사이트에서 독자적으로 작성했으며, 본 사이트에서 정했다고 명시한 범위는 원문의 제약 조건이 아닙니다.",
+    "input": "첫 번째 줄에 n, 두 번째 줄에 더미들의 용량이 주어집니다. 1≤n≤5000, 1≤capacity≤10^9.",
+    "output": "정답을 나타내는 정수 하나를 출력합니다.",
+    "explanation": "정답은 각각 12, 16, 20입니다.",
+    "hints": [
+      "오른쪽 끝점을 열거하고 그 더미는 전부 가져옵니다. 왼쪽으로 이동하면서 매번 min(이 더미의 용량, 오른쪽 이웃이 가져온 양−1)만큼 가져가고, 0이 되면 멈추며 누적 합의 최댓값을 기록합니다."
+    ]
+  },
+  "vi": {
+    "title": "Tổng lớn nhất lấy từ các đống liên tiếp với số lượng lấy tăng ngặt",
+    "description": "Chọn một đoạn liên tiếp khác rỗng và lấy từ mỗi đống một số nguyên dương các vật phẩm, không vượt quá sức chứa của đống đó, sao cho số lượng lấy tăng ngặt từ trái sang phải. Tìm số vật phẩm lớn nhất có thể lấy. Một tiền tố lấy 0 không đóng góp gì vào tổng và có thể đơn giản bị bỏ, nên không ảnh hưởng đến đáp án tối ưu.\n\nĐịnh dạng nhập/xuất chuẩn, ví dụ và bài giải do trang này tự viết độc lập; các khoảng giá trị được ghi rõ là của trang này không phải ràng buộc gốc của đề nguồn.",
+    "input": "Dòng đầu chứa n; dòng thứ hai chứa sức chứa các đống. 1≤n≤5000, 1≤capacity≤10^9.",
+    "output": "In ra một số nguyên duy nhất, là đáp án.",
+    "explanation": "Các đáp án là 12, 16 và 20.",
+    "hints": [
+      "Duyệt đầu mút phải và lấy trọn đống đó; di chuyển sang trái, mỗi lần lấy min(sức chứa của đống này, số lượng lấy của đống bên phải−1), dừng khi nó đạt 0, và ghi nhận tổng lũy kế lớn nhất."
+    ]
   }
 }

@@ -13,6 +13,21 @@
       "If any value repeats, those two XOR to 0 and the product is 0. Otherwise all values are distinct and lie in 1..3000, so the task becomes counting how many pairs produce each XOR value.",
       "There is no need to enumerate pairs: the distribution of pairwise XOR values is the XOR convolution of the frequency array with itself, which the fast Walsh-Hadamard transform computes over length 4096. If XOR value v occurs in c pairs, it contributes v to the power c to the product.",
       "Detect duplicates while reading. Without duplicates, apply the integer XOR transform to the frequency array of length 4096, square every entry, transform again and divide by 4096 to get the number of ordered pairs for each v; for nonzero v, halve it to get the pairs with i<j. Multiply the contributions with fast modular exponentiation modulo 1000000007. Intermediate values exceed 32 bits, so use 64-bit integers."
+    ],
+    "ja": [
+      "値が 1 つでも重複していれば、その 2 つの XOR は 0 なので積は 0 です。そうでなければ、すべての値は互いに異なり 1..3000 の範囲にあるので、問題は各 XOR 値を生むペアの数を数えることに帰着します。",
+      "ペアを列挙する必要はありません。ペアごとの XOR 値の分布は、頻度配列自身との XOR 畳み込みであり、長さ 4096 の高速 Walsh-Hadamard 変換で計算できます。XOR 値 v が c 組で現れるなら、積には v の c 乗が寄与します。",
+      "重複は読み込みながら検出します。重複がなければ、長さ 4096 の頻度配列に整数の XOR 変換を適用し、各要素を二乗してもう一度変換し、4096 で割って各 v の順序付きペアの数を求めます。v が 0 でなければ、それを半分にして i<j のペア数にします。各寄与を、1000000007 を法とする高速な冪乗で掛け合わせます。途中の値は 32 ビットを超えるので、64 ビット整数を使ってください。"
+    ],
+    "ko": [
+      "값이 하나라도 중복되면 그 두 값의 XOR이 0이므로 곱은 0입니다. 그렇지 않으면 모든 값이 서로 다르고 1..3000 범위에 있으므로, 문제는 각 XOR 값을 만드는 쌍이 몇 개인지 세는 것으로 바뀝니다.",
+      "쌍을 직접 열거할 필요는 없습니다. 쌍별 XOR 값의 분포는 빈도 배열과 자기 자신의 XOR 합성곱이며, 이는 길이 4096에서 고속 Walsh-Hadamard 변환으로 계산할 수 있습니다. XOR 값 v가 c개의 쌍에서 나온다면 곱에 v의 c제곱이 기여합니다.",
+      "입력을 읽으면서 중복을 검출하세요. 중복이 없으면 길이 4096의 빈도 배열에 정수 XOR 변환을 적용하고, 모든 항을 제곱한 뒤 다시 변환해 4096으로 나누면 각 v의 순서쌍 수가 나옵니다. 0이 아닌 v는 절반으로 나누어 i<j인 쌍의 수를 얻습니다. 각 기여분을 빠른 모듈러 거듭제곱으로 1000000007에 대해 곱하세요. 중간값이 32비트를 넘으므로 64비트 정수를 사용합니다."
+    ],
+    "vi": [
+      "Nếu có giá trị lặp lại, hai giá trị đó có XOR bằng 0 và tích bằng 0. Nếu không, mọi giá trị đều phân biệt và nằm trong 1..3000, nên bài toán trở thành đếm xem mỗi giá trị XOR được tạo ra từ bao nhiêu cặp.",
+      "Không cần liệt kê các cặp: phân phối các giá trị XOR theo cặp chính là tích chập XOR của mảng tần suất với chính nó, mà biến đổi Walsh-Hadamard nhanh tính được trên độ dài 4096. Nếu giá trị XOR v xuất hiện ở c cặp, nó đóng góp v mũ c vào tích.",
+      "Phát hiện giá trị trùng ngay khi đọc. Nếu không có giá trị trùng, áp dụng biến đổi XOR trên số nguyên cho mảng tần suất độ dài 4096, bình phương mọi phần tử, biến đổi lần nữa và chia cho 4096 để có số cặp có thứ tự cho mỗi v; với v khác 0, chia đôi để được số cặp với i<j. Nhân các đóng góp bằng lũy thừa modulo nhanh theo modulo 1000000007. Các giá trị trung gian vượt quá 32 bit, nên hãy dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nIf any value repeats, some factor has XOR 0 and the answer is immediately 0. Otherwise, apply the integer XOR Walsh transform to the value frequencies of length 4096, square each entry, transform again, and divide by 4096 to get the number of ordered pairs for each XOR value; the number of unordered pairs with a nonzero XOR is half of that, and the answer is the product of modular powers using these counts.\n\n## Correctness\n\nThe XOR transform turns XOR convolution into a pointwise product, and the inverse transform gives the number of ordered pairs with x XOR y=v. When v is nonzero, no pair uses the same index twice, and swapping the two ends gives exactly two ordered pairs, so halving gives the count with i<j. Multiplying group by group over v is equivalent to the product of all the original factors; the branch for duplicate values, which produces a 0 factor, is also exact.\n\n## Complexity\n\nTime O(sum of N over the test cases+T·4096 log 4096+T·4096 log N), space O(4096), not counting input parsing."

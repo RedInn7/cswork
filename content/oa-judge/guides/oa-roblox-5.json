@@ -13,6 +13,21 @@
       "The number of contiguous segments on the integer line equals the number of surviving houses with no left neighbour; demolishing a house only affects the segment containing it.",
       "So you only need the set of surviving coordinates and the current segment count: before demolishing x, check whether x - 1 and x + 1 still exist to know how the count changes.",
       "Both exist: one segment splits in two, so the count increases by one. Neither exists: x is a segment by itself, so the count decreases by one. Exactly one exists: x is an endpoint and the count stays the same. Compute the initial count as the number of x whose x - 1 is not in the set. A hash set gives expected O(1) per query; coordinates reach 10^9, so 64-bit arithmetic for x + 1 is safer. Output the count after each demolition in order."
+    ],
+    "ja": [
+      "整数直線上の連続した連なりの数は、左隣のない生き残りの家の数に等しく、家を取り壊しても影響を受けるのはその家を含む連なりだけです。",
+      "したがって必要なのは、生き残っている座標の集合と、現在の連なりの数だけです。x を取り壊す前に x - 1 と x + 1 がまだ存在するかを調べれば、数がどう変わるかが分かります。",
+      "両方とも存在する場合：1 つの連なりが 2 つに分かれるので、数は 1 増えます。どちらも存在しない場合：x はそれ自身で 1 つの連なりなので、数は 1 減ります。片方だけ存在する場合：x は端点で、数は変わりません。初期の数は、x - 1 が集合にないような x の個数として計算します。ハッシュセットを使えば 1 クエリあたり期待 O(1) です。座標は 10^9 に達するので、x + 1 には 64 ビット演算を使うほうが安全です。取り壊すたびの数を順に出力してください。"
+    ],
+    "ko": [
+      "정수 직선에서 연속 구간의 수는 왼쪽 이웃이 없는 살아 있는 주택의 수와 같습니다. 주택을 철거하면 그 주택이 속한 구간에만 영향이 갑니다.",
+      "따라서 살아 있는 좌표의 집합과 현재 구간 수만 있으면 됩니다. x를 철거하기 전에 x - 1과 x + 1이 아직 존재하는지 확인하면 개수가 어떻게 변하는지 알 수 있습니다.",
+      "둘 다 존재하면 구간 하나가 둘로 갈라지므로 개수가 1 늘어납니다. 둘 다 없으면 x는 혼자인 구간이므로 개수가 1 줄어듭니다. 정확히 하나만 존재하면 x는 끝점이므로 개수는 그대로입니다. 초기 개수는 x - 1이 집합에 없는 x의 수로 계산하세요. 해시 집합은 쿼리당 기대 O(1)을 줍니다. 좌표가 10^9에 이르므로 x + 1에는 64비트 연산이 더 안전합니다. 각 철거 후의 개수를 순서대로 출력하세요."
+    ],
+    "vi": [
+      "Số đoạn liên tiếp trên trục số nguyên bằng số ngôi nhà còn lại không có lân cận bên trái; phá một ngôi nhà chỉ ảnh hưởng đến đoạn chứa nó.",
+      "Vì vậy chỉ cần tập các tọa độ còn lại và số đoạn hiện tại: trước khi phá x, kiểm tra x - 1 và x + 1 còn tồn tại hay không để biết số đoạn thay đổi thế nào.",
+      "Cả hai đều tồn tại: một đoạn tách làm hai, nên số đoạn tăng một. Cả hai đều không: x là một đoạn riêng, nên số đoạn giảm một. Đúng một tồn tại: x là đầu mút và số đoạn giữ nguyên. Tính số đoạn ban đầu bằng số x có x - 1 không nằm trong tập. Tập băm cho O(1) kỳ vọng mỗi truy vấn; tọa độ lên tới 10^9, nên dùng số học 64 bit cho x + 1 sẽ an toàn hơn. In số đoạn sau mỗi lần phá theo thứ tự."
     ]
   },
   "explanationEn": "## Approach\n\nMaintain the set of coordinates not yet demolished and the current number of contiguous segments. Before deleting x, check whether x-1 and x+1 still exist: if both do, one segment is split into two, so the count increases by one; if neither does, an isolated segment disappears, so it decreases by one; if only one side exists, the count is unchanged.\n\n## Correctness\n\nContiguous segments on the integer line are counted exactly by the surviving houses that have no left neighbour, as segment starts. Deleting a point only affects its own segment: if the point is inside the segment, it splits into two; if the segment has length one, the whole segment disappears; if it is at an endpoint, the remaining houses still form one segment. The neighbour classification above corresponds exactly to these three cases.\n\n## Complexity\n\nAverage O(1) per query, space O(n)."

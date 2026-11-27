@@ -13,6 +13,21 @@
       "The range holds only d = hi - lo + 1 values; the strictly rising part and the strictly falling part each use at most d distinct values and share the peak, so the length must be between 3 and 2d - 1, otherwise there is no solution.",
       "Putting the peak at hi never hurts. To make the first item as large as possible the rising part should be as short as possible: the right side of the peak holds at most d - 1 numbers, so there are at least n - d rising edges, and at least 1.",
       "Let p = max(1, n - d): start at hi - p and add 1 each step up to hi (p + 1 numbers), then go down by 1 from hi - 1 to fill the remaining n - p - 1 positions; when a solution exists print n and then the sequence, otherwise print -1."
+    ],
+    "ja": [
+      "範囲に含まれる値は d = hi - lo + 1 個だけです。狭義増加部分と狭義減少部分はそれぞれ最大 d 種類の値を使い、頂点を共有するので、長さは 3 以上 2d - 1 以下でなければならず、そうでなければ解はありません。",
+      "頂点を hi に置いて損をすることはありません。先頭を最大にするには増加部分をできるだけ短くします。頂点の右側に置ける数は最大 d - 1 個なので、増加する辺は少なくとも n - d 本、かつ少なくとも 1 本必要です。",
+      "p = max(1, n - d) とします。hi - p から 1 ずつ増やして hi まで (p + 1 個の数) 並べ、その後 hi - 1 から 1 ずつ減らして残りの n - p - 1 個の位置を埋めます。解があれば n に続けて数列を出力し、なければ -1 を出力します。"
+    ],
+    "ko": [
+      "범위에는 d = hi - lo + 1개의 값만 있습니다. 엄격한 증가 구간과 엄격한 감소 구간은 각각 서로 다른 값을 최대 d개 사용하며 꼭대기를 공유하므로, 길이는 3 이상 2d - 1 이하여야 하고 그렇지 않으면 해가 없습니다.",
+      "꼭대기를 hi에 두어도 손해가 없습니다. 첫 항을 최대한 크게 하려면 증가 구간이 가능한 한 짧아야 합니다. 꼭대기 오른쪽에는 최대 d - 1개의 수가 들어가므로 증가 간선은 최소 n - d개이고, 또 최소 1개입니다.",
+      "p = max(1, n - d)라 하고, hi - p에서 시작해 hi까지 매 단계 1씩 더합니다(p + 1개의 수). 그다음 hi - 1부터 1씩 감소시키며 남은 n - p - 1개의 위치를 채웁니다. 해가 존재하면 n을 출력한 뒤 수열을 출력하고, 그렇지 않으면 -1을 출력합니다."
+    ],
+    "vi": [
+      "Đoạn chỉ chứa d = hi - lo + 1 giá trị; phần tăng chặt và phần giảm chặt mỗi phần dùng tối đa d giá trị phân biệt và dùng chung đỉnh, nên độ dài phải nằm trong khoảng từ 3 đến 2d - 1, nếu không thì vô nghiệm.",
+      "Đặt đỉnh ở hi không bao giờ gây hại. Để phần tử đầu lớn nhất có thể thì phần tăng phải ngắn nhất có thể: bên phải đỉnh chứa tối đa d - 1 số, nên có ít nhất n - d cạnh tăng, và ít nhất là 1.",
+      "Đặt p = max(1, n - d): bắt đầu từ hi - p và cộng 1 mỗi bước cho đến hi (p + 1 số), sau đó giảm 1 mỗi bước từ hi - 1 để điền n - p - 1 vị trí còn lại; khi có nghiệm thì in n rồi in dãy, ngược lại in -1."
     ]
   },
   "explanationEn": "## Approach\n\nLet d=hi-lo+1. At least 3 positions are needed and at most 2d-1. To make the first item as large as possible, use the shortest feasible rising phase: the number of rising edges is p=max(1,n-d); start at hi-p, increase one by one up to hi, then decrease one by one.\n\n## Correctness\n\nRaising the peak to hi does not reduce the available room and can improve the lexicographic order. The right side of the peak can hold at most d-1 elements, so the left side needs at least n-d rising edges, and at least 1; taking the smallest p maximizes the first item hi-p. With the first item fixed, each next number is taken as large as possible, but p rising positions must be kept before reaching hi, so the sequence can only increase by 1 at each step; after the peak, decreasing by 1 each time maximizes each corresponding position, and the length bound guarantees it never drops below lo.\n\n## Complexity\n\nTime O(n), output space O(n)."

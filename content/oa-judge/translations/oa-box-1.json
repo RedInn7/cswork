@@ -13,5 +13,41 @@
       "Compare the denomination against the set of denominations with exact string comparison.",
       "The fee is computed once on the total of the whole transaction."
     ]
+  },
+  "ja": {
+    "title": "Box OA #1: 偽造コインの識別",
+    "description": "暗号資産の取引は n 枚のコインからなり、各コインにはシリアル番号があります。有効なシリアル番号は次を満たします:\n1. 長さが 10 から 12 文字であること。\n2. 最初の 3 文字が互いに異なる英大文字であること。\n3. 次の 4 文字が鋳造年を表し、1900 から 2019 の間 (両端を含む) であること。\n4. 続く文字が額面を表し、10, 20, 50, 100, 200, 500, 1000 のいずれかであること。\n5. 額面の直後の文字がシリアル番号の最後の文字であり、シリアル番号がちょうど 1 文字の英大文字で終わること。\n\nこの取引の合計から 1% の手数料が差し引かれ、小数は許されないので、結果は切り捨てられます。有効なすべてのコインの額面の合計から手数料を差し引いた整数を求めてください。",
+    "input": "1 行目に n が与えられ、続く n 行にそれぞれシリアル番号が与えられます。0<n≤100000、1≤シリアル番号の長さ≤14 で、シリアル番号には英字と数字のみが含まれます。",
+    "output": "整数を 1 つ出力してください: 有効なコインの額面の合計の 99% を切り捨てたものです。",
+    "explanation": "例 1: 有効なコインは AVG190420T (20)、RTF20001000Z (1000)、ERT1947200T (200)、DRV1984500Y (500) で、合計 1720 です。1% を差し引くと 1702.8 で、切り捨てて 1702 になります。QWER201850G は年の位置に R があります。AFA199620E の最初の 3 文字は互いに異なりません。RTY20202004 は年が範囲外で、最後の文字が英大文字ではありません。ETB2010400G は額面が 400 で、そのような額面は存在しません。\n例 2: 100×0.99=99。\n例 3: 額面 10 のコインが 3 枚で合計 30、手数料を引くと 29.7 で、切り捨てて 29 です。",
+    "hints": [
+      "額面は 8 文字目から最後から 2 文字目までの間にあります。",
+      "額面は、額面の集合に対して、文字列の完全一致で比較します。",
+      "手数料は、取引全体の合計に対して 1 回だけ計算します。"
+    ]
+  },
+  "ko": {
+    "title": "Box OA #1: 위조 동전 식별하기",
+    "description": "암호화폐 거래는 n개의 동전으로 이루어지며, 각 동전에는 일련번호가 있습니다. 유효한 일련번호는 다음을 만족합니다:\n1. 길이가 10에서 12자입니다;\n2. 처음 3자는 서로 다른 영어 대문자입니다;\n3. 다음 4자는 주조 연도이며 1900에서 2019 사이(양 끝 포함)여야 합니다;\n4. 그다음 문자들은 액면가이며 10, 20, 50, 100, 200, 500, 1000 중 하나여야 합니다;\n5. 액면가 바로 뒤의 문자가 일련번호의 마지막 문자이며, 일련번호는 정확히 하나의 영어 대문자로 끝나야 합니다.\n\n이 거래의 총액에서 1% 수수료가 공제되며 소수는 허용되지 않으므로 결과는 내림합니다. 유효한 모든 동전의 액면가 합에서 수수료를 공제한 정수를 구하세요.",
+    "input": "첫 번째 줄에 n이 주어지고, 이어지는 n개의 줄에 각각 일련번호가 하나씩 주어집니다. 0<n≤100000, 1≤일련번호 길이≤14이며, 일련번호는 영어 문자와 숫자로만 이루어집니다.",
+    "output": "정수 하나를 출력합니다. 유효한 동전의 총 액면가의 99%를 내림한 값입니다.",
+    "explanation": "예제 1: 유효한 동전은 AVG190420T (20), RTF20001000Z (1000), ERT1947200T (200), DRV1984500Y (500)이며 합계 1720입니다. 1%를 공제하면 1702.8이고 내림하면 1702입니다. QWER201850G는 연도 위치에 R이 있습니다. AFA199620E의 처음 세 글자는 서로 다르지 않습니다. RTY20202004는 연도 범위를 벗어났고 마지막 문자가 대문자가 아닙니다. ETB2010400G는 존재하지 않는 액면가 400을 씁니다.\n예제 2: 100×0.99=99.\n예제 3: 10짜리 동전 세 개의 합은 30이고, 수수료 공제 후 29.7이며 내림하면 29입니다.",
+    "hints": [
+      "액면가는 8번째 문자부터 끝에서 두 번째 문자까지에 있습니다.",
+      "액면가는 정확한 문자열 비교로 액면가 집합과 대조합니다.",
+      "수수료는 거래 전체의 총액에 대해 한 번만 계산합니다."
+    ]
+  },
+  "vi": {
+    "title": "Box OA #1: Nhận diện tiền xu giả",
+    "description": "Một giao dịch tiền mã hóa gồm n đồng xu, mỗi đồng có một số seri. Một số seri hợp lệ thỏa mãn:\n1. Độ dài từ 10 đến 12 ký tự;\n2. 3 ký tự đầu là các chữ cái tiếng Anh viết hoa đôi một khác nhau;\n3. 4 ký tự tiếp theo là năm đúc, phải nằm trong khoảng từ 1900 đến 2019 (bao gồm cả hai đầu);\n4. Các ký tự tiếp theo là mệnh giá, phải là một trong 10, 20, 50, 100, 200, 500, 1000;\n5. Ký tự ngay sau mệnh giá là ký tự cuối cùng của số seri; số seri phải kết thúc bằng đúng một chữ cái tiếng Anh viết hoa.\n\nMột khoản phí 1% được khấu trừ từ tổng của giao dịch này, và không cho phép số lẻ, nên kết quả được làm tròn xuống. Tìm số nguyên thu được sau khi khấu trừ phí từ tổng mệnh giá của tất cả các đồng xu hợp lệ.",
+    "input": "Dòng đầu chứa n; mỗi dòng trong n dòng tiếp theo chứa một số seri. 0<n≤100000, 1≤độ dài số seri≤14, và số seri chỉ chứa chữ cái tiếng Anh và chữ số.",
+    "output": "In ra một số nguyên: 99% tổng mệnh giá của các đồng xu hợp lệ, làm tròn xuống.",
+    "explanation": "Ví dụ 1: các đồng xu hợp lệ là AVG190420T (20), RTF20001000Z (1000), ERT1947200T (200), và DRV1984500Y (500), tổng cộng 1720; sau khi khấu trừ 1% là 1702.8, làm tròn xuống thành 1702. QWER201850G có chữ R ở vị trí năm; 3 chữ cái đầu của AFA199620E không đôi một khác nhau; RTY20202004 có năm ngoài phạm vi và ký tự cuối không phải chữ cái viết hoa; ETB2010400G dùng mệnh giá 400, không tồn tại.\nVí dụ 2: 100×0.99=99.\nVí dụ 3: ba đồng xu 10 tổng cộng 30, sau phí là 29.7, làm tròn xuống thành 29.",
+    "hints": [
+      "Mệnh giá nằm giữa ký tự thứ 8 và ký tự kế cuối.",
+      "So sánh mệnh giá với tập các mệnh giá bằng so sánh xâu chính xác.",
+      "Phí được tính một lần trên tổng của cả giao dịch."
+    ]
   }
 }

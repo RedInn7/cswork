@@ -11,5 +11,35 @@
     "hints": [
       "After handling the previous type p, state j records the last type of the other processor, and dp[j]+offset is the actual cost. Continuing on the same processor adds the same cost to every state; the best result of switching processors is min(dp[t]+short[t],min(j≠t)dp[j]+long[t])+ the old offset, and only state p is updated. Maintain the minimums at two different indices, with support for decreasing a single point."
     ]
+  },
+  "ja": {
+    "title": "型つきタスクを順に処理する 2 つのプロセッサの最小セットアップ時間の合計",
+    "description": "元の順序に従って、各タスクを 2 つのプロセッサのどちらかに割り当てます。各プロセッサは最後に処理した型を覚えています。タスクの型がそのプロセッサの最後の型と一致すれば short[t]、そうでなければ long[t] のコストがかかります。プロセッサの最初の使用は long[t] です。すべてのタスクの最小の総コストを求めてください。順序は変えられません。short ≤ long は保証されません。\n\n標準入出力・例・解説は当サイトが独自に作成したものです。当サイトのものと明記した範囲は、元の問題の制約ではありません。",
+    "input": "1 行目に n m、2 行目に 1..m の n 個の型、3 行目に m 個の short の値、4 行目に m 個の long の値が与えられます。元の問題文には上限がありません。当サイトでは 1≤n,m≤200000、0≤short[t],long[t]≤10^9 とし、short>long の場合もコストが 0 の場合も許します。",
+    "output": "答えを表す整数を 1 つ出力してください。",
+    "explanation": "答えは 11、12、0 です。1 つ目の例では、最初の 2 つのタスクがそれぞれ未使用のプロセッサを使い、3 つ目のタスクが 3 台目のコールドスタート用プロセッサを勝手に作ってはいけません。",
+    "hints": [
+      "直前の型 p を処理した後、状態 j はもう一方のプロセッサの最後の型を記録し、dp[j]+offset が実際のコストです。同じプロセッサで続けると、すべての状態に同じコストが加わります。プロセッサを切り替えた場合の最良の結果は、min(dp[t]+short[t],min(j≠t)dp[j]+long[t])+古い offset で、更新されるのは状態 p だけです。異なる 2 つの添字の最小値を維持し、1 点の値の減少に対応します。"
+    ]
+  },
+  "ko": {
+    "title": "유형이 있는 작업을 순서대로 처리하는 두 프로세서의 최소 총 준비 시간",
+    "description": "원래 순서대로 각 작업을 두 프로세서 중 하나에 할당합니다. 각 프로세서는 마지막으로 처리한 유형을 기억합니다. 작업의 유형이 그 프로세서의 마지막 유형과 같으면 short[t], 다르면 long[t]의 비용이 들며, 프로세서의 첫 사용은 long[t]입니다. 모든 작업의 최소 총 비용을 구하세요. 순서는 바꿀 수 없습니다. short가 long 이하라는 보장은 없습니다.\n\n표준 입출력 형식, 예제, 해설은 본 사이트가 독자적으로 작성했습니다. 본 사이트의 범위라고 명시한 값은 원문의 제약 조건이 아닙니다.",
+    "input": "첫째 줄에 n m, 둘째 줄에 1..m 범위의 유형 n개, 셋째 줄에 short 값 m개, 넷째 줄에 long 값 m개가 주어집니다. 원문에는 상한이 없으며 본 사이트에서는 1≤n,m≤200000, 0≤short[t],long[t]≤10^9이고 short>long 및 비용 0도 허용됩니다.",
+    "output": "정수 하나, 즉 답을 출력합니다.",
+    "explanation": "답은 순서대로 11, 12, 0입니다. 첫 번째 예제에서는 처음 두 작업이 각각 아직 쓰지 않은 프로세서를 사용하며, 세 번째 작업에서 세 번째 콜드 스타트 프로세서를 만들어 내서는 안 됩니다.",
+    "hints": [
+      "직전 유형 p를 처리한 뒤, 상태 j는 다른 프로세서의 마지막 유형을 기록하며 실제 비용은 dp[j]+offset입니다. 같은 프로세서에서 계속하면 모든 상태에 같은 비용이 더해집니다. 프로세서를 바꾸는 최선의 결과는 min(dp[t]+short[t],min(j≠t)dp[j]+long[t])+이전 offset이며, 상태 p만 갱신합니다. 서로 다른 인덱스에서의 최솟값 두 개를 유지하고 한 점의 감소를 지원합니다."
+    ]
+  },
+  "vi": {
+    "title": "Tổng thời gian chuẩn bị tối thiểu cho hai bộ xử lý làm các tác vụ có loại theo thứ tự",
+    "description": "Theo thứ tự ban đầu, giao mỗi tác vụ cho một trong hai bộ xử lý; mỗi bộ xử lý nhớ loại tác vụ nó xử lý gần nhất. Nếu loại của một tác vụ trùng với loại cuối cùng của bộ xử lý đó, nó tốn short[t], nếu không thì long[t]; lần dùng đầu tiên của một bộ xử lý tốn long[t]. Tìm tổng chi phí nhỏ nhất của mọi tác vụ; không được đổi thứ tự. short không được đảm bảo ≤long.\n\nĐầu vào/đầu ra chuẩn, các ví dụ và phần lời giải do trang này tự viết; các khoảng giá trị được đánh dấu rõ là của trang này không phải ràng buộc gốc của đề.",
+    "input": "Dòng đầu chứa n m, dòng thứ hai chứa n loại trong 1..m, dòng thứ ba chứa m giá trị short, và dòng thứ tư chứa m giá trị long. Đề gốc không cho cận trên; trên trang này 1≤n,m≤200000, 0≤short[t],long[t]≤10^9, cho phép cả short>long lẫn chi phí bằng không.",
+    "output": "In ra một số nguyên duy nhất, là đáp án.",
+    "explanation": "Các đáp án lần lượt là 11, 12 và 0. Ở ví dụ đầu, hai tác vụ đầu mỗi tác vụ dùng một bộ xử lý chưa dùng, và tác vụ thứ ba không được bịa ra bộ xử lý thứ ba khởi động nguội.",
+    "hints": [
+      "Sau khi xử lý loại trước đó p, trạng thái j ghi lại loại cuối cùng của bộ xử lý còn lại, và dp[j]+offset là chi phí thực. Tiếp tục trên cùng bộ xử lý cộng cùng một chi phí vào mọi trạng thái; kết quả tốt nhất khi chuyển bộ xử lý là min(dp[t]+short[t],min(j≠t)dp[j]+long[t])+ offset cũ, và chỉ trạng thái p được cập nhật. Duy trì các giá trị nhỏ nhất tại hai chỉ số khác nhau, hỗ trợ giảm giá trị tại một điểm."
+    ]
   }
 }

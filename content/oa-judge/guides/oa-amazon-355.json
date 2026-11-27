@@ -13,6 +13,21 @@
       "Once a warehouse of capacity w is chosen, the cost is explicit: raising it to a costs max(0, a−w), and raising the others' total S−w to b costs max(0, b−(S−w)). Requests are independent.",
       "As a function of w, the cost does not increase while w<a and does not decrease once w≥a. So you only need the largest capacity below a and the smallest capacity at least a.",
       "Sort the capacities and compute S. For each request, binary search the first position p with capacity ≥a, evaluate the cost at p−1 and p (when they exist), and take the minimum. b reaches 10^15, so use 64-bit integers throughout."
+    ],
+    "ja": [
+      "容量 w の倉庫を選ぶと、コストは明示的に決まります。a まで上げるのに max(0, a−w)、他の倉庫の合計 S−w を b まで上げるのに max(0, b−(S−w)) かかります。要求は互いに独立です。",
+      "w の関数としてのコストは、w<a の間は増加せず、w≥a では減少しません。したがって、a 未満で最大の容量と、a 以上で最小の容量だけを調べれば十分です。",
+      "容量をソートして S を求めます。各要求について、容量が a 以上となる最初の位置 p を二分探索し、p−1 と p(存在する場合)でのコストを評価して最小値を取ります。b は 10^15 に達するので、全体を通して64ビット整数を使ってください。"
+    ],
+    "ko": [
+      "용량 w인 창고를 선택하면 비용이 명확해집니다. a까지 올리는 데 max(0, a−w), 나머지 합 S−w를 b까지 올리는 데 max(0, b−(S−w))가 듭니다. 요청은 서로 독립적입니다.",
+      "w의 함수로 보면 비용은 w<a인 동안 증가하지 않고 w≥a가 되면 감소하지 않습니다. 따라서 a보다 작은 가장 큰 용량과 a 이상인 가장 작은 용량만 보면 됩니다.",
+      "용량을 정렬하고 S를 구합니다. 각 요청마다 용량이 ≥a인 첫 위치 p를 이분 탐색으로 찾고, p−1과 p에서(존재하는 경우) 비용을 계산해 최솟값을 취합니다. b가 10^15까지 커지므로 전부 64비트 정수를 사용합니다."
+    ],
+    "vi": [
+      "Khi đã chọn một kho có dung lượng w, chi phí được xác định rõ: nâng nó lên a tốn max(0, a−w), và nâng tổng của các kho còn lại S−w lên b tốn max(0, b−(S−w)). Các yêu cầu độc lập với nhau.",
+      "Xét như một hàm của w, chi phí không tăng khi w<a và không giảm khi w≥a. Vì vậy bạn chỉ cần dung lượng lớn nhất nhỏ hơn a và dung lượng nhỏ nhất không nhỏ hơn a.",
+      "Sắp xếp các dung lượng và tính S. Với mỗi yêu cầu, tìm kiếm nhị phân vị trí p đầu tiên có dung lượng ≥a, tính chi phí tại p−1 và p (khi chúng tồn tại), rồi lấy giá trị nhỏ nhất. b có thể đạt 10^15, nên dùng số nguyên 64 bit xuyên suốt."
     ]
   },
   "explanationEn": "## Approach\n\nSort the capacities and compute their total S. When warehouse w is chosen, the cost is max(0,a−w)+max(0,b−(S−w)). Binary search for the first w≥a and compare only it and the capacity just before it.\n\n## Proof of correctness\n\nWhen w<a, the first term has slope −1 and the second slope 0 or 1, so the total cost does not increase with w; when w≥a, the first term is 0 and the second does not decrease with w. Therefore, below a only the largest capacity matters, and above a only the smallest. The two neighbors found by binary search cover the optimum of both regions, and the smaller cost is the global optimum; queries never modify S or the capacities.\n\n## Complexity\n\nO(n log n+q log n) time and O(n+q) space."

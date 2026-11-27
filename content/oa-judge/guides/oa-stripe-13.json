@@ -13,6 +13,21 @@
       "The output is just group by sender, then sort inside each group. Only the first three fields of a line are whitespace-separated; everything from the fourth field to the end of the line is the subject, which may contain spaces or be empty.",
       "Collect the records into groups keyed by sender, and sort each group by the triple (timestamp, recipient, subject), comparing timestamps as integers and the rest lexicographically. The senders themselves are output in lexicographic order too.",
       "Parse each line by skipping whitespace to read the timestamp, sender and recipient, then skip whitespace again; the rest is the subject. Go through the groups sorted by sender, printing sender: <sender> followed by the group's <timestamp> <recipient> [subject] lines, with no extra space when the subject is empty. The first line is the total number of lines, i.e. groups plus records."
+    ],
+    "ja": [
+      "出力は、送信者でグループ化して各グループ内でソートするだけです。行の最初の 3 つのフィールドだけが空白で区切られ、4 番目のフィールドから行末までが件名です。件名にはスペースが含まれたり、空だったりすることがあります。",
+      "レコードを送信者をキーとするグループに集め、各グループを 3 つ組 (timestamp, recipient, subject) でソートします。タイムスタンプは整数として、他は辞書順で比較します。送信者自体も辞書順に出力します。",
+      "各行を、空白を読み飛ばしながらタイムスタンプ、送信者、受信者の順に読み、もう一度空白を読み飛ばして、残りを件名とします。グループを送信者の順に走査し、sender: <sender> に続けて、そのグループの <timestamp> <recipient> [subject] の行を出力します。件名が空のときは余分なスペースを出力しません。最初の行は総行数、つまりグループ数とレコード数の和です。"
+    ],
+    "ko": [
+      "출력은 발신자로 묶은 뒤 각 그룹 안에서 정렬하는 것뿐입니다. 한 줄에서 처음 세 필드만 공백으로 구분되며, 4번째 필드부터 줄 끝까지는 모두 제목이고 공백을 포함하거나 비어 있을 수 있습니다.",
+      "기록을 발신자를 키로 하는 그룹에 모으고, 각 그룹을 (timestamp, recipient, subject)의 세 쌍으로 정렬합니다. 타임스탬프는 정수로, 나머지는 사전순으로 비교합니다. 발신자 자체도 사전순으로 출력합니다.",
+      "각 줄을 파싱할 때 공백을 건너뛰며 timestamp, sender, recipient를 읽고 다시 공백을 건너뛰면 나머지가 제목입니다. 그룹을 발신자순으로 순회하며 sender: <sender>를 출력하고, 이어서 그룹의 <timestamp> <recipient> [subject] 줄을 출력합니다. 제목이 비어 있으면 공백을 추가하지 않습니다. 첫 줄은 전체 줄 수, 즉 그룹 수와 기록 수의 합입니다."
+    ],
+    "vi": [
+      "Đầu ra chỉ là nhóm theo người gửi rồi sắp xếp bên trong mỗi nhóm. Chỉ ba trường đầu của một dòng được phân tách bằng khoảng trắng; mọi thứ từ trường thứ tư đến hết dòng là tiêu đề, có thể chứa dấu cách hoặc rỗng.",
+      "Gom các bản ghi thành các nhóm theo khoá là người gửi, và sắp xếp mỗi nhóm theo bộ ba (timestamp, recipient, subject), so sánh timestamp như số nguyên còn các trường còn lại theo thứ tự từ điển. Bản thân các người gửi cũng được xuất theo thứ tự từ điển.",
+      "Phân tích mỗi dòng bằng cách bỏ qua khoảng trắng để đọc timestamp, người gửi và người nhận, rồi lại bỏ qua khoảng trắng; phần còn lại là tiêu đề. Duyệt các nhóm đã sắp xếp theo người gửi, in sender: <sender> theo sau là các dòng <timestamp> <recipient> [subject] của nhóm, không có dấu cách thừa khi tiêu đề rỗng. Dòng đầu tiên là tổng số dòng, tức là số nhóm cộng số bản ghi."
     ]
   },
   "explanationEn": "## Approach\n\nCollect records by sender, then sort them with the triple key `(timestamp, recipient, subject)`; finally output the groups sorted by sender key.\n\n## Correctness\n\nEvery record goes into exactly the group of its sender. Ascending group keys give the group order the problem requires, and the lexicographic order of the triples matches the three-level ordering inside a group exactly, so the output covers all input logs and only them, and satisfies every ordering rule.\n\n## Complexity\n\nLet n be the number of logs. Sorting takes O(n log n) in total, with O(n) space."

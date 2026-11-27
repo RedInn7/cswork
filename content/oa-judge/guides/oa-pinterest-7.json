@@ -13,6 +13,21 @@
       "The process is a deterministic simulation: each round only picks the nearest scooter at or to the right of the current position, and the position only moves right.",
       "Sort the scooter positions and keep a pointer that skips every scooter whose position is less than the current position; the scooter under the pointer is the one ridden this round.",
       "While pos < finish: advance the pointer past scooters < pos; if none remain, stop (the remaining walk is not counted). Otherwise take that scooter x, ride to reached = min(finish, x + 10), add reached - x, set pos = reached and advance the pointer. Each scooter is handled at most once, so after sorting the work is linear."
+    ],
+    "ja": [
+      "この処理は決定的なシミュレーションです。各ラウンドでは、現在位置以上で最も近いスクーターを選ぶだけで、位置は右にしか動きません。",
+      "スクーターの位置をソートし、現在位置より小さい位置にあるスクーターをすべて読み飛ばすポインタを持ちます。ポインタが指すスクーターが、このラウンドで乗るものです。",
+      "pos < finish の間、ポインタを pos 未満のスクーターの先まで進めます。残りがなければ停止します(残りの歩行は数えません)。そうでなければそのスクーター x を取り、reached = min(finish, x + 10) まで進み、reached - x を加え、pos = reached として、ポインタを進めます。各スクーターは高々 1 回しか処理されないので、ソートの後は線形時間で済みます。"
+    ],
+    "ko": [
+      "이 과정은 결정적인 시뮬레이션입니다. 매 라운드 현재 위치 이상에서 가장 가까운 스쿠터 하나만 선택하고, 위치는 오른쪽으로만 이동합니다.",
+      "스쿠터 위치를 정렬하고, 현재 위치보다 작은 위치의 스쿠터를 모두 건너뛰는 포인터를 유지하세요. 포인터가 가리키는 스쿠터가 이번 라운드에 타는 스쿠터입니다.",
+      "pos < finish인 동안 포인터를 pos보다 작은 스쿠터 너머로 옮깁니다. 남은 스쿠터가 없으면 멈춥니다(남은 도보 구간은 계산하지 않습니다). 그렇지 않으면 그 스쿠터 x를 잡고 reached = min(finish, x + 10)까지 이동하여 reached - x를 더하고, pos = reached로 두고 포인터를 한 칸 옮깁니다. 각 스쿠터는 최대 한 번만 처리되므로 정렬 이후에는 선형 시간입니다."
+    ],
+    "vi": [
+      "Quá trình này là mô phỏng xác định: mỗi vòng chỉ chọn chiếc scooter gần nhất tại hoặc bên phải vị trí hiện tại, và vị trí chỉ dịch sang phải.",
+      "Sắp xếp các vị trí scooter và giữ một con trỏ bỏ qua mọi scooter có vị trí nhỏ hơn vị trí hiện tại; chiếc scooter ở con trỏ là chiếc được cưỡi ở vòng này.",
+      "Khi pos < finish: đẩy con trỏ qua các scooter < pos; nếu không còn chiếc nào thì dừng (phần đi bộ còn lại không được tính). Ngược lại lấy scooter x đó, cưỡi tới reached = min(finish, x + 10), cộng reached - x, đặt pos = reached và đẩy con trỏ lên. Mỗi scooter được xử lý nhiều nhất một lần, nên sau khi sắp xếp công việc là tuyến tính."
     ]
   },
   "explanationEn": "## Approach\n\nSort the scooter positions and, from the current position, find the first scooter with x >= the current position; add min(finish, x+10) - x and move the current position there. Stop when no usable scooter remains.\n\n## Correctness\n\nEach round, the rule uniquely names the nearest scooter to the right of the current point; in an ascending array that is exactly the lower_bound. It can be ridden to x+10 or finish, whichever comes first, so this round's distance is min(finish, x+10) - x. The algorithm simulates round by round according to the rule, walking distance that is not ridden is not counted, and each round the position strictly increases or reaches finish, so it terminates.\n\n## Complexity\n\nLet n be the number of scooters. Sorting takes O(n log n), after which each scooter is processed at most once; space O(n)."

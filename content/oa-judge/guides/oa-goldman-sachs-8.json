@@ -13,6 +13,21 @@
       "The command string repeats forever, and the robot's displacement and heading after one pass are enough to tell whether its path keeps drifting away.",
       "If one pass returns to the origin, the path is clearly bounded; if the heading has changed, it is restored within four passes and their displacements cancel out by rotational symmetry, so it is bounded too; only when the heading is unchanged and the displacement is nonzero does each pass add up in the same direction, making the path unbounded.",
       "For each command string, simulate from (0,0) facing north (direction 0): G moves one step in the current direction, L turns 90 degrees counterclockwise, R turns 90 degrees clockwise; afterwards print YES if the position is the origin or the direction is not north, otherwise NO, one line per string."
+    ],
+    "ja": [
+      "コマンド列は無限に繰り返されるので、1 周後の変位と向きだけで、経路が離れ続けるかどうかを判定できます。",
+      "1 周で原点に戻るなら、経路は明らかに有界です。向きが変わっているなら、4 周以内に元の向きに戻り、回転対称性によってそれらの変位は打ち消し合うので、やはり有界です。向きが変わらず変位が 0 でない場合だけ、毎周同じ方向に加算されて非有界になります。",
+      "各コマンド列について、(0,0) から北向き（方向 0）に出発して模擬します。G は現在の向きに 1 歩進み、L は反時計回りに 90 度、R は時計回りに 90 度回転します。終了後、位置が原点であるか向きが北でなければ YES、そうでなければ NO を、文字列ごとに 1 行ずつ出力します。"
+    ],
+    "ko": [
+      "명령 문자열은 무한히 반복되며, 한 번 수행한 뒤의 변위와 방향만 알면 로봇이 계속 멀어지는지 판단할 수 있습니다.",
+      "한 번 수행한 뒤 원점으로 돌아오면 경로는 당연히 유한합니다. 방향이 바뀌었다면 네 번 이내에 원래 방향으로 돌아오며 회전 대칭에 의해 변위가 상쇄되므로 역시 유한합니다. 방향이 그대로이고 변위가 0이 아닐 때만 매번 같은 방향으로 누적되어 경로가 무한합니다.",
+      "각 명령 문자열마다 (0,0)에서 북쪽(방향 0)을 바라본 상태로 시뮬레이션합니다. G는 현재 방향으로 한 칸 이동하고, L은 반시계 방향으로 90도, R은 시계 방향으로 90도 회전합니다. 끝난 뒤 위치가 원점이거나 방향이 북쪽이 아니면 YES를, 그렇지 않으면 NO를 문자열마다 한 줄씩 출력합니다."
+    ],
+    "vi": [
+      "Xâu lệnh lặp vô hạn, và độ dịch chuyển cùng hướng của robot sau một lượt là đủ để biết đường đi của nó có tiếp tục trôi ra xa hay không.",
+      "Nếu sau một lượt robot về gốc thì đường đi hiển nhiên bị giới hạn; nếu hướng đã đổi thì nó được khôi phục trong vòng bốn lượt và các độ dịch chuyển triệt tiêu nhau nhờ đối xứng quay, nên cũng bị giới hạn; chỉ khi hướng không đổi và độ dịch chuyển khác không thì mỗi lượt cộng dồn theo cùng một hướng, khiến đường đi không bị giới hạn.",
+      "Với mỗi xâu lệnh, mô phỏng từ (0,0) hướng bắc (hướng 0): G tiến một bước theo hướng hiện tại, L quay 90 độ ngược chiều kim đồng hồ, R quay 90 độ cùng chiều kim đồng hồ; sau đó in YES nếu vị trí là gốc hoặc hướng không phải bắc, ngược lại in NO, mỗi xâu một dòng."
     ]
   },
   "explanationEn": "## Approach\n\nSimulate the commands once, recording the displacement and the final heading. If the robot is back at the origin, or the final heading differs from the initial heading, the displacements of repeated executions cancel out periodically and the path is bounded; otherwise each pass accumulates displacement in the same direction and the path is unbounded.\n\n## Proof of correctness\n\nThe heading after each pass can only take four values. If the heading changes, it is restored after at most four passes, and the displacements of these four passes sum to zero by rotational symmetry; after that the state repeats. If the heading does not change, a nonzero displacement accumulates in the same direction every pass and is unbounded, while a zero displacement keeps the position fixed.\n\n## Complexity\n\nO(L) time per command string, O(1) extra space."

@@ -13,6 +13,21 @@
       "The endpoint depends only on how many U, D, L, and R moves there are, not on their order; any route to the same endpoint needs at least the Manhattan distance in steps.",
       "Only the moves that make up the net vertical displacement |U − D| and the net horizontal displacement |L − R| must stay; all other moves cancel in opposite pairs and can be deleted.",
       "Count the four letters; the answer is the total length minus |U − D| minus |L − R|."
+    ],
+    "ja": [
+      "終点は U、D、L、R の個数だけで決まり、順序には依存しません。同じ終点に着く経路には、少なくともマンハッタン距離だけの手数が必要です。",
+      "残さなければならないのは、正味の縦移動 |U − D| と正味の横移動 |L − R| を構成する移動だけです。それ以外の移動は逆向きのペアで打ち消し合うので、削除できます。",
+      "4種類の文字を数えます。答えは、全長から |U − D| と |L − R| を引いた値です。"
+    ],
+    "ko": [
+      "도착점은 U, D, L, R 이동의 개수에만 의존하고 순서와는 무관합니다. 같은 도착점에 이르는 어떤 경로든 최소한 맨해튼 거리만큼의 걸음이 필요합니다.",
+      "순수 수직 이동량 |U − D|와 순수 수평 이동량 |L − R|을 이루는 이동만 남겨야 하며, 나머지 이동은 반대 방향끼리 쌍으로 상쇄되므로 삭제할 수 있습니다.",
+      "네 글자의 개수를 세고, 답은 전체 길이에서 |U − D|와 |L − R|을 뺀 값입니다."
+    ],
+    "vi": [
+      "Điểm đến chỉ phụ thuộc vào số bước U, D, L và R, không phụ thuộc thứ tự; mọi đường đi tới cùng điểm đến cần ít nhất số bước bằng khoảng cách Manhattan.",
+      "Chỉ các bước tạo nên độ dịch ròng theo chiều dọc |U − D| và theo chiều ngang |L − R| mới phải giữ; mọi bước khác triệt tiêu theo từng cặp ngược chiều và có thể xóa.",
+      "Đếm bốn chữ cái; đáp án là tổng độ dài trừ |U − D| trừ |L − R|."
     ]
   },
   "explanationEn": "## Approach\n\nKeep the necessary net vertical and net horizontal displacement, and delete the remaining opposite moves in pairs.\n\n## Proof of correctness\n\nAny path reaching the same endpoint needs at least the Manhattan distance |U−D|+|L−R| steps. After deleting the UD pairs and the LR pairs, the number of remaining instructions is exactly this distance and the endpoint is unchanged, so the lower bound is reached.\n\n## Complexity\n\nO(n) time and O(1) extra space."

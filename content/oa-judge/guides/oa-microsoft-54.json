@@ -13,6 +13,21 @@
       "With two rows and only right or down moves, every path goes down exactly once, and that column determines the whole path.",
       "Going down at column i visits the top row over columns 0..i and the bottom row over columns i..N−1, so the path maximum is the larger of the maxima of those two segments.",
       "Compute suffix maxima of the bottom row from right to left, then walk left to right keeping the prefix maximum of the top row; for each column take the larger of the two and print the minimum over all columns. Numbers can be negative, so start the minimum from a large enough value."
+    ],
+    "ja": [
+      "2 行で右か下にしか進めないので、どの経路もちょうど 1 回だけ下に移動し、その列が経路全体を決めます。",
+      "列 i で下に移動すると、上の行の列 0..i と下の行の列 i..N−1 を通るので、経路の最大値はその 2 つの区間の最大値のうち大きいほうです。",
+      "下の行の後ろからの累積最大値を右から左へ求め、その後、左から右へ上の行の累積最大値を保ちながら進みます。各列で 2 つのうち大きいほうを取り、すべての列にわたる最小値を出力します。数は負にもなりうるので、最小値の初期値は十分大きな値にしてください。"
+    ],
+    "ko": [
+      "두 행에서 오른쪽 또는 아래로만 이동하면 모든 경로는 정확히 한 번 아래로 내려가며, 그 열이 경로 전체를 결정합니다.",
+      "열 i에서 내려가면 위 행의 열 0..i와 아래 행의 열 i..N−1을 지나므로, 경로의 최댓값은 두 구간 각각의 최댓값 중 큰 쪽입니다.",
+      "아래 행의 suffix 최댓값을 오른쪽에서 왼쪽으로 계산한 뒤, 왼쪽에서 오른쪽으로 가면서 위 행의 prefix 최댓값을 유지하세요. 각 열에서 둘 중 큰 값을 취하고 모든 열에 대한 최솟값을 출력합니다. 수가 음수일 수 있으므로 최솟값의 초깃값은 충분히 큰 값으로 둡니다."
+    ],
+    "vi": [
+      "Với hai hàng và chỉ đi sang phải hoặc xuống dưới, mọi đường đi đều đi xuống đúng một lần, và cột đó quyết định toàn bộ đường đi.",
+      "Đi xuống ở cột i thì đi qua hàng trên ở các cột 0..i và hàng dưới ở các cột i..N−1, nên giá trị lớn nhất của đường đi là số lớn hơn trong hai giá trị lớn nhất của hai đoạn đó.",
+      "Tính giá trị lớn nhất theo hậu tố của hàng dưới từ phải sang trái, sau đó đi từ trái sang phải và giữ giá trị lớn nhất theo tiền tố của hàng trên; với mỗi cột lấy số lớn hơn trong hai giá trị rồi in ra giá trị nhỏ nhất trên tất cả các cột. Các số có thể âm, nên hãy khởi tạo giá trị nhỏ nhất bằng một số đủ lớn."
     ]
   },
   "explanationEn": "## Approach\n\nMaintain prefix maxima of the top row and suffix maxima of the bottom row. Enumerate the single column where the path moves down; the path maximum there is the larger of the two, and the answer is the minimum over all columns.\n\n## Correctness\n\nEvery valid path moves down exactly once; before that it passes through a prefix of the top row and afterwards through a suffix of the bottom row. Each down-move column corresponds to exactly one valid path, so enumerating them finds the optimum without omission or repetition.\n\n## Complexity\n\nTime O(N), space O(N)."

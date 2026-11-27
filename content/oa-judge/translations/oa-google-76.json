@@ -11,5 +11,35 @@
     "hints": [
       "Greedily collect words for each line assuming single spaces. For non-last lines, distribute the total number of spaces over the gaps by division; the last line uses single spaces and is padded on the right."
     ]
+  },
+  "ja": {
+    "title": "貪欲な改行と両端揃え",
+    "description": "各行にできるだけ多くの単語をそのまま入れます。単語間には少なくとも 1 つの空白を置き、単語は分割しません。最終行ではなく、複数の単語を含む行では、空白をできるだけ均等に配分し、余りは左側の隙間から順に割り当てます。最終行、または単語が 1 つだけの行は左揃えにして末尾を空白で埋めます。どの行もちょうど maxWidth 文字です。\n\n標準入出力の形式は CSWork が整備したもので、「本サイト」と記した値の範囲は本サイトの判定上の取り決めです。",
+    "input": "1 行目に n maxWidth、続く n 行に 1 行 1 単語が与えられます。1≤n≤300、1≤maxWidth≤100、単語の長さは 1..min(20,maxWidth) で、単語は空白以外の ASCII 文字からなります。",
+    "output": "まず行数を出力し、続いて整形した各行を出力します。各行は末尾の空白を含めてちょうど maxWidth 文字でなければなりません。出力全体も改行で終わる必要があります。",
+    "explanation": "例 1：3 つの行は \"This    is    an\"、\"example  of text\"、\"justification.  \" で（引用符は出力しません）、どれも 16 文字です。例 2：1 行目は a、空白 2 つ、b で、最終行は \"c d \" です。どちらも 4 文字です。例 3：word の後ろに空白 2 つの詰め物が付き、行の幅は 6 です。",
+    "hints": [
+      "各行について、単語間を空白 1 つとして単語を貪欲に集めます。最終行以外では、空白の総数を隙間の数で割って配分します。最終行は空白 1 つで連結し、右側を埋めます。"
+    ]
+  },
+  "ko": {
+    "title": "그리디 줄 바꿈과 양쪽 정렬",
+    "description": "각 줄에 단어를 통째로 가능한 한 많이 배치하며, 단어 사이에는 공백이 최소 하나 있어야 하고 단어를 쪼개서는 안 됩니다. 마지막 줄이 아니고 단어가 여러 개인 줄은 공백을 최대한 고르게 분배하고, 나머지가 있으면 왼쪽 간격에 먼저 하나씩 줍니다. 마지막 줄이나 단어가 하나뿐인 줄은 왼쪽 정렬하고 뒤를 공백으로 채우며, 모든 줄은 정확히 maxWidth 글자여야 합니다.\n\n표준 입출력 형식은 CSWork에서 정리한 것이며, \"이 사이트\"라고 표시된 값의 범위는 이 사이트의 채점 기준입니다.",
+    "input": "첫째 줄에 n maxWidth가 주어지고, 이어서 단어가 한 줄에 하나씩 n개의 줄로 주어집니다. 1≤n≤300, 1≤maxWidth≤100이며 단어의 길이는 1..min(20,maxWidth)이고 공백이 아닌 ASCII 문자로 이루어집니다.",
+    "output": "먼저 줄 수를 출력한 뒤 정렬된 줄을 출력합니다. 각 줄은 뒤쪽 공백을 포함하여 정확히 maxWidth 글자여야 합니다. 전체 출력도 개행으로 끝나야 합니다.",
+    "explanation": "예제 1: 세 줄은 \"This    is    an\", \"example  of text\", \"justification.  \"이며(따옴표는 출력하지 않습니다) 각각 16글자입니다. 예제 2: 첫 줄은 a, 공백 2개, b이고 마지막 줄은 \"c d \"이며 각각 4글자입니다. 예제 3: word 뒤에 채움 공백 2개가 붙어 줄 너비는 6입니다.",
+    "hints": [
+      "각 줄마다 공백을 하나씩이라고 가정하고 단어를 그리디하게 모읍니다. 마지막 줄이 아닌 줄은 전체 공백 수를 간격 수로 나누어 분배하고, 마지막 줄은 공백 하나씩으로 잇고 오른쪽을 채웁니다."
+    ]
+  },
+  "vi": {
+    "title": "Ngắt dòng tham lam và căn đều hai bên",
+    "description": "Đặt càng nhiều từ nguyên vẹn càng tốt trên mỗi dòng, với ít nhất một dấu cách giữa các từ và không cắt từ. Với một dòng không phải dòng cuối và chứa nhiều từ, hãy phân bổ các dấu cách đều nhất có thể, phần dư được dồn cho các khoảng trống bên trái trước. Dòng cuối, hoặc dòng chỉ chứa một từ, được căn trái và bù thêm dấu cách ở cuối; mỗi dòng có đúng maxWidth ký tự.\n\nĐịnh dạng đầu vào/đầu ra chuẩn do CSWork biên soạn; các khoảng giá trị được đánh dấu \"this site\" là quy ước chấm bài của trang này.",
+    "input": "Dòng đầu chứa n maxWidth, tiếp theo là n dòng mỗi dòng một từ. 1≤n≤300, 1≤maxWidth≤100, độ dài từ là 1..min(20,maxWidth), và các từ gồm các ký tự ASCII không phải khoảng trắng.",
+    "output": "Trước tiên in số dòng, rồi các dòng đã định dạng; mỗi dòng phải có đúng maxWidth ký tự (kể cả dấu cách ở cuối). Toàn bộ đầu ra cũng phải kết thúc bằng một ký tự xuống dòng.",
+    "explanation": "Ví dụ 1: ba dòng là \"This    is    an\", \"example  of text\" và \"justification.  \" (không in dấu ngoặc kép), mỗi dòng 16 ký tự. Ví dụ 2: dòng đầu là a, hai dấu cách, rồi b; dòng cuối là \"c d \"; mỗi dòng 4 ký tự. Ví dụ 3: word được theo sau bởi hai dấu cách đệm, độ rộng dòng là 6.",
+    "hints": [
+      "Thu thập tham lam các từ cho mỗi dòng với giả định dùng một dấu cách đơn. Với các dòng không phải dòng cuối, phân bổ tổng số dấu cách vào các khoảng trống bằng phép chia; dòng cuối dùng một dấu cách đơn và được đệm bên phải."
+    ]
   }
 }

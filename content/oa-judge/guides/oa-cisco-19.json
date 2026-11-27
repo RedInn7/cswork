@@ -13,6 +13,21 @@
       "The best non-empty segment ending at position i either contains only a[i] or is the best segment ending at i - 1 extended by a[i].",
       "While scanning keep ending, the best sum of a segment ending at the current element, and the maximum of all endings so far; this is Kadane's algorithm.",
       "Initialise ending and answer with the first element (so an all-negative array still picks a non-empty segment); for every later value v set ending = max(v, ending + v) and answer = max(answer, ending); print answer, using 64-bit sums."
+    ],
+    "ja": [
+      "位置 i で終わる空でない最良の区間は、a[i] だけの区間か、i - 1 で終わる最良の区間を a[i] で延ばしたものです。",
+      "走査しながら、現在の要素で終わる区間の最良の和 ending と、ここまでの ending の最大値を保持します。これが Kadane のアルゴリズムです。",
+      "ending と answer を最初の要素で初期化します（これにより、すべて負の配列でも空でない区間が選ばれます）。以降の各値 v について ending = max(v, ending + v)、answer = max(answer, ending) と更新し、answer を出力します。和は 64 ビットで扱います。"
+    ],
+    "ko": [
+      "위치 i에서 끝나는 최적의 비어 있지 않은 구간은 a[i] 하나뿐이거나, i - 1에서 끝나는 최적 구간에 a[i]를 이어 붙인 것입니다.",
+      "스캔하면서 현재 원소에서 끝나는 구간의 최대 합 ending과 지금까지의 모든 ending의 최댓값을 유지합니다. 이것이 Kadane 알고리즘입니다.",
+      "ending과 answer를 첫 원소로 초기화합니다(모든 원소가 음수여도 비어 있지 않은 구간을 고르게 하기 위함). 이후의 각 값 v에 대해 ending = max(v, ending + v), answer = max(answer, ending)으로 갱신합니다. 64비트 합을 사용해 answer를 출력합니다."
+    ],
+    "vi": [
+      "Đoạn không rỗng tốt nhất kết thúc tại vị trí i hoặc chỉ gồm a[i], hoặc là đoạn tốt nhất kết thúc tại i - 1 được nối thêm a[i].",
+      "Trong lúc duyệt, giữ ending là tổng tốt nhất của một đoạn kết thúc tại phần tử hiện tại, và giá trị lớn nhất của mọi ending cho đến nay; đây chính là thuật toán Kadane.",
+      "Khởi tạo ending và answer bằng phần tử đầu tiên (để mảng toàn số âm vẫn chọn một đoạn không rỗng); với mỗi giá trị v tiếp theo, đặt ending = max(v, ending + v) và answer = max(answer, ending); in answer, dùng tổng 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nKeep the best sum of a non-empty segment ending at the current element, and the maximum of that value over all end positions.\n\n## Proof of correctness\n\nA segment ending at i either contains only a[i] or consists of the best segment ending at i-1 extended by a[i]. These two kinds cover all non-empty segments; initializing with the first element guarantees that a non-empty segment is chosen even when all values are negative.\n\n## Complexity\n\nO(n) time and O(1) auxiliary space apart from the input storage; sums use 64-bit integers."

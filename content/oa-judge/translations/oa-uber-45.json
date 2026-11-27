@@ -11,5 +11,35 @@
     "hints": [
       "First convert adjacent comparisons of the array into a sequence of −1/0/1, then count occurrences of the pattern with KMP, allowing overlaps."
     ]
+  },
+  "ja": {
+    "title": "隣接する増減パターンに一致する個数",
+    "description": "パターンでは、1 は次の数が前の数より大きいこと、0 は等しいこと、−1 は小さいことを表します。パターンの長さ + 1 の長さの連続部分配列のうち、隣接する要素の関係がパターンと項ごとに一致するものの個数を数えてください。\n\n本サイトでは標準入出力を明示しており、原典に範囲の記載がないものはすべて本サイト独自の取り決めとして示しています。",
+    "input": "1 行目に n m、続いて配列とパターンがそれぞれ 1 行で与えられます。原典には値の範囲がありません。本サイトでは 1≤m<n≤200000、配列の要素は −10⁹..10⁹、パターンの値は −1/0/1 とします。",
+    "output": "答えを表す整数を 1 つ出力してください。",
+    "explanation": "例 1: 4, 5, 5, 1 だけが、増加、横ばい、減少の順になるので、答えは 1 です。例 2: 重なる 2 つの窓 1, 2, 3 と 2, 3, 4 が一致するので、答えは 2 です。例 3: 隣接する 2 つの窓はどちらもすべて等しいので、答えは 2 です。",
+    "hints": [
+      "まず配列の隣接する比較を −1/0/1 の列に変換し、次に KMP でパターンの出現回数を、重なりを許して数えます。"
+    ]
+  },
+  "ko": {
+    "title": "인접한 증가/감소 패턴이 일치하는 개수",
+    "description": "패턴에서 1은 다음 수가 이전 수보다 크다는 뜻이고, 0은 같다는 뜻이며, −1은 작다는 뜻입니다. 길이가 패턴 길이 + 1인 연속 부분 배열 중 인접한 대소 관계가 패턴과 항목별로 일치하는 것의 개수를 구하세요.\n\n이 사이트는 표준 입출력을 명시적으로 정했으며, 원문에 범위가 없는 부분은 모두 이 사이트의 규약으로 표시했습니다.",
+    "input": "첫 줄에 n m, 이어서 배열과 패턴이 각각 한 줄씩 주어집니다. 원문에는 값의 범위가 없으며, 이 사이트에서는 1≤m<n≤200000, 배열 원소는 −10⁹..10⁹, 패턴 값은 −1/0/1입니다.",
+    "output": "정수 하나, 답을 출력합니다.",
+    "explanation": "예제 1: 4, 5, 5, 1만 증가, 같음, 감소 순서이므로 답은 1입니다. 예제 2: 겹치는 두 윈도우 1, 2, 3과 2, 3, 4가 일치하므로 답은 2입니다. 예제 3: 인접한 두 윈도우가 모두 같은 값이므로 답은 2입니다.",
+    "hints": [
+      "먼저 배열의 인접한 비교를 −1/0/1 시퀀스로 바꾼 뒤, KMP로 패턴의 출현 횟수를 겹침을 허용하며 셉니다."
+    ]
+  },
+  "vi": {
+    "title": "Đếm số khớp mẫu tăng/giảm liền kề",
+    "description": "Trong mẫu, 1 nghĩa là số kế tiếp lớn hơn số trước, 0 nghĩa là bằng, và −1 nghĩa là nhỏ hơn. Hãy đếm các mảng con liên tiếp có độ dài bằng độ dài mẫu cộng 1 mà các quan hệ liền kề của chúng khớp với mẫu từng phần tử một.\n\nTrang này nêu rõ định dạng đầu vào/đầu ra chuẩn; mọi giới hạn mà nguồn không cho đều được đánh dấu là quy ước của trang này.",
+    "input": "Dòng đầu tiên chứa n m, tiếp theo là hai dòng chứa mảng và mẫu. Nguồn không cho phạm vi giá trị; trên trang này 1≤m<n≤200000, các phần tử mảng nằm trong −10⁹..10⁹, và các giá trị của mẫu là −1/0/1.",
+    "output": "In ra một số nguyên là đáp án.",
+    "explanation": "Ví dụ 1: chỉ có 4, 5, 5, 1 tăng, đứng yên rồi giảm, nên đáp án là 1. Ví dụ 2: hai cửa sổ chồng nhau 1, 2, 3 và 2, 3, 4 đều khớp, nên đáp án là 2. Ví dụ 3: cả hai cửa sổ liền kề đều gồm các số bằng nhau, nên đáp án là 2.",
+    "hints": [
+      "Trước hết chuyển các phép so sánh liền kề của mảng thành một dãy −1/0/1, rồi đếm số lần xuất hiện của mẫu bằng KMP, cho phép chồng lấp."
+    ]
   }
 }

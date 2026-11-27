@@ -13,6 +13,21 @@
       "The two rooks are in different rows, so every pair can be enumerated at its later row: the current cell pairs with the best cell of an earlier row in a different column.",
       "From the earlier rows only two candidates are needed: the two best scores kept in different columns. The current column conflicts with at most one of them, and the other is then the best choice in a different column.",
       "Start the candidates as two very small scores with columns that do not exist. For each row, first update the answer for every cell with its score plus the best candidate score whose column differs; after the whole row is queried, merge each cell of the row into the candidates, keeping the larger score for a shared column and then the top two by (score, column). Querying before updating prevents same-row pairs. Scores can be negative, so start the answer very low and use 64-bit integers."
+    ],
+    "ja": [
+      "2 つのルークは異なる行にあるので、どのペアも後ろの行で列挙できます。現在のマスは、それより前の行の、異なる列にある最良のマスと組みます。",
+      "前の行から必要な候補は 2 つだけで、異なる列で保持した最良のスコア 2 つです。現在の列と衝突するのは高々 1 つで、その場合は残りのもう 1 つが、異なる列での最良の選択になります。",
+      "候補は、存在しない列を持つ非常に小さい 2 つのスコアで初期化します。各行について、まず各マスに対し、そのスコアと、列が異なる最良の候補のスコアの和で答えを更新します。行全体の問い合わせが終わってから、行の各マスを候補に統合します。同じ列については大きい方のスコアを残し、その後（スコア、列）の上位 2 つを残します。更新より先に問い合わせることで、同じ行のペアを防げます。スコアは負になり得るので、答えは非常に小さい値から始め、64 ビット整数を使います。"
+    ],
+    "ko": [
+      "두 룩은 서로 다른 행에 있으므로, 모든 쌍을 더 아래쪽 행에서 열거할 수 있습니다. 현재 칸은 이전 행들에서 다른 열에 있는 가장 좋은 칸과 짝을 짓습니다.",
+      "이전 행들에서는 서로 다른 열에 있는 가장 좋은 점수 두 개만 후보로 두면 됩니다. 현재 열이 둘 중 최대 하나와 충돌하며, 충돌하지 않는 나머지가 다른 열에서의 최선이 됩니다.",
+      "후보는 존재하지 않는 열을 가진 매우 작은 점수 두 개로 시작합니다. 각 행에서 먼저 모든 칸에 대해 자신의 점수에 열이 다른 가장 좋은 후보 점수를 더해 정답을 갱신합니다. 행 전체의 질의가 끝난 뒤 그 행의 각 칸을 후보에 병합하는데, 같은 열이면 큰 점수만 남기고 (점수, 열) 기준 상위 두 개를 유지합니다. 갱신 전에 질의하면 같은 행의 쌍이 만들어지지 않습니다. 점수가 음수일 수 있으므로 정답을 매우 낮은 값으로 시작하고 64비트 정수를 사용합니다."
+    ],
+    "vi": [
+      "Hai quân xe ở khác hàng, nên mọi cặp đều có thể được liệt kê tại hàng sau của nó: ô hiện tại ghép với ô tốt nhất của một hàng trước ở cột khác.",
+      "Từ các hàng trước chỉ cần hai ứng viên: hai điểm tốt nhất được giữ ở các cột khác nhau. Cột hiện tại xung đột với nhiều nhất một trong hai, và khi đó cái còn lại là lựa chọn tốt nhất ở cột khác.",
+      "Khởi tạo các ứng viên là hai điểm số rất nhỏ với các cột không tồn tại. Với mỗi hàng, trước tiên cập nhật đáp án cho từng ô bằng điểm của nó cộng điểm ứng viên tốt nhất có cột khác; sau khi cả hàng đã được truy vấn, gộp từng ô của hàng vào các ứng viên, giữ điểm lớn hơn cho cột dùng chung rồi lấy hai điểm đầu theo (điểm, cột). Truy vấn trước khi cập nhật ngăn các cặp cùng hàng. Điểm số có thể âm, nên hãy khởi tạo đáp án rất thấp và dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nProcess row by row, keeping the two best scores over all previous rows, distinguished by different columns. Pair the current cell with the best of these whose column differs, then add this row to the candidates.\n\n## Proof of correctness\n\nThe current row and a previous row are always different rows, and a column conflict can rule out at most one column among the historical best candidates, so the top two from different columns suffice. Querying the whole row before updating rules out pairs within the same row; every pair of rooks is enumerated at its later row.\n\n## Complexity\n\nTime O(NM), space O(NM) to store the input, with O(1) extra for the candidates."

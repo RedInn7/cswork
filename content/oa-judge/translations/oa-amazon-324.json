@@ -11,5 +11,35 @@
     "hints": [
       "Keep all unshipped IDs in a deque; INSERT appends, and SHIP checks the length and then takes the first three or returns N/A."
     ]
+  },
+  "ja": {
+    "title": "キューの順に3個ずつパッケージを出荷する",
+    "description": "キューは最初は空です。INSERT はパッケージ ID をキューの末尾に追加します。SHIP は、キューに少なくとも 3 個のパッケージがあれば、先頭の 3 個を出荷してその順序で返します。そうでなければ要素が1つのリスト [\"N/A\"] を返し、パッケージは取り除きません。すべての SHIP の結果のリストを返してください。SHIP がなければ空のリストを返します。\n\n標準入出力、例、解説は本サイトが独自に作成したものです。本サイト独自と明記した範囲は、出典の元の制約ではありません。",
+    "input": "入力は、空白を含まない JSON の2次元配列で、各要素は [\"INSERT\",ID] または [\"SHIP\",\"-\"] です。元の問題文には値や ID の文字に関する制約がなく、本サイトでは、クエリ数を 1≤クエリ数≤50000 とし、ID は 0..16 個の Unicode 文字からなり、空白、空の名前、重複、大文字小文字の違いを許します。JSON 文字列内の空白は JSON のエスケープを使って表し(たとえば空白は \\u0020 と書きます)、非 ASCII 文字は \\uXXXX またはサロゲートペアを使います。意味を持つ文字列は短縮しません。",
+    "output": "空白を含まない JSON の2次元配列を出力してください。文字列内の空白と非 ASCII 文字は JSON のエスケープを使い、空白は \\u0020 と表します。",
+    "explanation": "出力は [[\"N/A\"],[\"A\",\"B\",\"C\"]]、二重の空白を持つ ID、空の ID、絵文字を含む3つのパッケージがそのままのもの、そして [[\"N/A\"]] です。元の例にある N/ A は表示上の誤記で、本サイトでは本文と同じく一貫して N/A を使います。",
+    "hints": [
+      "未出荷の ID をすべて deque に保持します。INSERT は末尾に追加し、SHIP は長さを確認してから先頭の3個を取り出すか、N/A を返します。"
+    ]
+  },
+  "ko": {
+    "title": "대기열 순서대로 한 번에 세 개의 패키지 발송하기",
+    "description": "대기열은 비어 있는 상태로 시작합니다. INSERT는 패키지 ID를 대기열의 끝에 추가합니다. SHIP은 대기열에 패키지가 3개 이상 있으면 가장 앞의 3개를 그 순서대로 발송해 반환하고, 그렇지 않으면 원소가 하나인 목록 [\"N/A\"]를 반환하며 어떤 패키지도 제거하지 않습니다. 모든 SHIP의 결과 목록을 반환하세요. SHIP이 없으면 빈 목록을 반환합니다.\n\n표준 입출력, 예제, 해설은 이 사이트에서 독자적으로 작성했습니다. 이 사이트가 직접 정했다고 표시된 범위는 원문의 제약 조건이 아닙니다.",
+    "input": "입력은 각 항목이 [\"INSERT\",ID] 또는 [\"SHIP\",\"-\"]인 간결한 JSON 이차원 배열입니다. 원문에는 값이나 ID 문자에 대한 제한이 없으며, 이 사이트에서는 1≤쿼리 수≤50000이고 ID는 유니코드 문자 0..16개이며 공백, 빈 이름, 중복, 대소문자 차이를 허용합니다. JSON 문자열 안의 공백은 JSON 이스케이프로 써야 하며, 예를 들어 공백은 \\u0020 형태로 쓰고 비ASCII 문자는 \\uXXXX 또는 서로게이트 쌍을 사용합니다. 의미상의 문자열은 줄이지 않습니다.",
+    "output": "간결한 JSON 이차원 배열을 출력합니다. 문자열 안의 공백과 비ASCII 문자는 JSON 이스케이프를 사용하며 공백은 \\u0020 형태로 인코딩합니다.",
+    "explanation": "출력은 각각 [[\"N/A\"],[\"A\",\"B\",\"C\"]], 이중 공백이 있는 ID, 빈 ID, 이모지를 포함해 세 패키지를 그대로 담은 결과, 그리고 [[\"N/A\"]]입니다. 원문 예제의 N/ A는 표시상의 오타이며, 이 사이트는 본문과 마찬가지로 전반에서 N/A를 사용합니다.",
+    "hints": [
+      "아직 발송되지 않은 모든 ID를 덱에 보관합니다. INSERT는 추가하고, SHIP은 길이를 확인한 뒤 앞의 세 개를 가져오거나 N/A를 반환합니다."
+    ]
+  },
+  "vi": {
+    "title": "Giao ba gói hàng một lần theo thứ tự hàng đợi",
+    "description": "Hàng đợi ban đầu rỗng. INSERT thêm một ID gói hàng vào cuối hàng đợi. SHIP, nếu hàng đợi chứa ít nhất 3 gói hàng, thì giao 3 gói sớm nhất và trả về chúng theo thứ tự đó; ngược lại nó trả về danh sách một phần tử [\"N/A\"] và không lấy gói nào ra. Hãy trả về danh sách kết quả của mọi lệnh SHIP; nếu không có SHIP nào, trả về danh sách rỗng.\n\nĐầu vào/đầu ra chuẩn, các ví dụ và phần lời giải do trang này tự viết; các khoảng giá trị được đánh dấu rõ là của trang này không phải ràng buộc gốc của đề.",
+    "input": "Đầu vào là một mảng JSON hai chiều gọn có các phần tử dạng [\"INSERT\",ID] hoặc [\"SHIP\",\"-\"]. Đề gốc không cho cận về giá trị hay ký tự ID; trên trang này 1≤số truy vấn≤50000, và một ID có 0..16 ký tự Unicode, cho phép dấu cách, tên rỗng, trùng lặp và khác biệt hoa thường. Khoảng trắng bên trong chuỗi JSON phải dùng escape JSON, ví dụ một dấu cách được viết là \\u0020, còn ký tự không thuộc ASCII dùng \\uXXXX hoặc cặp surrogate; các chuỗi về mặt ngữ nghĩa không bị rút gọn.",
+    "output": "In ra một mảng JSON hai chiều gọn; khoảng trắng và ký tự không thuộc ASCII trong các chuỗi dùng escape JSON, với một dấu cách được mã hóa là \\u0020.",
+    "explanation": "Các đầu ra là [[\"N/A\"],[\"A\",\"B\",\"C\"]]; ba gói hàng giữ nguyên, bao gồm một ID có hai dấu cách liền nhau, một ID rỗng và một emoji; và [[\"N/A\"]]. Chữ N/ A trong ví dụ gốc là lỗi hiển thị, và trang này dùng N/A xuyên suốt, như trong phần nội dung.",
+    "hints": [
+      "Giữ mọi ID chưa giao trong một deque; INSERT thêm vào cuối, còn SHIP kiểm tra độ dài rồi lấy ba phần tử đầu hoặc trả về N/A."
+    ]
   }
 }

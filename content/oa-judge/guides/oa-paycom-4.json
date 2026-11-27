@@ -13,6 +13,21 @@
       "The original function looks only at parity: it returns 0 for odd input and 1 for even input. Calling it twice feeds the first return value into the second call.",
       "Work through both cases: an odd start gives 0 on the first call, 0 is even, so the second call gives 1; an even start gives 1 first, 1 is odd, so the second call gives 0.",
       "Read i, call the function twice in the original order and print the result, which amounts to 1 for odd and 0 for even. Watch negative inputs when testing parity: treat a non-zero remainder as odd rather than checking for a remainder of exactly 1."
+    ],
+    "ja": [
+      "元の関数が見るのは偶奇だけで、奇数の入力には 0、偶数の入力には 1 を返します。2 回呼び出すと、最初の戻り値が 2 回目の呼び出しに渡されます。",
+      "両方の場合を追ってみましょう。奇数から始めると最初の呼び出しは 0 を返し、0 は偶数なので 2 回目の呼び出しは 1 を返します。偶数から始めると最初は 1 を返し、1 は奇数なので 2 回目の呼び出しは 0 を返します。",
+      "i を読み込み、元の順序で関数を 2 回呼び出して結果を出力します。結果は、奇数なら 1、偶数なら 0 になります。負の入力で偶奇を判定するときは注意してください。剰余がちょうど 1 かどうかではなく、0 でないかどうかで奇数と判断してください。"
+    ],
+    "ko": [
+      "원래 함수는 홀짝만 봅니다. 홀수 입력에는 0, 짝수 입력에는 1을 반환합니다. 두 번 호출하면 첫 번째 반환값이 두 번째 호출의 입력이 됩니다.",
+      "두 경우를 따져 보세요. 홀수로 시작하면 첫 호출이 0을 반환하고 0은 짝수이므로 두 번째 호출은 1을 반환합니다. 짝수로 시작하면 첫 호출이 1을 반환하고 1은 홀수이므로 두 번째 호출은 0을 반환합니다.",
+      "i를 읽고 원래 순서대로 함수를 두 번 호출한 결과를 출력합니다. 결과적으로 홀수면 1, 짝수면 0입니다. 음수 입력의 홀짝을 판별할 때 주의하세요. 나머지가 정확히 1인지 확인하지 말고, 나머지가 0이 아니면 홀수로 취급하세요."
+    ],
+    "vi": [
+      "Hàm gốc chỉ xét tính chẵn lẻ: nó trả về 0 với đầu vào lẻ và 1 với đầu vào chẵn. Gọi hai lần nghĩa là giá trị trả về của lần đầu được đưa vào lần gọi thứ hai.",
+      "Xét cả hai trường hợp: bắt đầu từ số lẻ thì lần gọi đầu cho 0, 0 là số chẵn nên lần gọi thứ hai cho 1; bắt đầu từ số chẵn thì lần đầu cho 1, 1 là số lẻ nên lần gọi thứ hai cho 0.",
+      "Đọc i, gọi hàm hai lần theo đúng thứ tự gốc rồi in kết quả, tức là 1 với số lẻ và 0 với số chẵn. Chú ý các đầu vào âm khi kiểm tra tính chẵn lẻ: hãy coi số dư khác 0 là lẻ thay vì kiểm tra số dư bằng đúng 1."
     ]
   },
   "explanationEn": "## Approach\n\nCall f twice, strictly in the original order. f returns 0 for odd numbers and 1 for even numbers. After two consecutive calls, an odd initial value gives 1 and an even initial value gives 0.\n\n## Correctness\n\nIf the initial value is odd, the first call returns 0, and the second call maps the even 0 to 1; if the initial value is even, the first call returns 1, and the second call maps the odd 1 to 0. So the result equals the indicator of the initial value's parity.\n\n## Complexity\n\nTime and extra space are both O(1). This site only turns the original fixed i=3 into an input parameter; the function body and the number of calls are unchanged."

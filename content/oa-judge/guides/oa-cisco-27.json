@@ -13,6 +13,21 @@
       "Only leaves can be deleted, so keeping a node means keeping all of its ancestors; conversely an unsafe node can only go away together with its entire subtree.",
       "Let D[v] be the path sum from the root to v; the path sum from v to a strict ancestor u is D[v]-D[u], whose maximum is D[v] minus the smallest D among the strict ancestors. So v is safe exactly when D[v] - min(D of strict ancestors) <= threshold[v].",
       "Run an iterative DFS from the root (deep chains would overflow recursion), carrying node, parent, D, the minimum D over strict ancestors and whether it is already deleted; a node is deleted exactly when its parent is deleted or it is unsafe itself, and you count deleted nodes; the root is never deleted. Use 64-bit path sums and compare negative weights and thresholds as they are."
+    ],
+    "ja": [
+      "削除できるのは葉だけなので、ノードを残すならそのすべての祖先も残すことになります。逆に、安全でないノードがなくなるのは、その部分木全体とともにだけです。",
+      "D[v] を根から v までの経路の和とします。v から真の祖先 u までの経路の和は D[v]-D[u] で、その最大値は D[v] から真の祖先の D の最小値を引いたものです。したがって v が安全であるのは、D[v] - min(真の祖先の D) <= threshold[v] のときにちょうど限ります。",
+      "根から反復的な DFS を行い（深い鎖では再帰があふれます）、ノード、親、D、真の祖先にわたる D の最小値、およびすでに削除済みかどうかを持ち回ります。ノードが削除されるのは、親が削除済みか、そのノード自身が安全でないときにちょうど限り、削除されたノードを数えます。根は削除しません。経路の和は 64 ビットで扱い、負の重みと threshold もそのまま比較します。"
+    ],
+    "ko": [
+      "리프만 삭제할 수 있으므로 노드를 남기려면 그 조상을 모두 남겨야 합니다. 반대로 안전하지 않은 노드는 그 서브트리 전체와 함께일 때만 사라질 수 있습니다.",
+      "D[v]를 루트에서 v까지의 경로 합이라 하면, v에서 진조상 u까지의 경로 합은 D[v]-D[u]이고, 그 최댓값은 D[v]에서 진조상들 중 가장 작은 D를 뺀 것입니다. 따라서 v가 안전한 것은 정확히 D[v] - min(진조상들의 D) <= threshold[v]일 때입니다.",
+      "루트에서 반복 DFS를 실행합니다(깊은 체인은 재귀를 넘치게 합니다). 노드, 부모, D, 진조상들에 대한 D의 최솟값, 이미 삭제 대상인지 여부를 들고 다닙니다. 노드는 부모가 삭제되었거나 자신이 안전하지 않을 때 정확히 삭제되며, 삭제된 노드를 셉니다. 루트는 절대 삭제되지 않습니다. 경로 합은 64비트로 다루고, 음수 가중치와 threshold는 있는 그대로 비교합니다."
+    ],
+    "vi": [
+      "Chỉ có thể xóa các lá, nên giữ một nút nghĩa là giữ mọi tổ tiên của nó; ngược lại, một nút không an toàn chỉ có thể biến mất cùng với toàn bộ cây con của nó.",
+      "Gọi D[v] là tổng đường đi từ gốc đến v; tổng đường đi từ v đến một tổ tiên thực sự u là D[v]-D[u], giá trị lớn nhất của nó là D[v] trừ đi D nhỏ nhất trong các tổ tiên thực sự. Vậy v an toàn đúng khi D[v] - min(D của các tổ tiên thực sự) <= threshold[v].",
+      "Chạy DFS lặp từ gốc (chuỗi sâu sẽ làm tràn đệ quy), mang theo nút, cha, D, giá trị D nhỏ nhất trên các tổ tiên thực sự và việc nút đã bị xóa hay chưa; một nút bị xóa đúng khi cha của nó bị xóa hoặc chính nó không an toàn, và bạn đếm các nút bị xóa; gốc không bao giờ bị xóa. Dùng tổng đường đi 64 bit và so sánh trọng số âm cùng ngưỡng âm đúng như giá trị của chúng."
     ]
   },
   "explanationEn": "## Approach\n\nDuring the traversal maintain the root path sum D and the minimum root path sum M over the strict ancestors. v is safe if and only if D[v]−M≤threshold[v]. If a node is unsafe, or its parent has already been determined to be deleted, its entire subtree must be deleted; the iterative traversal counts these nodes at the same time.\n\n## Proof of correctness\n\nThe path sum to a strict ancestor u is D[v]−D[u], whose maximum is D[v]−M. Keeping any node requires keeping all of its ancestors, so an unsafe node and all of its descendants cannot be kept. These subtrees can be deleted from the leaves up towards the root, and every remaining node then satisfies the condition exactly, so the number of deletions is both necessary and achievable. Negative edges and negative thresholds take part in the comparison as they are, without being clamped to 0.\n\n## Complexity\n\nO(n) time, O(n) space. The adjacency list uses compact arrays with streaming lexical parsing and no recursion, and path sums use 64-bit or arbitrary-precision integers."

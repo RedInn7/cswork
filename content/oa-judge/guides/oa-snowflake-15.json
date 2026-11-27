@@ -13,6 +13,21 @@
       "In one operation the chosen task runs x seconds and every other task runs y seconds. Equivalently, every task gets y seconds in every operation, and the chosen task gets an extra x - y.",
       "With the total number of operations t fixed, each task first gets t * y; the rest of its need can only come from being chosen, x - y at a time, so it must be chosen ceil(remaining / (x - y)) times. t is feasible when these counts sum to at most t, and a larger t is only easier.",
       "Binary search t on [0, ceil(max / y)]: for each task, if v - t*y > 0 add ceil((v - t*y) / (x - y)) to need; if need <= t set hi = t, otherwise lo = t + 1. Use 64-bit integers throughout and print lo."
+    ],
+    "ja": [
+      "1 回の操作で、選ばれたタスクは x 秒、他のすべてのタスクは y 秒実行されます。言い換えると、どの操作でもすべてのタスクが y 秒を得て、選ばれたタスクが追加で x - y を得ます。",
+      "操作の総数 t を固定すると、各タスクはまず t * y を得ます。残りの必要量は選ばれることでしか得られず、1 回あたり x - y ずつなので、ceil(remaining / (x - y)) 回選ばれる必要があります。これらの回数の合計が t 以下なら t は実現可能で、t が大きいほど簡単になります。",
+      "[0, ceil(max / y)] で t を二分探索します。各タスクについて、v - t*y > 0 なら ceil((v - t*y) / (x - y)) を need に加えます。need <= t なら hi = t、そうでなければ lo = t + 1 とします。全体を通して 64 ビット整数を使い、lo を出力してください。"
+    ],
+    "ko": [
+      "한 번의 연산에서 선택된 작업은 x초, 나머지는 y초 실행합니다. 같은 말로, 매 연산마다 모든 작업이 y초를 받고 선택된 작업은 추가로 x - y를 더 받습니다.",
+      "전체 연산 횟수 t를 고정하면 각 작업은 먼저 t * y를 받고, 나머지 필요량은 선택될 때마다 x - y씩 받는 것으로만 채울 수 있으므로 ceil(remaining / (x - y))번 선택되어야 합니다. 이 횟수의 합이 t 이하이면 t가 가능하며, t가 클수록 더 쉽습니다.",
+      "[0, ceil(max / y)] 구간에서 t를 이분 탐색합니다. 각 작업마다 v - t*y > 0이면 ceil((v - t*y) / (x - y))를 need에 더하고, need <= t이면 hi = t, 아니면 lo = t + 1로 합니다. 전 과정에서 64비트 정수를 쓰고 lo를 출력합니다."
+    ],
+    "vi": [
+      "Trong một thao tác, tác vụ được chọn chạy x giây và mọi tác vụ khác chạy y giây. Tương đương, mọi tác vụ nhận y giây trong mỗi thao tác, và tác vụ được chọn nhận thêm x - y.",
+      "Với tổng số thao tác t cố định, mỗi tác vụ trước hết nhận t * y; phần nhu cầu còn lại chỉ có thể đến từ việc được chọn, mỗi lần x - y, nên nó phải được chọn ceil(remaining / (x - y)) lần. t khả thi khi tổng các số lần này không vượt quá t, và t lớn hơn chỉ dễ hơn.",
+      "Tìm kiếm nhị phân t trên [0, ceil(max / y)]: với mỗi tác vụ, nếu v - t*y > 0 thì cộng ceil((v - t*y) / (x - y)) vào need; nếu need <= t đặt hi = t, ngược lại lo = t + 1. Dùng số nguyên 64-bit xuyên suốt và in lo."
     ]
   },
   "explanationEn": "## Approach\n\nBinary search on the number of operations t; first give every task a base amount of t*y, then divide each task's remaining need by x-y, rounding up, to get the number of extra times it must be the main task; t is feasible if the sum is at most t.\n\n## Correctness\n\nAny t-step schedule provides the extra main-task execution at most t times, so the condition is necessary. If the sum of the required counts is <=t, choose still-unfinished tasks according to these counts; surplus reservations for already finished tasks can be replaced by other unfinished tasks without reducing any necessary execution, and once everything is finished there is no need to continue, so all tasks finish within at most t steps. Feasibility is monotone, so binary search gives the minimum.\n\n## Complexity\n\nTime O(n log maxTime), space O(n)."

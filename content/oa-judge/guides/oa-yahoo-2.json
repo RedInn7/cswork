@@ -13,6 +13,21 @@
       "A valid substring always spans exactly two adjacent runs (a run of 0s and a run of 1s, or the other way round) with equal lengths on both sides.",
       "Compress the string into its run lengths; two adjacent runs of lengths a and b give min(a, b) valid substrings centered on their boundary.",
       "While scanning keep the previous run length prev and the current run length run; when the character changes, add min(prev, run) to the answer and set prev = run, run = 1; after the loop add min(prev, run) once more and print."
+    ],
+    "ja": [
+      "条件を満たす部分文字列は、必ず隣り合うちょうど 2 つのラン (0 のランと 1 のラン、またはその逆) にまたがり、両側の長さが等しくなります。",
+      "文字列をランの長さに圧縮します。長さ a と b の隣り合う 2 つのランは、その境界を中心とする min(a, b) 個の条件を満たす部分文字列を与えます。",
+      "走査中、直前のランの長さ prev と現在のランの長さ run を保持します。文字が変わったら、答えに min(prev, run) を加え、prev = run、run = 1 とします。ループの後でもう一度 min(prev, run) を加えて出力します。"
+    ],
+    "ko": [
+      "유효한 부분 문자열은 항상 양쪽 길이가 같은 인접한 두 구간(0 구간과 1 구간, 또는 그 반대)에 걸쳐 있습니다.",
+      "문자열을 연속 구간의 길이로 압축합니다. 길이 a와 b인 인접한 두 구간은 그 경계를 중심으로 하는 min(a, b)개의 유효한 부분 문자열을 만듭니다.",
+      "스캔하면서 직전 구간 길이 prev와 현재 구간 길이 run을 유지합니다. 문자가 바뀌면 답에 min(prev, run)을 더하고 prev = run, run = 1로 둡니다. 반복이 끝난 뒤 min(prev, run)을 한 번 더 더하고 출력합니다."
+    ],
+    "vi": [
+      "Một xâu con hợp lệ luôn trải đúng qua hai đoạn kề nhau (một đoạn 0 và một đoạn 1, hoặc ngược lại) với độ dài hai bên bằng nhau.",
+      "Nén xâu thành các độ dài đoạn; hai đoạn kề nhau có độ dài a và b cho min(a, b) xâu con hợp lệ có tâm tại ranh giới của chúng.",
+      "Trong khi duyệt, giữ độ dài đoạn trước prev và độ dài đoạn hiện tại run; khi ký tự đổi, cộng min(prev, run) vào đáp án và đặt prev = run, run = 1; sau vòng lặp cộng thêm min(prev, run) một lần nữa rồi in ra."
     ]
   },
   "explanationEn": "## Approach\n\nCompress the string into runs of equal characters; each pair of adjacent runs contributes the smaller length.\n\n## Proof of correctness\n\nA valid substring spans exactly two adjacent runs with equal lengths, so the number of possible starting points is the length of the shorter run.\n\n## Complexity\n\nO(n) time, O(1) space."

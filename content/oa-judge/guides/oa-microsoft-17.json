@@ -13,6 +13,21 @@
       "An adjacent swap is reversible: a window can become key with one swap exactly when key can become that window with one swap.",
       "So put key itself and every result of one adjacent swap of key into a set, then check whether each equal-length window of text is in the set; the set removes duplicates, so each start position counts once.",
       "Fill the set with key and, for every i, the string obtained by swapping characters i and i+1 of key. Enumerate every window of text of length |key| and add one when it is in the set, then print the count. Lengths are at most 50, so plain substrings are fine."
+    ],
+    "ja": [
+      "隣接交換は元に戻せます。窓が1回の交換で key になることは、key が1回の交換でその窓になることと同値です。",
+      "そこで、key 自身と key の隣接交換1回の結果をすべて集合に入れ、text の同じ長さの各窓がその集合にあるかを調べます。集合が重複を取り除くので、各開始位置は1回だけ数えられます。",
+      "集合に key と、各 i について key の文字 i と i+1 を交換した文字列を入れます。text の長さ |key| の窓をすべて列挙し、集合にあれば 1 を加え、数を出力します。長さは高々 50 なので、素直な部分文字列で十分です。"
+    ],
+    "ko": [
+      "인접 교환은 되돌릴 수 있습니다. 윈도우가 한 번의 교환으로 key가 될 수 있는 것은 key가 한 번의 교환으로 그 윈도우가 될 수 있을 때와 정확히 같습니다.",
+      "따라서 key 자신과 key를 인접 교환 한 번 한 모든 결과를 집합에 넣은 뒤, text의 같은 길이 윈도우가 집합에 있는지 확인합니다. 집합이 중복을 제거하므로 각 시작 위치는 한 번만 셉니다.",
+      "집합을 key와, 각 i에 대해 key의 i번째와 i+1번째 문자를 교환한 문자열로 채웁니다. text의 길이 |key|인 모든 윈도우를 열거하여 집합에 있으면 1을 더하고 센 값을 출력합니다. 길이가 최대 50이므로 단순한 부분 문자열로 충분합니다."
+    ],
+    "vi": [
+      "Phép hoán đổi kề nhau là thuận nghịch: một cửa sổ có thể trở thành key bằng một lần hoán đổi khi và chỉ khi key có thể trở thành cửa sổ đó bằng một lần hoán đổi.",
+      "Vì vậy hãy đưa key và mọi kết quả của một lần hoán đổi kề nhau của key vào một tập hợp, rồi kiểm tra từng cửa sổ cùng độ dài của text có thuộc tập hay không; tập hợp loại bỏ trùng lặp, nên mỗi vị trí bắt đầu chỉ được đếm một lần.",
+      "Điền vào tập hợp key và, với mỗi i, xâu thu được bằng cách hoán đổi các ký tự i và i+1 của key. Duyệt mọi cửa sổ của text có độ dài |key| và cộng một nếu nó nằm trong tập, rồi in số đếm. Độ dài tối đa là 50, nên dùng xâu con thông thường là đủ."
     ]
   },
   "explanationEn": "## Approach\n\nGenerate key itself and all distinct strings obtained from one adjacent swap, then enumerate the equal-length windows of text and look each one up in the set.\n\n## Proof of correctness\n\nAn adjacent swap is reversible, so a window can become key with one swap exactly when it belongs to key's one-swap set. The set avoids counting the same start twice through duplicate swaps, and enumerating the windows covers every start.\n\n## Complexity\n\nTime O(|key|²+|text|·|key|), space O(|key|²)."

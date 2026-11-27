@@ -13,6 +13,21 @@
       "For a fixed title j, every title that is a prefix of j ends at a node on the trie path from the root to j.",
       "Insert all titles into a trie and record at each end node how many titles end there; for each title, the sum of those counts along its path is the number of titles that are its prefix, minus one for itself.",
       "First pass: insert the titles one by one and increment the count at the end node (duplicates add up). Second pass: walk each title through the trie again, summing the end counts of the nodes passed (not the root), then subtract 1 to drop the pair with itself; the sum over all titles is the answer, kept in a 64-bit integer."
+    ],
+    "ja": [
+      "あるタイトル j を固定すると、j の接頭辞であるすべてのタイトルは、トライの根から j へのパス上のノードで終わります。",
+      "すべてのタイトルをトライに挿入し、各終端ノードでそこで終わるタイトルの個数を記録します。各タイトルについて、そのパス上のカウントの合計が、そのタイトルの接頭辞となるタイトルの個数(自分自身の分を含む)になるので、自分自身の1を引きます。",
+      "1回目のパス: タイトルを1つずつ挿入し、終端ノードのカウントを増やします(重複は加算される)。2回目のパス: 各タイトルを再びトライでたどり、通過したノード(根は除く)の終端カウントを合計し、そこから 1 を引いて自分自身とのペアを除きます。全タイトルについての合計が答えで、64ビット整数で保持します。"
+    ],
+    "ko": [
+      "제목 j를 고정하면, j의 접두사인 모든 제목은 트라이에서 루트부터 j까지의 경로 위에 있는 어떤 노드에서 끝납니다.",
+      "모든 제목을 트라이에 삽입하고 각 끝 노드에서 몇 개의 제목이 끝나는지 기록합니다. 각 제목에 대해 경로상의 그 개수를 합하면 그 제목의 접두사인 제목의 수이며, 자기 자신은 하나를 뺍니다.",
+      "첫 번째 패스: 제목을 하나씩 삽입하며 끝 노드의 카운트를 증가시킵니다(중복은 누적됩니다). 두 번째 패스: 각 제목을 다시 트라이를 따라 걸으며 지나는 노드(루트 제외)의 끝 카운트를 합한 뒤, 자기 자신과의 쌍을 제외하기 위해 1을 뺍니다. 모든 제목에 대한 합이 답이며 64비트 정수로 유지합니다."
+    ],
+    "vi": [
+      "Với một tên j cố định, mọi tên là tiền tố của j đều kết thúc tại một nút nằm trên đường đi trong trie từ gốc đến j.",
+      "Chèn mọi tên vào một trie và ghi lại tại mỗi nút kết thúc có bao nhiêu tên kết thúc ở đó; với mỗi tên, tổng các số đếm này dọc theo đường đi của nó là số tên là tiền tố của nó, trừ đi một cho chính nó.",
+      "Lượt thứ nhất: chèn lần lượt các tên và tăng số đếm tại nút kết thúc (các tên trùng được cộng dồn). Lượt thứ hai: đi lại từng tên qua trie, cộng số đếm kết thúc của các nút đi qua (không tính gốc), rồi trừ 1 để bỏ cặp với chính nó; tổng trên mọi tên là đáp án, giữ trong số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nInsert every title into a trie and record, at each end node, how many times that complete title occurs. For each title, walk down the trie adding the counts of the end nodes on the path; finally subtract one for the current title itself.\n\n## Correctness\n\nFor a fixed title j, the titles that are prefixes of j correspond exactly to the end nodes on the trie path from the root to j's end. The end counts include the distinct indices of duplicate titles, and subtracting 1 removes only the pairing of j with itself, which matches the requirement i != j.\n\n## Complexity\n\nLet L be the total number of characters in all titles. Building and querying both take O(L), and space is O(L)."

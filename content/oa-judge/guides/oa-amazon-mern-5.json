@@ -13,6 +13,21 @@
       "A moved digit can be inserted anywhere, so the final answer is always all final digits in ascending order. The real question is which digits must be moved, and therefore incremented.",
       "If a digit has a smaller digit somewhere to its right, leaving it in place blocks that smaller digit, so it must be moved once; one move is enough, since moving again only makes it larger. Digits with nothing smaller on their right keep their value.",
       "Scan from right to left while keeping the minimum digit seen so far: if the current digit is greater than that minimum, count min(d+1, 9); otherwise count the digit itself and update the minimum. Finally print the counted digits from 0 to 9, keeping leading zeros."
+    ],
+    "ja": [
+      "移動した桁は任意の位置に挿入できるので、最終的な答えは常に、最終的な桁をすべて昇順に並べたものになります。本当の問題は、どの桁を移動しなければならないか、つまり 1 を加えなければならないかです。",
+      "右側のどこかにより小さい桁がある桁は、そのまま残すとその小さい桁の邪魔になるので、1 回移動しなければなりません。1 回で十分です。再び移動してもさらに大きくなるだけです。右側にそれより小さい桁がない桁は値を保ちます。",
+      "右から左へ走査し、これまでに見た最小の桁を保持します。現在の桁がその最小値より大きければ min(d+1, 9) を数え、そうでなければその桁自身を数えて最小値を更新します。最後に、数えた桁を 0 から 9 の順に出力します。先頭の 0 は保持します。"
+    ],
+    "ko": [
+      "옮긴 숫자는 어디에든 삽입할 수 있으므로 최종 답은 항상 최종 숫자들을 오름차순으로 정렬한 것입니다. 진짜 질문은 어떤 숫자를 반드시 옮겨야 하는가, 즉 어떤 숫자가 증가해야 하는가입니다.",
+      "어떤 숫자의 오른쪽 어딘가에 더 작은 숫자가 있다면 그 숫자를 제자리에 두는 것이 더 작은 숫자를 막으므로 한 번은 옮겨야 합니다. 한 번의 이동이면 충분하며, 다시 옮기면 값만 더 커집니다. 오른쪽에 더 작은 숫자가 없는 숫자는 값을 유지합니다.",
+      "오른쪽에서 왼쪽으로 스캔하며 지금까지 본 최소 숫자를 유지합니다. 현재 숫자가 그 최솟값보다 크면 min(d+1, 9)를 세고, 아니면 그 숫자 자체를 세고 최솟값을 갱신합니다. 마지막에 센 숫자들을 0부터 9까지 앞자리 0을 유지한 채 출력합니다."
+    ],
+    "vi": [
+      "Một chữ số được di chuyển có thể chèn vào bất kỳ đâu, nên đáp án cuối cùng luôn là tất cả các chữ số cuối cùng theo thứ tự tăng dần. Câu hỏi thật sự là chữ số nào phải di chuyển, và do đó phải tăng thêm.",
+      "Nếu một chữ số có chữ số nhỏ hơn ở đâu đó bên phải, để nó tại chỗ sẽ chặn chữ số nhỏ hơn đó, nên nó phải được di chuyển một lần; một lần là đủ, vì di chuyển nữa chỉ làm nó lớn hơn. Các chữ số không có chữ số nào nhỏ hơn ở bên phải giữ nguyên giá trị.",
+      "Duyệt từ phải sang trái và giữ chữ số nhỏ nhất đã gặp: nếu chữ số hiện tại lớn hơn giá trị nhỏ nhất đó, đếm min(d+1, 9); ngược lại đếm chính chữ số đó và cập nhật giá trị nhỏ nhất. Cuối cùng in các chữ số đã đếm từ 0 đến 9, giữ nguyên các số 0 đứng đầu."
     ]
   },
   "explanationEn": "## Source Mapping\n\nAmazon MERN #5 is labeled in the original as an interleaved algorithm problem and is already included in the main algorithm library. In the fixed snapshot its title is \"Optimize Box IDs\"; the operation and examples of the Fastprep original are exactly the same as Amazon #34. The link on #5 points to Amazon #13 \"Get Total Balanced\", which is unrelated to this string problem, so the #5 company number is kept and the verified package of #34 is reused.\n\n## Approach\n\nScan from right to left while maintaining the minimum digit on the right. If the current digit is greater than that minimum, it must be moved and incremented by 1; otherwise it stays. Finally sort the transformed digits.\n\n## Proof of Correctness\n\nIf a digit has a smaller digit after it, not moving it would block the smaller digit from moving forward; an optimal solution can move it and increment it only once, since extra increments are never better. The unmoved digits form a non-decreasing sequence, and moved digits can be inserted at any position, so all digits can be merged in ascending order to obtain the smallest result.\n\n## Complexity\n\nTime O(n+10), space O(n)."

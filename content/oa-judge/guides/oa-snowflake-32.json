@@ -13,6 +13,21 @@
       "The filled string splits into maximal single-color runs; a run of length l contributes l(l+1)/2 single-color substrings, and the total is the sum over runs.",
       "A segment can be filled with one color exactly when it contains at most one kind of fixed letter. So a prefix DP can enumerate the start of the last run; if two neighboring runs end up with the same color, the real count only grows, so the DP never overestimates.",
       "dp[0] = 0; for each end, move start left from end - 1, tracking the fixed letter seen and stopping at a second distinct letter; each start updates dp[end] with dp[start] + len(len+1)/2. This is O(n^2) with 64-bit integers; print dp[n]."
+    ],
+    "ja": [
+      "埋めた文字列は極大な単色のランに分かれ、長さ l のランは l(l+1)/2 個の単色の部分文字列を寄与します。合計はすべてのランの和です。",
+      "区間を 1 色で埋められるのは、相異なる固定文字が高々 1 種類のときです。そこで接頭辞 DP で最後のランの開始位置を列挙できます。隣り合う 2 つのランが同じ色になっても、実際の個数は増えるだけなので、DP が過大評価することはありません。",
+      "dp[0] = 0 とし、各 end について start を end - 1 から左へ動かし、見た固定文字を追跡して、相異なる 2 つ目の文字で止めます。各 start で dp[end] を dp[start] + len(len+1)/2 で更新します。これは 64 ビット整数を使った O(n^2) です。dp[n] を出力してください。"
+    ],
+    "ko": [
+      "채워진 문자열은 극대 단색 구간들로 나뉘며, 길이 l인 구간은 l(l+1)/2개의 단색 부분 문자열을 기여하고 전체는 구간들의 합입니다.",
+      "어떤 구간을 한 색으로 채울 수 있는 것은 그 안에 서로 다른 고정 문자가 많아야 한 종류일 때 정확히 성립합니다. 따라서 접두사 DP로 마지막 구간의 시작 위치를 열거할 수 있으며, 이웃한 두 구간이 같은 색이 되면 실제 개수는 더 늘어날 뿐이므로 DP는 과대평가하지 않습니다.",
+      "dp[0] = 0으로 두고, 각 end에 대해 start를 end - 1부터 왼쪽으로 옮기며 본 고정 문자를 추적하고 서로 다른 두 번째 문자를 만나면 멈춥니다. 각 start마다 dp[end]를 dp[start] + len(len+1)/2로 갱신합니다. 64비트 정수를 쓰는 O(n^2)이며 dp[n]을 출력합니다."
+    ],
+    "vi": [
+      "Xâu đã điền chia thành các đoạn đơn sắc cực đại; một đoạn độ dài l đóng góp l(l+1)/2 xâu con đơn sắc, và tổng là tổng trên các đoạn.",
+      "Một đoạn có thể được điền bằng một màu đúng khi nó chứa tối đa một loại chữ cái cố định. Vì vậy DP tiền tố có thể liệt kê điểm bắt đầu của đoạn cuối; nếu hai đoạn kề nhau cuối cùng có cùng màu, số đếm thực tế chỉ tăng lên, nên DP không bao giờ đánh giá quá cao.",
+      "dp[0] = 0; với mỗi end, dịch start sang trái từ end - 1, theo dõi chữ cái cố định đã thấy và dừng ở chữ cái phân biệt thứ hai; mỗi start cập nhật dp[end] bằng dp[start] + len(len+1)/2. Đây là O(n^2) với số nguyên 64-bit; in dp[n]."
     ]
   },
   "explanationEn": "## Approach\n\nDecompose the filled string into single-color runs; a run of length l contributes l(l+1)/2. Use a prefix DP that enumerates the last run, scanning backward and stopping as soon as a second distinct fixed letter is met.\n\n## Correctness\n\nA run can be filled into a single color if and only if it contains at most one kind of fixed character. All final single-color runs form a valid partition, which the DP enumeration covers; conversely, every valid partition can have each of its runs filled, and if adjacent runs get the same color this only adds extra substrings, so the DP never exceeds the achievable optimum. Together, the two directions show the optima are equal.\n\n## Complexity\n\nTime O(n^2), space O(n)."

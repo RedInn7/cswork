@@ -13,6 +13,21 @@
       "Each letter is kept exactly once in the result, in its original relative order; to maximize the result lexicographically, earlier positions should hold larger letters.",
       "Use a monotonic stack: when a larger letter arrives and the top of the stack is smaller and will appear again later, pop the top and pick it up again later.",
       "First count the remaining occurrences of each letter; while scanning, decrement the current letter's count and skip it if it is already on the stack; otherwise, while the top is smaller than the current letter and still has remaining occurrences, pop it and clear its on-stack flag, then push the current letter; the stack is the answer."
+    ],
+    "ja": [
+      "結果では各文字がちょうど 1 回残り、元の相対順序が保たれます。辞書順で最大にするには、前の位置により大きな文字を置く必要があります。",
+      "単調スタックを使います。より大きな文字が来たとき、スタックの先頭がそれより小さく、かつ後ろにもう一度現れるなら、先頭を pop して後で改めて拾います。",
+      "まず各文字の残りの出現回数を数えます。走査中は現在の文字の回数を減らし、すでにスタックにあればスキップします。そうでなければ、先頭が現在の文字より小さく、かつ残りの出現がある間は pop してスタック上のフラグを解除し、その後現在の文字を push します。最終的なスタックが答えです。"
+    ],
+    "ko": [
+      "결과에는 각 문자가 원래의 상대적 순서대로 정확히 한 번씩만 남습니다. 결과를 사전순으로 최대화하려면 앞쪽 위치에 더 큰 문자가 와야 합니다.",
+      "단조 스택을 사용합니다. 더 큰 문자가 들어왔을 때 스택의 top이 더 작고 뒤에서 다시 나타난다면, top을 pop하고 나중에 다시 선택합니다.",
+      "먼저 각 문자의 남은 등장 횟수를 셉니다. 스캔하면서 현재 문자의 횟수를 감소시키고, 이미 스택에 있으면 건너뜁니다. 그렇지 않으면 top이 현재 문자보다 작고 남은 등장 횟수가 있는 동안 pop하며 스택 포함 표시를 해제한 뒤 현재 문자를 push합니다. 스택이 곧 답입니다."
+    ],
+    "vi": [
+      "Mỗi chữ cái được giữ đúng một lần trong kết quả, theo thứ tự tương đối ban đầu; để kết quả lớn nhất theo thứ tự từ điển, các vị trí đầu nên chứa chữ cái lớn hơn.",
+      "Dùng stack đơn điệu: khi một chữ cái lớn hơn xuất hiện mà đỉnh stack nhỏ hơn và sau đó còn xuất hiện nữa, hãy lấy đỉnh ra và nhặt lại nó ở lần sau.",
+      "Trước hết đếm số lần xuất hiện còn lại của mỗi chữ cái; khi duyệt, giảm bộ đếm của chữ cái hiện tại và bỏ qua nó nếu đã có trong stack; ngược lại, trong khi đỉnh nhỏ hơn chữ cái hiện tại và vẫn còn lần xuất hiện sau, lấy nó ra và xóa cờ đang-trong-stack của nó, rồi đẩy chữ cái hiện tại vào; stack chính là đáp án."
     ]
   },
   "explanationEn": "## Approach\n\nWhen a larger letter arrives, a monotonic stack pops smaller letters that will still appear later.\n\n## Proof of correctness\n\nA popped letter has a later copy that can take its place; moving the current larger letter forward raises the result lexicographically; letters that cannot be replaced later are kept.\n\n## Complexity\n\nO(n) time, O(σ) space."

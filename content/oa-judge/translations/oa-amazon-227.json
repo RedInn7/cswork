@@ -11,5 +11,35 @@
     "hints": [
       "Subtracting adjacent windows gives a[i]=a[i+k]. Group the indices by index mod k: a group whose values are already all equal stays unchanged; otherwise set the group to its most frequent positive value, or change everything to 1 if it has no positive value."
     ]
+  },
+  "ja": {
+    "title": "すべての長さ k のウィンドウの和を等しくするために正の整数へ変更する要素数",
+    "description": "任意の要素を正の整数に変更でき、変更した位置は 1 回として数えます。長さ k のすべての連続部分配列の和が等しくなるようにするとき、変更の最小回数を求めてください。元の要素は非正でもよく、変更しない位置が正になる必要はありません。k≥n の場合は変更不要です。\n\n標準入出力、例、解説は本サイトが独自に作成したものです。本サイトのものと明記された範囲は、元の問題の制約ではありません。",
+    "input": "1 行目に n k、2 行目に整数配列が与えられます。元の問題文には数値の範囲がなかったため、本サイトでは 1≤n,k≤200000、−10^9≤要素≤10^9 とします。",
+    "output": "答えを表す整数を 1 つ出力してください。",
+    "explanation": "答えは 1、0、2 です。最後の例では 2 を −1 には変更できないので、2 つの −1 を 2 に変更するしかありません。",
+    "hints": [
+      "隣り合うウィンドウの差を取ると a[i]=a[i+k] が得られます。添字を index mod k でグループ化します。すでにすべて同じ値のグループは変更せず、そうでなければグループを最頻の正の値にそろえ、正の値がなければすべてを 1 に変更します。"
+    ]
+  },
+  "ko": {
+    "title": "모든 k-윈도우의 합이 같아지도록 원소를 양의 정수로 바꾸기",
+    "description": "임의의 원소를 양의 정수로 바꿀 수 있으며, 바꾼 위치는 한 번씩 셉니다. 길이 k인 모든 연속 부분 배열의 합이 같아야 할 때 최소 변경 횟수를 구하세요. 원래 원소는 0 이하일 수 있고, 바꾸지 않는 위치는 양수가 될 필요가 없습니다. k≥n이면 변경이 필요 없습니다.\n\n표준 입출력, 예제, 해설은 이 사이트에서 독립적으로 작성했으며, 이 사이트 기준이라고 명시한 범위는 원문의 원래 제약 조건이 아닙니다.",
+    "input": "첫째 줄에 n k가 주어지고, 둘째 줄에 정수 배열이 주어집니다. 원문에는 수치 범위가 없었으며, 이 사이트에서는 1≤n,k≤200000, −10^9≤원소≤10^9로 설정했습니다.",
+    "output": "정답을 나타내는 정수 하나를 출력합니다.",
+    "explanation": "정답은 각각 1, 0, 2입니다. 마지막 예제에서는 2를 −1로 바꿀 수 없으므로, 두 개의 −1을 2로 바꾸는 방법뿐입니다.",
+    "hints": [
+      "인접한 윈도우를 빼면 a[i]=a[i+k]를 얻습니다. 인덱스를 index mod k로 묶어, 이미 모든 값이 같은 그룹은 그대로 두고, 그렇지 않으면 그룹을 가장 빈도가 높은 양수 값으로 맞추며, 양수 값이 없으면 전부 1로 바꿉니다."
+    ]
+  },
+  "vi": {
+    "title": "Đổi phần tử thành số nguyên dương để mọi cửa sổ k có tổng bằng nhau",
+    "description": "Bất kỳ phần tử nào cũng có thể được đổi thành một số nguyên dương, và mỗi vị trí bị đổi được tính một lần. Mọi mảng con liên tiếp độ dài k phải có cùng tổng; tìm số lần đổi tối thiểu. Các phần tử gốc có thể không dương; các vị trí không đổi không cần trở thành số dương. Khi k≥n thì không cần đổi gì.\n\nĐề bài chuẩn hóa vào/ra, các ví dụ và lời giải được trang này tự biên soạn; những khoảng giá trị được ghi rõ là của trang này không phải ràng buộc gốc của nguồn.",
+    "input": "Dòng đầu chứa n k; dòng thứ hai chứa mảng số nguyên. Văn bản gốc không nêu giới hạn số; trang này dùng 1≤n,k≤200000, −10^9≤phần tử≤10^9.",
+    "output": "In ra một số nguyên duy nhất, là đáp án.",
+    "explanation": "Các đáp án lần lượt là 1, 0 và 2. Trong ví dụ cuối, số 2 không thể đổi thành −1; cách duy nhất là đổi hai số −1 thành 2.",
+    "hints": [
+      "Lấy hiệu của hai cửa sổ kề nhau cho a[i]=a[i+k]. Nhóm các chỉ số theo chỉ số mod k: một nhóm mà mọi giá trị đã bằng nhau thì giữ nguyên; nếu không thì đặt cả nhóm bằng giá trị dương xuất hiện nhiều nhất của nó, hoặc đổi tất cả thành 1 nếu nhóm không có giá trị dương nào."
+    ]
   }
 }

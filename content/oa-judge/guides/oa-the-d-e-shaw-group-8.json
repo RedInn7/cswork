@@ -13,6 +13,21 @@
       "The longest range in which a[i] is the maximum (ties allowed) cannot contain any element strictly greater than a[i]; the nearest strictly greater elements on both sides are its boundaries.",
       "Let left be the index of the nearest strictly greater element on the left (-1 if none) and right the nearest on the right (n if none); then b[i] = right - left - 1. A monotonic stack finds both boundaries in linear time.",
       "Scan left to right, popping every stack top that is <= the current value; the remaining top is left, then push i. Do the same from right to left to get right. Pop with <= on both sides so equal values can include each other. Sum right - left - 1 in a 64-bit integer; elements may be negative."
+    ],
+    "ja": [
+      "a[i] が最大値(同値を許す)となる最長の範囲は、a[i] より真に大きい要素を含められません。両側で最も近い真に大きい要素が、その境界になります。",
+      "left を左側で最も近い真に大きい要素の添字(なければ -1)、right を右側で最も近いものの添字(なければ n)とすると、b[i] = right - left - 1 です。単調スタックで両方の境界を線形時間で求められます。",
+      "左から右へ走査し、現在の値以下のスタックの先頭をすべて pop します。残った先頭が left で、その後 i を push します。右から左にも同様に行って right を求めます。同値が互いを含められるように、両方向とも <= で pop します。right - left - 1 を 64 ビット整数で合計してください。要素は負になることがあります。"
+    ],
+    "ko": [
+      "a[i]가 최댓값(같은 값 허용)인 가장 긴 구간에는 a[i]보다 엄격히 큰 원소가 들어갈 수 없습니다. 양쪽에서 가장 가까운 엄격히 큰 원소가 그 경계입니다.",
+      "left를 왼쪽에서 가장 가까운 엄격히 큰 원소의 인덱스(없으면 -1), right를 오른쪽에서 가장 가까운 것의 인덱스(없으면 n)라 하면 b[i] = right - left - 1입니다. 단조 스택으로 두 경계를 선형 시간에 구할 수 있습니다.",
+      "왼쪽에서 오른쪽으로 스캔하며 현재 값 이하인 스택 top을 모두 pop한 뒤, 남은 top이 left이고 이후 i를 push합니다. 오른쪽에서 왼쪽으로 같은 방식으로 right를 구합니다. 양쪽 모두 <=로 pop해야 같은 값끼리 서로 포함할 수 있습니다. right - left - 1의 합은 64비트 정수로 계산하며, 원소는 음수일 수 있습니다."
+    ],
+    "vi": [
+      "Đoạn dài nhất mà a[i] là giá trị lớn nhất (cho phép bằng nhau) không thể chứa phần tử nào lớn hơn hẳn a[i]; các phần tử lớn hơn hẳn gần nhất ở hai phía chính là hai biên của nó.",
+      "Gọi left là chỉ số của phần tử lớn hơn hẳn gần nhất bên trái (-1 nếu không có) và right là chỉ số của phần tử lớn hơn hẳn gần nhất bên phải (n nếu không có); khi đó b[i] = right - left - 1. Ngăn xếp đơn điệu tìm được cả hai biên trong thời gian tuyến tính.",
+      "Duyệt từ trái sang phải, pop mọi phần tử trên đỉnh ngăn xếp có giá trị <= giá trị hiện tại; đỉnh còn lại là left, rồi push i. Làm tương tự từ phải sang trái để có right. Pop với <= ở cả hai phía để các giá trị bằng nhau có thể nằm chung một đoạn. Cộng right - left - 1 vào một số nguyên 64 bit; phần tử có thể âm."
     ]
   },
   "explanationEn": "## Approach\n\nFor each position, find the nearest strictly greater element on its left and on its right. All elements between them are not greater than the current value, so the largest valid range length is the width between the two boundaries. A monotonic stack finds the boundaries in linear time.\n\n## Proof of correctness\n\nThe nearest strictly greater element cannot be included in the range, because a[i] would then no longer be the maximum; on either side, every element before that one is not greater than a[i] and can be included without breaking the maximum condition. So the nearest strictly greater elements on the left and right uniquely determine the largest range, whose length is right - left - 1. Adding this over all positions gives the target sum.\n\n## Complexity\n\nO(n) time and O(n) extra space."

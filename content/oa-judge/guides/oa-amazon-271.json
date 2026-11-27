@@ -13,6 +13,21 @@
       "The position weight i increases from left to right. If a larger value sits before a smaller one, swapping them increases the sum by (position difference) × (value difference), so in an optimal permutation the values must be non-decreasing.",
       "Once the values are non-decreasing, the relative order of different values is fully determined; only equal values can be swapped without changing the sum. For the lexicographically smallest answer, equal values should appear in increasing index order.",
       "Sort the original indices by (value, index) in ascending order and print each index plus 1. Values can be negative; the ordering rule stays the same."
+    ],
+    "ja": [
+      "位置の重み i は左から右へ増えます。大きい値が小さい値より前にあるとき、それらを入れ替えると和は（位置の差）×（値の差）だけ増えます。したがって最適な順列では、値は非減少でなければなりません。",
+      "値が非減少になれば、異なる値の相対的な順序は完全に決まります。和を変えずに入れ替えられるのは等しい値だけです。辞書順で最小の答えにするには、等しい値はインデックスの小さい順に現れるようにします。",
+      "元のインデックスを (値, インデックス) の昇順にソートし、各インデックスに 1 を加えて出力します。値は負でもかまいませんが、順序の規則は同じです。"
+    ],
+    "ko": [
+      "위치 가중치 i는 왼쪽에서 오른쪽으로 갈수록 커집니다. 큰 값이 작은 값보다 앞에 있으면 둘을 바꿨을 때 합이 (위치 차이) × (값 차이)만큼 늘어나므로, 최적 순열에서는 값이 비감소해야 합니다.",
+      "값이 비감소로 정해지면 서로 다른 값들의 상대 순서는 완전히 결정되고, 합을 바꾸지 않고 서로 교환할 수 있는 것은 값이 같은 원소뿐입니다. 사전순으로 가장 작은 답을 위해서는 값이 같은 원소를 인덱스가 증가하는 순서로 놓습니다.",
+      "원래 인덱스를 (값, 인덱스) 오름차순으로 정렬하고 각 인덱스에 1을 더해 출력합니다. 값은 음수일 수 있지만 정렬 규칙은 그대로입니다."
+    ],
+    "vi": [
+      "Trọng số vị trí i tăng từ trái sang phải. Nếu một giá trị lớn đứng trước một giá trị nhỏ, hoán đổi chúng làm tổng tăng thêm (hiệu vị trí) × (hiệu giá trị), nên trong hoán vị tối ưu các giá trị phải không giảm.",
+      "Khi các giá trị không giảm, thứ tự tương đối của các giá trị khác nhau hoàn toàn được xác định; chỉ các giá trị bằng nhau mới có thể hoán đổi mà không đổi tổng. Để có đáp án nhỏ nhất theo từ điển, các giá trị bằng nhau nên xuất hiện theo thứ tự chỉ số tăng dần.",
+      "Sắp xếp các chỉ số gốc theo (giá trị, chỉ số) tăng dần và in mỗi chỉ số cộng 1. Giá trị có thể âm; quy tắc sắp xếp vẫn như cũ."
     ]
   },
   "explanationEn": "## Approach\n\nSort the original indices by (data[i],i) in ascending order and output the one-based indices.\n\n## Proof of correctness\n\nIf a larger value is in a smaller position and a smaller value in a larger position, swapping them increases the sum by the position difference times the value difference, so a maximum sum requires non-decreasing values. The relative order of groups with different values is therefore unique; swapping equal values does not change the gain, so arranging each group by increasing original index gives the lexicographically smallest permutation.\n\n## Complexity\n\nTime O(n log n), space O(n)."

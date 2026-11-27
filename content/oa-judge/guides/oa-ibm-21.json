@@ -13,6 +13,21 @@
       "Every interval that first does not decrease and then does not increase has a peak; to the left of the peak is a non-decreasing part ending at the peak, and to the right is a non-increasing part starting at it.",
       "Precompute up[i], the longest non-decreasing contiguous run ending at i, and down[i], the longest non-increasing contiguous run starting at i; the longest valid interval with peak i has length up[i]+down[i]−1.",
       "Left to right: up[i]=up[i−1]+1 when a[i]≥a[i−1], otherwise 1; right to left: down[i]=down[i+1]+1 when a[i]≥a[i+1], otherwise 1. The answer is the maximum of up[i]+down[i]−1 over all positions."
+    ],
+    "ja": [
+      "まず非減少でその後に非増加になる区間には、必ずピークがあります。ピークの左側はピークで終わる非減少の部分、右側はピークから始まる非増加の部分です。",
+      "up[i](i で終わる最長の非減少な連続区間)と down[i](i から始まる最長の非増加な連続区間)を前計算します。ピークが i の最長の有効な区間の長さは up[i]+down[i]−1 です。",
+      "左から右へ:a[i]≥a[i−1] なら up[i]=up[i−1]+1、そうでなければ 1。右から左へ:a[i]≥a[i+1] なら down[i]=down[i+1]+1、そうでなければ 1。答えは、すべての位置における up[i]+down[i]−1 の最大値です。"
+    ],
+    "ko": [
+      "먼저 감소하지 않고 그다음 증가하지 않는 모든 구간에는 정점이 있습니다. 정점의 왼쪽은 정점에서 끝나는 비감소 부분이고, 오른쪽은 정점에서 시작하는 비증가 부분입니다.",
+      "up[i]를 i에서 끝나는 가장 긴 비감소 연속 구간의 길이, down[i]를 i에서 시작하는 가장 긴 비증가 연속 구간의 길이로 미리 계산합니다. 정점이 i인 가장 긴 유효 구간의 길이는 up[i]+down[i]−1입니다.",
+      "왼쪽에서 오른쪽으로는 a[i]≥a[i−1]이면 up[i]=up[i−1]+1, 아니면 1입니다. 오른쪽에서 왼쪽으로는 a[i]≥a[i+1]이면 down[i]=down[i+1]+1, 아니면 1입니다. 답은 모든 위치에 대한 up[i]+down[i]−1의 최댓값입니다."
+    ],
+    "vi": [
+      "Mọi đoạn trước hết không giảm rồi không tăng đều có một đỉnh; bên trái đỉnh là phần không giảm kết thúc tại đỉnh, và bên phải là phần không tăng bắt đầu từ đỉnh.",
+      "Tính trước up[i], đoạn liên tiếp không giảm dài nhất kết thúc tại i, và down[i], đoạn liên tiếp không tăng dài nhất bắt đầu tại i; đoạn hợp lệ dài nhất có đỉnh i có độ dài up[i]+down[i]−1.",
+      "Từ trái sang phải: up[i]=up[i−1]+1 khi a[i]≥a[i−1], ngược lại bằng 1; từ phải sang trái: down[i]=down[i+1]+1 khi a[i]≥a[i+1], ngược lại bằng 1. Đáp án là giá trị lớn nhất của up[i]+down[i]−1 trên mọi vị trí."
     ]
   },
   "explanationEn": "## Approach\n\nCompute the non-decreasing length ending at each position and the non-increasing length starting at each position, then enumerate the peak, add the two and subtract one.\n\n## Proof of correctness\n\nEvery valid interval has a peak, and its two sides are bounded by these two maximal lengths at that position. Conversely, joining the two maximal runs at the peak still gives a valid interval, so the maximum of the enumerated values is exactly optimal.\n\n## Complexity\n\nTime O(n), space O(n)."

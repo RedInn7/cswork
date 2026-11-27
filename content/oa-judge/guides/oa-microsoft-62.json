@@ -13,6 +13,21 @@
       "A square of side L needs L² cells and the total area is at most m+4n, so L cannot exceed the integer square root of m+4n.",
       "An even side can be tiled by 2×2 tiles, with unit tiles filling in when large tiles run out, so only the total area matters. For an odd side at most floor(L/2) squared large tiles fit, and the remaining row and column of 2L−1 cells can only take unit tiles.",
       "Let L be the integer square root of m+4n (compute it with integers, or correct a floating-point estimate, using 64-bit integers). If L is odd and m is less than 2L−1, decrease L by 1; the new L is even with a smaller area, so it is always feasible. Print L."
+    ],
+    "ja": [
+      "一辺 L の正方形には L² マスが必要で、総面積は高々 m+4n なので、L は m+4n の整数平方根を超えられません。",
+      "偶数の一辺は 2×2 のタイルで敷き詰められ、大きいタイルが尽きたら 1×1 のタイルで埋められるので、総面積だけが問題になります。奇数の一辺では、大きいタイルは高々 floor(L/2) の二乗枚しか置けず、残りの 1 行と 1 列の 2L−1 マスは 1×1 のタイルでしか埋められません。",
+      "L を m+4n の整数平方根とします（整数で計算するか、浮動小数点の推定値を補正し、64 ビット整数を使います）。L が奇数で m が 2L−1 未満なら、L を 1 減らします。新しい L は偶数で面積が小さくなるので、常に実現可能です。L を出力します。"
+    ],
+    "ko": [
+      "변 길이가 L인 정사각형에는 L²칸이 필요하고 전체 넓이는 최대 m+4n이므로, L은 m+4n의 정수 제곱근을 넘을 수 없습니다.",
+      "짝수 변은 2×2 타일로 채울 수 있고 큰 타일이 떨어지면 단위 타일로 메우면 되므로 전체 넓이만 중요합니다. 홀수 변에는 큰 타일이 최대 floor(L/2)의 제곱개 들어가며, 남는 한 행과 한 열의 2L−1칸은 단위 타일로만 채울 수 있습니다.",
+      "L을 m+4n의 정수 제곱근으로 두세요(정수로 계산하거나 부동소수점 추정값을 보정하며, 64비트 정수를 사용합니다). L이 홀수이고 m이 2L−1보다 작으면 L을 1 줄입니다. 새 L은 짝수이고 넓이가 더 작아 항상 가능합니다. L을 출력합니다."
+    ],
+    "vi": [
+      "Một hình vuông cạnh L cần L² ô và tổng diện tích nhiều nhất là m+4n, nên L không thể vượt quá căn bậc hai nguyên của m+4n.",
+      "Cạnh chẵn có thể lát bằng các viên 2×2, với gạch đơn vị lấp vào khi hết gạch lớn, nên chỉ có tổng diện tích là quan trọng. Với cạnh lẻ, tối đa floor(L/2) bình phương viên gạch lớn đặt vừa, và hàng cùng cột còn lại gồm 2L−1 ô chỉ có thể dùng gạch đơn vị.",
+      "Gọi L là căn bậc hai nguyên của m+4n (tính bằng số nguyên, hoặc hiệu chỉnh ước lượng dấu phẩy động, dùng số nguyên 64 bit). Nếu L lẻ và m nhỏ hơn 2L−1, giảm L đi 1; L mới là số chẵn với diện tích nhỏ hơn, nên luôn khả thi. In L."
     ]
   },
   "explanationEn": "## Approach\n\nFirst take the square root L of the total area. An even side length is limited only by the total area; an odd L needs at least 2L−1 unit tiles, and if there are not enough, drop to L−1.\n\n## Correctness\n\nA square of side L holds at most floor(L/2)² large tiles, and the remaining cells can be filled with unit tiles. For an even L, if there are not enough large tiles, the total-area constraint guarantees enough unit tiles to fill in; for an odd L, besides the total area, the 2L−1 border cells that the largest array of large tiles cannot cover must also be filled. When L is not feasible, L−1 is even with a smaller area, so it is necessarily feasible and optimal.\n\n## Complexity\n\nTime O(log(m+4n)) for the integer square root, space O(1)."

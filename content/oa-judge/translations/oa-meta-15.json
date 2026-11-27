@@ -11,5 +11,35 @@
     "hints": [
       "Enumerate every non-zero cell, clip the check range to the matrix, and test cell by cell, skipping the center and the corners of the original square."
     ]
+  },
+  "ja": {
+    "title": "角を除いた局所最大値",
+    "description": "値 v を持つ 0 でないセル (i,j) について、それを中心とする半径 v の正方形領域を調べます。中心自身と、元の完全な正方形の 4 つの角は無視し、行列の内側にあるセルだけを比較します。ほかの値がどれも ≥v でなければ、そのセルは局所最大値です。座標を、行の昇順、次に列の昇順で出力してください。元のサイトの例には無効な点が含まれていたため、本サイトで再計算しました。\n\n入出力形式、例、テストデータは CSWork が作成しました。",
+    "input": "本サイトの入力規模：R C（1..30）、続いて C 個の非負整数（0..10⁹）を持つ R 行です。インデックスは 0 始まりで、4 つの角は完全な正方形で定義されます。切り取られた領域の角を代わりに除外してはいけません。",
+    "output": "1 行目は局所最大値の個数 t で、続く t 行に row col（0 始まり）を、行の昇順、次に列の昇順で出力します。最大値がなければ 0 だけを出力します。",
+    "explanation": "例 1：有効なのは (0,0) だけです。(2,2) の近くでは、角でないセル (4,1) が 3 を持ち、2 より大きいです。最下行の 2 つの 3 は、それぞれ相手の比較領域に入っているので、どちらも無効です。最初に個数 1 を出力し、続けて 0 0 を出力します。",
+    "hints": [
+      "0 でないすべてのセルを列挙し、チェック範囲を行列に合わせて切り取り、セルごとに調べます。中心と元の正方形の角は飛ばします。"
+    ]
+  },
+  "ko": {
+    "title": "모서리를 제외한 지역 최댓값",
+    "description": "값이 v인 0이 아닌 칸 (i,j)에 대해, 이 칸을 중심으로 반지름 v인 정사각형 영역을 살펴봅니다. 중심 자신과 원래의 전체 정사각형의 네 모서리는 무시하고, 행렬 안에 있는 칸만 비교합니다. v 이상인 다른 값이 없으면 그 칸은 지역 최댓값입니다. 좌표를 행 오름차순, 그다음 열 오름차순으로 출력하세요. 원문 사이트의 예제에는 유효하지 않은 점이 있어 이 사이트에서 다시 계산했습니다.\n\n입력 형식, 예제, 테스트 데이터는 CSWork가 정리하고 작성했습니다.",
+    "input": "이 사이트의 입력 규모: R C(1..30)가 주어지고, 이어서 각각 C개의 음이 아닌 정수(0..10⁹)를 담은 R개의 줄이 주어집니다. 인덱스는 0부터 시작하며, 네 모서리는 전체 정사각형을 기준으로 정의하고 잘린 영역의 모서리를 대신 제외해서는 안 됩니다.",
+    "output": "첫째 줄에 지역 최댓값의 개수 t를 출력하고, 다음 t개의 줄에 row col(0부터 시작)을 행 오름차순, 그다음 열 오름차순으로 출력합니다. 최댓값이 없으면 0만 출력합니다.",
+    "explanation": "예제 1: (0,0)만 유효합니다. (2,2) 근처에서는 모서리가 아닌 칸 (4,1)의 값이 3으로 2보다 크고, 맨 아래 행의 두 3은 각각 상대의 비교 영역 안에 들어가므로 둘 다 유효하지 않습니다. 먼저 개수 1을 출력한 뒤 0 0을 출력합니다.",
+    "hints": [
+      "0이 아닌 모든 칸을 열거하고 검사 범위를 행렬 안으로 자른 뒤, 중심과 원래 정사각형의 모서리를 건너뛰며 칸마다 검사한다."
+    ]
+  },
+  "vi": {
+    "title": "Các cực đại địa phương không tính góc",
+    "description": "Với một ô khác không (i,j) có giá trị v, xét vùng hình vuông bán kính v có tâm tại đó, bỏ qua chính tâm và bốn góc của hình vuông đầy đủ ban đầu, và chỉ so sánh các ô nằm trong ma trận. Nếu không có giá trị nào khác ≥v thì ô đó là cực đại địa phương. In các tọa độ theo thứ tự tăng dần của hàng, rồi cột. Ví dụ của trang gốc chứa các điểm không hợp lệ, nên trang này đã tính lại.\n\nĐịnh dạng đầu vào, các ví dụ và dữ liệu kiểm thử do CSWork biên soạn và viết.",
+    "input": "Quy mô đầu vào của trang này: R C (1..30), tiếp theo là R dòng, mỗi dòng C số nguyên không âm (0..10⁹). Chỉ số bắt đầu từ 0, và bốn góc được xác định theo hình vuông đầy đủ; không được loại trừ các góc của vùng đã cắt thay thế.",
+    "output": "Dòng đầu là số t các cực đại địa phương; t dòng tiếp theo cho row col (bắt đầu từ 0), theo thứ tự tăng dần của hàng, rồi cột. Nếu không có cực đại nào, chỉ in 0.",
+    "explanation": "Ví dụ 1: chỉ (0,0) hợp lệ. Gần (2,2), ô không phải góc (4,1) chứa 3, lớn hơn 2; hai số 3 ở hàng dưới cùng nằm trong vùng so sánh của nhau, nên không ô nào hợp lệ. In số đếm 1 trước, rồi 0 0.",
+    "hints": [
+      "Liệt kê mọi ô khác không, cắt phạm vi kiểm tra vào ma trận, và kiểm tra từng ô, bỏ qua tâm và các góc của hình vuông ban đầu."
+    ]
   }
 }

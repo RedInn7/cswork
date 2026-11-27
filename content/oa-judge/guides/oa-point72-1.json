@@ -13,6 +13,21 @@
       "Whether a sum of three numbers is divisible by d depends only on each number's remainder modulo d, not on the values themselves.",
       "Count how often each remainder 0..d-1 occurs. Enumerate two remainders r1 <= r2; the third remainder r3 = (-r1 - r2) mod d is then fixed. Only handle r3 >= r2 so each remainder combination is counted once.",
       "When the three remainders are distinct, add cnt[r1] * cnt[r2] * cnt[r3]; when exactly two are equal, use C(cnt, 2) times the other count; when all three are equal, use C(cnt, 3). Normalize remainders of negative numbers into 0..d-1 first. Total O(n + d^2); the answer can reach about 1.33 * 10^9, so accumulate in 64-bit integers."
+    ],
+    "ja": [
+      "3 つの数の和が d で割り切れるかどうかは、各数の d を法とする余りだけで決まり、値そのものには依存しません。",
+      "各余り 0..d-1 の出現回数を数えます。2 つの余り r1 <= r2 を列挙すると、3 つ目の余り r3 = (-r1 - r2) mod d が決まります。余りの組み合わせを 1 回ずつ数えるため、r3 >= r2 の場合だけを処理します。",
+      "3 つの余りがすべて異なるときは cnt[r1] * cnt[r2] * cnt[r3] を加えます。ちょうど 2 つが等しいときは C(cnt, 2) に残りの個数を掛けたものを、3 つとも等しいときは C(cnt, 3) を使います。負の数の余りは、先に 0..d-1 に正規化します。全体で O(n + d^2) です。答えは約 1.33 * 10^9 に達しうるので、64 ビット整数で累積します。"
+    ],
+    "ko": [
+      "세 수의 합이 d로 나누어떨어지는지는 값 자체가 아니라 각 수의 d에 대한 나머지에만 의존합니다.",
+      "나머지 0..d-1이 각각 몇 번 나타나는지 셉니다. 두 나머지 r1 <= r2를 열거하면 세 번째 나머지 r3 = (-r1 - r2) mod d가 고정됩니다. 각 나머지 조합이 한 번만 세어지도록 r3 >= r2인 경우만 처리합니다.",
+      "세 나머지가 모두 다르면 cnt[r1] * cnt[r2] * cnt[r3]을 더하고, 정확히 두 개가 같으면 C(cnt, 2)에 나머지 하나의 개수를 곱하며, 세 개가 모두 같으면 C(cnt, 3)을 사용합니다. 음수의 나머지는 먼저 0..d-1로 정규화합니다. 전체 O(n + d^2)이며 답은 약 1.33 * 10^9까지 될 수 있으므로 64비트 정수로 누적하세요."
+    ],
+    "vi": [
+      "Tổng ba số có chia hết cho d hay không chỉ phụ thuộc vào phần dư của mỗi số theo modulo d, không phụ thuộc vào chính các giá trị.",
+      "Đếm số lần mỗi phần dư 0..d-1 xuất hiện. Liệt kê hai phần dư r1 <= r2; phần dư thứ ba r3 = (-r1 - r2) mod d khi đó được cố định. Chỉ xử lý r3 >= r2 để mỗi tổ hợp phần dư được đếm một lần.",
+      "Khi ba phần dư đôi một khác nhau, cộng cnt[r1] * cnt[r2] * cnt[r3]; khi đúng hai phần dư bằng nhau, dùng C(cnt, 2) nhân với số đếm còn lại; khi cả ba bằng nhau, dùng C(cnt, 3). Trước hết chuẩn hóa phần dư của các số âm về 0..d-1. Tổng cộng O(n + d^2); đáp án có thể đạt khoảng 1.33 * 10^9, nên cộng dồn bằng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nCount the occurrences of each remainder 0..d-1. Enumerate r1 <= r2 and let r3 = (-r1-r2) mod d; only handle r3 >= r2 to avoid counting a remainder triple twice. When the three remainders are distinct, use the product of their frequencies; when two are equal, use C(cnt,2) times the other frequency; when all three are equal, use C(cnt,3).\n\n## Proof of correctness\n\nEvery valid index triple corresponds to exactly one non-decreasing remainder combination (r1,r2,r3) whose sum is 0 mod d, so the enumeration passes it exactly once. Given the first two remainders, the third is uniquely determined by the divisibility condition. Using a product or a binomial coefficient according to which remainders coincide chooses exactly the corresponding number of distinct array indices; conversely, the remainders of each such choice sum to 0 mod d, so every chosen triple is valid. Therefore the accumulated value is the answer.\n\n## Complexity\n\nTime O(n+d^2), space O(d); on this site n <= 2000 and d <= 1000. The largest answer is C(2000,3) = 1,331,334,000."

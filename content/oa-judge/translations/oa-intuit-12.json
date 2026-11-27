@@ -11,5 +11,35 @@
     "hints": [
       "Construct by cycling 1,2,…,m."
     ]
+  },
+  "ja": {
+    "title": "戦車の配列",
+    "description": "種類 1..m の戦車を長さ n の列に並べ、要素がすべて異なる連続部分配列の個数が最大になるようにします。そのような列が複数ある場合は、辞書順で最小のものを出力します。",
+    "input": "入力は n m で、1≤n≤100000、1≤m≤10000000 です。n 個の整数をスペース区切りで出力します。",
+    "output": "説明どおりに答えを出力します。配列の答えでは、値をスペースで区切ります。",
+    "explanation": "1,2,…,m を繰り返して構成します。\n\n正しさ：長さが高々 m の区間はそれぞれ条件を満たす部分配列を高々 1 つしか寄与せず、m より長い区間は要素がすべて異なることはありえません。上界は Σ(n−ℓ+1)、ℓ=1..min(n,m) です。巡回する列では、長さ ≤m のすべての窓が互いに異なる要素からなるので、この上界に達します。辞書順最小の構成では、直前の m−1 個の位置に現れない最小の種類を常に選ぶ必要があるので、まさに巡回列 1,2,…,m になります。\n\n計算量：時間 O(n)、補助空間 O(1)（出力を除く）。",
+    "hints": [
+      "1,2,…,m を繰り返して構成します。"
+    ]
+  },
+  "ko": {
+    "title": "탱크 배열",
+    "description": "종류 1..m의 탱크를 길이 n의 수열로 배치하여, 서로 다른 종류만 담고 있는 연속 부분 배열의 개수가 최대가 되도록 하세요. 그러한 수열이 여러 개이면 사전순으로 가장 작은 것을 출력합니다.",
+    "input": "입력은 n m이며, 1≤n≤100000, 1≤m≤10000000입니다. n개의 정수를 공백으로 구분하여 출력합니다.",
+    "output": "설명된 대로 답을 출력하며, 배열 형태의 답은 값들을 공백으로 구분합니다.",
+    "explanation": "1,2,…,m을 순환시켜 구성합니다.\n\n정당성: 길이가 m 이하인 각 구간은 조건을 만족하는 부분 배열을 최대 하나만 기여하며, 길이가 m보다 긴 구간은 모든 원소가 서로 다를 수 없습니다. 상한은 Σ(n−ℓ+1), ℓ=1..min(n,m)입니다. 순환 수열은 길이가 m 이하인 모든 윈도우가 서로 다른 원소로 이루어지게 하므로 이 상한에 도달합니다. 사전순으로 가장 작은 구성은 항상 직전 m−1개 위치에 나타나지 않은 가장 작은 종류를 골라야 하므로, 정확히 순환 1,2,…,m입니다.\n\n복잡도: 시간 O(n), 보조 공간 O(1)(출력 제외).",
+    "hints": [
+      "1,2,…,m을 순환시켜 구성합니다."
+    ]
+  },
+  "vi": {
+    "title": "Dãy xe tăng",
+    "description": "Xếp các xe tăng thuộc loại 1..m thành một dãy độ dài n sao cho số mảng con liên tiếp chỉ chứa các loại đôi một khác nhau là lớn nhất; nếu có nhiều dãy như vậy, in ra dãy nhỏ nhất theo thứ tự từ điển.",
+    "input": "Đầu vào là n m, 1≤n≤100000, 1≤m≤10000000. In ra n số nguyên cách nhau bằng dấu cách.",
+    "output": "In ra đáp án như mô tả; với đáp án là mảng, các giá trị cách nhau bằng dấu cách.",
+    "explanation": "Xây dựng bằng cách lặp vòng 1,2,…,m.\n\nTính đúng đắn: mỗi đoạn có độ dài không quá m đóng góp tối đa một mảng con thỏa điều kiện, và một đoạn dài hơn m không thể có mọi phần tử đôi một khác nhau; cận trên là Σ(n−ℓ+1), ℓ=1..min(n,m). Dãy tuần hoàn khiến mọi cửa sổ có độ dài ≤m gồm các phần tử đôi một khác nhau, đạt đúng cận này. Cách xây dựng nhỏ nhất theo thứ tự từ điển luôn phải chọn loại nhỏ nhất không xuất hiện trong m−1 vị trí trước đó, nên nó chính xác là chu trình 1,2,…,m.\n\nĐộ phức tạp: thời gian O(n) và bộ nhớ phụ O(1) (không tính đầu ra).",
+    "hints": [
+      "Xây dựng bằng cách lặp vòng 1,2,…,m."
+    ]
   }
 }

@@ -13,6 +13,21 @@
       "If target≤0, buying nothing is already enough. Otherwise, a machine with power ≤0 only costs money without helping, so it can be dropped.",
       "If you decide to buy i machines at price 1 and j machines at price 2, it is clearly best to buy the most powerful ones in each group. So you only need to enumerate i and find the smallest j for it.",
       "Sort both groups by power in descending order and build prefix sums for the price-2 group. Enumerate i from 0 to the size of group 1, keeping supplied, the power of the first i machines of group 1; binary search the prefix sums for the first position j that is ≥ max(0, target−supplied), and if it exists update the answer with i+2j. If nothing is feasible, output −1; use 64-bit integers for all sums."
+    ],
+    "ja": [
+      "target≤0 なら、何も買わなくてもすでに十分です。そうでなければ、性能が ≤0 のマシンは費用がかかるだけで役に立たないので、捨ててかまいません。",
+      "価格 1 のマシンを i 台、価格 2 のマシンを j 台買うと決めたなら、各グループで最も性能の高いものを買うのが明らかに最善です。したがって i を列挙し、それに対する最小の j を求めれば十分です。",
+      "2つのグループを性能の降順にソートし、価格 2 のグループの累積和を作ります。i を 0 からグループ 1 のサイズまで列挙しながら、グループ 1 の先頭 i 台の性能の合計 supplied を保持します。累積和を二分探索して max(0, target−supplied) 以上となる最初の位置 j を求め、存在すれば答えを i+2j で更新します。実現可能なものがなければ −1 を出力します。すべての和には 64 ビット整数を使います。"
+    ],
+    "ko": [
+      "target≤0이면 아무것도 사지 않아도 이미 충분합니다. 그렇지 않으면 성능이 ≤0인 기계는 돈만 들 뿐 도움이 되지 않으므로 버려도 됩니다.",
+      "가격 1짜리 i개와 가격 2짜리 j개를 사기로 했다면 각 그룹에서 성능이 가장 큰 것들을 사는 것이 분명히 최선입니다. 따라서 i만 열거하고 그에 대한 최소 j를 찾으면 됩니다.",
+      "두 그룹을 성능 내림차순으로 정렬하고 가격 2 그룹의 누적 합을 만듭니다. i를 0부터 그룹 1의 크기까지 열거하며, 그룹 1의 앞 i개 성능의 합을 supplied로 유지합니다. 누적 합에서 max(0, target−supplied) 이상이 되는 첫 위치 j를 이분 탐색으로 찾고, 존재하면 i+2j로 정답을 갱신합니다. 가능한 경우가 없으면 −1을 출력하며, 모든 합에는 64비트 정수를 사용합니다."
+    ],
+    "vi": [
+      "Nếu target≤0 thì không mua gì đã đủ. Ngược lại, máy có công suất ≤0 chỉ tốn tiền mà không giúp được gì nên có thể bỏ.",
+      "Nếu quyết định mua i máy giá 1 và j máy giá 2, rõ ràng tốt nhất là mua những máy mạnh nhất trong mỗi nhóm. Vậy chỉ cần duyệt i và tìm j nhỏ nhất tương ứng.",
+      "Sắp xếp cả hai nhóm theo công suất giảm dần và dựng tổng tiền tố cho nhóm giá 2. Duyệt i từ 0 đến kích thước nhóm 1, giữ supplied là công suất của i máy đầu tiên của nhóm 1; dùng tìm kiếm nhị phân trên tổng tiền tố để tìm vị trí j đầu tiên có giá trị ≥ max(0, target−supplied), nếu tồn tại thì cập nhật đáp án với i+2j. Nếu không có phương án khả thi, in −1; dùng số nguyên 64 bit cho mọi tổng."
     ]
   },
   "explanationEn": "## Approach\n\nIf target≤0, the answer is 0 right away. Otherwise discard non-positive powers, group the machines by price, sort each group's powers in descending order, and take prefix sums. Enumerate how many machines to take from the price-1 group, binary search for the fewest machines from the price-2 group that cover the remaining need, and take the minimum total price.\n\n## Proof of correctness\n\nAll prices are positive, so removing a machine with non-positive power only lowers the cost and never lowers the reachable power; hence an optimal choice never includes such machines. With the number taken from each group fixed, taking that group's most powerful machines dominates every other choice. After fixing the count from the first group, the positive prefix sums of the second group strictly increase, so the fewest machines found by binary search give the lowest price for that count; taking the global minimum then exhausts every feasible combination.\n\n## Complexity\n\nTime O(n log n), space O(n); power sums use 64 bits."

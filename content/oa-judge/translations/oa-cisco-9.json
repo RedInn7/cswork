@@ -12,5 +12,38 @@
       "Integer division in Java/C++ truncates toward zero for negative numbers, so it cannot directly replace the mathematical floor.",
       "For tied modes, return the smallest value as stated in the problem."
     ]
+  },
+  "ja": {
+    "title": "平均値と最頻値の計算",
+    "description": "整数の配列が与えられます。2 つの整数を出力してください。算術平均の切り捨てと、最も多く現れる値である最頻値です。最頻値が複数ある場合は、その中で最小のものを返します。\n\n元の制約: 1≤N≤100000、-10^9≤inputNums[i]≤10^9。\n\n元の出典: https://oamaster.com/docs/companies/cisco#9-calculate-mean-and-mode （固定スナップショットの内容フィンガープリント 82178bbe8b797598a998eeaf22296a73359f80847741be7e46723ab73ba1cc63）。同じ問題の別の Fastprep の記録には最頻値の同率時の規則が書かれていませんが、本問題は OAMaster の元の問題ページに明記された「最小の値」の規則に従います。",
+    "input": "1 行目に N、2 行目に N 個の整数 inputNums[i] が与えられます。",
+    "output": "`mean mode` の順に、2 つの整数を空白区切りで出力してください。",
+    "explanation": "平均は floor(sum(inputNums)/N) です。和が負で割り切れない場合は負の無限大方向に丸めることに注意してください。度数表で各値の出現回数を数え、最も頻繁に現れる値のうち最小のものを選びます。",
+    "hints": [
+      "Java/C++ の整数除算は負数では 0 方向に切り捨てるため、数学的な floor の代わりにそのまま使うことはできません。",
+      "最頻値が複数ある場合は、問題文のとおり最小の値を返してください。"
+    ]
+  },
+  "ko": {
+    "title": "평균과 최빈값 계산",
+    "description": "정수 배열이 주어질 때, 두 정수를 출력합니다. 산술 평균의 내림값과, 가장 많이 등장하는 값인 최빈값입니다. 최빈값이 여러 개이면 그중 가장 작은 값을 반환합니다.\n\n원문 제약 조건: 1≤N≤100000, -10^9≤inputNums[i]≤10^9.\n\n원문 출처: https://oamaster.com/docs/companies/cisco#9-calculate-mean-and-mode (고정 스냅샷 내용 지문 82178bbe8b797598a998eeaf22296a73359f80847741be7e46723ab73ba1cc63). 같은 문제를 다룬 다른 Fastprep 기록에는 최빈값 동률 규칙이 명시되어 있지 않으며, 이 문제는 원본 OAMaster 문제 페이지에 명시된 가장 작은 값 규칙을 따릅니다.",
+    "input": "첫 줄에 N이 주어지고, 둘째 줄에 N개의 정수 inputNums[i]가 주어집니다.",
+    "output": "`mean mode` 순서로, 공백으로 구분된 두 정수를 출력합니다.",
+    "explanation": "평균은 floor(sum(inputNums)/N)입니다. 합이 음수이고 나누어떨어지지 않으면 음의 무한대 방향으로 내림한다는 점에 유의하세요. 빈도 표로 각 값의 등장 횟수를 세고, 가장 많이 등장한 값들 중 가장 작은 값을 선택합니다.",
+    "hints": [
+      "Java/C++의 정수 나눗셈은 음수에서 0 방향으로 버림하므로 수학적 floor를 그대로 대체할 수 없습니다.",
+      "최빈값이 여러 개이면 문제에 명시된 대로 가장 작은 값을 반환합니다."
+    ]
+  },
+  "vi": {
+    "title": "Tính trung bình cộng và mode",
+    "description": "Cho một mảng số nguyên, hãy in ra hai số nguyên: trung bình cộng làm tròn xuống, và mode, tức giá trị xuất hiện nhiều nhất. Nếu có nhiều mode thì trả về giá trị nhỏ nhất trong số đó.\n\nRàng buộc gốc: 1≤N≤100000, -10^9≤inputNums[i]≤10^9.\n\nNguồn gốc: https://oamaster.com/docs/companies/cisco#9-calculate-mean-and-mode (dấu vân tay nội dung của bản chụp cố định 82178bbe8b797598a998eeaf22296a73359f80847741be7e46723ab73ba1cc63). Một bản ghi Fastprep khác của cùng bài không nêu quy tắc xử lý khi có nhiều mode; bài này theo quy tắc giá trị nhỏ nhất được nêu rõ trên trang bài gốc của OAMaster.",
+    "input": "Dòng đầu chứa N; dòng thứ hai chứa N số nguyên inputNums[i].",
+    "output": "In `mean mode` theo thứ tự đó, là hai số nguyên cách nhau bởi một dấu cách.",
+    "explanation": "Trung bình cộng là floor(sum(inputNums)/N); lưu ý rằng khi tổng âm không chia hết thì kết quả làm tròn về phía âm vô cùng. Dùng bảng tần suất để đếm số lần xuất hiện của mỗi giá trị, rồi lấy giá trị nhỏ nhất trong số các giá trị xuất hiện nhiều nhất.",
+    "hints": [
+      "Phép chia nguyên trong Java/C++ cắt về phía 0 với số âm, nên không thể thay trực tiếp cho hàm floor toán học.",
+      "Khi có nhiều mode bằng nhau, hãy trả về giá trị nhỏ nhất như đề bài nêu."
+    ]
   }
 }

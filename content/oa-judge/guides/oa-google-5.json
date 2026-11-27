@@ -13,6 +13,21 @@
       "All members of a valid group share some digit d, so the group cannot be larger than the number of elements containing d; conversely, all elements containing d always form a valid group.",
       "So count, for each digit 0..9, how many elements contain it, and take the maximum. When an element's tens and units digits are equal, it must be counted only once.",
       "Use a counting array of size 10; for each two-digit number take its tens digit t and units digit o: add one to counts[t], and add one to counts[o] only if o != t; print the maximum of the array."
+    ],
+    "ja": [
+      "条件を満たすグループの要素はすべて何らかの数字 d を共有するので、グループの大きさは d を含む要素数を超えません。逆に、d を含む要素をすべて集めれば必ず条件を満たすグループになります。",
+      "したがって、各数字 0..9 について、それを含む要素の数を数えて最大値を取ります。十の位と一の位が等しい要素は 1 回だけ数えます。",
+      "大きさ 10 のカウント配列を用意し、各 2 桁の数について十の位 t と一の位 o を取り出します。counts[t] に 1 を加え、o != t のときだけ counts[o] にも 1 を加えます。配列の最大値を出力します。"
+    ],
+    "ko": [
+      "유효한 그룹의 모든 원소는 어떤 숫자 d를 공유하므로, 그룹의 크기는 d를 포함하는 원소의 개수를 넘을 수 없습니다. 반대로 d를 포함하는 모든 원소는 항상 유효한 그룹을 이룹니다.",
+      "따라서 각 숫자 0..9에 대해 그것을 포함하는 원소의 개수를 세고 최댓값을 취합니다. 한 원소의 십의 자리와 일의 자리가 같으면 한 번만 세어야 합니다.",
+      "크기 10의 카운트 배열을 사용합니다. 각 두 자리 수에서 십의 자리 t와 일의 자리 o를 구하여 counts[t]에 1을 더하고, o != t일 때만 counts[o]에도 1을 더합니다. 배열의 최댓값을 출력합니다."
+    ],
+    "vi": [
+      "Mọi phần tử của một nhóm hợp lệ đều có chung một chữ số d nào đó, nên nhóm không thể lớn hơn số phần tử chứa d; ngược lại, tất cả các phần tử chứa d luôn tạo thành một nhóm hợp lệ.",
+      "Vì vậy, hãy đếm với mỗi chữ số 0..9 có bao nhiêu phần tử chứa nó rồi lấy giá trị lớn nhất. Khi chữ số hàng chục và hàng đơn vị của một phần tử bằng nhau, nó chỉ được đếm một lần.",
+      "Dùng mảng đếm kích thước 10; với mỗi số có hai chữ số, lấy chữ số hàng chục t và hàng đơn vị o: cộng 1 vào counts[t], và chỉ cộng 1 vào counts[o] nếu o != t; in giá trị lớn nhất của mảng."
     ]
   },
   "explanationEn": "## Approach\n\nCount, for each digit 0..9, how many array elements contain it. For a number, add one for its tens digit first, and add one for its units digit only when it differs from the tens digit. The largest count is the answer.\n\n## Why it is correct\n\nAny valid group must have a digit d shared by all its members, so its size does not exceed the number of elements containing d. Conversely, all the elements containing d always form a valid group, so the maximum of the ten counts is both an upper bound and an achievable solution.\n\n## Complexity\n\nTime O(n), extra space O(1) apart from the input."

@@ -13,6 +13,21 @@
       "Split the path on dots into keys and walk down from the root one key at a time; if at any step the current value is not an object (arrays included) or lacks the key, the whole path does not exist.",
       "Keep a current value: after processing the first i keys, it is exactly the value the first i path segments point to. After the last key, output the current value itself, which may be an object, array, string, number, boolean or null, not its truthiness.",
       "Parse the first line as JSON, strip the trailing newline from the second line and split it on dots. For each key: if the current value is an object containing it, step into it; otherwise print null and stop. After all keys, serialize the current value as JSON. The checker accepts any key order and whitespace, so printing the raw text span of that value from the input also works."
+    ],
+    "ja": [
+      "パスをドットでキーに分割し、ルートから 1 つずつキーをたどって下ります。どこかのステップで現在の値がオブジェクト (配列を含まない) でない、またはキーがない場合、そのパス全体が存在しません。",
+      "現在の値を保持します。最初の i 個のキーを処理した後、それはちょうど最初の i 個のパスセグメントが指す値です。最後のキーの後は、現在の値そのものを出力します。これはオブジェクト、配列、文字列、数値、真偽値、null のいずれでもよく、その真偽性ではありません。",
+      "1 行目を JSON としてパースし、2 行目の末尾の改行を取り除いてドットで分割します。各キーについて、現在の値がそのキーを含むオブジェクトなら中へ進み、そうでなければ null を出力して終了します。すべてのキーを処理したら、現在の値を JSON としてシリアライズします。チェッカーはキーの順序と空白を問わないので、入力からその値の元のテキスト範囲をそのまま出力しても動きます。"
+    ],
+    "ko": [
+      "경로를 점으로 나누어 키 목록을 만들고 루트에서 키를 하나씩 따라 내려갑니다. 어느 단계에서든 현재 값이 객체(배열 포함)가 아니거나 해당 키가 없으면 경로 전체가 존재하지 않는 것입니다.",
+      "현재 값을 유지하면, 처음 i개의 키를 처리한 후 그 값은 경로의 처음 i개 구간이 가리키는 값과 정확히 같습니다. 마지막 키 이후에는 참/거짓 여부가 아니라 현재 값 자체를 출력하며, 그것은 객체, 배열, 문자열, 숫자, 불리언, null일 수 있습니다.",
+      "첫 줄을 JSON으로 파싱하고, 둘째 줄의 끝 개행을 제거한 뒤 점으로 나눕니다. 각 키에 대해 현재 값이 그 키를 포함하는 객체이면 안으로 들어가고, 아니면 null을 출력하고 멈춥니다. 모든 키를 처리한 후 현재 값을 JSON으로 직렬화합니다. 채점기는 키 순서와 공백을 가리지 않으므로 입력에서 그 값의 원문 텍스트 구간을 그대로 출력해도 됩니다."
+    ],
+    "vi": [
+      "Tách đường dẫn theo dấu chấm thành các khóa và đi xuống từ gốc từng khóa một; nếu ở bất kỳ bước nào giá trị hiện tại không phải đối tượng (kể cả mảng) hoặc thiếu khóa, toàn bộ đường dẫn không tồn tại.",
+      "Giữ một giá trị hiện tại: sau khi xử lý i khóa đầu, nó chính là giá trị mà i đoạn đầu của đường dẫn trỏ tới. Sau khóa cuối cùng, in chính giá trị hiện tại, có thể là đối tượng, mảng, chuỗi, số, boolean hoặc null, chứ không phải tính đúng/sai của nó.",
+      "Phân tích dòng đầu tiên thành JSON, bỏ ký tự xuống dòng ở cuối dòng thứ hai và tách nó theo dấu chấm. Với mỗi khóa: nếu giá trị hiện tại là đối tượng chứa khóa đó thì đi vào; ngược lại in null và dừng. Sau mọi khóa, tuần tự hóa giá trị hiện tại thành JSON. Bộ chấm chấp nhận mọi thứ tự khóa và khoảng trắng, nên in nguyên đoạn văn bản thô của giá trị đó từ đầu vào cũng được."
     ]
   },
   "explanationEn": "## Approach\n\nStarting from the root, look up the dictionary key for each segment in turn; on failure return null immediately, on success serialize the current value.\n\n## Correctness\n\nAfter processing the first i segments, the current value is exactly the value the path prefix points to. If the next key cannot be accessed in an object, the full path does not exist; otherwise the invariant keeps holding. After the last segment the value itself is returned, not its truthiness. The independent oracle enumerates every path reachable through dictionary keys together with its value, then looks the path up in that table.\n\n## Complexity\n\nParsing and output take O(B) time, the lookup takes expected O(path characters), and space is O(B), where B is the number of input and output bytes."

@@ -13,6 +13,21 @@
       "A password is invalid only when some run of identical letters reaches length k; in other words, it is valid exactly when every run of identical letters has length between 1 and k-1.",
       "Let d[i] be the number of valid passwords of length i and classify them by the length L (1..k-1) of the final run: the first i-L characters form any valid password and the final run uses a different letter, 25 choices; if the whole string is one run (L = i) there are 26 choices.",
       "Set d[1] = 26; for i from 2 to n keep a sliding-window sum of the last k-1 values of d (add d[i-1], remove d[i-k]); d[i] is 25 times the window sum, plus 26 when i < k. Reduce modulo 1000000007 throughout, add the modulus back after subtracting, and output d[n]."
+    ],
+    "ja": [
+      "パスワードが無効になるのは、同じ文字の連続(ラン)の長さが k に達したときだけです。言い換えると、同じ文字のランの長さがすべて 1 から k-1 の間にあるときちょうど有効です。",
+      "d[i] を長さ i の有効なパスワードの個数とし、末尾のランの長さ L(1..k-1)で分類します。最初の i-L 文字は任意の有効なパスワードで、末尾のランは異なる文字を使うので 25 通りです。文字列全体が 1 つのラン(L = i)の場合は 26 通りです。",
+      "d[1] = 26 とし、i を 2 から n まで動かして、d の直近 k-1 個の値のスライディングウィンドウの和を保持します(d[i-1] を加え、d[i-k] を除きます)。d[i] はウィンドウの和の 25 倍で、i < k のときはさらに 26 を加えます。全体を通して 1000000007 を法として計算し、引き算した後は法を足し戻し、d[n] を出力します。"
+    ],
+    "ko": [
+      "비밀번호가 무효인 것은 같은 문자의 연속 구간(run)이 길이 k에 도달할 때뿐입니다. 즉 같은 문자의 모든 run의 길이가 1 이상 k-1 이하일 때 정확히 유효합니다.",
+      "d[i]를 길이 i인 유효한 비밀번호의 수라 하고, 마지막 run의 길이 L(1..k-1)로 분류합니다. 앞의 i-L개 문자는 임의의 유효한 비밀번호이고 마지막 run은 다른 문자를 쓰므로 선택지가 25가지입니다. 문자열 전체가 하나의 run(L = i)이면 선택지는 26가지입니다.",
+      "d[1] = 26으로 두고, i를 2부터 n까지 늘리며 d의 마지막 k-1개 값의 슬라이딩 윈도우 합을 유지합니다(d[i-1]을 더하고 d[i-k]를 뺍니다). d[i]는 윈도우 합의 25배이며 i < k이면 26을 더합니다. 계산 내내 1000000007로 나눈 나머지를 취하고, 뺄셈 뒤에는 모듈러스를 더해 음수를 보정하며, d[n]을 출력합니다."
+    ],
+    "vi": [
+      "Một mật khẩu không hợp lệ chỉ khi có một chuỗi các chữ cái giống nhau đạt độ dài k; nói cách khác, nó hợp lệ đúng khi mọi chuỗi các chữ cái giống nhau có độ dài từ 1 đến k-1.",
+      "Gọi d[i] là số mật khẩu hợp lệ có độ dài i và phân loại chúng theo độ dài L (1..k-1) của chuỗi cuối cùng: i-L ký tự đầu tạo thành một mật khẩu hợp lệ bất kỳ và chuỗi cuối dùng một chữ cái khác, 25 cách chọn; nếu cả xâu là một chuỗi (L = i) thì có 26 cách.",
+      "Đặt d[1] = 26; với i từ 2 đến n giữ tổng cửa sổ trượt của k-1 giá trị gần nhất của d (thêm d[i-1], bỏ d[i-k]); d[i] bằng 25 lần tổng cửa sổ, cộng thêm 26 khi i < k. Rút gọn theo modulo 1000000007 xuyên suốt, cộng lại modulus sau khi trừ, và xuất d[n]."
     ]
   },
   "explanationEn": "## Approach\n\nKeep the source constraint k<=n; boundary tests cover k=2 and k=n.\n\n## Proof of correctness\n\nClassify strings by the length of their trailing run of identical characters. Appending a different character has 25 choices; appending the same character extends the old trailing run by 1. Summing over the classes gives 25 times the sum of the most recent at most k-1 length states; the rolling window only speeds up that sum and is equivalent to an independent DP over the trailing-run length.\n\n## Complexity\n\nTime O(n), space O(n)."

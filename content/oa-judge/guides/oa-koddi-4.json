@@ -13,6 +13,21 @@
       "The grid can be 10^9×10^9, so windows cannot be enumerated one by one; but each black cell lies in at most 4 windows of size 2×2, so at most 4k windows contain any black cell.",
       "Only count the windows touched by black cells: for each black cell enumerate the at most 4 windows containing it (identified by their top-left corner) and tally the black cells per window; every untouched window has zero black cells.",
       "For black cell (x, y), the window corners are (x−1 or x, y−1 or y), kept only when 0 ≤ i < rows−1 and 0 ≤ j < cols−1; a hash map (or sorting and counting equal keys) gives each window's black count, which you tally for 1..4; the zero class is (rows−1)(cols−1) minus the number of touched windows, all in 64-bit integers."
+    ],
+    "ja": [
+      "グリッドは 10^9×10^9 にもなりうるので、ウィンドウを 1 つずつ列挙することはできません。しかし、各黒いセルは 2×2 のウィンドウの高々 4 つに含まれるので、黒いセルを含むウィンドウは高々 4k 個です。",
+      "黒いセルに触れるウィンドウだけを数えます。各黒いセルについて、それを含む高々 4 つのウィンドウ（左上隅で識別します）を列挙し、ウィンドウごとの黒いセルの個数を集計します。触れられていないウィンドウは、黒いセルが 0 個です。",
+      "黒いセル (x, y) について、ウィンドウの隅は (x−1 または x, y−1 または y) で、0 ≤ i < rows−1 かつ 0 ≤ j < cols−1 のときだけ残します。ハッシュマップ（または、ソートして等しいキーを数える方法）で各ウィンドウの黒いセルの個数が分かるので、1..4 について集計します。0 のクラスは (rows−1)(cols−1) から、触れられたウィンドウの個数を引いたもので、すべて 64 ビット整数で計算します。"
+    ],
+    "ko": [
+      "격자는 10^9×10^9일 수 있어 윈도우를 하나씩 열거할 수 없습니다. 하지만 검은 칸 하나는 2×2 윈도우 최대 4개에만 속하므로, 검은 칸을 포함하는 윈도우는 최대 4k개입니다.",
+      "검은 칸이 닿는 윈도우만 셉니다. 각 검은 칸에 대해 그것을 포함하는 최대 4개의 윈도우(왼쪽 위 모서리로 식별)를 열거하고 윈도우별 검은 칸 수를 집계합니다. 닿지 않은 윈도우는 검은 칸이 0개입니다.",
+      "검은 칸 (x, y)의 윈도우 모서리는 (x−1 또는 x, y−1 또는 y)이며, 0 ≤ i < rows−1이고 0 ≤ j < cols−1일 때만 유지합니다. 해시 맵(또는 정렬 후 같은 키 세기)으로 각 윈도우의 검은 칸 수를 얻어 1..4로 집계하세요. 0인 부류는 (rows−1)(cols−1)에서 닿은 윈도우의 수를 뺀 값이며, 모두 64비트 정수로 계산합니다."
+    ],
+    "vi": [
+      "Lưới có thể là 10^9×10^9, nên không thể liệt kê từng cửa sổ; nhưng mỗi ô đen nằm trong tối đa 4 cửa sổ kích thước 2×2, nên có tối đa 4k cửa sổ chứa ô đen nào đó.",
+      "Chỉ đếm các cửa sổ mà ô đen chạm tới: với mỗi ô đen, liệt kê tối đa 4 cửa sổ chứa nó (xác định bằng góc trên bên trái) và thống kê số ô đen theo từng cửa sổ; mọi cửa sổ không bị chạm tới có 0 ô đen.",
+      "Với ô đen (x, y), các góc cửa sổ là (x−1 hoặc x, y−1 hoặc y), chỉ giữ khi 0 ≤ i < rows−1 và 0 ≤ j < cols−1; một hash map (hoặc sắp xếp rồi đếm các khóa bằng nhau) cho số ô đen của từng cửa sổ, rồi thống kê cho 1..4; số cửa sổ loại 0 là (rows−1)(cols−1) trừ đi số cửa sổ bị chạm tới, tất cả dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nEach black cell belongs to at most four 2×2 windows, so only accumulate the windows touched by black cells; every other window has zero black cells.\n\n## Proof of correctness\n\nAny 2×2 window containing at least one black cell is enumerated by some black cell inside it, and its frequency in the dictionary equals exactly the number of black cells it contains. Windows that never appear contain no black cells, so the count of the zero class is the total number of windows minus the size of the dictionary.\n\n## Complexity\n\nO(k) time and O(k) space.\n\n## Source and additions\n\nhttps://oamaster.com/docs/companies/koddi#4-count-2x2-submatrices-by-black-cell-count; the statement is explicit; this site adds the coordinate ranges, the distinctness of black cells, and the input protocol."

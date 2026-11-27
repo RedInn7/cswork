@@ -13,6 +13,21 @@
       "The phase advances by one every day and cycles every 8 days, so all you need is how many days have passed since the start of the year.",
       "Turn the date into a 0-based day-of-year offset: the days of all complete earlier months plus day - 1; then move the starting phase forward by that offset modulo 8.",
       "Keep the list of the 8 phase names and the fixed non-leap month lengths [31,28,31,30,31,30,31,31,30,31,30,31]; offset = sum of the first month - 1 month lengths + day - 1; the answer is names[(index of the start phase + offset) mod 8]."
+    ],
+    "ja": [
+      "月相は毎日1つずつ進み、8日周期で循環します。したがって、年初から何日経過したかが分かれば十分です。",
+      "日付を0始まりの年内オフセットに変換します。それより前の完全な月の日数の合計に day - 1 を足したものです。そのうえで、開始時の月相をオフセットを8で割った余りだけ進めます。",
+      "8つの月相名のリストと、平年固定の各月の日数 [31,28,31,30,31,30,31,31,30,31,30,31] を持ちます。offset = 最初の month - 1 か月分の日数の合計 + day - 1 で、答えは names[(開始月相の添字 + offset) mod 8] です。"
+    ],
+    "ko": [
+      "위상은 하루에 하나씩 넘어가고 8일마다 순환하므로, 연초부터 며칠이 지났는지만 알면 됩니다.",
+      "날짜를 0부터 시작하는 연중 일수 오프셋으로 바꿉니다. 이전의 모든 완전한 달의 일수 합에 day - 1을 더한 값입니다. 그런 다음 시작 위상을 이 오프셋만큼 8로 나눈 나머지 기준으로 앞으로 이동시킵니다.",
+      "8개 위상 이름의 목록과 고정된 평년의 월별 일수 [31,28,31,30,31,30,31,31,30,31,30,31]을 준비합니다. offset = (앞의 month - 1개 달의 일수 합) + day - 1이고, 답은 names[(시작 위상의 인덱스 + offset) mod 8]입니다."
+    ],
+    "vi": [
+      "Mỗi ngày pha tăng thêm một và lặp lại sau mỗi 8 ngày, nên chỉ cần biết đã trôi qua bao nhiêu ngày kể từ đầu năm.",
+      "Đổi ngày thành độ lệch ngày trong năm tính từ 0: tổng số ngày của các tháng đầy đủ trước đó cộng day - 1; sau đó dịch pha khởi đầu tiến lên theo độ lệch đó, lấy modulo 8.",
+      "Giữ danh sách 8 tên pha và độ dài các tháng cố định của năm không nhuận [31,28,31,30,31,30,31,31,30,31,30,31]; offset = tổng độ dài của month - 1 tháng đầu + day - 1; đáp án là names[(chỉ số của pha khởi đầu + offset) mod 8]."
     ]
   },
   "explanationEn": "## Approach\n\nConvert the date into a 0-based offset in days from the start of the year, take it modulo 8 and add it to the index of the starting phase.\n\n## Correctness\n\nEach day the phase moves forward by one of its 8 states. The number of days elapsed within the year is exactly the number of days in all earlier complete months plus the day of the month minus one, so cycling by that offset gives the unique answer.\n\n## Complexity\n\nO(12) time, O(1) space."

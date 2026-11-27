@@ -13,6 +13,21 @@
       "Every substring of length 3 is identified uniquely by its right end, so checking once when the scan reaches each right end counts every window exactly once.",
       "Keep the number of vowels in a sliding window of length 3: add the character entering on the right and remove the one three positions back, so the count stays exact; once the window holds 3 characters, count it when the vowel count is 2.",
       "Read the whole line, which may be empty. For each index i from left to right: if s[i] is a vowel, increase the count; if i >= 3 and s[i - 3] is a vowel, decrease it; if i >= 2 and the count is exactly 2, increase the answer. Output the answer; an empty string or one shorter than 3 gives 0."
+    ],
+    "ja": [
+      "長さ 3 の部分文字列は右端で一意に決まるので、走査が各右端に達したときに 1 回だけ調べれば、すべての窓をちょうど 1 回ずつ数えられます。",
+      "長さ 3 のスライディングウィンドウ内の母音の個数を保持します。右から入る文字を加え、3 つ前の文字を除くことで個数が正確に保たれます。窓に 3 文字が入ったら、母音の個数が 2 のときに数えます。",
+      "1 行全体を読み込みます（空の場合もあります）。インデックス i を左から順に見て、s[i] が母音なら個数を増やし、i >= 3 かつ s[i - 3] が母音なら減らし、i >= 2 かつ個数がちょうど 2 なら答えを増やします。答えを出力します。空文字列や長さが 3 未満の文字列では 0 になります。"
+    ],
+    "ko": [
+      "길이 3인 부분 문자열은 오른쪽 끝으로 유일하게 정해집니다. 따라서 스캔이 각 오른쪽 끝에 도달할 때 한 번씩만 검사하면 모든 윈도우를 정확히 한 번씩 셉니다.",
+      "길이 3인 슬라이딩 윈도우의 모음 개수를 유지합니다. 오른쪽에서 들어오는 문자를 더하고 3칸 뒤의 문자를 빼면 개수가 정확하게 유지됩니다. 윈도우에 문자가 3개 들어찬 뒤에는 모음 개수가 2일 때 정답에 포함합니다.",
+      "한 줄 전체를 읽습니다. 빈 줄일 수도 있습니다. 인덱스 i를 왼쪽부터 순회하며, s[i]가 모음이면 개수를 늘리고, i >= 3이고 s[i - 3]이 모음이면 개수를 줄이며, i >= 2이고 개수가 정확히 2이면 정답을 1 늘립니다. 마지막에 정답을 출력합니다. 빈 문자열이거나 길이가 3보다 짧으면 0입니다."
+    ],
+    "vi": [
+      "Mỗi xâu con độ dài 3 được xác định duy nhất bởi đầu mút phải của nó, nên kiểm tra một lần khi lần quét đến mỗi đầu mút phải sẽ đếm mỗi cửa sổ đúng một lần.",
+      "Giữ số nguyên âm trong cửa sổ trượt độ dài 3: thêm ký tự vào ở bên phải và bỏ ký tự cách đó ba vị trí, nhờ vậy số đếm luôn chính xác; khi cửa sổ có đủ 3 ký tự, đếm nó nếu số nguyên âm bằng 2.",
+      "Đọc cả dòng, có thể trống. Với mỗi chỉ số i từ trái sang phải: nếu s[i] là nguyên âm thì tăng số đếm; nếu i >= 3 và s[i - 3] là nguyên âm thì giảm số đếm; nếu i >= 2 và số đếm đúng bằng 2 thì tăng đáp án. In đáp án; xâu rỗng hoặc ngắn hơn 3 cho kết quả 0."
     ]
   },
   "explanationEn": "## Approach\n\nMaintain the number of vowels among the last three characters; once the window has length 3, add one to the answer whenever the count is 2.\n\n## Correctness\n\nEach window of length 3 is checked exactly once, when the scan reaches its right end. Adding the new character and removing the character three positions back keeps the window's vowel count exact.\n\n## Complexity\n\nTime O(n), extra space O(1)."

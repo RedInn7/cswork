@@ -11,5 +11,35 @@
     "hints": [
       "Parse numbers as exact Decimal values and compare every key in the union of keys; recurse while respecting types, array order and object key sets, and finally sort the differing keys."
     ]
+  },
+  "ja": {
+    "title": "2 つの JSON 推薦結果の異なるキー",
+    "description": "2 つの JSON オブジェクトを比較し、片側にしか存在しない、または値が 2 つの側で異なるトップレベルのキーを、Unicode コードポイントの昇順で返してください。オブジェクトのキーの順序は等価性に影響せず、配列は順序付きで、bool は数値と異なり、キーの欠落は null と異なります。数値は厳密な 10 進数の値で比較します。\n\n標準入出力の形式と例は本サイトが整備したものです。本サイトのものと明記された範囲は、元の問題の制約ではありません。",
+    "input": "入力は、JSON オブジェクトのちょうど 2 行で、最後に改行が 1 つ付いていてもかまいません。CRLF にも対応します。本サイトでは UTF-8 の合計サイズ≤4MiB、各ルートのキー≤1000 個、各木の値ノード≤10000 個、コンテナの深さ≤20（ルートを 1 と数えます）です。キーはどれも 64 コードポイント以下、文字列値は 256 コードポイント以下で空でもよく、テキストは有効な Unicode スカラー値でなければなりません。キーの重複は拒否されます。JSON の値は object/array/string/number/bool/null のすべてに対応します。数値の絶対値は 10^9 以下で 10^-6 の整数倍、数値トークンは 64 文字以下、指数の絶対値は 12 以下で、等価な小数・指数・−0 の形式に対応します。",
+    "output": "文字列の昇順の JSON 配列を、重複なしで出力します。空白や有効なエスケープを使った等価な表現も許されます。",
+    "explanation": "例の答えはそれぞれ [\"hacker\",\"input\"]、[\"a\",\"b\"]、[] です。数値の書式が異なっていても、違いとは見なしません。",
+    "hints": [
+      "数値を厳密な Decimal として解析し、キーの和集合のすべてのキーを比較します。型、配列の順序、オブジェクトのキー集合を尊重しながら再帰し、最後に異なるキーをソートします。"
+    ]
+  },
+  "ko": {
+    "title": "두 JSON 추천 결과에서 서로 다른 키",
+    "description": "두 JSON 객체를 비교하여, 한쪽에만 존재하거나 양쪽의 값이 다른 최상위 키를 유니코드 코드 포인트의 오름차순 사전순으로 반환하세요. 객체의 키 순서는 동등성에 영향을 주지 않고, 배열은 순서가 있으며, bool은 숫자와 다르고, 존재하지 않는 키는 null과 다릅니다. 숫자는 정확한 십진 값으로 비교합니다.\n\n표준 입출력 형식과 예제는 이 사이트에서 정리한 것이며, 이 사이트의 것이라고 명시한 범위는 원본의 제약 조건이 아닙니다.",
+    "input": "입력은 JSON 객체 두 줄이며 끝에 개행이 하나 더 있을 수 있고 CRLF도 지원합니다. 이 사이트에서는 전체 UTF-8 크기가 ≤4MiB이고, 각 루트는 키가 ≤1000개, 각 트리는 값 노드가 ≤10000개, 컨테이너 깊이는 ≤20(루트를 1로 셈)입니다. 모든 키는 ≤64 코드 포인트이고 문자열 값은 ≤256 코드 포인트이며 비어 있을 수 있습니다. 텍스트는 유효한 유니코드 스칼라 값이어야 하고 중복된 키는 거부됩니다. object/array/string/number/bool/null의 전체 JSON 값을 지원합니다. 숫자는 절댓값이 ≤10^9이고 10^-6의 정수배이며, 숫자 토큰은 ≤64자, 지수의 절댓값은 ≤12이고, 동등한 십진, 지수, −0 형태를 지원합니다.",
+    "output": "중복 없이 오름차순으로 정렬된 문자열의 JSON 배열을 출력합니다. 공백이 있거나 유효한 이스케이프를 쓴 동등한 인코딩도 허용됩니다.",
+    "explanation": "예제의 답은 각각 [\"hacker\",\"input\"], [\"a\",\"b\"], []입니다. 서로 다른 숫자 표기는 차이로 세지 않습니다.",
+    "hints": [
+      "숫자를 정확한 Decimal 값으로 파싱하고 키의 합집합의 모든 키를 비교합니다. 타입, 배열 순서, 객체의 키 집합을 지키며 재귀하고, 마지막으로 다른 키들을 정렬합니다."
+    ]
+  },
+  "vi": {
+    "title": "Các khóa khác nhau giữa hai kết quả gợi ý JSON",
+    "description": "So sánh hai đối tượng JSON và trả về các khóa cấp cao nhất chỉ tồn tại ở một bên hoặc có giá trị khác nhau giữa hai bên, theo thứ tự từ điển tăng dần của các code point Unicode. Thứ tự khóa của đối tượng không ảnh hưởng đến sự bằng nhau, các mảng có thứ tự, bool khác với số, và khóa bị thiếu khác với null; các số được so sánh theo giá trị thập phân chính xác của chúng.\n\nĐịnh dạng đầu vào/đầu ra chuẩn và các ví dụ do trang này biên soạn; các khoảng giá trị được đánh dấu rõ là của trang này không phải ràng buộc gốc của nguồn.",
+    "input": "Đầu vào là đúng hai dòng đối tượng JSON, có thể theo sau bởi một ký tự xuống dòng cuối; hỗ trợ CRLF. Với trang này tổng kích thước UTF-8 ≤4MiB; mỗi gốc có ≤1000 khóa, mỗi cây có ≤10000 nút giá trị, và độ sâu của container ≤20 (gốc tính là 1); mỗi khóa ≤64 code point, và các giá trị xâu ≤256 code point và có thể rỗng; văn bản phải gồm các giá trị vô hướng Unicode hợp lệ, và các khóa trùng lặp bị từ chối. Hỗ trợ đầy đủ các giá trị JSON: object/array/string/number/bool/null. Các số có giá trị tuyệt đối ≤10^9 và là bội số nguyên của 10^-6, một token số ≤64 ký tự, giá trị tuyệt đối của số mũ ≤12, và hỗ trợ các dạng thập phân, số mũ và −0 tương đương.",
+    "output": "In ra một mảng JSON các xâu theo thứ tự tăng dần, không có phần tử trùng; cho phép các cách mã hóa tương đương có khoảng trắng và escape hợp lệ.",
+    "explanation": "Các ví dụ cho lần lượt [\"hacker\",\"input\"], [\"a\",\"b\"] và []; các định dạng số khác nhau không được tính là khác biệt.",
+    "hints": [
+      "Phân tích các số thành giá trị Decimal chính xác và so sánh mọi khóa trong hợp của các khóa; đệ quy trong khi tôn trọng kiểu, thứ tự mảng và tập khóa của đối tượng, và cuối cùng sắp xếp các khóa khác nhau."
+    ]
   }
 }

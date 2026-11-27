@@ -125,6 +125,22 @@ test('hints open one at a time, unlock on failures or time, and similar problems
     assert.deepEqual(beacons.at(-1).params, { problem_id: 'lc-2', level: 3 });
     assert.equal(aids.length, 2);
 
+    // A Japanese reader: the hints in Japanese where translated, under the English labels; a
+    // language the ladder is not translated into reads English.
+    const local = { ...hints, ja: ['観察その一', '不変量その二', '手順その三'] };
+    const reader = (contentLanguage) =>
+      act(async () =>
+        again.render(createElement(Workspace, { key: contentLanguage, problemId: 'lc-3', userId: 'guest', hints: local, contentLanguage })),
+      );
+    await reader('ja');
+    await click('Show next hint');
+    assert.equal($('.cs-hint-ladder-list p').getAttribute('lang'), 'ja');
+    assert.match($('.cs-hint-ladder-list').textContent, /Hint 1 · Observation観察その一/);
+    await reader('ko');
+    await click('Show next hint');
+    assert.equal($('.cs-hint-ladder-list p').getAttribute('lang'), 'en');
+    assert.match($('.cs-hint-ladder-list').textContent, /Hint 1 · ObservationLook one/);
+
     // Similar problems: collapsed, then links open problems in the app.
     const went = [];
     await act(async () =>

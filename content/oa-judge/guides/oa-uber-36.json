@@ -13,6 +13,21 @@
       "The common prefix of any two numbers is a prefix of the first and also a prefix of the second. So if you prepare every prefix of every number on one side, you can check the prefixes of the other side one by one.",
       "Put every non-empty prefix of the decimal string of each number in arr1 into a set. Then scan the prefixes of each number in arr2 from short to long: each hit updates the maximum length, and the first miss lets you stop, since longer prefixes cannot hit either.",
       "Convert each number in arr1 to a string and add its prefixes of lengths 1 through full length to a set. Start the answer at 0. For each number in arr2, take prefixes of length 1, 2, ...; stop at the first prefix not in the set, otherwise update the answer with the current length. Print the answer."
+    ],
+    "ja": [
+      "2 つの数の共通接頭辞は、1 つ目の数の接頭辞であり、2 つ目の数の接頭辞でもあります。したがって片方の側のすべての数のすべての接頭辞を用意しておけば、もう一方の側の接頭辞を 1 つずつ確認できます。",
+      "arr1 の各数の 10 進文字列の、空でないすべての接頭辞を集合に入れます。次に arr2 の各数の接頭辞を短い方から順に走査します。一致するたびに最大の長さを更新し、最初に一致しなかった時点で打ち切ります。それより長い接頭辞も一致しないからです。",
+      "arr1 の各数を文字列に変換し、長さ 1 から全長までの接頭辞を集合に追加します。答えは 0 から始めます。arr2 の各数について、長さ 1、2、... の接頭辞を取り、集合にない最初の接頭辞で打ち切り、そうでなければ答えを現在の長さで更新します。最後に答えを出力します。"
+    ],
+    "ko": [
+      "두 수의 공통 접두사는 첫 번째 수의 접두사이면서 두 번째 수의 접두사이기도 합니다. 따라서 한쪽의 모든 수의 접두사를 미리 준비해 두면, 다른 쪽 수들의 접두사를 하나씩 확인할 수 있습니다.",
+      "arr1의 각 수의 십진 문자열에서 비어 있지 않은 모든 접두사를 집합에 넣습니다. 그다음 arr2의 각 수의 접두사를 짧은 것부터 긴 것 순으로 훑습니다. 집합에 있으면 최대 길이를 갱신하고, 처음으로 없는 접두사가 나오면 더 긴 접두사도 없으므로 멈춥니다.",
+      "arr1의 각 수를 문자열로 바꾸고 길이 1부터 전체 길이까지의 접두사를 집합에 추가합니다. 답은 0에서 시작합니다. arr2의 각 수에 대해 길이 1, 2, ...의 접두사를 취하고, 집합에 없는 첫 접두사에서 멈추며, 있으면 현재 길이로 답을 갱신합니다. 답을 출력합니다."
+    ],
+    "vi": [
+      "Tiền tố chung của hai số bất kỳ vừa là tiền tố của số thứ nhất vừa là tiền tố của số thứ hai. Vì vậy nếu chuẩn bị sẵn mọi tiền tố của mọi số ở một phía, bạn có thể kiểm tra lần lượt các tiền tố của phía còn lại.",
+      "Đưa mọi tiền tố không rỗng của xâu thập phân của từng số trong arr1 vào một tập hợp. Sau đó duyệt các tiền tố của từng số trong arr2 từ ngắn đến dài: mỗi lần khớp thì cập nhật độ dài lớn nhất, và lần trượt đầu tiên cho phép dừng, vì các tiền tố dài hơn cũng không thể khớp.",
+      "Chuyển từng số trong arr1 thành xâu và thêm các tiền tố có độ dài từ 1 đến toàn bộ độ dài vào một tập hợp. Khởi tạo đáp án bằng 0. Với mỗi số trong arr2, lấy các tiền tố độ dài 1, 2, ...; dừng ở tiền tố đầu tiên không có trong tập, ngược lại cập nhật đáp án bằng độ dài hiện tại. In đáp án."
     ]
   },
   "explanationEn": "## Approach\n\nPut all non-empty prefixes of the decimal representation of every number in arr1 into a set. Then scan the prefixes of each number in arr2; every prefix found in the set updates the maximum length, and after the first miss there is no need to keep scanning that number.\n\n## Proof of correctness\n\nFor any number x in arr1 and number y in arr2, the common prefix of x and y is necessarily a prefix of x, so it has been added to the set; when y is scanned, this common prefix hits the set. Conversely, if some prefix of y hits the set, it is a prefix of some number in arr1 and also a prefix of y, so it corresponds to a valid pair. The algorithm checks all possible prefixes and takes the maximum length, so it obtains the longest common prefix over all cross-array pairs.\n\n## Complexity\n\nLet D be the total number of digits of all numbers in both arrays. Building and querying the set takes O(D) expected time, with O(D) extra space.\n\n## Source and site conventions\n\nThe input protocol and bounds of this site are given in the statement. Fixed OAMaster snapshot: https://oamaster.com/docs/companies/uber#36-find-length-of-longest-common-prefix; the original reason it was blocked: the statement was cut off at \"Given two arrays of strictly i\", and from [123,4,5,955] and [12345,63,95,2] with output 3 alone the comparison rule could not be determined."

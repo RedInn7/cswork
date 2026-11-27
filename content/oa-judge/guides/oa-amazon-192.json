@@ -13,6 +13,21 @@
       "Repeatedly removing the current minimum and maximum is the same as sorting and pairing from both ends toward the middle.",
       "An average is the pair sum divided by 2, and dividing by the same constant does not change equality, so you only need the number of distinct pair sums; no floating point is needed.",
       "Sort; for i = 0..n/2-1 compute a[i] + a[n-1-i] and put it in a set (or sort and deduplicate); print the number of distinct sums."
+    ],
+    "ja": [
+      "現在の最小値と最大値を繰り返し取り除くことは、ソートして両端から中央に向かってペアにすることと同じです。",
+      "平均はペアの和を 2 で割ったものですが、同じ定数で割っても等しさは変わらないので、必要なのは異なるペアの和の個数だけです。浮動小数点は必要ありません。",
+      "ソートし、i = 0..n/2-1 について a[i] + a[n-1-i] を計算して集合に入れます（またはソートして重複を取り除きます）。異なる和の個数を出力します。"
+    ],
+    "ko": [
+      "현재의 최솟값과 최댓값을 반복해서 제거하는 것은 정렬한 뒤 양 끝에서 중앙으로 짝짓는 것과 같습니다.",
+      "평균은 쌍의 합을 2로 나눈 값이고, 같은 상수로 나눠도 같음은 변하지 않으므로 서로 다른 쌍의 합의 개수만 구하면 됩니다. 부동소수점은 필요 없습니다.",
+      "정렬한 뒤 i = 0..n/2-1에 대해 a[i] + a[n-1-i]를 계산해 집합에 넣고(또는 정렬 후 중복 제거), 서로 다른 합의 개수를 출력합니다."
+    ],
+    "vi": [
+      "Việc liên tục loại giá trị nhỏ nhất và lớn nhất hiện tại tương đương với việc sắp xếp rồi ghép từ hai đầu vào giữa.",
+      "Một giá trị trung bình là tổng của cặp chia cho 2, và chia cho cùng một hằng số không làm thay đổi sự bằng nhau, nên chỉ cần số các tổng cặp phân biệt; không cần dấu phẩy động.",
+      "Sắp xếp; với i = 0..n/2-1 tính a[i] + a[n-1-i] và đưa vào một tập hợp (hoặc sắp xếp và loại trùng); in số tổng phân biệt."
     ]
   },
   "explanationEn": "## Approach\n\nSort and pair the two ends moving inward, putting each pair's sum into a set. Two averages are equal exactly when the two sums are equal, so no floating point is needed.\n\n## Proof of correctness\n\nAfter sorting, the two ends are the current minimum and maximum, and once they are removed the inner part is still sorted, so by induction this reproduces the pairing process defined by the problem. Dividing by the same nonzero constant 2 preserves equality, so the size of the set of sums equals the size of the set of averages.\n\n## Complexity\n\nTime O(n log n), space O(n)."

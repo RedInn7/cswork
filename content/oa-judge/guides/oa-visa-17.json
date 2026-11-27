@@ -13,6 +13,21 @@
       "Positions are independent: each one either keeps min(a, b) or, if chosen, becomes min(a, 2b).",
       "Compute each position's gain from being chosen, min(a, 2b) − min(a, b) (which may be negative or zero); the answer is the base score plus the largest at most k positive gains.",
       "First sum the base score Σmin(a[i], b[i]); compute every gain, sort them in descending order, and add the positive ones among the first k. 2b reaches 2×10⁹ and the total 2×10¹⁴, so use 64-bit integers throughout."
+    ],
+    "ja": [
+      "各位置は独立です。選ばなければ min(a, b) を保ち、選べば min(a, 2b) になります。",
+      "各位置を選んだときの利得 min(a, 2b) − min(a, b) を計算します(負や 0 になることもあります)。答えは基本スコアに、正の利得のうち大きいものを最大 k 個足したものです。",
+      "まず基本スコア Σmin(a[i], b[i]) を合計します。すべての利得を計算して降順にソートし、先頭 k 個のうち正のものを足します。2b は 2×10⁹ に達し、合計は 2×10¹⁴ に達するので、全体を通して 64 ビット整数を使ってください。"
+    ],
+    "ko": [
+      "각 위치는 서로 독립입니다. 선택하지 않으면 min(a, b)를 유지하고, 선택하면 min(a, 2b)가 됩니다.",
+      "각 위치를 선택했을 때의 이득 min(a, 2b) − min(a, b)를 계산합니다(음수이거나 0일 수 있습니다). 답은 기본 점수에 양수인 이득 중 최대 k개를 더한 값입니다.",
+      "먼저 기본 점수 Σmin(a[i], b[i])를 합산하고, 모든 이득을 계산해 내림차순으로 정렬한 뒤 앞의 k개 중 양수인 것만 더합니다. 2b는 2×10⁹, 합계는 2×10¹⁴까지 커지므로 전 과정에서 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Các vị trí độc lập với nhau: mỗi vị trí hoặc giữ min(a, b) hoặc, nếu được chọn, trở thành min(a, 2b).",
+      "Tính mức lợi của mỗi vị trí khi được chọn, min(a, 2b) − min(a, b) (có thể âm hoặc bằng 0); đáp án là điểm cơ sở cộng với nhiều nhất k mức lợi dương lớn nhất.",
+      "Trước hết cộng điểm cơ sở Σmin(a[i], b[i]); tính mọi mức lợi, sắp xếp giảm dần, và cộng các giá trị dương trong k giá trị đầu. 2b có thể đạt 2×10⁹ và tổng đạt 2×10¹⁴, nên dùng số nguyên 64 bit xuyên suốt."
     ]
   },
   "explanationEn": "## Approach\n\nThe gain from operating on a position is min(aᵢ, 2bᵢ) − min(aᵢ, bᵢ). Add the largest at most k positive gains to the base score.\n\n## Correctness\n\nA plan's score equals the base score plus the sum of the chosen gains. Positions do not interact, so taking the largest sum of positive gains among at most k positions is globally optimal.\n\n## Complexity\n\nTime O(n log n), space O(n)."

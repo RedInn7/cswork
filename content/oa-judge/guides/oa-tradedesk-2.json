@@ -13,6 +13,21 @@
       "Each lamp lights the closed integer interval [x - r, x + r]; count the integer points covered by exactly one lamp, not the number of segments. Coordinates are large, so points cannot be marked one by one.",
       "Use a difference sweep: +1 at x - r and -1 at x + r + 1 (x + r + 1 marks the end of the closed interval). After sorting the events by coordinate, the coverage is constant between two consecutive event coordinates.",
       "Collect the 2n events and sort them. Process all events at the same coordinate together to update the coverage cov; if cov = 1 afterwards, add next event coordinate - current coordinate to the answer. Coordinates reach +-2 * 10^9 and the answer about 4 * 10^9, so use 64-bit integers."
+    ],
+    "ja": [
+      "各ランプは閉じた整数区間 [x - r, x + r] を照らします。数えるのは、ちょうど 1 個のランプに覆われる整数点の数で、線分の数ではありません。座標が大きいので、点を 1 つずつ印を付けることはできません。",
+      "差分スイープを使います。x - r に +1、x + r + 1 に -1 を置きます (x + r + 1 は閉区間の終わりを表します)。イベントを座標でソートすると、連続する 2 つのイベント座標の間では被覆数は一定です。",
+      "2n 個のイベントを集めてソートします。同じ座標のイベントをまとめて処理して被覆数 cov を更新し、そのあと cov = 1 なら、次のイベント座標 - 現在の座標を答えに足します。座標は ±2 * 10^9 に達し、答えは約 4 * 10^9 になるので、64 ビット整数を使ってください。"
+    ],
+    "ko": [
+      "각 전등은 닫힌 정수 구간 [x - r, x + r]을 밝힙니다. 구간의 수가 아니라 정확히 하나의 전등이 덮는 정수 점의 수를 세어야 합니다. 좌표가 크므로 점을 하나씩 표시할 수 없습니다.",
+      "차분 스위프를 사용합니다. x - r에서 +1, x + r + 1에서 -1입니다(x + r + 1은 닫힌 구간의 끝을 나타냄). 이벤트를 좌표순으로 정렬하면 연속한 두 이벤트 좌표 사이에서 덮임 횟수는 일정합니다.",
+      "2n개의 이벤트를 모아 정렬합니다. 같은 좌표의 이벤트는 함께 처리하여 덮임 횟수 cov를 갱신하고, 이후 cov = 1이면 다음 이벤트 좌표 - 현재 좌표를 답에 더합니다. 좌표는 +-2 * 10^9까지 되고 답은 약 4 * 10^9이므로 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Mỗi chiếc đèn chiếu sáng đoạn nguyên đóng [x - r, x + r]; đếm số điểm nguyên được phủ bởi đúng một đèn, không phải số đoạn. Các tọa độ rất lớn, nên không thể đánh dấu từng điểm.",
+      "Dùng quét sai phân: +1 tại x - r và -1 tại x + r + 1 (x + r + 1 đánh dấu kết thúc của đoạn đóng). Sau khi sắp xếp các sự kiện theo tọa độ, số lần phủ không đổi giữa hai tọa độ sự kiện liên tiếp.",
+      "Thu thập 2n sự kiện và sắp xếp chúng. Xử lý cùng lúc mọi sự kiện có cùng tọa độ để cập nhật số lần phủ cov; nếu sau đó cov = 1 thì cộng (tọa độ sự kiện kế tiếp - tọa độ hiện tại) vào đáp án. Tọa độ có thể đạt +-2 * 10^9 và đáp án khoảng 4 * 10^9, nên dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Problem\n\nEach lamp lights the closed integer interval [x - r, x + r]. Count the integer coordinates lit by exactly one lamp (not the number of segments).\n\n## Approach\n\nDifference sweep line: each interval adds +1 at x - r and -1 at x + r + 1. Sort the 2n events by coordinate; after processing all events at the same coordinate together, you get the coverage count from that coordinate up to the next event coordinate (left-closed, right-open). When the coverage is 1, add the length of that stretch to the answer.\n\n## Correctness\n\nAll integer points between two consecutive event coordinates are covered by the same set of intervals, so the coverage is constant and equals the sum of the increments of the earlier events; accumulating by stretches is therefore equivalent to counting point by point. Using x + r + 1 for the right end marks the end of the closed interval and avoids missing the endpoint.\n\n## Complexity\n\nSorting is O(n log n). Coordinates can reach +-2 * 10^9 and the answer about 4 * 10^9, so use 64-bit integers.\n\n## Independent verification\n\nThe oracle discretizes all endpoints and, for each elementary segment, directly counts how many intervals cover it completely (O(n^2), small data only), which differs from the sweep-line implementation; for even smaller data it also counts integer point by point. All combinations of 1..3 lamps with coordinates -2..2 and radii 1..2 were enumerated and the reference program was actually run on each. The wrong solutions include counting the union, an open right endpoint, counting only the number of segments (a misreading of the upstream text), and 32-bit accumulation."

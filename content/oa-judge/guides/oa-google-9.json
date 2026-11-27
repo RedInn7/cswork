@@ -13,6 +13,21 @@
       "The chosen digits keep their original order and there are at most 3 of them, so a state can be the processed prefix plus how many digits are chosen.",
       "Let best[k] be the largest value made from exactly k digits of the current prefix. A new digit d is either skipped or used as the last digit, coming from best[k−1]×10+d.",
       "Start with best[0]=0 and the rest unreachable (for example −1). For each digit update k from 3 down to 1: best[k]=max(best[k], best[k−1]×10+d); going downward keeps a digit from being used twice. Print the maximum of best[1], best[2] and best[3]."
+    ],
+    "ja": [
+      "選ぶ数字は元の順序を保ち、高々 3 個なので、状態は処理済みの接頭辞と、これまでに選んだ個数で表せます。",
+      "best[k] を、現在の接頭辞からちょうど k 個の数字で作れる最大値とします。新しい数字 d は、使わないか、best[k−1]×10+d として最後の数字に使うかのどちらかです。",
+      "best[0]=0、残りは到達不能 (例えば −1) で始めます。各数字について k を 3 から 1 へ降順に更新します: best[k]=max(best[k], best[k−1]×10+d)。降順にすることで同じ数字が 2 回使われるのを防げます。best[1]、best[2]、best[3] の最大値を出力します。"
+    ],
+    "ko": [
+      "고른 숫자들은 원래 순서를 유지하고 최대 3개이므로, 상태를 처리한 접두사와 고른 숫자의 개수로 둘 수 있습니다.",
+      "best[k]를 현재 접두사의 숫자 정확히 k개로 만들 수 있는 가장 큰 값이라고 합시다. 새 숫자 d는 건너뛰거나, 마지막 숫자로 사용되어 best[k−1]×10+d가 됩니다.",
+      "best[0]=0으로 시작하고 나머지는 도달 불가능으로 둡니다 (예를 들어 −1). 각 숫자에 대해 k를 3에서 1까지 내려가며 best[k]=max(best[k], best[k−1]×10+d)로 갱신합니다. 아래로 내려가면 한 숫자가 두 번 쓰이지 않습니다. best[1], best[2], best[3] 중 최댓값을 출력합니다."
+    ],
+    "vi": [
+      "Các chữ số được chọn giữ nguyên thứ tự ban đầu và có tối đa 3 chữ số, nên một trạng thái có thể gồm tiền tố đã xử lý cùng số chữ số đã chọn.",
+      "Gọi best[k] là giá trị lớn nhất tạo từ đúng k chữ số của tiền tố hiện tại. Một chữ số mới d hoặc bị bỏ qua, hoặc được dùng làm chữ số cuối, xuất phát từ best[k−1]×10+d.",
+      "Bắt đầu với best[0]=0 và các phần tử còn lại là không đạt được (ví dụ −1). Với mỗi chữ số, cập nhật k từ 3 xuống 1: best[k]=max(best[k], best[k−1]×10+d); duyệt xuống giúp một chữ số không bị dùng hai lần. In giá trị lớn nhất trong best[1], best[2] và best[3]."
     ]
   },
   "explanationEn": "## Idea\n\nbest[k] stores the largest value that can be formed by choosing exactly k digits from the processed prefix. When digit d is read, update best[k]=max(best[k],best[k−1]×10+d) in decreasing order of k so that no digit is used more than once.\n\n## Why it is correct\n\nInduction on the prefix length. An optimal choice of exactly k digits either does not use the current digit, coming from the old best[k], or ends with it, obtained by appending the digit to the best k−1 digits of the prefix. The two cases are complete and mutually exclusive. The decreasing order guarantees that the state read is the one of the previous prefix. Finally, taking the maximum over the states with 1..3 digits matches \"at most three digits\".\n\n## Complexity\n\nO(n) time and O(1) extra space apart from the input."

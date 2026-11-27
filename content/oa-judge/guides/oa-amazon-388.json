@@ -13,6 +13,21 @@
       "Think of the final sizes as integer slots handed out from small to large; an item can only take a slot at least its original size, costing (slot − original size) × unit cost.",
       "When several items can take the same slot, the most expensive one should go first: swapping a cheap-first, expensive-later pair never makes things worse.",
       "Sort by original size; starting from the smallest size, push every item whose size is at most the current slot into a max-heap by unit cost, pop the most expensive one, place it in the current slot, add its cost, and move to the next slot; when the heap is empty, jump to the next item's size. Use a 64-bit answer."
+    ],
+    "ja": [
+      "最終的なサイズを、小さい方から順に配られる整数のスロットだと考えます。商品が取れるのは元のサイズ以上のスロットだけで、コストは (スロット − 元のサイズ) × 単価です。",
+      "複数の商品が同じスロットを取れるときは、最も高い商品を先にします。安い商品を先、高い商品を後にするペアを入れ替えても、悪くなることはありません。",
+      "元のサイズでソートします。最小のサイズから始め、サイズが現在のスロット以下の商品をすべて単価の最大ヒープに入れ、最も高い商品を pop して現在のスロットに置き、そのコストを加算して次のスロットへ進みます。ヒープが空なら、次の商品のサイズへ飛びます。答えは 64 ビットで持ちます。"
+    ],
+    "ko": [
+      "최종 크기를 작은 것부터 큰 것으로 나눠 주는 정수 슬롯이라고 생각합니다. 항목은 원래 크기 이상의 슬롯만 차지할 수 있으며 비용은 (슬롯 − 원래 크기) × 단위 비용입니다.",
+      "여러 항목이 같은 슬롯을 차지할 수 있을 때는 가장 비싼 항목을 먼저 배정해야 합니다. 싼 항목을 먼저, 비싼 항목을 나중에 두는 쌍을 맞바꿔도 결과가 나빠지지 않습니다.",
+      "원래 크기로 정렬합니다. 가장 작은 크기부터 시작해 크기가 현재 슬롯 이하인 항목을 모두 단위 비용 기준 최대 힙에 넣고, 가장 비싼 것을 꺼내 현재 슬롯에 놓고 비용을 더한 뒤 다음 슬롯으로 넘어갑니다. 힙이 비면 다음 항목의 크기로 건너뜁니다. 답은 64비트로 계산합니다."
+    ],
+    "vi": [
+      "Hãy coi các kích thước cuối cùng là các ô nguyên được phát từ nhỏ đến lớn; một món chỉ có thể nhận ô có giá trị ít nhất bằng kích thước gốc của nó, tốn (slot − kích thước gốc) × chi phí đơn vị.",
+      "Khi nhiều món có thể nhận cùng một ô, món đắt nhất nên đi trước: hoán đổi một cặp rẻ-trước, đắt-sau không bao giờ làm tình hình tốt hơn.",
+      "Sắp xếp theo kích thước gốc; bắt đầu từ kích thước nhỏ nhất, đẩy mọi món có kích thước không vượt quá ô hiện tại vào một max-heap theo chi phí đơn vị, lấy món đắt nhất ra, đặt nó vào ô hiện tại, cộng chi phí của nó, rồi chuyển sang ô kế tiếp; khi heap rỗng, nhảy tới kích thước của món kế tiếp. Dùng đáp án 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nSort by original size and assign integer size slots in order. Add every item that can already take a slot to a heap ordered by unit cost in descending order, and assign the most expensive one; when the heap is empty, jump to the next original size.\n\n## Proof of correctness\n\nAny empty slot with a waiting item can let a later-placed item move forward without increasing the cost. For two items that can both use the current slot, if the more expensive one is placed after the cheaper one, swapping them decreases or keeps the cost, and both are already released, so the result is still valid. Hence placing the most expensive item in the current slot can always be extended to an optimal solution; induction over the slots gives the global optimum. Skipping while the heap is empty only skips positions where no item can be placed, so nothing is missed.\n\n## Complexity\n\nO(n log n) time and O(n) space; the answer can reach 199999000000000."

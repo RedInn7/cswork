@@ -13,6 +13,21 @@
       "There are enough developers and all development starts together, so the developed features finish when the slowest of them does. Integration is done one after another by the lead alone and takes the sum of the chosen integration times. Both run in parallel, so the total time is the larger of the two.",
       "Binary search the total time T: features whose development time exceeds T must be integrated instead, and all others can just be developed. T is feasible exactly when those forced integration times sum to at most T, and a larger T is always easier. Note that times can be 0.",
       "Binary search over [0, max(developmentTime)]: for a candidate T, add up in 64 bits the integrationTime[i] of every developmentTime[i] > T; if the sum is at most T, lower the upper bound, otherwise raise the lower bound. Print the smallest feasible value."
+    ],
+    "ja": [
+      "開発者は十分な人数がおり、すべての開発が同時に始まるので、開発する機能は、最も遅いものが終わった時点で完了します。統合はリーダーが 1 人で順に行うので、選んだ統合時間の和がかかります。両者は並行して進むので、全体の時間は 2 つのうち大きいほうです。",
+      "全体の時間 T を二分探索します。開発時間が T を超える機能は代わりに統合しなければならず、それ以外はすべて開発すれば済みます。強制的に統合される時間の和が T 以下であることが、T が実現可能であるための必要十分条件で、T が大きいほど常に簡単になります。時間は 0 になり得ることに注意してください。",
+      "[0, max(developmentTime)] で二分探索します。候補 T について、developmentTime[i] > T であるすべての i の integrationTime[i] を 64 ビットで足し、和が T 以下なら上限を下げ、そうでなければ下限を上げます。実現可能な最小の値を出力します。"
+    ],
+    "ko": [
+      "개발자가 충분하고 모든 개발이 동시에 시작하므로 개발하는 기능들은 가장 느린 것이 끝날 때 함께 끝납니다. 통합은 리드 혼자 차례로 하므로 선택한 통합 시간의 합이 걸립니다. 둘은 병렬로 진행되므로 전체 시간은 둘 중 큰 값입니다.",
+      "총 시간 T를 이분 탐색합니다. 개발 시간이 T를 넘는 기능은 대신 통합해야 하고, 나머지는 그냥 개발하면 됩니다. 강제된 통합 시간의 합이 T 이하일 때 정확히 T가 가능하며, T가 클수록 항상 더 쉽습니다. 시간이 0일 수 있다는 점에 유의하세요.",
+      "[0, max(developmentTime)]에서 이분 탐색합니다. 후보 T에 대해 developmentTime[i] > T인 모든 i의 integrationTime[i]를 64비트로 합산하여, 합이 T 이하이면 상한을 낮추고 아니면 하한을 올립니다. 가능한 가장 작은 값을 출력합니다."
+    ],
+    "vi": [
+      "Có đủ lập trình viên và mọi việc phát triển bắt đầu cùng nhau, nên các tính năng được phát triển hoàn thành khi tính năng chậm nhất trong số đó xong. Việc tích hợp do trưởng nhóm tự làm lần lượt từng cái và mất tổng các thời gian tích hợp đã chọn. Cả hai chạy song song, nên tổng thời gian là giá trị lớn hơn trong hai giá trị.",
+      "Tìm kiếm nhị phân tổng thời gian T: các tính năng có thời gian phát triển vượt quá T buộc phải được tích hợp, và mọi tính năng khác có thể đơn giản là được phát triển. T khả thi đúng khi các thời gian tích hợp bắt buộc đó có tổng không quá T, và T lớn hơn luôn dễ hơn. Lưu ý rằng thời gian có thể bằng 0.",
+      "Tìm kiếm nhị phân trên [0, max(developmentTime)]: với một ứng viên T, cộng trong 64 bit các integrationTime[i] của mọi developmentTime[i] > T; nếu tổng không quá T thì hạ cận trên, ngược lại nâng cận dưới. In giá trị khả thi nhỏ nhất."
     ]
   },
   "explanationEn": "## Approach\n\nBinary search on the total time T: features whose development time exceeds T must be integrated, and the sum of their integration times must not exceed T; everything else can simply be developed.\n\n## Proof of correctness\n\nIf a development time is >T, that feature cannot be developed, which gives the set that must be integrated. When its sum is >T, no plan can finish within T; otherwise, hand that set to the team lead and develop the rest in parallel, which finishes within T. The decision is monotone in T, so binary search returns the minimum feasible value.\n\n## Complexity\n\nTime O(n log(1+maximum development time)), space O(n); accumulate with 64 bits."

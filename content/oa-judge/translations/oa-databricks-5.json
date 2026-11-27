@@ -11,5 +11,35 @@
     "hints": [
       "Normalize the sides of both the rectangles and the query boxes into a short side and a long side. Maintain the maximum short side and the maximum long side over all stored rectangles; a query box can hold every rectangle if and only if these two maxima do not exceed the corresponding sides of the box."
     ]
+  },
+  "ja": {
+    "title": "回転可能な長方形を1つずつクエリの箱に収める",
+    "description": "2種類の操作を順に実行します。`0 a b` は a×b の長方形を保存します。`1 a b` は、以前に保存したすべての長方形が、それぞれ個別に a×b のクエリの箱に収まるかを尋ねます。長方形は90度回転でき、各長方形は別々に置かれ、同時に同じ箱に収まる必要はありません。\n\n標準入出力、このサイトの補足の範囲、および例は、この問題の説明に従います。",
+    "input": "1行目に q(1≤q≤30000)、続く q 行にそれぞれ kind, a, b が与えられます。kind は 0 または 1 で、1≤a,b≤10⁹ です。これらの範囲はサイトの補足で、最悪の場合の出力の長さをジャッジの制限内に収めるためのものです。",
+    "output": "クエリ操作ごとに1行を出力し、収まれば 1、そうでなければ 0 としてください。長方形が1つも保存されていなければ、クエリの結果は 1 です。",
+    "explanation": "長方形とクエリの箱の辺を、それぞれ短辺と長辺に正規化します。保存されたすべての長方形の最大の短辺と最大の長辺を保持します。クエリの箱がすべての長方形を収められるのは、この2つの最大値がどちらも箱の対応する辺を超えないとき、かつそのときに限ります。",
+    "hints": [
+      "長方形とクエリの箱の辺を、それぞれ短辺と長辺に正規化します。保存されたすべての長方形の最大の短辺と最大の長辺を保持します。クエリの箱がすべての長方形を収められるのは、この2つの最大値がどちらも箱の対応する辺を超えないとき、かつそのときに限ります。"
+    ]
+  },
+  "ko": {
+    "title": "회전 가능한 직사각형을 질의 상자에 하나씩 넣기",
+    "description": "두 종류의 연산을 순서대로 실행합니다. `0 a b`는 a×b 직사각형을 저장하고, `1 a b`는 이전에 저장한 모든 직사각형이 각각 a×b 질의 상자에 들어가는지 묻습니다. 직사각형은 90도 회전할 수 있으며, 각 직사각형은 따로따로 배치하므로 같은 상자에 동시에 들어갈 필요는 없습니다.\n\n표준 입출력, 이 사이트의 보충 범위, 예시는 이 문제의 설명을 따릅니다.",
+    "input": "첫째 줄에 q (1≤q≤30000)가 주어지고, 이어서 q개의 줄에 각각 kind, a, b가 주어집니다. kind는 0 또는 1이고 1≤a,b≤10⁹입니다. 이 범위는 최악의 경우 출력 길이를 채점기의 한도 안에 두기 위한 사이트 보충입니다.",
+    "output": "질의 연산마다 한 줄씩 들어가면 1, 아니면 0을 출력합니다. 저장된 직사각형이 없으면 질의 결과는 1입니다.",
+    "explanation": "직사각형과 질의 상자의 변을 모두 짧은 변과 긴 변으로 정규화합니다. 저장된 모든 직사각형의 짧은 변의 최댓값과 긴 변의 최댓값을 유지합니다. 질의 상자가 모든 직사각형을 담을 수 있는 것은 이 두 최댓값이 상자의 대응하는 변을 넘지 않을 때이며 그때에 한합니다.",
+    "hints": [
+      "직사각형과 질의 상자의 변을 모두 짧은 변과 긴 변으로 정규화합니다. 저장된 모든 직사각형의 짧은 변의 최댓값과 긴 변의 최댓값을 유지합니다. 질의 상자가 모든 직사각형을 담을 수 있는 것은 이 두 최댓값이 상자의 대응하는 변을 넘지 않을 때이며 그때에 한합니다."
+    ]
+  },
+  "vi": {
+    "title": "Xếp từng hình chữ nhật xoay được vào các hộp truy vấn",
+    "description": "Thực hiện hai loại thao tác theo thứ tự: `0 a b` lưu một hình chữ nhật a×b; `1 a b` hỏi liệu mọi hình chữ nhật đã lưu trước đó có thể từng cái một nằm vừa trong hộp truy vấn a×b hay không. Các hình chữ nhật có thể xoay 90 độ; mỗi hình chữ nhật được đặt riêng, và chúng không cần nằm vừa cùng một hộp tại cùng một lúc.\n\nĐầu vào/đầu ra chuẩn, các khoảng bổ sung của trang này và các ví dụ theo mô tả của bài này.",
+    "input": "Dòng đầu tiên chứa q (1≤q≤30000), tiếp theo là q dòng, mỗi dòng chứa kind, a và b. kind là 0 hoặc 1, và 1≤a,b≤10⁹. Các khoảng này là bổ sung của trang để giữ độ dài đầu ra trong trường hợp xấu nhất nằm trong giới hạn của trình chấm.",
+    "output": "In một dòng cho mỗi thao tác truy vấn: 1 nếu vừa, ngược lại 0. Khi chưa lưu hình chữ nhật nào, kết quả truy vấn là 1.",
+    "explanation": "Chuẩn hóa các cạnh của cả hình chữ nhật lẫn hộp truy vấn thành cạnh ngắn và cạnh dài. Duy trì cạnh ngắn lớn nhất và cạnh dài lớn nhất trên mọi hình chữ nhật đã lưu; một hộp truy vấn chứa được mọi hình chữ nhật khi và chỉ khi hai giá trị lớn nhất này không vượt quá các cạnh tương ứng của hộp.",
+    "hints": [
+      "Chuẩn hóa các cạnh của cả hình chữ nhật lẫn hộp truy vấn thành cạnh ngắn và cạnh dài. Duy trì cạnh ngắn lớn nhất và cạnh dài lớn nhất trên mọi hình chữ nhật đã lưu; một hộp truy vấn chứa được mọi hình chữ nhật khi và chỉ khi hai giá trị lớn nhất này không vượt quá các cạnh tương ứng của hộp."
+    ]
   }
 }

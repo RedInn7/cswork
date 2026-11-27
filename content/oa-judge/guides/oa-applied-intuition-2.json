@@ -13,6 +13,21 @@
       "Nested transactions behave like a stack of overlays: each layer records only the keys it changed, and inner changes take priority when reading.",
       "Represent the state as a base map plus a stack of maps for the transaction layers. SET and DELETE write into the top layer, or into the base map when no transaction is open; DELETE must store a deleted marker rather than removing the key, so that it hides the value in outer layers.",
       "GET searches from the top of the stack downward and uses the first record it finds (a deleted marker or no record at all prints NULL). BEGIN pushes an empty map, ROLLBACK pops the top, and COMMIT pops the top and copies all its records over the new top or the base map. With an empty stack, ROLLBACK and COMMIT print NO TRANSACTION."
+    ],
+    "ja": [
+      "ネストしたトランザクションは、オーバーレイのスタックのように振る舞います。各層は自分が変更したキーだけを記録し、読み取り時には内側の変更が優先されます。",
+      "状態を、ベースとなる map と、トランザクション層ごとの map のスタックで表現します。SET と DELETE は最上位の層に、トランザクションが開いていなければベースの map に書き込みます。DELETE はキーを取り除くのではなく削除マーカーを保存して、外側の層の値を隠さなければなりません。",
+      "GET はスタックの最上位から下に向かって検索し、最初に見つかった記録を使います (削除マーカー、または記録がまったくない場合は NULL を出力します)。BEGIN は空の map を push し、ROLLBACK は最上位を pop し、COMMIT は最上位を pop して、そのすべての記録を新しい最上位 (またはベースの map) に上書きコピーします。スタックが空のときの ROLLBACK と COMMIT は NO TRANSACTION を出力します。"
+    ],
+    "ko": [
+      "중첩 트랜잭션은 오버레이를 쌓아 둔 스택처럼 동작합니다. 각 계층은 자신이 바꾼 키만 기록하고, 읽을 때는 안쪽의 변경이 우선합니다.",
+      "상태를 기본 맵과 트랜잭션 계층 맵의 스택으로 표현합니다. SET과 DELETE는 맨 위 계층에 쓰고, 열린 트랜잭션이 없으면 기본 맵에 씁니다. DELETE는 키를 지우지 말고 삭제 표시를 저장해야 바깥 계층의 값을 가릴 수 있습니다.",
+      "GET은 스택 맨 위에서 아래로 검색해 처음 찾은 기록을 사용합니다(삭제 표시이거나 기록이 전혀 없으면 NULL을 출력합니다). BEGIN은 빈 맵을 푸시하고, ROLLBACK은 맨 위를 팝하며, COMMIT은 맨 위를 팝한 뒤 그 기록을 모두 새 맨 위 계층이나 기본 맵에 덮어씁니다. 스택이 비어 있을 때 ROLLBACK과 COMMIT은 NO TRANSACTION을 출력합니다."
+    ],
+    "vi": [
+      "Các giao dịch lồng nhau hoạt động như một ngăn xếp các lớp phủ: mỗi lớp chỉ ghi lại các khóa mà nó thay đổi, và các thay đổi bên trong được ưu tiên khi đọc.",
+      "Biểu diễn trạng thái bằng một map gốc cộng với một ngăn xếp các map cho các lớp giao dịch. SET và DELETE ghi vào lớp trên cùng, hoặc vào map gốc khi không có giao dịch nào đang mở; DELETE phải lưu một dấu đã xóa thay vì gỡ khóa, để nó che giá trị ở các lớp ngoài.",
+      "GET tìm từ đỉnh ngăn xếp xuống dưới và dùng bản ghi đầu tiên tìm được (dấu đã xóa hoặc không có bản ghi nào thì in NULL). BEGIN đẩy một map rỗng, ROLLBACK lấy đỉnh ra, và COMMIT lấy đỉnh ra rồi chép mọi bản ghi của nó đè lên đỉnh mới hoặc map gốc. Khi ngăn xếp rỗng, ROLLBACK và COMMIT in NO TRANSACTION."
     ]
   },
   "explanationEn": "## Approach\n\nEach transaction layer records key changes, and GET searches from the innermost layer outward; commit merges this layer's overrides into the parent layer, and rollback discards this layer.\n\n## Proof of Correctness\n\nThe value in the newest transaction layer takes priority; commit keeps its changes, and rollback restores the state from before the transaction began.\n\n## Complexity\n\nread O(depth), writes amortized O(1), space O(q)."

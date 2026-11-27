@@ -13,6 +13,21 @@
       "Every character of password that appears in reference must be deleted; there is no choice involved, every matching position goes.",
       "reference only decides which letters are deleted, so letters repeated in it are not charged twice, while every occurrence in password is charged.",
       "Mark the letters of reference in 26 booleans, scan password, add cost[letter] for every marked letter, and print the total."
+    ],
+    "ja": [
+      "password の文字のうち reference に現れるものはすべて削除しなければなりません。選択の余地はなく、一致する位置はすべて削除されます。",
+      "reference が決めるのは削除する文字の種類だけなので、reference の中で繰り返される文字が 2 回課金されることはありませんが、password の中の出現はすべて課金されます。",
+      "reference の文字を 26 個の真偽値に記録し、password を走査して、記録された文字ごとに cost[letter] を加算し、合計を出力します。"
+    ],
+    "ko": [
+      "password에서 reference에 나타나는 문자는 모두 삭제해야 합니다. 선택의 여지는 없으며 일치하는 모든 위치가 삭제됩니다.",
+      "reference는 어떤 문자를 삭제할지만 결정하므로, 그 안에서 반복된 문자는 두 번 비용이 부과되지 않지만 password에 나타난 모든 위치에는 비용이 부과됩니다.",
+      "reference의 문자를 26개의 불리언으로 표시하고, password를 훑으면서 표시된 문자마다 cost[letter]를 더하여 총합을 출력하세요."
+    ],
+    "vi": [
+      "Mọi ký tự của password xuất hiện trong reference đều phải bị xóa; không có lựa chọn nào ở đây, mọi vị trí khớp đều bị xóa.",
+      "reference chỉ quyết định chữ cái nào bị xóa, nên các chữ cái lặp lại trong nó không bị tính hai lần, trong khi mọi lần xuất hiện trong password đều bị tính.",
+      "Đánh dấu các chữ cái của reference trong 26 giá trị boolean, duyệt password, cộng cost[letter] cho mỗi chữ cái được đánh dấu, và in tổng."
     ]
   },
   "explanationEn": "## Approach\n\nPut the letters that appear in reference into a set. Scan password and, for every character that belongs to the set, add the deletion cost of that letter. When a character appears several times in password, every occurrence is charged; a character repeated in reference is not charged again.\n\n## Correctness\n\nThe problem requires removing every character of password that appears in reference, so every matching position must be deleted; the cost cannot be lowered by keeping some of them or by handling only one kind of character. Non-matching positions are not deletion targets, and deleting them would only add positive cost. Therefore the only necessary and optimal deletion set is exactly the set of all matching positions, and adding up their costs position by position gives the minimum total cost.\n\n## Complexity\n\nO(|password|+|reference|) time and O(Σ) space, where Σ=26.\n\n## Reference implementation\n\n```python\nimport sys\n\ndef solve(raw):\n    lines = raw.splitlines()\n    if len(lines) != 3:\n        raise ValueError(\"expected password, reference, and 26 costs\")\n    password, reference = lines[0], lines[1]\n    costs = list(map(int, lines[2].split()))\n    if not 1 <= len(password) <= 100_000 or not 1 <= len(reference) <= 100_000:\n        raise ValueError(\"string length must be in [1, 100000]\")\n    if len(costs) != 26 or any(not 1 <= cost <= 100 for cost in costs):\n        raise ValueError(\"expected 26 costs in [1, 100]\")\n    if any(not ('a' <= char <= 'z') for char in password + reference):\n        raise ValueError(\"strings must contain lowercase English letters\")\n    removable = set(reference)\n    return str(sum(costs[ord(char) - ord('a')] for char in password if char in removable))\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n```"

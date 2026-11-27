@@ -13,6 +13,21 @@
       "At any moment the people in the system are exactly those whose finish time is later than now; someone finishing exactly at an arrival time has already left.",
       "Simulate in arrival order with a queue of finish times of the people in the system (it is naturally increasing); on each arrival first pop everyone who has finished, then admit or reject by the rule \"reject when more than 10 people are present\".",
       "For each arrival a: pop every queue front with finish <= a; if more than 10 remain, output null; otherwise start = max(a, finish time at the back of the queue) (just a if the queue is empty), output start and push start + 30. With exactly 10 present the person is still admitted, so at most 11 people are ever in the system."
+    ],
+    "ja": [
+      "任意の時点でシステム内にいるのは、終了時刻が現在より後の人々だけです。ちょうど到着時刻に終了する人は、すでに去っています。",
+      "到着順にシミュレーションし、システム内の人々の終了時刻のキュー(自然に増加する)を持ちます。各到着で、まず終了した人をすべて取り除き、それから「10人より多くいれば拒否」という規則で受け付けるか拒否するかを決めます。",
+      "各到着 a について: 終了時刻が <= a のキューの先頭をすべて取り除きます。10 より多く残っていれば null を出力します。そうでなければ、start = max(a, キューの末尾の終了時刻)(キューが空なら a だけ)を求めて start を出力し、start + 30 を追加します。ちょうど10人いる場合でもその人は受け付けられるので、システム内には最大でも 11 人しかいません。"
+    ],
+    "ko": [
+      "어느 순간이든 시스템 안에 있는 사람은 종료 시각이 지금보다 늦은 사람들입니다. 도착 시각에 정확히 끝나는 사람은 이미 떠난 것입니다.",
+      "도착 순서대로 시뮬레이션하며, 시스템 안에 있는 사람들의 종료 시각을 담은 큐(자연스럽게 증가하는 순서)를 유지합니다. 도착할 때마다 먼저 끝난 사람들을 모두 꺼내고, \"10명보다 많으면 거부\"라는 규칙으로 접수 또는 거부를 결정합니다.",
+      "각 도착 a에 대해: 종료 시각이 <= a인 큐의 앞쪽 원소를 모두 꺼냅니다. 10명보다 많이 남아 있으면 null을 출력하고, 아니면 start = max(a, 큐 뒤쪽의 종료 시각)(큐가 비어 있으면 a)를 출력한 뒤 start + 30을 큐에 넣습니다. 정확히 10명이 있을 때도 접수되므로 시스템에는 최대 11명이 있게 됩니다."
+    ],
+    "vi": [
+      "Tại mọi thời điểm, những người trong hệ thống chính là những người có thời điểm xong muộn hơn hiện tại; ai xong đúng vào thời điểm có người đến thì đã rời đi.",
+      "Mô phỏng theo thứ tự đến với một hàng đợi các thời điểm xong của những người trong hệ thống (nó tự nhiên tăng dần); với mỗi lần đến, trước hết lấy ra mọi người đã xong, rồi nhận hoặc từ chối theo quy tắc \"từ chối khi có hơn 10 người\".",
+      "Với mỗi lần đến a: lấy ra mọi đầu hàng đợi có finish <= a; nếu còn hơn 10 người thì in null; ngược lại start = max(a, thời điểm xong ở cuối hàng đợi) (chỉ là a nếu hàng đợi rỗng), in start và đẩy start + 30. Với đúng 10 người đang có thì người đến vẫn được nhận, nên trong hệ thống luôn có tối đa 11 người."
     ]
   },
   "explanationEn": "## Approach\n\nSimulate person by person in non-decreasing arrival order. Keep a queue of the finish times of everyone in the system who has not finished service yet. On an arrival, first remove everyone with `finish<=arrival`, because they have already finished and left at that moment. If more than 10 people remain, the current person leaves immediately and the output is null; otherwise the person is admitted, service starts at the later of the arrival time and the finish time at the back of the queue, and service ends at the start time plus 30.\n\nThe rule in the statement is \"reject when the current number of people is greater than 10\", so a person is still admitted when exactly 10 are present; after admission the system holds at most 11 people. This also matches the sample where 12 people arrive at the same moment: the first 11 are accepted and the 12th is rejected. Simultaneous arrivals are processed in input order.\n\n## Proof of correctness\n\nThe queue of finish times increases in service order. After removing every finish event no later than the current arrival, it contains exactly the people who are still being served or waiting at that moment. Rejection or admission is decided by the stated threshold, so nobody who has already left is counted and nobody over the limit is admitted. An admitted person starts at the arrival time or at the last person's finish time, which is exactly the single-server FCFS rule.\n\n## Complexity\n\nEach person enters and leaves the queue at most once: O(n) time and O(n) extra space.\n\n## Input convention\n\nThis site uses a stdin/stdout format of n followed by n arrival times, and adopts the suggested ranges from the source, `1<=n<=200000` and `0<=arrival[i]<=10^9`, keeping the original requirements that arrivals are non-decreasing and that simultaneous arrivals follow input order."

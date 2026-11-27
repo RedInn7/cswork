@@ -11,5 +11,35 @@
     "hints": [
       "Sort by start and scan, maintaining the end of the current merged segment; when a start is greater than it, record the gap and begin a new segment."
     ]
+  },
+  "ja": {
+    "title": "閉区間を併合した後の最小の隙間",
+    "description": "まず、交差するすべての閉区間を、互いに素な極大の線分に併合します。端点を共有する場合も交差とみなします。併合後の隣り合う2つの線分の間の隙間(後ろの線分の開始 − 前の線分の終了)の最小値を求めてください。併合後に線分が2つ未満なら比較すべき隙間がないため、本サイトのプロトコルに従って −1 を出力します。\n\n標準入出力、例、解説は本サイトが独自に作成したものです。本サイト独自と明記した範囲は、出典の元の制約ではありません。",
+    "input": "1行目に n、続く n 行に start end が与えられます。元の問題文には値の範囲が示されておらず、本サイトでは 1≤n≤200000、−10^9≤start≤end≤10^9 とします。−1 という出力は隙間がない場合のためだけに追加したもので、線分が1つだけの入力も除外していません。",
+    "output": "答えとなる整数を1つ出力してください。",
+    "explanation": "答えは 3、−1、2 です。元の説明では start[i−1] と end[i] の添字が入れ替わっています。元の例 7−5=2 に従い、本サイトでは一貫して、後ろの線分の開始から前の線分の終了を引きます。",
+    "hints": [
+      "開始位置でソートして走査し、現在の併合済み線分の終了位置を保持します。開始位置がそれより大きければ隙間を記録し、新しい線分を始めます。"
+    ]
+  },
+  "ko": {
+    "title": "닫힌 구간을 병합한 뒤 최소 간격",
+    "description": "먼저 서로 겹치는 모든 닫힌 구간을 서로소인 최대 구간들로 병합합니다. 끝점만 공유해도 겹치는 것으로 봅니다. 병합된 구간들 중 인접한 두 구간 사이의 최소 간격, 즉 뒤 구간의 시작에서 앞 구간의 끝을 뺀 값을 구하세요. 병합 후 구간이 두 개 미만이면 비교할 간격이 없으므로 이 사이트의 규약에 따라 −1을 출력합니다.\n\n표준 입출력, 예제, 해설은 이 사이트에서 독자적으로 작성했습니다. 이 사이트가 직접 정했다고 표시된 범위는 원문의 제약 조건이 아닙니다.",
+    "input": "첫째 줄에 n이 주어지고, 이어서 n줄에 start end가 주어집니다. 원문에는 값의 범위가 없으며, 이 사이트에서는 1≤n≤200000, −10^9≤start≤end≤10^9입니다. −1 인코딩은 간격이 없는 경우를 위해서만 추가했으며, 구간이 하나뿐인 입력도 제외하지 않습니다.",
+    "output": "정답을 정수 하나로 출력합니다.",
+    "explanation": "정답은 각각 3, −1, 2입니다. 원문 설명은 start[i−1]과 end[i]의 인덱스를 서로 바꿔 놓았습니다. 원문 예제 7−5=2를 따라, 이 사이트는 일관되게 뒤 구간의 시작에서 앞 구간의 끝을 뺀 값을 사용합니다.",
+    "hints": [
+      "시작 기준으로 정렬한 뒤 훑으면서 현재 병합된 구간의 끝을 유지합니다. 시작이 그보다 크면 간격을 기록하고 새 구간을 시작합니다."
+    ]
+  },
+  "vi": {
+    "title": "Khoảng trống nhỏ nhất sau khi gộp các đoạn đóng",
+    "description": "Trước tiên gộp mọi đoạn đóng giao nhau thành các đoạn rời nhau tối đại; chung một điểm đầu mút cũng được tính là giao nhau. Hãy tìm khoảng trống nhỏ nhất giữa hai đoạn đã gộp kề nhau, tức là điểm đầu của đoạn sau trừ điểm cuối của đoạn trước. Nếu sau khi gộp còn ít hơn hai đoạn thì không có khoảng trống nào để so sánh, và kết quả in ra là −1 theo giao thức của trang này.\n\nĐầu vào/đầu ra chuẩn, các ví dụ và phần lời giải do trang này tự viết; các khoảng giá trị được đánh dấu rõ là của trang này không phải ràng buộc gốc của đề.",
+    "input": "Dòng đầu chứa n, tiếp theo là n dòng start end. Đề gốc không cho cận giá trị; trên trang này 1≤n≤200000, −10^9≤start≤end≤10^9. Mã hóa −1 chỉ được thêm cho trường hợp không có khoảng trống; đầu vào chỉ có một đoạn không bị loại trừ.",
+    "output": "In ra một số nguyên duy nhất, là đáp án.",
+    "explanation": "Các đáp án lần lượt là 3, −1 và 2. Mô tả gốc đảo ngược các chỉ số trong start[i−1] và end[i]; theo ví dụ gốc 7−5=2, trang này nhất quán dùng điểm đầu của đoạn sau trừ điểm cuối của đoạn trước.",
+    "hints": [
+      "Sắp xếp theo điểm đầu và quét, duy trì điểm cuối của đoạn gộp hiện tại; khi một điểm đầu lớn hơn nó, ghi lại khoảng trống và bắt đầu một đoạn mới."
+    ]
   }
 }

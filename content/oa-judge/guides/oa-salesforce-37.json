@@ -13,6 +13,21 @@
       "Compute the conversion cost |s[i]-t[i]| (absolute ASCII difference) at every position, and the task becomes finding the longest contiguous interval with total at most K in an array of non-negative integers.",
       "Non-negative costs mean that shrinking an interval never increases its total, so for each right end the valid left ends form a contiguous suffix, and two pointers work: move the right end forward, move the left end forward while over budget, and never move the left end back.",
       "Parse the JSON to get s, t, and K. Move the right end from left to right, adding the cost at that position; while the total exceeds K, subtract the cost at the left end and advance it. Update the answer with right-left+1 at each step; with empty strings the answer is 0."
+    ],
+    "ja": [
+      "各位置の変換コスト |s[i]-t[i]|(ASCII の差の絶対値)を計算すると、問題は、非負整数の配列で合計が K 以下となる最長の連続区間を求めることに帰着します。",
+      "コストが非負なので、区間を縮めても合計は増えません。したがって各右端について、有効な左端は連続した接尾辞になり、しゃくとり法が使えます。右端を前に進め、予算を超えている間は左端を進め、左端は決して戻しません。",
+      "JSON をパースして s、t、K を取得します。右端を左から右へ動かしながらその位置のコストを加え、合計が K を超える間は左端のコストを引いて左端を進めます。各ステップで right-left+1 により答えを更新します。文字列が空なら答えは 0 です。"
+    ],
+    "ko": [
+      "모든 위치에서 변환 비용 |s[i]-t[i]|(ASCII 코드의 절댓값 차이)를 계산하면, 음이 아닌 정수 배열에서 합이 K 이하인 가장 긴 연속 구간을 찾는 문제가 됩니다.",
+      "비용이 음수가 아니므로 구간을 줄이면 합이 늘어나지 않습니다. 따라서 각 오른쪽 끝에 대해 유효한 왼쪽 끝은 연속된 접미사를 이루며 투 포인터를 쓸 수 있습니다. 오른쪽 끝을 앞으로 옮기고, 예산을 넘으면 왼쪽 끝을 앞으로 옮기며, 왼쪽 끝을 뒤로 되돌리지 않습니다.",
+      "JSON을 파싱하여 s, t, K를 얻습니다. 오른쪽 끝을 왼쪽에서 오른쪽으로 옮기며 그 위치의 비용을 더합니다. 합이 K를 넘는 동안 왼쪽 끝의 비용을 빼고 왼쪽을 전진시킵니다. 매 단계에서 right-left+1로 답을 갱신하며, 문자열이 비어 있으면 답은 0입니다."
+    ],
+    "vi": [
+      "Tính chi phí biến đổi |s[i]-t[i]| (hiệu ASCII tuyệt đối) tại mỗi vị trí, và bài toán trở thành tìm đoạn liên tiếp dài nhất có tổng không quá K trong một mảng số nguyên không âm.",
+      "Chi phí không âm nghĩa là thu hẹp một đoạn không bao giờ làm tăng tổng của nó, nên với mỗi đầu phải, các đầu trái hợp lệ tạo thành một hậu tố liên tiếp, và hai con trỏ hoạt động được: đẩy đầu phải tiến lên, đẩy đầu trái tiến lên khi vượt ngân sách, và không bao giờ lùi đầu trái.",
+      "Phân tích JSON để lấy s, t và K. Di chuyển đầu phải từ trái sang phải, cộng chi phí tại vị trí đó; trong khi tổng vượt K, trừ chi phí ở đầu trái và tiến đầu trái lên. Cập nhật đáp án bằng right-left+1 ở mỗi bước; với xâu rỗng thì đáp án là 0."
     ]
   },
   "explanationEn": "## Approach\n\nTreat the per-position costs as a non-negative array, and use two pointers to maintain the longest window whose total cost does not exceed K.\n\n## Proof of correctness\n\nShrinking the interval never increases the non-negative cost, so after the right end grows, it is enough to move the left end until the window is valid again. At that point the left end is the smallest possible, giving the longest valid interval for that right end; comparing over all right ends covers the global optimum.\n\n## Complexity\n\nTime O(n), space O(1) apart from the input."

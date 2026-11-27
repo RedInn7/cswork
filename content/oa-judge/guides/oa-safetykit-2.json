@@ -13,6 +13,21 @@
       "The command string is repeated forever, so the position and heading after a single pass are enough to determine how the whole path behaves.",
       "If the robot is back at the origin after one pass, the path is clearly bounded. If its heading has changed, then within at most 4 passes it faces the original direction again and the displacements of those passes cancel out, so the path is bounded too. Only when it is not at the origin and still faces the same direction does each pass shift it the same way, making the path unbounded.",
       "Simulate one pass per string: encode the heading as 0..3, add 1 for L and subtract 1 for R (both modulo 4), and step forward along the current heading for G. At the end, print YES if the position is (0,0) or the heading differs from the initial one, otherwise print NO."
+    ],
+    "ja": [
+      "コマンド文字列は永遠に繰り返されるので、1回分を実行した後の位置と向きが分かれば、軌跡全体の振る舞いが決まります。",
+      "1回分の後にロボットが原点に戻っていれば、軌跡は明らかに有界です。向きが変わっていれば、高々 4 回の繰り返しで元の向きに戻り、それらの変位は打ち消し合うので、やはり有界です。原点にいなくて、かつ同じ向きのままのときだけ、毎回同じ方向にずれていくため、非有界になります。",
+      "各文字列について1回分をシミュレーションします。向きを 0..3 で表し、L なら 1 を足し、R なら 1 を引き（どちらも 4 を法とします）、G なら現在の向きに1歩進みます。最後に、位置が (0,0) であるか、向きが初期と異なれば YES を、そうでなければ NO を出力します。"
+    ],
+    "ko": [
+      "명령 문자열은 영원히 반복되므로, 한 번 실행한 뒤의 위치와 방향만 알면 전체 경로가 어떻게 되는지 결정할 수 있습니다.",
+      "한 번 실행한 뒤 로봇이 원점으로 돌아왔다면 경로는 분명히 유계입니다. 방향이 바뀌었다면 최대 4번 안에 원래 방향을 다시 보게 되고 그 사이 변위들이 서로 상쇄되므로 경로는 역시 유계입니다. 원점이 아니면서 방향도 그대로일 때만 매번 같은 방향으로 이동하므로 비유계가 됩니다.",
+      "각 문자열에 대해 한 번 시뮬레이션합니다. 방향을 0..3으로 부호화하고, L이면 1을 더하고 R이면 1을 빼며(둘 다 모듈로 4), G이면 현재 방향으로 한 걸음 전진합니다. 마지막에 위치가 (0,0)이거나 방향이 처음과 다르면 YES, 그렇지 않으면 NO를 출력합니다."
+    ],
+    "vi": [
+      "Xâu lệnh được lặp lại mãi mãi, nên vị trí và hướng sau một lượt đủ để xác định toàn bộ đường đi hành xử ra sao.",
+      "Nếu robot quay về gốc sau một lượt thì đường đi hiển nhiên bị chặn. Nếu hướng của nó đã thay đổi thì trong tối đa 4 lượt nó lại quay về hướng ban đầu và các độ dịch chuyển của những lượt đó triệt tiêu nhau, nên đường đi cũng bị chặn. Chỉ khi nó không ở gốc và vẫn hướng như cũ thì mỗi lượt dịch nó theo cùng một cách, khiến đường đi không bị chặn.",
+      "Mô phỏng một lượt cho mỗi xâu: mã hóa hướng thành 0..3, cộng 1 cho L và trừ 1 cho R (cả hai theo modulo 4), và bước tới theo hướng hiện tại cho G. Cuối cùng, in YES nếu vị trí là (0,0) hoặc hướng khác hướng ban đầu, ngược lại in NO."
     ]
   },
   "explanationEn": "## Approach\n\nRun the command string once and record the final position `(x, y)` and heading `d` (start facing north, `d = 0`).\n\n- Back at the origin after one pass: bounded.\n- Not facing north after one pass: also bounded.\n- Only \"facing north and away from the origin\" is unbounded.\n\nSo the test is `(x, y) == (0, 0)` or `d != 0`.\n\n## Proof of correctness\n\nTreat one pass as a transformation: rotate the displacement `v = (x, y)` by the current heading, then translate.\n\n- `d = 0` and `v != 0`: after each pass the robot still faces north and has moved by the same `v`, so after `k` passes it is `k*|v|` from the origin. Unbounded.\n- `d = 0` and `v = 0`: every pass ends at the origin, so the path never leaves the area covered by the first pass. Bounded.\n- `d` is a 90-degree turn: four consecutive passes move by `v` rotated by 0, 90, 180 and 270 degrees, which sum to 0. `d` is 180 degrees: two passes move by `v` and `-v`, which also sum to 0. Either way, after at most 4 passes the robot is back at the origin facing north and everything repeats, so the path stays inside the finite area of those passes. Bounded.\n\nThese cases match the test exactly.\n\n## Complexity\n\nO(|s|) time and O(1) extra space per string, O(sum of |s|) overall.\n\n## Pitfalls\n\n- Checking only the position misjudges strings like `GL` as unbounded.\n- The condition is an \"or\": either returning to the origin or ending with a different heading is enough.\n- Keep the direction table consistent with how L and R rotate, and mind negative values when taking the heading modulo 4 (Python's `%` already handles it)."

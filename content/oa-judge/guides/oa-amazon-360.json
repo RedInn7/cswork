@@ -13,6 +13,21 @@
       "After sorting, the span constraint only involves a team's minimum and maximum, so every team can be taken as a contiguous block of the sorted array: two interleaved teams can always be regrouped into the smaller k and the larger k without breaking the limit.",
       "Look at the remaining person with the lowest skill: if they and the next k−1 people fit within maxDiff, form that team right away; otherwise no team containing them is valid, so drop them.",
       "Sort; with i starting at 0, while i+k≤n: if a[i+k−1]−a[i]≤maxDiff, count a team and set i+=k, otherwise set i+=1. Print the count."
+    ],
+    "ja": [
+      "ソート後、幅の制約はチームの最小値と最大値だけに関わるので、どのチームもソート済み配列の連続したブロックとして取れます。交互に混ざった2つのチームは、小さい方の k 人と大きい方の k 人に組み直しても、制限は破られません。",
+      "残っている人のうち最もスキルの低い人に注目します。その人と次の k−1 人が maxDiff の範囲に収まるなら、すぐにそのチームを作ります。そうでなければ、その人を含む有効なチームは存在しないので、捨てます。",
+      "ソートし、i を 0 から始め、i+k≤n の間、a[i+k−1]−a[i]≤maxDiff ならチームを数えて i+=k、そうでなければ i+=1 とします。数えた個数を出力します。"
+    ],
+    "ko": [
+      "정렬하면 격차 제약은 팀의 최솟값과 최댓값에만 관련되므로, 모든 팀을 정렬된 배열의 연속 구간으로 잡을 수 있습니다. 서로 교차하는 두 팀은 제한을 깨지 않고 더 작은 k명과 더 큰 k명으로 항상 다시 묶을 수 있습니다.",
+      "남은 사람 중 기술이 가장 낮은 사람을 봅니다. 그 사람과 다음 k−1명이 maxDiff 이내이면 즉시 그 팀을 만들고, 아니면 그를 포함하는 유효한 팀이 없으므로 버립니다.",
+      "정렬한 뒤 i를 0에서 시작해 i+k≤n인 동안: a[i+k−1]−a[i]≤maxDiff이면 팀을 세고 i+=k, 아니면 i+=1로 합니다. 센 개수를 출력합니다."
+    ],
+    "vi": [
+      "Sau khi sắp xếp, ràng buộc chênh lệch chỉ liên quan đến giá trị nhỏ nhất và lớn nhất của đội, nên mỗi đội có thể lấy là một khối liên tiếp của mảng đã sắp xếp: hai đội đan xen luôn có thể được chia lại thành k người nhỏ hơn và k người lớn hơn mà không vi phạm giới hạn.",
+      "Hãy nhìn người còn lại có kỹ năng thấp nhất: nếu người đó và k−1 người kế tiếp nằm trong maxDiff, hãy lập đội đó ngay; nếu không, không đội nào chứa người đó là hợp lệ, nên loại người đó.",
+      "Sắp xếp; với i bắt đầu từ 0, khi i+k≤n: nếu a[i+k−1]−a[i]≤maxDiff thì đếm một đội và đặt i+=k, nếu không thì đặt i+=1. In ra số đội đã đếm."
     ]
   },
   "explanationEn": "## Approach\n\nSort the skills. If the leftmost k consecutive people can form a team, take that whole block; otherwise discard the current smallest person.\n\n## Proof of correctness\n\nIf the earliest k people already exceed the span, no k-person team containing the smallest person is valid, so that person can only be skipped. For any two interleaved valid k-person teams, the merged people can be split into the smaller k and the larger k: the smaller team's span does not exceed that of the original team containing the overall minimum; for the larger team, if its maximum is in the other team, its span does not exceed that team's span, and otherwise it does not exceed the span of the team containing the overall minimum. So by repeatedly removing interleavings we obtain contiguous groups in the sorted order of the selected people. Now, if the overall earliest k people can form a team, use it to replace the first team of an optimal solution; all members of later teams have indices after that first team, hence also after the overall earliest k people, so the replacement does not affect them. Thus taking the team immediately loses no teams, and induction proves the algorithm correct.\n\n## Complexity\n\nO(n log n) time and O(n) space."

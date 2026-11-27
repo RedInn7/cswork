@@ -13,6 +13,21 @@
       "Give every token on stack i the weight 2 to the power i: taking two tokens and adding one to the next stack keeps the total weight and removes one token.",
       "As long as some stack holds at least 2 tokens another operation is possible; at the end every stack holds at most 1 token, which is exactly the binary representation of the total weight, so the minimum is the number of 1 bits of that total.",
       "There is no need to build the total weight, which can be huge: walk from stack 0 with a carry, add the carry to the current height, count its parity in the answer, and pass half of the rest to the next stack. After the N stacks the carry keeps moving to higher stacks, so add the number of 1 bits of the remaining carry."
+    ],
+    "ja": [
+      "スタック i の各トークンに 2 の i 乗の重みを与えます。2 個を取って次のスタックに 1 個加える操作は、総重みを保ったままトークンを 1 個減らします。",
+      "どれかのスタックに 2 個以上のトークンがある限り、もう 1 回操作ができます。最後にはどのスタックにも高々 1 個のトークンしかなく、これはまさに総重みの 2 進表現なので、最小値はその総数の 1 のビットの個数です。",
+      "巨大になり得る総重みを実際に作る必要はありません。スタック 0 から桁上がりを持って進み、現在の高さに桁上がりを足し、その偶奇を答えに数え、残りの半分を次のスタックに渡します。N 個のスタックの後も、桁上がりは上のスタックへ動き続けるので、残った桁上がりの 1 のビットの個数を足します。"
+    ],
+    "ko": [
+      "스택 i의 모든 토큰에 가중치 2의 i제곱을 부여합니다. 토큰 2개를 꺼내 다음 스택에 1개를 추가해도 전체 가중치는 유지되고 토큰은 하나 줄어듭니다.",
+      "토큰이 2개 이상 있는 스택이 있는 한 연산을 더 할 수 있고, 끝나면 모든 스택에 토큰이 최대 1개씩 있게 됩니다. 이것이 바로 전체 가중치의 이진 표현이므로 최솟값은 그 총합의 1인 비트의 개수입니다.",
+      "엄청나게 클 수 있는 전체 가중치를 만들 필요는 없습니다. 스택 0부터 올림수를 들고 가며, 현재 높이에 올림수를 더하고, 그 홀짝성을 정답에 세고, 나머지의 절반을 다음 스택으로 넘깁니다. N개 스택을 지난 뒤에도 올림수는 더 높은 스택으로 계속 이동하므로, 남은 올림수의 1인 비트 수를 더합니다."
+    ],
+    "vi": [
+      "Gán cho mỗi token trên chồng i trọng số 2 mũ i: lấy hai token và thêm một token vào chồng kế tiếp giữ nguyên tổng trọng số và bớt đi một token.",
+      "Chừng nào còn một chồng có ít nhất 2 token thì còn thao tác tiếp theo; cuối cùng mỗi chồng có tối đa 1 token, đó chính là biểu diễn nhị phân của tổng trọng số, nên giá trị nhỏ nhất là số bit 1 của tổng đó.",
+      "Không cần dựng tổng trọng số, vì nó có thể rất lớn: đi từ chồng 0 với một số nhớ, cộng số nhớ vào chiều cao hiện tại, tính tính chẵn lẻ của nó vào đáp án, và chuyển một nửa phần còn lại sang chồng kế tiếp. Sau N chồng, số nhớ tiếp tục dịch lên các chồng cao hơn, nên cộng thêm số bit 1 của số nhớ còn lại."
     ]
   },
   "explanationEn": "## Approach\n\nProcess the carry from low to high: add the carry to the current height, leave 1 if the result is odd, and send half of the rest to the next stack; after the input ends, keep processing the binary bits of the carry.\n\n## Correctness\n\nEvery token on stack i has weight 2^i; an operation does not change the total weight and reduces the token count by 1. In the end each stack holds at most 1 token, which is exactly the unique binary representation of the total weight; any state that is not of this form still allows an operation that reduces the count, so this is optimal.\n\n## Complexity\n\nTime O(N+log of the maximum height), space O(1) apart from the input."

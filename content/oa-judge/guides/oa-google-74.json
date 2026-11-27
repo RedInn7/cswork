@@ -13,6 +13,21 @@
       "After sorting each part on its own, both parts are non-decreasing inside, so the only place the concatenation can fail is the boundary between them.",
       "The boundary has no inversion exactly when the maximum of the left part is at most the minimum of the right part.",
       "Build the suffix-minimum array from the right. Then scan from the left keeping the prefix maximum; for each cut after index i (i from 0 to n−2), count it when the prefix maximum is ≤ suffix[i+1]."
+    ],
+    "ja": [
+      "各部分を単独でソートすると、どちらの部分も内部では単調非減少になるので、連結結果が崩れうるのは 2 つの部分の境界だけです。",
+      "境界で逆転がないのは、左の部分の最大値が右の部分の最小値以下である場合に限ります。",
+      "右から接尾辞の最小値の配列を作ります。次に左から走査して接頭辞の最大値を保持し、インデックス i（0 から n−2）の後ろでの分割について、接頭辞の最大値が suffix[i+1] 以下なら数えます。"
+    ],
+    "ko": [
+      "각 부분을 따로 정렬하면 두 부분은 각각 내부에서 비내림차순이므로, 이어 붙인 결과가 깨질 수 있는 곳은 두 부분의 경계뿐입니다.",
+      "경계에서 역전이 없는 것은 왼쪽 부분의 최댓값이 오른쪽 부분의 최솟값 이하일 때와 정확히 같습니다.",
+      "오른쪽부터 접미사 최솟값 배열을 만듭니다. 그런 다음 왼쪽부터 훑으면서 접두사 최댓값을 유지하고, 인덱스 i(0부터 n−2까지) 뒤에서 자르는 경우 접두사 최댓값 ≤ suffix[i+1]이면 센니다."
+    ],
+    "vi": [
+      "Sau khi sắp xếp riêng từng phần, cả hai phần đều không giảm bên trong, nên chỗ duy nhất phép nối có thể sai là ranh giới giữa chúng.",
+      "Ranh giới không có nghịch thế chính xác khi giá trị lớn nhất của phần trái không vượt quá giá trị nhỏ nhất của phần phải.",
+      "Xây mảng hậu tố nhỏ nhất từ phải sang. Sau đó duyệt từ trái, giữ giá trị lớn nhất của tiền tố; với mỗi điểm cắt sau chỉ số i (i từ 0 đến n−2), đếm nó khi giá trị lớn nhất của tiền tố ≤ suffix[i+1]."
     ]
   },
   "explanationEn": "## Idea\n\nPrecompute the minimum of every suffix and scan the prefix maximum; a cut is valid when the prefix maximum is at most the suffix minimum.\n\n## Correctness\n\nAfter sorting, each part is already non-decreasing inside, so the only possible inversion is between the two parts; the left part's maximum not exceeding the right part's minimum rules out every such inversion.\n\n## Complexity\n\nO(n) time, O(n) space."

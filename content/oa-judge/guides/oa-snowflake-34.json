@@ -13,6 +13,21 @@
       "Deleting more only makes the remaining string shorter, so target can only stop being a subsequence, never become one again; whether target survives the first t deletions is monotone in t, and the largest t can be binary searched.",
       "Record the step at which each position is deleted (when[i]). To test some t, just keep the positions with when[i] > t instead of actually deleting characters.",
       "Binary search t in [0, |source|]: scan the kept positions left to right and greedily match target with two pointers (advance in target on equal characters; matching all of it means feasible); set lo = mid when feasible, otherwise hi = mid - 1, and print lo. Comparisons are case-sensitive."
+    ],
+    "ja": [
+      "削除を増やすと残る文字列は短くなるだけなので、target は部分列でなくなることはあっても、再び部分列になることはありません。最初の t 回の削除後に target が残るかどうかは t について単調で、最大の t は二分探索で求められます。",
+      "各位置が削除されるステップ(when[i])を記録します。ある t を調べるときは、実際に文字を削除せず、when[i] > t の位置だけを残して考えます。",
+      "t を [0, |source|] で二分探索します。残った位置を左から走査し、2 つのポインタで target を貪欲にマッチさせます(文字が一致したら target 側を進め、すべてマッチすれば実現可能)。実現可能なら lo = mid、そうでなければ hi = mid - 1 とし、最後に lo を出力します。比較は大文字・小文字を区別します。"
+    ],
+    "ko": [
+      "더 많이 삭제하면 남는 문자열은 짧아질 뿐이므로 target은 부분 수열이 아니게 될 수는 있어도 다시 부분 수열이 될 수는 없습니다. 처음 t번의 삭제 후 target이 유지되는지는 t에 대해 단조적이므로, 가장 큰 t를 이분 탐색할 수 있습니다.",
+      "각 위치가 삭제되는 단계(when[i])를 기록합니다. 어떤 t를 검사할 때는 실제로 문자를 삭제하는 대신 when[i] > t인 위치만 남겨 두면 됩니다.",
+      "t를 [0, |source|] 범위에서 이분 탐색합니다. 남은 위치를 왼쪽에서 오른쪽으로 훑으며 투 포인터로 target을 그리디하게 매칭합니다(문자가 같으면 target에서 앞으로 이동하고, 전부 매칭되면 가능). 가능하면 lo = mid, 아니면 hi = mid - 1로 하고 lo를 출력합니다. 비교는 대소문자를 구분합니다."
+    ],
+    "vi": [
+      "Xóa càng nhiều thì xâu còn lại càng ngắn, nên target chỉ có thể thôi là xâu con chứ không thể quay lại là xâu con; việc target còn sống sau t lần xóa đầu tiên là đơn điệu theo t, và có thể tìm kiếm nhị phân t lớn nhất.",
+      "Ghi lại bước mà mỗi vị trí bị xóa (when[i]). Để kiểm tra một giá trị t, chỉ cần giữ các vị trí có when[i] > t thay vì xóa ký tự thật.",
+      "Tìm kiếm nhị phân t trong [0, |source|]: quét các vị trí còn giữ từ trái sang phải và ghép tham lam target bằng hai con trỏ (tiến trong target khi hai ký tự bằng nhau; ghép hết là khả thi); đặt lo = mid khi khả thi, ngược lại hi = mid - 1, rồi in lo. Phép so sánh phân biệt hoa thường."
     ]
   },
   "explanationEn": "## Approach\n\nRecord the deletion time of each position and binary search on the number of deletions. When checking a candidate, ignore positions whose deletion time is <= the candidate, and greedily match the target subsequence.\n\n## Correctness\n\nThe greedy always takes the earliest available matching position, which leaves the most positions for later characters, so it decides the subsequence question exactly. Extra deletions cannot create a new subsequence, so the feasible deletion counts form a prefix, and binary search finds the last feasible value.\n\n## Complexity\n\nTime O(n log n), space O(n)."

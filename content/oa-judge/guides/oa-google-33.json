@@ -13,6 +13,21 @@
       "After some edges are deleted, the remaining edges determine connectivity: the two ends of every kept edge must be in the same component.",
       "Ignore the deleted edges and merge the endpoints of every other edge with a union-find structure; in the end each root represents one connected component and its set size is the number of nodes.",
       "Put the parent-child edges to delete into a set; go through all tree edges and union the endpoints of every edge not in that set (union by size, path compression); collect the set size of every root and sort ascending; print the number of components followed by these sizes."
+    ],
+    "ja": [
+      "いくつかの辺を削除したあとは、残った辺が連結性を決めます。残された辺の両端は、同じ成分になければなりません。",
+      "削除された辺は無視し、それ以外のすべての辺の端点を Union-Find で併合します。最後には各根が 1 つの連結成分を表し、その集合サイズがノード数です。",
+      "削除する親子の辺を集合に入れます。木のすべての辺を走査し、その集合にない辺の端点を併合します（サイズによる併合と経路圧縮）。各根の集合サイズを集めて昇順にソートし、成分の個数に続けてこれらのサイズを出力します。"
+    ],
+    "ko": [
+      "일부 간선을 삭제한 뒤의 연결성은 남은 간선이 결정합니다. 유지된 모든 간선의 두 끝점은 같은 컴포넌트에 있어야 합니다.",
+      "삭제할 간선은 무시하고, 나머지 모든 간선의 끝점을 유니온 파인드로 합칩니다. 결국 각 루트는 연결 컴포넌트 하나를 나타내며 그 집합의 크기가 노드 수입니다.",
+      "삭제할 부모-자식 간선을 집합에 넣고, 모든 트리 간선을 순회하며 그 집합에 없는 간선의 끝점을 합칩니다(크기 기준 합치기, 경로 압축). 모든 루트의 집합 크기를 모아 오름차순으로 정렬하고, 컴포넌트 수 뒤에 이 크기들을 출력합니다."
+    ],
+    "vi": [
+      "Sau khi xóa một số cạnh, các cạnh còn lại quyết định tính liên thông: hai đầu của mọi cạnh được giữ phải thuộc cùng một thành phần.",
+      "Bỏ qua các cạnh bị xóa và hợp nhất hai đầu mút của mọi cạnh còn lại bằng cấu trúc union-find; cuối cùng mỗi gốc đại diện cho một thành phần liên thông và kích thước tập của nó là số nút.",
+      "Đưa các cạnh cha-con cần xóa vào một tập; duyệt mọi cạnh của cây và union hai đầu mút của mỗi cạnh không nằm trong tập đó (union theo kích thước, nén đường đi); thu thập kích thước tập của mỗi gốc và sắp xếp tăng dần; in số thành phần rồi đến các kích thước này."
     ]
   },
   "explanationEn": "## Approach\n\nIgnore the deleted edges, merge the remaining edges with union-find, then count the size of each root and sort the sizes.\n\n## Correctness\n\nThe two ends of an edge that is not deleted must be in the same component, and union-find merges exactly the nodes reachable through these edges. The final roots correspond to the connected components, and the set sizes are their numbers of nodes. Sorting only fixes the display order and does not change the components.\n\n## Complexity\n\nTime O(n alpha(n) + n log n), space O(n)."

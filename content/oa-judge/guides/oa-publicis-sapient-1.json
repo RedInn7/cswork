@@ -13,6 +13,21 @@
       "Each box costs a fixed amount of time with nothing shared or traded off between boxes: it depends only on the floor the box is on.",
       "Every box on floor i (numbered from 0, with the top floor being n) needs a round trip of 2(n - i) minutes plus 1 minute for loading and unloading, so the total is the sum of boxes[i] * (2(n - i) + 1).",
       "A single linear pass that accumulates this sum is enough. Watch the range: a floor can hold 10^9 boxes and the factor can be about 2 * 10^5, so the total can reach about 10^19, above the signed 64-bit limit; accumulate and print with an unsigned 64-bit integer (or a big integer)."
+    ],
+    "ja": [
+      "各箱のコストは固定で、箱同士で共有したりトレードオフになったりするものはありません。コストは箱がある階だけで決まります。",
+      "i 階（0 から数え、最上階は n 階）の箱は 1 個につき、往復 2(n - i) 分と積み下ろし 1 分が必要なので、合計は boxes[i] * (2(n - i) + 1) の総和です。",
+      "この和を累積する線形の 1 回の走査で十分です。範囲に注意してください。1 つの階に 10^9 個の箱があり、係数が約 2 * 10^5 になりうるので、合計は約 10^19 に達し、符号付き 64 ビットの上限を超えます。符号なし 64 ビット整数（または多倍長整数）で累積して出力してください。"
+    ],
+    "ko": [
+      "각 상자의 비용은 고정되어 있으며 상자들 사이에 공유되거나 맞바꿀 것이 없습니다. 비용은 그 상자가 있는 층에만 의존합니다.",
+      "i층(0부터 번호를 매기며 꼭대기 층은 n)의 모든 상자는 왕복 2(n - i)분과 적재/하역 1분이 필요하므로, 총합은 boxes[i] * (2(n - i) + 1)의 합입니다.",
+      "이 합을 누적하는 선형 한 번의 순회로 충분합니다. 범위에 주의하세요. 한 층에 10^9개의 상자가 있을 수 있고 계수는 약 2 * 10^5까지 될 수 있으므로 총합은 약 10^19에 이르러 부호 있는 64비트 한계를 넘습니다. 부호 없는 64비트 정수(또는 빅 인티저)로 누적하고 출력하세요."
+    ],
+    "vi": [
+      "Mỗi hộp tốn một lượng thời gian cố định, không có gì được chia sẻ hay đánh đổi giữa các hộp: nó chỉ phụ thuộc vào tầng chứa hộp.",
+      "Mỗi hộp ở tầng i (đánh số từ 0, với tầng trên cùng là n) cần một chuyến đi về 2(n - i) phút cộng thêm 1 phút để xếp và dỡ, nên tổng là tổng của boxes[i] * (2(n - i) + 1).",
+      "Một lượt quét tuyến tính cộng dồn tổng này là đủ. Chú ý phạm vi: một tầng có thể chứa 10^9 hộp và hệ số có thể khoảng 2 * 10^5, nên tổng có thể đạt khoảng 10^19, vượt giới hạn số nguyên 64 bit có dấu; hãy cộng dồn và in bằng số nguyên 64 bit không dấu (hoặc số nguyên lớn)."
     ]
   },
   "explanationEn": "## Approach\n\nEach box on floor i takes `2(n−i)` minutes for the round trip plus 1 minute for loading and unloading, so the costs simply add up linearly. Time O(n), constant extra space.\n\n## Proof of correctness\n\nEvery box on floor i must make one round trip from that floor to the top floor and back, taking `2(n−i)`, plus 1 minute of loading and unloading. Round trips of different boxes share nothing, so adding up all these fixed costs gives the unique total time, which is also the minimum time.\n\n## Complexity\n\nEach trip visits only one floor and then returns to the top floor; boxes may repeat round trips any number of times.\n\nO(n) time, O(1) extra space.\n\n## Reference implementation\n\n```python\ndef solve(raw):\n z=list(map(int,raw.split()));n=z[0];a=z[1:1+n];return str(sum(b*(2*(n-i)+1) for i,b in enumerate(a)))\n```\n"

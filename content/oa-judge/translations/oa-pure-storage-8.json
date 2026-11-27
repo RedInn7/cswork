@@ -12,5 +12,38 @@
       "Check the branch taken when the middle element exactly equals target.",
       "A very small sorted array is enough to disprove general correctness."
     ]
+  },
+  "ja": {
+    "title": "誤った二分探索の反例を構成する",
+    "description": "Bob は、次のプログラムが非減少配列から target を常に正しく探索できると主張しています。target があれば一致する任意の添字を返し、なければ −1 を返す、というものです。入力を一切読まないプログラムを書いてください。このアルゴリズムが正しければ CORRECT を出力し、そうでなければ有効な反例となる配列と target を 1 組出力します。本サイトは元の OCR053 の完全な Java 版に従っており、反証すべきプログラムは次のとおりです。\n\n```java\nint sorted_search(int[] elements, int target) {\n    if (elements == null || elements.length <= 0) return -1;\n    int left = 0, right = elements.length - 1;\n    while (left < right) {\n        int middle = (left + right + 1) / 2;\n        if (elements[middle] > target) right = middle - 1;\n        else left = middle + 1;\n    }\n    if (elements[right] == target) return right;\n    return -1;\n}\n```\n\nジャッジは、このアルゴリズムに誤った結果を出させる有効な証拠であれば何でも受理します。公開されている例と一致する必要はありません。",
+    "input": "入力はなく、標準入力は空です。問題に存在しないテストパラメータを読み取ってはいけません。",
+    "output": "プログラムが正しければ CORRECT を出力してください。そうでなければ、ちょうど 3 行を出力します。1 行目は非負整数 n、2 行目は非減少順に並んだちょうど n 個の整数（空白区切り）、3 行目は target です。要素と target は Java の符号付き 32 ビット整数（−2147483648..2147483647）でなければなりません。これは元の int インターフェースから決まるもので、元の文章には配列長の別途の上限が書かれていません。本サイトでも長さに人為的な小さい制限は設けませんが、出力全体は実行時の 64KiB の予算内に収める必要があります。証拠は元のプログラムに誤った結果を返させるものでなければなりません。target が複数回現れる場合は一致する任意の添字を返せば正解なので、反例にはなりません。",
+    "explanation": "公開されている出力は本サイトが導出したもので、元の OCR の例から取ったものではありません。[1,2,3] から 2 を探すとき、middle=1 で elements[1]=2 ですが、left=2 が実行されます。ループ終了後に elements[2]=3 を調べて誤って −1 を返します。したがって、この 3 行は有効な反例であり、CORRECT は成り立ちません。元の OCR は 3 行の反例を要求し、入力は与えられないので、本問題では余分な入力を作り出していません。",
+    "hints": [
+      "中央の要素がちょうど target に等しいときに通る分岐を確認してください。",
+      "一般の正しさを否定するには、ごく小さいソート済み配列で十分です。"
+    ]
+  },
+  "ko": {
+    "title": "잘못된 이분 탐색의 반례 만들기",
+    "description": "Bob은 다음 프로그램이 비내림차순 배열에서 target을 항상 올바르게 찾는다고 주장합니다. target이 있으면 일치하는 아무 인덱스를 반환하고, 없으면 −1을 반환한다는 것입니다. 입력을 읽지 않는 프로그램을 작성하세요. 알고리즘이 올바르면 CORRECT를 출력하고, 그렇지 않으면 유효한 반례 배열과 target을 아무거나 출력합니다. 이 사이트는 원문 OCR053의 전체 Java 버전을 따르며, 반박해야 할 프로그램은 다음과 같습니다.\n\n```java\nint sorted_search(int[] elements, int target) {\n    if (elements == null || elements.length <= 0) return -1;\n    int left = 0, right = elements.length - 1;\n    while (left < right) {\n        int middle = (left + right + 1) / 2;\n        if (elements[middle] > target) right = middle - 1;\n        else left = middle + 1;\n    }\n    if (elements[right] == target) return right;\n    return -1;\n}\n```\n\n채점기는 이 알고리즘이 잘못된 결과를 내게 만드는 유효한 증거라면 무엇이든 받아들이며, 공개된 예제와 같을 필요는 없습니다.",
+    "input": "입력이 없으며 표준 입력은 비어 있습니다. 문제에 존재하지 않는 테스트 매개변수를 읽지 마세요.",
+    "output": "프로그램이 올바르면 CORRECT를 출력합니다. 그렇지 않으면 정확히 세 줄을 출력합니다. 첫 줄은 음이 아닌 정수 n, 둘째 줄은 비내림차순으로 정렬된 정확히 n개의 정수를 공백으로 구분한 것, 셋째 줄은 target입니다. 원소와 target은 원문의 int 인터페이스에 따라 Java 부호 있는 32비트 정수(−2147483648..2147483647)여야 합니다. 원문에는 배열 길이의 별도 상한이 없고 이 사이트도 인위적인 작은 길이 제한을 두지 않지만, 전체 출력은 64KiB 실행 예산으로 제한됩니다. 증거는 원래 프로그램이 틀린 결과를 반환하게 만들어야 합니다. target이 여러 번 나타나면 일치하는 아무 인덱스를 반환해도 올바른 결과이므로 반례가 될 수 없습니다.",
+    "explanation": "공개된 출력은 원문 OCR 예제가 아니라 이 사이트에서 도출한 것입니다. 배열 [1,2,3]에서 2를 찾으면 middle=1이고 elements[1]=2인데도 left=2가 실행됩니다. 루프가 끝난 뒤 검사에서 elements[2]=3을 읽어 잘못된 −1을 반환합니다. 따라서 이 세 줄은 유효한 반례이며 CORRECT는 성립하지 않습니다. 원문 OCR은 입력 없이 세 줄짜리 반례를 요구하므로, 이 문제는 추가 입력을 만들어 내지 않습니다.",
+    "hints": [
+      "middle 원소가 target과 정확히 같을 때 실행되는 분기를 확인하세요.",
+      "아주 작은 정렬 배열 하나만으로도 일반적인 정확성을 반박할 수 있습니다."
+    ]
+  },
+  "vi": {
+    "title": "Dựng phản ví dụ cho tìm kiếm nhị phân bị lỗi",
+    "description": "Bob khẳng định rằng chương trình sau luôn tìm đúng target trong một mảng không giảm: trả về một chỉ số khớp bất kỳ nếu target có mặt, và −1 nếu không. Hãy viết chương trình không đọc dữ liệu vào: nếu thuật toán đúng thì in CORRECT; ngược lại in ra một mảng và một target là phản ví dụ hợp lệ bất kỳ. Trang này theo đúng bản Java đầy đủ của OCR053 gốc; chương trình cần bác bỏ là:\n\n```java\nint sorted_search(int[] elements, int target) {\n    if (elements == null || elements.length <= 0) return -1;\n    int left = 0, right = elements.length - 1;\n    while (left < right) {\n        int middle = (left + right + 1) / 2;\n        if (elements[middle] > target) right = middle - 1;\n        else left = middle + 1;\n    }\n    if (elements[right] == target) return right;\n    return -1;\n}\n```\n\nBộ chấm chấp nhận mọi bằng chứng hợp lệ làm thuật toán này cho kết quả sai; không nhất thiết phải trùng với ví dụ công khai bạn thấy.",
+    "input": "Không có đầu vào; đầu vào chuẩn rỗng. Đừng đọc các tham số kiểm thử không tồn tại trong đề.",
+    "output": "Nếu chương trình đúng thì in CORRECT. Ngược lại in đúng ba dòng: dòng đầu là số nguyên không âm n; dòng thứ hai chứa đúng n số nguyên cách nhau bởi dấu cách, sắp xếp không giảm; dòng thứ ba là target. Các phần tử và target phải là số nguyên có dấu 32 bit của Java (−2147483648..2147483647), do giao diện int gốc quyết định; đề gốc không nêu giới hạn trên riêng cho độ dài mảng, trang này cũng không đặt giới hạn độ dài nhỏ một cách nhân tạo, nhưng tổng đầu ra bị chặn bởi ngân sách chạy 64KiB. Bằng chứng phải làm chương trình gốc trả về kết quả sai; nếu target xuất hiện nhiều lần thì trả về bất kỳ chỉ số khớp nào đều là đúng, nên không thể dùng làm phản ví dụ.",
+    "explanation": "Đầu ra công khai do trang này suy ra, không lấy từ ví dụ OCR gốc. Khi tìm 2 trong mảng [1,2,3], middle=1 và elements[1]=2, nhưng vẫn thực hiện left=2; sau khi thoát vòng lặp, phép kiểm tra đọc elements[2]=3 và trả về −1 một cách sai. Vậy ba dòng này là một phản ví dụ hợp lệ, và CORRECT không đúng. OCR gốc yêu cầu phản ví dụ ba dòng và không có đầu vào, nên bài này không bịa thêm đầu vào nào.",
+    "hints": [
+      "Hãy kiểm tra nhánh được chọn khi phần tử ở giữa đúng bằng target.",
+      "Một mảng đã sắp xếp rất nhỏ là đủ để bác bỏ tính đúng đắn tổng quát."
+    ]
   }
 }

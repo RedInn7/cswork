@@ -13,6 +13,21 @@
       "A frequency passes every filter only if it lies in every closed interval at once; the intersection of closed intervals is again a single closed interval (possibly empty), so there is no need to test each frequency against all m intervals.",
       "The intersection starts at the maximum of all left endpoints and ends at the minimum of all right endpoints; if the start exceeds the end, the intersection is empty and the answer is 0. After that you only need to test each frequency against this one interval.",
       "Read n, m and the n frequencies; scan the m intervals to get lo = the largest left endpoint and hi = the smallest right endpoint; then go over all frequencies, count those with lo <= x <= hi, and print the count. Total time O(n+m)."
+    ],
+    "ja": [
+      "周波数がすべてのフィルタを通過するのは、すべての閉区間に同時に含まれる場合に限ります。閉区間の共通部分は再び 1 つの閉区間（空の場合もある）なので、各周波数を m 個の区間すべてと照合する必要はありません。",
+      "共通部分は、すべての左端の最大値から始まり、すべての右端の最小値で終わります。始点が終点を超えていれば共通部分は空で、答えは 0 です。あとは各周波数をこの 1 つの区間と照合するだけです。",
+      "n、m と n 個の周波数を読み込みます。m 個の区間を走査して、lo = 最大の左端、hi = 最小の右端を求めます。その後、すべての周波数を調べ、lo <= x <= hi を満たすものを数えて出力します。全体の時間は O(n+m) です。"
+    ],
+    "ko": [
+      "주파수가 모든 필터를 통과하려면 모든 닫힌 구간에 동시에 속해야 합니다. 닫힌 구간들의 교집합은 다시 하나의 닫힌 구간(공집합일 수도 있음)이므로, 각 주파수를 m개의 구간 전부와 비교할 필요가 없습니다.",
+      "교집합은 모든 왼쪽 끝점의 최댓값에서 시작하여 모든 오른쪽 끝점의 최솟값에서 끝납니다. 시작이 끝보다 크면 교집합은 공집합이고 답은 0입니다. 그 뒤에는 각 주파수를 이 구간 하나와만 비교하면 됩니다.",
+      "n, m과 n개의 주파수를 읽습니다. m개의 구간을 스캔하여 lo = 가장 큰 왼쪽 끝점, hi = 가장 작은 오른쪽 끝점을 구합니다. 그런 다음 모든 주파수를 훑으며 lo <= x <= hi인 것의 개수를 세어 출력합니다. 전체 시간은 O(n+m)입니다."
+    ],
+    "vi": [
+      "Một tần số vượt qua mọi bộ lọc chỉ khi nó nằm đồng thời trong mọi đoạn đóng; giao của các đoạn đóng lại là một đoạn đóng duy nhất (có thể rỗng), nên không cần kiểm tra từng tần số với cả m đoạn.",
+      "Giao bắt đầu tại giá trị lớn nhất của mọi đầu mút trái và kết thúc tại giá trị nhỏ nhất của mọi đầu mút phải; nếu điểm bắt đầu vượt quá điểm kết thúc thì giao rỗng và đáp án là 0. Sau đó chỉ cần kiểm tra từng tần số với đúng đoạn này.",
+      "Đọc n, m và n tần số; quét m đoạn để lấy lo = đầu mút trái lớn nhất và hi = đầu mút phải nhỏ nhất; sau đó duyệt mọi tần số, đếm những tần số có lo <= x <= hi, và in số đếm. Tổng thời gian O(n+m)."
     ]
   },
   "explanationEn": "## Approach\n\nThe intersection runs from the largest left endpoint to the smallest right endpoint; traverse the frequencies and count those that fall within this closed interval.\n\n## Proof of correctness\n\nA number satisfies all intervals if and only if it is not smaller than any lower bound and not larger than any upper bound.\n\n## Complexity\n\nO(n+m) time, O(1) extra space."

@@ -13,6 +13,21 @@
       "Write the inner sum with prefix sums: segment [l, r] is stable exactly when a[l] = a[r] and P[r] - P[l + 1] = a[l], where P[i] is the sum of the first i values.",
       "Rearrange the condition into equal pairs: left end l has key (a[l], P[l + 1] + a[l]) and right end r has key (a[r], P[r]); while scanning right ends, count earlier left-end keys in a hash map.",
       "Compute prefix sums in 64 bits; scan r from 0 to n - 1, first adding the key of l = r - 2 (when l >= 0) so every segment has length at least 3, then adding the count stored for (a[r], P[r]) to the answer; print the answer."
+    ],
+    "ja": [
+      "内部の和を接頭辞和で書くと、区間 [l, r] が安定であることは、a[l] = a[r] かつ P[r] - P[l + 1] = a[l] とちょうど同値です。ここで P[i] は先頭 i 個の値の和です。",
+      "条件を等しいペアの形に変形します。左端 l のキーは (a[l], P[l + 1] + a[l])、右端 r のキーは (a[r], P[r]) です。右端を走査しながら、それ以前の左端のキーをハッシュマップで数えます。",
+      "接頭辞和は 64 ビットで計算します。r を 0 から n - 1 まで走査し、まず l = r - 2（l >= 0 のとき）のキーを追加して、すべての区間の長さが少なくとも 3 になるようにしてから、(a[r], P[r]) に保存された個数を答えに加算します。最後に答えを出力します。"
+    ],
+    "ko": [
+      "내부 합을 접두사 합으로 쓰면, 구간 [l, r]이 안정적일 조건은 정확히 a[l] = a[r]이고 P[r] - P[l + 1] = a[l]입니다. 여기서 P[i]는 처음 i개 값의 합입니다.",
+      "조건을 같은 쌍으로 정리합니다. 왼쪽 끝 l의 키는 (a[l], P[l + 1] + a[l])이고 오른쪽 끝 r의 키는 (a[r], P[r])입니다. 오른쪽 끝을 스캔하면서 이전 왼쪽 끝들의 키를 해시 맵으로 셉니다.",
+      "접두사 합은 64비트로 계산합니다. r을 0부터 n - 1까지 스캔하며, 먼저 l = r - 2의 키를 추가하여(l >= 0일 때) 모든 구간의 길이가 3 이상이 되도록 한 뒤, (a[r], P[r])에 저장된 개수를 답에 더합니다. 마지막에 답을 출력합니다."
+    ],
+    "vi": [
+      "Viết tổng phần bên trong bằng tổng tiền tố: đoạn [l, r] ổn định khi và chỉ khi a[l] = a[r] và P[r] - P[l + 1] = a[l], trong đó P[i] là tổng của i giá trị đầu tiên.",
+      "Biến đổi điều kiện thành các cặp bằng nhau: đầu trái l có khóa (a[l], P[l + 1] + a[l]) và đầu phải r có khóa (a[r], P[r]); trong khi quét các đầu phải, đếm các khóa đầu trái trước đó trong một bảng băm.",
+      "Tính tổng tiền tố bằng 64 bit; quét r từ 0 đến n - 1, trước tiên thêm khóa của l = r - 2 (khi l >= 0) để mọi đoạn có độ dài ít nhất 3, rồi cộng số đếm lưu cho (a[r], P[r]) vào đáp án; in đáp án."
     ]
   },
   "explanationEn": "## Approach\n\nLet the prefix P[i] be the sum of the first i elements. Scan the right end r, counting each l<=r-2 under the key (a[l],P[l+1]+a[l]), and query the key (a[r],P[r]).\n\n## Proof of correctness\n\nThe stability condition is equivalent to a[l]=a[r] and P[r]-P[l+1]=a[l], and rearranging gives exactly equal key pairs. Inserting only l<=r-2 guarantees a length of at least 3, the hash counts keep every distinct left end, and each segment is counted exactly once at its own right end.\n\n## Complexity\n\nO(n) time, O(n) space; prefix sums use 64-bit integers."

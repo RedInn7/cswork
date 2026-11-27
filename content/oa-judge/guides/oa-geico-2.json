@@ -13,6 +13,21 @@
       "An LRU cache needs two things: finding a value by key quickly, and knowing which key has gone unused the longest. A get hit and every put (including an update of an existing key) count as a use.",
       "Store key to value in a hash map, and keep an ordered structure by usage time (a doubly linked list or an ordered dictionary) from least to most recently used; every use moves the key to the most-recent end, and when the capacity is exceeded remove the key at the least-recent end.",
       "Parse the first line capacity=N, then process line by line: for put(k,v), if the key exists remove its old position, put (k,v) at the most-recent end, and if the size exceeds the capacity delete the key at the least-recent end; for get(k), output -1 if it is missing, otherwise move it to the most-recent end and output its value. The statement's first example drops one -1; trust the step-by-step simulation."
+    ],
+    "ja": [
+      "LRU キャッシュには 2 つのことが必要です。キーから値を素早く見つけることと、どのキーが最も長く使われていないかを把握することです。get のヒットと、すべての put（既存のキーの更新を含む）が、使用としてカウントされます。",
+      "キーから値へのハッシュマップを持ち、使用時刻の順（最も長く使われていないものから最近使われたものへ）に並んだ構造（双方向連結リストまたは順序つき辞書）を保持します。使用のたびにそのキーを最近の端に移し、容量を超えたら最も古い端のキーを削除します。",
+      "1 行目の capacity=N を解析し、1 行ずつ処理します。put(k,v) では、キーが存在すれば古い位置を取り除き、(k,v) を最近の端に置き、サイズが容量を超えたら最も古い端のキーを削除します。get(k) では、存在しなければ -1 を出力し、存在すれば最近の端に移してその値を出力します。問題文の最初の例は -1 が 1 つ抜けています。ステップごとのシミュレーションの結果を信頼してください。"
+    ],
+    "ko": [
+      "LRU 캐시에는 두 가지가 필요합니다. 키로 값을 빠르게 찾는 것과, 어떤 키가 가장 오래 사용되지 않았는지 아는 것입니다. get이 적중하는 경우와 모든 put(기존 키의 갱신 포함)은 사용으로 간주됩니다.",
+      "키에서 값으로의 해시 맵을 저장하고, 사용 시각 순서(이중 연결 리스트 또는 순서 있는 딕셔너리)를 가장 오래전에서 가장 최근까지 유지합니다. 사용할 때마다 해당 키를 가장 최근 쪽 끝으로 옮기고, 용량을 넘으면 가장 오래전 쪽 끝의 키를 제거합니다.",
+      "첫 줄 capacity=N을 파싱한 뒤 줄 단위로 처리합니다. put(k,v)에서는 키가 있으면 이전 위치를 제거하고, (k,v)를 가장 최근 쪽 끝에 두며, 크기가 용량을 넘으면 가장 오래전 쪽 끝의 키를 삭제합니다. get(k)에서는 없으면 -1을 출력하고, 있으면 가장 최근 쪽 끝으로 옮긴 뒤 그 값을 출력합니다. 문제 설명의 첫 번째 예제에는 -1이 하나 빠져 있으니 단계별 시뮬레이션을 신뢰하세요."
+    ],
+    "vi": [
+      "Một bộ nhớ đệm LRU cần hai thứ: tìm giá trị theo khóa thật nhanh, và biết khóa nào đã không được dùng lâu nhất. Một lần get trúng và mọi lần put (kể cả cập nhật một khóa đã có) đều được tính là một lần sử dụng.",
+      "Lưu khóa sang giá trị trong một hash map, và giữ một cấu trúc có thứ tự theo thời gian sử dụng (danh sách liên kết đôi hoặc ordered dictionary) từ ít đến nhiều được dùng gần đây; mỗi lần sử dụng chuyển khóa về đầu mút gần đây nhất, và khi vượt dung lượng thì xóa khóa ở đầu mút ít được dùng gần đây nhất.",
+      "Phân tích dòng đầu capacity=N, rồi xử lý từng dòng: với put(k,v), nếu khóa đã tồn tại thì xóa vị trí cũ của nó, đặt (k,v) ở đầu mút gần đây nhất, và nếu kích thước vượt dung lượng thì xóa khóa ở đầu mút ít được dùng gần đây nhất; với get(k), xuất -1 nếu không có, ngược lại chuyển nó về đầu mút gần đây nhất và xuất giá trị của nó. Ví dụ đầu tiên trong đề bỏ sót một số -1; hãy tin vào mô phỏng từng bước."
     ]
   },
   "explanationEn": "## Why it is correct\n\nA `get` hit marks the key as most recently used, and a `put` insert or update also refreshes the recency order; when over capacity, the least recently used key is deleted. The output of the source's first multi-step example omits one `get(1)` result: after `put(4,4)` key 1 has already been evicted, so that query outputs `-1`. The repeated Example 1 later in the source explicitly gives five outputs, and a step-by-step simulation also gives `1, -1, -1, 3, 4`. Only that output is corrected; the semantics of the operations are not changed.\n\n## Algorithm\n\nA hash table stores key to value, and an `OrderedDict` keeps the order from least recently used to most recently used. After a hit or a put, move the key to the end; when over capacity, pop the first item. Each operation takes expected O(1) time, and the space is O(capacity)."

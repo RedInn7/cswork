@@ -13,6 +13,21 @@
       "Once the two warehouses are fixed, each center goes to the nearer one; after sorting the centers, the assignment switches at most once along the line, so each warehouse serves a contiguous block.",
       "A single warehouse serving one block is best placed at the block's median, and with prefix sums the total distance of a block to its median takes O(1); then try every cut.",
       "Sort and build prefix sums; for cost(l,r) take m=(l+r)/2 and compute a[m]*(m-l) - sum(a[l..m)) + sum(a(m..r)) - a[m]*(r-m-1), with an empty block costing 0; for every i from 0 to n take the minimum of cost(0,i)+cost(i,n)."
+    ],
+    "ja": [
+      "2 つの倉庫を固定すると、各センターはより近い倉庫に行きます。センターをソートすると、担当は直線上で高々 1 回しか切り替わらないので、各倉庫は連続したブロックを担当します。",
+      "1 つの倉庫が 1 つのブロックを担当するとき、最適な位置はそのブロックの中央値で、累積和を使うとブロックの中央値までの総距離は O(1) で求まります。その上で、すべての切れ目を試します。",
+      "ソートして累積和を作ります。cost(l,r) は m=(l+r)/2 として a[m]*(m-l) - sum(a[l..m)) + sum(a(m..r)) - a[m]*(r-m-1) で計算し、空のブロックのコストは 0 とします。i を 0 から n まで動かし、cost(0,i)+cost(i,n) の最小値を取ります。"
+    ],
+    "ko": [
+      "두 창고가 정해지면 각 센터는 더 가까운 창고로 갑니다. 센터를 정렬하면 담당이 바뀌는 것은 직선 위에서 최대 한 번뿐이므로, 각 창고는 연속된 블록을 담당합니다.",
+      "한 블록을 담당하는 창고 하나는 그 블록의 중앙값에 두는 것이 최선이며, 접두 합으로 블록의 중앙값까지의 총 거리를 O(1)에 구할 수 있습니다. 그런 다음 모든 절단 위치를 시도합니다.",
+      "정렬하고 접두 합을 만듭니다. cost(l,r)은 m=(l+r)/2로 두고 a[m]*(m-l) - sum(a[l..m)) + sum(a(m..r)) - a[m]*(r-m-1)로 계산하며, 빈 블록의 비용은 0입니다. i를 0부터 n까지 돌며 cost(0,i)+cost(i,n)의 최솟값을 취합니다."
+    ],
+    "vi": [
+      "Khi hai nhà kho đã cố định, mỗi trung tâm đi tới nhà kho gần hơn; sau khi sắp xếp các trung tâm, việc phân công chuyển đổi nhiều nhất một lần dọc theo đường thẳng, nên mỗi nhà kho phục vụ một khối liên tiếp.",
+      "Một nhà kho phục vụ một khối được đặt tốt nhất tại trung vị của khối, và với tổng tiền tố thì tổng khoảng cách của một khối tới trung vị tính trong O(1); sau đó thử mọi điểm cắt.",
+      "Sắp xếp và dựng tổng tiền tố; với cost(l,r) lấy m=(l+r)/2 và tính a[m]*(m-l) - sum(a[l..m)) + sum(a(m..r)) - a[m]*(r-m-1), với khối rỗng có chi phí 0; với mỗi i từ 0 đến n lấy giá trị nhỏ nhất của cost(0,i)+cost(i,n)."
     ]
   },
   "explanationEn": "## Approach\n\nAfter sorting, the service areas of the two warehouses are split by one cut into two contiguous parts. A single part is optimal at its median; use prefix sums to compute a part's distance in O(1), and enumerate every cut.\n\n## Correctness\n\nFor two fixed warehouses, the nearest-warehouse assignment switches at most once along the number line, and the sum of absolute distances to a single warehouse is minimized at the median. So some optimal plan corresponds to one contiguous cut with each side's median, and the enumeration covers it. Empty parts are enumerated as well, which also handles the case of a single center.\n\n## Complexity\n\nTime O(n log n), space O(n)."

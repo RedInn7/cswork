@@ -11,5 +11,35 @@
     "hints": [
       "Binary search on the maximum distance. For a fixed distance, source and receiving servers form an interval bipartite graph; greedily match the leftmost remaining request with the leftmost remaining capacity by position, and fail if they are too far apart. The small-scale oracle enumerates the destination of every request."
     ]
+  },
+  "ja": {
+    "title": "Request Redirection",
+    "description": "リクエストを、それを処理できるサーバーに割り当てます。各サーバーの最終的な負荷は max_req より厳密に小さくなければなりません。サーバー間の距離の最大値を最小にしてください。\n\n本サイトの標準入出力形式と補足の範囲は、この問題の記述のとおりです。",
+    "input": "1 行目に n (1≤n≤10^5)、2 行目に requests[n]、3 行目に max_req[n] が与えられます。すべての値は 10^9 以下の非負整数または正の整数です。サーバーの位置は配列の添字に従います。",
+    "output": "リダイレクト距離の最大値の最小値を出力してください。容量の合計が足りない場合は -1 を出力してください。",
+    "explanation": "最大距離で二分探索します。距離を固定すると、リクエスト元と受け入れ側のサーバーは区間二部グラフになります。位置の順に、残っている最も左のリクエストと、残っている最も左の容量を貪欲にマッチさせ、遠すぎる場合は失敗とします。小規模な検証用の基準 (オラクル) は、各リクエストの行き先を列挙します。",
+    "hints": [
+      "最大距離で二分探索します。距離を固定すると、リクエスト元と受け入れ側のサーバーは区間二部グラフになります。位置の順に、残っている最も左のリクエストと、残っている最も左の容量を貪欲にマッチさせ、遠すぎる場合は失敗とします。小規模な検証用の基準 (オラクル) は、各リクエストの行き先を列挙します。"
+    ]
+  },
+  "ko": {
+    "title": "Request Redirection",
+    "description": "요청을 처리할 수 있는 서버에 할당합니다. 각 서버의 최종 부하는 max_req보다 엄격히 작아야 합니다. 서버 간 거리의 최댓값을 최소화하세요.\n\n본 사이트의 표준 입출력 형식과 보충 범위는 이 문제에 설명된 대로입니다.",
+    "input": "첫째 줄에 n(1≤n≤10^5), 둘째 줄에 requests[n], 셋째 줄에 max_req[n]이 주어집니다. 모든 값은 10^9 이하의 음이 아닌/양의 정수입니다. 서버의 위치는 배열 인덱스를 따릅니다.",
+    "output": "가능한 리디렉션 거리의 최댓값의 최솟값을 출력합니다. 총 용량이 부족하면 -1을 출력합니다.",
+    "explanation": "최대 거리에 대해 이분 탐색합니다. 거리가 고정되면 요청을 보내는 서버와 받는 서버가 구간 이분 그래프를 이룹니다. 위치 기준으로 가장 왼쪽에 남은 요청과 가장 왼쪽에 남은 용량을 탐욕적으로 매칭하고, 너무 멀면 실패합니다. 소규모 검증기는 모든 요청의 목적지를 열거합니다.",
+    "hints": [
+      "최대 거리에 대해 이분 탐색합니다. 거리가 고정되면 요청을 보내는 서버와 받는 서버가 구간 이분 그래프를 이룹니다. 위치 기준으로 가장 왼쪽에 남은 요청과 가장 왼쪽에 남은 용량을 탐욕적으로 매칭하고, 너무 멀면 실패합니다. 소규모 검증기는 모든 요청의 목적지를 열거합니다."
+    ]
+  },
+  "vi": {
+    "title": "Request Redirection",
+    "description": "Gán các yêu cầu cho những máy chủ có thể phục vụ chúng. Tải cuối cùng của mỗi máy chủ phải nhỏ hơn hẳn max_req. Hãy cực tiểu hóa khoảng cách lớn nhất giữa các máy chủ.\n\nĐịnh dạng vào/ra chuẩn và các giới hạn bổ sung của trang này được mô tả trong bài này.",
+    "input": "Dòng đầu tiên chứa n (1≤n≤10^5), dòng thứ hai là requests[n], và dòng thứ ba là max_req[n]; mọi giá trị là số nguyên không âm/dương ≤10^9. Vị trí máy chủ theo chỉ số mảng.",
+    "output": "In ra khoảng cách chuyển hướng lớn nhất nhỏ nhất có thể; in -1 nếu tổng dung lượng không đủ.",
+    "explanation": "Tìm kiếm nhị phân theo khoảng cách lớn nhất. Với một khoảng cách cố định, các máy chủ nguồn và máy chủ nhận tạo thành một đồ thị hai phía dạng khoảng; hãy ghép tham lam yêu cầu còn lại ngoài cùng bên trái với dung lượng còn lại ngoài cùng bên trái theo vị trí, và thất bại nếu chúng cách nhau quá xa. Bộ đối chứng quy mô nhỏ liệt kê đích đến của từng yêu cầu.",
+    "hints": [
+      "Tìm kiếm nhị phân theo khoảng cách lớn nhất. Với một khoảng cách cố định, các máy chủ nguồn và máy chủ nhận tạo thành một đồ thị hai phía dạng khoảng; hãy ghép tham lam yêu cầu còn lại ngoài cùng bên trái với dung lượng còn lại ngoài cùng bên trái theo vị trí, và thất bại nếu chúng cách nhau quá xa. Bộ đối chứng quy mô nhỏ liệt kê đích đến của từng yêu cầu."
+    ]
   }
 }

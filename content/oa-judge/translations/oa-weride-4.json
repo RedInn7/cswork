@@ -11,5 +11,35 @@
     "hints": [
       "You only need to accumulate occurrence counts of two-hop neighbors. If there is no two-hop candidate, every non-friend candidate has 0 mutual friends, so take the smallest available number."
     ]
+  },
+  "ja": {
+    "title": "共通の友達によるおすすめ",
+    "description": "ユーザーには 0..n−1 の番号が付けられ、入力として無向の友人関係が与えられます。各ユーザー y について、y 自身でも y の友達でもないユーザーの中から、共通の友達が最も多い人を選びます。同数の場合は番号が最小の人を選びます。候補がいなければ結果は -1 です。\n\n元の問題の順序規則と、1人あたりの友達が最大15人という制限は明示されています。本サイトでは、重複する辺がないことと、入出力プロトコルを追加しています。\n\n出典: https://oamaster.com/docs/companies/weride#4-friend-recommendation-system-max-common-friends(固定された問題文のフィンガープリント 714fa067c86636fe872c62ad6ef9e5113a22f11336c9cc098921db1095093cc3)。本サイトが追加した入出力プロトコルと範囲は問題文に記載のとおりで、元のサイトの規則であるとは主張しません。",
+    "input": "1行目に n m(1≤n≤100000)が与えられ、続く m 行はそれぞれ異なる2人のユーザー番号の組です。友人関係に重複はなく、無向で、1人あたりの友達は最大15人です。",
+    "output": "おすすめの番号をユーザー番号の順に n 個出力します。",
+    "explanation": "完全な考え方、証明、計算量は付属のノートを参照してください。",
+    "hints": [
+      "2ホップ先の隣接ユーザーの出現回数を累積するだけで十分です。2ホップの候補が1つもない場合、友達でない候補はすべて共通の友達が 0 人なので、使用可能な最小の番号を選びます。"
+    ]
+  },
+  "ko": {
+    "title": "공통 친구 기반 친구 추천",
+    "description": "사용자는 0..n−1로 번호가 붙어 있고, 입력으로 무방향 친구 관계가 주어집니다. 각 사용자 y에 대해, y 자신도 아니고 y의 친구도 아닌 사용자 중에서 공통 친구가 가장 많은 사용자를 고르며, 동점이면 번호가 가장 작은 사용자를 고릅니다. 후보가 없으면 결과는 -1입니다.\n\n원문의 정렬 규칙과 한 사람당 친구가 최대 15명이라는 제한은 명시되어 있으며, 이 사이트는 중복 간선이 없다는 조건과 입출력 프로토콜을 추가합니다.\n\n출처: https://oamaster.com/docs/companies/weride#4-friend-recommendation-system-max-common-friends (고정된 문제 지문 fingerprint 714fa067c86636fe872c62ad6ef9e5113a22f11336c9cc098921db1095093cc3). 이 사이트가 추가한 입출력 프로토콜과 범위는 문제 설명에 기술된 대로이며 원문 사이트의 규칙이라고 주장하지 않습니다.",
+    "input": "첫 번째 줄에 n m (1≤n≤100000)이 주어지고, 이어지는 m개의 줄은 각각 서로 다른 두 사용자 번호의 쌍입니다. 친구 관계는 중복이 없고 무방향이며 한 사람당 친구는 최대 15명입니다.",
+    "output": "사용자 번호 순서대로 n개의 추천 번호를 출력합니다.",
+    "explanation": "전체 접근법, 증명, 복잡도는 함께 제공되는 노트를 참고하십시오.",
+    "hints": [
+      "2-hop 이웃의 등장 횟수만 누적하면 됩니다. 2-hop 후보가 하나도 없으면 친구가 아닌 모든 후보의 공통 친구가 0명이므로 사용 가능한 가장 작은 번호를 고릅니다."
+    ]
+  },
+  "vi": {
+    "title": "Gợi ý kết bạn theo số bạn chung",
+    "description": "Người dùng được đánh số 0..n−1, và đầu vào cho các quan hệ bạn bè vô hướng. Với mỗi người dùng y, trong số những người dùng không phải y và không phải bạn của y, chọn người có nhiều bạn chung nhất; nếu hòa thì chọn số nhỏ nhất. Nếu không có ứng viên thì kết quả là -1.\n\nQuy tắc sắp xếp của bài gốc và giới hạn tối đa 15 bạn cho mỗi người là tường minh; trang này bổ sung việc không có cạnh trùng lặp và giao thức nhập/xuất.\n\nNguồn: https://oamaster.com/docs/companies/weride#4-friend-recommendation-system-max-common-friends (dấu vân tay đề bài cố định 714fa067c86636fe872c62ad6ef9e5113a22f11336c9cc098921db1095093cc3). Giao thức nhập/xuất và các giới hạn do trang này bổ sung được mô tả như trong đề bài và không được khẳng định là quy tắc của trang gốc.",
+    "input": "Dòng đầu chứa n m (1≤n≤100000); mỗi dòng trong m dòng tiếp theo là một cặp số hiệu hai người dùng phân biệt. Các quan hệ bạn bè không trùng lặp, vô hướng, và mỗi người có tối đa 15 bạn.",
+    "output": "In n số được gợi ý theo thứ tự số hiệu người dùng.",
+    "explanation": "Xem các ghi chú đi kèm để biết cách tiếp cận đầy đủ, chứng minh và độ phức tạp.",
+    "hints": [
+      "Bạn chỉ cần tích lũy số lần xuất hiện của các hàng xóm cách hai bước. Nếu không có ứng viên cách hai bước, mọi ứng viên không phải bạn đều có 0 bạn chung, nên hãy lấy số nhỏ nhất còn dùng được."
+    ]
   }
 }

@@ -13,6 +13,21 @@
       "A query gives an exact time and key and is guaranteed to exist, with no need to find the nearest time, so the pair (time, key) identifies one cache record.",
       "Store each value in a hash map keyed by (time, key) and answer each query with a direct lookup.",
       "Keep values as their original strings (they may have leading zeros) rather than integers, and use the time strings as they are. Print the results in query order separated by spaces; the input is large, so read it quickly."
+    ],
+    "ja": [
+      "クエリは正確な時刻とキーを与え、必ず存在するので、最も近い時刻を探す必要はなく、(time, key) のペアが 1 つのキャッシュレコードを特定します。",
+      "各値を (time, key) をキーとしてハッシュマップに保存し、各クエリを直接検索で答えます。",
+      "値は整数ではなく元の文字列のまま保持し（先頭に 0 があるかもしれません）、時刻の文字列もそのまま使います。結果はクエリの順に空白で区切って出力します。入力が大きいので、高速に読み込んでください。"
+    ],
+    "ko": [
+      "질의는 정확한 시각과 키를 주고 반드시 존재하며 가장 가까운 시각을 찾을 필요가 없으므로, 쌍 (time, key)가 캐시 레코드 하나를 식별합니다.",
+      "각 값을 (time, key)를 키로 하는 해시 맵에 저장하고 각 질의에 직접 조회로 답합니다.",
+      "값은 정수가 아니라 원래 문자열로 유지하고(앞에 0이 있을 수 있습니다), 시각 문자열도 그대로 사용합니다. 결과는 질의 순서대로 공백으로 구분하여 출력합니다. 입력이 크므로 빠르게 읽으세요."
+    ],
+    "vi": [
+      "Một truy vấn cho thời gian và khóa chính xác và được đảm bảo tồn tại, không cần tìm thời gian gần nhất, nên cặp (time, key) xác định duy nhất một bản ghi cache.",
+      "Lưu mỗi giá trị trong một bảng băm với khóa là (time, key) và trả lời mỗi truy vấn bằng một lần tra cứu trực tiếp.",
+      "Giữ các giá trị dưới dạng xâu gốc (chúng có thể có số 0 ở đầu) thay vì số nguyên, và dùng các xâu thời gian nguyên trạng. In kết quả theo thứ tự truy vấn, cách nhau bằng dấu cách; đầu vào lớn, nên hãy đọc nhanh."
     ]
   },
   "explanationEn": "## Idea\n\nBuild a hash map keyed by the pair (time, key), and answer each query with a direct lookup.\n\n## Proof of correctness\n\nA given pair identifies a cache record uniquely; the hash map stores the original string for every valid pair, and the guarantee that every query exists makes each lookup return exactly the requested data.\n\n## Complexity\n\nExpected O(number of input characters) time, O(n) space."

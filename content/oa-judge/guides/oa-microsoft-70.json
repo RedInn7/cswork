@@ -13,6 +13,21 @@
       "\"Every lowercase occurrence comes before every uppercase occurrence\" compares just two positions: the last lowercase occurrence and the first uppercase occurrence.",
       "Record, for each of the 26 letters, its last lowercase position and its first uppercase position; one scan provides both.",
       "Scan the string: a lowercase letter updates its last lowercase position, and an uppercase letter records its first uppercase position only the first time. Count the letters for which both positions exist and the last lowercase position is smaller than the first uppercase position."
+    ],
+    "ja": [
+      "「小文字のすべての出現が大文字のすべての出現より前にある」は、2 つの位置、つまり最後の小文字の出現と最初の大文字の出現だけを比べればわかります。",
+      "26 文字それぞれについて、最後の小文字の位置と最初の大文字の位置を記録します。1 回のスキャンで両方が得られます。",
+      "文字列をスキャンし、小文字ならその文字の最後の小文字の位置を更新し、大文字なら最初の 1 回だけ最初の大文字の位置を記録します。両方の位置が存在し、最後の小文字の位置が最初の大文字の位置より小さい文字を数えます。"
+    ],
+    "ko": [
+      "\"모든 소문자 출현이 모든 대문자 출현보다 앞에 온다\"는 것은 단 두 위치, 즉 마지막 소문자 출현과 첫 대문자 출현만 비교하면 됩니다.",
+      "26개 문자 각각에 대해 마지막 소문자 위치와 첫 대문자 위치를 기록하세요. 한 번 훑으면 두 값을 모두 얻을 수 있습니다.",
+      "문자열을 훑으면서, 소문자는 그 문자의 마지막 소문자 위치를 갱신하고, 대문자는 처음 나타날 때만 첫 대문자 위치를 기록합니다. 두 위치가 모두 존재하고 마지막 소문자 위치가 첫 대문자 위치보다 작은 문자의 수를 세세요."
+    ],
+    "vi": [
+      "\"Mọi lần xuất hiện chữ thường đứng trước mọi lần xuất hiện chữ hoa\" chỉ cần so sánh hai vị trí: lần xuất hiện chữ thường cuối cùng và lần xuất hiện chữ hoa đầu tiên.",
+      "Ghi lại, cho mỗi trong 26 chữ cái, vị trí chữ thường cuối cùng và vị trí chữ hoa đầu tiên của nó; một lượt quét cung cấp cả hai.",
+      "Quét xâu: chữ thường cập nhật vị trí chữ thường cuối cùng của nó, còn chữ hoa chỉ ghi vị trí chữ hoa đầu tiên ở lần gặp đầu tiên. Đếm các chữ cái mà cả hai vị trí đều tồn tại và vị trí chữ thường cuối cùng nhỏ hơn vị trí chữ hoa đầu tiên."
     ]
   },
   "explanationEn": "## Approach\n\nRecord each letter's last lowercase position and first uppercase position; the letter qualifies if both exist and the former is smaller.\n\n## Correctness\n\nAll lowercase occurrences coming before all uppercase occurrences is equivalent to the latest lowercase occurrence coming before the earliest uppercase occurrence. Checking this necessary and sufficient condition for each letter separately and adding up gives the number of distinct qualifying letters.\n\n## Complexity\n\nTime O(N+26), space O(26)."

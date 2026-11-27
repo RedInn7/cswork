@@ -13,6 +13,21 @@
       "With n <= 40, enumerating all 2^40 subsequences is too much, but each half has at most 2^20 choices; every subsequence splits uniquely into a choice from the left half plus a choice from the right half, and the empty subsequence has sum 0.",
       "Meet in the middle: generate and sort all subset sums of each half, and the task becomes picking one number from each of two sorted arrays so that their sum is closest to goal.",
       "Start the left pointer at the smallest left sum and the right pointer at the largest right sum; each time update the minimum of |sum - goal|; if the sum is below goal move the left pointer right, if above move the right pointer left, and if equal the answer is 0. Initialize the answer to |goal| for the empty subsequence."
+    ],
+    "ja": [
+      "n <= 40 なので、2^40 個すべての部分列を列挙するのは多すぎますが、各半分の選び方は最大 2^20 通りです。すべての部分列は、左半分の選択と右半分の選択に一意に分解され、空の部分列の和は 0 です。",
+      "meet in the middle: それぞれの半分のすべての部分集合の和を生成してソートすると、問題は、ソート済みの 2 つの配列から 1 つずつ数を選び、その和を goal に最も近づけることになります。",
+      "左ポインタを左の和の最小値から、右ポインタを右の和の最大値から始めます。そのたびに |sum - goal| の最小値を更新し、和が goal 未満なら左ポインタを右へ、goal を超えるなら右ポインタを左へ動かし、等しければ答えは 0 です。答えは空の部分列に対応する |goal| で初期化します。"
+    ],
+    "ko": [
+      "n <= 40이면 2^40개의 부분 수열을 모두 열거하는 것은 너무 크지만, 각 절반은 선택이 최대 2^20가지입니다. 모든 부분 수열은 왼쪽 절반의 선택과 오른쪽 절반의 선택으로 유일하게 나뉘며, 빈 부분 수열의 합은 0입니다.",
+      "Meet in the middle: 각 절반의 모든 부분집합 합을 생성하여 정렬하면, 두 정렬된 배열에서 하나씩 골라 그 합이 goal에 가장 가깝게 되도록 하는 문제가 됩니다.",
+      "왼쪽 포인터는 가장 작은 왼쪽 합에서, 오른쪽 포인터는 가장 큰 오른쪽 합에서 시작합니다. 매번 |sum - goal|의 최솟값을 갱신하고, 합이 goal보다 작으면 왼쪽 포인터를 오른쪽으로, 크면 오른쪽 포인터를 왼쪽으로 옮기며, 같으면 답은 0입니다. 답은 빈 부분 수열에 해당하는 |goal|로 초기화합니다."
+    ],
+    "vi": [
+      "Với n <= 40, liệt kê 2^40 dãy con là quá nhiều, nhưng mỗi nửa chỉ có tối đa 2^20 lựa chọn; mọi dãy con tách duy nhất thành một lựa chọn từ nửa trái cộng một lựa chọn từ nửa phải, và dãy con rỗng có tổng 0.",
+      "Meet in the middle: sinh và sắp xếp mọi tổng tập con của mỗi nửa, và bài toán trở thành chọn một số từ mỗi trong hai mảng đã sắp xếp sao cho tổng của chúng gần goal nhất.",
+      "Bắt đầu con trỏ trái ở tổng trái nhỏ nhất và con trỏ phải ở tổng phải lớn nhất; mỗi lần cập nhật giá trị nhỏ nhất của |sum - goal|; nếu tổng nhỏ hơn goal thì dịch con trỏ trái sang phải, nếu lớn hơn thì dịch con trỏ phải sang trái, và nếu bằng nhau thì đáp án là 0. Khởi tạo đáp án bằng |goal| cho dãy con rỗng."
     ]
   },
   "explanationEn": "## Approach\n\nSplit the array in half, generate all subset sums of each half and sort them, then use one pointer from the left and one from the right to find the sum closest to goal.\n\n## Correctness\n\nEvery subsequence decomposes uniquely into a choice in the left half and a choice in the right half, so the enumerated sums cover all possibilities. When the sum of the two is below the target, pairing the current (smaller) left sum with any even smaller right sum cannot improve in the direction of crossing the target, so the left pointer is advanced; when it is above the target, the right pointer is decreased symmetrically. Keeping the minimum difference at every step covers every potentially optimal combination. The empty set corresponds to sum 0.\n\n## Complexity\n\nTime O(n*2^(n/2)), space O(2^(n/2)); the full upper bound of 40 elements is kept."

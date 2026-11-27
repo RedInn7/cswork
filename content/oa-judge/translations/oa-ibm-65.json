@@ -11,5 +11,35 @@
     "hints": [
       "Pair capacities from small to large with loads from large to small; for positions with equal capacity, sort them by original index in reverse before assigning, so that smaller indices get the smaller loads of that group."
     ]
+  },
+  "ja": {
+    "title": "総リソースが最小となる辞書順で最小の負荷配置",
+    "description": "serverCapacity を固定したまま serverLoad を並べ替え、Σ capacity[i]×load[i] を最小にします。総リソースが最小となる配置が複数ある場合は、辞書順で最小の負荷配列を返さなければなりません。後者の要件は元の問題文の本文から直接得たもので、整理されたカタログではその一文が失われていました。\n\n入出力の形式は当サイトが整えたもので、不足していた数値の制約は当サイトが補ったものとして明示しています。",
+    "input": "1行目に n、2行目に n 個の capacity の値、3行目に n 個の load の値が与えられます。出典には数値の範囲がありません。当サイトでは 1≤n≤200000 を追加し、両方の配列の要素は −10^9..10^9 の整数で、重複や負の値も許されます。",
+    "output": "n 個の整数を出力します。辞書順で最小となる最適な負荷配置は一意に定まります。",
+    "explanation": "3つの公開例の出力は、順に 3 2 1、6 5 2 2 4、1 2 です。これらの答えは、独立した全探索または直接のシミュレーションで確認済みです。",
+    "hints": [
+      "capacity の小さい方から順に、load の大きい方から順に対応させます。capacity が等しい位置は、割り当ての前に元のインデックスの降順に並べ、そのグループ内では小さいインデックスに小さい load が来るようにします。"
+    ]
+  },
+  "ko": {
+    "title": "최소 자원 부하 배치 중 사전순 최소 배열",
+    "description": "serverCapacity가 고정되어 있을 때, Σ capacity[i]×load[i]가 최소가 되도록 serverLoad를 재배열합니다. 최소 자원 배치가 여러 개이면 사전순으로 가장 작은 부하 배열을 반환해야 합니다. 후자의 요구 사항은 원문 본문에서 직접 가져온 것이며, 정리된 카탈로그에서는 그 문장이 누락되었습니다.\n\n입출력 형식은 본 사이트에서 정리한 것이며, 원문에 없던 수치 제약은 본 사이트에서 추가한 것임을 명시했습니다.",
+    "input": "첫째 줄에 n이, 둘째 줄에 n개의 capacity 값이, 셋째 줄에 n개의 load 값이 주어집니다. 원문에는 수치 범위가 없으며, 본 사이트에서는 1≤n≤200000, 두 배열의 원소는 −10^9..10^9의 정수로 두고 중복과 음수를 허용합니다.",
+    "output": "n개의 정수를 출력합니다. 사전순으로 가장 작은 최적 부하 배치는 유일합니다.",
+    "explanation": "공개된 세 예제의 출력은 순서대로 3 2 1; 6 5 2 2 4; 1 2입니다. 이 답들은 독립적인 완전 탐색 또는 직접 시뮬레이션으로 검증했습니다.",
+    "hints": [
+      "capacity를 작은 것부터, load를 큰 것부터 짝짓습니다. capacity가 같은 위치들은 할당하기 전에 원래 인덱스의 역순으로 정렬하여, 그 그룹에서 작은 인덱스가 작은 load를 받게 합니다."
+    ]
+  },
+  "vi": {
+    "title": "Cách sắp xếp tải tiêu tốn tài nguyên tối thiểu và nhỏ nhất theo thứ tự từ điển",
+    "description": "Với serverCapacity cố định, sắp xếp lại serverLoad để cực tiểu hóa Σ capacity[i]×load[i]. Nếu có nhiều cách sắp xếp tiêu tốn tài nguyên tối thiểu, bạn phải trả về mảng tải nhỏ nhất theo thứ tự từ điển. Yêu cầu sau xuất phát trực tiếp từ nội dung đề gốc; danh mục đã biên soạn bị mất câu đó.\n\nGiao thức nhập/xuất do trang này biên soạn; các ràng buộc số còn thiếu được đánh dấu rõ là phần trang này bổ sung.",
+    "input": "Dòng đầu chứa n, dòng thứ hai chứa n giá trị capacity, dòng thứ ba chứa n giá trị load. Đề nguồn không cho phạm vi số; trang này bổ sung 1≤n≤200000, và các phần tử của cả hai mảng là số nguyên trong khoảng −10^9..10^9, cho phép trùng lặp và giá trị âm.",
+    "output": "In n số nguyên: cách sắp xếp tải tối ưu duy nhất nhỏ nhất theo thứ tự từ điển.",
+    "explanation": "Đầu ra của ba ví dụ công khai lần lượt là: 3 2 1; 6 5 2 2 4; 1 2. Các đáp án này đã được kiểm chứng bằng liệt kê độc lập hoặc mô phỏng trực tiếp.",
+    "hints": [
+      "Ghép capacity từ nhỏ đến lớn với load từ lớn đến nhỏ; với các vị trí có cùng capacity, sắp xếp chúng theo chỉ số gốc giảm dần trước khi gán, để chỉ số nhỏ hơn nhận load nhỏ hơn của nhóm đó."
+    ]
   }
 }

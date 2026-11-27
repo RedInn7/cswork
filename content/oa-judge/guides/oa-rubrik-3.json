@@ -13,6 +13,21 @@
       "Words are split only on whitespace, and whether a word counts depends only on the word itself, so you just need to check each token on its own.",
       "A token is valid only when all four conditions hold: length at least 3, every character an ASCII letter or digit, at least one vowel (a/e/i/o/u in either case), and at least one consonant (a letter that is not a vowel; digits are neither).",
       "Split the input on whitespace. For each token, scan its characters once: any character that is not an ASCII letter or digit makes it invalid, and along the way record whether a vowel and a consonant letter have appeared. Count the token when its length is at least 3 and both flags are set, then print the count."
+    ],
+    "ja": [
+      "単語は空白でのみ分割され、単語が数えられるかどうかはその単語自身だけで決まるので、各トークンを個別に調べればよいだけです。",
+      "トークンが有効になるのは次の 4 つの条件がすべて成り立つときだけです: 長さが 3 以上、すべての文字が ASCII の英字か数字、母音(a/e/i/o/u の大文字・小文字)が少なくとも 1 つ、子音(母音でない英字。数字はどちらでもない)が少なくとも 1 つ。",
+      "入力を空白で分割します。各トークンについて文字を 1 回走査し、ASCII の英字か数字でない文字があれば無効とし、その間に母音と子音の英字が現れたかを記録します。長さが 3 以上で両方のフラグが立っているトークンを数え、その個数を出力します。"
+    ],
+    "ko": [
+      "단어는 공백으로만 구분되고 단어를 셀지는 단어 자체에만 달려 있으므로, 각 토큰을 개별적으로 검사하면 됩니다.",
+      "토큰이 유효하려면 네 조건이 모두 성립해야 합니다. 길이가 3 이상이고, 모든 문자가 ASCII 영문자 또는 숫자이며, 모음(a/e/i/o/u, 대소문자 모두)이 하나 이상, 자음(모음이 아닌 영문자)이 하나 이상 있어야 합니다. 숫자는 모음도 자음도 아닙니다.",
+      "입력을 공백 기준으로 나눕니다. 각 토큰의 문자를 한 번 훑으면서, ASCII 영문자 또는 숫자가 아닌 문자가 있으면 무효 처리하고, 그 과정에서 모음과 자음 문자가 나타났는지 기록합니다. 길이가 3 이상이고 두 플래그가 모두 설정된 토큰만 세어 개수를 출력합니다."
+    ],
+    "vi": [
+      "Các từ chỉ được tách theo khoảng trắng, và một từ có được tính hay không chỉ phụ thuộc vào chính từ đó, nên chỉ cần kiểm tra từng token một cách độc lập.",
+      "Một token hợp lệ chỉ khi cả bốn điều kiện đều đúng: độ dài ít nhất 3, mọi ký tự là chữ cái hoặc chữ số ASCII, có ít nhất một nguyên âm (a/e/i/o/u, chữ hoa hay thường), và có ít nhất một phụ âm (chữ cái không phải nguyên âm; chữ số không phải cả hai loại).",
+      "Tách đầu vào theo khoảng trắng. Với mỗi token, duyệt các ký tự một lần: bất kỳ ký tự nào không phải chữ cái hay chữ số ASCII làm token không hợp lệ, và trong lúc đó ghi nhận đã xuất hiện nguyên âm và phụ âm hay chưa. Đếm token khi độ dài ít nhất 3 và cả hai cờ đều bật, rồi in số đếm."
     ]
   },
   "explanationEn": "## Approach\n\nScan the tokens split on whitespace, recording for each whether it is valid, whether it contains a vowel, and whether it contains a consonant.\n\n## Correctness\n\nA token is counted only when it satisfies the character domain, the length, and both letter conditions at the same time; this is equivalent, item by item, to the original definition, and each token is processed exactly once.\n\n## Complexity\n\nTime O(|s|), space O(1) (not counting the split result)."

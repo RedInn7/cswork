@@ -11,5 +11,35 @@
     "hints": [
       "Scan while keeping the set of prefix sums of the current unseparated segment. If adding the current item repeats a prefix sum, insert a separator before the current item and start a new segment containing only the current item."
     ]
+  },
+  "ja": {
+    "title": "和が 0 の区間をすべて取り除くための最小挿入数",
+    "description": "元の配列には任意の整数を挿入することだけができ、元の要素を削除したり変更したりすることはできません。空でないすべての連続区間の和が 0 でないようにするために必要な、挿入の最小個数を求めてください。元の配列に 0 が含まれる場合、要素 1 つの和 0 の区間は取り除けません。このサイトでは、解がない場合に −1 を出力する規約とします。\n\nこのサイトの標準入出力と解法は独自に作成したものです。このサイトの制約と明記された範囲は、元の出典の制約ではありません。",
+    "input": "1 行目に n、2 行目に n 個の整数が与えられます。元の問題には値の上限がありません。このサイトでは 1≤n≤200000、要素は −10^9..10^9 とします。",
+    "output": "答えを表す整数を 1 つ出力してください。",
+    "explanation": "例 1: 3 の後に 100 を挿入すると和が 0 の区間がなくなるので、少なくとも 1 回の挿入が必要で、答えは 1 です。例 2: 隣り合う符号が反対のペアはどれも和が 0 なので、3 つの隙間それぞれに 1 回ずつ挿入が必要で、答えは 3 です。例 3: 元の要素 0 は常に和が 0 の要素 1 つの区間なので、解はなく −1 です。",
+    "hints": [
+      "走査しながら、まだ区切られていない現在の区間の累積和の集合を持ちます。現在の要素を加えると累積和が重複する場合は、現在の要素の前に区切りを挿入し、現在の要素だけを含む新しい区間を始めます。"
+    ]
+  },
+  "ko": {
+    "title": "합이 0인 구간을 모두 없애기 위해 삽입할 최소 정수 개수",
+    "description": "원래 배열에는 임의의 정수를 삽입하기만 할 수 있으며, 원래 원소를 삭제하거나 바꿀 수는 없습니다. 비어 있지 않은 모든 연속 구간의 합이 0이 아니도록 만들 때 필요한 최소 삽입 횟수를 구하세요. 원래 배열에 0이 있으면 원소 하나짜리 합 0 구간을 없앨 수 없으며, 이 사이트는 해가 없는 경우 −1을 출력하기로 정했습니다.\n\n표준 입출력과 풀이는 이 사이트에서 독자적으로 작성했으며, 이 사이트가 정한 것으로 표시된 범위는 원 출처의 제약 조건이 아닙니다.",
+    "input": "첫 번째 줄에 n, 두 번째 줄에 n개의 정수가 주어집니다. 원 출처에는 값의 범위가 없으며, 이 사이트에서는 1≤n≤200000, 원소는 −10^9..10^9로 정했습니다.",
+    "output": "정수 하나를 출력합니다.",
+    "explanation": "예제 1: 3 뒤에 100을 삽입하면 합이 0인 구간이 사라지므로 최소 한 번의 삽입이 필요하며 답은 1입니다. 예제 2: 인접한 부호 반대 쌍의 합이 모두 0이므로 세 곳의 틈마다 한 번씩 삽입해야 하며 답은 3입니다. 예제 3: 원래 원소 0은 항상 합이 0인 단일 원소 구간이므로 해가 없어 −1입니다.",
+    "hints": [
+      "왼쪽에서 오른쪽으로 훑으면서 아직 분리되지 않은 현재 구간의 누적 합 집합을 유지합니다. 현재 원소를 더했을 때 누적 합이 중복되면 현재 원소 앞에 구분자를 삽입하고, 현재 원소만 담은 새 구간을 시작합니다."
+    ]
+  },
+  "vi": {
+    "title": "Chèn ít số nguyên nhất để loại bỏ mọi đoạn có tổng bằng 0",
+    "description": "Bạn chỉ được chèn các số nguyên tùy ý vào mảng gốc; không được xóa hay thay đổi phần tử gốc. Làm cho tổng của mọi đoạn con liên tiếp khác rỗng đều khác 0, và tìm số lần chèn tối thiểu. Nếu mảng gốc chứa 0, đoạn một phần tử có tổng bằng 0 không thể loại bỏ, và quy ước của trang này là xuất −1 khi vô nghiệm.\n\nCách vào/ra chuẩn và lời giải do trang này tự viết; các phạm vi được đánh dấu là của trang này không phải ràng buộc gốc của đề.",
+    "input": "Dòng đầu chứa n, dòng thứ hai chứa n số nguyên. Đề gốc không cho cận giá trị; trang này quy định 1≤n≤200000 và phần tử trong −10^9..10^9.",
+    "output": "Xuất một số nguyên duy nhất là đáp án.",
+    "explanation": "Ví dụ 1: chèn 100 sau 3 thì không còn đoạn nào có tổng bằng 0, nên cần ít nhất một lần chèn; đáp án là 1. Ví dụ 2: mỗi cặp kề nhau trái dấu đều có tổng 0, nên cần một lần chèn ở mỗi trong ba khe; đáp án là 3. Ví dụ 3: phần tử gốc 0 luôn là đoạn một phần tử có tổng bằng 0, nên vô nghiệm: −1.",
+    "hints": [
+      "Quét và giữ tập các tổng tiền tố của đoạn hiện tại chưa bị tách. Nếu việc thêm phần tử hiện tại làm lặp lại một tổng tiền tố, hãy chèn một dấu ngăn cách trước phần tử hiện tại và bắt đầu một đoạn mới chỉ chứa phần tử hiện tại."
+    ]
   }
 }

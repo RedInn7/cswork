@@ -13,6 +13,21 @@
       "Flatten the matrix in row-major order into a one-dimensional array; B is the prefix sum of that array put back into the original shape.",
       "A single running sum across the whole matrix is enough: traverse row by row and column by column, add each element to the running sum, and the running sum at that moment is the answer for that cell. Do not reset it at the start of a row.",
       "After reading m and n, read the elements one by one, add each to the sum and write the sum immediately, with n numbers per line separated by spaces. The sum can reach 2×10^14, so use 64-bit integers."
+    ],
+    "ja": [
+      "行列を行優先の順に 1 次元配列に平坦化します。B は、その配列の累積和を元の形に戻したものです。",
+      "行列全体にわたる 1 つの累積和だけで十分です。行ごと、列ごとに走査し、各要素を累積和に加えます。そのときの累積和が、そのセルの答えです。行の先頭でリセットしてはいけません。",
+      "m と n を読んだ後、要素を 1 つずつ読み、和に加えて、すぐにその和を書き出します。1 行に n 個の数を、空白区切りで並べます。和は 2×10^14 に達しうるので、64 ビット整数を使ってください。"
+    ],
+    "ko": [
+      "행렬을 행 우선 순서로 1차원 배열로 펼치면, B는 그 배열의 접두사 합을 원래 모양으로 되돌려 놓은 것입니다.",
+      "행렬 전체에 걸친 누적 합 하나면 충분합니다. 행 단위, 열 단위로 순회하며 각 원소를 누적 합에 더하면 그 시점의 누적 합이 해당 칸의 답입니다. 행이 시작될 때 초기화하지 마세요.",
+      "m과 n을 읽은 뒤 원소를 하나씩 읽어 합에 더하고 곧바로 그 합을 기록하며, 한 줄에 n개의 수를 공백으로 구분해 출력합니다. 합은 2×10^14까지 커질 수 있으므로 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Trải phẳng ma trận theo thứ tự ưu tiên hàng thành một mảng một chiều; B là tổng tiền tố của mảng đó được đặt lại theo hình dạng ban đầu.",
+      "Chỉ cần một tổng chạy duy nhất trên toàn ma trận: duyệt từng hàng, từng cột, cộng mỗi phần tử vào tổng chạy, và tổng chạy tại thời điểm đó là đáp án của ô ấy. Không đặt lại tổng ở đầu mỗi hàng.",
+      "Sau khi đọc m và n, đọc từng phần tử một, cộng vào tổng và ghi ngay tổng đó, mỗi dòng n số cách nhau bởi dấu cách. Tổng có thể đạt 2×10^14 nên hãy dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nAccumulate one global running sum row by row and column by column; each position contains exactly all elements of the rows before it plus the elements to its left in the current row. Time O(mn), extra space O(n) for output.\n\n## Proof of Correctness\n\nWhen traversing in row-major order, the maintained running sum always equals the sum of the current cell and all cells before it in A; writing it into the same position of B gives exactly the prefix sum the problem asks for.\n\n## Complexity\n\nAll prefix sums use arbitrary-precision integers; the input rectangle is complete.\n\nO(mn) time; O(1) extra space besides the output matrix.\n\n## Reference Implementation\n\n```python\ndef solve(raw):\n z=raw.splitlines();m,n=map(int,z[0].split());s=0;o=[]\n for line in z[1:1+m]:\n  a=list(map(int,line.split()));r=[]\n  for x in a[:n]:s+=x;r.append(str(s))\n  o.append(' '.join(r))\n return '\\n'.join(o)\n```"

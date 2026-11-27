@@ -11,5 +11,35 @@
     "hints": [
       "Traverse each connected component, subtract the first visited coordinate from every coordinate in the component, sort them, and use the tuple as the shape signature."
     ]
+  },
+  "ja": {
+    "title": "平行移動だけで区別する島の種類数",
+    "description": "1 は陸地、0 は水を表し、陸地のセルは上下左右につながります。2 つの島の形は、一方を平行移動して他方に重ねられるときに限り、同じとみなします。回転や反転で一致するものは同じとはみなしません。異なる形の数を返してください。\n\n標準の入力・出力形式は CSWork が整理したものです。「このサイト」と明記した数値範囲は、このサイトの判定上の取り決めです。",
+    "input": "1 行目に r c、続く r 行に 01 の文字列が与えられます。このサイトでは 1≤r,c≤500 です。",
+    "output": "問題で求められた答えを出力してください。",
+    "explanation": "例 1: 連結成分は 6 つあり、そのうち 2 組が平行移動で等価なので、形は全部で 4 種類です。例 2: 長さ 2 の縦向きの 2 つの島は、平行移動で重なるので、出力は 1 です。例 3: 横向きの 2 セルの島と縦向きの 2 セルの島は、平行移動だけでは重ならないので、出力は 2 です。",
+    "hints": [
+      "各連結成分を走査し、成分内のすべての座標から最初に訪れた座標を引いて、ソートし、そのタプルを形のシグネチャとして使います。"
+    ]
+  },
+  "ko": {
+    "title": "평행 이동만 허용하는 서로 다른 섬의 개수",
+    "description": "1은 땅, 0은 물을 나타내며, 땅 칸은 상하좌우로 연결됩니다. 두 섬의 모양은 한쪽을 평행 이동하여 다른 쪽과 겹칠 수 있을 때에만 같은 모양으로 취급하며, 회전이나 반사는 같은 모양으로 치지 않습니다. 서로 다른 모양의 개수를 반환하세요.\n\n표준 입력/출력 형식은 CSWork에서 정리한 것이며, \"이 사이트\"라고 표시된 값의 범위는 이 사이트의 채점 기준입니다.",
+    "input": "첫째 줄에 r c가 주어지고, 이어서 01 문자열 r줄이 주어집니다. 이 사이트에서는 1≤r,c≤500입니다.",
+    "output": "문제에서 요구하는 답을 출력합니다.",
+    "explanation": "예제 1: 연결 요소가 6개이고 그중 두 쌍이 평행 이동으로 동일하므로 모양은 모두 4가지입니다. 예제 2: 길이 2인 세로 섬 두 개는 평행 이동하면 겹치므로 출력은 1입니다. 예제 3: 가로로 두 칸인 섬과 세로로 두 칸인 섬은 평행 이동만으로는 겹칠 수 없으므로 출력은 2입니다.",
+    "hints": [
+      "각 연결 요소를 순회하면서 요소 안의 모든 좌표에서 처음 방문한 좌표를 빼고, 정렬한 뒤 그 튜플을 모양의 시그니처로 사용합니다."
+    ]
+  },
+  "vi": {
+    "title": "Đếm các hòn đảo phân biệt chỉ xét phép tịnh tiến",
+    "description": "1 biểu diễn đất và 0 biểu diễn nước; các ô đất liên thông theo các hướng lên, xuống, trái, phải. Hai hình dạng đảo chỉ được xem là giống nhau nếu có thể tịnh tiến một hình để trùng với hình kia; phép xoay hoặc phản chiếu không được xem là giống nhau. Trả về số hình dạng phân biệt.\n\nĐịnh dạng đầu vào/đầu ra chuẩn do CSWork biên soạn; các khoảng giá trị ghi là \"của trang này\" là quy ước chấm bài của trang này.",
+    "input": "Dòng đầu chứa r c, tiếp theo là r dòng xâu 01. Trên trang này, 1≤r,c≤500.",
+    "output": "In ra đáp án theo yêu cầu của đề bài.",
+    "explanation": "Ví dụ 1: có 6 thành phần liên thông, trong đó hai cặp tương đương nhau qua phép tịnh tiến, tổng cộng 4 hình dạng. Ví dụ 2: hai hòn đảo dọc có độ dài 2 trùng nhau sau khi tịnh tiến, nên in 1. Ví dụ 3: một đảo hai ô nằm ngang và một đảo hai ô nằm dọc không thể trùng nhau chỉ bằng phép tịnh tiến, nên in 2.",
+    "hints": [
+      "Duyệt từng thành phần liên thông, trừ tọa độ được thăm đầu tiên khỏi mọi tọa độ trong thành phần, sắp xếp chúng, và dùng bộ tuple làm chữ ký hình dạng."
+    ]
   }
 }

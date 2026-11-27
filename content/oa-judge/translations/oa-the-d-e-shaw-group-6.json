@@ -11,5 +11,35 @@
     "hints": [
       "After the first three items are processed, exactly one item remains. Use dynamic programming to record \"value kept at the current front → minimum cost paid to reach this state\". In each round, consider that value together with the next two items and enumerate which one stays; when fewer than three items remain at the end, settle them all at once as the statement specifies."
     ]
+  },
+  "ja": {
+    "title": "先頭 3 個のうち 2 個を取り除く最小コスト",
+    "description": "毎回、現在の配列の先頭 3 要素から任意の 2 個を選んで削除します。この操作のコストは、削除した 2 つの数のうち大きい方です。残りが 3 要素未満になったら、残りをすべて一度に削除し、コストはそれらの最大値です。配列を空にするための最小合計コストを求めてください。\n\n標準入出力、本サイトで追加した範囲、および例は、この問題の説明に従っています。元の問題で範囲が欠けている箇所は、本サイトの追加であることを明示しています。",
+    "input": "1 行目に n(1≤n≤1000)、2 行目に n 個の正の整数が与えられます。1≤arr[i]≤10^6 です。範囲は元の問題の制約に従っています。",
+    "output": "最小合計コストを出力してください。",
+    "explanation": "最初の 3 個を処理すると、ちょうど 1 個が残ります。動的計画法で「現在の先頭に残っている値 → その状態に至るまでの最小コスト」を記録します。各ラウンドでは、その値と次の 2 個を合わせて、どれを残すかを列挙します。最後に 3 個未満になったら、問題文のとおりまとめて精算します。",
+    "hints": [
+      "最初の 3 個を処理すると、ちょうど 1 個が残ります。動的計画法で「現在の先頭に残っている値 → その状態に至るまでの最小コスト」を記録します。各ラウンドでは、その値と次の 2 個を合わせて、どれを残すかを列挙します。最後に 3 個未満になったら、問題文のとおりまとめて精算します。"
+    ]
+  },
+  "ko": {
+    "title": "앞의 세 항목 중 두 개를 제거하는 최소 비용",
+    "description": "매번 현재 배열의 앞쪽 세 원소 중 임의의 두 개를 골라 삭제하며, 이 연산의 비용은 삭제한 두 수 중 큰 값입니다. 남은 원소가 세 개 미만이면 남은 원소를 모두 한꺼번에 삭제하며, 비용은 그 최댓값입니다. 배열을 모두 비우는 데 드는 최소 총비용을 구하세요.\n\n표준 입출력, 이 사이트가 추가한 범위, 예시는 이 문제의 설명을 따릅니다. 원문에 범위가 없는 부분은 이 사이트에서 추가한 것임을 명시합니다.",
+    "input": "첫째 줄에 n(1≤n≤1000)이 주어지고, 둘째 줄에 n개의 양의 정수가 주어집니다(1≤arr[i]≤10^6). 이 범위는 원래 문제의 제약에서 가져왔습니다.",
+    "output": "최소 총비용을 출력합니다.",
+    "explanation": "처음 세 항목을 처리하고 나면 항목이 정확히 하나 남습니다. 동적 계획법으로 “현재 맨 앞에 남겨 둔 값 → 그 상태에 도달하는 데 든 최소 비용”을 기록합니다. 매 라운드마다 그 값과 다음 두 항목을 함께 놓고 어느 것을 남길지 열거하며, 마지막에 세 개 미만이 남으면 문제의 규칙대로 한꺼번에 정산합니다.",
+    "hints": [
+      "처음 세 항목을 처리하고 나면 항목이 정확히 하나 남습니다. 동적 계획법으로 “현재 맨 앞에 남겨 둔 값 → 그 상태에 도달하는 데 든 최소 비용”을 기록합니다. 매 라운드마다 그 값과 다음 두 항목을 함께 놓고 어느 것을 남길지 열거하며, 마지막에 세 개 미만이 남으면 문제의 규칙대로 한꺼번에 정산합니다."
+    ]
+  },
+  "vi": {
+    "title": "Chi phí tối thiểu khi xóa hai trong ba phần tử đầu",
+    "description": "Mỗi lần, chọn hai phần tử bất kỳ trong ba phần tử đầu của mảng hiện tại và xóa chúng; chi phí của thao tác là số lớn hơn trong hai số bị xóa. Nếu còn ít hơn ba phần tử, xóa toàn bộ phần tử còn lại cùng một lúc, với chi phí bằng giá trị lớn nhất của chúng. Hãy tìm tổng chi phí nhỏ nhất để làm rỗng mảng.\n\nGiao thức đầu vào/đầu ra chuẩn, các giới hạn do trang này bổ sung và các ví dụ đều theo mô tả của đề này; chỗ nào đề gốc thiếu giới hạn thì được đánh dấu rõ là phần bổ sung của trang này.",
+    "input": "Dòng đầu chứa n (1≤n≤1000); dòng thứ hai chứa n số nguyên dương, 1≤arr[i]≤10^6. Các giới hạn được lấy từ ràng buộc của đề gốc.",
+    "output": "In ra tổng chi phí nhỏ nhất.",
+    "explanation": "Sau khi xử lý ba phần tử đầu, luôn còn đúng một phần tử được giữ lại. Dùng quy hoạch động ghi lại \"giá trị được giữ ở đầu hiện tại → chi phí nhỏ nhất đã trả để đến trạng thái này\". Mỗi vòng, xét giá trị đó cùng hai phần tử kế tiếp và duyệt xem giữ lại phần tử nào; khi cuối cùng còn ít hơn ba phần tử thì xử lý tất cả cùng lúc theo đúng quy định của đề.",
+    "hints": [
+      "Sau khi xử lý ba phần tử đầu, luôn còn đúng một phần tử được giữ lại. Dùng quy hoạch động ghi lại \"giá trị được giữ ở đầu hiện tại → chi phí nhỏ nhất đã trả để đến trạng thái này\". Mỗi vòng, xét giá trị đó cùng hai phần tử kế tiếp và duyệt xem giữ lại phần tử nào; khi cuối cùng còn ít hơn ba phần tử thì xử lý tất cả cùng lúc theo đúng quy định của đề."
+    ]
   }
 }

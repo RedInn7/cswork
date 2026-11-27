@@ -13,6 +13,21 @@
       "The order depends only on two quantities: how often the value occurs in the whole array, and the value itself.",
       "Count each value's frequency first, then sort all elements by the key (frequency, value); equal values share a key, so they end up together and keep their multiplicity.",
       "Count frequencies in an array or hash map (values are at most 10^6, so an array works); sort the original array by frequency ascending and then by value ascending; print the n sorted numbers space-separated."
+    ],
+    "ja": [
+      "順序は 2 つの量だけで決まります。配列全体でその値が何回出現するかと、値そのものです。",
+      "まず各値の出現回数を数え、その後すべての要素をキー (出現回数, 値) でソートします。等しい値は同じキーを持つので、まとまって並び、個数も保たれます。",
+      "出現回数を配列かハッシュマップで数えます (値は最大 10^6 なので配列でも可能です)。元の配列を出現回数の昇順、次に値の昇順でソートし、ソートされた n 個の数をスペース区切りで出力します。"
+    ],
+    "ko": [
+      "순서는 두 가지에만 의존합니다. 값이 전체 배열에서 얼마나 자주 등장하는지, 그리고 값 자체입니다.",
+      "먼저 각 값의 빈도를 센 다음 모든 원소를 (빈도, 값) 키로 정렬합니다. 같은 값은 같은 키를 가지므로 함께 모이고 등장 횟수를 그대로 유지합니다.",
+      "빈도를 배열이나 해시 맵으로 셉니다 (값이 최대 10^6이므로 배열도 사용할 수 있습니다). 원래 배열을 빈도 오름차순, 그다음 값 오름차순으로 정렬하고, 정렬된 n개의 수를 공백으로 구분하여 출력합니다."
+    ],
+    "vi": [
+      "Thứ tự chỉ phụ thuộc vào hai đại lượng: giá trị đó xuất hiện bao nhiêu lần trong toàn mảng, và bản thân giá trị.",
+      "Đếm tần suất của từng giá trị trước, rồi sắp xếp mọi phần tử theo khóa (tần suất, giá trị); các giá trị bằng nhau có cùng khóa, nên chúng nằm cạnh nhau và giữ nguyên số lần xuất hiện.",
+      "Đếm tần suất bằng một mảng hoặc hash map (giá trị tối đa 10^6 nên dùng mảng được); sắp xếp mảng gốc theo tần suất tăng dần rồi theo giá trị tăng dần; in n số đã sắp xếp cách nhau bằng dấu cách."
     ]
   },
   "explanationEn": "## Approach\n\nFirst count each value's frequency, then sort all elements of the original array by (frequency, value).\n\n## Correctness\n\nThe comparison key determines a total order for every element. After sorting by this key every element still appears exactly once, values with smaller frequencies come first as whole blocks, and values with equal frequency are in ascending order, which is exactly the required ordering.\n\n## Complexity\n\nWith n the array length and u the number of distinct values: time O(n log n), space O(u)."

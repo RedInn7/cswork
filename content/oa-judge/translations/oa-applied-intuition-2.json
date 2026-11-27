@@ -11,5 +11,35 @@
     "hints": [
       "Each transaction layer records key changes, and GET searches from the innermost layer outward; commit merges this layer's overrides into the parent layer, and rollback discards this layer."
     ]
+  },
+  "ja": {
+    "title": "KV Store with Nested Transactions",
+    "description": "SET/GET/DELETE と、ネスト可能な BEGIN/ROLLBACK/COMMIT を実装してください。存在しないキーへの GET は NULL を返します。トランザクションがない状態で commit または rollback を行うと NO TRANSACTION を出力します。\n\nこのサイトで追加された標準入出力の規約と制約については「入力」を参照してください。",
+    "input": "q≤200000 行。キーと値は空白を含みません。",
+    "output": "GET の結果と、トランザクションがないときのエラーを出力してください。",
+    "explanation": "各トランザクション層はキーの変更を記録し、GET は最も内側の層から外側へ向かって検索します。commit はこの層の上書きを親の層にマージし、rollback はこの層を破棄します。",
+    "hints": [
+      "各トランザクション層はキーの変更を記録し、GET は最も内側の層から外側へ向かって検索します。commit はこの層の上書きを親の層にマージし、rollback はこの層を破棄します。"
+    ]
+  },
+  "ko": {
+    "title": "KV Store with Nested Transactions",
+    "description": "SET/GET/DELETE와 중첩된 BEGIN/ROLLBACK/COMMIT을 구현하세요. 없는 키에 대한 GET은 NULL을 출력하고, 트랜잭션이 없는 상태에서 commit이나 rollback을 하면 NO TRANSACTION을 출력합니다.\n\n이 사이트에서 추가한 표준 입출력 규칙과 제약 조건은 \"입력\" 항목을 참고하세요.",
+    "input": "q≤200000개의 줄이 주어지며, 키와 값은 공백을 포함하지 않습니다.",
+    "output": "GET 결과와 트랜잭션 없음 오류를 출력합니다.",
+    "explanation": "각 트랜잭션 계층은 키의 변경 사항을 기록하고, GET은 가장 안쪽 계층부터 바깥으로 검색합니다. commit은 이 계층의 덮어쓰기를 부모 계층에 병합하고, rollback은 이 계층을 버립니다.",
+    "hints": [
+      "각 트랜잭션 계층은 키의 변경 사항을 기록하고, GET은 가장 안쪽 계층부터 바깥으로 검색합니다. commit은 이 계층의 덮어쓰기를 부모 계층에 병합하고, rollback은 이 계층을 버립니다."
+    ]
+  },
+  "vi": {
+    "title": "KV Store with Nested Transactions",
+    "description": "Cài đặt SET/GET/DELETE và BEGIN/ROLLBACK/COMMIT lồng nhau; GET một khóa không tồn tại cho ra NULL; COMMIT hoặc ROLLBACK khi không có giao dịch nào thì xuất NO TRANSACTION.\n\nXem phần \"Đầu vào\" để biết quy ước nhập/xuất chuẩn và các ràng buộc do trang này bổ sung.",
+    "input": "q≤200000 dòng; khóa và giá trị không chứa khoảng trắng.",
+    "output": "In ra các kết quả GET và các lỗi không có giao dịch.",
+    "explanation": "Mỗi lớp giao dịch ghi lại các thay đổi khóa, và GET tìm từ lớp trong cùng ra ngoài; commit gộp các ghi đè của lớp này vào lớp cha, còn rollback loại bỏ lớp này.",
+    "hints": [
+      "Mỗi lớp giao dịch ghi lại các thay đổi khóa, và GET tìm từ lớp trong cùng ra ngoài; commit gộp các ghi đè của lớp này vào lớp cha, còn rollback loại bỏ lớp này."
+    ]
   }
 }

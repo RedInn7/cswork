@@ -11,5 +11,35 @@
     "hints": [
       "Run a DP from left to right with two states: whether the previous city has a unit staying there. Once you decide whether the current unit stays or moves left, the final coverage of the previous city is fixed, so settle its population; finally settle the last city."
     ]
+  },
+  "ja": {
+    "title": "各警備ユニットが左へ高々 1 回だけ移動できるときの保護人口の最大値",
+    "description": "都市が一列に並んでおり、unit[i]=1 は最初にその都市にユニットがあることを表します。各ユニットはそのまま留まるか、すぐ左の都市へ 1 回だけ移動できます。最初の都市のユニットは留まることしかできません。最終的に、ユニットが 1 つ以上ある都市は population[i] を 1 回だけ寄与し、重なったユニットが重ねて寄与することはありません。保護される人口の最大値を求めてください。\n\n標準入出力、例、解説は本サイトが独自に作成したものです。本サイトのものと明記された範囲は、元の問題の制約ではありません。",
+    "input": "1 行目に n、2 行目に population、3 行目に長さ n の 01 文字列 unit が与えられます。元の問題文には、2 つの配列の長さが等しいという制約だけが残っており、数値の範囲はありませんでした。本サイトでは 1≤n≤200000、0≤population[i]≤10^9 とします。",
+    "output": "答えを表す整数を 1 つ出力してください。",
+    "explanation": "答えは 27、7、101 です。3 つ目の例では、2 つのユニットで中央の 100 を二重に数えることはできません。",
+    "hints": [
+      "左から右へ、直前の都市にユニットが留まっているかどうかの 2 状態で DP を行います。現在のユニットが留まるか左へ動くかを決めると、直前の都市の最終的なカバー状況が確定するので、その人口を精算します。最後に末尾の都市を精算します。"
+    ]
+  },
+  "ko": {
+    "title": "보안 유닛이 왼쪽으로 최대 한 번 이동할 때 보호되는 최대 인구",
+    "description": "도시들이 한 줄로 늘어서 있고, unit[i]=1이면 처음에 그 도시에 유닛이 있다는 뜻입니다. 유닛은 제자리에 있거나 바로 왼쪽 도시로 한 번 이동할 수 있으며, 첫 번째 도시의 유닛은 제자리에만 있을 수 있습니다. 최종적으로 유닛이 하나 이상 있는 도시는 population[i]를 한 번 기여하고, 겹친 유닛은 다시 기여하지 않습니다. 보호되는 인구의 최댓값을 구하세요.\n\n표준 입출력 형식, 예제, 해설은 본 사이트가 독자적으로 작성했습니다. 본 사이트의 범위라고 명시한 값은 원문의 제약 조건이 아닙니다.",
+    "input": "첫째 줄에 n이 주어지고, 둘째 줄에 population, 셋째 줄에 길이 n인 01 문자열 unit이 주어집니다. 원문에는 두 배열의 길이가 같다는 제약만 남아 있고 수치 범위는 없었으며, 본 사이트는 1≤n≤200000, 0≤population[i]≤10^9을 사용합니다.",
+    "output": "정수 하나, 즉 답을 출력합니다.",
+    "explanation": "답은 27, 7, 101입니다. 세 번째 예제에서는 유닛 두 개가 가운데의 100을 두 번 셀 수 없습니다.",
+    "hints": [
+      "왼쪽에서 오른쪽으로 두 가지 상태를 가진 DP를 수행합니다. 상태는 이전 도시에 유닛이 제자리에 남아 있는지 여부입니다. 현재 유닛이 남을지 왼쪽으로 이동할지 정하고 나면 이전 도시의 최종 보호 여부가 확정되므로 그 인구를 정산하고, 마지막으로 마지막 도시를 정산합니다."
+    ]
+  },
+  "vi": {
+    "title": "Dân số được bảo vệ lớn nhất khi mỗi đơn vị an ninh chỉ được dịch sang trái tối đa một lần",
+    "description": "Các thành phố xếp thành một hàng, và unit[i]=1 nghĩa là ban đầu có một đơn vị ở đó. Một đơn vị có thể ở yên hoặc dịch một lần sang thành phố liền kề bên trái; đơn vị ở thành phố đầu tiên chỉ có thể ở yên. Cuối cùng, một thành phố có ít nhất một đơn vị đóng góp population[i] đúng một lần; các đơn vị chồng nhau không đóng góp thêm. Tìm tổng dân số được bảo vệ lớn nhất.\n\nĐịnh dạng vào/ra chuẩn, các ví dụ và lời giải được trang này tự biên soạn độc lập; những khoảng giá trị được đánh dấu rõ là của trang này không phải ràng buộc gốc của đề nguồn.",
+    "input": "Dòng đầu chứa n, dòng thứ hai chứa population, và dòng thứ ba chứa một xâu 01 unit có độ dài n. Đề gốc chỉ giữ lại ràng buộc là hai mảng có độ dài bằng nhau, không có giới hạn số; trang này dùng 1≤n≤200000, 0≤population[i]≤10^9.",
+    "output": "In ra một số nguyên duy nhất, là đáp án.",
+    "explanation": "Các đáp án là 27, 7 và 101. Ở ví dụ thứ ba, hai đơn vị không thể tính số 100 ở giữa hai lần.",
+    "hints": [
+      "Chạy DP từ trái sang phải với hai trạng thái: thành phố trước có đơn vị ở yên hay không. Khi đã quyết định đơn vị hiện tại ở yên hay dịch sang trái, phạm vi bao phủ cuối cùng của thành phố trước được cố định, nên chốt dân số của nó; cuối cùng chốt thành phố cuối."
+    ]
   }
 }

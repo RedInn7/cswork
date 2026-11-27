@@ -1,11 +1,12 @@
 /**
- * Validates English OA statements in content/oa-judge/translations/<id>.json.
- * Each translation is bound to its package checksum and must keep every number and
+ * Validates translated OA statements in content/oa-judge/translations/<id>.json: English (`en`,
+ * required) and Japanese, Korean, Vietnamese (`ja`, `ko`, `vi`, each optional).
+ * Each file is bound to its package checksum and every language must keep every number and
  * ASCII identifier/literal from the Chinese statement, so bounds and outputs cannot drift.
  * Usage: node scripts/oa-judge/check-translations.mjs [--quiet] [id ...]
  */
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
-import { identifiers, numbers } from './text-checks.mjs';
+import { TRANSLATED, identifiers, numbers, scriptProblem } from './text-checks.mjs';
 
 const root = 'content/oa-judge';
 const args = process.argv.slice(2);
@@ -39,26 +40,33 @@ for (const file of files) {
   const problems = [];
   try {
     const t = JSON.parse(readFileSync(`${dir}/${file}`, 'utf8'));
-    const en = t.en || {};
     if (t.schemaVersion !== 1 || t.id !== id) problems.push('bad schemaVersion/id');
     if (!registry.has(id)) problems.push('not in registry');
     else if (t.packageChecksum !== registry.get(id)) problems.push('stale packageChecksum');
-    for (const key of ['title', 'description', 'input', 'output'])
-      if (typeof en[key] !== 'string' || !en[key].trim()) problems.push(`missing en.${key}`);
-    for (const [key, max] of Object.entries(limits))
-      if (typeof en[key] === 'string' && en[key].length > max) problems.push(`en.${key} too long`);
-    if (typeof en.explanation !== 'string') problems.push('en.explanation must be a string');
-    if (!Array.isArray(en.hints) || en.hints.length > 10 || en.hints.some((h) => typeof h !== 'string' || !h.trim() || h.length > 2000))
-      problems.push('en.hints must be 0..10 non-empty strings');
-    const english = fields(en);
-    if (/[㐀-鿿]/.test(english)) problems.push('Chinese characters left in English text');
-    if (registry.has(id)) {
-      const zh = fields(chinese(id));
-      const enNumbers = numbers(english), enWords = identifiers(english);
-      const lostNumbers = [...numbers(zh)].filter((n) => !enNumbers.has(n));
-      const lostWords = [...identifiers(zh)].filter((w) => !enWords.has(w));
-      if (lostNumbers.length) problems.push(`numbers missing: ${lostNumbers.join(' ')}`);
-      if (lostWords.length) problems.push(`identifiers missing: ${lostWords.join(' ')}`);
+    const extra = Object.keys(t).filter((key) => !['schemaVersion', 'id', 'packageChecksum', 'en', ...TRANSLATED].includes(key));
+    if (extra.length) problems.push(`unknown keys: ${extra.join(' ')}`);
+    const zh = registry.has(id) ? fields(chinese(id)) : '';
+    for (const lang of ['en', ...TRANSLATED]) {
+      if (lang !== 'en' && !(lang in t)) continue;
+      const s = t[lang] || {};
+      for (const key of ['title', 'description', 'input', 'output'])
+        if (typeof s[key] !== 'string' || !s[key].trim()) problems.push(`missing ${lang}.${key}`);
+      for (const [key, max] of Object.entries(limits))
+        if (typeof s[key] === 'string' && s[key].length > max) problems.push(`${lang}.${key} too long`);
+      if (typeof s.explanation !== 'string') problems.push(`${lang}.explanation must be a string`);
+      if (!Array.isArray(s.hints) || s.hints.length > 10 || s.hints.some((h) => typeof h !== 'string' || !h.trim() || h.length > 2000))
+        problems.push(`${lang}.hints must be 0..10 non-empty strings`);
+      const translated = fields(s);
+      const script = scriptProblem(lang, translated);
+      if (script) problems.push(`${script} ${lang} text`);
+      const ownNumbers = numbers(translated), ownWords = identifiers(translated);
+      const lostNumbers = [...numbers(zh)].filter((n) => !ownNumbers.has(n));
+      // English keeps every Latin word of the source. ja/ko/vi translate loanwords ("1-based",
+      // "catalog"), so only names inside code spans must survive.
+      const named = lang === 'en' ? zh : (zh.match(/`[^`\n]+`|```[\s\S]*?```/g) || []).join(' ');
+      const lostWords = [...identifiers(named)].filter((w) => !ownWords.has(w));
+      if (lostNumbers.length) problems.push(`${lang} numbers missing: ${lostNumbers.join(' ')}`);
+      if (lostWords.length) problems.push(`${lang} identifiers missing: ${lostWords.join(' ')}`);
     }
   } catch (error) {
     problems.push(`unreadable: ${error.message}`);

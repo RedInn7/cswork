@@ -13,6 +13,21 @@
       "The total is fixed, so the smallest possible gap is 0 or 1, and every final pile must be base=floor(total/n) or base+1.",
       "Piles below base must receive boxes (total deficit D) and piles above base+1 must give boxes away (total excess E); one move reduces at most one unit of deficit and one unit of excess.",
       "Compute the total and base, accumulate D=Σmax(0, base−v) and E=Σmax(0, v−base−1), and print max(D, E). The total reaches 10^14, so use 64 bits."
+    ],
+    "ja": [
+      "総数は一定なので、最小の差は 0 か 1 で、最終的な山はすべて base=floor(total/n) または base+1 のいずれかです。",
+      "base 未満の山は箱を受け取る必要があり (不足の合計 D)、base+1 を超える山は箱を渡す必要があります (超過の合計 E)。1 回の移動で減らせる不足は最大 1、超過も最大 1 です。",
+      "合計と base を求め、D=Σmax(0, base−v) と E=Σmax(0, v−base−1) を累積し、max(D, E) を出力します。合計は 10^14 に達するので 64 ビットを使います。"
+    ],
+    "ko": [
+      "총합이 고정되어 있으므로 가능한 최소 편차는 0 또는 1이며, 모든 최종 더미는 base=floor(total/n) 또는 base+1이어야 합니다.",
+      "base보다 작은 더미는 상자를 받아야 하고 (총 부족량 D), base+1을 넘는 더미는 상자를 내줘야 합니다 (총 초과량 E). 한 번의 이동은 부족량 한 단위와 초과량 한 단위를 최대 하나씩만 줄입니다.",
+      "총합과 base를 계산하고 D=Σmax(0, base−v)와 E=Σmax(0, v−base−1)를 누적한 뒤 max(D, E)를 출력합니다. 총합은 10^14까지 커지므로 64비트를 씁니다."
+    ],
+    "vi": [
+      "Tổng là cố định, nên chênh lệch nhỏ nhất có thể là 0 hoặc 1, và mọi chồng cuối cùng phải bằng base=floor(total/n) hoặc base+1.",
+      "Các chồng dưới base phải nhận thêm hộp (tổng thiếu hụt D) và các chồng trên base+1 phải cho bớt hộp (tổng dư thừa E); một lần di chuyển giảm được tối đa một đơn vị thiếu hụt và một đơn vị dư thừa.",
+      "Tính tổng và base, cộng dồn D=Σmax(0, base−v) và E=Σmax(0, v−base−1), rồi in max(D, E). Tổng đạt 10^14, nên dùng 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nLet base=floor(sum/n); compute the total deficit D below base and the total excess E above base+1; the answer is max(D,E).\n\n## Proof of correctness\n\nWith a fixed total, the minimum difference is 0 or 1, and every final pile must be base or base+1. Let r=sum mod n and let H be the number of piles originally above base. Giving as many of the r high targets as possible to these H piles minimizes how much must be taken from the surplus piles. If r≤H, exactly the low-end deficit D must be filled; if r>H, the extra r−H high targets also need one box each. From the total we also have E=D+r−H, so the optimal number of moves is D+max(0,r−H)=max(D,E). Moving one box per step from a surplus pile to a deficit pile achieves this lower bound.\n\n## Complexity\n\nO(n) time and O(1) space besides the input, using 64-bit or arbitrary-precision integers."

@@ -11,5 +11,35 @@
     "hints": [
       "First check whether the whole message fits. Otherwise keep prefix words one by one as long as the prefix length plus 4 does not exceed K, then append the ellipsis; if not even one word fits, return the three periods."
     ]
+  },
+  "ja": {
+    "title": "通知を単語の区切りで切り詰める",
+    "description": "メッセージは、1 つのスペースで区切られた英単語からなります。K 文字を超える場合は、末尾から単語を丸ごと削除して \" ...\"（スペース 1 つと ASCII のピリオド 3 つ）を付けます。1 つも単語を残せない場合は \"...\" だけを表示します。有効な通知のうち最長のものを求めてください。元の問題の例は省略記号の前のスペースの扱いが一貫していなかったため、本サイトでは問題文に書かれたスペース 1 つの規則に従って修正しました。\n\n本サイトでは標準入出力の形式を使い、元の問題で与えられていない範囲は明示します。",
+    "input": "1 行目に K（3..500）、2 行目に message（1..500 文字）が与えられます。message は英字とスペースのみからなり、先頭・末尾・連続したスペースはありません。",
+    "output": "通知全体を出力し、末尾に改行を付けてください。",
+    "explanation": "例 1：And now を残し、スペースとピリオド 3 つを付けて \"And now ...\" を出力します。here も残すと長さが 16 になってしまいます。例 2：どの単語でも接尾辞を付けると 4 を超えるので、\"...\" しか作れません。例 3：文全体の長さは 11 で 20 を超えないので、そのまま返します。",
+    "hints": [
+      "まずメッセージ全体が収まるかを確認します。収まらなければ、先頭の単語を 1 つずつ、接頭辞の長さに 4 を足した値が K を超えない間だけ残し、最後に省略記号を付けます。1 つも収まらなければピリオド 3 つを返します。"
+    ]
+  },
+  "ko": {
+    "title": "단어 경계에서 알림 메시지 자르기",
+    "description": "메시지는 공백 하나로 구분된 영어 단어들로 이루어져 있습니다. 길이가 K자를 넘으면 끝에서부터 단어를 통째로 몇 개 지우고 \" ...\"(공백 하나와 ASCII 마침표 세 개)를 덧붙입니다. 남길 수 있는 단어가 없으면 \"...\"만 표시합니다. 유효한 알림 중 가장 긴 것을 구하세요. 원문 예제는 줄임표 앞 공백 처리가 일관되지 않았으므로, 이 사이트에서는 문제에 명시된 공백 하나 규칙에 맞게 예제를 수정했습니다.\n\n이 사이트는 표준 입출력 방식을 사용하며, 원문에 주어지지 않은 범위는 명시적으로 밝혀 둡니다.",
+    "input": "첫째 줄에 K(3..500)가 주어지고, 둘째 줄에 message(길이 1..500)가 주어집니다. message는 영문자와 공백으로만 이루어지며, 앞뒤 공백이나 연속된 공백은 없습니다.",
+    "output": "알림 전체를 출력하고 마지막에 줄바꿈을 붙입니다.",
+    "explanation": "예제 1: And now를 남기고 공백 하나와 마침표 세 개를 붙여 \"And now ...\"를 출력합니다. here까지 남기면 길이가 16이 됩니다. 예제 2: 단어 하나에 접미사를 붙여도 4를 넘으므로 \"...\"만 가능합니다. 예제 3: 문장 전체의 길이가 11로 20을 넘지 않으므로 그대로 반환합니다.",
+    "hints": [
+      "먼저 메시지 전체가 들어가는지 확인합니다. 그렇지 않으면 접두 단어들을 하나씩 남기되, 접두사 길이에 4를 더한 값이 K를 넘지 않는 동안만 유지하고 줄임표를 붙입니다. 단어를 하나도 남기지 못하면 마침표 세 개만 반환합니다."
+    ]
+  },
+  "vi": {
+    "title": "Cắt ngắn thông báo tại ranh giới từ",
+    "description": "Một thông báo gồm các từ tiếng Anh cách nhau bởi đúng một dấu cách. Nếu độ dài vượt quá K ký tự, hãy xóa một số từ nguyên vẹn ở cuối rồi thêm \" ...\" (một dấu cách theo sau là ba dấu chấm ASCII); nếu không giữ lại được từ nào thì chỉ hiển thị \"...\". Tìm thông báo hợp lệ dài nhất. Các ví dụ của đề gốc không nhất quán về dấu cách trước dấu ba chấm, nên trang này đã sửa chúng theo quy tắc một dấu cách nêu trong đề.\n\nTrang này dùng giao thức đầu vào/đầu ra chuẩn; những khoảng giá trị mà đề gốc không nêu được ghi rõ ràng.",
+    "input": "Dòng đầu tiên chứa K (3..500), dòng thứ hai chứa message (1..500 ký tự), chỉ gồm chữ cái tiếng Anh và dấu cách, không có dấu cách ở đầu, ở cuối hoặc liên tiếp.",
+    "output": "In ra thông báo đầy đủ, theo sau là một ký tự xuống dòng kết thúc.",
+    "explanation": "Ví dụ 1: giữ And now, rồi thêm một dấu cách và ba dấu chấm, in ra \"And now ...\"; nếu giữ thêm here thì độ dài sẽ là 16. Ví dụ 2: bất kỳ từ nào cộng với hậu tố đều vượt quá 4, nên chỉ có thể in \"...\". Ví dụ 3: cả câu có độ dài 11, không vượt quá 20, nên được trả về nguyên vẹn.",
+    "hints": [
+      "Trước hết kiểm tra xem cả thông báo có vừa không. Nếu không, giữ lần lượt các từ của tiền tố miễn là độ dài tiền tố cộng 4 không vượt quá K, rồi thêm dấu ba chấm; nếu không vừa nổi một từ nào, trả về ba dấu chấm."
+    ]
   }
 }

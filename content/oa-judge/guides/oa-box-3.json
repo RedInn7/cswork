@@ -13,6 +13,21 @@
       "The carousel is circular, so there are only two ways to get from one position to another, clockwise and counterclockwise, and the minimum number of moves is the shorter of the two.",
       "With the target at position t, the current position s and ring length n, the two directions take (t - s) mod n and (s - t) mod n steps. The target flavor may appear several times, and every occurrence is a candidate.",
       "Parse the JSON input to get flavors, startIndex and target. For every index whose flavor equals target, take the smaller of the two directional distances, and print the minimum over all candidates."
+    ],
+    "ja": [
+      "回転台は円形なので、ある位置から別の位置へ行く方法は、時計回りと反時計回りの 2 通りしかなく、最小の移動回数はそのうち短いほうです。",
+      "目標が位置 t、現在位置が s、リングの長さが n のとき、2 方向のステップ数は (t - s) mod n と (s - t) mod n です。目標のフレーバーは複数回現れることがあり、すべての出現が候補になります。",
+      "JSON の入力を解析して flavors、startIndex、target を取得します。フレーバーが target に等しいすべてのインデックスについて、2 方向の距離の小さいほうを取り、すべての候補にわたる最小値を出力します。"
+    ],
+    "ko": [
+      "회전판은 원형이므로 한 위치에서 다른 위치로 가는 방법은 시계 방향과 반시계 방향 두 가지뿐이고, 최소 이동 횟수는 둘 중 짧은 쪽입니다.",
+      "목표가 위치 t에, 현재 위치가 s에 있고 원의 길이가 n일 때, 두 방향은 각각 (t - s) mod n단계와 (s - t) mod n단계가 걸립니다. 목표 맛은 여러 번 나타날 수 있고, 나타나는 모든 위치가 후보입니다.",
+      "JSON 입력을 파싱해 flavors, startIndex, target을 얻습니다. 맛이 target과 같은 모든 인덱스에 대해 두 방향 거리 중 작은 값을 취하고, 모든 후보 중 최솟값을 출력합니다."
+    ],
+    "vi": [
+      "Băng chuyền là vòng tròn, nên chỉ có hai cách đi từ vị trí này sang vị trí khác, theo chiều kim đồng hồ và ngược chiều kim đồng hồ, và số bước tối thiểu là giá trị ngắn hơn trong hai cách.",
+      "Với đích ở vị trí t, vị trí hiện tại s và độ dài vòng n, hai hướng mất (t - s) mod n và (s - t) mod n bước. Vị kem đích có thể xuất hiện nhiều lần, và mỗi lần xuất hiện đều là một ứng viên.",
+      "Phân tích đầu vào JSON để lấy flavors, startIndex và target. Với mỗi chỉ số có vị kem bằng target, lấy giá trị nhỏ hơn của hai khoảng cách theo hướng, và in giá trị nhỏ nhất trên mọi ứng viên."
     ]
   },
   "explanationEn": "## Approach\n\nTreat flavors as a ring of length n. With the target flavor at index t and the current position startIndex, the clockwise and counterclockwise step counts are (t-startIndex) mod n and (startIndex-t) mod n respectively; take the smaller one. If the same flavor appears several times, take the shortest distance over all target positions.\n\nThe source example input writes target as banana, but its explanation clearly says the target is originalart at index 0 and computes 1 step accordingly. Therefore only the example's target is corrected to originalart, keeping the source output 1; with the original input banana, the correct output according to the statement would be 0.\n\n## Correctness\n\nThe two simple directional paths on the ring have lengths equal to the two distances modulo n; any shortest movement must go in the shorter direction, so the distance is the minimum of the two. If the target name repeats, any of its slots satisfies the request, and the minimum number of steps is the minimum distance over all slots.\n\n## Complexity\n\nOne scan of the flavor array: time O(n), extra space O(1).\n\n## Verification and Source\n\n#3 of the fixed OAMaster snapshot explicitly gives the circular carousel, the startIndex/target parameters, and the solution min(|t-startIndex|, n-|t-startIndex|). The explanation of the original example also explicitly places originalart at index 0 and describes moving left by 1 or right by 3, which directly supports that the target field should be originalart with the answer still 1. This site wraps these three function parameters into a single JSON line as standard input; the input format has the same semantics as the function problem.\n\nLocally, the formula was independently verified on 54 example/random inputs, and two wrong programs that run normally were used for validation: one that does not wrap around the ring, and one that counts the current position as a step. The candidate has not yet been verified in the official server sandbox."

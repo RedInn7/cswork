@@ -13,6 +13,21 @@
       "This is weighted interval scheduling: each call is the half-open interval [start, start+duration), and a call ending exactly when the next one starts does not conflict with it.",
       "Sort the calls by end time and run a prefix DP: dp[i] is the best value using the first i calls; call i is either skipped (dp[i-1]) or taken, in which case the calls that can precede it are exactly a prefix of calls whose end time is <= its start.",
       "Build the sorted array ends; for call i binary search the number p of calls among the first i-1 with end <= start, and set dp[i] = max(dp[i-1], dp[p] + volume). End times and totals can exceed 32 bits, so use 64-bit integers, and print dp[n]."
+    ],
+    "ja": [
+      "これは重み付き区間スケジューリングです。各電話は半開区間 [start, start+duration) であり、ある電話が終わる時刻にちょうど次の電話が始まっても衝突しません。",
+      "電話を終了時刻でソートし、接頭辞に対する DP を行います。dp[i] は先頭 i 件を使ったときの最良値です。電話 i は、選ばない（dp[i-1]）か、選ぶかのどちらかです。選ぶ場合、その前に置ける電話は、終了時刻が開始時刻以下の電話からなる接頭辞にちょうど一致します。",
+      "ソート済みの終了時刻の配列 ends を作ります。電話 i について、先頭 i-1 件のうち終了時刻 <= start のものの個数 p を二分探索で求め、dp[i] = max(dp[i-1], dp[p] + volume) とします。終了時刻や合計は 32 ビットを超えうるので 64 ビット整数を使い、dp[n] を出力してください。"
+    ],
+    "ko": [
+      "가중치가 있는 구간 스케줄링 문제입니다. 각 통화는 반개구간 [start, start+duration)이며, 한 통화가 끝나는 순간 다음 통화가 시작되면 서로 충돌하지 않습니다.",
+      "통화를 종료 시각 기준으로 정렬하고 접두사 DP를 수행합니다. dp[i]는 앞의 i개 통화로 얻는 최댓값이고, i번째 통화는 건너뛰거나(dp[i-1]) 선택합니다. 선택하면 그 앞에 올 수 있는 통화는 종료 시각이 시작 시각 이하인 통화들, 즉 정렬 순서상 접두사입니다.",
+      "정렬된 종료 시각 배열 ends를 만들고, i번째 통화에 대해 앞의 i-1개 중 종료 시각이 start 이하인 통화의 수 p를 이분 탐색으로 구한 뒤 dp[i] = max(dp[i-1], dp[p] + volume)로 갱신합니다. 종료 시각과 합계는 32비트를 넘을 수 있으므로 64비트 정수를 쓰고 dp[n]을 출력합니다."
+    ],
+    "vi": [
+      "Đây là bài lập lịch khoảng có trọng số: mỗi cuộc gọi là khoảng nửa mở [start, start+duration), và cuộc gọi kết thúc đúng lúc cuộc kế tiếp bắt đầu thì không xung đột với nó.",
+      "Sắp xếp các cuộc gọi theo thời điểm kết thúc và chạy DP tiền tố: dp[i] là giá trị tốt nhất khi dùng i cuộc gọi đầu; cuộc gọi i hoặc bị bỏ qua (dp[i-1]) hoặc được chọn, khi đó các cuộc gọi có thể đứng trước nó chính là một tiền tố các cuộc gọi có thời điểm kết thúc <= start của nó.",
+      "Xây mảng ends đã sắp xếp; với cuộc gọi i, dùng tìm kiếm nhị phân để tìm số p các cuộc gọi trong i-1 cuộc đầu có end <= start, rồi đặt dp[i] = max(dp[i-1], dp[p] + volume). Thời điểm kết thúc và tổng có thể vượt quá 32 bit, nên dùng số nguyên 64-bit, và in dp[n]."
     ]
   },
   "explanationEn": "## Approach\n\nSort by end time. Let dp[i] be the maximum order volume obtainable from the first i calls. For call i, binary search for the number p of calls whose end time is no later than its start time: without the current call the value is dp[i-1], and with it the value is dp[p]+volume[i]; take the larger.\n\n## Correctness\n\nFor the first i calls sorted by end time, an optimal plan either does not choose call i, in which case its value is at most dp[i-1], or chooses call i. Under the half-open interval rule used by the source's implementations in three languages, the calls that can come right before it are exactly the intervals with end time <= start[i], and these form a sorted prefix p, so the best value when choosing it is dp[p]+volume[i]. The two cases cover all feasible plans, and taking the maximum gives dp[i]. By induction on i, dp[n] is the global optimum.\n\n## Complexity\n\nTime O(n log n), space O(n).\n\n## Source and site conventions\n\nIn the original example, calls 2 and 4 can be chosen, for an order volume of 76. The original problem gives the input ranges but does not state whether equal endpoints conflict; the Python, Java, and C++ implementations in the pinned snapshot all use `end <= next start` to decide that two calls can follow each other, and this site makes that implementation rule explicit as the half-open interval `[start, start+duration)`. This site adds the stdin/stdout input format. Source: https://oamaster.com/docs/companies/snowflake#11-maximum-order-volume-weighted-interval-scheduling"

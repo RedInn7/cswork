@@ -13,6 +13,21 @@
       "No two adjacent nodes may share a group, which is exactly graph colouring. A tree with at least two nodes has an edge, so at least two groups are needed, and since a tree is bipartite two groups always suffice.",
       "A connected tree has a unique 2-colouring up to swapping the colours: split nodes by depth parity. So the minimum grouping is fixed and you only need max minus min within each of the two groups.",
       "From any node run an iterative DFS or BFS, giving each node the colour opposite to its parent, and keep the minimum and maximum value per colour. The answer is the sum of the two ranges. With a single node print 0. With up to 10^5 nodes, avoid deep recursion."
+    ],
+    "ja": [
+      "隣接するノードは同じグループに入れないので、これはグラフ彩色そのものです。ノードが 2 つ以上の木には辺があるので少なくとも 2 グループが必要で、木は二部グラフなので 2 グループで必ず足ります。",
+      "連結な木の 2 彩色は、色の入れ替えを除いて一意に定まります。つまり深さの偶奇でノードを分けます。したがって最小のグループ分けは固定で、2 つのグループそれぞれの最大値から最小値を引いた値だけを求めればよいことになります。",
+      "任意のノードから反復的な DFS か BFS を行い、各ノードに親と反対の色を付けて、色ごとの最小値と最大値を保持します。答えは 2 つの幅の和です。ノードが 1 つなら 0 を出力します。ノードは最大 10^5 個なので、深い再帰は避けます。"
+    ],
+    "ko": [
+      "인접한 두 노드는 같은 그룹에 속할 수 없으므로, 이는 정확히 그래프 색칠 문제입니다. 노드가 2개 이상인 트리에는 간선이 있으므로 그룹이 최소 2개 필요하고, 트리는 이분 그래프이므로 항상 2개로 충분합니다.",
+      "연결된 트리의 2-색칠은 색을 서로 바꾸는 것을 제외하면 유일합니다. 깊이의 홀짝으로 노드를 나누면 됩니다. 따라서 최소 그룹 분할은 고정되어 있으며, 두 그룹 각각에서 최댓값 − 최솟값만 구하면 됩니다.",
+      "임의의 노드에서 반복적인 DFS 또는 BFS를 실행하여 각 노드에 부모와 반대 색을 주고, 색마다 최솟값과 최댓값을 유지합니다. 답은 두 범위의 합입니다. 노드가 하나이면 0을 출력합니다. 노드가 최대 10^5개이므로 깊은 재귀는 피하세요."
+    ],
+    "vi": [
+      "Không có hai nút kề nhau nào được ở chung một nhóm, đây chính là bài toán tô màu đồ thị. Một cây có ít nhất hai nút thì có cạnh, nên cần ít nhất 2 nhóm, và vì cây là đồ thị hai phía nên 2 nhóm luôn đủ.",
+      "Một cây liên thông có đúng một cách tô 2 màu, sai khác phép hoán đổi hai màu: chia các nút theo tính chẵn lẻ của độ sâu. Do đó cách chia nhóm tối thiểu là cố định và bạn chỉ cần tính giá trị lớn nhất trừ nhỏ nhất trong mỗi nhóm của hai nhóm.",
+      "Từ một nút bất kỳ, chạy DFS hoặc BFS lặp, gán cho mỗi nút màu đối lập với nút cha, và giữ giá trị nhỏ nhất và lớn nhất theo từng màu. Đáp án là tổng hai khoảng giá trị. Nếu chỉ có một nút thì in 0. Với tối đa 10^5 nút, hãy tránh đệ quy sâu."
     ]
   },
   "explanationEn": "## Idea\n\n2-colour the tree with an iterative traversal and keep the minimum and maximum value of each colour.\n\n## Why it is correct\n\nA tree with at least two nodes has an edge, so at least two groups are needed. Grouping by depth parity is valid, and the 2-colouring of a connected tree is unique up to swapping the colours, so these two colour classes are exactly the grouping with the minimum number of groups. A single node is handled separately.\n\n## Complexity\n\nO(n) time, O(n) extra space."

@@ -13,6 +13,21 @@
       "Equal prices produce no signal and do not break the earlier sequence, so first compress all neighbouring changes into a stream of +1/−1 directions, remembering the price index of each direction.",
       "\"The most recent changes match an indicator\" is pattern matching on that stream: each time a full match ends at the current element, a signal fires at that element's price index. KMP finds all matches, including overlapping ones, in linear time.",
       "Run KMP on the direction stream for buyIndicator and for sellIndicator; on a match add +1 or −1 at the matching direction's price index (a buy and a sell at the same index cancel naturally), and after a match set j=pi[j−1] so matches may overlap. Finally take prefix sums of the increments and print the position at every time."
+    ],
+    "ja": [
+      "同じ価格はシグナルを生まず、それ以前の並びを途切れさせないので、まず隣り合う変化をすべて +1/−1 の方向のストリームに圧縮し、各方向の価格の添字を覚えておきます。",
+      "「直近の変化が指標と一致する」とは、そのストリーム上のパターン照合のことです。現在の要素で完全一致が終わるたびに、その要素の価格の添字でシグナルが発生します。KMP は、重なりを含むすべての一致を線形時間で見つけます。",
+      "方向のストリームに対して、buyIndicator と sellIndicator のそれぞれで KMP を実行します。一致したら、一致した方向の価格の添字に +1 または −1 を加算します（同じ添字での買いと売りは自然に打ち消されます）。一致のあとは j=pi[j−1] とし、一致が重なれるようにします。最後に増分の累積和を取り、各時点のポジションを出力します。"
+    ],
+    "ko": [
+      "같은 가격은 신호를 만들지 않고 앞선 수열을 끊지도 않으므로, 먼저 이웃한 모든 변화를 +1/−1 방향의 스트림으로 압축하고 각 방향의 가격 인덱스를 기억해 두세요.",
+      "\"가장 최근의 변화가 지시자와 일치한다\"는 이 스트림에 대한 패턴 매칭입니다. 완전한 일치가 현재 원소에서 끝날 때마다 그 원소의 가격 인덱스에서 신호가 발생합니다. KMP는 겹치는 일치를 포함해 모든 일치를 선형 시간에 찾습니다.",
+      "방향 스트림에 대해 buyIndicator와 sellIndicator 각각 KMP를 실행합니다. 일치하면 해당 방향의 가격 인덱스에 +1 또는 −1을 더하고(같은 인덱스의 매수와 매도는 자연스럽게 상쇄), 일치 후에는 j=pi[j−1]로 설정하여 일치가 겹칠 수 있게 합니다. 마지막으로 증분의 누적 합을 구해 모든 시점의 포지션을 출력하세요."
+    ],
+    "vi": [
+      "Giá bằng nhau không tạo tín hiệu và không làm đứt chuỗi trước đó, nên trước hết nén mọi thay đổi liền kề thành một luồng các hướng +1/−1, ghi nhớ chỉ số giá của mỗi hướng.",
+      "\"Các thay đổi gần nhất khớp với một indicator\" là bài khớp mẫu trên luồng đó: mỗi khi một lần khớp đầy đủ kết thúc tại phần tử hiện tại, một tín hiệu kích hoạt tại chỉ số giá của phần tử đó. KMP tìm mọi lần khớp, kể cả các lần chồng nhau, trong thời gian tuyến tính.",
+      "Chạy KMP trên luồng hướng cho buyIndicator và cho sellIndicator; khi khớp thì cộng +1 hoặc −1 tại chỉ số giá của hướng khớp (mua và bán tại cùng chỉ số tự nhiên triệt tiêu nhau), và sau mỗi lần khớp đặt j=pi[j−1] để các lần khớp có thể chồng nhau. Cuối cùng lấy tổng tiền tố của các mức tăng và in vị thế tại mọi thời điểm."
     ]
   },
   "explanationEn": "## Idea\n\nTurn the neighbouring price changes into a stream of non-zero directions and record the original price index of each direction. Match the buy and sell patterns separately with KMP, add the signals at the corresponding price indices, then take prefix sums.\n\n## Proof of correctness\n\nFor each pattern, KMP on the non-zero direction stream fires exactly once at each place where a complete match ends, and only there; the recorded index is exactly the price the current signal belongs to. Adding the buy and sell increments and taking prefix sums gives the net position from all triggered signals at every time.\n\n## Complexity\n\nO(n+b+s) time, O(n+b+s) space.\n\n## Source note\n\nThe original example 51,56,56,58 clearly treats the two rises as consecutive signals; an equal price neither triggers a signal nor resets the non-zero change sequence. The 0-direction implementation in the upstream curated MDX conflicts with this original example; this site follows the original rule and example and records the difference.\n\nThis site separately prepared the standard input/output protocol; it does not claim the original site provides it."

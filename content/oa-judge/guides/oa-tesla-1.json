@@ -13,6 +13,21 @@
       "Each letter is transformed on its own and the order stays the same; treat letters as numbers 0..25, shift right by 4 and wrap around from Z back to A.",
       "For a letter number x, the encrypted number is (x + 4) mod 26; the modulus handles W, X, Y and Z wrapping to the start.",
       "For each character compute 'A' + ((c - 'A' + 4) mod 26), and concatenate the results in the original order."
+    ],
+    "ja": [
+      "各文字は独立に変換され、順序は変わりません。文字を 0..25 の数として扱い、右に 4 ずらし、Z から A へ循環させます。",
+      "文字の番号 x に対して、暗号化後の番号は (x + 4) mod 26 です。剰余によって W、X、Y、Z が先頭に回り込みます。",
+      "各文字について 'A' + ((c - 'A' + 4) mod 26) を計算し、結果を元の順序で連結します。"
+    ],
+    "ko": [
+      "각 문자는 독립적으로 변환되고 순서는 그대로입니다. 문자를 0..25의 수로 보고 오른쪽으로 4칸 이동하며 Z에서 A로 순환합니다.",
+      "문자 번호 x에 대해 암호화된 번호는 (x + 4) mod 26입니다. 나머지 연산이 W, X, Y, Z를 처음으로 되돌려 줍니다.",
+      "각 문자 c에 대해 'A' + ((c - 'A' + 4) mod 26)을 계산하고, 결과를 원래 순서대로 이어 붙입니다."
+    ],
+    "vi": [
+      "Mỗi chữ cái được biến đổi độc lập và thứ tự giữ nguyên; hãy coi các chữ cái là các số 0..25, dịch sang phải 4 và quay vòng từ Z về A.",
+      "Với số thứ tự chữ cái x, số thứ tự sau mã hóa là (x + 4) mod 26; phép modulo xử lý việc W, X, Y và Z quay về đầu bảng.",
+      "Với mỗi ký tự tính 'A' + ((c - 'A' + 4) mod 26), và nối các kết quả theo thứ tự ban đầu."
     ]
   },
   "explanationEn": "## Approach\n\nConvert each letter to 0 through 25, add 4, take the result modulo 26, and convert it back to a letter.\n\n## Correctness\n\nAdding 4 gives the position shifted to the right, and modulo 26 handles the wrap-around at the end exactly; mapping character by character while keeping the order gives the answer.\n\n## Complexity\n\nO(n) time and O(n) output space."

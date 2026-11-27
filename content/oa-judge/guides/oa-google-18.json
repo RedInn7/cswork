@@ -13,6 +13,21 @@
       "For one house, only the rightmost store on its left and the leftmost store on its right can be nearest; every other store lies behind one of these two and cannot be closer.",
       "Sort the store positions. For each house, binary search its insertion point in the sorted stores; the stores right next to that point are the only candidates.",
       "Sort the stores; for each house use lower_bound to find the first store idx with position >= the house; the candidates are stores[idx] (if it exists) and stores[idx-1] (if it exists); compare distances and break ties by the smaller position; print the results in the original house order."
+    ],
+    "ja": [
+      "1 軒の家について、最も近くなりうる店は、左側で最も右にある店と、右側で最も左にある店だけです。ほかの店はこの 2 つのどちらかの後ろにあるので、それより近くはなりません。",
+      "店の位置をソートします。各家について、ソート済みの店の中で挿入位置を二分探索します。その位置のすぐ隣にある店だけが候補です。",
+      "店をソートし、各家について lower_bound で位置が家以上である最初の店 idx を求めます。候補は stores[idx] (存在すれば) と stores[idx-1] (存在すれば) です。距離を比較し、同じなら小さい位置を選びます。結果は家の元の順序で出力します。"
+    ],
+    "ko": [
+      "한 집에서 가장 가까울 수 있는 가게는 왼쪽에서 가장 오른쪽에 있는 가게와 오른쪽에서 가장 왼쪽에 있는 가게뿐입니다. 다른 모든 가게는 이 둘 중 하나의 뒤에 있으므로 더 가까울 수 없습니다.",
+      "가게 위치를 정렬합니다. 각 집에 대해 정렬된 가게들에서 삽입 위치를 이분 탐색으로 찾습니다. 그 지점 바로 옆의 가게들만 후보입니다.",
+      "가게를 정렬하고, 각 집에 대해 lower_bound로 위치가 집 이상인 첫 번째 가게 idx를 찾습니다. 후보는 stores[idx] (존재하면)와 stores[idx-1] (존재하면)입니다. 거리를 비교하고 같으면 더 작은 위치를 택합니다. 결과는 집의 원래 순서대로 출력합니다."
+    ],
+    "vi": [
+      "Với một ngôi nhà, chỉ cửa hàng ngoài cùng bên phải trong số các cửa hàng bên trái nó và cửa hàng ngoài cùng bên trái trong số các cửa hàng bên phải nó mới có thể là gần nhất; mọi cửa hàng khác đều nằm sau một trong hai cửa hàng này và không thể gần hơn.",
+      "Sắp xếp các vị trí cửa hàng. Với mỗi ngôi nhà, tìm kiếm nhị phân điểm chèn của nó trong các cửa hàng đã sắp xếp; các cửa hàng ngay cạnh điểm đó là các ứng viên duy nhất.",
+      "Sắp xếp các cửa hàng; với mỗi ngôi nhà dùng lower_bound để tìm cửa hàng idx đầu tiên có vị trí >= vị trí nhà; các ứng viên là stores[idx] (nếu tồn tại) và stores[idx-1] (nếu tồn tại); so sánh khoảng cách và nếu bằng nhau thì chọn vị trí nhỏ hơn; in kết quả theo thứ tự ban đầu của các ngôi nhà."
     ]
   },
   "explanationEn": "## Approach\n\nSort the store positions. Binary search the insertion point of each house and compare only the neighbouring stores on its left and right.\n\n## Why it is correct\n\nAmong the stores to the left of the house, the rightmost one is the closest; the same holds on the right. No other store can be closer. Comparing these two candidates and breaking ties by position is enough.\n\n## Complexity\n\nTime O(m log m + n log m), extra space O(m + n)."

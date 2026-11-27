@@ -13,6 +13,21 @@
       "Setting a 1 in y where x has a 1 turns that bit of the XOR into 0, which both lowers the value and wastes budget, so y should place 1s only where x has 0s.",
       "In binary, a bit's weight is larger than the total weight of all lower bits, so the limited budget of set bits should go to the highest 0 bits first.",
       "Scan x from the most significant bit to the least: if the bit is 0 and budget remains, output 1 for y and decrease the budget; otherwise output 0. y has the same length as x, and leading 0s are printed as usual."
+    ],
+    "ja": [
+      "x が 1 の位置で y を 1 にすると、XOR のそのビットが 0 になり、値が下がるうえに予算も無駄になります。したがって y の 1 は、x が 0 の位置にだけ置きます。",
+      "2 進数では、あるビットの重みは、それより下位のすべてのビットの重みの合計より大きいので、限られたセットビットの予算は、x の最も上位の 0 のビットから順に使います。",
+      "x を最上位ビットから最下位ビットへ走査します。ビットが 0 で予算が残っていれば、y に 1 を出力して予算を 1 減らし、そうでなければ 0 を出力します。y は x と同じ長さで、先頭の 0 もそのまま出力します。"
+    ],
+    "ko": [
+      "x가 1인 곳에 y의 1을 놓으면 XOR 결과의 그 비트가 0이 되어 값이 작아지고 예산도 낭비됩니다. 따라서 y의 1은 x가 0인 곳에만 놓아야 합니다.",
+      "이진수에서는 한 비트의 가중치가 그보다 낮은 모든 비트의 가중치 합보다 크므로, 제한된 켜진 비트 예산은 가장 높은 0 비트부터 써야 합니다.",
+      "x를 가장 높은 비트에서 가장 낮은 비트 순으로 훑으면서 비트가 0이고 예산이 남아 있으면 y에 1을 출력하고 예산을 줄이며, 아니면 0을 출력합니다. y의 길이는 x와 같으며 앞쪽의 0도 그대로 출력합니다."
+    ],
+    "vi": [
+      "Đặt 1 trong y ở nơi x có 1 sẽ biến bit đó của XOR thành 0, vừa làm giảm giá trị vừa lãng phí ngân sách, nên y chỉ nên đặt các bit 1 ở nơi x có 0.",
+      "Trong hệ nhị phân, trọng số của một bit lớn hơn tổng trọng số của mọi bit thấp hơn, nên ngân sách bit bật hạn chế phải dành cho các bit 0 cao nhất trước.",
+      "Duyệt x từ bit cao nhất đến thấp nhất: nếu bit là 0 và còn ngân sách thì xuất 1 cho y và giảm ngân sách; ngược lại xuất 0. y có cùng độ dài với x, và các số 0 đứng đầu được in như bình thường."
     ]
   },
   "explanationEn": "## Approach\n\nStarting from the most significant bit, set a bit of y to 1 only where x is 0 and set-bit budget remains; all other bits are 0.\n\n## Proof of correctness\n\nWhere x is 1, setting y to 1 only lowers the result and uses up budget, so it is never better than 0. Where x is 0, setting a 1 adds that bit's weight; a higher bit's weight exceeds the sum of all lower bits, so spending the limited budget on the highest 0 bits in order is optimal.\n\n## Complexity\n\nTime O(bits), output space O(bits)."

@@ -13,5 +13,41 @@
       "The non-diagonal elements form disjoint orbits of four.",
       "The strict top triangle r<c<n−1−r contains exactly one representative of each orbit."
     ]
+  },
+  "ja": {
+    "title": "Capital One OA #18: 対角線を固定した行列の回転",
+    "description": "空でない n×n の正方行列と、非負の回数 turns が与えられます。各ターンで、2本の主対角線上の要素はその場に残り、残りの4つの三角形の領域が時計回りに90度回転します。対角線上にない要素の元の座標 (r,c) は (c,n−1−r) に移動します(座標は0から数えます)。これを turns 回繰り返した後の行列を出力してください。この写像は、固定された元の 5×5 の例と各要素ごとに一致します。元のページの公開されている出典の画像にも、両方の対角線を固定した時計回りの回転が明示されています。",
+    "input": "1行目に n turns、続く n 行にそれぞれ n 個の整数が空白区切りで与えられます。LF/CRLF の改行と末尾の EOF を受け付けます。元の問題には数値の上限がありませんでした。このサイトは Java の型に合わせて次のように公開しています。n≥1(空でない正方行列)、要素は −2147483648..2147483647、turns は 0..2147483647 です。n は既存の 32MiB の入力予算によってのみ制限され、それより小さい個別の上限はありません。4095 は最短のエンコーディングの予算から導かれた値で、元の制約ではありません。空の行列と負のターン数は、拡張としてサポートされません。",
+    "output": "回転後の行列を、n 個の整数からなる n 行で出力してください。n は出力しないでください。",
+    "explanation": "最初の公開例は、元の完全な 5×5 の入力と出力をそのまま保持しています。両方の対角線 1/7/13/19/25 と 5/9/13/17/21 は固定されたままです。2番目と3番目の公開例はこのサイトが追加したものです。2×2 の行列はすべて対角線上にあるので、何ターン後も変わりません。1×1 の行列と turns が 0 の場合も同様に変わりません。出典の画像は別にダウンロードされ、そのハッシュに結び付けられています。このサイトは、固定されたスナップショットにアクセス可能な画像が含まれているとは主張しません。",
+    "hints": [
+      "4回回転すると元の行列に戻ります。",
+      "対角線上にない要素は、4要素ずつの互いに素な軌道を成します。",
+      "厳密な上三角 r<c<n−1−r には、各軌道の代表がちょうど1つ含まれます。"
+    ]
+  },
+  "ko": {
+    "title": "Capital One OA #18: 대각선을 고정한 행렬 회전",
+    "description": "비어 있지 않은 n×n 정사각 행렬과 음이 아닌 횟수 turns가 주어집니다. 한 턴마다 두 주대각선 위의 원소는 제자리에 두고, 나머지 네 삼각형 영역은 시계 방향으로 90도 회전합니다. 대각선이 아닌 원소의 원래 좌표 (r,c)는 (c,n−1−r)로 이동하며 좌표는 0부터 셉니다. 이를 turns번 반복한 뒤의 행렬을 출력하세요. 이 사상은 고정된 원래의 5×5 예시와 원소 하나하나가 일치하며, 원문 페이지의 공개된 원본 이미지에도 두 대각선이 고정된 채 시계 방향으로 회전함이 명시적으로 나와 있습니다.",
+    "input": "첫째 줄에 n turns가 주어지고, 이어서 n개의 줄에 각각 n개의 정수가 공백으로 구분되어 주어집니다. LF/CRLF 줄바꿈과 끝의 EOF를 허용합니다. 원문에는 수치 상한이 주어지지 않았으며, 이 사이트에서는 Java 타입에 맞춰 공개적으로 조정했습니다. n≥1(비어 있지 않은 정사각 행렬), 원소는 −2147483648..2147483647, turns는 0..2147483647입니다. n은 기존의 32MiB 입력 예산으로만 제한되며 별도의 더 작은 상한은 없습니다. 4095는 가장 짧은 인코딩 예산에서 유도한 값이며 원문의 제약이 아닙니다. 빈 행렬과 음수 회전 횟수는 확장으로서 지원하지 않습니다.",
+    "output": "회전한 행렬을 각 줄에 n개의 정수로 n줄 출력합니다. n은 출력하지 않습니다.",
+    "explanation": "첫 번째 공개 예시는 원래의 완전한 5×5 입력과 출력을 그대로 유지하며, 두 대각선 1/7/13/19/25와 5/9/13/17/21은 고정됩니다. 두 번째와 세 번째 공개 예시는 이 사이트에서 추가했습니다. 2×2 행렬은 전부 대각선이므로 몇 번을 회전해도 변하지 않고, 1×1 행렬과 0번 회전도 마찬가지로 행렬이 변하지 않습니다. 원본 이미지는 별도로 다운로드하여 자체 해시에 연결했으며, 이 사이트는 고정된 스냅샷에 접근 가능한 이미지가 들어 있다고 주장하지 않습니다.",
+    "hints": [
+      "네 번 회전하면 원래 행렬로 돌아옵니다.",
+      "대각선이 아닌 원소들은 4개씩 서로소인 궤도를 이룹니다.",
+      "엄격한 위쪽 삼각형 r<c<n−1−r에는 각 궤도의 대표가 정확히 하나씩 있습니다."
+    ]
+  },
+  "vi": {
+    "title": "Capital One OA #18: Xoay ma trận với hai đường chéo cố định",
+    "description": "Cho một ma trận vuông n×n không rỗng và một số lần turns không âm. Ở mỗi lượt, các phần tử trên cả hai đường chéo chính giữ nguyên vị trí, và bốn vùng tam giác còn lại xoay 90 độ theo chiều kim đồng hồ: một phần tử không nằm trên đường chéo có tọa độ gốc (r,c) chuyển đến (c,n−1−r), với tọa độ tính từ 0. Hãy in ma trận sau khi lặp lại điều này turns lần. Ánh xạ này khớp từng phần tử với ví dụ 5×5 gốc cố định; hình ảnh nguồn công khai trên trang gốc cho thấy rõ phép xoay theo chiều kim đồng hồ với cả hai đường chéo cố định.",
+    "input": "Dòng đầu tiên chứa n turns, tiếp theo là n dòng, mỗi dòng n số nguyên cách nhau bởi khoảng trắng; chấp nhận kết thúc dòng LF/CRLF và EOF ở cuối. Đề gốc không đưa ra cận số; trang này điều chỉnh công khai theo các kiểu của Java: n≥1 (ma trận vuông không rỗng), các phần tử trong −2147483648..2147483647, và turns trong 0..2147483647. n chỉ bị giới hạn bởi ngân sách đầu vào 32MiB hiện có, không có cận nhỏ hơn riêng; 4095 suy ra từ ngân sách mã hóa ngắn nhất và không phải ràng buộc của nguồn. Ma trận rỗng và số lượt âm không được hỗ trợ như phần mở rộng.",
+    "output": "In ma trận đã xoay thành n dòng, mỗi dòng n số nguyên; không in n.",
+    "explanation": "Ví dụ công khai đầu tiên giữ nguyên đầu vào và đầu ra 5×5 đầy đủ của đề gốc; cả hai đường chéo, 1/7/13/19/25 và 5/9/13/17/21, đều cố định. Ví dụ công khai thứ hai và thứ ba do trang này thêm: một ma trận 2×2 hoàn toàn nằm trên đường chéo và giữ nguyên sau bất kỳ số lượt nào; một ma trận 1×1 và số lượt bằng không cũng để ma trận không đổi. Hình ảnh nguồn được tải riêng và gắn với hash của chính nó; trang này không khẳng định rằng bản chụp cố định chứa một hình ảnh truy cập được.",
+    "hints": [
+      "Bốn lần xoay khôi phục ma trận ban đầu.",
+      "Các phần tử không nằm trên đường chéo tạo thành các quỹ đạo bốn phần tử rời nhau.",
+      "Tam giác trên ngặt r<c<n−1−r chứa đúng một đại diện của mỗi quỹ đạo."
+    ]
   }
 }

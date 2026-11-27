@@ -11,5 +11,35 @@
     "hints": [
       "Count frequencies and sort by value. A valid range of values must be consecutive, with every interior value appearing at least twice and each endpoint at least once. Scan the right end: restart at a gap between values, and when the previous value has frequency 1, make it the new left end; maintain the window's total frequency and the maximum."
     ]
+  },
+  "ja": {
+    "title": "並べ替え後に隣接差が高々 1 となる最大のサーバーリング",
+    "description": "整数配列からいくつかの要素を削除します。残った要素は自由に並べ替えて、先頭と末尾を含むすべての隣り合うペアの差の絶対値が ≤1 であるリングにできなければなりません。残せる要素の最大数を求めてください。同じ値は、出現する回数だけ使えますが、要素を追加することはできません。\n\n本サイトが標準入出力、解説、テストを独自に作成しました。元の範囲が欠けている点や、例の訂正は、問題文中に明記しています。",
+    "input": "1行目に n、2行目に n 個の整数が与えられます。元の問題文には値の範囲が示されていないため、本サイトでは 1≤n≤200000、−10^9≤値≤10^9 とします。",
+    "output": "答えとなる整数を1つ出力してください。",
+    "explanation": "3つの答えは 3、4、1 です。出典の最初の例は 4 としていますが、その説明は存在しない 2 を追加しており、与えられた配列では最大 3 までしか残せません。2つ目の例では、1,2,3,2 が長さ 4 のリングをなします。",
+    "hints": [
+      "頻度を数えて値でソートします。有効な値の範囲は連続していなければならず、内部の各値は少なくとも 2 回、両端は少なくとも 1 回ずつ現れる必要があります。右端を走査し、値に隙間があればそこから再開し、直前の値の頻度が 1 のときは、それを新しい左端にします。ウィンドウ内の頻度の合計を保持し、その最大値を求めます。"
+    ]
+  },
+  "ko": {
+    "title": "재배열 후 인접한 원소의 차가 최대 1인 가장 큰 서버 링",
+    "description": "정수 배열에서 일부 원소를 삭제하고, 남은 원소를 자유롭게 재배열하여 첫 원소와 마지막 원소를 포함해 모든 인접한 원소 쌍의 차의 절댓값이 ≤1인 링(원형)을 만듭니다. 남길 수 있는 원소의 최대 개수를 구하세요. 같은 값은 등장한 횟수만큼 쓸 수 있으며 원소를 추가할 수는 없습니다.\n\n이 사이트가 표준 입출력, 해설, 테스트를 독자적으로 작성했으며, 누락된 원문 범위와 예제의 정정 사항은 문제 설명에 명시했습니다.",
+    "input": "첫째 줄에 n이, 둘째 줄에 n개의 정수가 주어집니다. 원문에는 값의 범위가 없으며, 이 사이트에서 1≤n≤200000, −10^9≤value≤10^9로 정했습니다.",
+    "output": "정답을 정수 하나로 출력합니다.",
+    "explanation": "세 개의 정답은 3, 4, 1입니다. 원문의 첫 번째 예제는 4라고 하지만 그 설명은 존재하지 않는 2를 하나 더 끌어다 쓰며, 주어진 배열로는 최대 3개만 남길 수 있습니다. 두 번째 예제에서 1,2,3,2는 실제로 길이 4의 링을 이룹니다.",
+    "hints": [
+      "빈도를 세고 값 기준으로 정렬합니다. 유효한 값의 범위는 연속이어야 하며, 내부의 각 값은 최소 두 번, 양 끝은 최소 한 번 등장해야 합니다. 오른쪽 끝을 훑으며 값 사이에 간격이 있으면 다시 시작하고, 이전 값의 빈도가 1이면 그 값을 새로운 왼쪽 끝으로 삼습니다. 윈도우의 총 빈도를 유지하며 최댓값을 구합니다."
+    ]
+  },
+  "vi": {
+    "title": "Vòng máy chủ lớn nhất có hiệu hai phần tử kề nhau không quá 1 sau khi sắp xếp lại",
+    "description": "Xóa một số phần tử của một mảng số nguyên; các phần tử còn lại có thể được sắp xếp lại tùy ý thành một vòng tròn trong đó mọi cặp phần tử kề nhau, kể cả phần tử đầu và cuối, có hiệu tuyệt đối ≤1. Hãy tìm số phần tử tối đa được giữ lại. Các giá trị bằng nhau có thể dùng bao nhiêu lần tùy theo số lần xuất hiện, và không được thêm phần tử.\n\nTrang này tự viết đầu vào/ra chuẩn, lời giải và các bộ kiểm thử; các giới hạn gốc bị thiếu và các chỗ sửa ví dụ được nêu rõ trong đề bài.",
+    "input": "Dòng đầu chứa n và dòng thứ hai chứa n số nguyên. Đề gốc không nêu giới hạn giá trị; trên trang này 1≤n≤200000, −10^9≤giá trị≤10^9.",
+    "output": "In ra một số nguyên duy nhất, là đáp án.",
+    "explanation": "Ba đáp án là 3, 4 và 1. Ví dụ đầu tiên của nguồn nói 4, nhưng phần giải thích của nó tự bịa thêm một số 2; với mảng đã cho nhiều nhất giữ được 3. Trong ví dụ thứ hai, 1,2,3,2 quả thực tạo thành một vòng độ dài 4.",
+    "hints": [
+      "Đếm tần suất và sắp xếp theo giá trị. Một khoảng giá trị hợp lệ phải liên tiếp, mọi giá trị bên trong xuất hiện ít nhất hai lần và mỗi đầu mút ít nhất một lần. Quét đầu mút phải: khởi động lại tại chỗ đứt quãng giữa các giá trị, và khi giá trị trước đó có tần suất 1 thì đặt nó làm đầu mút trái mới; duy trì tổng tần suất của cửa sổ và giá trị lớn nhất."
+    ]
   }
 }

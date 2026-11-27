@@ -13,6 +13,21 @@
       "Releases must follow non-decreasing plannedDate, so sort first; after that you only decide which date each update uses, and it cannot be earlier than the previous update.",
       "For the current update the earliest feasible date is the smaller of the two candidates that is not before the current day. Since alternateDate <= plannedDate and planned dates are sorted, the planned date is never before the current day even when the alternate date has passed. Taking the earliest feasible date each time never delays any later update.",
       "Sort the pairs (plannedDate, alternateDate) by planned date (then by alternate date); start with day = 0; for each pair, if alternate >= day set day = alternate, otherwise day = planned; print day at the end."
+    ],
+    "ja": [
+      "リリースは plannedDate の非減少順でなければならないので、まずソートします。その後は各アップデートがどの日を使うかを決めるだけで、その日は直前のアップデートより早くなれません。",
+      "現在のアップデートで実現可能な最も早い日は、2 つの候補のうち現在の日より前でない小さい方です。alternateDate <= plannedDate であり予定日はソート済みなので、代替日がすでに過ぎていても、予定日が現在の日より前になることはありません。毎回実現可能な最も早い日を選べば、後のアップデートを遅らせることはありません。",
+      "(plannedDate, alternateDate) のペアを予定日 (次に代替日) でソートします。day = 0 から始め、各ペアについて alternate >= day なら day = alternate、そうでなければ day = planned とし、最後に day を出力します。"
+    ],
+    "ko": [
+      "배포는 plannedDate의 비내림차순을 따라야 하므로 먼저 정렬합니다. 그 후에는 각 업데이트가 어느 날짜를 쓸지만 정하면 되고, 그 날짜는 이전 업데이트보다 이를 수 없습니다.",
+      "현재 업데이트에서 가능한 가장 이른 날짜는, 현재 날짜보다 이르지 않은 두 후보 중 작은 쪽입니다. alternateDate <= plannedDate이고 계획일이 정렬되어 있으므로, 대체일이 이미 지났더라도 계획일은 절대 현재 날짜보다 이르지 않습니다. 매번 가능한 가장 이른 날짜를 택하면 뒤의 어떤 업데이트도 늦추지 않습니다.",
+      "(plannedDate, alternateDate) 쌍을 계획일 (같으면 대체일) 기준으로 정렬하고 day = 0으로 시작합니다. 각 쌍에 대해 alternate >= day이면 day = alternate, 아니면 day = planned로 설정합니다. 마지막에 day를 출력합니다."
+    ],
+    "vi": [
+      "Các bản phát hành phải theo plannedDate không giảm, nên hãy sắp xếp trước; sau đó bạn chỉ quyết định mỗi bản cập nhật dùng ngày nào, và nó không thể sớm hơn bản cập nhật trước đó.",
+      "Với bản cập nhật hiện tại, ngày khả thi sớm nhất là ngày nhỏ hơn trong hai ứng viên mà không trước ngày hiện tại. Vì alternateDate <= plannedDate và các ngày dự kiến đã được sắp xếp, ngày dự kiến không bao giờ trước ngày hiện tại, kể cả khi ngày thay thế đã qua. Luôn chọn ngày khả thi sớm nhất thì không làm trễ bản cập nhật nào về sau.",
+      "Sắp xếp các cặp (plannedDate, alternateDate) theo ngày dự kiến (rồi theo ngày thay thế); bắt đầu với day = 0; với mỗi cặp, nếu alternate >= day thì đặt day = alternate, ngược lại day = planned; cuối cùng in day."
     ]
   },
   "explanationEn": "## Approach\n\nSort by planned date and keep the current earliest available day. If the alternate date is not earlier than the current day, choose it; otherwise you can only wait until the planned date.\n\n## Correctness\n\nOnce the planned order is fixed, the earliest legal release date of the current update can only be the earliest of its two possible dates that is not before the previous day. Since alternateDate <= plannedDate, if the alternate date has already passed, the planned date is still not before the current day: every date chosen earlier is at most its own planned date, and the planned dates are sorted. Choosing the earliest legal date for each item cannot delay any later feasible date, so the final completion day is minimal.\n\n## Complexity\n\nTime O(n log n), space O(n)."

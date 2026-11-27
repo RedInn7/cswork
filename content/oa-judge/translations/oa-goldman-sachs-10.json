@@ -11,5 +11,35 @@
     "hints": [
       "Use dynamic programming where dp[i] is the number of decodings of the first i digits. The last digit can be decoded on its own if it is not 0; the last two digits can be decoded together if they are in 10..26."
     ]
+  },
+  "ja": {
+    "title": "Alphanumeric Combinations",
+    "description": "数字列は、順序を保ったまま 1..26 の整数に分割でき、それらは a..z に対応します。有効な分割 1 つが単語 1 つに対応します。先頭が 0 の数は、単独でも 01..09 の一部としてもデコードできません。\n\n本サイトの入力プロトコルと明示された補足の範囲は CSWork が作成したもので、元の OA の規則を装うものではありません。",
+    "input": "1 行に数字列 S が与えられます。元の問題には長さの範囲がありません。本サイトでは、出力がこの問題の判定の出力上限に収まるよう、1≤|S|≤1000、文字は 0..9 のみという制約を追加しています。",
+    "output": "有効なデコードの個数を 10 進整数で出力します。有効なデコードがなければ 0 を出力します。",
+    "explanation": "解法、正当性の証明、計算量は付属の解説を参照してください。",
+    "hints": [
+      "動的計画法を使います。dp[i] を、先頭 i 桁のデコード方法の個数とします。最後の 1 桁は 0 でなければ単独でデコードでき、最後の 2 桁は 10..26 の範囲なら一緒にデコードできます。"
+    ]
+  },
+  "ko": {
+    "title": "Alphanumeric Combinations",
+    "description": "숫자 문자열은 순서대로 1..26의 정수들로 나눌 수 있으며, 각 정수는 a..z에 대응됩니다. 유효한 분할 하나는 단어 하나에 대응됩니다. 앞에 0이 오는 경우는 단독으로도, 01..09의 일부로도 해독할 수 없습니다.\n\n이 사이트의 입력 규약과 명시된 보충 범위는 CSWork가 구성한 것이며 원래 OA 규칙인 척하지 않습니다.",
+    "input": "숫자 문자열 S가 한 줄로 주어집니다. 원 문제는 길이 범위를 주지 않았으므로, 이 사이트는 출력이 이 문제의 채점 출력 한도 안에 들어가도록 1≤|S|≤1000을 추가하며 문자는 0..9뿐입니다.",
+    "output": "유효한 해독 방법의 수를 10진 정수로 출력합니다. 유효한 해독이 없으면 0을 출력합니다.",
+    "explanation": "접근 방식, 정당성 증명, 복잡도는 함께 제공되는 풀이를 참고하세요.",
+    "hints": [
+      "동적 계획법을 사용하며 dp[i]는 앞의 i개 숫자를 해독하는 방법의 수입니다. 마지막 숫자는 0이 아니면 단독으로 해독할 수 있고, 마지막 두 숫자는 10..26 범위이면 함께 해독할 수 있습니다."
+    ]
+  },
+  "vi": {
+    "title": "Alphanumeric Combinations",
+    "description": "Một xâu chữ số có thể được tách theo thứ tự thành các số nguyên 1..26, tương ứng với a..z. Mỗi cách tách hợp lệ ứng với một từ; số 0 đứng đầu không thể giải mã riêng lẻ hay là một phần của 01..09.\n\nGiao thức đầu vào và các khoảng giá trị bổ sung được nêu rõ của trang này do CSWork biên soạn và không giả danh quy tắc OA gốc.",
+    "input": "Một dòng duy nhất chứa xâu chữ số S. Đề gốc không nêu khoảng độ dài; trang này bổ sung 1≤|S|≤1000 với các ký tự chỉ là 0..9, để đầu ra nằm trong giới hạn đầu ra của bài này.",
+    "output": "In ra số cách giải mã hợp lệ dưới dạng số nguyên thập phân; in 0 nếu không có cách giải mã hợp lệ nào.",
+    "explanation": "Xem lời giải đi kèm để biết ý tưởng, chứng minh tính đúng đắn và độ phức tạp.",
+    "hints": [
+      "Dùng quy hoạch động với dp[i] là số cách giải mã i chữ số đầu tiên. Chữ số cuối có thể được giải mã riêng nếu nó khác 0; hai chữ số cuối có thể được giải mã cùng nhau nếu chúng nằm trong 10..26."
+    ]
   }
 }

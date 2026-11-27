@@ -13,6 +13,21 @@
       "Look at the last jar: either you skip it, or you take it, and taking it rules out the jar before it.",
       "Let f[i] be the best total over the first i jars; then f[i] = max(f[i - 1], f[i - 2] + a[i]); it only depends on the two previous values, so two rolling variables suffice.",
       "Start older (best for the first i - 2 jars) and previous (best for the first i - 1 jars) at 0; for each amount v the new value is max(previous, older + v), then older takes the old previous and previous takes the new value; print previous, using 64-bit integers."
+    ],
+    "ja": [
+      "最後の瓶に注目します。飛ばすか、取るかのどちらかで、取るとその前の瓶は取れなくなります。",
+      "f[i] を最初の i 個の瓶に対する最良の合計とすると、f[i] = max(f[i - 1], f[i - 2] + a[i]) です。直前の 2 つの値にしか依存しないので、2 つのローリング変数で足ります。",
+      "older（最初の i - 2 個の最良）と previous（最初の i - 1 個の最良）を 0 で始めます。各個数 v について新しい値は max(previous, older + v) で、その後 older は古い previous を、previous は新しい値を取ります。previous を出力します。整数は 64 ビットを使います。"
+    ],
+    "ko": [
+      "마지막 병을 봅니다. 건너뛰거나 고르거나 둘 중 하나이며, 고르면 그 앞의 병은 고를 수 없습니다.",
+      "f[i]를 처음 i개 병에 대한 최선의 합이라 하면 f[i] = max(f[i - 1], f[i - 2] + a[i])입니다. 직전 두 값에만 의존하므로 롤링 변수 두 개면 충분합니다.",
+      "older(처음 i - 2개 병의 최선)와 previous(처음 i - 1개 병의 최선)를 0으로 시작합니다. 각 양 v에 대해 새 값은 max(previous, older + v)이고, 그다음 older는 이전 previous를, previous는 새 값을 가집니다. 64비트 정수를 사용하여 previous를 출력합니다."
+    ],
+    "vi": [
+      "Hãy nhìn hũ cuối cùng: hoặc bạn bỏ qua nó, hoặc bạn lấy nó, và lấy nó thì loại trừ hũ ngay trước đó.",
+      "Gọi f[i] là tổng tốt nhất trên i hũ đầu; khi đó f[i] = max(f[i - 1], f[i - 2] + a[i]); nó chỉ phụ thuộc vào hai giá trị trước, nên hai biến cuốn chiếu là đủ.",
+      "Bắt đầu older (giá trị tốt nhất cho i - 2 hũ đầu) và previous (giá trị tốt nhất cho i - 1 hũ đầu) bằng 0; với mỗi số lượng v, giá trị mới là max(previous, older + v), rồi older nhận previous cũ và previous nhận giá trị mới; in previous, dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nRoll the optimum values for the first i-2 jars and the first i-1 jars; the current jar can be skipped, or added to the optimum for the first i-2 jars.\n\n## Proof of correctness\n\nWhether an optimal plan takes the last jar splits all plans into two mutually exclusive and exhaustive classes: if it does not, the value equals the optimum at the previous position; if it does, the previous jar cannot be taken, so the jar can be added to the optimum two positions back. Induction gives the global optimum.\n\n## Complexity\n\nO(n) time and O(1) auxiliary space apart from the input; the largest answer is 5*10^11."

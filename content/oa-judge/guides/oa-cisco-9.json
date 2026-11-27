@@ -13,6 +13,21 @@
       "The mean is rounded down by the mathematical floor (toward negative infinity for negative sums, not truncated toward 0), and among tied modes the smallest value wins.",
       "In one scan add up the total and count each integer in a hash map; the mean is floor(total / N) and the mode is the smallest value among those with the highest count.",
       "The total can reach about 10^14, so use 64-bit integers; for the floor in C++ or Go subtract 1 from the truncated quotient when there is a remainder and the total is negative, and in Java use Math.floorDiv; walk the count table and update the mode when a count is higher, or equal with a smaller value; print \"mean mode\"."
+    ],
+    "ja": [
+      "平均は数学的な floor（負の和では負の無限大方向であり、0 方向への切り捨てではありません）で切り捨て、最頻値が複数ある場合は最小の値を採用します。",
+      "1 回の走査で合計を足し上げながら、ハッシュマップで各整数の出現回数を数えます。平均は floor(total / N)、最頻値は出現回数が最大の値のうち最小のものです。",
+      "合計は約 10^14 に達し得るので 64 ビット整数を使ってください。C++ や Go で floor を求めるには、余りがあり合計が負のとき、0 方向に切り捨てた商から 1 を引きます。Java では Math.floorDiv を使います。度数表を走査し、出現回数が大きいとき、または同じで値が小さいときに最頻値を更新します。出力は \"mean mode\" です。"
+    ],
+    "ko": [
+      "평균은 수학적 floor로 내림합니다(합이 음수이면 0 방향 절삭이 아니라 음의 무한대 방향). 최빈값이 동률이면 가장 작은 값이 우선합니다.",
+      "한 번의 순회로 합계를 더하고 해시 맵에서 각 정수의 등장 횟수를 셉니다. 평균은 floor(total / N)이고, 최빈값은 등장 횟수가 가장 많은 값들 중 가장 작은 값입니다.",
+      "합계가 약 10^14까지 커질 수 있으므로 64비트 정수를 사용하세요. C++나 Go에서 floor를 구하려면 합계가 음수이고 나머지가 있을 때 절삭된 몫에서 1을 빼고, Java에서는 Math.floorDiv를 사용합니다. 횟수 표를 순회하며 횟수가 더 크거나, 같고 값이 더 작을 때 최빈값을 갱신합니다. \"mean mode\"를 출력합니다."
+    ],
+    "vi": [
+      "Trung bình cộng được làm tròn xuống theo floor toán học (về phía âm vô cùng với tổng âm, không phải cắt về phía 0), và trong các mode bằng nhau thì giá trị nhỏ nhất thắng.",
+      "Chỉ cần một lượt duyệt: cộng dồn tổng và đếm từng số nguyên bằng hash map; trung bình là floor(total / N) và mode là giá trị nhỏ nhất trong số các giá trị có số lần xuất hiện cao nhất.",
+      "Tổng có thể lên tới khoảng 10^14 nên hãy dùng số nguyên 64 bit; với floor trong C++ hoặc Go, hãy trừ 1 khỏi thương đã bị cắt khi có dư và tổng âm, còn trong Java dùng Math.floorDiv; duyệt bảng đếm và cập nhật mode khi số lần lớn hơn, hoặc bằng nhưng giá trị nhỏ hơn; in \"mean mode\"."
     ]
   },
   "explanationEn": "## Approach\n\nAccumulate the elements in one scan to get the total, and count the frequency of every integer at the same time. The mean is floor(sum/N) by its mathematical definition, and the mode is the value with the highest frequency; on ties take the smallest value.\n\n## Correctness\n\nBy the statement, the arithmetic mean of the array is the sum divided by N, rounded down, so the result is uniquely floor(sum/N); in particular negative values must not be truncated toward zero. The mode is by definition an element whose number of occurrences reaches the maximum; taking the smallest of these elements satisfies exactly the tie rule of the statement. One complete frequency count yields both the maximum frequency and the smallest mode.\n\n## Complexity\n\nO(N) time, O(U) space, where U is the number of distinct integers.\n\n## Sources and boundaries\n\nThe original OAMaster problem's example output is 3 2; its example explanation writes the mean as 15/2=3, which is a typo in the original: the array has 5 elements and the correct computation is 15/5=3, with the expected output unchanged. Its text states explicitly that ties among modes take the smallest value, with the constraints N<=10^5 and absolute values of the elements <=10^9. A second Fastprep record of the same problem confirms that a negative mean should be floored but does not state the tie rule for the mode; this site follows the explicit tie rule from OAMaster. The input/output protocol is supplied by this site. Source: https://oamaster.com/docs/companies/cisco#9-calculate-mean-and-mode; supplementary records of the same problem: https://www.fastprep.io/problems/cisco-calculate-mean-and-mode, https://www.fastprep.io/problems/cisco-find-mean-and-mode."

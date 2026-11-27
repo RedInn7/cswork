@@ -13,6 +13,21 @@
       "The comparison is on full coordinate sets: a component of the second grid counts only if its cells are exactly the cells of some component of the first grid, not a subset and not merely the same shape.",
       "Find all 4-connected components of both grids and represent each as the set of its cell ids; the question becomes how many sets of the second grid also appear among the sets of the first grid.",
       "Traverse each grid iteratively with a stack or queue to avoid deep recursion, recording each component as the set of its cell ids r*m+c, and put the first grid's components in a hash set. Then count the second grid's components found in that set. Equivalently, label the first grid's cells with component ids; a second-grid component matches when all its cells carry the same label and both components have the same size."
+    ],
+    "ja": [
+      "比較は座標の集合全体に対して行います。2 つ目のグリッドの成分が数えられるのは、そのセルが 1 つ目のグリッドのある成分のセルとまったく同じ場合だけで、部分集合や単に同じ形というだけでは数えられません。",
+      "両方のグリッドのすべての 4 連結成分を見つけ、それぞれをセル ID の集合で表します。問題は、2 つ目のグリッドの集合のうち、1 つ目のグリッドの集合にも現れるものがいくつあるか、になります。",
+      "深い再帰を避けるため、各グリッドをスタックまたはキューで反復的に走査し、各成分をセル ID r*m+c の集合として記録し、1 つ目のグリッドの成分をハッシュ集合に入れます。そして 2 つ目のグリッドの成分のうち、その集合に見つかるものを数えます。同じことですが、1 つ目のグリッドのセルに成分 ID のラベルを付けておき、2 つ目のグリッドの成分のすべてのセルが同じラベルを持ち、かつ 2 つの成分のサイズが等しければ一致です。"
+    ],
+    "ko": [
+      "비교 대상은 전체 좌표 집합입니다. 두 번째 격자의 연결 요소는 그 칸들이 첫 번째 격자의 어떤 연결 요소의 칸들과 정확히 같을 때만 세며, 부분 집합이거나 모양만 같은 경우는 세지 않습니다.",
+      "두 격자의 모든 4방향 연결 요소를 찾고 각각을 칸 id의 집합으로 표현하면, 문제는 두 번째 격자의 집합 중 몇 개가 첫 번째 격자의 집합에도 나타나는지로 바뀝니다.",
+      "깊은 재귀를 피하기 위해 스택이나 큐로 각 격자를 반복적으로 순회하며, 각 연결 요소를 칸 id r*m+c의 집합으로 기록하고 첫 번째 격자의 연결 요소들을 해시 집합에 넣습니다. 그런 다음 두 번째 격자의 연결 요소 중 그 집합에 있는 것의 수를 셉니다. 동등하게, 첫 번째 격자의 칸에 연결 요소 id로 라벨을 붙이고, 두 번째 격자의 연결 요소가 모든 칸에서 같은 라벨을 가지며 두 연결 요소의 크기가 같으면 일치합니다."
+    ],
+    "vi": [
+      "Phép so sánh dựa trên tập tọa độ đầy đủ: một thành phần của lưới thứ hai chỉ được tính nếu các ô của nó chính xác là các ô của một thành phần nào đó của lưới thứ nhất, không phải một tập con và cũng không phải chỉ cùng hình dạng.",
+      "Tìm mọi thành phần liên thông 4 hướng của cả hai lưới và biểu diễn mỗi thành phần bằng tập id các ô của nó; bài toán trở thành đếm xem có bao nhiêu tập của lưới thứ hai cũng xuất hiện trong các tập của lưới thứ nhất.",
+      "Duyệt mỗi lưới bằng vòng lặp với ngăn xếp hoặc hàng đợi để tránh đệ quy sâu, ghi mỗi thành phần dưới dạng tập id ô r*m+c, và đưa các thành phần của lưới thứ nhất vào một tập băm. Sau đó đếm các thành phần của lưới thứ hai có trong tập đó. Tương đương, gán nhãn id thành phần cho các ô của lưới thứ nhất; một thành phần của lưới thứ hai khớp khi mọi ô của nó mang cùng một nhãn và hai thành phần có cùng kích thước."
     ]
   },
   "explanationEn": "## Approach\n\nExtract the set of cell ids of each connected component with an iterative traversal, use the immutable set as a key, and count the keys of the second grid that also appear in the first grid.\n\n## Correctness\n\nThe traversal only expands along 1-cells in the four directions and stops only when it cannot expand further, so each run extracts exactly one complete component. Two sets of absolute cell ids are equal if and only if all coordinates are exactly equal; set lookup implements exactly what the problem asks.\n\n## Complexity\n\nExpected time O(nm), space O(nm)."

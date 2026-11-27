@@ -13,6 +13,21 @@
       "A member is adequately served exactly when every required specialty has at least one provider within the distance limit; a single specialty with no such provider means the member is reported.",
       "Group providers by specialty first, so checking one of a member's specialties only scans that group. Coordinates are integers, so compare squared distance with the squared limit, which is exact and includes distances equal to the limit.",
       "When reading providers, store their coordinates in a list keyed by specialty. For each member, split the required specialties on the vertical bar and check each one's list for a provider with squared distance <= maxDistance^2; if some specialty has none, record the member id and stop checking. Finally print the recorded ids in ascending numeric order, one per line, or nothing if there are none."
+    ],
+    "ja": [
+      "メンバーが十分にサービスを受けられるのは、必要なすべての専門分野について、距離の上限以内にプロバイダーが 1 人以上いる場合に限ります。そのようなプロバイダーがいない専門分野が 1 つでもあれば、そのメンバーを報告します。",
+      "先にプロバイダーを専門分野ごとにグループ化しておけば、メンバーの 1 つの専門分野の確認ではそのグループだけを走査すれば済みます。座標は整数なので、2 乗距離と上限の 2 乗を比較すれば正確で、距離が上限ちょうどの場合も含められます。",
+      "プロバイダーを読み込む際に、座標を専門分野をキーとするリストに保存します。各メンバーについて、必要な専門分野を縦棒で分割し、それぞれのリストに 2 乗距離が <= maxDistance^2 のプロバイダーがあるかを確認します。ない専門分野があれば、そのメンバーの ID を記録して確認を打ち切ります。最後に、記録した ID を数値の昇順で 1 行に 1 つずつ出力します。該当がなければ何も出力しません。"
+    ],
+    "ko": [
+      "회원이 적절히 서비스를 받는다는 것은 필요한 모든 전문 분야에 거리 제한 이내의 제공자가 최소 한 명 있다는 것과 동치입니다. 그런 제공자가 없는 전문 분야가 하나라도 있으면 그 회원을 보고합니다.",
+      "먼저 제공자를 전문 분야별로 묶어 두면, 회원의 한 전문 분야를 확인할 때 그 그룹만 훑으면 됩니다. 좌표가 정수이므로 제곱 거리를 제한값의 제곱과 비교하면 정확하며, 제한과 같은 거리도 포함됩니다.",
+      "제공자를 읽을 때 전문 분야를 키로 하는 리스트에 좌표를 저장합니다. 각 회원에 대해 필요한 전문 분야를 세로 막대(|)로 나누고, 각각의 리스트에서 제곱 거리가 maxDistance^2 이하인 제공자가 있는지 확인합니다. 어떤 전문 분야에 제공자가 없으면 회원 id를 기록하고 확인을 중단합니다. 마지막으로 기록된 id를 숫자 오름차순으로 한 줄에 하나씩 출력하며, 없으면 아무것도 출력하지 않습니다."
+    ],
+    "vi": [
+      "Một hội viên được phục vụ đầy đủ khi và chỉ khi mọi chuyên khoa bắt buộc có ít nhất một nhà cung cấp trong giới hạn khoảng cách; chỉ cần một chuyên khoa không có nhà cung cấp như vậy thì hội viên bị báo cáo.",
+      "Hãy nhóm các nhà cung cấp theo chuyên khoa trước, để kiểm tra một chuyên khoa của hội viên chỉ phải quét nhóm đó. Tọa độ là số nguyên, nên so sánh bình phương khoảng cách với bình phương giới hạn, cách này chính xác và bao gồm cả các khoảng cách bằng giới hạn.",
+      "Khi đọc các nhà cung cấp, lưu tọa độ của họ vào một danh sách theo khóa là chuyên khoa. Với mỗi hội viên, tách các chuyên khoa bắt buộc theo dấu gạch đứng và kiểm tra danh sách của từng chuyên khoa xem có nhà cung cấp nào có bình phương khoảng cách <= maxDistance^2 không; nếu có chuyên khoa không có, ghi lại id hội viên và dừng kiểm tra. Cuối cùng in các id đã ghi theo thứ tự số tăng dần, mỗi id một dòng, hoặc không in gì nếu không có."
     ]
   },
   "explanationEn": "## Approach\n\nBuild an index of provider coordinates by specialty. For each member, check each required specialty in turn for a provider whose squared distance is not greater than d^2. The time is O(P+M*R*P_s), where P_s is the number of providers with the relevant specialty.\n\n## Proof of correctness\n\nA member is adequately served if and only if each required specialty has at least one provider within the distance limit. The algorithm checks this existence specialty by specialty; as soon as one is missing, the member is added to the result. Sorting at the end only affects the display order.\n\n## Complexity\n\nCoordinates are integers, so squared distances can be compared to avoid floating-point error; the distance bound includes being equal to maxDistance.\n\nO(P + M*R*P) time and O(P) space, where R is the number of specialties a member requires.\n\n## Reference implementation\n\n```python\ndef solve(raw):\n z=raw.splitlines();P,M,d=map(int,z[0].split());by={}\n for line in z[1:1+P]:\n  i,s,x,y=line.split();by.setdefault(s,[]).append((int(x),int(y)))\n ans=[]\n for line in z[1+P:1+P+M]:\n  mid,x,y,req=line.split();x=int(x);y=int(y);bad=False\n  for s in req.split('|'):\n   if not any((a-x)**2+(b-y)**2<=d*d for a,b in by.get(s,[])):bad=True;break\n  if bad:ans.append(int(mid))\n return '\\n'.join(map(str,sorted(ans)))\n```"

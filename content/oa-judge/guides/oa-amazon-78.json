@@ -13,6 +13,21 @@
       "Only the count f of each level matters. All group sizes must be b or b+1 for some b >= 1, and b can never exceed the smallest frequency.",
       "For a fixed b, a level with frequency f needs at least ceil(f/(b+1)) groups; each of those needs at least b servers, so b works exactly when ceil(f/(b+1)) * b <= f, and then the leftovers can be spread one per group. A larger b never increases the minimum number of groups per level, so try b from large to small; the first b feasible for every level gives the fewest total groups.",
       "Count the frequency of each level; for b from the smallest frequency down to 1: for each frequency compute groups = (f + b)/(b + 1) with integer division; if groups * b > f this b fails, otherwise add groups; the sum for the first b that works for all levels is the answer (b = 1 always works). The total work is at most (number of levels) x (smallest frequency) <= n."
+    ],
+    "ja": [
+      "重要なのは各レベルの個数 f だけです。すべてのグループの大きさは、ある b >= 1 について b か b+1 でなければならず、b が最小の頻度を超えることはありません。",
+      "b を固定すると、頻度 f のレベルは少なくとも ceil(f/(b+1)) 個のグループを必要とし、各グループには少なくとも b 台のサーバーが必要です。したがって b が成り立つのは ceil(f/(b+1)) * b <= f のときに限られ、そのとき余りは 1 グループにつき 1 つずつ割り振れます。b が大きくなってもレベルあたりの最小グループ数は増えないので、b を大きいほうから小さいほうへ試し、すべてのレベルで実現可能になる最初の b がグループ総数を最小にします。",
+      "各レベルの頻度を数えます。b を最小頻度から 1 まで下げながら、各頻度について整数除算で groups = (f + b)/(b + 1) を計算します。groups * b > f ならこの b は失敗で、そうでなければ groups を加えます。すべてのレベルで成り立つ最初の b の合計が答えです（b = 1 は常に成り立ちます）。全体の作業量は、高々 (レベルの数) x (最小頻度) <= n です。"
+    ],
+    "ko": [
+      "각 등급의 개수 f만 중요합니다. 모든 그룹의 크기는 어떤 b >= 1에 대해 b 또는 b+1이어야 하며, b는 가장 작은 빈도를 넘을 수 없습니다.",
+      "b가 고정되면 빈도 f인 등급은 최소 ceil(f/(b+1))개의 그룹이 필요하고 각 그룹에는 서버가 최소 b개 있어야 합니다. 따라서 ceil(f/(b+1)) * b <= f일 때에 한해 b가 가능하며, 남은 서버는 그룹마다 하나씩 나눠 넣을 수 있습니다. b가 클수록 등급당 필요한 최소 그룹 수는 늘지 않으므로 b를 큰 값에서 작은 값으로 시도하며, 모든 등급에서 가능한 첫 번째 b가 가장 적은 총 그룹 수를 줍니다.",
+      "각 등급의 빈도를 센 뒤 b를 가장 작은 빈도에서 1까지 내려가며 시도합니다. 각 빈도에 대해 groups = (f + b)/(b + 1)(정수 나눗셈)을 계산하고, groups * b > f이면 이 b는 실패이며, 아니면 groups를 더합니다. 모든 등급에서 통과한 첫 번째 b의 합이 답입니다(b = 1은 항상 가능). 전체 작업량은 (등급 수) x (가장 작은 빈도) <= n 이하입니다."
+    ],
+    "vi": [
+      "Chỉ số lượng f của mỗi mức độ là quan trọng. Mọi kích thước nhóm phải là b hoặc b+1 với một b >= 1 nào đó, và b không bao giờ vượt quá tần suất nhỏ nhất.",
+      "Với b cố định, một mức độ có tần suất f cần ít nhất ceil(f/(b+1)) nhóm; mỗi nhóm cần ít nhất b máy chủ, nên b dùng được chính xác khi ceil(f/(b+1)) * b <= f, và khi đó phần dư có thể rải mỗi nhóm một máy. b lớn hơn không bao giờ làm tăng số nhóm tối thiểu của mỗi mức độ, nên hãy thử b từ lớn xuống nhỏ; b đầu tiên khả thi với mọi mức độ cho tổng số nhóm ít nhất.",
+      "Đếm tần suất của mỗi mức độ; với b từ tần suất nhỏ nhất giảm xuống 1: với mỗi tần suất tính groups = (f + b)/(b + 1) bằng chia nguyên; nếu groups * b > f thì b này thất bại, ngược lại cộng groups; tổng của b đầu tiên dùng được cho mọi mức độ là đáp án (b = 1 luôn dùng được). Tổng công việc tối đa là (số mức độ) x (tần suất nhỏ nhất) <= n."
     ]
   },
   "explanationEn": "## Approach\n\nEnumerate the smaller group size b, decreasing from the smallest level frequency. A frequency f uses ceil(f/(b+1)) groups, which is feasible only if each of these groups has at least b items. The first b that is feasible for all levels gives the fewest total groups.\n\n## Proof of correctness\n\nFor a fixed b, the number of groups is at least ceil(f/(b+1)). If f >= that number of groups x b, adding the remaining items one per group forms groups of size b or b+1; if not, adding more groups only raises the minimum requirement. As b grows, the minimum number of groups needed for each frequency does not increase, so the first feasible value found while decreasing is optimal.\n\n## Complexity\n\nO(n) time, since the number of distinct levels x the smallest frequency <= n; O(n) space."

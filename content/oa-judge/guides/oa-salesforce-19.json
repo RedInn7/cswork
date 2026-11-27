@@ -13,6 +13,21 @@
       "Each interval has only two choices: execute it directly, or split it into two equal halves and recurse. The halves are independent and their costs add, so the best cost of an interval is min(direct cost, best of left half + best of right half).",
       "n can reach 10^9, so arrays proportional to the interval length are not allowed. An interval with no high-priority process costs normal_time when executed directly, and splitting it only adds positive costs, so return immediately. The recursion therefore only goes into intervals containing high-priority processes, about k*log n of them.",
       "Sort the high-priority indices. The recursive function carries the interval start, its length, and its range [left,right) in the sorted array. An empty range returns normal_time. Otherwise compute the direct cost priority_time*(right-left)*length (it can exceed 64 bits, so use a wider integer or cap it); a length-1 interval returns it. Otherwise binary search the midpoint inside the range, recurse on both halves, and return the smaller value."
+    ],
+    "ja": [
+      "各区間の選択肢は 2 つだけです。そのまま実行するか、等しい 2 つの半分に分割して再帰するかです。半分どうしは独立で、コストは足されるので、区間の最良コストは min(直接のコスト, 左半分の最良 + 右半分の最良) です。",
+      "n は 10^9 に達し得るので、区間の長さに比例する配列は使えません。高優先度のプロセスを含まない区間は、直接実行すると normal_time かかり、分割すると正のコストが増えるだけなので、直ちに返します。したがって、再帰は高優先度のプロセスを含む区間にしか入らず、その数は k*log n 程度です。",
+      "高優先度の添字をソートします。再帰関数は、区間の開始位置、その長さ、ソート済み配列での範囲 [left,right) を持ちます。範囲が空なら normal_time を返します。そうでなければ直接実行のコスト priority_time*(right-left)*length を計算し (64 ビットを超える場合があるので、より幅の広い整数型を使うか、上限を設けます)、長さ 1 の区間ならそれを返します。そうでなければ範囲内で中点を二分探索し、両方の半分に再帰して小さいほうを返します。"
+    ],
+    "ko": [
+      "각 구간에는 두 가지 선택뿐입니다. 그대로 실행하거나, 같은 길이의 두 절반으로 나누어 재귀합니다. 두 절반은 독립이고 비용은 더해지므로 구간의 최적 비용은 min(직접 비용, 왼쪽 절반 최적 + 오른쪽 절반 최적)입니다.",
+      "n은 10^9까지 될 수 있으므로 구간 길이에 비례하는 배열은 쓸 수 없습니다. 고우선순위 프로세스가 없는 구간은 직접 실행하면 normal_time이고, 나누면 양의 비용만 더해지므로 즉시 반환합니다. 따라서 재귀는 고우선순위 프로세스를 포함한 구간으로만 내려가며, 그 수는 약 k*log n개입니다.",
+      "고우선순위 인덱스를 정렬합니다. 재귀 함수는 구간의 시작, 길이, 정렬된 배열에서의 범위 [left,right)를 가지고 갑니다. 범위가 비어 있으면 normal_time을 반환합니다. 그렇지 않으면 직접 비용 priority_time*(right-left)*length를 계산하고(64비트를 넘을 수 있으므로 더 넓은 정수를 쓰거나 상한을 둡니다), 길이가 1인 구간이면 그 값을 반환합니다. 아니면 범위 안에서 중간점을 이분 탐색하고 두 절반을 재귀 호출하여 더 작은 값을 반환합니다."
+    ],
+    "vi": [
+      "Mỗi đoạn chỉ có hai lựa chọn: thực thi trực tiếp, hoặc chia thành hai nửa bằng nhau rồi đệ quy. Hai nửa độc lập và chi phí của chúng cộng lại, nên chi phí tốt nhất của một đoạn là min(chi phí trực tiếp, tốt nhất nửa trái + tốt nhất nửa phải).",
+      "n có thể đạt 10^9, nên không được dùng mảng tỉ lệ với độ dài đoạn. Một đoạn không có tiến trình ưu tiên cao tốn normal_time khi thực thi trực tiếp, và việc chia chỉ thêm các chi phí dương, nên trả về ngay. Vì vậy đệ quy chỉ đi vào các đoạn chứa tiến trình ưu tiên cao, khoảng k*log n đoạn.",
+      "Sắp xếp các chỉ số ưu tiên cao. Hàm đệ quy mang theo điểm bắt đầu của đoạn, độ dài của nó, và khoảng [left,right) của nó trong mảng đã sắp xếp. Khoảng rỗng trả về normal_time. Ngược lại tính chi phí trực tiếp priority_time*(right-left)*length (có thể vượt quá 64 bit, nên dùng số nguyên rộng hơn hoặc chặn trần); đoạn độ dài 1 trả về giá trị đó. Ngược lại tìm kiếm nhị phân điểm giữa trong khoảng, đệ quy trên cả hai nửa, và trả về giá trị nhỏ hơn."
     ]
   },
   "explanationEn": "## Approach\n\nSort the high-priority indices; let each recursive interval carry its corresponding range of indices, and use binary search to split it into left and right subranges. An empty interval returns normal_time immediately; otherwise, compare the direct cost with the sum of the optimal costs of the two halves.\n\n## Correctness\n\nThe only valid decisions for each interval are executing it directly or splitting it into equal halves; with the latter, the two halves are independent and their costs add, so taking the smaller of the two is a complete recurrence. Direct execution is the cheapest option for an empty interval, and splitting only adds positive costs, so it can be pruned immediately. Binary search on the sorted indices gives exact counts and never touches the full large array where there are no high-priority processes.\n\n## Complexity\n\nO(k log k log n) time as a safe upper bound, O(log n) recursion stack, O(k) space for sorting."

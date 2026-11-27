@@ -13,6 +13,21 @@
       "For a fixed return time j, the best departure is the cheapest one among all i<j.",
       "Scan j in increasing order and maintain the minimum departure cost strictly before j; each step only needs to add departure j−1 if it exists.",
       "Go through the return array: if j−1 is a valid departure index, update the prefix minimum; if some departure is available, update the answer with minimum + return cost. The lengths can differ and costs can be negative; print −1 if no valid pair exists."
+    ],
+    "ja": [
+      "帰りの時刻 j を固定すると、最適な出発は i<j の中で最も安いものです。",
+      "j を昇順に走査し、j より厳密に前の出発コストの最小値を保ちます。各ステップでは、出発 j−1 が存在すればそれを加えるだけで済みます。",
+      "帰り配列を走査し、j−1 が有効な出発の添字なら接頭辞の最小値を更新します。出発が 1 つでも使えるなら、最小値 + 帰りコストで答えを更新します。長さは異なることがあり、コストは負になりえます。有効な組がなければ −1 を出力します。"
+    ],
+    "ko": [
+      "귀환 시각 j를 고정하면 가장 좋은 출발은 i<j인 것 중 가장 싼 것입니다.",
+      "j를 증가시키며 j보다 엄격히 앞선 출발 비용의 최솟값을 유지합니다. 각 단계에서는 출발 j−1이 있으면 그것만 추가하면 됩니다.",
+      "귀환 배열을 순회하면서 j−1이 유효한 출발 인덱스이면 접두사 최솟값을 갱신하고, 사용할 수 있는 출발이 있으면 최솟값 + 귀환 비용으로 답을 갱신합니다. 길이가 다를 수 있고 비용이 음수일 수 있으며, 유효한 쌍이 없으면 −1을 출력합니다."
+    ],
+    "vi": [
+      "Với thời điểm về j cố định, chuyến đi tốt nhất là chuyến rẻ nhất trong tất cả i<j.",
+      "Quét j theo thứ tự tăng dần và duy trì chi phí chuyến đi nhỏ nhất chặt trước j; mỗi bước chỉ cần thêm chuyến đi j−1 nếu nó tồn tại.",
+      "Duyệt mảng chuyến về: nếu j−1 là chỉ số chuyến đi hợp lệ thì cập nhật giá trị nhỏ nhất của tiền tố; nếu đã có chuyến đi khả dụng thì cập nhật đáp án bằng giá trị nhỏ nhất + chi phí chuyến về. Độ dài có thể khác nhau và chi phí có thể âm; in −1 nếu không có cặp hợp lệ."
     ]
   },
   "explanationEn": "## Approach\n\nScan the return time j; add the departure at j−1, if it exists, to the running minimum; update the answer with the minimum departure cost so far plus this return.\n\n## Proof of correctness\n\nWhen j is processed, the maintained minimum covers exactly all existing departures with i<j, and for a fixed return, choosing the cheapest departure is optimal. Every actual return is visited, and every valid combination is compared at the time of its return, so the global minimum is covered. When the lengths differ, the departure index is checked independently, and the return list is not truncated.\n\n## Complexity\n\nO(n+m) time and O(1) space besides the input arrays."

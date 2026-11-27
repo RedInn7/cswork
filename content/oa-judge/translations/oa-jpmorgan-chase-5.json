@@ -11,5 +11,35 @@
     "hints": [
       "Track each stock's holding and the cumulative profit and loss; buys and sells only change holdings, and a price change adds the holding times the change to the profit and loss."
     ]
+  },
+  "ja": {
+    "title": "保有資産のリアルタイムの純損益",
+    "description": "BUY と SELL は現在の市場価格で取引し、CHANGE は価格の変動、QUERY は開始から現在までの純損益(まだ売っていない保有分の含み損益を含む)を問い合わせます。SELL では十分な保有があることが保証されています。原文の例の出力はプレースホルダーで、正しいクエリ結果は 120 と 200 です。\n\n入出力プロトコルは本サイトで作成したもので、欠けている数値の範囲は本サイトによる補足であることを明記しています。",
+    "input": "入力は文字列の JSON 配列で、各要素がイベントです。BUY stock quantity、SELL stock quantity、CHANGE stock delta、または QUERY のいずれかです。元の範囲:1≤イベント数≤100000、各イベントは ≤21 文字(本サイトでは Unicode コードポイントで数えます)で、数量は 1..1000、|delta|≤1000 です。銘柄名は空白を含まない空でない 1 つのトークンで、Unicode と、JSON エスケープで表される空白以外の制御文字もそのまま保持します。イベントの各フィールドは 1 つの空白で区切られます。",
+    "output": "1 行目はクエリの個数で、続けて 1 行に 1 つずつ純損益を出力してください。QUERY がない場合は 0 だけを出力します。",
+    "explanation": "3 つの公開サンプルの出力は順に 2 / 120 / 200; 2 / 0 / -6; 0 です。これらの答えは独立した全探索または直接シミュレーションで確認済みです。",
+    "hints": [
+      "銘柄ごとの保有数量と累計の損益を追跡します。売買は保有数量を変えるだけで、価格の変動は「保有数量 × 変動幅」を損益に加えます。"
+    ]
+  },
+  "ko": {
+    "title": "보유 종목의 실시간 순손익",
+    "description": "BUY와 SELL은 현재 시장 가격으로 거래하고, CHANGE는 가격 변동이며, QUERY는 처음부터 지금까지의 순손익을 묻습니다. 아직 팔지 않은 보유분의 평가손익도 포함합니다. SELL에는 항상 충분한 보유량이 있음이 보장됩니다. 원문 예제의 출력은 자리 표시자이며, 올바른 쿼리 결과는 120과 200입니다.\n\n입출력 규약은 이 사이트에서 작성했으며, 누락된 수치 범위는 사이트가 추가한 것임을 명시했습니다.",
+    "input": "입력은 문자열의 JSON 배열이며 각 항목은 이벤트입니다: BUY stock quantity, SELL stock quantity, CHANGE stock delta, 또는 QUERY. 원본 범위: 1≤이벤트 수≤100000이고, 각 이벤트는 ≤21자입니다(이 사이트는 유니코드 코드 포인트로 셉니다). 수량은 1..1000이고 |delta|≤1000입니다. 종목 이름은 공백이 없는 비어 있지 않은 단일 토큰이며, 유니코드와 JSON 이스케이프로 표현되는 공백이 아닌 제어 문자를 그대로 유지합니다. 이벤트 필드는 공백 하나로 구분됩니다.",
+    "output": "첫 줄에 쿼리의 수를 출력하고, 이어서 한 줄에 순손익 하나씩 출력합니다. QUERY가 없으면 0만 출력합니다.",
+    "explanation": "공개 예제 3개의 출력은 순서대로 2 / 120 / 200; 2 / 0 / -6; 0입니다. 이 답들은 독립적인 전수 조사 또는 직접 시뮬레이션으로 검증했습니다.",
+    "hints": [
+      "종목별 보유량과 누적 손익을 추적합니다. 매수와 매도는 보유량만 바꾸고, 가격 변동은 보유량에 변동폭을 곱한 값을 손익에 더합니다."
+    ]
+  },
+  "vi": {
+    "title": "Lãi lỗ ròng theo thời gian thực của các vị thế nắm giữ",
+    "description": "BUY và SELL giao dịch theo giá thị trường hiện tại, CHANGE là một thay đổi về giá, và QUERY hỏi lãi lỗ ròng từ đầu đến giờ, bao gồm cả lãi lỗ chưa thực hiện của số cổ phiếu đang nắm giữ chưa bán; SELL được đảm bảo có đủ số cổ phiếu để bán. Đầu ra của ví dụ gốc chỉ là giá trị giữ chỗ; kết quả truy vấn đúng là 120 và 200.\n\nGiao thức đầu vào/đầu ra do trang này biên soạn, và những ràng buộc số còn thiếu được đánh dấu rõ là phần trang bổ sung.",
+    "input": "Đầu vào là một mảng JSON các xâu, mỗi phần tử là một sự kiện: BUY stock quantity, SELL stock quantity, CHANGE stock delta, hoặc QUERY. Cận gốc: 1≤số sự kiện≤100000, và mỗi sự kiện có ≤21 ký tự (trang này đếm theo điểm mã Unicode); số lượng là 1..1000, và |delta|≤1000. Tên cổ phiếu là một token duy nhất, không rỗng, không chứa khoảng trắng, giữ nguyên Unicode và các ký tự điều khiển không phải khoảng trắng được biểu diễn bằng chuỗi thoát JSON; các trường của sự kiện cách nhau bằng đúng một dấu cách.",
+    "output": "Dòng đầu là số truy vấn, tiếp theo là mỗi dòng một giá trị lãi lỗ ròng; nếu không có QUERY, chỉ in 0.",
+    "explanation": "Đầu ra của ba ví dụ công khai lần lượt là: 2 / 120 / 200; 2 / 0 / -6; 0. Các kết quả này đã được kiểm tra bằng liệt kê độc lập hoặc mô phỏng trực tiếp.",
+    "hints": [
+      "Theo dõi số nắm giữ của từng cổ phiếu và tổng lãi lỗ tích lũy; mua và bán chỉ thay đổi số nắm giữ, còn một thay đổi giá cộng vào lãi lỗ giá trị nắm giữ nhân với mức thay đổi."
+    ]
   }
 }

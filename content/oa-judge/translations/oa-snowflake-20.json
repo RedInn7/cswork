@@ -11,5 +11,35 @@
     "hints": [
       "Sort by x and divide and conquer; each half recursively returns its minimum distance and its points sorted by y. When merging, scan only the strip whose squared distance to the dividing line is less than the current best, pruning by the difference in y."
     ]
+  },
+  "ja": {
+    "title": "10 万点の厳密な最近点対の二乗距離",
+    "description": "相異なる点のエントリ間のユークリッド距離の二乗の最小値を求めてください。一致するエントリ同士の距離は 0 です。元の問題は一様乱数での生成に触れていますが、正しさは乱数に依存してはいけません。10 万点は 2000 点に減らさず、そのまま扱います。\n\n入出力の形式は本サイトで独自に整備したものであり、出題元の解答は実行していません。",
+    "input": "1 行目に n、続く n 行に x y が与えられます。元の範囲は 2≤n≤1000 または n=100000、0≤x,y≤10⁹−1 です。計算と比較には厳密な 64 ビット整数を使い、浮動小数点の二乗値は使ってはいけません。",
+    "output": "問題が求める整数を 1 つ出力してください。",
+    "explanation": "3 つの公開例の答えは順に 2、0、1999999996000000002 です。すべての例は、独立した小規模な全探索または状態探索で検証済みです。",
+    "hints": [
+      "x でソートして分割統治します。各半分は再帰的に、最小距離と y でソートした点を返します。マージでは、分割線までの二乗距離が現在の最良値より小さい帯だけを走査し、y の差で枝刈りします。"
+    ]
+  },
+  "ko": {
+    "title": "점 100,000개의 정확한 최근접 제곱 거리",
+    "description": "서로 다른 점 항목 사이의 유클리드 제곱 거리의 최솟값을 구하세요. 좌표가 같은 항목들의 거리는 0입니다. 원문은 균등 난수로 생성된다고 언급하지만 정확성이 무작위성에 의존해서는 안 됩니다. 100,000개의 점은 2000개로 줄이지 않고 그대로 유지합니다.\n\n입출력 규약은 이 사이트에서 독자적으로 정리한 것이며, 원 출처의 풀이는 실행하지 않습니다.",
+    "input": "첫 줄에 n이 주어지고, 이어서 x y 형식의 줄 n개가 주어집니다. 원문 범위: 2≤n≤1000 또는 n=100000, 0≤x,y≤10⁹−1. 계산과 비교는 정확한 64비트 정수로 하며, 부동소수점으로 제곱값을 다루면 안 됩니다.",
+    "output": "문제가 요구하는 정수 하나를 출력합니다.",
+    "explanation": "공개 예제 3개의 답은 순서대로 2; 0; 1999999996000000002입니다. 모든 예제는 독립적인 소규모 완전 탐색 또는 상태 탐색으로 검증했습니다.",
+    "hints": [
+      "x로 정렬하고 분할 정복을 합니다. 각 절반은 재귀적으로 최소 거리와 y로 정렬된 점들을 반환합니다. 병합할 때는 분할선까지의 제곱 거리가 현재 최선보다 작은 띠 영역만 훑으며, y 차이로 가지치기합니다."
+    ]
+  },
+  "vi": {
+    "title": "Bình phương khoảng cách gần nhất chính xác của 100.000 điểm",
+    "description": "Tìm bình phương khoảng cách Euclid nhỏ nhất giữa các mục điểm phân biệt; các mục trùng nhau có khoảng cách 0. Đề gốc nhắc đến việc sinh ngẫu nhiên đều, nhưng tính đúng đắn không được phụ thuộc vào tính ngẫu nhiên. 100.000 điểm được giữ nguyên chứ không rút gọn xuống 2000.\n\nGiao thức đầu vào/đầu ra do trang này tự biên soạn; lời giải của nguồn gốc không được chạy.",
+    "input": "Dòng đầu tiên chứa n, tiếp theo là n dòng x y. Khoảng gốc: 2≤n≤1000 hoặc n=100000; 0≤x,y≤10⁹−1. Việc tính toán và so sánh dùng số nguyên 64-bit chính xác; không được dùng bình phương dấu phẩy động.",
+    "output": "In ra một số nguyên là đáp án.",
+    "explanation": "Đáp án của ba ví dụ công khai lần lượt là: 2; 0; 1999999996000000002. Tất cả ví dụ đã được kiểm chứng bằng liệt kê quy mô nhỏ độc lập hoặc tìm kiếm trạng thái.",
+    "hints": [
+      "Sắp xếp theo x và chia để trị; mỗi nửa đệ quy trả về khoảng cách nhỏ nhất của nó và các điểm của nó đã sắp theo y. Khi trộn, chỉ quét dải có bình phương khoảng cách tới đường chia nhỏ hơn giá trị tốt nhất hiện tại, và cắt tỉa theo hiệu y."
+    ]
   }
 }

@@ -13,6 +13,21 @@
       "First merge the existing intersecting intervals into disjoint blocks ordered by position. For the new interval to connect blocks l through r, it must cover at least the stretch from the end of block l to the start of block r.",
       "Blocks joined by one interval are always consecutive after sorting, and the length condition depends only on L[r]−R[l] ≤ k. Joining q blocks reduces the count by q−1, so look for the longest consecutive run of blocks that meets the condition. Even if no two blocks can be joined, the new interval can sit inside one block without adding a block.",
       "Sort and merge to get m blocks with starts L and ends R; with two pointers, advance the right end one at a time and move the left end right while L[r]−R[l] > k; update the minimum with m−(r−l) at each step; print the minimum."
+    ],
+    "ja": [
+      "まず、既存の交わる区間を併合し、位置順に並んだ互いに素なブロックにします。新しい区間がブロック l から r までをつなぐには、少なくともブロック l の終端からブロック r の始端までを覆う必要があります。",
+      "1 つの区間でつながるブロックは、ソート後は必ず連続していて、長さの条件は L[r]−R[l] ≤ k だけで決まります。q 個のブロックをつなぐと成分数は q−1 減るので、条件を満たす連続ブロックの最長区間を探します。どの 2 つのブロックもつなげられない場合でも、新しい区間を 1 つのブロックの内部に置けば、ブロックは増えません。",
+      "ソートして併合し、始端 L と終端 R を持つ m 個のブロックを得ます。しゃくとり法で右端を 1 つずつ進め、L[r]−R[l] > k の間は左端を右に進めます。各ステップで m−(r−l) により最小値を更新し、最小値を出力します。"
+    ],
+    "ko": [
+      "먼저 이미 교차하는 구간들을 합쳐 위치 순으로 정렬된 서로소 블록으로 만듭니다. 새 구간이 블록 l부터 r까지를 연결하려면 최소한 블록 l의 끝에서 블록 r의 시작까지를 덮어야 합니다.",
+      "하나의 구간으로 연결되는 블록들은 정렬 후 항상 연속해 있으며, 길이 조건은 L[r]−R[l] ≤ k에만 의존합니다. 블록 q개를 연결하면 개수가 q−1 줄어들므로, 조건을 만족하는 가장 긴 연속 블록 구간을 찾습니다. 두 블록도 연결할 수 없는 경우에도 새 구간을 한 블록 안에 놓으면 블록이 늘어나지 않습니다.",
+      "정렬하고 합쳐서 시작점 L과 끝점 R을 가진 m개의 블록을 얻습니다. 투 포인터로 오른쪽 끝을 하나씩 늘리고, L[r]−R[l] > k인 동안 왼쪽 끝을 오른쪽으로 옮깁니다. 매 단계 m−(r−l)로 최솟값을 갱신하고 그 최솟값을 출력합니다."
+    ],
+    "vi": [
+      "Trước hết gộp các đoạn đang cắt nhau thành các khối rời nhau, sắp xếp theo vị trí. Để đoạn mới nối các khối từ l đến r, nó phải phủ ít nhất phần từ cuối khối l đến đầu khối r.",
+      "Các khối được một đoạn nối lại luôn liên tiếp sau khi sắp xếp, và điều kiện về độ dài chỉ phụ thuộc L[r]−R[l] ≤ k. Nối q khối làm giảm số lượng đi q−1, nên hãy tìm dãy khối liên tiếp dài nhất thỏa điều kiện. Kể cả khi không nối được hai khối nào, đoạn mới vẫn có thể nằm gọn trong một khối mà không tạo thêm khối.",
+      "Sắp xếp và gộp để được m khối với đầu mút trái L và phải R; với hai con trỏ, dịch đầu phải từng bước và dịch đầu trái sang phải khi L[r]−R[l] > k; ở mỗi bước cập nhật giá trị nhỏ nhất bằng m−(r−l); in ra giá trị nhỏ nhất."
     ]
   },
   "explanationEn": "## Approach\n\nFirst merge the existing intersecting intervals into m separate components. Use two pointers to find the longest run of consecutive components l..r with L[r]−R[l]≤k; the answer is m−(r−l).\n\n## Proof of correctness\n\nConnecting components l through r requires spanning at least the distance from R[l] to L[r], and adding exactly that segment connects all components in between, so the condition is necessary and sufficient. Components that can be connected must be consecutive in sorted order, so two pointers enumerate every best span. Connecting q components turns them into one, reducing the count by q−1; if the new interval can only cover a single original component, a zero-length segment inside it can still be added without increasing the count.\n\n## Complexity\n\nTime O(n log n), space O(n)."

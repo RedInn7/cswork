@@ -13,6 +13,21 @@
       "Prices within a category strictly increase, so within any category you should buy a prefix starting from the first item.",
       "The task is the sum of the m smallest values of n merged increasing sequences; each category only matters through the price of its next item.",
       "Keep a min-heap of (next price, step) per category; m times, pop the minimum, add its price to the answer, and push it back with the step added. Prices and the total need 64 bits."
+    ],
+    "ja": [
+      "各カテゴリ内の価格は狭義単調増加なので、どのカテゴリでも最初の商品から始まる接頭辞を買うのが最適です。",
+      "求めるのは、n 本の増加列をマージしたときの小さい方から m 個の和です。各カテゴリは次の商品の価格だけで表せます。",
+      "カテゴリごとに (次の価格, 公差) を最小ヒープに入れ、m 回、最小を取り出して答えに価格を加え、公差を足して戻します。価格と合計には 64 ビットが必要です。"
+    ],
+    "ko": [
+      "한 카테고리 안에서 가격은 엄격하게 증가하므로, 어느 카테고리에서든 첫 번째 상품부터 접두사만큼 사는 것이 맞습니다.",
+      "이 문제는 증가하는 n개의 수열을 병합했을 때 가장 작은 m개 값의 합을 구하는 것입니다. 각 카테고리는 다음 상품의 가격으로만 영향을 줍니다.",
+      "카테고리마다 (다음 가격, 증가폭)을 최소 힙에 두고, m번 최솟값을 꺼내 가격을 답에 더한 뒤 증가폭을 더해 다시 넣습니다. 가격과 총합은 64비트가 필요합니다."
+    ],
+    "vi": [
+      "Giá trong một loại tăng chặt, nên trong mỗi loại bạn chỉ nên mua một tiền tố bắt đầu từ món đầu tiên.",
+      "Bài toán là tổng của m giá trị nhỏ nhất trong n dãy tăng được trộn lại; mỗi loại chỉ quan trọng qua giá của món kế tiếp.",
+      "Giữ min-heap gồm (giá kế tiếp, bước) cho mỗi loại; lặp m lần: lấy phần tử nhỏ nhất ra, cộng giá của nó vào đáp án, rồi đẩy lại với bước được cộng thêm. Giá và tổng cần 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nA min-heap keeps the cheapest unbought item of each category; each time, pop the minimum price, add it, and push the next price of the same category; do this m times.\n\n## Proof of correctness\n\nA positive b guarantees that the prices of each category strictly increase, so any plan that buys a later item while skipping a cheaper earlier one can be improved. The minimum over the category fronts is the minimum over all unbought items, so repeatedly taking it yields exactly the m smallest items of the merged increasing sequences, and no other m items can have a smaller sum.\n\n## Complexity\n\nO(n+m log n) time and O(n) space; costs use 64 bits."

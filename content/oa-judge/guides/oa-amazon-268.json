@@ -13,6 +13,21 @@
       "The primary task is required every day, so the time left for a secondary task on each day is limit minus that day's primary duration. The question becomes how many secondary tasks can be matched one-to-one with these leftover capacities, each task no longer than its capacity.",
       "Try the smallest capacity against the shortest task: if even the shortest task does not fit, that capacity is useless; if it fits, pair them, and an exchange argument shows this never makes the result worse.",
       "Compute each day's leftover capacity and sort ascending, and sort the secondary tasks ascending; keep a pointer to the shortest unscheduled task, walk the capacities from small to large, and whenever the current task fits, pair it and advance the pointer; the final pointer position is the answer."
+    ],
+    "ja": [
+      "主タスクは毎日必須なので、各日に副タスクへ使える時間は limit からその日の主タスクの所要時間を引いたものです。問題は、これらの余り容量と副タスクを 1 対 1 に、各タスクが容量以下になるよう対応させられる数に帰着されます。",
+      "最小の容量と最短のタスクを比べます。最短のタスクでさえ収まらないなら、その容量は役に立ちません。収まるなら対応させます。交換論法により、これで結果が悪くなることはありません。",
+      "各日の余り容量を計算して昇順にソートし、副タスクも昇順にソートします。まだスケジュールされていない最短のタスクを指すポインタを持ち、容量を小さい方から順に見ます。現在のタスクが収まるなら対応させてポインタを進めます。最終的なポインタの位置が答えです。"
+    ],
+    "ko": [
+      "주요 작업은 매일 필수이므로, 각 날 보조 작업에 쓸 수 있는 시간은 limit에서 그날의 주요 작업 시간을 뺀 값입니다. 문제는 보조 작업을 이 남는 용량들과 일대일로, 각 작업이 자기 용량보다 길지 않게 짝지을 수 있는 최대 개수가 됩니다.",
+      "가장 작은 용량을 가장 짧은 작업과 비교해 보세요. 가장 짧은 작업조차 들어가지 않으면 그 용량은 쓸모가 없고, 들어가면 짝짓습니다. 교환 논증에 의해 이렇게 해도 결과가 나빠지지 않습니다.",
+      "날마다 남는 용량을 계산해 오름차순으로 정렬하고 보조 작업도 오름차순으로 정렬합니다. 아직 배정되지 않은 가장 짧은 작업을 가리키는 포인터를 두고 용량을 작은 것부터 훑으면서, 현재 작업이 들어가면 짝짓고 포인터를 전진시킵니다. 최종 포인터 위치가 답입니다."
+    ],
+    "vi": [
+      "Tác vụ chính là bắt buộc mỗi ngày, nên thời gian còn lại cho tác vụ phụ mỗi ngày bằng limit trừ đi thời lượng tác vụ chính của ngày đó. Bài toán trở thành: có thể ghép một-một bao nhiêu tác vụ phụ với các dung lượng còn lại này, mỗi tác vụ không dài hơn dung lượng của nó.",
+      "Thử dung lượng nhỏ nhất với tác vụ ngắn nhất: nếu ngay cả tác vụ ngắn nhất cũng không vừa, dung lượng đó vô dụng; nếu vừa, ghép chúng lại, và một lập luận hoán đổi cho thấy điều này không bao giờ làm kết quả tệ đi.",
+      "Tính dung lượng còn lại của mỗi ngày và sắp xếp tăng dần, và sắp xếp các tác vụ phụ tăng dần; giữ một con trỏ tới tác vụ ngắn nhất chưa lên lịch, duyệt các dung lượng từ nhỏ đến lớn, và mỗi khi tác vụ hiện tại vừa thì ghép nó và tiến con trỏ; vị trí cuối của con trỏ là đáp án."
     ]
   },
   "explanationEn": "## Approach\n\nSort each day's remaining time in ascending order and the secondary tasks in ascending order. Repeatedly match the shortest unscheduled secondary task with the smallest remaining time that can hold it.\n\n## Proof of correctness\n\nIf the smallest remaining time cannot hold the shortest task, it cannot hold any task, so skipping it loses nothing. If it can, some optimal matching pairs the two: if each is matched to something else, swapping still lets the larger remaining time hold the longer task; if only one of them is matched, it can be replaced directly. So this pair can be fixed and the rest solved recursively, giving the maximum number of matches.\n\n## Complexity\n\nTime O(n log n), space O(n)."

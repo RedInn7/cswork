@@ -11,5 +11,35 @@
     "hints": [
       "Enumerate all non-empty candidate substrings; for each side, enumerate match lengths not exceeding the candidate's length, then find the maximum score and compare lexicographically."
     ]
+  },
+  "ja": {
+    "title": "接頭辞と接尾辞の一致スコアが最大の部分文字列",
+    "description": "text の空でない部分文字列 t を選びます。接頭辞スコアは、t の接頭辞が prefixString の接尾辞と一致する最大の長さ、接尾辞スコアは、t の接尾辞が suffixString の接頭辞と一致する最大の長さです。合計スコアはその和で、2 つの一致は重なっても構いません。最高スコアが同点の場合は、辞書順で最小の t を選びます。\n\n入出力の形式は本サイトが整理したものです。欠けていた数値の範囲と、原文の誤記の修正はすべて明示しています。",
+    "input": "3 行で、順に text、prefixString、suffixString が与えられます。OCR で補った範囲は、それぞれ長さ 1..50 で小文字のみからなります。text は、少なくとも片側で 1 文字以上一致することが保証されています。",
+    "output": "最高スコアを持つ、辞書順で最小の空でない部分文字列を出力してください。",
+    "explanation": "3 つの公開例の出力は順に、engin、banana、a です。これらの答えは、独立した全列挙または直接のシミュレーションで検証済みです。",
+    "hints": [
+      "空でない候補の部分文字列をすべて列挙します。各側について、候補の長さを超えない一致の長さを列挙し、最大スコアを求めて、辞書順で比較します。"
+    ]
+  },
+  "ko": {
+    "title": "접두사·접미사 일치 점수가 가장 높은 부분 문자열",
+    "description": "text의 비어 있지 않은 부분 문자열 t를 고릅니다. 접두사 점수는 t의 접두사가 prefixString의 접미사와 일치하는 최대 길이이고, 접미사 점수는 t의 접미사가 suffixString의 접두사와 일치하는 최대 길이입니다. 총점은 두 점수의 합이며, 두 일치 구간은 겹칠 수 있습니다. 최고 점수가 같으면 사전순으로 가장 작은 t를 고르세요.\n\n입출력 프로토콜은 이 사이트에서 정리한 것이며, 빠져 있던 수치 범위와 원문 오타의 복원 내용은 모두 명시했습니다.",
+    "input": "세 줄에 순서대로 text, prefixString, suffixString이 주어집니다. OCR 전체 범위: 각 문자열의 길이는 1..50이며 소문자로만 이루어져 있고, text는 적어도 한쪽에서 최소 한 글자는 일치함이 보장됩니다.",
+    "output": "최고 점수를 갖는 비어 있지 않은 부분 문자열 중 사전순으로 가장 작은 것을 출력합니다.",
+    "explanation": "공개된 세 예제의 출력은 순서대로 engin; banana; a입니다. 이 답들은 독립적인 완전 탐색 또는 직접 시뮬레이션으로 검증했습니다.",
+    "hints": [
+      "비어 있지 않은 모든 후보 부분 문자열을 열거합니다. 각 후보에 대해 양쪽에서 후보의 길이를 넘지 않는 일치 길이를 열거하여 최고 점수를 구하고 사전순으로 비교합니다."
+    ]
+  },
+  "vi": {
+    "title": "Xâu con có điểm khớp tiền tố và hậu tố cao nhất",
+    "description": "Chọn một xâu con không rỗng t của text. Điểm tiền tố là độ dài lớn nhất mà một tiền tố của t khớp với một hậu tố của prefixString; điểm hậu tố là độ dài lớn nhất mà một hậu tố của t khớp với một tiền tố của suffixString. Tổng điểm là tổng của hai điểm đó, và hai phần khớp có thể chồng lên nhau; nếu hòa ở điểm cao nhất, chọn t nhỏ nhất theo thứ tự từ điển.\n\nGiao thức đầu vào/đầu ra do trang này biên soạn; các cận số còn thiếu và việc khôi phục lỗi đánh máy của nguồn đều được nêu rõ.",
+    "input": "Ba dòng: text, prefixString và suffixString, theo thứ tự đó; cận đầy đủ theo OCR: mỗi xâu có độ dài 1..50 và chỉ chứa chữ cái thường; đảm bảo text khớp ít nhất một ký tự ở ít nhất một phía.",
+    "output": "In ra xâu con không rỗng có điểm cao nhất và nhỏ nhất theo thứ tự từ điển.",
+    "explanation": "Đầu ra của ba ví dụ công khai lần lượt là: engin; banana; a. Các đáp án này đã được kiểm chứng bằng liệt kê độc lập hoặc mô phỏng trực tiếp.",
+    "hints": [
+      "Liệt kê mọi xâu con không rỗng làm ứng viên; với mỗi phía, liệt kê các độ dài khớp không vượt quá độ dài của ứng viên, rồi tìm điểm lớn nhất và so sánh theo thứ tự từ điển."
+    ]
   }
 }

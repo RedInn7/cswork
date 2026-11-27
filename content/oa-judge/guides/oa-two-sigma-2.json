@@ -13,6 +13,21 @@
       "Whether the sum of two numbers is divisible by N depends only on their remainders modulo N: the remainders must add up to 0 or N. So all you need is how many times each remainder occurs.",
       "Scan from left to right with a dictionary of the remainders seen so far. For the current element, first add the count of its complementary remainder among earlier elements, then insert its own remainder. That way it never pairs with itself and no pair is counted twice.",
       "Start with an empty dictionary seen and answer = 0. For each element, let r = value mod N and the complement be (N - r) mod N; add seen[complement] to the answer, then increase seen[r] by 1. Print the answer, which needs a 64-bit integer."
+    ],
+    "ja": [
+      "2 つの数の和が N で割り切れるかどうかは、N で割った余りだけで決まり、余りの和が 0 または N になる必要があります。したがって必要なのは、各余りが何回現れるかだけです。",
+      "左から右へ走査し、それまでに見た余りの辞書を持ちます。現在の要素については、まず、それより前の要素の中での補の余りの個数を足し、そのあとで自分の余りを追加します。こうすれば自分自身とペアになることはなく、ペアが 2 回数えられることもありません。",
+      "空の辞書 seen と answer = 0 から始めます。各要素について r = value mod N とし、補を (N - r) mod N として、seen[complement] を answer に足し、そのあと seen[r] を 1 増やします。answer を出力します。64 ビット整数が必要です。"
+    ],
+    "ko": [
+      "두 수의 합이 N으로 나누어떨어지는지는 N으로 나눈 나머지에만 달려 있습니다. 나머지의 합이 0 또는 N이어야 합니다. 따라서 각 나머지가 몇 번 나오는지만 알면 됩니다.",
+      "왼쪽에서 오른쪽으로 훑으며, 지금까지 본 나머지들의 딕셔너리를 유지합니다. 현재 원소에 대해 먼저 이전 원소들 중 보완 나머지의 개수를 더한 다음 자신의 나머지를 삽입합니다. 이렇게 하면 자기 자신과 짝지어지지 않고 어떤 쌍도 두 번 세어지지 않습니다.",
+      "빈 딕셔너리 seen과 answer = 0으로 시작합니다. 각 원소에 대해 r = value mod N이고 보완은 (N - r) mod N입니다. seen[complement]를 답에 더한 다음 seen[r]을 1 증가시킵니다. 답을 출력하며, 64비트 정수가 필요합니다."
+    ],
+    "vi": [
+      "Tổng của hai số có chia hết cho N hay không chỉ phụ thuộc vào các số dư của chúng theo modulo N: các số dư phải cộng lại bằng 0 hoặc N. Vậy chỉ cần biết mỗi số dư xuất hiện bao nhiêu lần.",
+      "Quét từ trái sang phải với một từ điển các số dư đã gặp. Với phần tử hiện tại, trước hết cộng số lượng của số dư bù trong các phần tử trước, rồi mới chèn số dư của chính nó. Như vậy nó không bao giờ ghép với chính nó và không có cặp nào bị đếm hai lần.",
+      "Bắt đầu với từ điển seen rỗng và answer = 0. Với mỗi phần tử, đặt r = value mod N và số bù là (N - r) mod N; cộng seen[complement] vào đáp án, rồi tăng seen[r] lên 1. In đáp án, cần một số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nScan the remainders in order, keep a dictionary of the frequencies of earlier remainders, add the count of the complementary remainder, and then insert the current element.\n\n## Proof of correctness\n\nThe sum being divisible by N is equivalent to the remainders being complementary. When j is processed, the dictionary contains only indices i<j, so the complementary entries are exactly all valid pairs with j as the right end; going through every j counts each pair once, misses none, and never pairs an element with itself.\n\n## Complexity\n\nO(n) expected time and O(n) space, without allocating an array of length N."

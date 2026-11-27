@@ -11,5 +11,35 @@
     "hints": [
       "First find how many left and right brackets must be added, and for each kind take that many ratings in descending order. After that, extra choices must come in left-right pairs; add pairs one at a time while the gain is positive."
     ]
+  },
+  "ja": {
+    "title": "括弧列を釣り合わせる際の最大評価値",
+    "description": "元の括弧列の得点は 0 です。kit の各括弧にはそれぞれ評価値があり、各括弧は高々 1 回しか使えず、1 つも選ばなくてもかまいません。選んだ括弧を元の文字列の元の順序を保ったまま任意の位置に挿入して、釣り合った括弧列にします。選んだ括弧の評価値の合計を最大化してください。補完は必ず可能であることが保証されています。\n\n標準入出力、例、解法はこのサイトが独自に作成したものです。このサイトのものと明記された範囲は、元の出典の制約ではありません。",
+    "input": "1 行目に元の文字列 s、2 行目に kit、3 行目に kit の各文字の評価値が与えられます。元のスナップショットには値の範囲がありません。このサイトでは 1≤|s|,|kit|≤100000、評価値は −10^9..10^9 とします。",
+    "output": "答えを表す整数を 1 つ出力してください。",
+    "explanation": "例 1: 評価値 4 の左括弧と評価値 −3 の右括弧を選んで 1 の利得になります。もう 1 組選ぶと合計は下がります。例 2: 唯一の左括弧を必ず追加しなければならないので、答えは −5 です。例 3: 元の文字列がすでに釣り合っているので、何も選ばなければ 0 です。",
+    "hints": [
+      "まず左括弧と右括弧をそれぞれ何個追加しなければならないかを求め、各種類について評価値の大きい順にその個数だけ取ります。その後の追加選択は左右 1 組ずつになるので、利得が正である限り 1 組ずつ追加します。"
+    ]
+  },
+  "ko": {
+    "title": "균형 잡힌 괄호 문자열을 만들기 위한 최대 평점",
+    "description": "원래 괄호 문자열의 점수는 0입니다. kit의 각 괄호는 고유한 평점이 있고 최대 한 번만 사용할 수 있으며, 하나도 선택하지 않아도 됩니다. 선택한 괄호를 원래 문자열의 순서를 유지한 채 임의의 위치에 삽입해 균형 잡힌 괄호 문자열을 만들 때, 선택한 괄호의 평점 합을 최대화하세요. 완성은 항상 가능함이 보장됩니다.\n\n표준 입출력, 예제, 풀이는 이 사이트에서 독자적으로 작성했으며, 이 사이트가 정한 것으로 표시된 범위는 원 출처의 제약 조건이 아닙니다.",
+    "input": "첫 번째 줄에 원래 문자열 s, 두 번째 줄에 kit, 세 번째 줄에 kit의 각 문자의 평점이 주어집니다. 원본 스냅샷에는 값의 범위가 없으며, 이 사이트는 1≤|s|,|kit|≤100000, 평점은 −10^9..10^9로 정했습니다.",
+    "output": "정수 하나를 출력합니다.",
+    "explanation": "예제 1: 평점 4의 여는 괄호와 평점 −3의 닫는 괄호를 선택해 1을 얻습니다. 한 쌍을 더 선택하면 합계가 줄어듭니다. 예제 2: 유일한 여는 괄호를 반드시 추가해야 하므로 답은 −5입니다. 예제 3: 원래 문자열이 이미 균형 잡혀 있으므로 아무것도 선택하지 않으면 0입니다.",
+    "hints": [
+      "먼저 추가해야 하는 여는 괄호와 닫는 괄호의 개수를 구하고, 각 종류에서 필요한 개수만큼 평점이 높은 순으로 고릅니다. 그다음 추가 선택은 여는 괄호와 닫는 괄호의 쌍으로만 가능하며, 이득이 양수인 동안 한 쌍씩 추가합니다."
+    ]
+  },
+  "vi": {
+    "title": "Điểm đánh giá lớn nhất để hoàn thiện xâu ngoặc cân bằng",
+    "description": "Xâu ngoặc ban đầu được 0 điểm. Mỗi dấu ngoặc trong kit có điểm đánh giá riêng và dùng được tối đa một lần, cũng có thể không chọn dấu nào; chèn các dấu ngoặc đã chọn vào bất kỳ vị trí nào của xâu ban đầu, giữ nguyên thứ tự gốc, để được một xâu ngoặc cân bằng, sao cho tổng điểm đánh giá của các dấu ngoặc đã chọn là lớn nhất. Luôn đảm bảo có thể hoàn thiện được.\n\nĐầu vào/đầu ra chuẩn, các ví dụ và lời giải do trang này tự viết; các khoảng giá trị được đánh dấu là của trang này không phải là ràng buộc gốc của nguồn.",
+    "input": "Dòng đầu chứa xâu ban đầu s, dòng thứ hai chứa kit, dòng thứ ba chứa điểm đánh giá của từng ký tự trong kit. Ảnh chụp gốc không cho giới hạn giá trị; trang này đặt 1≤|s|,|kit|≤100000 và điểm đánh giá trong khoảng −10^9..10^9.",
+    "output": "In ra một số nguyên là đáp án.",
+    "explanation": "Ví dụ 1: chọn dấu ngoặc trái có điểm 4 và dấu ngoặc phải có điểm −3, lời được 1; chọn thêm một cặp nữa sẽ làm tổng giảm. Ví dụ 2: dấu ngoặc trái duy nhất bắt buộc phải thêm, nên đáp án là −5. Ví dụ 3: xâu ban đầu đã cân bằng, nên không chọn dấu ngoặc nào cho kết quả 0.",
+    "hints": [
+      "Trước hết tìm xem cần thêm bao nhiêu dấu ngoặc trái và phải, rồi với mỗi loại lấy đúng số đó điểm đánh giá theo thứ tự giảm dần. Sau đó, các lựa chọn thêm phải đi theo từng cặp trái-phải; thêm từng cặp một khi lợi ích còn dương."
+    ]
   }
 }

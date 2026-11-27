@@ -11,5 +11,35 @@
     "hints": [
       "Build an outgoing adjacency list to simulate get_links, then run BFS from start and return the level at which target is first discovered."
     ]
+  },
+  "ja": {
+    "title": "Web リンクシミュレーターでの最小クリック数",
+    "description": "各有向リンクは 1 回のクリックで u から v へ移動できます。get_links(page) はそのページから出るすべての辺の行き先を返します。start から target までの最小クリック数を求めてください。同じ場合は 0、target に到達できない場合は −1 です。重複したリンクや自己ループもあり得ます。\n\n入出力プロトコルと明示された補足制約は本サイトが整備したものであり、元の解法は実行していません。",
+    "input": "1 行目に m が与えられ、続く m 行に u v が、最後の行に start target が与えられます。1≤m≤200000 で、ページ名は空白を含まない文字列です。本サイトの伝送プロトコルでは、1 つの名前は最大 16 Unicode 文字です(元の 200,000 本の辺は維持され、最悪ケースの UTF-8 入力は最大 26,000,500 バイトです)。名前は大文字・小文字を区別し、純粋な英語である必要はありません。",
+    "output": "問題で求められる整数を 1 つ出力してください。",
+    "explanation": "3 つの公開例の答えは順に 2; -1; 0 です。例は、独立した全探索・状態探索・直接シミュレーションで再確認済みです。",
+    "hints": [
+      "出辺の隣接リストを構築して get_links をシミュレートし、start から BFS を行い、target が最初に発見された層を返します。"
+    ]
+  },
+  "ko": {
+    "title": "웹 링크 시뮬레이터에서 최소 클릭 횟수",
+    "description": "방향이 있는 각 링크는 한 번의 클릭으로 u에서 v로 이동하게 해 줍니다. get_links(page)는 해당 페이지의 모든 나가는 간선의 목적지를 반환합니다. start에서 target까지의 최소 클릭 횟수를 구하세요. 둘이 같으면 0이고, target에 도달할 수 없으면 −1입니다. 중복 링크와 자기 루프가 허용됩니다.\n\n입출력 규약과 명시된 보충 제약 조건은 이 사이트에서 정리한 것이며, 원본 풀이는 실행하여 검증하지 않았습니다.",
+    "input": "첫 번째 줄에 m이 주어지고, 이어서 m개의 줄에 u v가 주어지며, 마지막 줄에 start target이 주어집니다. 1≤m≤200000이고 페이지 이름은 공백이 없는 문자열입니다. 이 사이트의 전송 규약은 이름 하나가 최대 16개의 유니코드 문자라는 조건을 추가합니다(원래의 200,000개 간선은 유지되며, 최악의 UTF-8 입력은 최대 26,000,500바이트입니다). 이름은 대소문자를 구분하며 영문자만으로 이루어질 필요는 없습니다.",
+    "output": "문제에서 요구하는 정수 하나를 출력합니다.",
+    "explanation": "세 공개 예제의 답은 순서대로 2; -1; 0입니다. 예제는 독립적인 완전 탐색, 상태 탐색 또는 직접 시뮬레이션으로 다시 검증했습니다.",
+    "hints": [
+      "나가는 간선의 인접 리스트를 만들어 get_links를 시뮬레이션하고, start에서 BFS를 수행하여 target이 처음 발견되는 레벨을 반환합니다."
+    ]
+  },
+  "vi": {
+    "title": "Số lần nhấp ít nhất trong trình mô phỏng liên kết web",
+    "description": "Mỗi liên kết có hướng cho phép một lần nhấp nhảy từ u đến v; get_links(page) trả về đích của mọi cạnh đi ra từ trang đó. Hãy tìm số lần nhấp tối thiểu từ start đến target; bằng 0 nếu hai trang trùng nhau, và −1 nếu không thể đến được target. Cho phép liên kết trùng lặp và khuyên (self-loop).\n\nGiao thức đầu vào/đầu ra và các ràng buộc bổ sung được đánh dấu rõ do trang này biên soạn; lời giải của nguồn gốc không được chạy.",
+    "input": "Dòng đầu tiên chứa m, tiếp theo là m dòng u v, và dòng cuối chứa start target. 1≤m≤200000, và tên trang là các xâu không có khoảng trắng. Giao thức truyền tải của trang này bổ sung rằng mỗi tên có tối đa 16 ký tự Unicode (giữ nguyên 200,000 cạnh của bản gốc, và đầu vào UTF-8 trong trường hợp xấu nhất tối đa 26,000,500 byte). Tên phân biệt hoa thường và không nhất thiết là thuần tiếng Anh.",
+    "output": "In ra một số nguyên duy nhất theo yêu cầu của đề bài.",
+    "explanation": "Đáp án của ba ví dụ công khai lần lượt là: 2; -1; 0. Các ví dụ đã được kiểm tra lại bằng liệt kê độc lập, tìm kiếm trạng thái hoặc mô phỏng trực tiếp.",
+    "hints": [
+      "Xây danh sách kề chiều đi ra để mô phỏng get_links, sau đó chạy BFS từ start và trả về tầng mà target được phát hiện lần đầu."
+    ]
   }
 }

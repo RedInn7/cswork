@@ -13,6 +13,21 @@
       "Once the arrival times are sorted, the cases inside an activation window form a contiguous block, and shrinking the window to that block's first and last arrival never drops a case and only shortens the duration, so you only need to consider sorted ranges [i, j].",
       "For a sorted range [i, j] the efficiency is (j - i + 1) - (a[j] - a[i]), which rewrites as (j - a[j]) - (i - a[i]) + 1. For a fixed right end j you only need the minimum of i - a[i] over all earlier i < j.",
       "Sort the arrival times and set low = 0 - a[0]. For j = 1..n-1, update the answer with (j - a[j]) - low + 1, then update low with j - a[j]. The window must cover at least two cases and the answer can be negative, so start from a very small value rather than 0."
+    ],
+    "ja": [
+      "到着時刻をソートすると、アクティベーションの窓の中のケースは連続したブロックになります。窓をそのブロックの最初と最後の到着に縮めても、ケースは減らず継続時間は短くなるだけなので、ソート済みの範囲 [i, j] だけを考えれば十分です。",
+      "ソート済みの範囲 [i, j] の効率は (j - i + 1) - (a[j] - a[i]) で、これは (j - a[j]) - (i - a[i]) + 1 と書き換えられます。右端 j を固定すると、それより前のすべての i < j にわたる i - a[i] の最小値だけが必要です。",
+      "到着時刻をソートし、low = 0 - a[0] とします。j = 1..n-1 について、答えを (j - a[j]) - low + 1 で更新し、その後 low を j - a[j] で更新します。窓は少なくとも 2 つのケースを覆う必要があり、答えは負になりえるので、0 ではなく非常に小さい値から始めます。"
+    ],
+    "ko": [
+      "도착 시각을 정렬하면 활성화 구간 안의 케이스는 연속된 블록을 이루며, 구간을 그 블록의 첫 도착과 마지막 도착으로 줄여도 케이스가 빠지지 않고 길이만 짧아지므로, 정렬된 구간 [i, j]만 고려하면 됩니다.",
+      "정렬된 구간 [i, j]의 효율은 (j - i + 1) - (a[j] - a[i])이며, 이는 (j - a[j]) - (i - a[i]) + 1로 쓸 수 있습니다. 오른쪽 끝 j를 고정하면 이전의 모든 i < j에 대한 i - a[i]의 최솟값만 필요합니다.",
+      "도착 시각을 정렬하고 low = 0 - a[0]으로 둡니다. j = 1..n-1에 대해 답을 (j - a[j]) - low + 1로 갱신한 뒤 low를 j - a[j]로 갱신합니다. 구간은 적어도 두 케이스를 덮어야 하고 답은 음수일 수 있으므로 0이 아니라 매우 작은 값에서 시작하세요."
+    ],
+    "vi": [
+      "Sau khi sắp xếp các thời điểm đến, các ca nằm trong một cửa sổ kích hoạt tạo thành một khối liên tiếp, và thu hẹp cửa sổ về thời điểm đến đầu và cuối của khối đó không bao giờ làm mất ca nào mà chỉ làm thời lượng ngắn lại, nên chỉ cần xét các đoạn đã sắp xếp [i, j].",
+      "Với một đoạn đã sắp xếp [i, j], hiệu suất là (j - i + 1) - (a[j] - a[i]), viết lại thành (j - a[j]) - (i - a[i]) + 1. Với đầu phải j cố định, chỉ cần giá trị nhỏ nhất của i - a[i] trên mọi i < j trước đó.",
+      "Sắp xếp các thời điểm đến và đặt low = 0 - a[0]. Với j = 1..n-1, cập nhật đáp án bằng (j - a[j]) - low + 1, rồi cập nhật low bằng j - a[j]. Cửa sổ phải phủ ít nhất hai ca và đáp án có thể âm, nên hãy bắt đầu từ một giá trị rất nhỏ thay vì 0."
     ]
   },
   "explanationEn": "## Approach\n\nSort the arrival times. If the sorted index range [i,j] is chosen (at least two test cases), the shortest activation window covers both ends, and the efficiency is (j-i+1)-(a[j]-a[i]). Rewrite this as (j-a[j])-(i-a[i])+1. While iterating over j, maintain the minimum of i-a[i] over valid i<j, which gives the maximum in linear time.\n\n## Correctness\n\nThe test cases inside any activation window form a contiguous range after sorting; shrinking the window to its first and last arrival times loses none of those cases and does not increase the duration, so some optimal solution corresponds to a contiguous range. After the formula transformation, for each right end j the best left end is exactly the earlier i<j with the smallest i-a[i]. The prefix minimum enumerates and picks the largest efficiency among all ranges.\n\n## Complexity\n\nSorting is O(n log n), the scan is O(n), and the space is O(n)."

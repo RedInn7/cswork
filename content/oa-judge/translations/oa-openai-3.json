@@ -11,5 +11,35 @@
     "hints": [
       "First collect, sort, and deduplicate the EVENT times for each user and channel, and use a Fenwick tree to store the frequencies of processed events. Then process the input in order again: EVENT adds one, and COUNT queries the difference between the prefix frequencies for ≤t and <t−15."
     ]
+  },
+  "ja": {
+    "title": "ユーザーとチャネルごとの直近 15 分のイベント数",
+    "description": "EVENT と COUNT を入力順に処理します。COUNT u c t は、すでに処理されたイベントのうち、ユーザーとチャネルが同じで、タイムスタンプが閉区間 [t−15,t] にあるものだけを数えます。タイムスタンプが増加する保証はなく、入力の後ろに現れるイベントを先に数えてはいけません。重複したイベントは個別に数えます。\n\n入出力は本サイトが整備したものです。",
+    "input": "1 行目に q、続いて q 行の EVENT user chat timestamp または COUNT user chat timestamp が与えられます。本サイトでは 1≤q≤100000 とし、user と chat は 1..20 文字の ASCII の英数字またはアンダースコア、0≤timestamp≤10⁹ (単位は分) です。",
+    "output": "まず COUNT コマンドの個数 p を出力し、次に p 個のクエリの答えを順に 1 行ずつ出力してください。COUNT がなければ 0 だけを出力します。",
+    "explanation": "例 1 のクエリの結果は 2, 1 で、15 分前の端点は含まれます。例 2 ではタイムスタンプが順不同で、未来の時刻は数えないので、結果は 1, 1 です。例 3 では後のイベントは前のクエリに影響せず、結果は 0, 1 です。",
+    "hints": [
+      "まず各ユーザーとチャネルについて EVENT の時刻を集め、ソートして重複を除き、Fenwick 木に処理済みイベントの頻度を持たせます。そのうえで、入力を順にもう一度処理します。EVENT は 1 を加え、COUNT は ≤t と <t−15 の接頭辞頻度の差を問い合わせます。"
+    ]
+  },
+  "ko": {
+    "title": "사용자와 채널별 최근 15분 이벤트 수 세기",
+    "description": "EVENT와 COUNT를 입력 순서대로 처리합니다. COUNT u c t는 이미 처리된 이벤트 중 같은 사용자와 채널이고 타임스탬프가 닫힌 구간 [t−15,t]에 있는 것만 셉니다. 타임스탬프가 증가한다는 보장은 없으며, 입력에서 나중에 나오는 이벤트를 미리 세어서는 안 됩니다. 중복된 이벤트는 각각 따로 셉니다.\n\n입출력은 이 사이트가 정리했습니다.",
+    "input": "첫째 줄에 q, 이어서 q개의 줄에 EVENT user chat timestamp 또는 COUNT user chat timestamp가 주어집니다. 이 사이트는 1≤q≤100000을 사용하며, user와 chat은 1..20개의 ASCII 문자, 숫자 또는 밑줄이고, 0≤timestamp≤10⁹이며 단위는 분입니다.",
+    "output": "먼저 COUNT 명령의 수 p를 출력하고, 이어서 p개의 질의 답을 순서대로 한 줄에 하나씩 출력합니다. COUNT가 없으면 0만 출력합니다.",
+    "explanation": "예제 1에서 질의 결과는 2, 1이며 15분 전의 끝점도 포함됩니다. 예제 2에서는 타임스탬프가 순서대로가 아니고 미래의 시각은 세지 않으므로 1, 1입니다. 예제 3에서는 나중의 이벤트가 앞선 질의에 영향을 주지 않아 0, 1입니다.",
+    "hints": [
+      "먼저 사용자와 채널별 EVENT 시각을 모아 정렬하고 중복을 제거한 뒤, 펜윅 트리로 처리된 이벤트의 빈도를 저장합니다. 그런 다음 입력을 다시 순서대로 처리합니다. EVENT는 하나를 더하고, COUNT는 ≤t의 접두사 빈도와 <t−15의 접두사 빈도의 차이를 질의합니다."
+    ]
+  },
+  "vi": {
+    "title": "Đếm sự kiện trong 15 phút gần nhất theo người dùng và kênh",
+    "description": "Xử lý EVENT và COUNT theo thứ tự đầu vào. COUNT u c t chỉ đếm các sự kiện đã được xử lý trước đó có cùng người dùng và kênh mà dấu thời gian nằm trong đoạn đóng [t−15,t]. Dấu thời gian không đảm bảo tăng dần, và các sự kiện xuất hiện sau trong đầu vào không được đếm sớm; các sự kiện trùng lặp được đếm riêng từng cái.\n\nĐầu vào và đầu ra do trang này biên soạn.",
+    "input": "Dòng đầu tiên chứa q, tiếp theo là q dòng EVENT user chat timestamp hoặc COUNT user chat timestamp. Trang này dùng 1≤q≤100000; user và chat gồm 1..20 ký tự ASCII là chữ cái, chữ số hoặc dấu gạch dưới; 0≤timestamp≤10⁹, tính bằng phút.",
+    "output": "Trước tiên in số lệnh COUNT là p, sau đó in p đáp án của các truy vấn theo thứ tự, mỗi đáp án trên một dòng. Nếu không có COUNT nào, chỉ in 0.",
+    "explanation": "Trong Ví dụ 1 kết quả các truy vấn là 2, 1; điểm cuối cách 15 phút trước được tính. Trong Ví dụ 2 các dấu thời gian không theo thứ tự và thời gian tương lai không được đếm, cho 1, 1. Trong Ví dụ 3 các sự kiện sau không ảnh hưởng đến các truy vấn trước, cho 0, 1.",
+    "hints": [
+      "Trước tiên thu thập, sắp xếp và loại trùng các thời điểm EVENT cho mỗi người dùng và kênh, và dùng cây Fenwick để lưu tần suất các sự kiện đã xử lý. Sau đó xử lý đầu vào theo thứ tự một lần nữa: EVENT cộng một, còn COUNT truy vấn hiệu của các tần suất tiền tố cho ≤t và <t−15."
+    ]
   }
 }

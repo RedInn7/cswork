@@ -11,5 +11,35 @@
     "hints": [
       "At construction, build only the favorites set and keep two cursors. Advance the favorites cursor first, then scan the original list skipping favorites, and output NULL once everything is exhausted."
     ]
+  },
+  "ja": {
+    "title": "お気に入り優先の画像ストリーム",
+    "description": "画像ストリームは、まずお気に入り画像をすべてお気に入りリストの順に返し、そのあとでお気に入りでない画像を元の画像リストの順に返します。getNext は q 回連続で呼び出され、ストリームが尽きたあとの各呼び出しは NULL を返します。リストは構築後に変化しません。\n\n標準の入出力・例・テストは CSWork が作成したものです。「本サイト」と記した範囲は採点上の取り決めであり、面接の原典の制約であると主張するものではありません。",
+    "input": "本サイトの標準入力：1行目に n m q（1≤n,q≤100000、0≤m≤n）が与えられます。2行目に互いに異なる n 個の画像識別子、3行目に互いに異なる m 個のお気に入りの識別子が与えられ、これは元のリストの部分集合です。識別子は 1..32 個の英字または数字からなり、NULL は使われません。",
+    "output": "条件に従って答えを出力します。複数のクエリの結果は、順番に空白区切りで出力します。",
+    "explanation": "例 1：まずお気に入りを順に i3, i1 と出力し、次にお気に入りでない i2, i4 を出力します。5 回目の呼び出しではストリームが尽きているので NULL を出力します。例 2：お気に入りがないので、1 回目の呼び出しは a を、2 回目は NULL を出力します。例 3：すべての画像がお気に入りなので、与えられたお気に入りの順に b, a を出力します。",
+    "hints": [
+      "構築時にはお気に入りの集合だけを作り、2 つのカーソルを持ちます。まずお気に入りのカーソルを進め、次に元のリストをお気に入りを飛ばしながら走査し、すべて尽きたら NULL を出力します。"
+    ]
+  },
+  "ko": {
+    "title": "즐겨찾기 우선 이미지 스트림",
+    "description": "이미지 스트림은 먼저 즐겨찾기 목록의 순서대로 모든 즐겨찾기 이미지를 반환하고, 그다음 원래 이미지 목록의 순서대로 즐겨찾기가 아닌 이미지를 반환합니다. getNext를 연속으로 q번 호출하며, 스트림이 소진된 뒤의 호출은 각각 NULL을 반환합니다. 목록은 생성 후 변하지 않습니다.\n\n표준 입력/출력, 예제, 테스트는 CSWork가 작성했습니다. \"이 사이트\"로 표시된 범위는 채점 기준일 뿐이며, 실제 면접의 원래 제한이라고 주장하지 않습니다.",
+    "input": "이 사이트의 표준 입력: 첫째 줄에 n m q(1≤n,q≤100000, 0≤m≤n)가 주어집니다. 둘째 줄에 서로 다른 이미지 식별자 n개가, 셋째 줄에 서로 다른 즐겨찾기 식별자 m개가 주어지며, 즐겨찾기는 원래 목록의 부분집합입니다. 식별자는 영문자 또는 숫자 1..32개로 이루어지며 NULL은 허용되지 않습니다.",
+    "output": "설명에 따라 답을 출력합니다. 여러 질의의 결과는 순서대로 공백으로 구분하여 출력합니다.",
+    "explanation": "예제 1: 먼저 즐겨찾기를 순서대로 i3, i1을 출력하고, 이어서 즐겨찾기가 아닌 i2, i4를 출력합니다. 다섯 번째 호출에서는 스트림이 소진되어 NULL을 출력합니다. 예제 2: 즐겨찾기가 없으므로 첫 호출은 a, 두 번째는 NULL을 출력합니다. 예제 3: 모든 이미지가 즐겨찾기이므로 주어진 즐겨찾기 순서대로 b, a를 출력합니다.",
+    "hints": [
+      "생성 시에는 즐겨찾기 집합만 만들고 커서 두 개를 유지합니다. 먼저 즐겨찾기 커서를 진행시키고, 그다음 원래 목록을 즐겨찾기를 건너뛰며 스캔하며, 모두 소진되면 NULL을 출력합니다."
+    ]
+  },
+  "vi": {
+    "title": "Luồng ảnh ưu tiên ảnh yêu thích",
+    "description": "Luồng ảnh trước hết trả về tất cả ảnh yêu thích theo thứ tự trong danh sách yêu thích, sau đó trả về các ảnh không yêu thích theo thứ tự của danh sách ảnh gốc. getNext được gọi liên tiếp q lần; khi luồng đã hết, mỗi lần gọi trả về NULL. Các danh sách không thay đổi sau khi khởi tạo.\n\nĐầu vào/đầu ra chuẩn, các ví dụ và bộ test do CSWork biên soạn; các phạm vi được đánh dấu \"trang này\" là quy ước chấm bài, không được xem là giới hạn gốc của buổi phỏng vấn.",
+    "input": "Đầu vào chuẩn của trang này: dòng đầu chứa n m q (1≤n,q≤100000, 0≤m≤n); dòng thứ hai chứa n định danh ảnh đôi một khác nhau; dòng thứ ba chứa m định danh yêu thích đôi một khác nhau, là một tập con của danh sách gốc. Định danh gồm 1..32 chữ cái tiếng Anh hoặc chữ số, và không được là NULL.",
+    "output": "Xuất đáp án theo mô tả; kết quả của nhiều truy vấn được ngăn cách bằng dấu cách, theo đúng thứ tự.",
+    "explanation": "Ví dụ 1: trước hết xuất các ảnh yêu thích theo thứ tự, i3, i1, rồi các ảnh không yêu thích i2, i4; đến lần gọi thứ năm luồng đã hết nên xuất NULL. Ví dụ 2: không có ảnh yêu thích, nên lần gọi đầu xuất a và lần thứ hai xuất NULL. Ví dụ 3: mọi ảnh đều yêu thích, nên xuất b, a theo đúng thứ tự yêu thích đã cho.",
+    "hints": [
+      "Khi khởi tạo, chỉ cần xây tập các ảnh yêu thích và giữ hai con trỏ. Tiến con trỏ yêu thích trước, rồi quét danh sách gốc và bỏ qua các ảnh yêu thích, và xuất NULL khi mọi thứ đã hết."
+    ]
   }
 }

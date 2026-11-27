@@ -13,5 +13,41 @@
       "When generating powers, check whether the next one would exceed the upper bound before computing it, to avoid overflow.",
       "Do not use floating-point logarithms for the check; the precision is not sufficient."
     ]
+  },
+  "ja": {
+    "title": "Quora OA #1：k のべき乗を数える",
+    "description": "整数配列 arr と整数 k が与えられます。配列の中で k のべき乗、すなわち正の整数 e を用いて k^e と書ける数がいくつあるかを数えてください。",
+    "input": "1 行目に 2 つの整数 n と k、2 行目に n 個の整数 arr[0..n−1] が与えられます。1≤n≤200000、2≤k≤10^18、2≤arr[i]≤10^18。",
+    "output": "整数を 1 つ出力してください。k のべき乗である要素の個数です。",
+    "explanation": "例 1：arr=[11,121,10]、k=11 のとき、11=11^1 と 121=11^2 は該当しますが、10 は該当しないので、答えは 2 です。\n例 2：2、4、8、1024 はすべて 2 のべき乗ですが、6 はそうではないので、答えは 4 です。\n例 3：10、20、30 のどれも 5 のべき乗ではないので、答えは 0 です。",
+    "hints": [
+      "k≥2 のとき、10^18 を超えない k のべき乗は高々 60 個です。",
+      "べき乗を生成するときは、オーバーフローを避けるため、次の値を計算する前に、それが上限を超えないかを確認します。",
+      "判定に浮動小数点の対数を使ってはいけません。精度が足りません。"
+    ]
+  },
+  "ko": {
+    "title": "Quora OA #1: k의 거듭제곱 세기",
+    "description": "정수 배열 arr와 정수 k가 주어질 때, 배열에서 k의 거듭제곱인 수, 즉 양의 정수 e에 대해 k^e로 쓸 수 있는 수가 몇 개인지 세세요.",
+    "input": "첫 번째 줄에 두 정수 n과 k가, 두 번째 줄에 n개의 정수 arr[0..n−1]이 주어집니다. 1≤n≤200000, 2≤k≤10^18, 2≤arr[i]≤10^18.",
+    "output": "k의 거듭제곱인 원소의 개수를 나타내는 정수 하나를 출력합니다.",
+    "explanation": "예제 1: arr=[11,121,10], k=11입니다. 11=11^1, 121=11^2이지만 10은 아니므로 답은 2입니다.\n예제 2: 2, 4, 8, 1024는 모두 2의 거듭제곱이지만 6은 아니므로 답은 4입니다.\n예제 3: 10, 20, 30 중 5의 거듭제곱은 없으므로 답은 0입니다.",
+    "hints": [
+      "k≥2일 때 10^18을 넘지 않는 k의 거듭제곱은 최대 60개입니다.",
+      "거듭제곱을 생성할 때 오버플로를 피하기 위해 다음 값을 계산하기 전에 상한을 넘을지 확인하세요.",
+      "확인에 부동소수점 로그를 사용하지 마세요. 정밀도가 부족합니다."
+    ]
+  },
+  "vi": {
+    "title": "Quora OA #1: Đếm lũy thừa của k",
+    "description": "Cho một mảng số nguyên arr và một số nguyên k, hãy đếm có bao nhiêu số trong mảng là lũy thừa của k, tức là các số có thể viết dưới dạng k^e với e là số nguyên dương.",
+    "input": "Dòng đầu chứa hai số nguyên n và k; dòng thứ hai chứa n số nguyên arr[0..n−1]. 1≤n≤200000, 2≤k≤10^18, 2≤arr[i]≤10^18.",
+    "output": "In ra một số nguyên: số phần tử là lũy thừa của k.",
+    "explanation": "Ví dụ 1: arr=[11,121,10], k=11. 11=11^1 và 121=11^2, nhưng 10 thì không, nên đáp án là 2.\nVí dụ 2: 2, 4, 8 và 1024 đều là lũy thừa của 2, nhưng 6 thì không, nên đáp án là 4.\nVí dụ 3: không số nào trong 10, 20, 30 là lũy thừa của 5, nên đáp án là 0.",
+    "hints": [
+      "Khi k≥2, có tối đa 60 lũy thừa của k không vượt quá 10^18.",
+      "Khi sinh các lũy thừa, hãy kiểm tra xem lũy thừa tiếp theo có vượt cận trên hay không trước khi tính, để tránh tràn số.",
+      "Đừng dùng logarit dấu phẩy động để kiểm tra; độ chính xác không đủ."
+    ]
   }
 }

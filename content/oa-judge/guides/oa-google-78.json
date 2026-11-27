@@ -13,6 +13,21 @@
       "Treat each valid string as a node and each legal single change as an edge of weight 1; the fewest steps is a shortest path in an unweighted graph.",
       "n is small: there are at most 3·2^(n−1) strings with no equal neighbours, so the whole state space can be searched.",
       "BFS from the start string. For each position try the two other characters; if the new character differs from both neighbours you get a new string, and you enqueue it with its distance if unseen. The distance when the target is first dequeued is the answer; print −1 if it never appears."
+    ],
+    "ja": [
+      "有効な文字列を各ノード、合法な 1 文字変更を重み 1 の辺と見なします。最小ステップ数は、重みなしグラフでの最短経路です。",
+      "n が小さいので、隣り合う文字が等しくない文字列は高々 3·2^(n−1) 個で、状態空間全体を探索できます。",
+      "開始文字列から BFS を行います。各位置について他の 2 文字を試し、新しい文字が両隣と異なれば新しい文字列になるので、未訪問ならその距離とともにキューに入れます。目標が初めてキューから取り出されたときの距離が答えで、一度も現れなければ −1 を出力します。"
+    ],
+    "ko": [
+      "유효한 문자열 하나를 노드로, 허용되는 한 글자 변경 하나를 가중치 1의 간선으로 보면, 최소 단계 수는 가중치 없는 그래프의 최단 경로입니다.",
+      "n이 작습니다. 이웃이 같지 않은 문자열은 최대 3·2^(n−1)개이므로 전체 상태 공간을 탐색할 수 있습니다.",
+      "시작 문자열에서 BFS를 실행합니다. 각 위치에서 다른 두 문자를 시도하고, 새 문자가 양쪽 이웃과 모두 다르면 새 문자열이 되며, 처음 보는 문자열이면 거리와 함께 큐에 넣습니다. 목표가 처음 큐에서 나올 때의 거리가 답이며, 한 번도 나타나지 않으면 −1을 출력합니다."
+    ],
+    "vi": [
+      "Coi mỗi xâu hợp lệ là một nút và mỗi thay đổi đơn hợp lệ là một cạnh có trọng số 1; số bước ít nhất là đường đi ngắn nhất trong đồ thị không trọng số.",
+      "n nhỏ: có tối đa 3·2^(n−1) xâu không có hai ký tự liền kề bằng nhau, nên có thể tìm kiếm toàn bộ không gian trạng thái.",
+      "BFS từ xâu bắt đầu. Với mỗi vị trí thử hai ký tự còn lại; nếu ký tự mới khác cả hai hàng xóm thì ta được một xâu mới, và đưa nó vào hàng đợi cùng khoảng cách nếu chưa gặp. Khoảng cách khi xâu đích lần đầu được lấy ra là đáp án; in −1 nếu nó không bao giờ xuất hiện."
     ]
   },
   "explanationEn": "## Idea\n\nBFS from the start. At each position try the other two colours, and add the next state whenever the new character differs from its left and right neighbours; the distance at which the target is first reached is the answer.\n\n## Correctness\n\nEvery legal single-character change corresponds to exactly one edge of the state graph, and every edge has weight 1. Enumerating positions and replacement characters produces all legal edges and only those, so BFS finds the minimum number of operations.\n\n## Complexity\n\nThere are at most 3·2^(n−1) valid states. O(n²·2^n) time (including string copies), O(n·2^n) space."

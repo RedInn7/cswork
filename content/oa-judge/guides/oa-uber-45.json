@@ -13,6 +13,21 @@
       "Whether a subarray of length m + 1 matches depends only on its m adjacent comparisons. Convert the array into a sequence of -1/0/1 comparison results, and the task becomes counting how many times the pattern occurs in that sequence.",
       "This is classic string matching with overlapping occurrences allowed. Compute the KMP failure function of the pattern and scan the comparison sequence once instead of checking every starting point term by term.",
       "Compute the prefix function of the pattern. Then for i = 0..n - 2 compute v = sign(a[i+1] - a[i]); on a mismatch fall back j through the failure function, on a match increase j. When j reaches m, increase the count and set j = failure[m - 1] so overlapping occurrences are still found. Output the count."
+    ],
+    "ja": [
+      "長さ m + 1 の部分配列が一致するかどうかは、その m 個の隣接する比較だけで決まります。配列を -1/0/1 の比較結果の列に変換すれば、問題は、その列の中でパターンが何回出現するかを数えることになります。",
+      "これは、重なる出現を許す古典的な文字列照合です。パターンの KMP の失敗関数を計算し、各開始位置を項ごとに調べるのではなく、比較の列を 1 回走査します。",
+      "パターンの prefix function を計算します。次に i = 0..n - 2 について v = sign(a[i+1] - a[i]) を計算します。不一致なら失敗関数で j を戻し、一致なら j を増やします。j が m に達したら個数を増やし、j = failure[m - 1] にして、重なる出現も見つけます。個数を出力します。"
+    ],
+    "ko": [
+      "길이 m + 1인 부분 배열이 일치하는지는 그 m개의 인접 비교에만 달려 있습니다. 배열을 -1/0/1 비교 결과 시퀀스로 바꾸면, 이 시퀀스에서 패턴이 몇 번 나타나는지 세는 문제가 됩니다.",
+      "겹치는 출현을 허용하는 고전적인 문자열 매칭입니다. 패턴의 KMP 실패 함수를 계산하고, 시작점마다 항목별로 확인하는 대신 비교 시퀀스를 한 번만 훑습니다.",
+      "패턴의 접두사 함수를 계산합니다. 그다음 i = 0..n - 2에 대해 v = sign(a[i+1] - a[i])를 구하고, 불일치하면 실패 함수로 j를 되돌리고, 일치하면 j를 늘립니다. j가 m에 이르면 개수를 늘리고 j = failure[m - 1]로 설정해 겹치는 출현도 찾습니다. 개수를 출력합니다."
+    ],
+    "vi": [
+      "Một mảng con độ dài m + 1 có khớp hay không chỉ phụ thuộc vào m phép so sánh liền kề của nó. Chuyển mảng thành dãy kết quả so sánh -1/0/1, và bài toán trở thành đếm mẫu xuất hiện bao nhiêu lần trong dãy đó.",
+      "Đây là bài khớp xâu kinh điển có cho phép các lần xuất hiện chồng lấp. Tính hàm thất bại KMP của mẫu và quét dãy so sánh một lần thay vì kiểm tra từng điểm bắt đầu theo từng phần tử.",
+      "Tính hàm tiền tố của mẫu. Sau đó với i = 0..n - 2 tính v = sign(a[i+1] - a[i]); khi không khớp thì lùi j qua hàm thất bại, khi khớp thì tăng j. Khi j đạt m, tăng số đếm và đặt j = failure[m - 1] để vẫn tìm được các lần xuất hiện chồng lấp. In số đếm."
     ]
   },
   "explanationEn": "## Approach\n\nFirst turn the adjacent comparisons of the array into a -1/0/1 sequence, then count the occurrences of the pattern in it with KMP, allowing overlaps.\n\n## Correctness\n\nA subarray of length m+1 corresponds uniquely to a comparison sequence of length m, and the two matching conditions are equivalent term by term. A KMP failure jump only skips starting points that cannot match, so no occurrence is missed or counted twice.\n\n## Complexity\n\nTime O(n+m), space O(n+m)."

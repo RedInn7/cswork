@@ -13,6 +13,21 @@
       "After adding the first i elements, the running value equals the initial x plus the prefix sum of those i elements, so every constraint reads x + (some prefix sum) >= 1.",
       "The tightest of these constraints comes from the smallest prefix sum minPrefix. Once x + minPrefix >= 1, all other prefixes are fine too; x must also be positive.",
       "Start both the prefix sum s and minPrefix at 0 (counting the empty prefix as 0 is exactly what forces x >= 1); add the elements one by one and update minPrefix = min(minPrefix, s); print 1 - minPrefix. Prefix sums reach about 10^11, so use 64-bit integers."
+    ],
+    "ja": [
+      "最初の i 個の要素を足した後の値は、初期値 x とそれら i 個の要素の接頭辞和の和に等しいので、すべての制約は x + (ある接頭辞和) >= 1 の形になります。",
+      "これらの制約のうち最も厳しいのは、最小の接頭辞和 minPrefix によるものです。x + minPrefix >= 1 が成り立てば、他のすべての接頭辞も大丈夫です。x は正でもなければなりません。",
+      "接頭辞和 s と minPrefix をどちらも 0 から始めます（空の接頭辞を 0 と数えることが、まさに x >= 1 を強制します）。要素を 1 つずつ足して minPrefix = min(minPrefix, s) と更新し、1 - minPrefix を出力します。接頭辞和は約 10^11 に達するので、64 ビット整数を使います。"
+    ],
+    "ko": [
+      "처음 i개의 원소를 더한 뒤의 누적 값은 초기값 x에 그 i개 원소의 접두사 합을 더한 것과 같으므로, 모든 제약은 x + (어떤 접두사 합) >= 1의 꼴입니다.",
+      "이 제약 중 가장 빡빡한 것은 가장 작은 접두사 합 minPrefix에서 나옵니다. x + minPrefix >= 1이 성립하면 다른 접두사도 모두 괜찮으며, x는 양수여야 하기도 합니다.",
+      "접두사 합 s와 minPrefix를 모두 0으로 시작합니다(빈 접두사를 0으로 세는 것이 바로 x >= 1을 강제하는 방법). 원소를 하나씩 더하며 minPrefix = min(minPrefix, s)로 갱신하고 1 - minPrefix를 출력합니다. 접두사 합은 약 10^11에 이를 수 있으므로 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Sau khi cộng i phần tử đầu, giá trị đang chạy bằng giá trị khởi đầu x cộng tổng tiền tố của i phần tử đó, nên mọi ràng buộc đều có dạng x + (một tổng tiền tố nào đó) >= 1.",
+      "Ràng buộc chặt nhất đến từ tổng tiền tố nhỏ nhất minPrefix. Khi x + minPrefix >= 1, mọi tiền tố khác cũng ổn; x cũng phải dương.",
+      "Bắt đầu cả tổng tiền tố s và minPrefix bằng 0 (coi tiền tố rỗng bằng 0 chính là điều buộc x >= 1); cộng từng phần tử và cập nhật minPrefix = min(minPrefix, s); in 1 - minPrefix. Các tổng tiền tố có thể đạt khoảng 10^11, nên hãy dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nCompute the minimum minPrefix over all prefix sums. The initial value x must satisfy x+minPrefix≥1, so the answer is 1−minPrefix.\n\n## Proof of correctness\n\nThe running sum after each step equals x plus the corresponding prefix sum. All running sums are at least 1 if and only if x≥1−minPrefix; that value itself satisfies the constraint, and anything one smaller fails at the minimum prefix.\n\n## Complexity\n\nO(n) time, O(1) space."

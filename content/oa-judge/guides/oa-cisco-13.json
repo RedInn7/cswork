@@ -13,6 +13,21 @@
       "With only insertions and deletions, the original characters that survive must appear in the target in the same order, so they form a common subsequence; the more you keep, the fewer operations you need.",
       "Compute L, the length of the longest common subsequence, and answer len(a) + len(b) - 2L; characters are Unicode code points and each line is a JSON string, so decode the escapes first.",
       "Parse each line as JSON into a sequence of code points and use the shorter one as the DP columns; keep a 1D rolling array row plus a variable diagonal holding the old upper-left value: on equal characters row[j] = diagonal + 1, otherwise row[j] = max(row[j], row[j - 1]); print len(a) + len(b) - 2 * row[last]."
+    ],
+    "ja": [
+      "挿入と削除だけの場合、残る元の文字は目標の文字列の中で同じ順序で現れなければならないので、共通部分列になります。多く残せるほど操作回数は少なくなります。",
+      "最長共通部分列の長さ L を求め、len(a) + len(b) - 2L を答えとします。文字は Unicode コードポイントで、各行は JSON 文字列なので、先にエスケープをデコードしてください。",
+      "各行を JSON として読み込んでコードポイント列にし、短いほうを DP の列にします。1 次元のローリング配列 row と、元の左上の値を保持する変数 diagonal を使い、文字が等しければ row[j] = diagonal + 1、そうでなければ row[j] = max(row[j], row[j - 1]) とします。最後に len(a) + len(b) - 2 * row[last] を出力します。"
+    ],
+    "ko": [
+      "삽입과 삭제만 허용되면 남는 원래 문자들은 목표 문자열에서도 같은 순서로 나타나야 하므로 공통 부분 수열을 이룹니다. 많이 남길수록 필요한 연산이 줄어듭니다.",
+      "최장 공통 부분 수열의 길이 L을 구하고 답은 len(a) + len(b) - 2L입니다. 문자는 유니코드 코드 포인트이고 각 줄은 JSON 문자열이므로 먼저 이스케이프를 디코딩해야 합니다.",
+      "각 줄을 JSON으로 파싱하여 코드 포인트 시퀀스로 만들고, 더 짧은 쪽을 DP의 열로 사용합니다. 1차원 롤링 배열 row와, 이전의 왼쪽 위 값을 담는 변수 diagonal을 유지합니다. 문자가 같으면 row[j] = diagonal + 1, 다르면 row[j] = max(row[j], row[j - 1])입니다. len(a) + len(b) - 2 * row[last]를 출력합니다."
+    ],
+    "vi": [
+      "Khi chỉ được chèn và xóa, các ký tự gốc còn giữ lại phải xuất hiện trong xâu đích theo cùng thứ tự, nên chúng tạo thành một dãy con chung; giữ lại càng nhiều thì càng cần ít thao tác.",
+      "Tính L, độ dài của dãy con chung dài nhất, và đáp án là len(a) + len(b) - 2L; ký tự là Unicode code point và mỗi dòng là một xâu JSON, nên hãy giải mã các escape trước.",
+      "Phân tích mỗi dòng như JSON thành dãy code point và dùng dãy ngắn hơn làm các cột của DP; giữ một mảng cuốn chiếu một chiều row cùng một biến diagonal chứa giá trị chéo trên-trái cũ: khi hai ký tự bằng nhau thì row[j] = diagonal + 1, ngược lại row[j] = max(row[j], row[j - 1]); in len(a) + len(b) - 2 * row[last]."
     ]
   },
   "explanationEn": "## Approach\n\nUse a rolling array to compute L, the length of the longest common subsequence, and return len(a)+len(b)-2L. Use the shorter string as the DP columns to save space.\n\n## Proof of correctness\n\nThe original characters that are not deleted must appear in the target string in their original order, so they form a common subsequence; at most L of them can be kept, so at least len(a)-L deletions and len(b)-L insertions are needed. Keeping one longest common subsequence, deleting the other original characters and inserting the remaining target characters into the gaps achieves this lower bound. The prefix LCS DP adds 1 to the diagonal when the last characters are equal, and otherwise takes the maximum of skipping either last character; rolling the storage does not change these dependencies.\n\n## Complexity\n\nO(nm) time and O(min(n,m)) auxiliary space; characters are counted as code points, not as UTF-8 bytes or UTF-16 surrogate units."

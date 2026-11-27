@@ -11,5 +11,35 @@
     "hints": [
       "Sort the high-priority indices; let each recursive interval carry its corresponding range of indices, and use binary search to split it into left and right subranges. An empty interval returns normal_time immediately; otherwise, compare the direct cost with the sum of the optimal costs of the two halves."
     ]
+  },
+  "ja": {
+    "title": "高優先度プロセスがまばらな場合の分割統治スケジューリング",
+    "description": "1 始まりの n 個のプロセスが連続する区間をなします。長さが 1 より大きい区間は、等しい 2 つの半分に分割して、さらに割り当てることができます。あるいは区間をそのまま実行することもできます。区間に高優先度のプロセスが含まれていなければコストは normal_time で、含まれていればコストは priority_time×(高優先度プロセスの数)×(区間の長さ) です。合計時間は、すべてのプロセッサのコストの和であり、最大値ではありません。\n\n入出力形式は本サイトで整理したものです。",
+    "input": "1 行目に n k normal_time priority_time、2 行目に k 個の高優先度の添字が与えられます。元の範囲は、1≤n≤10⁹ (n は 2 のべき乗)、1≤k≤min(n,100000)、添字は 1..n です。本サイトでは、有効なプロセスのリストの添字は互いに異なるものとします。元の問題文には時間の係数の範囲が書かれていないため、本サイトでは両方とも 1..10⁹ とします。",
+    "output": "最小の合計コストを出力します。直接実行のコストの途中の値は 64 ビットを超える場合があるので、十分に大きな整数型を使ってください。n に比例する配列は確保しないでください。",
+    "explanation": "答えは 6、3、6 です。3 つ目の例では、両端はそれぞれ単一の点まで分割でき、その間の空の区間にはコストがかかります。",
+    "hints": [
+      "高優先度の添字をソートします。再帰の各区間に、対応する添字の範囲を持たせ、二分探索で左右の部分範囲に分けます。空の区間は直ちに normal_time を返します。そうでなければ、直接実行のコストと、2 つの半分の最適コストの和を比較します。"
+    ]
+  },
+  "ko": {
+    "title": "희소한 고우선순위 프로세스의 분할 정복 스케줄링",
+    "description": "1부터 번호가 매겨진 n개의 프로세스가 연속된 구간을 이룹니다. 길이가 1보다 큰 구간은 같은 길이의 두 절반으로 나누어 다시 배정할 수 있고, 아니면 구간을 그대로 실행할 수도 있습니다. 구간에 고우선순위 프로세스가 없으면 비용은 normal_time이고, 있으면 비용은 priority_time×(고우선순위 프로세스 수)×(구간 길이)입니다. 총 시간은 모든 프로세서 비용의 합이며 최댓값이 아닙니다.\n\n입력/출력 형식은 본 사이트에서 정리한 것입니다.",
+    "input": "첫 줄에 n k normal_time priority_time이, 둘째 줄에 k개의 고우선순위 인덱스가 주어집니다. 원문 범위: 1≤n≤10⁹이며 n은 2의 거듭제곱, 1≤k≤min(n,100000), 인덱스는 1..n입니다. 본 사이트에서는 유효한 프로세스 목록의 인덱스가 서로 다릅니다. 원문에는 시간 계수의 범위가 없으며, 본 사이트에서는 둘 다 1..10⁹로 정했습니다.",
+    "output": "최소 총비용을 출력합니다. 중간 직접 비용이 64비트를 넘을 수 있으므로 충분히 넓은 정수를 사용하고, n에 비례하는 배열은 할당하지 마세요.",
+    "explanation": "답은 6, 3, 6입니다. 세 번째 예시에서 양 끝점은 각각 단일 지점까지 나눌 수 있지만, 그 사이의 빈 구간들에는 비용을 지불해야 합니다.",
+    "hints": [
+      "고우선순위 인덱스를 정렬하고, 각 재귀 구간이 그에 해당하는 인덱스 범위를 함께 가지고 가도록 하여 이분 탐색으로 왼쪽과 오른쪽 부분 범위로 나눕니다. 빈 구간은 즉시 normal_time을 반환합니다. 그렇지 않으면 직접 실행 비용과 두 절반의 최적 비용의 합을 비교합니다."
+    ]
+  },
+  "vi": {
+    "title": "Lập lịch chia để trị cho các tiến trình ưu tiên cao thưa thớt",
+    "description": "n tiến trình đánh số từ 1 tạo thành một đoạn liên tiếp. Một đoạn có độ dài lớn hơn 1 có thể được chia thành hai nửa bằng nhau để giao tiếp cho các bộ xử lý khác; hoặc có thể thực thi trực tiếp đoạn đó. Nếu nó không chứa tiến trình ưu tiên cao nào, chi phí là normal_time; ngược lại, chi phí là priority_time×số tiến trình ưu tiên cao×độ dài đoạn. Tổng thời gian là tổng chi phí của mọi bộ xử lý, không phải giá trị lớn nhất.\n\nĐịnh dạng đầu vào/đầu ra do trang này biên soạn.",
+    "input": "Dòng đầu chứa n k normal_time priority_time, và dòng thứ hai chứa k chỉ số ưu tiên cao. Phạm vi gốc: 1≤n≤10⁹ với n là luỹ thừa của 2, 1≤k≤min(n,100000), các chỉ số trong 1..n. Trên trang này các chỉ số trong danh sách tiến trình hợp lệ là phân biệt; đề gốc không nêu phạm vi cho các hệ số thời gian, và trang này dùng 1..10⁹ cho cả hai.",
+    "output": "In tổng chi phí tối thiểu. Một chi phí trực tiếp trung gian có thể vượt quá 64 bit, nên hãy dùng số nguyên đủ rộng; không cấp phát mảng tỉ lệ với n.",
+    "explanation": "Các đáp án là 6, 3 và 6; trong ví dụ thứ ba, hai đầu mút có thể được chia nhỏ đến từng điểm đơn, còn các đoạn rỗng ở giữa vẫn phải trả chi phí.",
+    "hints": [
+      "Sắp xếp các chỉ số ưu tiên cao; để mỗi đoạn đệ quy mang theo khoảng chỉ số tương ứng của nó, và dùng tìm kiếm nhị phân để chia nó thành các khoảng con trái và phải. Đoạn rỗng trả về ngay normal_time; ngược lại, so sánh chi phí trực tiếp với tổng chi phí tối ưu của hai nửa."
+    ]
   }
 }

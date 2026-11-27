@@ -13,6 +13,21 @@
       "For any row i and column j, the minimum of column j <= a[i][j] <= the maximum of row i, so every column minimum is at most every row maximum.",
       "Only two numbers matter: R, the smallest of the row maxima, and C, the largest of the column minima; a valid element exists exactly when R = C, and then its value is R.",
       "Read row by row, take each row maximum and update R = min(R, row maximum), while an array of length M keeps every column minimum; at the end C = max(column minima); print the value if C == R, otherwise -1. The whole matrix never needs to be stored."
+    ],
+    "ja": [
+      "任意の行 i と列 j について、列 j の最小値 <= a[i][j] <= 行 i の最大値なので、どの列の最小値もどの行の最大値以下です。",
+      "重要なのは 2 つの数だけです。行の最大値の最小値 R と、列の最小値の最大値 C です。有効な要素が存在するのはちょうど R = C のときで、その値は R です。",
+      "行ごとに読み、各行の最大値を求めて R = min(R, 行の最大値) と更新し、長さ M の配列で各列の最小値を保持します。最後に C = max(列の最小値) とし、C == R ならその値を、そうでなければ -1 を出力します。行列全体を保存する必要はありません。"
+    ],
+    "ko": [
+      "임의의 행 i와 열 j에 대해 열 j의 최솟값 <= a[i][j] <= 행 i의 최댓값이므로, 모든 열 최솟값은 모든 행 최댓값 이하입니다.",
+      "중요한 수는 둘뿐입니다. 행 최댓값들 중 가장 작은 R과 열 최솟값들 중 가장 큰 C입니다. 유효한 원소는 R = C일 때에만 존재하며, 그 값은 R입니다.",
+      "행 단위로 읽으며 각 행의 최댓값을 구해 R = min(R, 행 최댓값)으로 갱신하고, 길이 M의 배열로 모든 열 최솟값을 유지합니다. 끝에서 C = max(열 최솟값들)이며, C == R이면 그 값을, 아니면 -1을 출력합니다. 행렬 전체를 저장할 필요가 없습니다."
+    ],
+    "vi": [
+      "Với mọi hàng i và cột j, giá trị nhỏ nhất của cột j <= a[i][j] <= giá trị lớn nhất của hàng i, nên mọi giá trị nhỏ nhất của cột đều không vượt quá mọi giá trị lớn nhất của hàng.",
+      "Chỉ có hai con số quan trọng: R, giá trị nhỏ nhất trong các giá trị lớn nhất của hàng, và C, giá trị lớn nhất trong các giá trị nhỏ nhất của cột; phần tử hợp lệ tồn tại đúng khi R = C, và khi đó giá trị của nó là R.",
+      "Đọc từng hàng, lấy giá trị lớn nhất của hàng và cập nhật R = min(R, giá trị lớn nhất của hàng), đồng thời một mảng độ dài M giữ giá trị nhỏ nhất của mỗi cột; cuối cùng C = max(các giá trị nhỏ nhất của cột); in giá trị nếu C == R, ngược lại in -1. Không cần lưu toàn bộ ma trận."
     ]
   },
   "explanationEn": "## Approach\n\nScan row by row, keeping R, the minimum of the row maxima, and the minimum of every column; at the end let C be the maximum of the column minima, and output the common value when R=C.\n\n## Proof of correctness\n\nEvery column minimum is no greater than every row maximum, hence C<=R. When a saddle point exists, its row maximum and column minimum lie between R and C, which forces the two to be equal; conversely, the intersection of a row attaining R and a column attaining C is squeezed between the same value and is therefore a valid saddle point.\n\n## Complexity\n\nO(NM) time and O(M) extra space with streaming parsing; repeated maxima within a row cannot cause a solution to be missed."

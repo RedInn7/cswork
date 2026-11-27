@@ -13,6 +13,21 @@
       "Pairing depends only on values, not on positions, so both arrays can be sorted first; an a that cannot beat the smallest unmatched b cannot beat any b.",
       "Greedy: match the smallest available a against the smallest unmatched b; if it is strictly greater, pair them, otherwise discard that a.",
       "Sort both arrays ascending and keep a pointer j to the first unmatched b; walk through a in order and advance j whenever the current a is strictly greater than b[j]; at the end j is the maximum number of pairs."
+    ],
+    "ja": [
+      "ペアになれるかは値だけで決まり位置は関係ないので、両方の配列を先にソートできます。未使用の最小の b にも勝てない a は、どの b にも勝てません。",
+      "貪欲法: 使える最小の a を未使用の最小の b と比べ、真に大きければペアにし、そうでなければその a を捨てます。",
+      "両方の配列を昇順にソートし、最初の未使用の b を指すポインタ j を持ちます。a を順に見ていき、現在の a が b[j] より真に大きいときに j を進めます。最後の j が最大ペア数です。"
+    ],
+    "ko": [
+      "쌍은 위치가 아니라 값에만 의존하므로 두 배열을 먼저 정렬할 수 있습니다. 아직 짝이 없는 가장 작은 b를 이기지 못하는 a는 어떤 b도 이길 수 없습니다.",
+      "그리디: 사용 가능한 가장 작은 a를 짝이 없는 가장 작은 b와 맞춥니다. 엄격하게 크면 쌍을 만들고, 아니면 그 a를 버립니다.",
+      "두 배열을 오름차순으로 정렬하고 아직 짝이 없는 첫 b를 가리키는 포인터 j를 둡니다. a를 순서대로 훑으면서 현재 a가 b[j]보다 엄격하게 크면 j를 증가시킵니다. 끝났을 때 j가 최대 쌍 수입니다."
+    ],
+    "vi": [
+      "Việc ghép cặp chỉ phụ thuộc giá trị chứ không phụ thuộc vị trí, nên có thể sắp xếp trước cả hai mảng; một phần tử a không thắng nổi b nhỏ nhất chưa ghép thì không thắng được b nào.",
+      "Tham lam: ghép a nhỏ nhất còn lại với b nhỏ nhất chưa ghép; nếu lớn hơn hẳn thì ghép cặp, ngược lại loại bỏ a đó.",
+      "Sắp xếp cả hai mảng tăng dần và giữ con trỏ j tới b chưa ghép đầu tiên; duyệt a theo thứ tự và tăng j mỗi khi a hiện tại lớn hơn hẳn b[j]; cuối cùng j chính là số cặp tối đa."
     ]
   },
   "explanationEn": "## Approach\n\nSort both arrays in ascending order and match the smallest available a against the smallest available b; if a is not large enough, skip that a.\n\n## Proof of correctness\n\nIf the smallest a cannot beat the smallest b, it cannot beat any remaining b and can be discarded. If it can, some optimal solution contains this pair: if each was originally paired with another element, after swapping, the other, larger a can still beat the b that was originally matched with the current a; in the remaining cases a direct replacement does not reduce the count. By induction the greedy is optimal.\n\n## Complexity\n\nO(n log n) time and O(n) space."

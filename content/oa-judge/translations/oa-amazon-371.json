@@ -11,5 +11,35 @@
     "hints": [
       "First count all known characters, then use a 26-entry min-heap to repeatedly pick the letter with the smallest current frequency, breaking ties by the smaller letter. Only record how many of each letter are added, and at the end fill the added letters into the ? positions in ascending order."
     ]
+  },
+  "ja": {
+    "title": "繰り返しコスト最小で ? を埋め、辞書順最小にする",
+    "description": "すべての ? を英小文字で埋めます。各位置のコストは、その位置より前に同じ文字が現れた回数です。まず総コストを最小化し、そのうえで結果全体を辞書順最小にしてください。\n\n本サイトは標準入出力と解説を独自に作成しました。出典に欠けている制約の補足や、例の訂正は仕様に明記しています。",
+    "input": "データが 1 行で与えられます。元の制約は 1≤長さ≤100000 で、? が少なくとも 1 つ含まれ、それ以外の文字はすべて a..z です。",
+    "output": "埋め終えた英小文字の文字列全体を出力してください。",
+    "explanation": "出力は aaaabaaaa、abcde、aabcdefghijklmnopqrstuvwxyz です。3 つ目の例では、最小ヒープが選ぶ順に文字をそのまま埋めてはいけません。選んだ a と b を並べ替えてから ? の位置に入れます。",
+    "hints": [
+      "まず既知の文字をすべて数え、26 要素の最小ヒープで現在の出現回数が最小の文字を繰り返し選びます。同数ならアルファベット順で小さい方を選びます。各文字を何個追加するかだけを記録し、最後に追加した文字を昇順に ? の位置へ埋めます。"
+    ]
+  },
+  "ko": {
+    "title": "반복 비용을 최소화하며 빈칸 채우기, 그다음 사전순 최소",
+    "description": "모든 ?를 소문자 하나로 채우세요. 각 위치의 비용은 그 앞에 같은 문자가 나타난 횟수입니다. 먼저 총 비용을 최소화하고, 그다음 전체 결과가 사전순으로 가장 작도록 만드세요.\n\n본 사이트에서 표준 입출력 형식과 풀이를 독립적으로 정리했습니다. 출처에 없는 범위를 보충한 내용과 예제의 오류를 바로잡은 내용은 명세에 명시되어 있습니다.",
+    "input": "데이터가 담긴 한 줄이 주어집니다. 원래 제약 조건은 1≤길이≤100000이며, ?가 최소 하나 있고 나머지 문자는 모두 a..z입니다.",
+    "output": "완전히 채운 소문자 문자열을 출력합니다.",
+    "explanation": "출력은 각각 aaaabaaaa, abcde, aabcdefghijklmnopqrstuvwxyz입니다. 세 번째 예제에서는 최소 힙이 고른 순서대로 글자를 바로 채우면 안 됩니다. 선택된 a와 b를 정렬해서 물음표 위치에 넣어야 합니다.",
+    "hints": [
+      "먼저 이미 있는 문자를 모두 세고, 크기 26의 최소 힙으로 현재 빈도가 가장 작은 문자를 반복해서 고르며, 같으면 더 작은 문자를 택합니다. 각 문자를 몇 개 추가하는지만 기록하고, 마지막에 추가한 문자들을 오름차순으로 ? 위치에 채웁니다."
+    ]
+  },
+  "vi": {
+    "title": "Điền ký tự thiếu sao cho chi phí lặp nhỏ nhất, rồi thứ tự từ điển nhỏ nhất",
+    "description": "Điền mỗi ? bằng một chữ cái thường. Chi phí của mỗi vị trí là số lần cùng chữ cái đó xuất hiện trước nó. Trước hết cực tiểu hóa tổng chi phí, sau đó làm cho toàn bộ kết quả nhỏ nhất theo thứ tự từ điển.\n\nTrang này tự biên soạn phần vào/ra chuẩn và lời giải; các bổ sung cho giới hạn mà nguồn còn thiếu và các chỉnh sửa cho ví dụ đều được nêu rõ trong đặc tả.",
+    "input": "Một dòng chứa dữ liệu. Giới hạn gốc là 1≤length≤100000, có ít nhất một ?, và mọi ký tự còn lại nằm trong a..z.",
+    "output": "In ra xâu chữ thường đã điền đầy đủ.",
+    "explanation": "Đầu ra là aaaabaaaa, abcde và aabcdefghijklmnopqrstuvwxyz. Ở ví dụ thứ ba, không thể điền thẳng các chữ cái theo thứ tự mà min-heap chọn; các chữ a và b đã chọn phải được sắp xếp rồi mới đặt vào các vị trí dấu hỏi.",
+    "hints": [
+      "Trước hết đếm tất cả ký tự đã biết, rồi dùng min-heap 26 phần tử để liên tục chọn chữ cái có tần suất hiện tại nhỏ nhất, hòa thì chọn chữ nhỏ hơn. Chỉ ghi lại số lượng thêm vào của từng chữ, và cuối cùng điền các chữ đã thêm vào các vị trí ? theo thứ tự tăng dần."
+    ]
   }
 }

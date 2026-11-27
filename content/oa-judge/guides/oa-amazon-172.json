@@ -13,6 +13,21 @@
       "Picture both groups on a number line: if two pairings cross (small with large and large with small), switching them to same-order pairings never increases the total distance.",
       "Sort the server coordinates and the center coordinates separately and pair the i-th smallest server with the i-th smallest center; that is optimal.",
       "Sort both lists ascending, add |a[i] - b[i]| for every i and print the sum. It can reach about 10^14, so use 64-bit integers."
+    ],
+    "ja": [
+      "両方のグループを数直線上に思い浮かべます。2 つのペアが交差している（小さいものと大きいもの、大きいものと小さいもの）場合、同じ順序のペアリングに入れ替えても総距離は増えません。",
+      "サーバーの座標とセンターの座標を別々にソートし、i 番目に小さいサーバーを i 番目に小さいセンターとペアにします。それが最適です。",
+      "両方のリストを昇順にソートし、すべての i について |a[i] - b[i]| を加えて、その和を出力します。値は約 10^14 に達しうるので、64 ビット整数を使ってください。"
+    ],
+    "ko": [
+      "두 그룹을 수직선 위에 놓고 생각해 보세요. 두 쌍이 교차할 때(작은 것과 큰 것, 큰 것과 작은 것) 같은 순서의 쌍으로 바꾸면 총 거리는 절대 늘어나지 않습니다.",
+      "서버 좌표와 센터 좌표를 각각 따로 정렬하고, i번째로 작은 서버를 i번째로 작은 센터와 짝지으면 최적입니다.",
+      "두 목록을 오름차순으로 정렬하고 모든 i에 대해 |a[i] - b[i]|를 더한 합을 출력합니다. 합은 약 10^14까지 커질 수 있으므로 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Hình dung hai nhóm trên một trục số: nếu hai cặp ghép cắt nhau (nhỏ với lớn và lớn với nhỏ), đổi chúng sang ghép cùng thứ tự không bao giờ làm tăng tổng khoảng cách.",
+      "Sắp xếp riêng tọa độ máy chủ và tọa độ trung tâm rồi ghép máy chủ nhỏ thứ i với trung tâm nhỏ thứ i; đó là tối ưu.",
+      "Sắp xếp cả hai danh sách tăng dần, cộng |a[i] - b[i]| cho mọi i và in tổng. Nó có thể đạt khoảng 10^14, nên dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nSort both coordinate lists, pair them in the same order, and add up the absolute differences.\n\n## Proof of correctness\n\nIf the two groups have x<=y and u<=v, the crossed cost |x-v|+|y-u| is no less than the same-order cost |x-u|+|y-v|. Repeatedly removing crossings yields the sorted same-order plan without increasing the cost, so it is optimal.\n\n## Complexity\n\nTime O(n log n), space O(n)."

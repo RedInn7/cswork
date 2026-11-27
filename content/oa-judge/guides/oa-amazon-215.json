@@ -13,6 +13,21 @@
       "For a given x the ratings are independent: rating v needs ceil(v/x) operations to drop to 0 or below, and the total is the sum of those values.",
       "A larger x never increases any rating's requirement, so feasibility is monotone; x = the largest rating needs only n <= M operations and is always feasible. So binary search the answer.",
       "Binary search on [1, max rating]: if the total demand sum of (v + mid - 1) / mid (accumulated in 64-bit) is at most M, set hi = mid, otherwise lo = mid + 1; print lo."
+    ],
+    "ja": [
+      "x を固定すると、各評価値は独立です。評価値 v を 0 以下にするには ceil(v/x) 回の操作が必要で、合計はそれらの和です。",
+      "x を大きくしても、どの評価値の必要回数も増えないので、実行可能性は単調です。x を最大の評価値にすれば、必要なのは n <= M 回だけで、常に実行可能です。したがって答えを二分探索できます。",
+      "[1, max rating] で二分探索します。必要回数の合計 sum of (v + mid - 1) / mid（64 ビットで累積）が M 以下なら hi = mid、そうでなければ lo = mid + 1 とします。最後に lo を出力します。"
+    ],
+    "ko": [
+      "주어진 x에서 평점들은 서로 독립입니다. 평점 v를 0 이하로 만드는 데 ceil(v/x)번의 연산이 필요하고, 전체는 이 값들의 합입니다.",
+      "x가 커져도 각 평점의 필요 횟수는 늘어나지 않으므로 실행 가능성은 단조적입니다. x = 최대 평점이면 n <= M번이면 되므로 항상 가능합니다. 따라서 답을 이분 탐색합니다.",
+      "[1, max rating]에서 이분 탐색합니다. 전체 필요량 sum of (v + mid - 1) / mid(64비트로 누적)가 M 이하이면 hi = mid, 아니면 lo = mid + 1로 두고 lo를 출력합니다."
+    ],
+    "vi": [
+      "Với một x cho trước, các xếp hạng độc lập với nhau: xếp hạng v cần ceil(v/x) thao tác để giảm xuống 0 hoặc thấp hơn, và tổng là tổng của các giá trị đó.",
+      "x lớn hơn không bao giờ làm tăng yêu cầu của bất kỳ xếp hạng nào, nên tính khả thi là đơn điệu; x = xếp hạng lớn nhất chỉ cần n <= M thao tác và luôn khả thi. Vì vậy tìm kiếm nhị phân đáp án.",
+      "Tìm kiếm nhị phân trên [1, max rating]: nếu tổng nhu cầu sum của (v + mid - 1) / mid (tích lũy bằng 64-bit) không quá M, đặt hi = mid, nếu không lo = mid + 1; in lo."
     ]
   },
   "explanationEn": "## Approach\n\nBinary search x. A rating v needs ceil(v/x) operations; check whether the total demand is at most M.\n\n## Proof of correctness\n\nEach operation reduces a single rating by only x, so a rating needs at least the ceiling number of operations, and repeating the operation achieves it. Ratings are independent, so adding up the demands gives exactly the minimum total. As x grows no demand increases, so feasibility is monotone; x equal to the largest rating needs at most n operations and is guaranteed feasible, so binary search finds the minimum.\n\n## Complexity\n\nTime O(n log(max rating)), space O(n), with the operation total accumulated in 64-bit."

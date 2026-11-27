@@ -13,6 +13,21 @@
       "Inside a monotone run (non-increasing or non-decreasing), the absolute difference between its ends equals the sum of its adjacent absolute differences, so the inner points of a monotone run can all be deleted.",
       "First merge runs of equal values into one; if a single value remains, the answer is 1. Otherwise the two ends and every point where a rise turns into a fall or a fall into a rise must stay, and everything else can go.",
       "Remove adjacent duplicates to get b; if its length is 1 print 1; otherwise start the answer at 2 and add 1 for every inner position i where b[i] - b[i-1] and b[i+1] - b[i] have opposite signs; print the answer."
+    ],
+    "ja": [
+      "単調な連なり（非減少または非増加）の内部では、その両端の絶対差は、隣接する絶対差の和に等しいので、単調な連なりの内側の点はすべて削除できます。",
+      "まず等しい値の連なりを 1 つにまとめます。値が 1 つだけ残るなら答えは 1 です。そうでなければ、両端と、上昇が下降に、または下降が上昇に変わるすべての点は残さなければならず、それ以外はすべて削除できます。",
+      "隣接する重複を取り除いて b を作ります。その長さが 1 なら 1 を出力します。そうでなければ答えを 2 から始め、内側の各位置 i について b[i] - b[i-1] と b[i+1] - b[i] の符号が逆なら 1 を加え、答えを出力します。"
+    ],
+    "ko": [
+      "단조 구간(비감소 또는 비증가) 안에서는 양 끝의 차이의 절댓값이 인접한 차이의 절댓값의 합과 같으므로, 단조 구간의 안쪽 점은 모두 삭제할 수 있습니다.",
+      "먼저 같은 값이 이어지는 구간을 하나로 합치고, 값이 하나만 남으면 답은 1입니다. 그렇지 않으면 양 끝과, 상승이 하강으로 또는 하강이 상승으로 바뀌는 모든 점은 반드시 남겨야 하고 나머지는 모두 삭제할 수 있습니다.",
+      "인접한 중복을 제거해 b를 얻고, 길이가 1이면 1을 출력합니다. 그렇지 않으면 답을 2에서 시작해, b[i] - b[i-1]과 b[i+1] - b[i]의 부호가 반대인 모든 안쪽 위치 i마다 1을 더한 뒤 답을 출력합니다."
+    ],
+    "vi": [
+      "Bên trong một đoạn đơn điệu (không tăng hoặc không giảm), chênh lệch tuyệt đối giữa hai đầu của nó bằng tổng các chênh lệch tuyệt đối kề nhau, nên các điểm bên trong của một đoạn đơn điệu đều có thể xóa.",
+      "Trước hết gộp các đoạn giá trị bằng nhau thành một; nếu chỉ còn một giá trị thì đáp án là 1. Nếu không, hai đầu và mọi điểm mà tại đó tăng chuyển thành giảm hoặc giảm chuyển thành tăng phải được giữ, và mọi thứ khác có thể bỏ.",
+      "Loại các phần tử trùng kề nhau để có b; nếu độ dài của nó là 1 thì in 1; nếu không, bắt đầu đáp án ở 2 và cộng 1 cho mỗi vị trí bên trong i mà b[i] - b[i-1] và b[i+1] - b[i] trái dấu nhau; in đáp án."
     ]
   },
   "explanationEn": "## Approach\n\nRemove consecutive equal values. If only one value remains the answer is 1; otherwise keep the first and last elements and every point where a strict rise turns into a fall or the other way round.\n\n## Proof of correctness\n\nWithin a monotone run, the difference of the endpoints equals the sum of all adjacent differences, so deleting interior points does not change the target. Skipping a strict turning point makes the triangle inequality strict, losing part of the sum, and no other deletion can make up for it, so every turning point must be kept; when the total variation is non-zero, the first and last extreme values must each be kept as well.\n\n## Complexity\n\nTime O(n), space O(n)."

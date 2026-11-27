@@ -13,6 +13,21 @@
       "Whether a string is valid only depends on its trailing run of consecutive vowels never exceeding k, so it is enough to group strings by the length of that trailing run.",
       "Let dp[j] be the number of strings of the current length ending with exactly j consecutive vowels. Appending a consonant (21 choices) resets j to 0; appending a vowel (5 choices) turns j into j + 1, and states above k are discarded.",
       "Start with dp[0] = 1. Each step, the new dp[0] = (sum of all dp) * 21 and the new dp[j] = old dp[j - 1] * 5 for 1 <= j <= k, all modulo 10^9 + 7. After n steps output the sum of dp modulo 10^9 + 7; the time is O(nk)."
+    ],
+    "ja": [
+      "文字列が有効かどうかは、末尾の連続する母音の長さが k を超えないことだけに依存するので、その末尾の連の長さで文字列をグループ分けすれば十分です。",
+      "dp[j] を、現在の長さで末尾がちょうど j 個の連続した母音である文字列の数とします。子音（21 通り）を追加すると j は 0 に戻ります。母音（5 通り）を追加すると j は j + 1 になり、k を超える状態は捨てます。",
+      "dp[0] = 1 から始めます。各ステップで、新しい dp[0] = (dp の総和) * 21、1 <= j <= k について新しい dp[j] = 古い dp[j - 1] * 5 とし、すべて 10^9 + 7 で剰余を取ります。n ステップ後に dp の総和を 10^9 + 7 で割った余りで出力します。時間は O(nk) です。"
+    ],
+    "ko": [
+      "문자열이 유효한지는 끝에 이어진 연속 모음의 길이가 k를 넘지 않는지에만 달려 있으므로, 그 길이로 문자열을 묶어 세면 충분합니다.",
+      "dp[j]를 현재 길이에서 정확히 j개의 연속된 모음으로 끝나는 문자열의 수라 합시다. 자음(21가지)을 붙이면 j가 0으로 돌아가고, 모음(5가지)을 붙이면 j가 j + 1이 되며 k를 넘는 상태는 버립니다.",
+      "dp[0] = 1로 시작합니다. 매 단계 새 dp[0] = (모든 dp의 합) * 21이고 1 <= j <= k에 대해 새 dp[j] = 이전 dp[j - 1] * 5이며, 모두 10^9 + 7로 나눈 나머지입니다. n단계 후 dp의 합을 10^9 + 7로 나눈 나머지를 출력합니다. 시간은 O(nk)입니다."
+    ],
+    "vi": [
+      "Một xâu có hợp lệ hay không chỉ phụ thuộc vào việc dãy nguyên âm liên tiếp ở cuối không vượt quá k, nên chỉ cần nhóm các xâu theo độ dài của dãy cuối đó.",
+      "Gọi dp[j] là số xâu có độ dài hiện tại kết thúc bằng đúng j nguyên âm liên tiếp. Thêm một phụ âm (21 lựa chọn) đặt lại j về 0; thêm một nguyên âm (5 lựa chọn) biến j thành j + 1, và các trạng thái vượt quá k bị loại bỏ.",
+      "Bắt đầu với dp[0] = 1. Mỗi bước, dp[0] mới = (tổng mọi dp) * 21 và dp[j] mới = dp[j - 1] cũ * 5 với 1 <= j <= k, tất cả theo modulo 10^9 + 7. Sau n bước in tổng dp theo modulo 10^9 + 7; thời gian là O(nk)."
     ]
   },
   "explanationEn": "## Approach\n\ndp[j] is the number of strings currently ending in exactly j consecutive vowels. Appending a consonant resets j to 0; appending a vowel increases j by 1, but j may not exceed k.\n\n## Correctness\n\nThe last character of any non-empty string falls into exactly one of two classes, consonant or vowel, and multiplying by 21 or 5 accounts for the character choices. The transitions keep the length of the trailing vowel run exactly, and transitions beyond k are dropped, so exactly all valid strings are counted.\n\n## Complexity\n\nO(nk) time and O(k) space."

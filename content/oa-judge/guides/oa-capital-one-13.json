@@ -13,6 +13,21 @@
       "You only need the number of decimal digits of each value; note that 0 has one digit.",
       "The digit count is the length of the decimal string, or you can count divisions by 10 (in that case treat 0 as one digit separately).",
       "Go through the array, add one to the count whenever the number of digits is even, and print the count."
+    ],
+    "ja": [
+      "必要なのは各値の10進の桁数だけです。0 は1桁であることに注意してください。",
+      "桁数は10進文字列の長さです。あるいは 10 で割れる回数を数えても求まります(その場合、0 は1桁として別に扱います)。",
+      "配列を走査し、桁数が偶数のたびにカウントを1増やし、そのカウントを出力します。"
+    ],
+    "ko": [
+      "각 값의 십진 자릿수만 알면 됩니다. 0은 한 자리임에 주의하세요.",
+      "자릿수는 십진 문자열의 길이이거나, 10으로 나누는 횟수로 셀 수 있습니다(이 경우 0은 한 자리로 따로 처리합니다).",
+      "배열을 훑으며 자릿수가 짝수일 때마다 카운트에 1을 더하고, 카운트를 출력합니다."
+    ],
+    "vi": [
+      "Bạn chỉ cần số chữ số thập phân của mỗi giá trị; lưu ý 0 có một chữ số.",
+      "Số chữ số là độ dài của xâu thập phân, hoặc bạn có thể đếm số lần chia cho 10 (khi đó hãy xử lý riêng 0 như một chữ số).",
+      "Duyệt mảng, cộng một vào số đếm mỗi khi số chữ số chẵn, rồi in số đếm."
     ]
   },
   "explanationEn": "## Approach\n\nCompute the number of decimal digits of each non-negative integer, and count it if the number of digits is even. The number of digits can be obtained from the length of the decimal string; 0 is written with one digit.\n\n## Correctness\n\nEach array element contributes 1 only when its decimal representation has an even length, and 0 otherwise. Adding the contributions term by term gives exactly what the problem asks for, and each term is processed exactly once.\n\n## Complexity\n\nTime O(n·d), where d≤10; space O(1) (excluding the space needed to parse the input)."

@@ -13,6 +13,21 @@
       "The condition only compares neighbouring days: the window steps before the day must each go from a day to a day that is not larger, and the window steps after it must each go to a day that is not smaller. Lengths of such unbroken runs can be computed in advance.",
       "Scan left to right for the number of non-increasing steps ending at each day, and right to left for the number of non-decreasing steps starting at each day; a day is ideal exactly when both numbers are at least window.",
       "left[0] = 0 and left[i] = left[i-1] + 1 when a[i-1] >= a[i], else 0; right[n-1] = 0 and right[i] = right[i+1] + 1 when a[i] <= a[i+1], else 0; print, in increasing order, every i+1 with left[i] >= window and right[i] >= window. A day too close to either end simply has too few steps, so no separate boundary check is needed."
+    ],
+    "ja": [
+      "条件は隣り合う日の比較だけです。その日の前の window ステップはどれも、ある日から、より大きくない日へ進み、その日の後の window ステップはどれも、より小さくない日へ進む必要があります。そのような途切れない連の長さはあらかじめ計算できます。",
+      "左から右へ各日で終わる非増加ステップの数を、右から左へ各日から始まる非減少ステップの数を数えます。両方の数が window 以上であることが、理想的な日の条件です。",
+      "left[0] = 0 とし、a[i-1] >= a[i] なら left[i] = left[i-1] + 1、そうでなければ 0 とします。right[n-1] = 0 とし、a[i] <= a[i+1] なら right[i] = right[i+1] + 1、そうでなければ 0 とします。left[i] >= window かつ right[i] >= window のすべての i+1 を昇順に出力します。どちらかの端に近すぎる日はステップ数が足りないだけなので、境界の別チェックは不要です。"
+    ],
+    "ko": [
+      "조건은 이웃한 날끼리의 비교만 포함합니다. 그날 앞의 window개 단계는 각각 어떤 날에서 더 크지 않은 날로 가야 하고, 그날 뒤의 window개 단계는 각각 더 작지 않은 날로 가야 합니다. 이런 끊김 없는 구간의 길이는 미리 계산해 둘 수 있습니다.",
+      "왼쪽에서 오른쪽으로 훑으며 각 날에서 끝나는 비증가 단계의 수를, 오른쪽에서 왼쪽으로 훑으며 각 날에서 시작하는 비감소 단계의 수를 구합니다. 두 수가 모두 window 이상일 때, 그리고 그때에만 그날은 이상적입니다.",
+      "left[0] = 0이고 a[i-1] >= a[i]이면 left[i] = left[i-1] + 1, 아니면 0입니다. right[n-1] = 0이고 a[i] <= a[i+1]이면 right[i] = right[i+1] + 1, 아니면 0입니다. left[i] >= window이고 right[i] >= window인 모든 i+1을 증가하는 순서로 출력합니다. 양 끝에 너무 가까운 날은 단계 수가 모자라므로 별도의 경계 검사는 필요 없습니다."
+    ],
+    "vi": [
+      "Điều kiện chỉ so sánh các ngày kề nhau: window bước trước ngày đó đều phải đi từ một ngày sang một ngày không lớn hơn, và window bước sau nó đều phải đi sang một ngày không nhỏ hơn. Độ dài của các đoạn liên tục như vậy có thể tính trước.",
+      "Quét từ trái sang phải để lấy số bước không tăng kết thúc tại mỗi ngày, và từ phải sang trái để lấy số bước không giảm bắt đầu tại mỗi ngày; một ngày là lý tưởng chính xác khi cả hai số đều ít nhất là window.",
+      "left[0] = 0 và left[i] = left[i-1] + 1 khi a[i-1] >= a[i], nếu không thì 0; right[n-1] = 0 và right[i] = right[i+1] + 1 khi a[i] <= a[i+1], nếu không thì 0; in, theo thứ tự tăng dần, mọi i+1 có left[i] >= window và right[i] >= window. Một ngày quá gần một trong hai đầu đơn giản là có quá ít bước, nên không cần kiểm tra biên riêng."
     ]
   },
   "explanationEn": "## Approach\n\nA left scan computes, for each point, the length of the non-increasing run ending there; a right scan computes the length of the non-decreasing run starting there. A day qualifies when both contain at least window adjacent relations.\n\n## Proof of correctness\n\nThe two run lengths exactly encode the pairwise order relations over the full window on the left and on the right. The index boundaries are also reflected through the lengths, so the intersection of the two conditions is exactly the set of all ideal days by definition.\n\n## Complexity\n\nTime O(n), space O(n)."

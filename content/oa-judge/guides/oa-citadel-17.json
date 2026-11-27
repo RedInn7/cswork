@@ -13,6 +13,21 @@
       "Within t rounds every task receives at least t * y of execution whether or not it is the primary task; being the primary task once only adds an extra x - y on top of that.",
       "More rounds can only help, so binary search on the number of rounds t. A task with v > t * y must be the primary task at least ceil((v - t * y) / (x - y)) times; if these counts sum to at most t, the pool can be cleared within t rounds.",
       "Search t in the range 0 to ceil(max(v) / y). In each check add up the primary turns each task needs and fail early once the sum exceeds t; if feasible move the right end down, otherwise move the left end up. Use 64-bit integers for t * y and the sum."
+    ],
+    "ja": [
+      "t ラウンドの間、各タスクは主タスクかどうかにかかわらず、少なくとも t * y だけ実行されます。主タスクになるたびに、それに加えて x - y だけ余分に進みます。",
+      "ラウンド数は多いほど有利なので、ラウンド数 t で二分探索します。v > t * y のタスクは、少なくとも ceil((v - t * y) / (x - y)) 回は主タスクにならなければなりません。これらの回数の合計が t 以下なら、t ラウンド以内にプールを空にできます。",
+      "t を 0 から ceil(max(v) / y) の範囲で探索します。各判定では、各タスクに必要な主タスクのターン数を足し合わせ、合計が t を超えた時点で早期に失敗とします。可能なら右端を下げ、そうでなければ左端を上げます。t * y と合計には 64 ビット整数を使ってください。"
+    ],
+    "ko": [
+      "t라운드 동안 모든 작업은 주 작업이 아니더라도 최소 t * y만큼 실행됩니다. 주 작업이 되는 한 번은 그 위에 x - y만 추가할 뿐입니다.",
+      "라운드가 많을수록 유리하기만 하므로 라운드 수 t에 대해 이분 탐색을 합니다. v > t * y인 작업은 최소 ceil((v - t * y) / (x - y))번 주 작업이 되어야 하며, 이 횟수들의 합이 t 이하이면 t라운드 안에 풀을 비울 수 있습니다.",
+      "t를 0부터 ceil(max(v) / y)까지 탐색합니다. 각 판정에서 작업별로 필요한 주 작업 횟수를 더하고, 합이 t를 넘는 즉시 실패로 처리합니다. 가능하면 오른쪽 끝을 내리고, 아니면 왼쪽 끝을 올립니다. t * y와 합에는 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Trong t vòng, mọi tác vụ đều nhận ít nhất t * y lượng thực thi dù có là tác vụ chính hay không; làm tác vụ chính một lần chỉ cộng thêm x - y trên mức đó.",
+      "Nhiều vòng hơn chỉ có lợi, nên chặt nhị phân theo số vòng t. Một tác vụ có v > t * y phải là tác vụ chính ít nhất ceil((v - t * y) / (x - y)) lần; nếu các số lần này có tổng không quá t thì nhóm có thể được làm sạch trong t vòng.",
+      "Tìm t trong khoảng 0 đến ceil(max(v) / y). Trong mỗi lần kiểm tra, cộng số lượt làm tác vụ chính mà mỗi tác vụ cần và thất bại sớm khi tổng vượt quá t; nếu khả thi thì dịch đầu phải xuống, nếu không thì dịch đầu trái lên. Dùng số nguyên 64 bit cho t * y và tổng."
     ]
   },
   "explanationEn": "## Approach\n\nBinary search on the number of rounds t: treat each task's base progress as t*y; for the shortfall, each turn as the primary task contributes an extra x-y, and the pool can be finished if the total number of primary turns needed is <= t.\n\n## Proof of correctness\n\nWithin t rounds each task gets at most the base t*y plus its number of primary turns times (x-y), so requiring the total of the needed turns to be <= t is a necessary condition. Conversely, these primary turns can be distributed over the rounds; if a task finishes early, giving its remaining reserved turns to other unfinished tasks only increases effective progress. A task still unfinished after t rounds would always have received the base y per round plus its required primary turns, a contradiction, so the condition is sufficient. Feasibility is monotone in t, so the binary search finds the minimum.\n\n## Complexity\n\nO(n log(max execution amount / y + 1)) time and O(n) space."

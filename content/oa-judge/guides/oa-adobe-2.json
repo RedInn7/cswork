@@ -13,6 +13,21 @@
       "Scores only range from 0 to 100, and a rank depends only on how many players have a strictly higher score; players with equal scores share a rank and are promoted or not together.",
       "Count players per score in 101 buckets and sweep from high scores to low; when you reach a score, the count accumulated so far is exactly the number of players strictly above it.",
       "Fill buckets[0..100]; go from 100 down to 1 (score 0 is never promoted); if the accumulated count plus 1 is at most k, add that bucket's size to the answer; then add the bucket to the accumulated count; when k <= 0 nobody is promoted automatically; print the answer."
+    ],
+    "ja": [
+      "得点は 0 から 100 までしかなく、順位は、厳密に高い得点を持つ選手が何人いるかだけで決まります。得点が等しい選手は順位を共有し、昇格するかどうかも一緒です。",
+      "選手を 101 個のバケットに得点ごとに数え、高い得点から低い得点へ掃引します。ある得点に達した時点での累積人数が、その得点より厳密に上にいる人数にちょうど等しくなります。",
+      "buckets[0..100] を埋めます。100 から 1 まで下りながら (得点 0 は昇格しません)、累積人数に 1 を加えた値が k 以下であれば、そのバケットの人数を答えに加えます。そのあとでバケットを累積人数に加えます。k <= 0 のときは自動的に誰も昇格しません。答えを出力します。"
+    ],
+    "ko": [
+      "점수는 0부터 100까지뿐이고, 순위는 자신보다 점수가 엄밀히 높은 선수의 수에만 달려 있습니다. 점수가 같은 선수는 순위를 공유하므로 함께 승급하거나 함께 탈락합니다.",
+      "점수별 선수 수를 101개의 버킷에 세고 높은 점수에서 낮은 점수로 훑습니다. 어떤 점수에 도달했을 때 지금까지 누적한 수가 바로 그 점수보다 엄밀히 높은 선수의 수입니다.",
+      "buckets[0..100]을 채웁니다. 100부터 1까지 내려가며(점수 0은 승급하지 않습니다), 누적된 수 + 1이 k 이하이면 그 버킷의 크기를 답에 더합니다. 그다음 버킷을 누적 수에 더합니다. k <= 0이면 자동으로 아무도 승급하지 않습니다. 답을 출력합니다."
+    ],
+    "vi": [
+      "Điểm chỉ nằm trong khoảng từ 0 đến 100, và hạng chỉ phụ thuộc vào số người chơi có điểm cao hơn hẳn; những người có điểm bằng nhau cùng hạng nên cùng được hoặc cùng không được thăng hạng.",
+      "Đếm số người chơi theo từng mức điểm trong 101 thùng và quét từ điểm cao xuống thấp; khi tới một mức điểm, số lượng đã tích lũy chính là số người có điểm cao hơn hẳn mức đó.",
+      "Điền buckets[0..100]; đi từ 100 xuống 1 (điểm 0 không bao giờ được thăng hạng); nếu số đã tích lũy cộng 1 không vượt quá k thì cộng kích thước thùng đó vào đáp án; sau đó cộng thùng này vào số đã tích lũy; khi k <= 0 thì mặc nhiên không ai được thăng hạng; in đáp án."
     ]
   },
   "explanationEn": "## Approach\n\nUse 101 score buckets and sweep from high to low, keeping the number of players seen so far; the rank of the current non-zero score is that count plus 1.\n\n## Proof of correctness\n\nThe players strictly above the current score are exactly those in the buckets already accumulated, so the rank is exact. All players in one bucket are promoted or not together, and score 0 is excluded separately, so the count matches all the conditions exactly.\n\n## Complexity\n\nO(n + 101) time and O(101) extra space."

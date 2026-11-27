@@ -11,5 +11,35 @@
     "hints": [
       "First distinguish the explicit rules of the original problem from the stdin/stdout conventions added by this site."
     ]
+  },
+  "ja": {
+    "title": "Lock Acquire/Release Log Checker",
+    "description": "各イベントは ACQUIRE lock か RELEASE lock です。ロックは取得した順と逆の順で解放しなければならず、すでに保持しているロックを再び取得することはできず、保持していないロックを解放することもできません。最初に誤っているイベントの 1 始まりの添字を返します。誤ったイベントがなくても、最後にまだ保持されているロックがあれば、イベント数 + 1 を返します。それ以外は 0 を返します。\n\n入出力の取り決めと「本サイトで追加」と記した制約は本サイトが整えたものです。元の問題に与えられていない制約を、原典の一部として扱うことはしません。",
+    "input": "1 行目に n、続く n 行はそれぞれ ACQUIRE name か RELEASE name です。本サイトで追加：0≤n≤200000、name は空白を含まない ASCII の識別子です。",
+    "output": "最初の誤りの添字を出力します。ロックが残っている場合は n+1、問題がなければ 0 を出力します。",
+    "explanation": "アルゴリズムの考え方、正しさの証明、計算量は付属の解説を参照してください。",
+    "hints": [
+      "まず、元の問題の明示的なルールと、本サイトが追加した stdin/stdout の取り決めを区別してください。"
+    ]
+  },
+  "ko": {
+    "title": "Lock Acquire/Release Log Checker",
+    "description": "각 이벤트는 ACQUIRE lock 또는 RELEASE lock입니다. 락은 획득한 순서의 역순으로 해제해야 하고, 이미 보유 중인 락을 다시 획득할 수 없으며, 보유하지 않은 락은 해제할 수 없습니다. 처음으로 오류가 발생한 이벤트의 1-based 인덱스를 반환하세요. 오류가 없는 이벤트이지만 끝에 락이 아직 보유 중이면 이벤트 수 + 1을 반환하고, 그렇지 않으면 0을 반환합니다.\n\n이 사이트에서 정리한 입출력 규약과 '이 사이트에서 추가'로 표시된 제한은 이 사이트가 작성한 것이며, 원문에 없는 제한은 원문의 일부로 간주하지 않습니다.",
+    "input": "첫 번째 줄에 n이 주어지고, 다음 n개의 줄은 각각 ACQUIRE name 또는 RELEASE name입니다. 이 사이트에서 추가: 0≤n≤200000이며 name은 공백이 없는 ASCII 식별자입니다.",
+    "output": "첫 번째 오류의 인덱스, 해제되지 않은 락이 남은 경우 n+1, 또는 0을 출력합니다.",
+    "explanation": "알고리즘 아이디어, 정당성 증명, 복잡도는 함께 제공되는 해설을 참고하세요.",
+    "hints": [
+      "먼저 원문에 명시된 규칙과 이 사이트에서 추가한 stdin/stdout 규약을 구분하세요."
+    ]
+  },
+  "vi": {
+    "title": "Lock Acquire/Release Log Checker",
+    "description": "Mỗi sự kiện là ACQUIRE lock hoặc RELEASE lock. Các khóa phải được giải phóng theo thứ tự ngược với thứ tự chiếm giữ; một khóa đang được giữ không thể chiếm lại, và một khóa không được giữ thì không thể giải phóng. Trả về chỉ số (tính từ 1) của sự kiện sai đầu tiên; nếu không có sự kiện nào sai nhưng cuối cùng vẫn còn khóa đang được giữ, trả về số sự kiện + 1; nếu không thì trả về 0.\n\nGiao thức đầu vào/đầu ra và các giới hạn được đánh dấu là 'do trang này bổ sung' do trang này biên soạn; các giới hạn không được nêu trong bài gốc không được coi là một phần của nguồn gốc.",
+    "input": "Dòng đầu chứa n; mỗi dòng trong n dòng tiếp theo là ACQUIRE name hoặc RELEASE name. Do trang này bổ sung: 0≤n≤200000, và name là một định danh ASCII không chứa khoảng trắng.",
+    "output": "In ra chỉ số của lỗi đầu tiên, n+1 trong trường hợp còn khóa treo, hoặc 0.",
+    "explanation": "Xem phần lời giải đi kèm để biết ý tưởng thuật toán, chứng minh tính đúng đắn và độ phức tạp.",
+    "hints": [
+      "Trước hết hãy phân biệt các quy tắc tường minh của bài gốc với các quy ước stdin/stdout do trang này bổ sung."
+    ]
   }
 }

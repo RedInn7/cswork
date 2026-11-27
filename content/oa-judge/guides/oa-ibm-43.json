@@ -13,6 +13,21 @@
       "To minimize lexicographically, some position should become smaller as early as possible; decrementing an a turns it into z, which is larger, so the chosen substring should contain no a unless the whole string is a's.",
       "Skip all leading a's and start at the first non-a character; until the next a, decrementing every additional position only helps, so extend the substring right up to just before the next a.",
       "Find the first non-a position and replace every character from there up to, but not including, the next a (or the end) with the previous letter; if the string is all a's, every change makes it larger, so change only the last character to z."
+    ],
+    "ja": [
+      "辞書順で最小にするには、できるだけ前の位置が小さくなるべきです。a を 1 つ前にすると z になって大きくなるので、文字列全体が a でない限り、選ぶ部分文字列に a を含めてはいけません。",
+      "先頭の a をすべて飛ばし、最初の a 以外の文字から始めます。次の a までは、位置を増やして 1 つ前の文字にするほど有利なので、次の a の直前まで部分文字列を延ばします。",
+      "最初の a 以外の位置を見つけ、そこから次の a (または末尾) の直前までのすべての文字を 1 つ前の文字に置き換えます。文字列がすべて a なら、どの変更も文字列を大きくするので、最後の 1 文字だけを z に変えます。"
+    ],
+    "ko": [
+      "사전순으로 최소화하려면 가능한 한 앞쪽의 어떤 위치가 작아져야 합니다. a를 낮추면 더 큰 z가 되므로, 문자열 전체가 a가 아닌 한 선택한 부분 문자열에는 a가 없어야 합니다.",
+      "앞쪽의 a를 모두 건너뛰고 처음 나오는 a가 아닌 문자에서 시작합니다. 다음 a가 나오기 전까지는 위치를 더 낮출수록 유리하므로, 다음 a 바로 앞까지 부분 문자열을 확장합니다.",
+      "a가 아닌 첫 위치를 찾아, 거기서부터 다음 a(또는 문자열 끝)의 직전까지 모든 문자를 이전 문자로 바꿉니다. 문자열이 모두 a이면 어떻게 바꿔도 더 커지므로 마지막 문자만 z로 바꿉니다."
+    ],
+    "vi": [
+      "Để nhỏ nhất theo thứ tự từ điển, một vị trí nào đó nên nhỏ đi càng sớm càng tốt; giảm một chữ a sẽ thành z, lớn hơn, nên xâu con được chọn không nên chứa a trừ khi cả xâu toàn là a.",
+      "Bỏ qua mọi chữ a ở đầu và bắt đầu tại ký tự không phải a đầu tiên; cho đến chữ a kế tiếp, giảm thêm mỗi vị trí đều có lợi, nên kéo dài xâu con tới ngay trước chữ a kế tiếp.",
+      "Tìm vị trí không phải a đầu tiên và thay mọi ký tự từ đó cho đến ngay trước chữ a kế tiếp (hoặc hết xâu) bằng chữ cái đứng trước; nếu xâu toàn chữ a thì mọi thay đổi đều làm nó lớn hơn, nên chỉ đổi ký tự cuối thành z."
     ]
   },
   "explanationEn": "## Approach\n\nSkip the leading a's, then decrement the following run of non-a characters; if the string is all a's, change only the last character to z.\n\n## Proof of correctness\n\nModifying the first non-a character lowers that position, and the earlier a position is lowered the smaller the string is lexicographically; extending across an a would make that position larger, so the substring must stop before the next a, and before that, lowering each additional position is always better. When the string is all a's, every modification makes it larger, so changing as late as possible and only one position gives the minimum.\n\n## Complexity\n\nTime O(n), output space O(n)."

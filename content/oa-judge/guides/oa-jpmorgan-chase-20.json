@@ -13,6 +13,21 @@
       "After sorting by start, any interval that can overlap the current merged segment comes right after it; touching at the same endpoint counts as overlapping, but adjacent different integers do not.",
       "Sort by start and keep the last merged segment: if the new interval starts no later than the segment's end, extend the end; otherwise begin a new segment.",
       "Sort intervals by (start, end) and process them in order: when start ≤ the current segment's end, set the end to the larger of the two; otherwise append the interval as a new segment. Print the number of segments, then one line with the two endpoints of each."
+    ],
+    "ja": [
+      "開始位置でソートすると、現在のマージ済み区間と重なり得る区間はその直後に来ます。端点が一致して接する場合は重なりとみなしますが、等しくない隣り合う整数は重なりとみなしません。",
+      "開始位置でソートし、最後にマージした区間を保持します。新しい区間の開始位置が、その区間の終了位置以下なら終了位置を延長し、そうでなければ新しい区間を始めます。",
+      "区間を (start, end) でソートして順に処理します。start ≤ 現在の区間の終了位置のときは、終了位置を2つのうち大きいほうにし、そうでなければ新しい区間として追加します。区間の数を出力し、続けて各区間の2つの端点を1行ずつ出力します。"
+    ],
+    "ko": [
+      "시작점 기준으로 정렬하면 현재 병합 구간과 겹칠 수 있는 구간은 바로 그 뒤에 옵니다. 끝점이 같은 값에서 맞닿으면 겹친 것이지만, 서로 다른 인접 정수는 겹친 것이 아닙니다.",
+      "시작점 기준으로 정렬하고 마지막으로 병합된 구간을 유지합니다. 새 구간이 그 구간의 끝점보다 늦지 않게 시작하면 끝점을 확장하고, 아니면 새 구간을 시작합니다.",
+      "구간을 (start, end) 기준으로 정렬하고 순서대로 처리합니다. start ≤ 현재 구간의 끝점이면 끝점을 둘 중 큰 값으로 설정하고, 아니면 새 구간으로 추가합니다. 구간의 수를 출력한 뒤 각 구간의 두 끝점을 한 줄씩 출력합니다."
+    ],
+    "vi": [
+      "Sau khi sắp xếp theo điểm đầu, mọi đoạn có thể chồng lấn với đoạn đã gộp hiện tại đều đứng ngay sau nó; chạm nhau tại cùng một đầu mút được tính là chồng lấn, nhưng các số nguyên khác nhau liền kề thì không.",
+      "Sắp xếp theo điểm đầu và giữ đoạn đã gộp cuối cùng: nếu đoạn mới bắt đầu không muộn hơn điểm cuối của đoạn, hãy mở rộng điểm cuối; ngược lại bắt đầu một đoạn mới.",
+      "Sắp xếp các đoạn theo (start, end) và xử lý theo thứ tự: khi start ≤ điểm cuối của đoạn hiện tại, đặt điểm cuối bằng giá trị lớn hơn trong hai giá trị; ngược lại thêm đoạn đó như một đoạn mới. In số đoạn, rồi mỗi dòng hai đầu mút của từng đoạn."
     ]
   },
   "explanationEn": "## Approach\n\nSort by start and maintain the last merged segment; if the new start does not exceed its end, extend it, otherwise start a new segment.\n\n## Proof of correctness\n\nAfter sorting, an interval that starts later than the current right end does not overlap the current segment, and later intervals start even later and cannot connect to it either, so the segment can be finalized. If they intersect, their union is exactly described by the smaller left end and the larger right end. By induction, the segments output so far are pairwise disjoint and exactly cover the processed intervals, so the final result is correct.\n\n## Complexity\n\nO(n log n) time and O(n) space."

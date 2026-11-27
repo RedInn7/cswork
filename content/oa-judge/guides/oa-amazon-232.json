@@ -13,6 +13,21 @@
       "All damage is non-negative, so health only goes down; it is enough to keep health strictly above 0 after the last level.",
       "The armor is used once and cancels min(armor, that level's damage), so it cancels the most on the level with the largest damage.",
       "Sum the damage and track the largest one; the answer is total damage - min(armor, largest damage) + 1. The total can reach 10^14, so use 64-bit integers."
+    ],
+    "ja": [
+      "ダメージはすべて非負なので、体力は下がる一方です。最後のレベルのあとに体力が真に 0 を超えていれば十分です。",
+      "鎧は 1 回だけ使え、min(armor, そのレベルのダメージ) を打ち消すので、最大のダメージのレベルで最も多く打ち消せます。",
+      "ダメージを合計し、最大のものを記録します。答えは 総ダメージ - min(armor, 最大のダメージ) + 1 です。合計は 10^14 に達しうるので、64 ビット整数を使います。"
+    ],
+    "ko": [
+      "모든 피해는 음이 아니므로 체력은 줄어들기만 합니다. 마지막 레벨 이후에도 체력이 엄밀히 0보다 크도록 하면 충분합니다.",
+      "방어구는 한 번만 쓰고 min(armor, 해당 레벨의 피해)만큼 막으므로, 피해가 가장 큰 레벨에서 가장 많이 막습니다.",
+      "피해의 합과 가장 큰 값을 구합니다. 정답은 총 피해 - min(armor, 최대 피해) + 1입니다. 합은 10^14까지 커질 수 있으므로 64비트 정수를 사용합니다."
+    ],
+    "vi": [
+      "Mọi sát thương đều không âm nên máu chỉ giảm; chỉ cần giữ máu lớn hơn 0 hẳn sau màn cuối.",
+      "Giáp chỉ dùng một lần và hóa giải min(armor, sát thương của màn đó), nên nó hóa giải được nhiều nhất ở màn có sát thương lớn nhất.",
+      "Cộng tổng sát thương và theo dõi sát thương lớn nhất; đáp án là tổng sát thương - min(armor, sát thương lớn nhất) + 1. Tổng có thể đạt 10^14, nên hãy dùng số nguyên 64-bit."
     ]
   },
   "explanationEn": "## Approach\n\nUse the armor on the level with the largest damage; the answer is total damage−min(armor, largest damage)+1.\n\n## Proof of correctness\n\nThe actual damage of every level is non-negative, so health is lowest at the end, and at least the actual total damage plus 1 is required. The armor can be used only once, and its largest possible reduction is min(armor, max(power)), which is achieved by using it on the level with the largest damage, so the formula is optimal.\n\n## Complexity\n\nTime O(n), space O(n) including the input; the answer uses 64-bit integers."

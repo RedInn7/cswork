@@ -12,5 +12,38 @@
       "Sort the calls by end time.",
       "Before choosing the current call, binary search for the last call that can come right before it."
     ]
+  },
+  "ja": {
+    "title": "注文量の最大化",
+    "description": "あるスーパーは 1 日に n 件の電話を受けます。各電話には開始時刻 start、所要時間 duration、注文量 volume があります。互いに重ならない電話を選び、注文量の合計を最大にしてください。出題元の 3 言語の実装に従い、電話の区間は半開区間 [start, start+duration) とします。つまり、ある電話が終わる時刻にちょうど次の電話が始まる場合、両方を連続して受けられます。\n\n元の制約: 1≤n≤100000、1≤start[i], duration[i], volume[i]≤10^9。\n\n出典: https://oamaster.com/docs/companies/snowflake#11-maximum-order-volume-weighted-interval-scheduling （固定スナップショットの内容フィンガープリント 0c74f501c9c27779e35805b2c9ac24588e2d0ca5c2b84f5ed60def2c9c34468f）。",
+    "input": "1 行目に n、続く 3 行にそれぞれ start、duration、volume の n 個の値が与えられます。",
+    "output": "得られる注文量の合計の最大値を出力してください。",
+    "explanation": "終了時刻でソートします。dp[i] を先頭 i 件の電話を使ったときの注文量の最大値とします。電話 i を選ぶ場合は、終了時刻がその開始時刻以前である電話の数 p を二分探索で求め、遷移は max(dp[i-1], dp[p]+volume[i]) です。",
+    "hints": [
+      "電話を終了時刻でソートします。",
+      "現在の電話を選ぶ前に、その直前に置ける最後の電話を二分探索で探します。"
+    ]
+  },
+  "ko": {
+    "title": "최대 주문량 통화 선택",
+    "description": "마트에 하루 동안 n건의 통화가 들어옵니다. 각 통화에는 시작 시각 start, 통화 시간 duration, 주문량 volume이 있습니다. 서로 겹치지 않는 통화를 골라 주문량의 합을 최대화하세요. 원 출처의 세 언어 구현에 따라 통화 구간은 반개구간 [start, start+duration)이며, 한 통화가 끝나는 순간 다음 통화가 시작되면 두 통화를 연달아 받을 수 있습니다.\n\n원문 제약 조건: 1≤n≤100000, 1≤start[i], duration[i], volume[i]≤10^9.\n\n원 출처: https://oamaster.com/docs/companies/snowflake#11-maximum-order-volume-weighted-interval-scheduling (고정된 스냅샷 내용 지문 0c74f501c9c27779e35805b2c9ac24588e2d0ca5c2b84f5ed60def2c9c34468f).",
+    "input": "첫 줄에 n이 주어지고, 이어지는 세 줄에 각각 start, duration, volume의 n개 값이 주어집니다.",
+    "output": "얻을 수 있는 주문량 합의 최댓값을 출력합니다.",
+    "explanation": "종료 시각 기준으로 정렬합니다. dp[i]를 앞의 i개 통화로 얻을 수 있는 최대 주문량이라 하면, i번째 통화를 선택할 때는 종료 시각이 그 통화의 시작 시각 이하인 통화의 수 p를 이분 탐색으로 구하고, 점화식은 max(dp[i-1], dp[p]+volume[i])입니다.",
+    "hints": [
+      "통화를 종료 시각 기준으로 정렬합니다.",
+      "현재 통화를 선택하기 전에, 바로 앞에 올 수 있는 마지막 통화를 이분 탐색으로 찾습니다."
+    ]
+  },
+  "vi": {
+    "title": "Tổng khối lượng đơn hàng lớn nhất",
+    "description": "Một siêu thị nhận n cuộc gọi trong một ngày. Mỗi cuộc gọi có thời điểm bắt đầu start, thời lượng duration và khối lượng đơn hàng volume. Hãy chọn các cuộc gọi không xung đột để tổng khối lượng đơn hàng lớn nhất. Theo cách cài đặt của nguồn bằng ba ngôn ngữ, khoảng thời gian của cuộc gọi là nửa mở [start, start+duration): khi một cuộc gọi kết thúc đúng lúc cuộc tiếp theo bắt đầu thì có thể nhận cả hai liên tiếp.\n\nRàng buộc gốc: 1≤n≤100000, 1≤start[i], duration[i], volume[i]≤10^9.\n\nNguồn gốc: https://oamaster.com/docs/companies/snowflake#11-maximum-order-volume-weighted-interval-scheduling (dấu vân tay nội dung của bản chụp cố định 0c74f501c9c27779e35805b2c9ac24588e2d0ca5c2b84f5ed60def2c9c34468f).",
+    "input": "Dòng đầu tiên chứa n; ba dòng tiếp theo lần lượt chứa n giá trị của start, duration và volume.",
+    "output": "In ra tổng khối lượng đơn hàng lớn nhất có thể đạt được.",
+    "explanation": "Sắp xếp theo thời điểm kết thúc. Gọi dp[i] là tổng khối lượng đơn hàng lớn nhất khi chỉ dùng i cuộc gọi đầu; khi xét chọn cuộc gọi i, dùng tìm kiếm nhị phân để tìm số p các cuộc gọi có thời điểm kết thúc không muộn hơn thời điểm bắt đầu của nó, và công thức chuyển là max(dp[i-1], dp[p]+volume[i]).",
+    "hints": [
+      "Sắp xếp các cuộc gọi theo thời điểm kết thúc.",
+      "Trước khi chọn cuộc gọi hiện tại, dùng tìm kiếm nhị phân để tìm cuộc gọi cuối cùng có thể đứng ngay trước nó."
+    ]
   }
 }

@@ -11,5 +11,35 @@
     "hints": [
       "Prefix sums give the distance d in the linear unrolling, and the shortest distance on the ring is min(d,perimeter−d); add it up query by query."
     ]
+  },
+  "ja": {
+    "title": "環状路線を複数回移動したときの最短距離の合計",
+    "description": "distances[i] は駅 i と駅 (i+1) mod n を結びます。各クエリは独立した出発駅と到着駅で、時計回りと反時計回りのうち短いほうの距離を求め、すべてのクエリについて合計してください。\n\n標準入出力と解答は本サイトが独自に作成したものです。本サイト独自とされている範囲は、元の問題の制約ではありません。",
+    "input": "1 行目に n q、2 行目に n 本の辺の長さが与えられ、続く q 行に 0 始まりの出発駅と到着駅が与えられます。元の問題には値の範囲が示されていないため、本サイトでは 1≤n,q≤100000、1≤(辺の長さ)≤10⁹ としています。",
+    "output": "整数 1 つ（答え）を出力してください。",
+    "explanation": "例 1: 最短距離は 1、5、4 で、合計は 10 です。例 2: 0 から 2 は反対回りで 13、2 から 1 は 10 で、合計は 23 です。例 3: 同じ駅なので移動は不要で、合計は 0 です。",
+    "hints": [
+      "累積和で直線に展開したときの距離 d を求めると、環上の最短距離は min(d,周長−d) です。これをクエリごとに足し合わせます。"
+    ]
+  },
+  "ko": {
+    "title": "원형 구간 여러 번 이동의 최단 거리 합",
+    "description": "distances[i]는 역 i와 역 (i+1) mod n을 잇습니다. 각 쿼리는 독립적인 출발역과 도착역이며, 시계 방향과 반시계 방향 중 더 짧은 거리를 택해 모든 쿼리에 대해 합산하세요.\n\n표준 입출력 형식과 풀이는 이 사이트가 독자적으로 작성했으며, 이 사이트의 것이라고 표시된 범위는 원문의 제약 조건이 아닙니다.",
+    "input": "첫째 줄에 n q가 주어지고, 둘째 줄에 n개의 간선 길이가 주어지며, 이어서 q개의 줄에 0-기반 출발역과 도착역이 주어집니다. 원문에는 값의 범위가 없으며, 이 사이트에서 1≤n,q≤100000, 1≤(간선 길이)≤10⁹로 정했습니다.",
+    "output": "정수 하나로 답을 출력합니다.",
+    "explanation": "예제 1: 최단 거리는 1, 5, 4이므로 합은 10입니다. 예제 2: 0에서 2까지는 반대 방향으로 가면 13이고, 2에서 1까지는 10이므로 합은 23입니다. 예제 3: 같은 역이면 이동이 필요 없으므로 합은 0입니다.",
+    "hints": [
+      "누적 합으로 일렬로 펼친 경우의 거리 d를 구하면 원형에서의 최단 거리는 min(d,perimeter−d)이므로, 쿼리마다 구해 더합니다."
+    ]
+  },
+  "vi": {
+    "title": "Tổng quãng đường ngắn nhất của nhiều chuyến đi trên vòng tròn",
+    "description": "distances[i] nối trạm i và trạm (i+1) modulo n. Mỗi truy vấn là một cặp điểm đầu và điểm cuối độc lập; hãy lấy quãng đường ngắn hơn trong hai chiều cùng chiều và ngược chiều kim đồng hồ, rồi cộng lại trên tất cả truy vấn.\n\nTrang này tự viết phần nhập/xuất chuẩn và lời giải; các khoảng giá trị được đánh dấu là của trang này không phải ràng buộc gốc của đề nguồn.",
+    "input": "Dòng đầu tiên chứa n q, dòng thứ hai chứa n độ dài cạnh, tiếp theo là q dòng, mỗi dòng gồm trạm đầu và trạm cuối (đánh số từ 0). Đề gốc không cho khoảng giá trị; trang này đặt 1≤n,q≤100000, 1≤(độ dài cạnh)≤10⁹.",
+    "output": "In ra một số nguyên là đáp án.",
+    "explanation": "Ví dụ 1: các quãng đường ngắn nhất là 1, 5 và 4, tổng cộng là 10. Ví dụ 2: đi từ 0 đến 2 thì đi chiều còn lại được 13, đi từ 2 đến 1 là 10, tổng cộng là 23. Ví dụ 3: cùng một trạm thì không cần di chuyển, tổng là 0.",
+    "hints": [
+      "Tổng tiền tố cho khoảng cách d khi trải vòng tròn thành đường thẳng, và quãng đường ngắn nhất trên vòng là min(d,perimeter−d); cộng dồn theo từng truy vấn."
+    ]
   }
 }

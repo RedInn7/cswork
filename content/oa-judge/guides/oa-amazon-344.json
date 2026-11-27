@@ -13,6 +13,21 @@
       "All copies of a value have the same sort key and end up together, so you can think in terms of distinct values first and expand them by their counts at the end.",
       "Count how many times each value occurs, then sort the distinct values by \"count ascending, and value ascending for equal counts\".",
       "Get (count, value) pairs with a hash map or by grouping after sorting, and sort the pairs in ascending order; then print each value count times, separated by spaces. When n=0, print an empty line."
+    ],
+    "ja": [
+      "ある値のすべてのコピーは同じソートキーを持ち、最終的にまとまって並びます。したがって、まず異なる値で考え、最後に個数に従って展開すればよいです。",
+      "各値が何回現れるかを数え、異なる値を「個数の昇順、個数が等しければ値の昇順」でソートします。",
+      "ハッシュマップで、またはソート後にグループ化して (個数, 値) のペアを得て、ペアを昇順にソートします。その後、各値を個数回ずつ、空白区切りで出力します。n=0 のときは空行を出力します。"
+    ],
+    "ko": [
+      "같은 값의 모든 복사본은 정렬 키가 같아 한데 모이므로, 먼저 서로 다른 값을 기준으로 생각한 뒤 마지막에 개수만큼 펼치면 됩니다.",
+      "각 값이 몇 번 등장하는지 센 뒤, 서로 다른 값을 \"개수 오름차순, 개수가 같으면 값 오름차순\"으로 정렬합니다.",
+      "해시 맵이나 정렬 후 그룹화로 (개수, 값) 쌍을 얻고 쌍을 오름차순으로 정렬합니다. 그다음 각 값을 count번 공백으로 구분하여 출력합니다. n=0이면 빈 줄을 출력합니다."
+    ],
+    "vi": [
+      "Mọi bản sao của một giá trị có cùng khóa sắp xếp và cuối cùng nằm cạnh nhau, nên bạn có thể nghĩ theo các giá trị phân biệt trước rồi khai triển theo số đếm ở cuối.",
+      "Đếm mỗi giá trị xuất hiện bao nhiêu lần, rồi sắp xếp các giá trị phân biệt theo \"số đếm tăng dần, và giá trị tăng dần khi số đếm bằng nhau\".",
+      "Lấy các cặp (count, value) bằng bảng băm hoặc bằng cách gom nhóm sau khi sắp xếp, và sắp xếp các cặp tăng dần; sau đó in mỗi giá trị count lần, cách nhau bởi dấu cách. Khi n=0, in một dòng trống."
     ]
   },
   "explanationEn": "## Approach\n\nCount frequencies, sort all distinct values by (frequency, value), and expand each one by its original frequency.\n\n## Proof of correctness\n\nAll copies of a value share the same sort key, and counting never mixes up how many times it occurs; the sort key matches the two-level priority exactly, and expanding keeps exactly the original multiset, so the result is in the required order.\n\n## Complexity\n\nTime O(n log n), space O(n)."

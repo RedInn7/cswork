@@ -11,5 +11,35 @@
     "hints": [
       "Let the frequency prefix F(t) count the thresholds ≤t. Fix r. When r≤n−r, check the forbidden middle zone and the forced counts; otherwise let M=F(r)−F(n−r) and K=r−F(n−r), which contributes C(M,K). As r increases, neither M nor K decreases, so update in batches with the recurrence between adjacent binomial coefficients instead of recomputing comb for every r."
     ]
+  },
+  "ja": {
+    "title": "実行中・待機中のしきい値のもとでの設定の正確な個数",
+    "description": "各ロボットは固有の ID を持ち、実行中または待機中のちょうど一方の状態にあります。実行中のロボットは、実行中のロボットの総数 r が自身のしきい値以上であることを必要とします。待機中のロボットは、待機中のロボットの総数 n−r が自身のしきい値より真に小さいことを必要とします。有効な ID 付きの構成の個数を、剰余を取らずに求めてください。\n\n本サイトでは標準入出力と解説を独自にまとめています。出典で欠けている制約の補足やサンプルの訂正は、プロトコル中に明記しています。",
+    "input": "1行目に n、2行目に n 個のしきい値が与えられます。元の制約は 1≤n≤100000、1≤a[i]≤n です。元の int の戻り値では実際の結果を保持できないため、本サイトでは最大約 30103 桁の任意精度の10進整数を出力すると明記します。",
+    "output": "答えとなる整数を1つ出力してください。",
+    "explanation": "3つの公開サンプルの出力は 2、1、4 です。独立した全探索または直接シミュレーションで確認済みです。",
+    "hints": [
+      "頻度の累積 F(t) を、しきい値が t 以下のものの個数とします。r を固定します。r≤n−r のときは、禁止される中間域と強制される個数を確認します。そうでなければ M=F(r)−F(n−r)、K=r−F(n−r) とし、C(M,K) を寄与させます。r が増えても M と K は減らないので、r ごとに comb を再計算せず、隣り合う二項係数の漸化式を使ってまとめて更新します。"
+    ]
+  },
+  "ko": {
+    "title": "실행 및 대기 임계값 아래에서 가능한 구성의 정확한 개수",
+    "description": "각 로봇은 고유한 정체성을 가지며 실행 중 또는 대기 중 정확히 한 상태에 있습니다. 실행 중인 로봇은 실행 중인 로봇의 총수 r이 자신의 임계값 이상이어야 하고(r≥임계값), 대기 중인 로봇은 대기 중인 로봇의 총수 n−r이 자신의 임계값보다 엄격하게 작아야 합니다. 유효한 정체성 구성의 개수를 나머지 연산 없이 구하십시오.\n\n이 사이트에서 표준 입출력과 해설을 독자적으로 정리했으며, 출처에 빠진 범위의 보완과 예제의 정정 사항은 프로토콜에 명시했습니다.",
+    "input": "첫째 줄에 n이 주어지고, 둘째 줄에 n개의 임계값이 주어집니다. 원문의 범위는 1≤n≤100000, 1≤a[i]≤n입니다. 원래의 int 반환 시그니처로는 실제 결과를 담을 수 없으므로, 이 사이트는 최대 약 30103자리에 이르는 임의 정밀도 십진 정수를 출력하도록 명시합니다.",
+    "output": "정수 하나, 즉 답을 출력합니다.",
+    "explanation": "공개 예제 3개의 출력은 각각 2, 1, 4이며, 독립적인 전수 조사 또는 직접 시뮬레이션으로 확인했습니다.",
+    "hints": [
+      "빈도 접두사 F(t)를 임계값이 ≤t인 개수로 정의합니다. r을 고정합니다. r≤n−r이면 금지된 중간 구간과 강제 개수를 확인하고, 그렇지 않으면 M=F(r)−F(n−r), K=r−F(n−r)로 두어 C(M,K)를 기여합니다. r이 증가해도 M과 K는 감소하지 않으므로, 모든 r마다 comb를 다시 계산하는 대신 인접한 이항계수 사이의 점화식으로 묶음 단위로 갱신합니다."
+    ]
+  },
+  "vi": {
+    "title": "Số cấu hình chính xác theo ngưỡng chạy và ngưỡng chờ",
+    "description": "Mỗi robot có danh tính riêng và ở đúng một trạng thái, chạy hoặc chờ. Một robot đang chạy yêu cầu tổng số robot đang chạy r≥ngưỡng của chính nó; một robot đang chờ yêu cầu tổng số robot đang chờ n−r phải nhỏ hơn hẳn ngưỡng của chính nó. Hãy tìm số cấu hình danh tính hợp lệ, không lấy modulus.\n\nTrang này tự biên soạn phần đầu vào/đầu ra chuẩn và lời giải; những giới hạn gốc còn thiếu và các chỗ sửa lại ví dụ đều được nêu rõ trong đặc tả.",
+    "input": "Dòng đầu chứa n, dòng thứ hai chứa n ngưỡng. Giới hạn gốc là 1≤n≤100000, 1≤a[i]≤n. Kiểu trả về int ban đầu không chứa được kết quả thực tế, nên trang này nêu rõ in ra một số nguyên thập phân độ chính xác tùy ý với tối đa khoảng 30103 chữ số.",
+    "output": "In ra một số nguyên duy nhất, là đáp án.",
+    "explanation": "Đầu ra của ba ví dụ công khai lần lượt là 2; 1; và 4, đã được kiểm tra bằng liệt kê độc lập hoặc mô phỏng trực tiếp.",
+    "hints": [
+      "Gọi tiền tố tần suất F(t) là số ngưỡng ≤t. Cố định r. Khi r≤n−r, kiểm tra vùng giữa bị cấm và các số lượng bắt buộc; ngược lại đặt M=F(r)−F(n−r) và K=r−F(n−r), đóng góp C(M,K). Khi r tăng, cả M lẫn K đều không giảm, nên hãy cập nhật theo lô bằng công thức truy hồi giữa các hệ số nhị thức liền kề thay vì tính lại comb cho mỗi r."
+    ]
   }
 }

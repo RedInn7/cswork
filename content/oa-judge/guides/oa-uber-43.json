@@ -13,6 +13,21 @@
       "A multiset of characters can be rearranged into a palindrome exactly when at most one letter appears an odd number of times. So you only need the parity of each of the 26 letters along the path, which fits in a 26-bit mask.",
       "Precompute the parity mask from the root to every node. XOR-ing two such masks cancels the shared root-to-LCA prefix, but it also cancels the LCA itself, so its letter must be added back. Find the LCA with binary lifting.",
       "Run an iterative DFS from root 0 to get parent, depth and mask[v] = mask[parent] xor (1 << letter). Build the lifting table up[j][v]. For a query, lift the deeper node to the same depth, then jump both nodes from the highest level down to reach the LCA. The path mask is mask[u] xor mask[v] xor the LCA's letter bit; print 1 if it has at most one set bit, else 0."
+    ],
+    "ja": [
+      "文字の多重集合が回文に並べ替えられるのは、奇数回現れる文字が高々 1 種類のときに限ります。したがってパス上の 26 種類の文字それぞれの偶奇だけが必要で、26 ビットのマスクに収まります。",
+      "根から各ノードまでの偶奇のマスクを前計算しておきます。2 つのマスクの XOR は、共有する根から LCA までの部分を打ち消しますが、LCA 自身も打ち消されるので、その文字を足し戻す必要があります。LCA はダブリングで求めます。",
+      "根 0 から反復的な DFS を行い、parent、depth、mask[v] = mask[parent] xor (1 << letter) を求めます。ダブリング表 up[j][v] を構築します。クエリでは、深い方のノードを同じ深さまで引き上げ、次に両方のノードを最上位のレベルから順にジャンプさせて LCA に到達します。パスのマスクは mask[u] xor mask[v] xor LCA の文字のビットで、立っているビットが高々 1 つなら 1、そうでなければ 0 を出力します。"
+    ],
+    "ko": [
+      "문자 다중집합을 팰린드롬으로 재배열할 수 있는 것은 홀수 번 나타나는 문자가 최대 하나일 때 그리고 그때에 한합니다. 따라서 경로에서 26개 문자 각각의 홀짝만 알면 되고, 이것은 26비트 마스크에 담깁니다.",
+      "루트에서 모든 노드까지의 홀짝 마스크를 미리 계산합니다. 두 마스크를 XOR하면 공통된 루트-LCA 접두사가 상쇄되지만 LCA 자신도 상쇄되므로 그 문자를 다시 더해 줘야 합니다. LCA는 이진 리프팅으로 찾습니다.",
+      "루트 0에서 반복 DFS를 돌려 parent, depth, mask[v] = mask[parent] xor (1 << letter)를 구합니다. 리프팅 테이블 up[j][v]를 만듭니다. 질의에서는 더 깊은 노드를 같은 깊이까지 올린 뒤, 가장 높은 레벨부터 내려오며 두 노드를 함께 점프시켜 LCA에 이릅니다. 경로 마스크는 mask[u] xor mask[v] xor LCA의 문자 비트이며, 켜진 비트가 최대 하나이면 1, 아니면 0을 출력합니다."
+    ],
+    "vi": [
+      "Một đa tập hợp ký tự có thể sắp xếp lại thành palindrome khi và chỉ khi có tối đa một chữ cái xuất hiện số lần lẻ. Vì vậy bạn chỉ cần độ chẵn lẻ của mỗi trong 26 chữ cái dọc theo đường đi, vừa khít trong một mask 26 bit.",
+      "Tính trước mask chẵn lẻ từ gốc đến mọi nút. XOR hai mask như vậy triệt tiêu phần tiền tố gốc-đến-LCA dùng chung, nhưng cũng triệt tiêu chính LCA, nên phải cộng lại chữ cái của nó. Tìm LCA bằng binary lifting.",
+      "Chạy DFS lặp từ gốc 0 để lấy parent, depth và mask[v] = mask[parent] xor (1 << letter). Xây dựng bảng lifting up[j][v]. Với mỗi truy vấn, nâng nút sâu hơn lên cùng độ sâu, rồi nhảy cả hai nút từ mức cao nhất xuống để đến LCA. Mask của đường đi là mask[u] xor mask[v] xor bit chữ cái của LCA; in 1 nếu nó có tối đa một bit được bật, ngược lại in 0."
     ]
   },
   "explanationEn": "## Approach\n\nMaintain, for every node, the bitmask of character parities on the path from the root to that node, and find lowest common ancestors (LCA) with binary lifting. The path mask is mask[u] xor mask[v] xor letterBit[LCA]; the answer is yes when at most one bit is set.\n\n## Correctness\n\nXOR-ing the two root paths cancels their common prefix, which also cancels the LCA that must be counted once; adding its letter back gives the parity of the whole path. In a palindrome every character except a possible middle one comes in pairs, so having at most one character with odd frequency is necessary and sufficient.\n\n## Complexity\n\nTime O((n+q) log n), space O(n log n)."

@@ -13,5 +13,41 @@
       "Each element can be swapped at most once, so the chosen swap pairs do not overlap.",
       "Run dynamic programming over prefixes: the last element either stays in place or is swapped with the one before it."
     ]
+  },
+  "ja": {
+    "title": "Salesforce OA #17: 強度の和の最大化",
+    "description": "長さ n の整数配列 arr が与えられます。次の操作を何回でも (0 回でもかまいません) 行えます。添字 i (0≤i<n−1) を選び、arr[i] と arr[i+1] を交換します。全体を通して、配列の各要素が参加できる交換は高々 1 回です。\n\n添字 i (0 始まり) の強度は arr[i]×(i+1) と定義されます。すべての操作の後に、Σ arr[i]×(i+1) (i は 0 から n−1) が取り得る最大値を求めてください。",
+    "input": "1 行目に整数 n、2 行目に n 個の整数 arr[0..n−1] が空白区切りで与えられます。1≤n≤100000、1≤arr[i]≤100000 です。",
+    "output": "整数を 1 つ出力します。強度の和の最大値です。",
+    "explanation": "例 1: arr[2] と arr[3] を交換すると [1,9,3,7,2] となり、強度の和は 1×1+2×9+3×3+4×7+5×2=66 です。\n例 2: (arr[0],arr[1]) と (arr[2],arr[3]) を交換すると [1,2,3,4] となり、強度の和は 30 です。\n例 3: 交換は不要で、強度の和は 1×1+2×2+3×5=20 です。",
+    "hints": [
+      "隣り合う 2 要素を交換すると、その 2 項の寄与だけが変わります。",
+      "各要素の交換は高々 1 回なので、選んだ交換の組は重なりません。",
+      "接頭辞に対する動的計画法を行います。最後の要素は、そのままか、直前の要素と交換されるかのどちらかです。"
+    ]
+  },
+  "ko": {
+    "title": "Salesforce OA #17: 강도 합의 최댓값",
+    "description": "길이 n의 정수 배열 arr가 주어집니다. 다음 연산을 임의의 횟수(0번 포함) 수행할 수 있습니다. 인덱스 i(0≤i<n−1)를 골라 arr[i]와 arr[i+1]을 교환합니다. 전체 과정에서 배열의 각 원소는 최대 한 번의 교환에만 참여할 수 있습니다.\n\n인덱스 i(0부터 시작)의 강도는 arr[i]×(i+1)로 정의됩니다. 모든 연산을 마친 후 Σ arr[i]×(i+1) (i는 0부터 n−1까지)의 가능한 최댓값을 구하세요.",
+    "input": "첫 줄에 정수 n이, 둘째 줄에 공백으로 구분된 n개의 정수 arr[0..n−1]이 주어집니다. 1≤n≤100000, 1≤arr[i]≤100000.",
+    "output": "정수 하나, 강도 합의 최댓값을 출력합니다.",
+    "explanation": "예시 1: arr[2]와 arr[3]을 교환하면 [1,9,3,7,2]가 되며 강도 합은 1×1+2×9+3×3+4×7+5×2=66입니다.\n예시 2: (arr[0],arr[1])과 (arr[2],arr[3])을 교환하면 [1,2,3,4]가 되며 강도 합은 30입니다.\n예시 3: 교환이 필요 없으며 강도 합은 1×1+2×2+3×5=20입니다.",
+    "hints": [
+      "인접한 두 원소를 교환하면 그 두 항의 기여만 바뀝니다.",
+      "각 원소는 최대 한 번만 교환할 수 있으므로 선택한 교환 쌍은 겹치지 않습니다.",
+      "접두사에 대해 동적 계획법을 수행합니다. 마지막 원소는 제자리에 있거나 바로 앞의 원소와 교환됩니다."
+    ]
+  },
+  "vi": {
+    "title": "Salesforce OA #17: Tổng sức mạnh lớn nhất",
+    "description": "Cho một mảng số nguyên arr độ dài n, bạn có thể thực hiện thao tác sau bất kỳ số lần nào (kể cả 0): chọn chỉ số i (0≤i<n−1) và hoán đổi arr[i] với arr[i+1]. Trong toàn bộ quá trình, mỗi phần tử của mảng chỉ được tham gia nhiều nhất một lần hoán đổi.\n\nSức mạnh của chỉ số i (tính từ 0) được định nghĩa là arr[i]×(i+1). Tìm giá trị lớn nhất có thể của Σ arr[i]×(i+1) (i từ 0 đến n−1) sau tất cả các thao tác.",
+    "input": "Dòng đầu chứa một số nguyên n; dòng thứ hai chứa n số nguyên arr[0..n−1], cách nhau bởi khoảng trắng. 1≤n≤100000, 1≤arr[i]≤100000.",
+    "output": "In một số nguyên: tổng sức mạnh lớn nhất.",
+    "explanation": "Ví dụ 1: hoán đổi arr[2] và arr[3] cho [1,9,3,7,2], với tổng sức mạnh 1×1+2×9+3×3+4×7+5×2=66.\nVí dụ 2: hoán đổi (arr[0],arr[1]) và (arr[2],arr[3]) cho [1,2,3,4], với tổng sức mạnh 30.\nVí dụ 3: không cần hoán đổi; tổng sức mạnh là 1×1+2×2+3×5=20.",
+    "hints": [
+      "Hoán đổi hai phần tử kề nhau chỉ làm thay đổi đóng góp của hai số hạng đó.",
+      "Mỗi phần tử chỉ được hoán đổi nhiều nhất một lần, nên các cặp hoán đổi được chọn không chồng lấn.",
+      "Chạy quy hoạch động trên các tiền tố: phần tử cuối hoặc đứng yên tại chỗ, hoặc được hoán đổi với phần tử đứng trước nó."
+    ]
   }
 }

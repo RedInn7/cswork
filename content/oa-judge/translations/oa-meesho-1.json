@@ -13,5 +13,41 @@
       "When appending the current letter, subtract the set already produced the last time the same letter was appended.",
       "You must keep the empty string and exclude any move that leaves 0..n at any step."
     ]
+  },
+  "ja": {
+    "title": "有限の数直線上の異なる移動部分列",
+    "description": "l/r だけを含む文字列 s が与えられます。その部分列を 1 つ選びます。x から始め、l は位置を 1 減らし、r は位置を 1 増やします。開始位置、すべての途中の位置、終了位置は、すべて有限の数直線 0..n 上になければならず、移動は y で終わらなければなりません。異なる文字列の列を数えます。異なる添字から得られる同じ文字列の列は 1 回しか数えません。個数を 1000000007 で割った余りで返してください。反射、範囲外のときにその場に留まること、領域から出て戻ってくることは許されません。",
+    "input": "1 行目に s、2 行目に n x y が与えられます。元の範囲のすべて: 1≤|s|≤1000、s は l/r だけを含む、0≤n,x,y≤2500。元の問題は x,y≤n を保証しておらず、本サイトはそのような入力も残しています。開始位置か終了位置が 0..n にない場合、有効な経路はなく、答えは 0 です。",
+    "output": "0..1000000006 の整数を出力してください。すべての文字を削除してもよいので、x=y が有効なら空の部分列が 1 を寄与します。n=0、x=y=0 の場合の答えは 1 で、それ以外の領域外の端点では答えは 0 です。この解釈は元の問題の有限の数直線と 0 個以上の要素の削除に従うもので、空でない部分列であることを追加で要求しません。",
+    "explanation": "元の出典には正式な例がなく、3 つの公開例はすべて本サイトが導出したものです。0 から 1 への rr では、文字列 r は添字の選び方 2 通りではなく 1 回だけ数えます。0 から 0 への lr では、lr は範囲外に出るので、空文字列だけが有効で答えは 1 です。0 から 0 への rl では、空文字列と rl のどちらも有効なので、答えは 2 です。",
+    "hints": [
+      "位置ごとの単純な選ぶ/選ばないでは、同一の文字列を複数回数えてしまいます。",
+      "現在の文字を追加するときは、同じ文字を前回追加したときにすでに生成された集合を引きます。",
+      "空文字列を残し、どのステップでも 0..n から出る移動を除外しなければなりません。"
+    ]
+  },
+  "ko": {
+    "title": "유한한 수직선 위의 서로 다른 이동 부분 수열",
+    "description": "l/r만 포함하는 문자열 s가 주어졌을 때 그 부분 수열을 하나 고릅니다. x에서 시작하여 l은 위치를 1 감소시키고 r은 1 증가시킵니다. 시작점, 모든 중간 위치, 끝점은 모두 유한한 수직선 0..n 위에 있어야 하며, 이동은 y에서 끝나야 합니다. 서로 다른 문자 시퀀스의 수를 세세요. 서로 다른 인덱스에서 나온 같은 문자 시퀀스는 한 번만 셉니다. 개수를 1000000007로 나눈 나머지를 반환하세요. 반사, 범위를 벗어났을 때 제자리에 머무르기, 영역을 벗어났다가 돌아오기는 허용되지 않습니다.",
+    "input": "첫 번째 줄에 s, 두 번째 줄에 n x y가 주어집니다. 원문의 전체 범위: 1≤|s|≤1000, s는 l/r만 포함, 0≤n,x,y≤2500. 원문은 x,y≤n을 보장하지 않으며, 이 사이트는 그러한 입력을 유지합니다. 시작점이나 끝점이 0..n에 없으면 유효한 경로가 없으므로 답은 0입니다.",
+    "output": "0..1000000006 범위의 정수를 출력합니다. 모든 문자를 삭제할 수 있으므로 x=y가 유효하면 빈 부분 수열이 1을 기여합니다. n=0,x=y=0이면 답은 1이고, 그 외 영역을 벗어난 끝점이 있으면 답은 0입니다. 이 해석은 원문의 유한한 수직선과 0개 이상의 원소 삭제를 따르며, 비어 있지 않은 부분 수열을 추가로 요구하지 않습니다.",
+    "explanation": "원문에는 공식 예제가 없으며 공개 예제 세 개는 모두 이 사이트에서 유도했습니다. 0에서 1로 가는 rr에서 문자열 r은 인덱스 선택 두 가지가 아니라 한 번만 셉니다. 0에서 0으로 돌아오는 lr에서 lr은 범위를 벗어나므로 빈 문자열만 유효하고 답은 1입니다. 0에서 0으로 돌아오는 rl에서는 빈 문자열과 rl이 모두 유효하므로 답은 2입니다.",
+    "hints": [
+      "위치별로 단순히 고르기/건너뛰기를 하면 같은 문자열을 여러 번 세게 됩니다.",
+      "현재 글자를 덧붙일 때는, 같은 글자를 마지막으로 덧붙였을 때 이미 만들어진 집합을 빼세요.",
+      "빈 문자열은 유지하고, 어느 단계에서든 0..n을 벗어나는 이동은 제외해야 합니다."
+    ]
+  },
+  "vi": {
+    "title": "Các dãy con di chuyển phân biệt trên trục số hữu hạn",
+    "description": "Cho một xâu s chỉ chứa l/r, hãy chọn một dãy con của nó. Bắt đầu từ x, l giảm vị trí đi 1 và r tăng vị trí lên 1; điểm xuất phát, mọi vị trí trung gian và điểm kết thúc đều phải nằm trên trục số hữu hạn 0..n, và cuộc đi phải kết thúc tại y. Đếm các dãy ký tự phân biệt; cùng một dãy ký tự đến từ các chỉ số khác nhau chỉ được tính một lần. Trả về số đếm theo modulo 1000000007. Không cho phép phản xạ, đứng yên khi ra ngoài biên, hay rời khỏi miền rồi quay lại.",
+    "input": "Dòng đầu tiên chứa s, và dòng thứ hai chứa n x y. Phạm vi gốc đầy đủ: 1≤|s|≤1000, s chỉ chứa l/r, 0≤n,x,y≤2500. Đề gốc không đảm bảo x,y≤n, và trang web này giữ lại các đầu vào như vậy: nếu điểm xuất phát hoặc điểm kết thúc không nằm trong 0..n thì không có đường đi hợp lệ và đáp án là 0.",
+    "output": "In ra một số nguyên trong khoảng 0..1000000006. Có thể xóa tất cả các ký tự, nên khi x=y hợp lệ thì dãy con rỗng đóng góp 1; với n=0,x=y=0 đáp án là 1, và với bất kỳ điểm cuối nào khác nằm ngoài miền thì đáp án là 0. Cách hiểu này theo trục số hữu hạn của đề gốc và việc xóa không hoặc nhiều phần tử, và không yêu cầu thêm rằng dãy con phải khác rỗng.",
+    "explanation": "Đề gốc không có ví dụ chính thức; cả ba ví dụ công khai đều do trang web này suy ra. Với rr từ 0 đến 1, xâu r chỉ được tính một lần, không phải hai lần theo hai lựa chọn chỉ số; với lr từ 0 quay về 0, lr đi ra ngoài biên, nên chỉ xâu rỗng là hợp lệ và đáp án là 1; với rl từ 0 quay về 0, cả xâu rỗng lẫn rl đều hợp lệ, nên đáp án là 2.",
+    "hints": [
+      "Cách chọn/bỏ thông thường theo vị trí sẽ đếm các xâu giống nhau nhiều hơn một lần.",
+      "Khi nối thêm chữ cái hiện tại, hãy trừ đi tập đã được tạo ra vào lần gần nhất nối cùng chữ cái đó.",
+      "Bạn phải giữ xâu rỗng và loại mọi bước đi rời khỏi 0..n ở bất kỳ bước nào."
+    ]
   }
 }

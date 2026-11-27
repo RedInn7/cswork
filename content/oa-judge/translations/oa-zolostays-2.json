@@ -13,5 +13,41 @@
       "Computing prefix and suffix maximums first gives an independent linear solution.",
       "With two pointers, each step settles the end whose lower boundary is already known."
     ]
+  },
+  "ja": {
+    "title": "Zolostays OA 2: 雨水貯留",
+    "description": "幅 1 で隣り合う n 本の棒の非負の高さが与えられます。雨が降った後に、これらの棒が貯められる水の総量 (単位数) を求めてください。両端に余分な壁はなく、水は流れ出ます。元のスナップショットの文章は途中で切れていますが、スターターコードが明示的に LC42 を参照しているため、本サイトは公式の問題文から幅と貯水の定義を補いました。元の 2 つの例と全制約は公式版と一致しています。",
+    "input": "n に続いて n 個の高さが、空白区切りで与えられます。元の全範囲は 1≤n≤20000、0≤height[i]≤100000 で、空の配列は受け付けません。標準入力は、配列パラメータに対する本サイト独自の適応です。",
+    "output": "貯まる雨水の総単位数を、剰余をとらない正確な整数で出力してください。",
+    "explanation": "元の 2 つの例は 6 と 9 を保持しています。3 つ目の例 [2,0,2]→2 は本サイトが追加したものです。元の文章は異なるルールを定義していたのではなく、単に途切れていました。補完は、元のスターターが明示的に参照している https://leetcode.com/problems/trapping-rain-water/description/ に基づいており、タイトルから推測しただけのものではありません。",
+    "hints": [
+      "各位置の水位は、左右それぞれの最も高い壁のうち低い方で決まります。",
+      "先に接頭辞の最大値と接尾辞の最大値を計算すれば、独立した線形時間の解法になります。",
+      "2 つのポインタを使うと、各ステップで、低い側の境界がすでに分かっている端を確定できます。"
+    ]
+  },
+  "ko": {
+    "title": "Zolostays OA #2: 빗물 받기",
+    "description": "너비가 1인 n개의 인접한 막대의 음이 아닌 높이가 주어질 때, 비가 온 뒤 이 막대들이 가둘 수 있는 물의 총량(단위)을 계산합니다. 양 끝에는 추가 벽이 없으므로 물이 흘러나갑니다. 원래 스냅샷의 텍스트는 잘려 있지만 스타터가 LC42를 명시적으로 참조하고 있어, 이 사이트에서는 그 공식 문제 설명에 따라 너비와 물 가두기의 정의를 보완했으며, 원래의 두 예제와 전체 제약 조건은 공식 버전과 일치합니다.",
+    "input": "n과 이어서 n개의 높이가 공백으로 구분되어 주어집니다. 원래의 전체 범위는 1≤n≤20000, 0≤height[i]≤100000이며 빈 배열은 허용하지 않습니다. 표준 입력은 배열 매개변수를 이 사이트에서 변형한 것입니다.",
+    "output": "가둔 빗물의 총량(단위)을 나머지 연산 없이 정확한 정수로 출력합니다.",
+    "explanation": "원래의 두 예제는 6과 9를 유지하며, 세 번째 예제 [2,0,2]→2는 이 사이트에서 추가했습니다. 원문 텍스트는 다른 규칙을 정의한 것이 아니라 잘려 있었을 뿐이며, 보완은 제목만 보고 짐작한 것이 아니라 원래 스타터가 명시적으로 참조하는 https://leetcode.com/problems/trapping-rain-water/description/ 를 근거로 했습니다.",
+    "hints": [
+      "각 위치의 수위는 왼쪽과 오른쪽에서 가장 높은 벽 중 더 낮은 쪽으로 제한됩니다.",
+      "접두사 최댓값과 접미사 최댓값을 먼저 계산하면 독립적인 선형 풀이가 됩니다.",
+      "투 포인터를 쓰면 각 단계에서 낮은 경계가 이미 알려진 쪽의 끝을 확정할 수 있습니다."
+    ]
+  },
+  "vi": {
+    "title": "Zolostays OA #2: Hứng nước mưa",
+    "description": "Cho chiều cao không âm của n thanh liền kề, mỗi thanh rộng 1, hãy tính tổng số đơn vị nước mà các thanh này giữ lại được sau cơn mưa. Hai đầu không có tường thêm nên nước có thể chảy ra ngoài. Văn bản của bản chụp gốc bị cắt cụt, nhưng starter nêu rõ tham chiếu LC42; trang này đã bổ sung định nghĩa về độ rộng và việc giữ nước từ đề chính thức đó, và hai ví dụ gốc cùng các ràng buộc đầy đủ khớp với bản chính thức.",
+    "input": "Nhập n, theo sau là n chiều cao, cách nhau bởi khoảng trắng. Khoảng giá trị gốc đầy đủ 1≤n≤20000, 0≤height[i]≤100000; không chấp nhận mảng rỗng. Đầu vào chuẩn là phần chuyển thể của trang này cho tham số mảng.",
+    "output": "In ra tổng số đơn vị nước mưa giữ lại được, là một số nguyên chính xác, không lấy modulo.",
+    "explanation": "Hai ví dụ gốc giữ nguyên 6 và 9; ví dụ thứ ba [2,0,2]→2 do trang này bổ sung. Văn bản nguồn bị cắt cụt chứ không định nghĩa quy tắc khác; phần bổ sung dựa trên https://leetcode.com/problems/trapping-rain-water/description/, mà starter gốc tham chiếu rõ ràng, chứ không chỉ đoán từ tiêu đề.",
+    "hints": [
+      "Mực nước tại mỗi vị trí bị giới hạn bởi giá trị nhỏ hơn trong hai bức tường cao nhất ở bên trái và bên phải.",
+      "Tính trước các giá trị lớn nhất theo tiền tố và hậu tố cho ra một lời giải tuyến tính độc lập.",
+      "Với hai con trỏ, mỗi bước chốt đầu có ranh giới thấp hơn đã biết."
+    ]
   }
 }

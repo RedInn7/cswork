@@ -13,6 +13,21 @@
       "All operations must have the same sum, and the first operation can only remove the first two, the last two, or the first and last elements, so there are only three possible target sums.",
       "Once the target is fixed, whatever is removed, what remains is always a contiguous range of the original array, so run an interval DP: dp[l][r] is the most operations still possible on a[l..r].",
       "For each of the three targets, fill lengths from 2 to N: dp[l][r] is the largest of the feasible options 1+dp[l+2][r] when a[l]+a[l+1] equals the target, 1+dp[l][r−2] when a[r−1]+a[r] does, and 1+dp[l+1][r−1] when a[l]+a[r] does (the remainder counts 0 when the length is 2). The answer is the largest dp[0][N−1] over the three targets, or 0 when N<2."
+    ],
+    "ja": [
+      "すべての操作の和は等しく、最初の操作で取り除けるのは先頭の 2 要素、末尾の 2 要素、先頭と末尾の要素だけなので、目標の和の候補は 3 通りしかありません。",
+      "目標を固定すると、何を取り除いても、残るのは常に元の配列の連続した区間です。そこで区間 DP を行い、dp[l][r] を a[l..r] でこれから行える最大の操作回数とします。",
+      "3 つの目標それぞれについて、長さ 2 から N まで順に埋めます。dp[l][r] は、実行可能な選択肢の最大値です。a[l]+a[l+1] が目標に等しければ 1+dp[l+2][r]、a[r−1]+a[r] が等しければ 1+dp[l][r−2]、a[l]+a[r] が等しければ 1+dp[l+1][r−1] です（長さが 2 のとき、残りは 0 と数えます）。答えは 3 つの目標についての dp[0][N−1] の最大値で、N<2 なら 0 です。"
+    ],
+    "ko": [
+      "모든 연산의 합이 같아야 하고 첫 연산은 처음 두 원소, 마지막 두 원소, 처음과 마지막 원소 중 하나만 제거할 수 있으므로, 가능한 목표 합은 세 가지뿐입니다.",
+      "목표를 정하고 나면 무엇을 제거하더라도 남는 것은 항상 원래 배열의 연속된 구간입니다. 따라서 구간 DP를 사용합니다. dp[l][r]은 a[l..r]에서 더 할 수 있는 최대 연산 횟수입니다.",
+      "세 목표 각각에 대해 길이 2부터 N까지 채웁니다. dp[l][r]은 가능한 선택지 중 최댓값입니다. a[l]+a[l+1]이 목표와 같으면 1+dp[l+2][r], a[r−1]+a[r]이 같으면 1+dp[l][r−2], a[l]+a[r]이 같으면 1+dp[l+1][r−1]입니다(길이가 2일 때 남는 부분은 0으로 셉니다). 정답은 세 목표에 대한 dp[0][N−1]의 최댓값이며, N<2이면 0입니다."
+    ],
+    "vi": [
+      "Mọi thao tác phải có cùng tổng, và thao tác đầu tiên chỉ có thể xóa hai phần tử đầu, hai phần tử cuối, hoặc phần tử đầu và cuối, nên chỉ có ba tổng mục tiêu khả dĩ.",
+      "Khi đã cố định mục tiêu, dù xóa gì thì phần còn lại luôn là một đoạn liên tiếp của mảng gốc, nên chạy DP khoảng: dp[l][r] là số thao tác nhiều nhất còn có thể thực hiện trên a[l..r].",
+      "Với mỗi trong ba mục tiêu, điền theo độ dài từ 2 đến N: dp[l][r] là giá trị lớn nhất trong các lựa chọn khả thi 1+dp[l+2][r] khi a[l]+a[l+1] bằng mục tiêu, 1+dp[l][r−2] khi a[r−1]+a[r] bằng mục tiêu, và 1+dp[l+1][r−1] khi a[l]+a[r] bằng mục tiêu (phần còn lại tính 0 khi độ dài là 2). Đáp án là dp[0][N−1] lớn nhất trong ba mục tiêu, hoặc 0 khi N<2."
     ]
   },
   "explanationEn": "## Approach\n\nThe sum of the first step has only three candidates. For each target sum, run an interval DP that enumerates the three valid endpoint-pair deletions and takes the maximum operation count of the remaining interval plus 1.\n\n## Proof of correctness\n\nAfter deleting endpoints, what remains is always a contiguous interval, so the state needs no history; with the target sum fixed, the three transitions cover all and only the valid next steps. Computing intervals in increasing length guarantees the subproblems are known, and enumerating the possible first-step targets gives the global optimum.\n\n## Complexity\n\nTime O(N²), space O(N²)."

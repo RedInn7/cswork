@@ -13,6 +13,21 @@
       "Once the kept suffix is fixed, execution is deterministic: put programs into the current slot in order and open a new slot when one does not fit. The key question is whether the number of slots is monotone as more of the prefix is deleted.",
       "Deleting more of the prefix never increases the number of slots needed, so the feasible starts form a suffix of positions and you can binary search the start.",
       "Write valid(start): slots = 1, used = 0; for each time[i]: if used + time[i] > k, slots += 1 and used = 0; then used += time[i]; return false once slots > m. Binary search the smallest feasible start lo (lo = n means the empty suffix) and print n - lo."
+    ],
+    "ja": [
+      "残す接尾辞を決めると、実行は決定的になります。プログラムを順に現在のスロットに入れ、入らなければ新しいスロットを開きます。鍵となるのは、先頭をより多く削除するにつれてスロット数が単調かどうかです。",
+      "先頭をより多く削除しても、必要なスロット数は増えないので、実行可能な開始位置は位置の接尾辞をなします。したがって開始位置を二分探索できます。",
+      "valid(start) を、slots = 1、used = 0 として、各 time[i] について used + time[i] > k なら slots += 1 かつ used = 0 とし、その後 used += time[i] とし、slots > m になった時点で false を返す関数として書きます。実行可能な最小の開始位置 lo（lo = n は空の接尾辞を表す）を二分探索し、n - lo を出力します。"
+    ],
+    "ko": [
+      "남길 접미사가 정해지면 실행은 결정적입니다. 프로그램을 순서대로 현재 슬롯에 넣고, 들어가지 않으면 새 슬롯을 엽니다. 핵심 질문은 접두사를 더 많이 삭제할수록 슬롯 수가 단조인지 여부입니다.",
+      "접두사를 더 많이 삭제해도 필요한 슬롯 수는 늘어나지 않으므로, 실행 가능한 시작 위치들은 위치의 접미사를 이루며 시작 위치를 이분 탐색할 수 있습니다.",
+      "valid(start)를 작성합니다. slots = 1, used = 0으로 두고 각 time[i]에 대해 used + time[i] > k이면 slots += 1, used = 0을 한 뒤 used += time[i]를 합니다. slots > m이 되는 즉시 false를 반환합니다. 가능한 가장 작은 시작 위치 lo(lo = n이면 빈 접미사)를 이분 탐색으로 찾아 n - lo를 출력합니다."
+    ],
+    "vi": [
+      "Khi hậu tố giữ lại đã cố định, việc thực thi là xác định: lần lượt đặt các chương trình vào khung hiện tại và mở khung mới khi không vừa. Câu hỏi then chốt là số khung có đơn điệu khi xóa thêm tiền tố hay không.",
+      "Xóa thêm tiền tố không bao giờ làm tăng số khung cần thiết, nên các điểm bắt đầu khả thi tạo thành một hậu tố của các vị trí và bạn có thể tìm kiếm nhị phân điểm bắt đầu.",
+      "Viết valid(start): slots = 1, used = 0; với mỗi time[i]: nếu used + time[i] > k, slots += 1 và used = 0; rồi used += time[i]; trả về false ngay khi slots > m. Tìm kiếm nhị phân điểm bắt đầu khả thi nhỏ nhất lo (lo = n nghĩa là hậu tố rỗng) và in n - lo."
     ]
   },
   "explanationEn": "## Approach\n\nBinary search the start of the suffix, counting the slots needed with the left-to-right procedure the problem defines. Deleting more of the prefix never increases the minimum number of slots.\n\n## Proof of correctness\n\nFor a fixed start, the greedy that fills the current slot as much as possible ends its first segment no earlier than any other valid segmentation; by induction over segments it uses the minimum number of segments. After deleting a prefix, the remaining segments of a valid segmentation can still be used, and the greedy only uses fewer, so feasible starts are monotone (they form a suffix); binary search finds the earliest feasible start, which gives the longest program suffix.\n\n## Complexity\n\nTime O(n log n), space O(n)."

@@ -13,6 +13,21 @@
       "Any remaining element can be taken on each turn, with no positional restriction. Think about what happens if you do not take the current maximum on your turn.",
       "If you skip the current maximum, the opponent can take it next; taking it never makes you worse off. By induction, both players' optimal strategy is to take the current maximum each time, so the game is equivalent to taking turns in descending order.",
       "Sort the array in descending order; the first player gets indices 0, 2, 4, ... and the second gets 1, 3, 5, ...; alternately add and subtract to get score1 - score2. Elements can be negative and follow the same rule. The total can reach about 2 * 10^14, so use 64-bit integers. Time O(n log n)."
+    ],
+    "ja": [
+      "各手番で、残っている任意の要素を取れ、位置による制限はありません。自分の番に現在の最大値を取らなかったらどうなるかを考えてみてください。",
+      "現在の最大値を取らないと、相手が次にそれを取れます。それを取っても自分が不利になることはありません。帰納法により、両者の最適戦略は毎回現在の最大値を取ることなので、このゲームは降順に交互に取るのと同値です。",
+      "配列を降順にソートします。先手は添字 0, 2, 4, ... を、後手は 1, 3, 5, ... を取ります。交互に足し引きして score1 - score2 を得ます。要素は負でもよく、同じルールに従います。合計は約 2 * 10^14 に達しうるので、64 ビット整数を使います。時間 O(n log n) です。"
+    ],
+    "ko": [
+      "매 차례에 남은 원소는 위치 제한 없이 아무거나 가져갈 수 있습니다. 자기 차례에 현재 최댓값을 가져가지 않으면 어떻게 되는지 생각해 보세요.",
+      "현재 최댓값을 건너뛰면 상대가 다음에 그것을 가져갈 수 있고, 그것을 가져간다고 해서 손해를 보는 일은 없습니다. 귀납적으로 두 플레이어의 최적 전략은 매번 현재 최댓값을 가져가는 것이므로, 이 게임은 내림차순으로 번갈아 가져가는 것과 같습니다.",
+      "배열을 내림차순으로 정렬하면 선공은 인덱스 0, 2, 4, ...를, 후공은 1, 3, 5, ...를 가져갑니다. 번갈아 더하고 빼서 score1 - score2를 구합니다. 원소는 음수일 수 있으며 같은 규칙을 따릅니다. 총합은 약 2 * 10^14까지 될 수 있으므로 64비트 정수를 사용합니다. 시간 O(n log n)."
+    ],
+    "vi": [
+      "Ở mỗi lượt có thể lấy bất kỳ phần tử còn lại nào, không có ràng buộc về vị trí. Hãy nghĩ xem điều gì xảy ra nếu bạn không lấy phần tử lớn nhất hiện tại ở lượt của mình.",
+      "Nếu bạn bỏ qua phần tử lớn nhất hiện tại, đối thủ có thể lấy nó ngay sau đó; lấy nó không bao giờ làm bạn tệ hơn. Bằng quy nạp, chiến lược tối ưu của cả hai người chơi là mỗi lần lấy phần tử lớn nhất hiện tại, nên trò chơi tương đương với việc lần lượt lấy theo thứ tự giảm dần.",
+      "Sắp xếp mảng giảm dần; người thứ nhất nhận các chỉ số 0, 2, 4, ... và người thứ hai nhận 1, 3, 5, ...; cộng và trừ luân phiên để có score1 - score2. Các phần tử có thể âm và tuân theo cùng quy tắc. Tổng có thể lên tới khoảng 2 * 10^14, nên dùng số nguyên 64 bit. Thời gian O(n log n)."
     ]
   },
   "explanationEn": "## Approach\n\nSort the scores in descending order. Both players always take the largest remaining score, so the first player gets the elements at even indices of the sorted order and the second player the elements at odd indices; accumulate the difference alternately.\n\n## Correctness\n\nWhenever it is a player's turn, taking the current maximum never reduces that player's final score: if they do not take it, the next opponent can take it; in an exchange argument, the player taking the maximum only leaves another element that the opponent could have taken for later. By induction, both players' optimal choices are equivalent to taking in descending order, and the turn order decides who gets what.\n\n## Complexity\n\nSorting O(n log n), extra space O(n)."

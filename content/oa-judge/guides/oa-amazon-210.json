@@ -13,6 +13,21 @@
       "The median is the second largest member of a group, so a high median needs one larger value plus the median itself, and the third member should be as small as possible.",
       "With q groups, the j-th largest median is at most the 2j-th largest value overall; pairing the largest 2q values two by two and adding one small value to each pair attains all bounds at once. Values are positive, so take q = floor(n/3).",
       "Sort ascending; the answer is the sum of a[n-2-2i] for i = 0..floor(n/3)-1, using 64-bit integers."
+    ],
+    "ja": [
+      "中央値はグループ内で 2 番目に大きい要素なので、中央値を大きくするには、それより大きい値が 1 つと中央値自身が必要で、3 台目はできるだけ小さくすべきです。",
+      "q 個のグループがあるとき、j 番目に大きい中央値は全体で 2j 番目に大きい値以下です。大きい方から 2q 個の値を 2 つずつ組にし、各組に小さい値を 1 つずつ加えれば、すべての上界が同時に達成されます。値は正なので、q = floor(n/3) を取ります。",
+      "昇順にソートし、答えは i = 0..floor(n/3)-1 について a[n-2-2i] の総和です。64 ビット整数を使います。"
+    ],
+    "ko": [
+      "중앙값은 그룹에서 두 번째로 큰 값이므로, 중앙값을 크게 하려면 더 큰 값 하나와 중앙값 자신이 필요하고 세 번째 구성원은 가능한 한 작아야 합니다.",
+      "그룹이 q개일 때 j번째로 큰 중앙값은 전체에서 2j번째로 큰 값 이하입니다. 가장 큰 2q개의 값을 두 개씩 짝지어 각 쌍에 작은 값 하나를 더하면 모든 상한을 동시에 달성합니다. 값이 양수이므로 q = floor(n/3)으로 둡니다.",
+      "오름차순으로 정렬하면 답은 i = 0..floor(n/3)-1에 대해 a[n-2-2i]의 합이며, 64비트 정수를 사용합니다."
+    ],
+    "vi": [
+      "Trung vị là thành viên lớn thứ hai trong nhóm, nên trung vị cao cần một giá trị lớn hơn cộng với chính trung vị, và thành viên thứ ba nên nhỏ nhất có thể.",
+      "Với q nhóm, trung vị lớn thứ j nhiều nhất bằng giá trị lớn thứ 2j trên toàn bộ; ghép hai-hai các 2q giá trị lớn nhất và thêm một giá trị nhỏ vào mỗi cặp đạt mọi cận cùng lúc. Các giá trị đều dương nên lấy q = floor(n/3).",
+      "Sắp xếp tăng dần; đáp án là tổng a[n-2-2i] với i = 0..floor(n/3)-1, dùng số nguyên 64-bit."
     ]
   },
   "explanationEn": "## Approach\n\nAfter sorting, form at most floor(n/3) groups: repeatedly take two servers from the largest end, the smaller of which contributes the median, and give the group one of the smallest remaining servers.\n\n## Proof of correctness\n\nWhen q groups are formed, list the group medians in descending order; the j-th median needs at least 2j servers not smaller than it, so its upper bound is the 2j-th largest value overall. Pairing the largest 2q servers with their neighbours and adding q smaller servers attains all of these bounds at once. All values are positive, so a larger q gives a larger sum of bounds, hence take floor(n/3).\n\n## Complexity\n\nTime O(n log n), space O(n), with a 64-bit answer."

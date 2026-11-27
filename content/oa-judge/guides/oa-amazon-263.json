@@ -13,6 +13,21 @@
       "A printer with threshold t is not paused until the active count reaches t, and once it does, every remaining printer of that group, including idle ones, is gone. So each threshold group can contribute the pages of at most t printers.",
       "The group bounds do not interfere: activate the chosen printers group by group in increasing threshold order, and the lower-threshold printers are paused and cleared before a higher group starts, so they never take up active slots. The answer is the sum, over groups, of the largest min(t, group size) page counts.",
       "Group printers by threshold; within each group sort pages in descending order and add the first min(t, group size) of them; add up all groups and print. The total can reach 2×10^14, so use 64-bit integers."
+    ],
+    "ja": [
+      "threshold が t のプリンターは、稼働数が t に達するまでは停止しません。達した時点で、そのグループの残りのプリンターは待機中のものも含めてすべて消えます。したがって各 threshold グループが貢献できるのは高々 t 台分のページです。",
+      "グループ間の上限は干渉しません。選んだプリンターを threshold の小さい順にグループごとに稼働させれば、低い threshold のプリンターは高いグループが始まる前に停止して消えているため、稼働枠を占有しません。答えは、各グループで大きい方から min(t, グループの大きさ) 個のページ数を取った合計です。",
+      "プリンターを threshold でグループ化し、各グループ内で pages を降順にソートして先頭の min(t, グループの大きさ) 個を加え、全グループを合計して出力します。合計は 2×10^14 に達し得るので、64 ビット整数を使ってください。"
+    ],
+    "ko": [
+      "threshold가 t인 프린터는 활성 수가 t에 도달할 때까지 중지되지 않으며, 도달하는 순간 그 그룹의 남은 프린터는 대기 중인 것까지 모두 사라집니다. 따라서 각 threshold 그룹은 최대 t대의 페이지만 기여할 수 있습니다.",
+      "그룹별 상한은 서로 간섭하지 않습니다. 선택한 프린터를 threshold가 작은 그룹부터 차례로 활성화하면, 낮은 threshold의 프린터는 높은 그룹이 시작되기 전에 이미 중지되어 정리되므로 활성 슬롯을 차지하지 않습니다. 답은 그룹별로 페이지 수가 가장 큰 min(t, 그룹 크기)개의 합을 모두 더한 값입니다.",
+      "프린터를 threshold별로 묶고, 각 그룹 안에서 pages를 내림차순으로 정렬해 앞의 min(t, 그룹 크기)개를 더한 뒤, 모든 그룹의 합을 출력합니다. 총합은 2×10^14까지 커질 수 있으므로 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Máy in có threshold t chỉ bị tạm dừng khi số máy hoạt động đạt t, và khi đó mọi máy in còn lại của nhóm đó, kể cả máy đang rảnh, đều mất. Vì vậy mỗi nhóm threshold đóng góp số trang của tối đa t máy in.",
+      "Các cận của từng nhóm không ảnh hưởng lẫn nhau: kích hoạt các máy in đã chọn lần lượt theo từng nhóm theo thứ tự threshold tăng dần, các máy in có threshold thấp hơn đã bị tạm dừng và dọn sạch trước khi nhóm cao hơn bắt đầu, nên chúng không chiếm chỗ hoạt động. Đáp án là tổng, trên mọi nhóm, của min(t, kích thước nhóm) số trang lớn nhất.",
+      "Nhóm các máy in theo threshold; trong mỗi nhóm sắp xếp pages giảm dần và cộng min(t, kích thước nhóm) phần tử đầu; cộng tất cả các nhóm rồi in ra. Tổng có thể lên tới 2×10^14, nên hãy dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nGroup by threshold=t, take only the largest min(t, group size) pages in each group, then sum them.\n\n## Proof of correctness\n\nPrinters in the threshold-t group are not paused before the active count reaches t, so once the t-th printer of the group is activated, every other printer of the group becomes invalid; at most t can be taken. Activating the chosen printers of each group in increasing threshold order reaches this bound: if, when t is first reached, an older printer with a lower threshold were still active, it should already have been paused at an earlier count of at most t−1, a contradiction. So older groups never occupy slots and trigger t before this group is filled. Taking the largest page counts in each group reaches the sum of the per-group bounds.\n\n## Complexity\n\nTime O(n log n), space O(n); the answer uses 64 bits."

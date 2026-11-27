@@ -11,5 +11,35 @@
     "hints": [
       "Compute the cost of making each interior point a peak on its own. For odd lengths, only odd indices can be chosen; for even lengths, enumerate the switch point where a run of odd indices is followed by a run of even indices."
     ]
+  },
+  "ja": {
+    "title": "最も厳密なピークを作るための最小増加量",
+    "description": "配列の要素は増やすことだけができ、各増加量は 0..10^18 の整数です。内部の点は、両隣より真に大きいときだけピークとみなされ、両端はピークになりません。まずピークの個数を最大化し、そのうえで増加量の合計を最小化してください。\n\n本サイトは標準入出力と解法を独自に整備しました。元の問題で欠けていた制約の補足と、例の修正はプロトコルに明記してあります。",
+    "input": "1 行目に n、2 行目に n 個の初期値が与えられます。元の問題には n と初期値の制約がありません。本サイトでは 1≤n≤200000、初期値は −10^9..10^9 とし、各増加量の上限 10^18 は元のまま保持します。",
+    "output": "整数 1 つ（答え）を出力します。",
+    "explanation": "3 つの公開例の出力は順に 1、10、0 です。独立した全探索または直接のシミュレーションで確認済みです。",
+    "hints": [
+      "各内部点を単独でピークにするコストを計算します。n が奇数の場合は奇数添字だけが選べます。n が偶数の場合は、奇数添字の連続のあとに偶数添字の連続が続く切り替え位置を列挙します。"
+    ]
+  },
+  "ko": {
+    "title": "가장 엄격한 봉우리를 최대로 만드는 최소 증가량",
+    "description": "배열의 원소는 증가시키는 것만 가능하며, 각 증가량은 0..10^18 범위의 정수입니다. 내부 지점은 양쪽 이웃보다 엄격히 클 때만 봉우리로 셉니다. 양 끝점은 세지 않습니다. 먼저 봉우리의 수를 최대화하고, 그다음 증가량의 총합을 최소화하세요.\n\n이 사이트는 표준 입출력과 풀이를 독자적으로 정리했으며, 원문에 없는 범위의 보충과 예제의 정정은 프로토콜에 명시했습니다.",
+    "input": "첫째 줄에 n, 둘째 줄에 n개의 초기값이 주어집니다. 원문에는 n과 초기값의 범위가 없으며, 이 사이트는 1≤n≤200000, 초기값은 −10^9..10^9로 하고 증가량당 상한 10^18은 원문 그대로 유지합니다.",
+    "output": "정수 하나를 출력합니다.",
+    "explanation": "공개 예제 세 개의 출력은 순서대로 1; 10; 0입니다. 독립적인 완전 탐색 또는 직접 시뮬레이션으로 검증했습니다.",
+    "hints": [
+      "각 내부 지점을 단독으로 봉우리로 만드는 비용을 계산하세요. 길이가 홀수이면 홀수 인덱스만 선택할 수 있고, 짝수이면 홀수 인덱스 구간 뒤에 짝수 인덱스 구간이 이어지는 전환 지점을 열거합니다."
+    ]
+  },
+  "vi": {
+    "title": "Tăng tối thiểu để có nhiều đỉnh nhọn chặt nhất",
+    "description": "Chỉ được tăng các phần tử của mảng, mỗi lần tăng là một số nguyên trong 0..10^18. Một điểm bên trong chỉ được tính là đỉnh nhọn (peak) nếu nó lớn hơn chặt cả hai lân cận; hai đầu mút không được tính. Trước hết tối đa hoá số đỉnh nhọn, sau đó tối thiểu hoá tổng lượng tăng.\n\nSite này tự biên soạn phần nhập xuất chuẩn và lời giải; các bổ sung cho giới hạn còn thiếu của nguồn và các sửa đổi ví dụ được nêu rõ trong giao thức.",
+    "input": "Dòng đầu chứa n, dòng thứ hai chứa n giá trị ban đầu. Đề gốc không đưa ra giới hạn cho n và các giá trị ban đầu; site này dùng 1≤n≤200000 với các giá trị ban đầu trong −10^9..10^9, và giữ nguyên cận trên gốc 10^18 cho mỗi lần tăng.",
+    "output": "In ra một số nguyên là đáp án.",
+    "explanation": "Đầu ra của ba ví dụ công khai lần lượt là: 1; 10; 0. Đã kiểm tra bằng liệt kê độc lập hoặc mô phỏng trực tiếp.",
+    "hints": [
+      "Tính chi phí để biến từng điểm bên trong thành đỉnh nhọn một cách độc lập. Với độ dài lẻ, chỉ có thể chọn các chỉ số lẻ; với độ dài chẵn, liệt kê điểm chuyển đổi mà sau một đoạn các chỉ số lẻ là một đoạn các chỉ số chẵn."
+    ]
   }
 }

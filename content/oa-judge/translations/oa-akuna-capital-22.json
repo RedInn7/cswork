@@ -13,5 +13,41 @@
       "Find a way to make each 1 jump separately over each run of 0s that was originally to its right.",
       "Each run of 0s contributes the number of 1s to its left multiplied by (the run length plus 1)."
     ]
+  },
+  "ja": {
+    "title": "2 進文字列を分離する最大合計コスト (同一出典の重複エントリ)",
+    "description": "2 進文字列 s が与えられ、すべての 0 をすべての 1 より前に移動することが目標です。1 回の操作では、右に少なくとも 1 つの 0 が直後に続く 1 を選びます。その 1 は連続する 0 のランを丸ごと右へ飛び越え、文字列の末尾か次の 1 の直前に着地します。コストは 1+(移動距離) です。分離を完了するための合計コストの最大値を求めてください。操作の回数ではありません。操作は実際に少なくとも 1 つ位置を動かさなければならないので、その場にとどまるコストは課せられません。すでに分離されている文字列のコストは 0 です。\n\nこのエントリは、本サイトの Akuna5 バイナリ回路と同じ元の問題の重複したソースエントリで、新しいアルゴリズムを主張するものではありません。この ID は、独立した提出のために残してあります。",
+    "input": "2 進文字列 s が 1 行で与えられます。1≤|s|≤100000 で、0 と 1 だけを含みます。長さの上限の全体は、FastPrep の N/A というプレースホルダの制約ではなく、同じ問題の固定された OCR016 に基づいています。",
+    "output": "合計コストの最大値を、非負整数で出力してください。64 ビット整数または多倍長整数が必要です。元の OCR の最終的なインターフェースは long で、FastPrep の int 宣言では全範囲をカバーできません。",
+    "explanation": "元の 009 の例 110100 のコストは 13、元の 016 の例 10100 のコストは 8 で、どちらもそのまま保っています。元のテキストにある操作の最大回数は、最終的な関数とコストの例に従って、合計コストの最大値に訂正しています。カタログに付属する解法は 1 ごとに基本料金を 1 回しか課さないので、110100 を 11、すでに分離された 01 を 1 と数え誤りますが、正しい値は 13 と 0 です。3 つ目の公開例 01 は本サイトが追加しました。距離 0 の操作にコストを課すと無限に繰り返せるので、それは有効な操作ではありません。",
+    "hints": [
+      "移動する総距離は、実行順序によらず同じです。",
+      "各 1 が、もともと右にあった 0 のランを 1 つずつ別々に飛び越えるようにする方法を見つけます。",
+      "各 0 のランの寄与は、その左にある 1 の個数に (ランの長さ + 1) を掛けたものです。"
+    ]
+  },
+  "ko": {
+    "title": "이진 문자열 분리의 최대 총 비용 (동일 출처 항목)",
+    "description": "이진 문자열 s가 주어졌을 때, 모든 0을 모든 1 앞으로 옮기는 것이 목표입니다. 한 번의 연산은 오른쪽에 0이 최소 하나 바로 이어지는 1을 하나 골라, 연속된 0 구간 전체를 건너뛰어 문자열의 끝이나 다음 1 바로 앞에 놓는 것이며, 비용은 1+(이동 거리)입니다. 분리를 완료하는 데 드는 최대 총 비용을 구하세요. 동작의 횟수가 아닙니다. 연산은 실제로 최소 한 칸 이동해야 하므로 제자리에 머무는 비용은 부과할 수 없고, 이미 분리된 문자열의 비용은 0입니다.\n\n이 항목은 이 사이트의 Akuna5 이진 회로와 같은 원본 문제의 중복 출처 항목이며 새로운 알고리즘을 주장하지 않습니다. 이 ID는 독립적인 제출을 위해 유지됩니다.",
+    "input": "이진 문자열 s가 한 줄로 주어집니다. 1≤|s|≤100000이며 0과 1만 포함합니다. 전체 길이 상한은 FastPrep의 N/A 자리표시자 제약 조건이 아니라 같은 문제의 고정된 OCR016에서 가져왔습니다.",
+    "output": "최대 총 비용을 음이 아닌 정수로 출력합니다. 64비트 정수 또는 큰 정수가 필요합니다. 최종 원본 OCR 인터페이스는 long이며, FastPrep의 int 선언은 전체 범위를 담지 못합니다.",
+    "explanation": "원본 009의 예제 110100의 비용은 13이고 원본 016의 예제 10100의 비용은 8이며, 둘 다 유지됩니다. 원문의 연산 횟수 최대화는 최종 함수와 비용 예제에 따라 총 비용 최대화로 정정했습니다. 카탈로그에 첨부된 풀이는 기본 비용을 1마다 한 번만 부과하여 110100을 11로, 이미 분리된 01을 1로 잘못 세는데, 올바른 값은 13과 0입니다. 세 번째 공개 예제 01은 이 사이트에서 추가했습니다. 이동 거리가 0인 동작에 비용을 부과하면 무한히 반복할 수 있으므로 유효한 이동이 아닙니다.",
+    "hints": [
+      "총 이동 거리는 어떤 실행 순서에서도 같습니다.",
+      "각 1이 원래 자기 오른쪽에 있던 0 구간 하나하나를 따로따로 건너뛰게 하는 방법을 찾으세요.",
+      "각 0 구간의 기여는 그 왼쪽에 있는 1의 개수에 (구간 길이 + 1)을 곱한 값입니다."
+    ]
+  },
+  "vi": {
+    "title": "Tổng chi phí lớn nhất để tách xâu nhị phân (mục cùng nguồn)",
+    "description": "Cho một xâu nhị phân s, mục tiêu là dời mọi chữ số 0 lên trước mọi chữ số 1. Một thao tác chọn một chữ số 1 ngay sau nó có ít nhất một chữ số 0 ở bên phải; nó phải nhảy qua toàn bộ đoạn các chữ số 0 liên tiếp và đáp ở cuối xâu hoặc ngay trước chữ số 1 kế tiếp, với chi phí 1+(quãng đường đã dời). Hãy tìm tổng chi phí lớn nhất để hoàn tất việc tách, không phải số thao tác. Một thao tác phải thực sự dời ít nhất một vị trí, nên không thể tính chi phí cho việc đứng yên; một xâu đã được tách thì tốn 0.\n\nMục này là một mục nguồn trùng lặp của cùng một bài gốc với bài Akuna5 Mạch nhị phân của trang này và không tuyên bố một thuật toán mới; ID này được giữ lại để nộp bài độc lập.",
+    "input": "Một dòng chứa xâu nhị phân s, 1≤|s|≤100000, chỉ gồm 0 và 1. Cận độ dài đầy đủ lấy từ OCR016 cố định của cùng bài, không phải từ ràng buộc giữ chỗ N/A của FastPrep.",
+    "output": "In ra tổng chi phí lớn nhất, một số nguyên không âm; cần số nguyên 64-bit hoặc số nguyên lớn. Giao diện OCR gốc cuối cùng là long; khai báo int của FastPrep không bao phủ được toàn bộ miền giá trị.",
+    "explanation": "Ví dụ gốc 009 là 110100 tốn 13 và ví dụ gốc 016 là 10100 tốn 8; cả hai đều được giữ lại. Số thao tác lớn nhất trong văn bản gốc được sửa thành tổng chi phí lớn nhất dựa trên hàm cuối cùng và các ví dụ về chi phí. Lời giải đi kèm catalog chỉ tính phí cơ bản một lần cho mỗi chữ số 1, sẽ đếm sai 110100 thành 11 và xâu đã tách 01 thành 1; các giá trị đúng là 13 và 0. Ví dụ công khai thứ ba 01 do trang này bổ sung. Nếu các thao tác có quãng đường bằng 0 bị tính phí thì chúng có thể lặp mãi, nên chúng không phải nước đi hợp lệ.",
+    "hints": [
+      "Tổng quãng đường dịch chuyển là như nhau với mọi thứ tự thực hiện.",
+      "Hãy tìm cách để mỗi chữ số 1 nhảy riêng qua từng đoạn chữ số 0 vốn ở bên phải nó từ ban đầu.",
+      "Mỗi đoạn chữ số 0 đóng góp số chữ số 1 bên trái nó nhân với (độ dài đoạn cộng 1)."
+    ]
   }
 }

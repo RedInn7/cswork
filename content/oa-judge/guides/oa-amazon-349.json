@@ -13,6 +13,21 @@
       "n can be as large as 10^12, so you cannot try every k. Note that floor(n/k) never increases as k grows, so equal quotients appear over a contiguous range of k.",
       "For the current k with quotient q=floor(n/k), the largest k giving the same quotient is floor(n/q). Add q once for the whole range and jump straight to floor(n/q)+1. There are at most about 2√n distinct quotients this way.",
       "Set k=1 and answer=0; while k≤n: q=n/k (integer division), add q to answer, and set k=n/q+1. When n=0 the loop does not run and the answer is 0. The result fits in a 64-bit integer."
+    ],
+    "ja": [
+      "n は最大 10^12 なので、すべての k を試すことはできません。k が大きくなっても floor(n/k) は増えないので、等しい商は k の連続した範囲に現れます。",
+      "現在の k に対する商を q=floor(n/k) とすると、同じ商を与える最大の k は floor(n/q) です。範囲全体につき q を1回だけ加え、floor(n/q)+1 へ直接ジャンプします。この方法で現れる異なる商は高々 2√n 個程度です。",
+      "k=1、answer=0 とし、k≤n の間、q=n/k(整数除算)を answer に加え、k=n/q+1 とします。n=0 のときはループが実行されず、答えは 0 です。結果は64ビット整数に収まります。"
+    ],
+    "ko": [
+      "n이 최대 10^12이므로 모든 k를 시도할 수 없습니다. k가 커질수록 floor(n/k)는 증가하지 않으므로, 같은 몫은 k의 연속 구간에서 나타난다는 점에 주목하십시오.",
+      "현재 k의 몫이 q=floor(n/k)일 때, 같은 몫을 주는 가장 큰 k는 floor(n/q)입니다. 구간 전체에 대해 q를 한 번만 더하고 곧바로 floor(n/q)+1로 건너뜁니다. 이렇게 하면 서로 다른 몫은 많아야 약 2√n개입니다.",
+      "k=1, answer=0으로 두고 k≤n인 동안 q=n/k(정수 나눗셈)를 구해 answer에 더하고 k=n/q+1로 갱신합니다. n=0이면 루프가 실행되지 않고 답은 0입니다. 결과는 64비트 정수에 들어갑니다."
+    ],
+    "vi": [
+      "n có thể lên tới 10^12 nên không thể thử mọi k. Lưu ý rằng floor(n/k) không bao giờ tăng khi k tăng, nên các thương bằng nhau xuất hiện trên một đoạn k liên tiếp.",
+      "Với k hiện tại có thương q=floor(n/k), k lớn nhất cho cùng thương là floor(n/q). Cộng q một lần cho cả đoạn và nhảy thẳng tới floor(n/q)+1. Theo cách này có tối đa khoảng 2√n thương phân biệt.",
+      "Đặt k=1 và answer=0; khi k≤n: q=n/k (chia nguyên), cộng q vào answer, rồi đặt k=n/q+1. Khi n=0 vòng lặp không chạy và đáp án là 0. Kết quả nằm vừa trong số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nStart from k=1. The last divisor that gives the same current quotient q=n//k is n//q; add q once, then jump past that range.\n\n## Proof of correctness\n\nThe quotient never increases as k grows, and the contiguous range with quotient q ends at the largest k with floor(n/k)=q, namely k=n//q. Skipping the whole range adds q only once and misses no other positive quotient; for k>n every quotient is 0, so there is no need to enumerate further. Hence the sum of the distinct quotients is computed exactly. There are only √n small divisors ≤√n, and the large divisors give quotients ≤√n, so there are at most √n distinct values there as well.\n\n## Complexity\n\nTime O(√n), extra space O(1)."

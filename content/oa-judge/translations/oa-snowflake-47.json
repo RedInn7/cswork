@@ -11,5 +11,35 @@
     "hints": [
       "Mark the original masks in a boolean array. Run SOS subset propagation bit by bit: a state in the upper half absorbs the state in the lower half obtained by removing the current bit. In the end, each mask is marked if it contains at least one original submask; sum the boolean values."
     ]
+  },
+  "ja": {
+    "title": "任意のゼロビットを反転した後の上位集合の和集合の大きさ",
+    "description": "与えられた各整数を、ちょうど n ビット(先頭ゼロを許す)で表します。元の各文字列について、任意のゼロビットを 1 に反転できます。元の 1 を 0 に変えることはできず、何も反転しないことも許されます。すべての元の文字列から得られるすべての結果の和集合の大きさを求めてください。重複する結果は 1 回だけ数え、剰余は取りません。\n\n入出力プロトコルは本サイトが整備したものです。元の文章で欠けていた数値範囲は、本サイトによる補足として明記しています。",
+    "input": "1 行目に n k が、2 行目に k 個の整数が与えられます。元の文章には数値の上下限がないため、本サイトでは 1≤n≤20、1≤k≤100000、0≤整数<2ⁿ とします。入力には重複が含まれることがあります。",
+    "output": "問題で求められる整数を 1 つ出力してください。",
+    "explanation": "3 つの公開例の答えは順に 6; 1; 16 です。例は、独立した全探索・状態探索・直接シミュレーションで確認済みです。",
+    "hints": [
+      "元のマスクを真偽値配列に印を付けます。SOS の部分集合伝播をビットごとに行います。上半分の状態が、現在のビットを取り除いて得られる下半分の状態を吸収します。最終的に、元の部分マスクを少なくとも 1 つ含む各マスクに印が付くので、真偽値を合計します。"
+    ]
+  },
+  "ko": {
+    "title": "임의의 0 비트를 뒤집어 얻는 상위 집합들의 합집합 크기",
+    "description": "주어진 각 정수를 정확히 n비트로 표현합니다(선행 0 허용). 각 원래 문자열에서 임의의 0 비트를 1로 뒤집을 수 있으며, 원래의 1은 0으로 바꿀 수 없고, 아무것도 뒤집지 않는 것도 허용됩니다. 모든 원래 문자열이 만들어 내는 모든 결과의 합집합의 크기를 구하세요. 중복된 결과는 한 번만 세며, 나머지 연산은 하지 않습니다.\n\n입출력 규약은 이 사이트에서 정리한 것이며, 원문에 없는 수치 범위는 이 사이트가 추가한 것으로 명시되어 있습니다.",
+    "input": "첫 번째 줄에 n k가 주어지고, 두 번째 줄에 k개의 정수가 주어집니다. 원문에는 수치 범위가 없으므로 이 사이트는 1≤n≤20, 1≤k≤100000, 0≤정수<2ⁿ을 추가하며, 입력에는 중복이 있을 수 있습니다.",
+    "output": "문제에서 요구하는 정수 하나를 출력합니다.",
+    "explanation": "세 공개 예제의 답은 순서대로 6; 1; 16입니다. 예제는 독립적인 완전 탐색, 상태 탐색 또는 직접 시뮬레이션으로 검증했습니다.",
+    "hints": [
+      "원래 마스크들을 불리언 배열에 표시합니다. 비트별로 SOS 부분집합 전파를 수행합니다. 상위 절반의 상태가 현재 비트를 제거한 하위 절반의 상태를 흡수합니다. 마지막에 각 마스크는 원래 부분 마스크를 하나 이상 포함하면 표시되며, 불리언 값을 모두 더합니다."
+    ]
+  },
+  "vi": {
+    "title": "Kích thước hợp các tập cha sau khi lật tùy ý các bit 0",
+    "description": "Biểu diễn mỗi số nguyên đã cho bằng đúng n bit (cho phép số 0 đứng đầu). Với mỗi xâu gốc, có thể lật bất kỳ các bit 0 thành 1; bit 1 gốc không thể đổi thành 0, và không lật gì cũng được phép. Hãy tìm kích thước của hợp mọi kết quả sinh ra từ mọi xâu gốc; các kết quả trùng lặp chỉ được đếm một lần, và không lấy modulus.\n\nGiao thức đầu vào/đầu ra do trang này biên soạn, và các khoảng giá trị bị thiếu trong văn bản gốc được đánh dấu rõ là phần bổ sung của trang này.",
+    "input": "Dòng đầu tiên chứa n k, dòng thứ hai chứa k số nguyên. Văn bản gốc không cho cận số; trang này bổ sung 1≤n≤20, 1≤k≤100000 và 0≤số nguyên<2ⁿ; đầu vào có thể chứa giá trị trùng lặp.",
+    "output": "In ra một số nguyên duy nhất theo yêu cầu của đề bài.",
+    "explanation": "Đáp án của ba ví dụ công khai lần lượt là: 6; 1; 16. Các ví dụ đã được kiểm tra bằng liệt kê độc lập, tìm kiếm trạng thái hoặc mô phỏng trực tiếp.",
+    "hints": [
+      "Đánh dấu các mask gốc trong một mảng boolean. Chạy lan truyền tập con kiểu SOS từng bit: trạng thái ở nửa trên hấp thụ trạng thái ở nửa dưới thu được bằng cách bỏ bit hiện tại. Cuối cùng, mỗi mask được đánh dấu nếu nó chứa ít nhất một mask con gốc; cộng các giá trị boolean."
+    ]
   }
 }

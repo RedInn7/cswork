@@ -12,5 +12,38 @@
       "Compute the digit sum of each of the previous two terms separately, then add them.",
       "The bounded state of the two most recent terms forms a cycle."
     ]
+  },
+  "ja": {
+    "title": "Sum-of-Digits Fibonacci Sequence",
+    "description": "f(0)=0、f(1)=1 と定義し、n≥2 では f(n) を、f(n−1) の各桁の和と f(n−2) の各桁の和の和とします。f(N) を返してください。元の問題には N の上限が与えられていません。このサイトの judge は 0≤N≤2147483647 (符号付き 32 ビット int の非負の範囲) を明示的にサポートしており、この範囲はこのサイトによる補足です。",
+    "input": "整数 N が 1 つ。0≤N≤2147483647 (このサイトがサポートする範囲)。",
+    "output": "N 番目の項 f(N) を出力してください。",
+    "explanation": "## 方針\n\n状態は直近の 2 項 (a,b) で、次の項は digitSum(a)+digitSum(b) です。すべての項は 0..18 の範囲にあります。最初の 0 と 1 はこれを満たし、2 項がともに 18 以下なら各桁の和は最大 9 なので、次の項は最大 18 です。有限の状態空間は必ず繰り返すので、ペアの状態を記録して循環を検出すれば、サポートされるどの N でも直接求められます。\n\n## 正当性の証明\n\n最初の 2 項は 0 と 1 です。現在の位置にある 2 項が元の漸化式と一致していると仮定すると、次の項は 2 項の各桁の和を足すという定義に厳密に従って計算されるので、次の項も一致します。直近の 2 項は常に 0..18 の範囲にあるため、状態は有限ステップのうちに繰り返さなければなりません。繰り返された状態以降のすべての項は以前とまったく同じなので、クエリを循環に対応づけても N 番目の項は変わりません。\n\n## 計算量\n\n前処理では、有界なペアの状態を高々 19² 個しか訪れないので、時間も空間も入力 N に対して O(1) で、各クエリは O(1) です。",
+    "hints": [
+      "直前の 2 項それぞれの各桁の和を別々に計算してから足します。",
+      "直近の 2 項という有界な状態は循環を成します。"
+    ]
+  },
+  "ko": {
+    "title": "Sum-of-Digits Fibonacci Sequence",
+    "description": "f(0)=0, f(1)=1로 정의하고, n≥2일 때 f(n)은 f(n−1)의 자릿수 합과 f(n−2)의 자릿수 합을 더한 값입니다. f(N)을 반환하세요. 원본 문제는 N의 상한을 주지 않았으며, 이 사이트의 채점기는 0≤N≤2147483647(부호 있는 32비트 int의 음이 아닌 범위)을 명시적으로 지원합니다. 이 범위는 이 사이트가 보충한 것입니다.",
+    "input": "정수 N 하나가 주어집니다. 0≤N≤2147483647(이 사이트가 지원하는 범위).",
+    "output": "N번째 항 f(N)을 출력합니다.",
+    "explanation": "## 접근 방법\n\n상태는 가장 최근의 두 항 (a,b)이고, 다음 항은 digitSum(a)+digitSum(b)입니다. 모든 항은 0..18 범위에 있습니다. 초기값 0과 1이 이를 만족하고, 두 항이 모두 18 이하이면 각 자릿수 합은 9 이하이므로 다음 항은 18 이하입니다. 유한한 상태 공간은 반드시 반복되므로 쌍 상태를 기록하여 사이클을 찾으면, 지원되는 어떤 N이든 바로 위치를 계산할 수 있습니다.\n\n## 정당성 증명\n\n처음 두 항은 0과 1입니다. 현재 위치의 두 항이 원래 점화식과 일치한다고 가정하면, 다음 항은 두 항의 자릿수 합을 더하는 정의대로 계산되므로 역시 일치합니다. 가장 최근의 두 항은 항상 0..18 범위에 있으므로 상태는 유한한 단계 안에 반드시 반복됩니다. 반복된 상태 이후의 모든 항은 이전과 정확히 같으므로, 질의를 사이클로 사상해도 N번째 항은 바뀌지 않습니다.\n\n## 복잡도\n\n전처리에서 방문하는 쌍 상태는 최대 19²개로 제한되므로, 입력 N에 대해 시간과 공간 모두 O(1)이며 각 질의는 O(1)입니다.",
+    "hints": [
+      "이전 두 항 각각의 자릿수 합을 따로 구한 뒤 더합니다.",
+      "가장 최근 두 항의 유한한 상태는 사이클을 이룹니다."
+    ]
+  },
+  "vi": {
+    "title": "Sum-of-Digits Fibonacci Sequence",
+    "description": "Định nghĩa f(0)=0 và f(1)=1; với n≥2, f(n) bằng tổng chữ số của f(n−1) cộng với tổng chữ số của f(n−2). Trả về f(N). Bài gốc không đưa ra cận trên cho N; bộ chấm của trang này hỗ trợ tường minh 0≤N≤2147483647 (phạm vi không âm của int có dấu 32 bit), và phạm vi này là phần bổ sung của trang này.",
+    "input": "Một số nguyên N duy nhất, 0≤N≤2147483647 (phạm vi được trang này hỗ trợ).",
+    "output": "In ra số hạng thứ N là f(N).",
+    "explanation": "## Hướng tiếp cận\n\nTrạng thái là hai số hạng gần nhất (a,b), và số hạng tiếp theo là digitSum(a)+digitSum(b). Mọi số hạng đều nằm trong 0..18: các giá trị khởi đầu 0 và 1 thỏa điều kiện này; nếu cả hai số hạng đều không quá 18, thì mỗi tổng chữ số không quá 9, nên số hạng tiếp theo không quá 18. Một không gian trạng thái hữu hạn phải lặp lại, vì vậy ghi lại các trạng thái cặp và phát hiện chu trình, từ đó xác định trực tiếp mọi N được hỗ trợ.\n\n## Chứng minh tính đúng đắn\n\nHai số hạng đầu là 0 và 1. Giả sử hai số hạng ở vị trí hiện tại khớp với công thức truy hồi gốc, số hạng tiếp theo được tính chặt chẽ theo định nghĩa, cộng tổng chữ số của hai số hạng, nên số hạng tiếp theo cũng khớp. Hai số hạng gần nhất luôn nằm trong 0..18, nên trạng thái phải lặp lại sau một số bước hữu hạn; mọi số hạng sau một trạng thái lặp lại hoàn toàn giống như trước đó, nên ánh xạ một truy vấn qua chu trình không làm đổi số hạng thứ N.\n\n## Độ phức tạp\n\nBước tiền xử lý thăm tối đa 19² trạng thái cặp bị chặn, nên cả thời gian và bộ nhớ đều là O(1) theo đầu vào N; mỗi truy vấn là O(1).",
+    "hints": [
+      "Tính tổng chữ số của từng số hạng trong hai số hạng trước một cách riêng biệt, rồi cộng chúng lại.",
+      "Trạng thái bị chặn của hai số hạng gần nhất tạo thành một chu trình."
+    ]
   }
 }

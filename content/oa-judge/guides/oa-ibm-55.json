@@ -13,6 +13,21 @@
       "Employee identities do not matter; only the number of people currently in the room matters: C and U add one person, R and L remove one.",
       "At any moment every person in the room needs a chair, so the number of chairs is at least the maximum headcount ever reached; empty chairs are reused and a purchase happens only when the headcount exceeds the chairs already owned, so that maximum is also enough.",
       "For each simulation keep the current headcount and the maximum so far, both starting at 0: add one for C or U, subtract one for R or L, and update the maximum after every event; that maximum is the answer for the simulation, and the answers are printed in input order separated by spaces."
+    ],
+    "ja": [
+      "従業員の個人は関係なく、現在部屋にいる人数だけが重要です。C と U は 1 人増やし、R と L は 1 人減らします。",
+      "どの時点でも、部屋にいる全員に椅子が必要なので、椅子の数は、これまでに達した最大人数以上でなければなりません。空いた椅子は再利用され、人数がすでに持っている椅子の数を超えたときだけ購入が発生するので、その最大値で足ります。",
+      "シミュレーションごとに、現在の人数とこれまでの最大値をどちらも 0 から保持します。C か U なら 1 を加え、R か L なら 1 を引き、イベントのたびに最大値を更新します。その最大値がそのシミュレーションの答えで、答えは入力順に空白区切りで出力します。"
+    ],
+    "ko": [
+      "직원의 신원은 중요하지 않고 현재 방에 있는 사람 수만 중요합니다. C와 U는 한 명을 늘리고, R과 L은 한 명을 줄입니다.",
+      "어느 순간이든 방에 있는 모든 사람에게는 의자가 필요하므로 의자 수는 지금까지의 최대 인원 이상이어야 합니다. 빈 의자는 재사용되고 인원이 이미 가진 의자 수를 넘을 때만 구매하므로, 이 최댓값만으로도 충분합니다.",
+      "각 시뮬레이션에서 현재 인원과 지금까지의 최댓값을 0에서 시작하여 유지합니다. C나 U이면 1을 더하고 R이나 L이면 1을 빼며, 매 이벤트 후 최댓값을 갱신합니다. 이 최댓값이 해당 시뮬레이션의 답이며, 답은 입력 순서대로 공백으로 구분하여 출력합니다."
+    ],
+    "vi": [
+      "Danh tính nhân viên không quan trọng; chỉ số người hiện đang ở trong phòng mới quan trọng: C và U thêm một người, R và L bớt một người.",
+      "Tại mọi thời điểm, mỗi người trong phòng đều cần một ghế, nên số ghế ít nhất bằng số người lớn nhất từng đạt; các ghế trống được dùng lại và chỉ mua khi số người vượt quá số ghế đang có, nên giá trị lớn nhất đó cũng là đủ.",
+      "Với mỗi lần mô phỏng, giữ số người hiện tại và giá trị lớn nhất cho đến nay, cả hai bắt đầu từ 0: cộng một cho C hoặc U, trừ một cho R hoặc L, và cập nhật giá trị lớn nhất sau mỗi sự kiện; giá trị lớn nhất đó là đáp án của lần mô phỏng, và các đáp án được in theo thứ tự đầu vào, cách nhau bởi dấu cách."
     ]
   },
   "explanationEn": "## Approach\n\nSimulate the number of employees in the room: C and U increase it by one, R and L decrease it by one. The answer is the maximum number of people in the room over the whole process; each time someone enters and there is no empty chair, exactly one more chair has to be bought.\n\n## Correctness\n\nAt any moment every employee in the room must have a chair of their own, so the number of chairs is at least the maximum headcount in the room. Reusing empty chairs according to the rules, and buying only when someone enters while the headcount has reached the number of chairs already bought, keeps the number of chairs equal to the maximum headcount so far after every purchase. At the end the number bought exactly reaches this lower bound. A valid event sequence guarantees that every departure or return corresponds to an existing employee, so the state is unique.\n\n## Complexity\n\nLet L be the total number of characters over all simulations. Time O(L), extra space O(1)."

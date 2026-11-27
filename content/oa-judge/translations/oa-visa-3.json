@@ -11,5 +11,35 @@
     "hints": [
       "Check against the problem definition item by item, paying attention to simultaneous updates and boundary semantics."
     ]
+  },
+  "ja": {
+    "title": "Chat Mention Counter",
+    "description": "メッセージとオフラインイベントを、イベントの順に処理します。メッセージの送信者は、投稿した時点で存在するアクティブなユーザーになります。メンショントークンはユーザー ID、ALL、HERE のいずれかで、ALL は存在するすべてのユーザー、HERE は現在アクティブなユーザーを対象とします。各ユーザーはメッセージごとに高々 1 回だけ数えられ、自分自身へのメンションも数えます。カウントが正の ID とその回数を、ID の辞書順で出力してください。\n\nルールは元の OAMaster の問題に従っています。入出力形式と、「サイト追加」と記された範囲は、このサイトが作成したものです。",
+    "input": "q（1≤q≤1000）。続く q 行は、MESSAGE sender timestamp m token1..tokenm または OFFLINE user のいずれかです。m≥0 で、ID は id の後に正の整数が続く形式です。タイムスタンプは非負の整数で、イベントは入力順に処理されます。直接のメンショントークンの総数は ≤200000 です。q≤1000 は展開後のサイズに対するサイト追加の制限です。\n\nサイト追加の範囲：ユーザー ID は id の後に 1..10^9 の 10 進整数が続く形式、timestamp は 0..10^9 です。",
+    "output": "id=count の形式で、ID の辞書順に空白区切りで出力してください。カウントがなければ空行を出力します。",
+    "explanation": "詳細は付属の解説を参照してください。",
+    "hints": [
+      "問題の定義と項目ごとに照らし合わせ、同時更新と境界の意味に注意してください。"
+    ]
+  },
+  "ko": {
+    "title": "Chat Mention Counter",
+    "description": "메시지와 오프라인 이벤트를 이벤트 순서대로 처리합니다. 메시지를 보낸 사람은 글을 올리는 순간 존재하는 활성 사용자가 됩니다. 멘션 토큰은 사용자 ID, ALL, HERE 중 하나일 수 있으며, ALL은 존재하는 모든 사용자를, HERE는 현재 활성인 사용자를 가리킵니다. 각 사용자는 메시지당 최대 한 번만 세며, 자기 자신에 대한 멘션도 셉니다. 횟수가 양수인 ID와 그 횟수를 ID의 사전식 순서로 정렬해 출력하세요.\n\n규칙은 원래 OAMaster 문제를 따르며, \"사이트 추가\"로 표시된 입출력 방식과 범위는 이 사이트가 정리한 것입니다.",
+    "input": "q (1≤q≤1000)가 주어집니다. 이어서 q개의 줄이 주어지며, 각 줄은 MESSAGE sender timestamp m token1..tokenm 또는 OFFLINE user입니다. m≥0이고 ID는 id 뒤에 양의 정수가 붙은 형태입니다. 타임스탬프는 음이 아닌 정수이며 이벤트는 입력 순서대로 처리합니다. 직접 멘션 토큰의 총 개수는 ≤200000이며, q≤1000은 확장된 크기에 대해 사이트가 추가한 제한입니다.\n\n사이트에서 추가한 범위: 사용자 ID는 id 뒤에 1..10^9 범위의 십진 정수가 붙은 형태이고, timestamp는 0..10^9입니다.",
+    "output": "id=count 항목을 ID의 사전식 순서로 정렬해 공백으로 구분하여 출력합니다. 센 것이 없으면 빈 줄을 출력합니다.",
+    "explanation": "자세한 내용은 함께 제공되는 해설을 참고하세요.",
+    "hints": [
+      "문제 정의와 항목별로 대조하되, 동시 갱신과 경계의 의미에 주의하세요."
+    ]
+  },
+  "vi": {
+    "title": "Chat Mention Counter",
+    "description": "Xử lý các tin nhắn và sự kiện ngoại tuyến theo thứ tự sự kiện. Người gửi tin nhắn trở thành người dùng tồn tại và đang hoạt động khi đăng. Một token nhắc đến có thể là ID người dùng, ALL hoặc HERE; ALL bao gồm mọi người dùng đã tồn tại, và HERE bao gồm những người dùng đang hoạt động. Mỗi người dùng được đếm tối đa một lần cho mỗi tin nhắn; tự nhắc đến cũng được tính. In ra các ID có số đếm dương cùng số đếm của chúng, sắp xếp theo thứ tự từ điển của ID.\n\nCác quy tắc theo bài gốc trên OAMaster; giao thức nhập/xuất và các giới hạn được đánh dấu \"trang bổ sung\" do trang này biên soạn.",
+    "input": "q (1≤q≤1000). Tiếp theo là q dòng: MESSAGE sender timestamp m token1..tokenm, hoặc OFFLINE user. m≥0, và ID có dạng id theo sau là một số nguyên dương; timestamp là các số nguyên không âm, và các sự kiện được xử lý theo thứ tự đầu vào. Tổng số token nhắc đến trực tiếp ≤200000; q≤1000 là giới hạn do trang bổ sung đối với kích thước sau khi khai triển.\n\nCác khoảng giá trị do trang bổ sung: ID người dùng là id theo sau là một số nguyên thập phân trong khoảng 1..10^9, và timestamp là 0..10^9;",
+    "output": "In ra các mục id=count sắp xếp theo thứ tự từ điển của ID, cách nhau bởi dấu cách; nếu không có số đếm nào thì in một dòng trống.",
+    "explanation": "Xem phần hướng dẫn kèm theo để biết chi tiết.",
+    "hints": [
+      "Đối chiếu từng mục với định nghĩa bài toán, chú ý đến các cập nhật đồng thời và ngữ nghĩa ở biên."
+    ]
   }
 }

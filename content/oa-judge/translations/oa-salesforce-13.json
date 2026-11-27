@@ -11,5 +11,35 @@
     "hints": [
       "Length 1 requires an alternating string, so count the mismatches against each of the two alternating templates. For a target L≥2, an original run of length r needs exactly floor(r/(L+1)) flips, and no fewer; binary search for the smallest feasible L."
     ]
+  },
+  "ja": {
+    "title": "GPU の連続使用の最長ランを最小化する",
+    "description": "毎回使用した GPU を a/b の文字列で記録しており、最大 switchCount 個の位置を反転できます。同じ文字が連続する最長のランの長さが取り得る最小値を求めてください。元の説明には不正な文字や、変更後に長さが縮んでしまう誤った例が含まれていたため、本サイトでは、反転 1 回でちょうど 1 文字が変わるという規則を採用しています。\n\n入出力形式は本サイトで整理したものです。",
+    "input": "1 行目は空でない a/b の文字列、2 行目は switchCount です。元の問題文には数値の範囲が書かれていないため、本サイトでは、長さを 1..200000、0≤switchCount≤長さ とします。",
+    "output": "最長のランの長さの最小値を出力します。",
+    "explanation": "答えは 2、4、2 です。1 つ目の例は aababbaaba に変更でき、長さは 10 のまま、最長のランは 2 になります。",
+    "hints": [
+      "長さ 1 にするには交互の文字列である必要があるので、2 通りの交互テンプレートとの不一致の数を数えます。目標 L≥2 のとき、長さ r の元のランに必要な反転数はちょうど floor(r/(L+1)) で、それより少なくはできません。実現可能な最小の L を二分探索で求めます。"
+    ]
+  },
+  "ko": {
+    "title": "연속 GPU 사용 구간의 최대 길이 최소화",
+    "description": "a/b 문자열은 매번 사용한 GPU를 기록하며, 최대 switchCount개의 위치를 뒤집을 수 있습니다. 같은 문자가 이어지는 가장 긴 구간의 길이를 최소로 만들었을 때의 값을 구하세요. 원문 설명에는 잘못된 문자가 포함되어 있고, 변경 후 길이가 줄어드는 잘못된 예시가 있습니다. 본 사이트에서는 한 번 뒤집을 때 정확히 한 문자만 바뀐다는 규칙을 따릅니다.\n\n입력/출력 형식은 본 사이트에서 정리한 것입니다.",
+    "input": "첫 줄에 비어 있지 않은 a/b 문자열이, 둘째 줄에 switchCount가 주어집니다. 원문에는 수치 범위가 없으며, 본 사이트에서는 길이가 1..200000이고 0≤switchCount≤길이입니다.",
+    "output": "가장 긴 구간의 가능한 최소 길이를 출력합니다.",
+    "explanation": "답은 2, 4, 2입니다. 첫 번째 예시는 aababbaaba로 바꿀 수 있으며, 길이는 10으로 유지되고 가장 긴 구간은 2입니다.",
+    "hints": [
+      "길이 1이 되려면 교대 문자열이어야 하므로 두 교대 템플릿에 대한 불일치 개수를 셉니다. 목표 L≥2에서는 길이 r인 원래 구간에 정확히 floor(r/(L+1))번의 뒤집기가 필요하고 그보다 적으면 안 됩니다. 이분 탐색으로 가능한 가장 작은 L을 찾습니다."
+    ]
+  },
+  "vi": {
+    "title": "Giảm tối thiểu đoạn dùng GPU liên tiếp dài nhất",
+    "description": "Một xâu a/b ghi lại GPU được dùng ở mỗi lần, và bạn có thể lật nhiều nhất switchCount vị trí. Tìm độ dài nhỏ nhất có thể của đoạn dài nhất gồm các ký tự giống nhau liên tiếp. Phần giải thích gốc chứa các ký tự không hợp lệ và một ví dụ sai trong đó độ dài bị co lại sau khi đổi; trang này giữ quy tắc rằng mỗi lần lật chỉ đổi đúng một ký tự.\n\nĐịnh dạng đầu vào/đầu ra do trang này biên soạn.",
+    "input": "Dòng đầu là xâu a/b không rỗng, dòng thứ hai là switchCount. Đề gốc không nêu giới hạn số; trên trang này độ dài là 1..200000 và 0≤switchCount≤độ dài.",
+    "output": "In độ dài nhỏ nhất có thể của đoạn dài nhất.",
+    "explanation": "Các đáp án là 2, 4 và 2; ví dụ đầu có thể đổi thành aababbaaba, giữ độ dài 10 với đoạn dài nhất là 2.",
+    "hints": [
+      "Độ dài 1 đòi hỏi một xâu xen kẽ, nên đếm số vị trí sai khác so với mỗi trong hai mẫu xen kẽ. Với mục tiêu L≥2, một đoạn gốc có độ dài r cần đúng floor(r/(L+1)) lần lật, và không thể ít hơn; tìm kiếm nhị phân L nhỏ nhất khả thi."
+    ]
   }
 }

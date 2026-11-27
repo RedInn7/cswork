@@ -13,6 +13,21 @@
       "An integer's depth is the number of lists enclosing it, with depth 1 for integers in the outermost list; the answer is the sum of every integer times its own depth.",
       "There is no need to recurse through the nesting, which can be deep: keep an explicit stack of lists with their depths, or simply scan the text from left to right, adding one level at each opening bracket and removing one at each closing bracket, so the current level is the depth of any integer you read.",
       "Traverse as above and, for each integer read (it may have a minus sign), add the integer times the current depth to the answer; empty sublists only change the level and contribute nothing; print the total, preferably as a 64-bit integer."
+    ],
+    "ja": [
+      "整数の深さとは、それを囲むリストの個数です。最も外側のリストにある整数の深さは 1 で、答えはすべての整数について値と自身の深さの積を足し合わせたものです。",
+      "ネストが深くなりうるので、再帰で辿る必要はありません。リストと深さを保持する明示的なスタックを使うか、テキストを左から右へ走査して、開き括弧で 1 段深く、閉じ括弧で 1 段浅くするだけでも構いません。そうすれば、読み取った整数の深さは常に現在の段数です。",
+      "上記のように走査し、整数 (負号が付くこともあります) を読み取るたびに、その整数に現在の深さを掛けた値を答えに加えます。空の部分リストは段数を変えるだけで寄与はありません。合計を出力します。64 ビット整数の使用を推奨します。"
+    ],
+    "ko": [
+      "정수의 깊이는 그 정수를 감싸는 리스트의 개수이며, 가장 바깥 리스트의 정수는 깊이 1입니다. 답은 모든 정수에 각자의 깊이를 곱한 값의 합입니다.",
+      "중첩이 깊을 수 있으므로 재귀로 들어갈 필요가 없습니다. 리스트와 그 깊이를 담는 명시적 스택을 쓰거나, 텍스트를 왼쪽에서 오른쪽으로 훑으면서 여는 괄호마다 한 단계 올리고 닫는 괄호마다 한 단계 내리면 현재 단계가 읽은 정수의 깊이가 됩니다.",
+      "위와 같이 순회하면서 정수를 읽을 때마다(음수 부호가 있을 수 있습니다) 정수에 현재 깊이를 곱한 값을 답에 더합니다. 빈 하위 리스트는 단계만 바꿀 뿐 아무것도 기여하지 않습니다. 총합을 출력하되, 가능하면 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Độ sâu của một số nguyên là số danh sách bao quanh nó, với độ sâu 1 cho số nguyên trong danh sách ngoài cùng; đáp án là tổng mọi số nguyên nhân với độ sâu của chính nó.",
+      "Không cần đệ quy qua các tầng lồng, vì chúng có thể rất sâu: hãy giữ một ngăn xếp tường minh gồm các danh sách và độ sâu của chúng, hoặc đơn giản là quét văn bản từ trái sang phải, thêm một cấp ở mỗi dấu ngoặc mở và bớt một cấp ở mỗi dấu ngoặc đóng, để cấp hiện tại chính là độ sâu của mọi số nguyên bạn đọc được.",
+      "Duyệt như trên và với mỗi số nguyên đọc được (có thể có dấu trừ), cộng số nguyên nhân độ sâu hiện tại vào đáp án; danh sách con rỗng chỉ làm đổi cấp và không đóng góp gì; in tổng, tốt nhất dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nAfter parsing the list, use an explicit stack holding lists together with their depths; an integer contributes its value times its depth, and a sublist is pushed with the depth plus one.\n\n## Proof of correctness\n\nEach integer is visited exactly once, by its direct parent list. On the stack the depth starts at 1 for the outermost level and increases by exactly 1 when entering a sublist, which equals the number of lists containing that integer, so the accumulation gives the defined weighted sum.\n\n## Complexity\n\nTime O(L), extra space O(L), where L is the input length; it does not rely on deep recursive traversal."

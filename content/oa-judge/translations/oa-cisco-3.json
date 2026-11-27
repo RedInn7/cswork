@@ -11,5 +11,35 @@
     "hints": [
       "Process the matrix row by row, recording the minimum of each column and the minimum R over all row maxima. Let C be the maximum of the column minima; if R=C, output that value, otherwise output −1. Keep only M column values, and do not build a copy of a million-integer matrix."
     ]
+  },
+  "ja": {
+    "title": "行の最大値かつ列の最小値となる行列の要素を探す",
+    "description": "行列の要素は非負です。その行の最大値であり、かつその列の最小値でもある要素を探し、その値を出力してください。存在しない場合は −1 を出力します。最大値や最小値が複数の位置で等しい場合も、それらはすべて有効です。厳密に大きい、あるいは小さい必要はありません。\n\n欠けている範囲に対する本サイトの補足と、元の誤記の復元については、入力プロトコルを参照してください。",
+    "input": "1 行目に N M、続く N 行に各 M 個の整数が与えられます。元の範囲は 1≤N,M≤1000 です。要素は非負で上限がないため、本サイトでは ≤10^9 を追加しています。元の入力の次の文では、次元が M 行 N 列と入れ替わって書かれていましたが、本サイトは明示的な次元の定義に基づいて N 行 M 列に直しています。",
+    "output": "答えを整数 1 つで出力してください。",
+    "explanation": "3 つの公開サンプルの出力は、順に次のとおりです: 2; 1; -1。独立した列挙または直接のシミュレーションで検証済みです。",
+    "hints": [
+      "行列を行ごとに処理し、各列の最小値と、各行の最大値すべてにわたる最小値 R を記録します。C を列の最小値の最大値とし、R=C ならその値を、そうでなければ −1 を出力します。保持するのは M 個の列の値だけで、100 万個の整数からなる行列のコピーを作ってはいけません。"
+    ]
+  },
+  "ko": {
+    "title": "행에서는 최대이고 열에서는 최소인 행렬 원소 찾기",
+    "description": "행렬의 원소는 음이 아닌 수입니다. 자신이 속한 행의 최댓값이면서 동시에 자신이 속한 열의 최솟값인 원소를 찾아 그 값을 출력하고, 없으면 −1을 출력하세요. 같은 최댓값이나 최솟값이 여러 위치에 있어도 모두 유효하며 엄격하게 크거나 작을 필요는 없습니다.\n\n이 사이트가 원문에 없던 범위를 어떻게 보충했고 원문의 오타를 어떻게 바로잡았는지는 입력 규약을 참고하세요.",
+    "input": "첫 줄에 N M이 주어지고, 이어서 각각 M개의 정수로 이루어진 N개의 줄이 주어집니다. 원문의 범위는 1≤N,M≤1000이며, 원소는 음이 아니지만 상한이 없으므로 이 사이트는 ≤10^9를 추가합니다. 원문 입력의 다음 문장은 차원을 M행 N열로 뒤바꿔 적었으나, 이 사이트는 명시된 차원 정의에 따라 N행 M열로 바로잡았습니다.",
+    "output": "정수 하나, 즉 답을 출력합니다.",
+    "explanation": "세 개의 공개 예제의 출력은 순서대로 다음과 같습니다. 2; 1; -1. 독립적인 전수 조사 또는 직접 시뮬레이션으로 검증했습니다.",
+    "hints": [
+      "행렬을 행 단위로 처리하면서 각 열의 최솟값과 모든 행 최댓값 중 최솟값 R을 기록합니다. C를 열 최솟값들의 최댓값이라 할 때 R=C이면 그 값을 출력하고, 아니면 −1을 출력합니다. M개의 열 값만 유지하며 백만 개의 정수로 이루어진 행렬의 복사본을 만들지 않습니다."
+    ]
+  },
+  "vi": {
+    "title": "Tìm phần tử ma trận vừa lớn nhất hàng vừa nhỏ nhất cột",
+    "description": "Các phần tử của ma trận không âm. Tìm một phần tử vừa bằng giá trị lớn nhất của hàng nó thuộc về, vừa bằng giá trị nhỏ nhất của cột nó thuộc về, và in giá trị của nó; nếu không tồn tại thì in −1. Nhiều vị trí lớn nhất hoặc nhỏ nhất bằng nhau đều hợp lệ; không cần lớn hơn hay nhỏ hơn một cách chặt chẽ.\n\nXem giao thức đầu vào về các phần bổ sung của trang này cho những khoảng giá trị còn thiếu và cách khôi phục các lỗi đánh máy trong nguồn.",
+    "input": "Dòng đầu chứa N M, tiếp theo là N dòng, mỗi dòng M số nguyên. Cận gốc: 1≤N,M≤1000; các phần tử không âm nhưng không có cận trên, nên trang này bổ sung ≤10^9. Câu tiếp theo của đầu vào gốc đã đảo kích thước thành M hàng và N cột; trang này khôi phục thành N hàng và M cột dựa trên định nghĩa kích thước tường minh.",
+    "output": "In ra một số nguyên duy nhất, là đáp án.",
+    "explanation": "Kết quả của ba ví dụ công khai lần lượt là: 2; 1; -1. Đã được kiểm chứng bằng liệt kê độc lập hoặc mô phỏng trực tiếp.",
+    "hints": [
+      "Xử lý ma trận từng hàng một, ghi lại giá trị nhỏ nhất của mỗi cột và giá trị nhỏ nhất R trong các giá trị lớn nhất của hàng. Gọi C là giá trị lớn nhất trong các giá trị nhỏ nhất của cột; nếu R=C thì in giá trị đó, ngược lại in −1. Chỉ giữ M giá trị cột, và không dựng bản sao của ma trận một triệu số nguyên."
+    ]
   }
 }

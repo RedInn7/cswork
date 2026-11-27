@@ -11,5 +11,35 @@
     "hints": [
       "Precompute the earliest index of the maximum in each suffix. Each round, take that maximum and continue from its index+k+1."
     ]
+  },
+  "ja": {
+    "title": "1 つ取って k 個飛ばす操作で作る、辞書順最大の非増加配列",
+    "description": "次のどちらかを繰り返し選びます。現在の左端の要素を捨てる。または、現在の左端の重みを結果に追加し、それとその後ろの k 個の要素を取り除く。後ろの要素が k 個に満たない場合は、残りをすべて取り除きますが、現在の要素は取ることができます。得られる重みは非増加でなければならず、実現可能な結果のうち辞書順で最大のものを求めてください。最初に異なる位置で大きい方が勝ち、一方が他方の接頭辞のときは長い方が勝ちます。\n\n標準入出力、例、解説は本サイトが独自に作成したものです。本サイトのものと明記された範囲は、元の問題の制約ではありません。",
+    "input": "1 行目に n k、2 行目に重みが与えられます。元の文章には数値の範囲がなかったため、本サイトでは 1≤n≤200000、0≤k≤10^9、1≤重み≤10^9 とします。",
+    "output": "結果の配列をスペース区切りで出力してください。",
+    "explanation": "答えは 5 3、10 5、3 です。1 つ目の例では、先頭側の要素をいくつ捨ててもかまいません。先頭の k+1 個だけを見ればよいわけではありません。",
+    "hints": [
+      "各接尾辞の最大値の、最も左にある添字を前計算します。毎回その最大値を取り、その添字+k+1 から続けます。"
+    ]
+  },
+  "ko": {
+    "title": "하나를 가져가고 k개를 건너뛰어 만드는 사전순 최대 비증가 배열",
+    "description": "다음 중 하나를 반복해서 선택합니다. 현재 가장 왼쪽 항목을 버립니다. 또는 현재 가장 왼쪽 항목의 무게를 결과에 추가하고, 그 항목과 뒤따르는 k개의 항목을 함께 제거합니다. 뒤에 k개보다 적게 남아 있으면 모두 제거되며, 현재 항목은 그래도 가져갈 수 있습니다. 결과의 무게는 비증가(non-increasing)여야 하며, 가능한 결과 중 사전순으로 가장 큰 것을 구하세요. 처음으로 다른 위치에서 큰 쪽이 이기고, 한 수열이 다른 수열의 접두사이면 더 긴 쪽이 이깁니다.\n\n표준 입출력, 예제, 해설은 이 사이트에서 독립적으로 작성했으며, 이 사이트 기준이라고 명시한 범위는 원문의 원래 제약 조건이 아닙니다.",
+    "input": "첫째 줄에 n k가 주어지고, 둘째 줄에 무게가 주어집니다. 원문에는 수치 범위가 없었으며, 이 사이트에서는 1≤n≤200000, 0≤k≤10^9, 1≤무게≤10^9로 설정했습니다.",
+    "output": "결과 배열을 공백으로 구분해 출력합니다.",
+    "explanation": "정답은 5 3, 10 5, 3입니다. 첫 번째 예제에서는 앞쪽 원소를 몇 개든 버릴 수 있으며, 처음 k+1개만 볼 수 있는 것이 아닙니다.",
+    "hints": [
+      "각 접미사에서 최댓값이 처음 나타나는 인덱스를 미리 계산합니다. 매 라운드 그 최댓값을 가져가고 그 인덱스+k+1부터 이어서 진행합니다."
+    ]
+  },
+  "vi": {
+    "title": "Mảng không tăng lớn nhất theo thứ tự từ điển khi lấy một và bỏ qua k",
+    "description": "Lặp lại việc chọn một trong hai thao tác: bỏ phần tử ngoài cùng bên trái hiện tại; hoặc thêm trọng lượng ngoài cùng bên trái hiện tại vào kết quả và loại nó cùng k phần tử đứng sau nó. Nếu sau nó còn ít hơn k phần tử thì loại hết, và phần tử hiện tại vẫn có thể được lấy. Các trọng lượng kết quả phải không tăng, và trong mọi kết quả khả thi, chọn kết quả lớn nhất theo thứ tự từ điển: tại vị trí khác đầu tiên, bên lớn hơn thắng, và khi một dãy là tiền tố của dãy kia thì dãy dài hơn thắng.\n\nĐề bài chuẩn hóa vào/ra, các ví dụ và lời giải được trang này tự biên soạn; những khoảng giá trị được ghi rõ là của trang này không phải ràng buộc gốc của nguồn.",
+    "input": "Dòng đầu chứa n k; dòng thứ hai chứa các trọng lượng. Văn bản gốc không có cận số; trang này dùng 1≤n≤200000, 0≤k≤10^9, 1≤trọng lượng≤10^9.",
+    "output": "In ra mảng kết quả, cách nhau bởi dấu cách.",
+    "explanation": "Các đáp án lần lượt là 5 3, 10 5 và 3. Trong ví dụ đầu tiên có thể bỏ bao nhiêu phần tử tiền tố tùy ý; bạn không bị giới hạn chỉ xét k+1 phần tử đầu.",
+    "hints": [
+      "Tính trước chỉ số sớm nhất của giá trị lớn nhất trong mỗi hậu tố. Mỗi vòng, lấy giá trị lớn nhất đó rồi tiếp tục từ chỉ số của nó cộng k+1."
+    ]
   }
 }

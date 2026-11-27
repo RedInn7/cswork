@@ -12,5 +12,38 @@
       "Every misplaced value must take part in at least one valid swap.",
       "The AND of all misplaced values is itself a value in the permutation's domain and can serve as the swap pivot."
     ]
+  },
+  "ja": {
+    "title": "ビット AND スワップによる最大のソート係数",
+    "description": "0 から n−1 までの順列 arr が与えられます。非負整数 k を 1 つ選び、(arr[i] & arr[j]) == k を満たす 2 要素の組だけをスワップできます。ここで & はビット AND を表し、k はソートの間ずっと固定です。順列がまだソートされていない場合、0,1,…,n−1 にソートできる最大の k を求めてください。本サイトの規定として、入力がすでにソート済みなら 0 を返します。これは固定された元の解説と、Python・Java・C++ の 3 つの実装が一貫して示す挙動に従った取り決めです。配列がソート済みのとき、スワップ 0 回はあらゆる非負の k で成立するため、元の問題を文字どおりに読むと有限の最大値は存在しません。0 を返すのは取り決めであり、数学的な最大値ではありません。",
+    "input": "1 行目に n、2 行目に n 個の整数 arr[i] が与えられます。1≤n≤100000 で、arr は 0 から n−1 までのちょうど順列です。標準入出力は本サイト独自のラッパーであり、元の制約はすべてそのまま保持しています。",
+    "output": "配列がまだソートされていない場合は、ソートを完了できる最大の非負整数 k を出力します。すでにソート済みの場合は、明示された取り決めに従い 0 を出力します。",
+    "explanation": "元の例 [0,3,2,1] では 3&1=1 であり、この 2 つの値をスワップすれば配列がソートされるため、答えは 1 です。2 つ目の例はすでにソート済みなので、取り決めにより 0 を出力します。3 つ目の例では値 0 が正しい位置になく、0 を含むスワップが必要なので、答えは 0 にしかなりえません。最後の 2 つの例は本サイトで追加したものです。",
+    "hints": [
+      "位置がずれているすべての値は、少なくとも 1 回は有効なスワップに参加しなければなりません。",
+      "位置がずれているすべての値の AND は、それ自体が順列の値域に含まれる値であり、スワップの軸として使えます。"
+    ]
+  },
+  "ko": {
+    "title": "비트 AND 교환으로 정렬하기 위한 최대 k",
+    "description": "0부터 n−1까지의 순열 arr가 주어집니다. 음이 아닌 정수 k를 하나 고른 뒤에는 (arr[i] & arr[j]) == k를 만족하는 두 원소만 서로 교환할 수 있습니다. 여기서 &는 비트 AND이며, k는 정렬하는 동안 고정됩니다. 순열이 아직 정렬되어 있지 않다면, 0,1,…,n−1 순서로 정렬할 수 있는 가장 큰 k를 구하세요. 이 사이트의 규칙은 다음과 같습니다. 입력이 이미 정렬되어 있으면 0을 반환합니다. 이 규칙은 고정된 원본 해설과 Python, Java, C++ 세 구현의 일관된 동작을 따른 것입니다. 배열이 이미 정렬되어 있으면 모든 음이 아닌 k에 대해 교환 0번이 유효하므로, 문자 그대로의 원문 문제에는 유한한 최댓값이 없습니다. 0을 반환하는 것은 수학적 최댓값이 아니라 관례입니다.",
+    "input": "첫째 줄에 n이 주어지고, 둘째 줄에 n개의 정수 arr[i]가 주어집니다. 1≤n≤100000이며, arr는 0부터 n−1까지의 순열입니다. 표준 입출력은 이 사이트의 래퍼이며 원래 제약 조건을 그대로 유지합니다.",
+    "output": "배열이 아직 정렬되어 있지 않다면 정렬을 완료할 수 있는 가장 큰 음이 아닌 정수 k를 출력합니다. 이미 정렬되어 있다면 명시된 관례에 따라 0을 출력합니다.",
+    "explanation": "원문 예제 [0,3,2,1]에서는 3&1=1이므로 이 두 값을 교환하면 정렬되어 답은 1입니다. 두 번째 예제는 이미 정렬되어 있으므로 관례에 따라 0을 출력합니다. 세 번째 예제에서는 값 0이 제자리에 있지 않으므로 0이 관여하는 교환이 필요하며, 답은 0뿐입니다. 마지막 두 예제는 이 사이트가 추가했습니다.",
+    "hints": [
+      "제자리에 있지 않은 모든 값은 유효한 교환에 적어도 한 번 참여해야 합니다.",
+      "제자리에 있지 않은 모든 값의 AND는 그 자체로 순열의 값 범위에 속하는 값이며, 교환의 기준점(pivot)으로 쓸 수 있습니다."
+    ]
+  },
+  "vi": {
+    "title": "Hệ số sắp xếp lớn nhất với hoán đổi theo AND bit",
+    "description": "Cho một hoán vị arr của các số từ 0 đến n−1. Sau khi chọn một số nguyên không âm k, bạn chỉ được hoán đổi hai phần tử thỏa mãn (arr[i] & arr[j]) == k, trong đó & là phép AND theo bit; k được giữ cố định trong suốt quá trình sắp xếp. Nếu hoán vị chưa được sắp xếp, hãy tìm k lớn nhất để có thể sắp xếp nó thành 0,1,…,n−1. Trang này quy ước: nếu đầu vào đã được sắp xếp thì trả về 0; quy ước này theo lời giải thích gốc cố định và hành vi nhất quán của ba bản cài đặt bằng Python, Java và C++. Khi mảng đã được sắp xếp, không cần hoán đổi nào nên mọi k không âm đều hợp lệ, do đó bài gốc theo nghĩa đen không có giá trị lớn nhất hữu hạn; trả về 0 chỉ là một quy ước, không phải giá trị lớn nhất theo toán học.",
+    "input": "Dòng đầu chứa n; dòng thứ hai chứa n số nguyên arr[i]. 1≤n≤100000, và arr đúng là một hoán vị của 0 đến n−1. Vào/ra chuẩn là phần bọc của trang này và giữ nguyên đầy đủ các ràng buộc gốc.",
+    "output": "Nếu mảng chưa được sắp xếp, in ra k không âm lớn nhất có thể hoàn tất việc sắp xếp; nếu đã được sắp xếp, in ra 0 theo quy ước đã nêu.",
+    "explanation": "Trong ví dụ gốc [0,3,2,1], 3&1=1, và hoán đổi hai giá trị này sẽ sắp xếp được mảng, nên đáp án là 1. Ví dụ thứ hai đã được sắp xếp, nên in ra 0 theo quy ước; ở ví dụ thứ ba, giá trị 0 đang nằm sai chỗ, nên cần một phép hoán đổi có liên quan đến 0 và đáp án chỉ có thể là 0. Hai ví dụ cuối do trang này bổ sung.",
+    "hints": [
+      "Mỗi giá trị nằm sai vị trí phải tham gia ít nhất một phép hoán đổi hợp lệ.",
+      "AND của tất cả các giá trị nằm sai vị trí bản thân nó cũng là một giá trị trong miền của hoán vị và có thể dùng làm điểm trụ để hoán đổi."
+    ]
   }
 }

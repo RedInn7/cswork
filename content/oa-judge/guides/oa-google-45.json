@@ -13,6 +13,21 @@
       "The number of chairs needed is the maximum number of guests present at the same time. Intervals are half-open [S, E): a guest leaving at time t has already freed the chair, and a guest arriving at the same moment can reuse it.",
       "Split each guest into two events: arrival +1 and departure -1. Sort by time, scan while accumulating the count, and record the maximum; at equal times departures must be processed before arrivals.",
       "Create 2n events (time, +-1) and sort them by (time, delta) ascending (so -1 naturally comes before +1); starting from 0, add the deltas in order and update the maximum after each one; print the maximum."
+    ],
+    "ja": [
+      "必要な椅子の数は、同時にいる客の最大人数です。区間は半開区間 [S, E) です。時刻 t に退出する客はすでに椅子を空けており、同じ時刻に到着する客はその椅子を再利用できます。",
+      "各客を 2 つのイベント、到着 +1 と退出 -1 に分けます。時刻でソートし、人数を累積しながら走査して最大値を記録します。同じ時刻では退出を到着より先に処理しなければなりません。",
+      "2n 個のイベント (time, +-1) を作り、(time, delta) の昇順でソートします（これで -1 が自然に +1 より先になります）。0 から始めて順に delta を加え、そのたびに最大値を更新し、最大値を出力します。"
+    ],
+    "ko": [
+      "필요한 의자 수는 같은 시각에 있는 손님 수의 최댓값입니다. 구간은 반열린 [S, E)입니다. 시각 t에 떠나는 손님은 이미 의자를 비웠으며, 같은 순간에 도착하는 손님이 그 의자를 재사용할 수 있습니다.",
+      "각 손님을 도착 +1, 퇴장 -1의 두 이벤트로 나눕니다. 시각 순으로 정렬한 뒤 스캔하며 인원을 누적하고 최댓값을 기록합니다. 시각이 같으면 퇴장을 도착보다 먼저 처리해야 합니다.",
+      "2n개의 이벤트 (time, +-1)를 만들어 (time, delta) 오름차순으로 정렬합니다(그러면 -1이 자연스럽게 +1보다 앞에 옵니다). 0에서 시작해 delta를 차례로 더하고 매번 최댓값을 갱신한 뒤, 최댓값을 출력합니다."
+    ],
+    "vi": [
+      "Số ghế cần thiết là số khách nhiều nhất có mặt cùng lúc. Các khoảng là nửa mở [S, E): khách rời đi tại thời điểm t đã trả ghế, và khách đến cùng thời điểm có thể dùng lại ghế đó.",
+      "Tách mỗi khách thành hai sự kiện: đến +1 và rời đi -1. Sắp xếp theo thời gian, quét và cộng dồn số đếm, ghi lại giá trị lớn nhất; tại cùng thời điểm phải xử lý rời đi trước đến.",
+      "Tạo 2n sự kiện (time, +-1) và sắp xếp tăng dần theo (time, delta) (nên -1 tự nhiên đứng trước +1); bắt đầu từ 0, cộng lần lượt các delta và cập nhật giá trị lớn nhất sau mỗi lần; in giá trị lớn nhất."
     ]
   },
   "explanationEn": "## Approach\n\nTurn each guest into the half-open interval [S[i], E[i]). An arrival event increases the number present by one and a departure event decreases it by one. Sort by time; at the same time, process departures before arrivals, and record the maximum count.\n\n## Correctness\n\nFor any time t, the half-open interval [S, E) covers t if and only if S <= t < E. At each time the event scan first removes all intervals with E = t and then adds all intervals with S = t, so the count after processing that time equals the number of intervals covering the instant just to its right; this is also the number present from that time until the next event. The count only changes at arrival or departure events, so the maximum seen in the scan is the maximum number present at any time, which is the number of chairs needed.\n\n## Complexity\n\nSorting the 2n events takes time O(n log n), space O(n).\n\n## Sources and site conventions\n\nThe original OAMaster problem only gives the arrival/departure definitions of S/E, with no constraints and no example. Fixed problem snapshot: https://oamaster.com/docs/companies/google#45-minimum-number-of-chairs; upstream commit `e66f809f4c953bce129f68491726176615db6afc`, Google page Git blob `300032c24800642c2ecedab9d930e86db3cdb54a`. A public page of the same problem gives exactly the same statement and example, and states clearly that a chair can be reused when one guest leaves and another arrives at the same time: https://leetcode.com/discuss/post/356520/google-oa-2019-min-number-of-chairs/. Another page of the same problem explicitly marks the attendance intervals as half-open: https://www.fastprep.io/problems/google-meeting-rooms-ii. This site explicitly adds n <= 200000 and the time range to make standard input/output judging convenient; these ranges are not attributed to the original problem."

@@ -13,6 +13,21 @@
       "If you move at every step, the positions are the triangular numbers 1, 3, 6, 10, ..., ending at T=steps·(steps+1)/2, which is the upper bound.",
       "If the forbidden index is not one of these positive triangular numbers, moving every step gives T; if it is, you must give up at least a little, so the answer is at most T−1. Skipping only the first step makes every later position a triangular number minus 1, and distinct positive triangular numbers differ by at least 2, so that forbidden triangular number is never hit.",
       "If the forbidden index is 0 the start itself is forbidden, so print -1; otherwise check whether some 1≤j≤steps has j(j+1)/2 equal to the forbidden index, and print T−1 if so, otherwise T."
+    ],
+    "ja": [
+      "毎ステップ動くと、位置は三角数 1, 3, 6, 10, ... となり、最終的に T=steps·(steps+1)/2 になります。これが上界です。",
+      "禁止インデックスがこれらの正の三角数のどれでもなければ、毎ステップ動いて T になります。そうである場合は少なくとも少し諦める必要があるので、答えは高々 T−1 です。最初のステップだけを飛ばすと、以降のすべての位置は三角数 −1 になります。異なる正の三角数は少なくとも 2 離れているので、その禁止された三角数に当たることはありません。",
+      "禁止インデックスが 0 なら開始地点自体が禁止なので -1 を出力します。そうでなければ、1≤j≤steps の j で j(j+1)/2 が禁止インデックスに等しいものがあるかを調べ、あれば T−1 を、なければ T を出力します。"
+    ],
+    "ko": [
+      "매 단계 이동하면 위치는 삼각수 1, 3, 6, 10, ...이 되고 T=steps·(steps+1)/2에서 끝나며, 이것이 상한입니다.",
+      "금지된 인덱스가 이러한 양의 삼각수 중 하나가 아니면 매 단계 이동하여 T를 얻습니다. 하나라면 적어도 조금은 포기해야 하므로 답은 최대 T−1입니다. 첫 단계만 건너뛰면 이후의 모든 위치는 삼각수에서 1을 뺀 값이 되고, 서로 다른 양의 삼각수는 최소 2 차이가 나므로 금지된 그 삼각수에는 닿지 않습니다.",
+      "금지된 인덱스가 0이면 시작 지점 자체가 금지이므로 -1을 출력합니다. 그렇지 않으면 1≤j≤steps인 어떤 j에 대해 j(j+1)/2가 금지된 인덱스와 같은지 확인하여, 같으면 T−1을, 아니면 T를 출력합니다."
+    ],
+    "vi": [
+      "Nếu tiến ở mọi bước, các vị trí là các số tam giác 1, 3, 6, 10, ..., kết thúc tại T=steps·(steps+1)/2, đây là cận trên.",
+      "Nếu chỉ số bị cấm không phải một trong các số tam giác dương này thì tiến mọi bước cho T; nếu là một trong số đó thì phải bỏ đi ít nhất một chút, nên đáp án nhiều nhất là T−1. Chỉ bỏ bước đầu tiên làm mọi vị trí về sau bằng một số tam giác trừ 1, và các số tam giác dương phân biệt cách nhau ít nhất 2, nên số tam giác bị cấm đó không bao giờ bị chạm.",
+      "Nếu chỉ số bị cấm là 0 thì điểm xuất phát bị cấm, in -1; ngược lại kiểm tra xem có 1≤j≤steps nào mà j(j+1)/2 bằng chỉ số bị cấm không, in T−1 nếu có, ngược lại in T."
     ]
   },
   "explanationEn": "## Approach\n\nMoving at every step ends at the triangular number T; if some positive triangular prefix is the forbidden point, skip the first step and the answer is T−1; otherwise it is T. A forbidden starting point returns -1 separately.\n\n## Proof of correctness\n\nWithout skipping, the position after each step is a triangular number, so if the forbidden point is never hit, the upper bound equal to the sum of all step lengths is reached. If it is hit, at least 1 must be given up, giving the upper bound T−1; after skipping the first step, every position after a forward step is a triangular number minus 1, and adjacent positive triangular numbers differ by at least 2, so such a position never equals that positive triangular forbidden point, and the bound is achievable.\n\n## Complexity\n\nTime O(steps), space O(1)."

@@ -11,5 +11,35 @@
     "hints": [
       "Sort effort in descending order and thresholds in ascending order, and use the centers with the smallest thresholds in turn: first pay for threshold items, then get the next two free, and record the savings. While an unused center remains, all leftover items can be paid for there; if the last center is used, it must take all leftover items, so its free items become the two globally smallest. Compare every prefix count of centers used, as well as using no offer at all."
     ]
+  },
+  "ja": {
+    "title": "各センターを最大1回だけ使う場合の最小梱包労力",
+    "description": "m 個のアイテムをそれぞれちょうど1回ずつ梱包しなければなりません。各センターは最大1回だけ使え、使わなくても構いません。センター i では、少なくとも packageCount[i] 個のアイテムの分を支払うと、さらに 2 個のアイテムが無料になります。この2つの無料アイテムの労力は、そのセンターで支払ったどのアイテムの労力も超えてはいけません。センターが与える無料枠はこの 2 個の1セットだけで、それ以外のアイテムはすべて支払う必要があります。特典を使わずに支払うだけでも構いませんし、しきい値に達しないまま支払うだけでも構いません。すべてのアイテムについて、支払う労力の合計の最小値を求めてください。\n\n標準入出力、例、解説は本サイトが独自に作成したものです。本サイト独自と明記した範囲は、出典の元の制約ではありません。",
+    "input": "1行目に m n、2行目に m 個の packEffort の値、3行目に n 個の packageCount の値が与えられます。元の制約は 1≤m,n≤100000、0≤packEffort[i]≤10000 です。元の問題文にはしきい値の数値上の制約がないため、本サイトで 1≤packageCount[i]≤10^9 を追加しています。しきい値≤m という条件は追加で課していません。",
+    "output": "答えとなる整数を1つ出力してください。",
+    "explanation": "答えは 19、9、0 です。1つ目の例では、唯一のセンターが4個すべてのアイテムを保持しなければならないため、無料にできるのは 8 と 1 だけです。10 を支払って 9 と 8 を無料にし、1 を存在しないセンターに残すことはできません。2つ目の例では、一方のセンターで 6 を支払って 5 と 4 を無料にし、もう一方で 3 を支払って 2 と 1 を無料にします。",
+    "hints": [
+      "労力を降順に、しきい値を昇順にソートし、しきい値の小さいセンターから順に使います。まずしきい値の個数分を支払い、続く 2 個を無料にして、節約額を記録します。未使用のセンターが残っている間は、残りのアイテムすべてをそこで支払えます。最後のセンターを使う場合は、そのセンターが残りのアイテムすべてを受け持たなければならないので、無料になるのは全体で最小の 2 個になります。使うセンター数のすべての接頭辞を、特典をまったく使わない場合とともに比較します。"
+    ]
+  },
+  "ko": {
+    "title": "센터를 최대 한 번만 사용할 때의 최소 포장 노력",
+    "description": "m개의 물품을 각각 정확히 한 번씩 포장해야 합니다. 각 센터는 최대 한 번만 사용할 수 있으며, 사용하지 않아도 됩니다. 센터 i에서 물품 packageCount[i]개 이상의 비용을 지불하면 물품 2개를 무료로 받을 수 있고, 무료로 받는 두 물품의 노력은 그 센터에서 지불한 어떤 물품의 노력보다도 클 수 없습니다. 한 센터는 이 무료 2개 한 세트만 제공하며, 나머지 물품은 모두 비용을 지불해야 합니다. 혜택을 받지 않고 지불만 해도 되고, 기준에 도달하지 않은 채 지불만 해도 됩니다. 모든 물품에 대해 지불하는 노력의 합의 최솟값을 구하세요.\n\n표준 입출력, 예제, 해설은 이 사이트에서 독자적으로 작성했습니다. 이 사이트가 직접 정했다고 표시된 범위는 원문의 제약 조건이 아닙니다.",
+    "input": "첫째 줄에 m n이, 둘째 줄에 m개의 packEffort 값이, 셋째 줄에 n개의 packageCount 값이 주어집니다. 원문의 범위는 1≤m,n≤100000, 0≤packEffort[i]≤10000입니다. 원문에는 기준값에 대한 수치 범위가 없으며, 이 사이트에서 1≤packageCount[i]≤10^9를 추가했고 기준값≤m이라는 조건은 따로 요구하지 않습니다.",
+    "output": "정답을 정수 하나로 출력합니다.",
+    "explanation": "정답은 각각 19, 9, 0입니다. 첫 번째 예제에서는 센터가 하나뿐이므로 4개의 물품을 모두 그 센터에서 처리해야 해서 8과 1만 무료가 될 수 있습니다. 10을 지불하고 9와 8을 무료로 받은 뒤 1을 존재하지 않는 센터에 남겨 둘 수는 없습니다. 두 번째 예제에서는 한 센터에서 6을 지불하고 5와 4를 무료로 받고, 다른 센터에서 3을 지불하고 2와 1을 무료로 받습니다.",
+    "hints": [
+      "노력을 내림차순으로, 기준값을 오름차순으로 정렬하고 기준값이 가장 작은 센터부터 차례로 사용합니다. 기준값만큼의 물품을 지불한 뒤 다음 두 개를 무료로 받고 절약한 양을 기록합니다. 사용하지 않은 센터가 남아 있는 동안에는 남은 물품을 모두 그곳에서 지불할 수 있습니다. 마지막 센터를 사용한다면 남은 물품을 전부 그 센터가 맡아야 하므로 그 센터의 무료 물품은 전체에서 가장 작은 두 개가 됩니다. 센터를 사용한 개수의 모든 접두사 경우와 혜택을 전혀 쓰지 않는 경우를 비교합니다."
+    ]
+  },
+  "vi": {
+    "title": "Công sức đóng gói tối thiểu khi mỗi trung tâm được dùng tối đa một lần",
+    "description": "Mỗi món trong m món hàng phải được đóng gói đúng một lần. Mỗi trung tâm được dùng tối đa một lần, hoặc không dùng. Tại trung tâm i, nếu trả công cho ít nhất packageCount[i] món thì được tặng thêm 2 món miễn phí, và công sức của mỗi món trong hai món miễn phí đó không được vượt quá công sức của bất kỳ món nào đã trả tại trung tâm ấy. Mỗi trung tâm chỉ cho đúng một bộ 2 món miễn phí này, và mọi món khác đều phải trả công. Bạn có thể trả công tại một trung tâm mà không nhận ưu đãi, và cũng có thể chỉ trả công mà không đạt ngưỡng. Hãy tìm tổng công sức phải trả tối thiểu cho tất cả các món.\n\nĐầu vào/đầu ra chuẩn, các ví dụ và phần lời giải do trang này tự viết; các khoảng giá trị được đánh dấu rõ là của trang này không phải ràng buộc gốc của đề.",
+    "input": "Dòng đầu chứa m n, dòng thứ hai chứa m giá trị packEffort, dòng thứ ba chứa n giá trị packageCount. Cận gốc là 1≤m,n≤100000, 0≤packEffort[i]≤10000. Đề gốc không cho cận số cho các ngưỡng; trang này bổ sung 1≤packageCount[i]≤10^9 và không yêu cầu thêm ngưỡng≤m.",
+    "output": "In ra một số nguyên duy nhất, là đáp án.",
+    "explanation": "Các đáp án lần lượt là 19, 9 và 0. Ở ví dụ đầu, trung tâm duy nhất phải chứa cả bốn món, nên chỉ 8 và 1 có thể miễn phí; bạn không thể trả 10, nhận 9 và 8 miễn phí, rồi để 1 ở một trung tâm không tồn tại. Ở ví dụ thứ hai, một trung tâm trả 6 để nhận 5 và 4 miễn phí, còn trung tâm kia trả 3 để nhận 2 và 1 miễn phí.",
+    "hints": [
+      "Sắp xếp công sức giảm dần và các ngưỡng tăng dần, rồi lần lượt dùng các trung tâm có ngưỡng nhỏ nhất: trước hết trả công cho số món bằng ngưỡng, sau đó nhận hai món kế tiếp miễn phí và ghi lại phần tiết kiệm. Chừng nào còn một trung tâm chưa dùng, mọi món còn lại đều có thể trả công tại đó; nếu trung tâm cuối cùng được dùng thì nó phải nhận toàn bộ các món còn lại, nên hai món miễn phí của nó trở thành hai món nhỏ nhất toàn cục. So sánh mọi số lượng trung tâm được dùng theo tiền tố, cũng như trường hợp không dùng ưu đãi nào."
+    ]
   }
 }

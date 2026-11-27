@@ -13,6 +13,21 @@
       "The condition depends only on the values, not on the index order, so sort first; after sorting, the values within m of a given value form one contiguous block.",
       "With the array sorted, use two pointers: for each right end, move left forward to the first position with values[right] - values[left] <= m; every element in [left, right) then pairs with right, giving right - left pairs, and each pair is counted only at its right end.",
       "Sort ascending with left = 0; for right from 0 to n-1, advance left while values[right] - values[left] > m, then add right - left to the answer. The answer can exceed 32 bits, so use a 64-bit integer."
+    ],
+    "ja": [
+      "条件は値だけに依存し、インデックスの順序には依存しないので、まずソートします。ソート後は、ある値から m 以内にある値は 1 つの連続したブロックを成します。",
+      "配列をソートしたうえで、尺取り法を使います。各右端について、values[right] - values[left] <= m となる最初の位置まで left を進めます。すると [left, right) のすべての要素が right とペアになるので right - left 個のペアが得られ、各ペアは右端でだけ数えられます。",
+      "昇順にソートし、left = 0 とします。right を 0 から n-1 まで動かしながら、values[right] - values[left] > m の間 left を進め、その後 right - left を答えに加えます。答えは 32 ビットを超えることがあるので、64 ビット整数を使います。"
+    ],
+    "ko": [
+      "조건은 값에만 달려 있고 인덱스 순서와는 무관하므로 먼저 정렬하세요. 정렬하면 어떤 값에서 m 이내인 값들은 하나의 연속된 블록을 이룹니다.",
+      "배열이 정렬되어 있으면 투 포인터를 씁니다. 각 오른쪽 끝에 대해 values[right] - values[left] <= m인 첫 위치까지 left를 앞으로 옮기면, [left, right)의 모든 원소가 right와 쌍이 되어 right - left개의 쌍이 나오며, 각 쌍은 자신의 오른쪽 끝에서만 한 번 세어집니다.",
+      "오름차순으로 정렬하고 left = 0으로 둡니다. right를 0부터 n-1까지 돌면서 values[right] - values[left] > m인 동안 left를 전진시킨 뒤 right - left를 답에 더합니다. 답은 32비트를 넘을 수 있으므로 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Điều kiện chỉ phụ thuộc vào giá trị, không phụ thuộc vào thứ tự chỉ số, nên hãy sắp xếp trước; sau khi sắp xếp, các giá trị trong phạm vi m của một giá trị cho trước tạo thành một khối liên tiếp.",
+      "Với mảng đã sắp xếp, dùng hai con trỏ: với mỗi đầu phải, dịch left về phía trước đến vị trí đầu tiên có values[right] - values[left] <= m; mọi phần tử trong [left, right) khi đó ghép được với right, cho right - left cặp, và mỗi cặp chỉ được đếm tại đầu phải của nó.",
+      "Sắp xếp tăng dần với left = 0; với right từ 0 đến n-1, tăng left trong khi values[right] - values[left] > m, rồi cộng right - left vào đáp án. Đáp án có thể vượt 32 bit, nên dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nSort the loads and use a left pointer to maintain the range of loads within m of the current right end. For each right end, add right-left pairs.\n\n## Why it works\n\nAfter sorting, the right end differs by at most m from every item in [left,right), and every item further left is invalid. Therefore right-left is exactly the number of valid pairs in which the current item is the right index, and each pair is counted only once, at its right end.\n\n## Complexity\n\nTime O(n log n), extra space O(n) (the sorted array)."

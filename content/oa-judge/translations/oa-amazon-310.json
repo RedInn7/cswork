@@ -11,5 +11,35 @@
     "hints": [
       "For each product, build a bitmask of up to T bits marking the transactions it appears in. Deduplicate each transaction and enumerate its distinct product pairs; the bit_count of the bitwise AND of the two mask values gives the exact frequency. Track only the current highest frequency and the lexicographically smallest pair, without storing a full pair table."
     ]
+  },
+  "ja": {
+    "title": "最も多くの取引で同時に現れる商品ペア",
+    "description": "1つの取引の中で商品名が重複することがありますが、異なる2商品のペアは取引ごとに1回だけ数えます。ペアは順序なしで、まず2つの名前を辞書順に並べ替えます。最も多くの取引で同時に現れる商品ペアを求めてください。同数の場合は、辞書順で最小の名前のペアを選びます。異なる商品のペアがまったく存在しない場合は、本サイトのプロトコルに従って −1 を出力します。\n\n標準入出力、例、解説は本サイトが独自に作成したものです。本サイト独自と明記した範囲は、出典の元の制約ではありません。",
+    "input": "1行目に取引の数 T が与えられ、続いて取引ごとに1行ずつ、k とそれに続く k 個の商品名が与えられます。元の制約は 1≤T≤1000、取引ごとに 1≤k≤100 で、名前は大文字のアルファベットからなります。元の問題文には名前の長さの上限がないため、本サイトで 1≤長さ≤100 を追加しています。全体での異なる商品の総数に制限はなく、異なる商品が 100000 個あってもよいものとします。",
+    "output": "2つの名前を辞書順の小さい方から先に、空白区切りで出力してください。異なる商品のペアが存在しない場合は −1 を出力します。",
+    "explanation": "答えは A B、A B、−1 です。2つ目の例では3つのペアすべての頻度が 1 なので、2つの名前の順序付きタプルとして辞書順で比較します。",
+    "hints": [
+      "各商品について、最大 T ビットのビットマスクを作り、その商品が現れる取引にビットを立てます。各取引の重複を除いて、異なる商品ペアを列挙し、2つのマスク値のビット AND の bit_count から正確な頻度を求めます。ペアの全表は保持せず、現時点で最も高い頻度と辞書順で最小のペアだけを追跡します。"
+    ]
+  },
+  "ko": {
+    "title": "가장 많은 거래에 함께 등장하는 상품 쌍",
+    "description": "한 거래 안에서 상품 이름이 중복될 수 있지만, 서로 다른 두 상품의 쌍은 거래당 한 번만 셉니다. 쌍은 순서가 없으며, 먼저 두 이름을 사전순으로 정렬합니다. 가장 많은 거래에 함께 등장하는 상품 쌍을 구하세요. 동률이면 사전순으로 가장 작은 이름 쌍을 택합니다. 서로 다른 상품의 쌍이 아예 없으면 이 사이트의 규약에 따라 −1을 출력합니다.\n\n표준 입출력, 예제, 해설은 이 사이트에서 독자적으로 작성했습니다. 이 사이트가 직접 정했다고 표시된 범위는 원문의 제약 조건이 아닙니다.",
+    "input": "첫째 줄에 거래 수 T가 주어지고, 이어서 거래마다 한 줄에 k와 k개의 상품 이름이 주어집니다. 원문의 범위는 1≤T≤1000이고 거래당 1≤k≤100이며, 이름은 대문자로 이루어집니다. 원문에는 이름 길이의 제한이 없으며, 이 사이트에서 1≤길이≤100을 추가했습니다. 전체 서로 다른 상품의 총수는 제한되지 않으며 서로 다른 상품 100000개까지 허용됩니다.",
+    "output": "두 이름을 사전순으로 작은 것부터 공백으로 구분해 출력합니다. 서로 다른 상품의 쌍이 없으면 −1을 출력합니다.",
+    "explanation": "정답은 각각 A B, A B, −1입니다. 두 번째 예제에서는 세 쌍의 빈도가 모두 1이므로 두 이름의 순서 있는 튜플로 사전순 비교를 합니다.",
+    "hints": [
+      "각 상품마다 그 상품이 등장하는 거래를 표시하는 최대 T비트의 비트마스크를 만듭니다. 각 거래에서 중복을 제거하고 서로 다른 상품 쌍을 열거하며, 두 마스크 값의 비트 AND에 대한 bit_count가 정확한 빈도입니다. 전체 쌍 표를 저장하지 않고 현재 최고 빈도와 사전순으로 가장 작은 쌍만 추적합니다."
+    ]
+  },
+  "vi": {
+    "title": "Cặp sản phẩm xuất hiện cùng nhau trong nhiều giao dịch nhất",
+    "description": "Tên sản phẩm có thể lặp lại trong một giao dịch, nhưng một cặp hai sản phẩm khác nhau chỉ được tính một lần cho mỗi giao dịch. Các cặp không có thứ tự: trước tiên sắp xếp hai tên theo thứ tự từ điển. Hãy tìm cặp sản phẩm xuất hiện cùng nhau trong nhiều giao dịch nhất; nếu hòa, chọn cặp tên nhỏ nhất theo thứ tự từ điển. Nếu hoàn toàn không có cặp hai sản phẩm khác nhau nào, in −1 theo giao thức của trang này.\n\nĐầu vào/đầu ra chuẩn, các ví dụ và phần lời giải do trang này tự viết; các khoảng giá trị được đánh dấu rõ là của trang này không phải ràng buộc gốc của đề.",
+    "input": "Dòng đầu chứa số giao dịch T, tiếp theo là mỗi giao dịch một dòng: k rồi k tên sản phẩm. Cận gốc là 1≤T≤1000 và 1≤k≤100 cho mỗi giao dịch, tên gồm các chữ cái in hoa. Đề gốc không cho cận độ dài tên; trang này bổ sung 1≤độ dài≤100. Tổng số sản phẩm phân biệt không bị giới hạn, và cho phép 100000 sản phẩm phân biệt.",
+    "output": "In ra hai tên theo thứ tự từ điển, tên nhỏ hơn trước, cách nhau một dấu cách; nếu không có cặp sản phẩm khác nhau nào, in −1.",
+    "explanation": "Các đáp án lần lượt là A B, A B và −1. Ở ví dụ thứ hai, cả ba cặp đều có tần suất 1, nên chúng được so sánh theo thứ tự từ điển như các bộ có thứ tự gồm hai tên.",
+    "hints": [
+      "Với mỗi sản phẩm, xây một bitmask tối đa T bit đánh dấu các giao dịch mà nó xuất hiện. Loại trùng trong mỗi giao dịch và duyệt các cặp sản phẩm khác nhau của nó; bit_count của phép AND bit giữa hai giá trị mask cho tần suất chính xác. Chỉ theo dõi tần suất cao nhất hiện tại và cặp nhỏ nhất theo thứ tự từ điển, không cần lưu bảng đầy đủ các cặp."
+    ]
   }
 }

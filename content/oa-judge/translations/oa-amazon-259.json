@@ -11,5 +11,35 @@
     "hints": [
       "Sort by end time, with dp recording the best value over the first several intervals. For the current interval, binary search the prefix whose end times are strictly less than its start, and take the maximum of skipping it and appending it after that prefix."
     ]
+  },
+  "ja": {
+    "title": "互いに重ならない閉区間の重み和の最大値",
+    "description": "区間 i は閉区間 [start[i],start[i]+duration[i]] で、利益は cost[i] です。互いに重ならない区間を選び、利益の合計を最大化してください。端点を共有する場合も重なりとみなし、何も選ばないこともできます。この閉区間の規則は、元の例（[2,4] と [4,7] は両立せず、答えは 9）から復元したものです。\n\n標準入出力、例、解説は本サイトが独自に作成したものです。本サイトのものと明記された範囲は、元の問題の制約ではありません。",
+    "input": "1 行目に n、続く 3 行に start、duration、cost が与えられます。元の文章には数値の範囲がなかったため、本サイトでは 1≤n≤200000、0≤各値≤10^9 とします。duration=0 は 1 点だけの区間を意味します。",
+    "output": "答えを表す整数を 1 つ出力してください。",
+    "explanation": "答えは 9、7、9 です。2 つ目の例では、区間は 1 で交わるので、両方を選ぶことはできません。3 つ目の例では、同じ位置にある 2 点のうち利益 5 のものを選び、次に利益 4 の位置 2 を選びます。",
+    "hints": [
+      "終了時刻でソートし、dp に最初のいくつかの区間での最良値を記録します。現在の区間について、終了時刻がその開始より真に小さい接頭辞を二分探索で求め、その区間を飛ばす場合と、その接頭辞の後に追加する場合の最大値を取ります。"
+    ]
+  },
+  "ko": {
+    "title": "서로 겹치지 않는 닫힌 구간의 최대 가중치 합",
+    "description": "구간 i는 닫힌 구간 [start[i],start[i]+duration[i]]이고 이익은 cost[i]입니다. 서로 겹치지 않는 구간들을 골라 총이익을 최대화하세요. 끝점을 공유하는 것도 겹치는 것으로 취급하며, 아무것도 고르지 않아도 됩니다. 이 닫힌 구간 규칙은 원문 예제에서 복원한 것으로, 예제에서 [2,4]와 [4,7]은 함께 고를 수 없고 정답은 9입니다.\n\n표준 입출력, 예제, 해설은 이 사이트에서 독립적으로 작성했으며, 이 사이트 기준이라고 명시한 범위는 원문의 원래 제약 조건이 아닙니다.",
+    "input": "첫째 줄에 n이 주어지고, 이어서 start, duration, cost의 세 줄이 주어집니다. 원문에는 수치 범위가 없었으며, 이 사이트에서는 1≤n≤200000, 0≤각 값≤10^9로 설정했습니다. duration=0이면 한 점으로 이루어진 구간입니다.",
+    "output": "정답을 나타내는 정수 하나를 출력합니다.",
+    "explanation": "정답은 9, 7, 9입니다. 두 번째 예제에서는 구간들이 1에서 교차하므로 둘을 함께 고를 수 없습니다. 세 번째 예제에서는 같은 위치의 두 점 중 이익이 5인 것을 고르고, 이어서 위치 2의 이익 4를 고릅니다.",
+    "hints": [
+      "종료 시각 순으로 정렬하고, dp에 앞쪽 몇 개 구간에 대한 최적값을 기록합니다. 현재 구간에 대해 종료 시각이 그 시작보다 엄격히 작은 접두사를 이분 탐색으로 찾고, 현재 구간을 건너뛰는 경우와 그 접두사 뒤에 붙이는 경우 중 최댓값을 취합니다."
+    ]
+  },
+  "vi": {
+    "title": "Tổng trọng số lớn nhất của các đoạn đóng đôi một không chồng nhau",
+    "description": "Đoạn i là đoạn đóng [start[i],start[i]+duration[i]] với lợi nhuận cost[i]. Chọn các đoạn đôi một không chồng nhau để tối đa hóa tổng lợi nhuận; có chung đầu mút cũng được tính là chồng nhau, và được phép không chọn gì. Quy ước đoạn đóng này được khôi phục từ ví dụ của nguồn, trong đó [2,4] và [4,7] không tương thích và đáp án là 9.\n\nĐề bài chuẩn hóa vào/ra, các ví dụ và lời giải được trang này tự biên soạn; những khoảng giá trị được ghi rõ là của trang này không phải ràng buộc gốc của nguồn.",
+    "input": "Dòng đầu chứa n, tiếp theo là ba dòng: start, duration và cost. Văn bản gốc không có cận số; trang này dùng 1≤n≤200000, 0≤mỗi giá trị≤10^9; duration=0 nghĩa là đoạn chỉ gồm một điểm.",
+    "output": "In ra một số nguyên duy nhất, là đáp án.",
+    "explanation": "Các đáp án lần lượt là 9, 7 và 9. Trong ví dụ thứ hai, các đoạn giao nhau tại 1 nên không thể chọn cả hai; trong ví dụ thứ ba, trong hai điểm cùng vị trí chọn điểm có lợi nhuận 5, rồi chọn vị trí 2 có lợi nhuận 4.",
+    "hints": [
+      "Sắp xếp theo thời điểm kết thúc, với dp ghi giá trị tốt nhất của một số đoạn đầu. Với đoạn hiện tại, tìm kiếm nhị phân tiền tố có thời điểm kết thúc nhỏ hơn hoàn toàn thời điểm bắt đầu của nó, rồi lấy giá trị lớn hơn giữa việc bỏ nó và việc nối nó sau tiền tố đó."
+    ]
   }
 }

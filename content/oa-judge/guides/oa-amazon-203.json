@@ -13,6 +13,21 @@
       "The common count with multiplicity depends only on letter frequencies: each letter contributes the smaller of its two frequencies.",
       "n is only 1000, so enumerate every pair of indices directly; with each string's 26 letter frequencies precomputed, a pair needs just 26 comparisons.",
       "Precompute each string's letter frequencies; loop over j < i, skipping pairs whose length difference is not larger than the current answer; add up the smaller frequencies and stop early once the sum exceeds K; update the answer for valid pairs. Start the answer at -1 and print -1 if no pair is valid."
+    ],
+    "ja": [
+      "多重度を考慮した共通数は文字の出現頻度だけで決まり、各文字は 2 つの頻度のうち小さい方を寄与します。",
+      "n は 1000 しかないので、添字のペアをそのまま全列挙できます。各文字列の 26 文字分の頻度を前計算しておけば、1 ペアあたり 26 回の比較で済みます。",
+      "各文字列の文字頻度を前計算します。j < i のペアを走査し、長さの差が現在の答え以下であるペアは飛ばします。小さい方の頻度を足していき、合計が K を超えたら早期に打ち切ります。有効なペアなら答えを更新します。答えは -1 から始め、有効なペアがなければ -1 を出力します。"
+    ],
+    "ko": [
+      "중복을 포함한 공통 개수는 알파벳 빈도에만 의존합니다. 각 알파벳은 두 빈도 중 작은 값을 기여합니다.",
+      "n이 1000뿐이므로 모든 인덱스 쌍을 직접 열거해도 됩니다. 각 문자열의 26개 알파벳 빈도를 미리 계산해 두면 한 쌍에 비교는 26번이면 충분합니다.",
+      "각 문자열의 알파벳 빈도를 미리 계산하고, j < i인 모든 쌍을 순회하되 길이 차이가 현재 답보다 크지 않은 쌍은 건너뜁니다. 작은 빈도들을 더하다가 합이 K를 넘으면 즉시 중단하고, 유효한 쌍이면 답을 갱신합니다. 답을 -1로 시작하며 유효한 쌍이 없으면 -1을 출력합니다."
+    ],
+    "vi": [
+      "Số ký tự chung tính cả bội chỉ phụ thuộc vào tần suất các chữ cái: mỗi chữ cái đóng góp giá trị nhỏ hơn trong hai tần suất của nó.",
+      "n chỉ là 1000, nên có thể duyệt trực tiếp mọi cặp chỉ số; với tần suất 26 chữ cái của mỗi xâu được tính trước, một cặp chỉ cần 26 phép so sánh.",
+      "Tính trước tần suất chữ cái của mỗi xâu; lặp j < i, bỏ qua các cặp có hiệu độ dài không lớn hơn đáp án hiện tại; cộng các tần suất nhỏ hơn và dừng sớm khi tổng vượt quá K; cập nhật đáp án cho các cặp hợp lệ. Bắt đầu đáp án ở -1 và in -1 nếu không có cặp nào hợp lệ."
     ]
   },
   "explanationEn": "## Approach\n\nPrecompute the 26 letter frequencies of every string, enumerate pairs of different strings, and update the largest length difference whenever the common multiplicity qualifies.\n\n## Proof of correctness\n\nEach letter can be matched at most as many times as the smaller of its frequencies in the two strings, and different letters are independent, so the sum of the smaller frequencies is exactly the number of common features. Enumerating every pair of different indices covers all choices, the largest qualifying value is taken, and when no valid pair is found the answer is -1 per this site's convention.\n\n## Complexity\n\nTime O(total characters + 26n^2), space O(26n)."

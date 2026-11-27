@@ -11,5 +11,35 @@
     "hints": [
       "Only the letters that occur an odd number of times need to keep one copy each. After filtering out the other letters, use a monotonic stack to pick the lexicographically smallest subsequence with no repeated letters."
     ]
+  },
+  "ja": {
+    "title": "同じ文字のペアを取り除いた後の最小の文字列",
+    "description": "1回の操作で、同じ文字を任意に2つ削除できます。それらは隣り合っている必要はなく、残った文字は相対的な順序を保ちます。まず長さを最小にし、その長さの文字列の中で辞書順で最小のものを求めてください。元のサイトの例には、誤った文字を削除しているものがあったため、本サイトでは、この明示した定義のもとで再計算しました。\n\n入力の形式、当サイトが追加した範囲、例、テストは、すべて CSWork が独自に作成したものです。",
+    "input": "英大文字 1..100000 文字からなる1行。",
+    "output": "最終的な文字列を出力します。空の場合は、空行を出力します。",
+    "explanation": "例 1: C の出現回数は偶数で、完全に削除されますが、B、A、X はそれぞれ1つ残ります。順序を保った最小の結果は BAX です。\n\n例 2: Z、Y、X、V はすべて出現回数が奇数で、可能な最小の部分列は XYZV です。\n\n例 3: A と B はそれぞれ 3 回、C と D はそれぞれ 2 回現れます。最短の結果は AB で、元のサイトが示した空文字列ではありません。",
+    "hints": [
+      "出現回数が奇数の文字だけが、それぞれ1つずつ残る必要があります。それ以外の文字を取り除いた後、単調スタックを使って、重複のない辞書順最小の部分列を選びます。"
+    ]
+  },
+  "ko": {
+    "title": "같은 글자 쌍을 지운 뒤 가장 작은 문자열",
+    "description": "한 번의 연산에서는 같은 글자 두 개를 임의로 지울 수 있으며, 서로 인접할 필요는 없고 남은 문자들은 상대적 순서를 유지합니다. 먼저 길이를 최소화하고, 그 길이의 문자열 중에서 사전순으로 가장 작은 것을 구하세요. 원 사이트의 일부 예제는 잘못된 문자를 지웠으므로, 본 사이트는 이 명시적인 정의 아래에서 다시 계산했습니다.\n\n입력 형식, 본 사이트에서 추가한 범위, 예제, 테스트는 CSWork가 독립적으로 작성했습니다.",
+    "input": "1..100000개의 영문 대문자로 이루어진 한 줄입니다.",
+    "output": "최종 문자열을 출력합니다. 비어 있으면 빈 줄을 출력합니다.",
+    "explanation": "예제 1: C의 빈도는 짝수여서 완전히 지워지고, B, A, X는 각각 한 번씩 남습니다. 순서를 유지하는 가장 작은 결과는 BAX입니다.\n\n예제 2: Z, Y, X, V의 빈도는 모두 홀수이며, 가능한 가장 작은 부분 수열은 XYZV입니다.\n\n예제 3: A와 B는 각각 3번, C와 D는 각각 2번 나타나므로, 가장 짧은 결과는 AB이며 원 사이트가 제시한 빈 문자열이 아닙니다.",
+    "hints": [
+      "홀수 번 나타나는 글자만 하나씩 남기면 됩니다. 나머지 글자를 걸러낸 뒤, 단조 스택으로 글자가 반복되지 않는 사전순 최소 부분 수열을 고릅니다."
+    ]
+  },
+  "vi": {
+    "title": "Xâu nhỏ nhất sau khi xóa các cặp chữ cái giống nhau",
+    "description": "Mỗi thao tác có thể xóa hai chữ cái giống nhau bất kỳ, không cần kề nhau; các ký tự còn lại giữ nguyên thứ tự tương đối. Trước hết cực tiểu hóa độ dài, sau đó tìm xâu nhỏ nhất theo thứ tự từ điển trong số các xâu có độ dài đó. Một số ví dụ của trang gốc xóa nhầm ký tự; trang này đã tính lại theo định nghĩa rõ ràng này.\n\nGiao thức đầu vào, các phạm vi do trang này bổ sung, các ví dụ và bộ test đều do CSWork tự viết độc lập.",
+    "input": "Một dòng gồm 1..100000 chữ cái tiếng Anh viết hoa.",
+    "output": "In xâu cuối cùng; nếu rỗng thì in một dòng trống.",
+    "explanation": "Ví dụ 1: C có tần suất chẵn và bị xóa hoàn toàn, còn B, A và X mỗi chữ được giữ một lần; kết quả nhỏ nhất giữ nguyên thứ tự là BAX.\n\nVí dụ 2: Z, Y, X và V đều có tần suất lẻ, và dãy con khả thi nhỏ nhất là XYZV.\n\nVí dụ 3: A và B mỗi chữ xuất hiện 3 lần còn C và D mỗi chữ xuất hiện 2 lần; kết quả ngắn nhất là AB, không phải xâu rỗng như trang gốc đưa ra.",
+    "hints": [
+      "Chỉ những chữ cái xuất hiện một số lẻ lần mới cần giữ lại mỗi chữ một bản. Sau khi lọc bỏ các chữ cái còn lại, dùng ngăn xếp đơn điệu để chọn dãy con nhỏ nhất theo thứ tự từ điển không có chữ cái lặp."
+    ]
   }
 }

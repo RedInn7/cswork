@@ -13,6 +13,21 @@
       "The string is already a palindrome. Removing the center character usually keeps the symmetry; the key is what happens to the mirrored pairs when some other position is removed.",
       "After removing a position, every character between it and the center has to match with a shift of one, which forces all of them to be equal all the way to the center; so only positions inside the block of equal characters covering the center can be removed.",
       "Take the center character s[(n-1)/2], set left = (n-1)/2 and right = n/2, and extend left and right while the neighbors equal the center character; the answer is the block length right - left + 1."
+    ],
+    "ja": [
+      "文字列はすでに回文です。中央の文字を取り除くと、たいていは対称性が保たれます。重要なのは、他の位置を取り除いたときに対になる文字がどうなるかです。",
+      "ある位置を取り除くと、その位置から中央までのすべての文字は 1 つずれて対応することになり、中央に至るまですべての文字が等しいことが必要になります。したがって、取り除けるのは、中央を覆う同じ文字のブロックの内側の位置だけです。",
+      "中央の文字 s[(n-1)/2] を取り、left = (n-1)/2、right = n/2 とします。隣の文字が中央の文字に等しい間、left と right を外側へ伸ばします。答えはブロックの長さ right - left + 1 です。"
+    ],
+    "ko": [
+      "문자열은 이미 팰린드롬입니다. 중앙 문자를 제거하면 대개 대칭이 유지됩니다. 핵심은 다른 위치를 제거할 때 서로 대응하던 쌍이 어떻게 되는지입니다.",
+      "한 위치를 제거하면 그 위치와 중앙 사이의 모든 문자가 한 칸씩 어긋난 채로 짝을 맞춰야 하며, 이는 중앙까지의 모든 문자가 서로 같을 것을 강제합니다. 따라서 중앙을 덮는 같은 문자 블록 안의 위치만 제거할 수 있습니다.",
+      "중앙 문자 s[(n-1)/2]를 잡고 left = (n-1)/2, right = n/2로 둡니다. 이웃 문자가 중앙 문자와 같은 동안 left와 right를 확장합니다. 답은 블록의 길이 right - left + 1입니다."
+    ],
+    "vi": [
+      "Xâu vốn đã là palindrome. Xóa ký tự ở tâm thường giữ được tính đối xứng; điều quan trọng là chuyện gì xảy ra với các cặp đối xứng khi một vị trí khác bị xóa.",
+      "Sau khi xóa một vị trí, mọi ký tự nằm giữa nó và tâm phải được ghép với độ lệch một vị trí, điều này buộc tất cả chúng phải bằng nhau cho đến tận tâm; vì vậy chỉ các vị trí nằm trong khối ký tự giống nhau bao phủ tâm mới có thể bị xóa.",
+      "Lấy ký tự tâm s[(n-1)/2], đặt left = (n-1)/2 và right = n/2, rồi mở rộng left và right chừng nào các ký tự kề bên còn bằng ký tự tâm; đáp án là độ dài khối right - left + 1."
     ]
   },
   "explanationEn": "## Approach\n\nFind the block of consecutive equal characters that contains the center of the string; the answer is its length.\n\n## Proof of correctness\n\nRemoving any position inside the central block of equal characters keeps every pair of mirrored characters matching. If a position outside the block is removed, then because the original string is a palindrome, the alignment shifts from the removed position toward the center, which requires all characters along the way, up to the center, to be equal; that would force the removed position to belong to the central block as well, a contradiction.\n\n## Complexity\n\nO(n) time and O(1) space."

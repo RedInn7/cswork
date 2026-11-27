@@ -11,5 +11,35 @@
     "hints": [
       "Everything outside the window stays the same, so you only need to compare from both ends of the window toward the middle; if, at the first differing pair, the right character is smaller than the left one, the reversal succeeds."
     ]
+  },
+  "ja": {
+    "title": "固定長の窓を反転すると文字列が小さくなる場合の個数",
+    "description": "長さ k の連続する窓を1つずつ反転し、文字列全体が元の文字列より真に小さくなる窓の位置の個数を数えてください。異なる位置にある同じテキストは別々に数えます。反転しても何も変わらない窓は数えません。\n\n本サイトでは標準入出力と解説を独自にまとめています。出典で欠けている制約の補足やサンプルの訂正は、プロトコル中に明記しています。",
+    "input": "入力は JSON 配列 [s,k] です。元の制約は 2≤コードポイント数≤1000000、1≤k≤min(length,20) です。元の問題文は文字集合を制限していません。本サイトでは Unicode スカラ値の文字とし、コードポイント順の辞書順を採用し、空白、NUL、BMP 外の文字、Unicode の区切り文字を許し、JSON エンコードでは元の文字をそのまま保持します。",
+    "output": "答えとなる整数を1つ出力してください。",
+    "explanation": "3つの公開サンプルの出力は 1、2、1 です。独立した全探索または直接シミュレーションで確認済みです。",
+    "hints": [
+      "窓の外側は変わらないので、窓の両端から中央へ向かって比較するだけで十分です。最初に異なるペアで、右の文字が左の文字より小さければ、その反転は成功です。"
+    ]
+  },
+  "ko": {
+    "title": "고정 길이 구간을 뒤집어 문자열이 더 작아지는 경우의 수",
+    "description": "길이 k인 각 연속 구간을 한 번에 하나씩 뒤집어 보고, 뒤집은 전체 문자열이 원래 문자열보다 엄격하게 작아지는 구간 위치의 개수를 세십시오. 서로 다른 위치에 있는 같은 텍스트는 각각 셉니다. 뒤집어도 변하지 않는 구간은 세지 않습니다.\n\n이 사이트에서 표준 입출력과 해설을 독자적으로 정리했으며, 출처에 빠진 범위의 보완과 예제의 정정 사항은 프로토콜에 명시했습니다.",
+    "input": "입력은 JSON 배열 [s,k]입니다. 원문의 범위: 2≤코드 포인트 길이≤1000000, 1≤k≤min(길이,20). 원문은 문자 집합을 제한하지 않으며, 이 사이트에서는 유니코드 스칼라 문자와 코드 포인트 기준 사전순을 지정하고, 공백, NUL, BMP 밖 문자, 유니코드 구분 문자를 허용하며 JSON 인코딩에서 원래 문자를 유지합니다.",
+    "output": "정수 하나, 즉 답을 출력합니다.",
+    "explanation": "공개 예제 3개의 출력은 각각 1, 2, 1이며, 독립적인 전수 조사 또는 직접 시뮬레이션으로 확인했습니다.",
+    "hints": [
+      "구간 밖은 그대로이므로 구간의 양 끝에서 가운데로 비교해 가면 됩니다. 처음으로 다른 쌍에서 오른쪽 문자가 왼쪽 문자보다 작으면 뒤집기가 성공입니다."
+    ]
+  },
+  "vi": {
+    "title": "Số lần đảo cửa sổ độ dài cố định làm xâu nhỏ đi",
+    "description": "Lần lượt đảo ngược từng cửa sổ liên tiếp độ dài k, và đếm các vị trí cửa sổ mà sau khi đảo, toàn bộ xâu nhỏ hơn hẳn xâu ban đầu. Cùng một đoạn văn bản ở các vị trí khác nhau được đếm riêng; các cửa sổ mà phép đảo không thay đổi gì thì không được đếm.\n\nTrang này tự biên soạn phần đầu vào/đầu ra chuẩn và lời giải; những giới hạn gốc còn thiếu và các chỗ sửa lại ví dụ đều được nêu rõ trong đặc tả.",
+    "input": "Đầu vào là một mảng JSON [s,k]. Giới hạn gốc: 2≤độ dài tính theo code point≤1000000, 1≤k≤min(độ dài,20). Đề gốc không hạn chế bộ ký tự; trang này quy định các ký tự Unicode scalar và thứ tự từ điển theo code point, cho phép khoảng trắng, NUL, ký tự ngoài BMP và ký tự phân tách Unicode, và giữ nguyên các ký tự gốc trong mã hóa JSON.",
+    "output": "In ra một số nguyên duy nhất, là đáp án.",
+    "explanation": "Đầu ra của ba ví dụ công khai lần lượt là 1; 2; và 1, đã được kiểm tra bằng liệt kê độc lập hoặc mô phỏng trực tiếp.",
+    "hints": [
+      "Mọi thứ ngoài cửa sổ giữ nguyên, nên bạn chỉ cần so sánh từ hai đầu cửa sổ vào giữa; nếu ở cặp khác nhau đầu tiên, ký tự bên phải nhỏ hơn ký tự bên trái thì phép đảo thành công."
+    ]
   }
 }

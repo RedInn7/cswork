@@ -13,6 +13,21 @@
       "If k batches are possible, their sizes can always be changed to 1, 2, ..., k, so k batches need at least k(k+1)/2 items; at the same time each batch takes at most one item per category, which limits how much a very large category can help.",
       "Sort the quantities ascending and add the categories one at a time, keeping the running total of items; with g batches so far, one more batch is possible as soon as the total reaches (g+1)(g+2)/2. Each new category raises the batch count by at most one, and that cap is exactly what handles the one-item-per-category rule.",
       "Sort the quantities ascending, with total = 0 and groups = 0; for each quantity v add v to total, and if total >= (groups+1)(groups+2)/2 increase groups by one. Print groups at the end. The total can be large, so use 64-bit integers."
+    ],
+    "ja": [
+      "k 個のバッチが可能なら、その大きさは常に 1, 2, ..., k に変えられるので、k 個のバッチには少なくとも k(k+1)/2 個の品物が必要です。同時に、各バッチはカテゴリごとに高々 1 個しか取れないので、非常に大きなカテゴリが役に立つ量には限りがあります。",
+      "数量を昇順にソートし、カテゴリを 1 つずつ加えながら、品物の累計を保持します。これまでに g 個のバッチがあるとき、累計が (g+1)(g+2)/2 に達した時点で、もう 1 つバッチが可能になります。新しいカテゴリでバッチ数が増えるのは高々 1 で、この上限がまさにカテゴリごとに 1 個という規則を処理します。",
+      "数量を昇順にソートし、total = 0、groups = 0 とします。各数量 v について total に v を加え、total >= (groups+1)(groups+2)/2 なら groups を 1 増やします。最後に groups を出力します。合計は大きくなりうるので、64 ビット整数を使ってください。"
+    ],
+    "ko": [
+      "k개의 배치가 가능하다면 그 크기를 항상 1, 2, ..., k로 바꿀 수 있으므로 k개의 배치에는 최소 k(k+1)/2개의 물품이 필요합니다. 동시에 각 배치는 종류당 최대 하나만 가져가므로, 수량이 매우 큰 종류가 도움이 되는 정도에는 한계가 있습니다.",
+      "수량을 오름차순으로 정렬하고 종류를 하나씩 추가하면서 물품의 누적 합계를 유지합니다. 지금까지 g개의 배치가 있다면, 합계가 (g+1)(g+2)/2에 도달하는 즉시 배치를 하나 더 만들 수 있습니다. 새 종류는 배치 수를 최대 하나만 올리며, 이 상한이 종류당 한 개라는 규칙을 정확히 처리합니다.",
+      "수량을 오름차순으로 정렬하고 total = 0, groups = 0으로 둡니다. 각 수량 v에 대해 v를 total에 더하고, total >= (groups+1)(groups+2)/2이면 groups를 하나 늘립니다. 마지막에 groups를 출력합니다. 합계가 커질 수 있으므로 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Nếu có thể lập k lô thì kích thước của chúng luôn có thể đổi thành 1, 2, ..., k, nên k lô cần ít nhất k(k+1)/2 món; đồng thời mỗi lô lấy tối đa một món mỗi loại, điều này giới hạn mức đóng góp của một loại rất lớn.",
+      "Sắp xếp các số lượng tăng dần và thêm từng loại một, giữ tổng số món đang có; với g lô cho đến lúc này, có thể lập thêm một lô ngay khi tổng đạt (g+1)(g+2)/2. Mỗi loại mới làm tăng số lô nhiều nhất một, và chính giới hạn đó xử lý quy tắc mỗi loại một món.",
+      "Sắp xếp các số lượng tăng dần, với total = 0 và groups = 0; với mỗi số lượng v, cộng v vào total, và nếu total >= (groups+1)(groups+2)/2 thì tăng groups thêm một. Cuối cùng in groups. Tổng có thể lớn, nên dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nProcess the quantities in ascending order, accumulating the available items. If the triangular total demand of the next batch can be paid, add 1 batch; each added category increases the number of batches by at most 1.\n\n## Proof of correctness\n\nIf k batches are feasible, the batch sizes can be shrunk to 1..k. For this staircase demand, the matching condition on category capacities is: for every t<=k, the truncated capacity sum sum(min(a_i,t)) is at least t(2k-t+1)/2, the requirement of the last t batches. When capacities are scanned in ascending order, the optimal batch count of the processed categories increases by at most 1; the new capacity is no less than the previous ones, so apart from the total-item condition the truncated conditions are guaranteed by the previous round's feasibility and the sorting. Therefore one more batch is possible exactly when the cumulative item count reaches (k+1)(k+2)/2, and impossible otherwise.\n\n## Complexity\n\nTime O(n log n), space O(n)."

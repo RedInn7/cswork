@@ -13,6 +13,21 @@
       "Events of different users are never merged, and one user's sessions depend only on whether the gap between consecutive events, in time order, exceeds t.",
       "Sort all events by (user, time), so each user's events become contiguous and increasing in time. Every session corresponds to its first event, so it is enough to count the positions where a new session starts.",
       "After sorting, scan from the start: the first event, an event whose user differs from the previous one, or an event of the same user whose time exceeds the previous one by more than t each start a new session and add one to the count; times reach 10^12, so use 64-bit integers; print the count."
+    ],
+    "ja": [
+      "異なるユーザーのイベントが統合されることはなく、1 人のユーザーのセッションは、時刻順に連続するイベントの間隔が t を超えるかどうかだけで決まります。",
+      "すべてのイベントを (user, time) でソートすると、各ユーザーのイベントが連続し、時刻が増加する順に並びます。各セッションは最初のイベントに対応するので、新しいセッションが始まる位置を数えるだけで十分です。",
+      "ソート後、先頭から走査します。最初のイベント、直前とユーザーが異なるイベント、同じユーザーで時刻が直前より t を超えて後のイベントは、それぞれ新しいセッションを始めるので、カウントに 1 を加えます。時刻は 10^12 に達するので、64 ビット整数を使います。カウントを出力します。"
+    ],
+    "ko": [
+      "서로 다른 사용자의 이벤트는 합쳐지지 않으며, 한 사용자의 세션은 시간순으로 연속한 이벤트의 간격이 t를 넘는지에만 의존합니다.",
+      "모든 이벤트를 (사용자, 시간)으로 정렬하면 각 사용자의 이벤트가 연속하고 시간 순으로 증가합니다. 모든 세션은 그 첫 이벤트에 대응하므로, 새 세션이 시작되는 위치를 세면 충분합니다.",
+      "정렬한 뒤 처음부터 훑습니다. 첫 이벤트, 이전과 사용자가 다른 이벤트, 같은 사용자이면서 시간이 이전보다 t를 넘게 큰 이벤트는 각각 새 세션을 시작하므로 개수를 1 늘립니다. 시간이 10^12까지 가므로 64비트 정수를 사용하고 개수를 출력합니다."
+    ],
+    "vi": [
+      "Các sự kiện của những người dùng khác nhau không bao giờ bị gộp, và các phiên của một người dùng chỉ phụ thuộc vào việc khoảng cách giữa các sự kiện liên tiếp, theo thứ tự thời gian, có vượt quá t hay không.",
+      "Sắp xếp mọi sự kiện theo (user, time), để các sự kiện của mỗi người dùng nằm liền nhau và tăng dần theo thời gian. Mỗi phiên tương ứng với sự kiện đầu tiên của nó, nên chỉ cần đếm các vị trí bắt đầu một phiên mới.",
+      "Sau khi sắp xếp, duyệt từ đầu: sự kiện đầu tiên, một sự kiện có người dùng khác với sự kiện trước, hoặc một sự kiện của cùng người dùng có thời gian vượt sự kiện trước quá t, mỗi loại bắt đầu một phiên mới và cộng thêm một vào số đếm; thời gian lên đến 10^12, nên dùng số nguyên 64 bit; in số đếm."
     ]
   },
   "explanationEn": "## Approach\n\nSort by user and time, and count the positions where the user changes or where the gap to the previous event is greater than t.\n\n## Proof of correctness\n\nAfter sorting a user's events, a gap greater than t splits sessions, and the remaining adjacent events link into exactly the maximal consecutive runs; the first event of each run contributes 1. The first events of different users are counted separately.\n\n## Complexity\n\nTime O(n log n), space O(n)."

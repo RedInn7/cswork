@@ -13,6 +13,21 @@
       "If any one employee is busy at a moment, the meeting cannot be held then, so the unavailable time is simply the union of all employees' busy intervals, regardless of who is busy.",
       "Put all busy intervals together, sort them by start and merge them into disjoint blocks; then, starting from minute 0, check the gaps between consecutive busy blocks in order. The start of the first gap of length at least length is the answer.",
       "Intervals are half-open [start, finish), so merge only when a start is <= the current block's end, and a meeting may begin exactly at the minute a block ends. Keep current as the latest end seen so far: if the next block's start minus current is >= length, output current. After all blocks, output current if current + length <= 1440, otherwise -1."
+    ],
+    "ja": [
+      "従業員の誰か 1 人でもその時刻に予定が埋まっていれば、ミーティングは開催できません。つまり、使えない時間は、誰が忙しいかにかかわらず、全従業員の予定の区間の和集合です。",
+      "すべての予定の区間をまとめて開始時刻でソートし、互いに素なブロックにマージします。そして分 0 から、連続する予定ブロックの間の隙間を順に調べます。長さが length 以上である最初の隙間の始まりが答えです。",
+      "区間は半開区間 [start, finish) なので、start が現在のブロックの終端 <= のときだけマージし、ミーティングはブロックが終わるちょうどその分に開始できます。これまでに見た最も遅い終端を current として保持し、次のブロックの start から current を引いた値が length 以上なら current を出力します。すべてのブロックの後は、current + length <= 1440 なら current を、そうでなければ -1 を出力します。"
+    ],
+    "ko": [
+      "어떤 직원이든 한 명이라도 그 시각에 바쁘면 회의를 열 수 없으므로, 불가능한 시간은 누가 바쁜지와 상관없이 모든 직원의 바쁜 구간의 합집합입니다.",
+      "모든 바쁜 구간을 한데 모아 시작 시각 기준으로 정렬하고 서로소인 블록으로 병합하세요. 그런 다음 0분부터 시작하여 연속한 바쁜 블록 사이의 빈틈을 순서대로 확인합니다. 길이가 length 이상인 첫 빈틈의 시작이 답입니다.",
+      "구간이 반개구간 [start, finish)이므로, start가 현재 블록의 끝 <= 일 때만 병합하며, 회의는 블록이 끝나는 바로 그 분에 시작할 수 있습니다. current를 지금까지 본 가장 늦은 끝으로 유지하세요. 다음 블록의 시작에서 current를 뺀 값이 >= length이면 current를 출력합니다. 모든 블록을 본 뒤에는 current + length <= 1440이면 current를, 아니면 -1을 출력합니다."
+    ],
+    "vi": [
+      "Nếu bất kỳ một nhân viên nào bận vào một thời điểm thì không thể họp lúc đó, nên thời gian không khả dụng đơn giản là hợp của mọi khoảng bận của tất cả nhân viên, bất kể ai bận.",
+      "Gộp mọi khoảng bận lại, sắp xếp theo điểm bắt đầu và gộp thành các khối rời nhau; sau đó, bắt đầu từ phút 0, lần lượt kiểm tra các khoảng trống giữa các khối bận liên tiếp. Điểm bắt đầu của khoảng trống đầu tiên có độ dài ít nhất length là đáp án.",
+      "Các khoảng là nửa mở [start, finish), nên chỉ gộp khi một start <= điểm cuối của khối hiện tại, và cuộc họp có thể bắt đầu đúng vào phút mà một khối kết thúc. Giữ current là điểm cuối muộn nhất đã thấy cho đến lúc này: nếu start của khối kế tiếp trừ current >= length thì in current. Sau tất cả các khối, in current nếu current + length <= 1440, ngược lại -1."
     ]
   },
   "explanationEn": "## Approach\n\nMerge all employees' busy intervals into one global union, sort by start time, and scan the free gaps starting from minute 0. The start of the first gap whose length is at least length is the earliest answer. With half-open intervals a meeting may start in the same minute a busy interval ends.\n\n## Correctness\n\nWhenever any employee is busy, the new meeting cannot be scheduled, so the union of all busy periods is exactly the unavailable time. After merging, check the gaps between adjacent unavailable blocks in increasing time; the start of the first long-enough gap is no later than any later feasible interval, and the gap itself satisfies the feasibility condition. Finally the end-of-day boundary must also be checked.\n\n## Complexity\n\nThere are at most 10000 intervals: sorting takes O(M log M) time and O(M) space."

@@ -13,6 +13,21 @@
       "Whether a string qualifies (both its first and last characters are vowels) depends only on that string, so each string can first be marked 0 or 1.",
       "Each query asks for the number of 1s in a contiguous index range, which is a prefix-sum job: let pre[i] be the number of qualifying strings among the first i, then the answer for [l, r] is pre[r] - pre[l-1].",
       "Read the strings one by one, mark a string 1 when both its first and last characters are in aeiou (a single vowel character counts), and accumulate the prefix-sum array; each query has the form l-r, so split it at the hyphen and print pre[r] - pre[l-1]; separate all answers with spaces."
+    ],
+    "ja": [
+      "文字列が条件を満たすか（最初と最後の文字がどちらも母音か）は、その文字列だけで決まるので、まず各文字列に 0 または 1 の印を付けられます。",
+      "各クエリは、連続するインデックス範囲にある 1 の個数を求めるものなので、累積和の問題です。pre[i] を最初の i 個のうち条件を満たす文字列の数とすると、[l, r] の答えは pre[r] - pre[l-1] です。",
+      "文字列を 1 つずつ読み、最初と最後の文字がどちらも aeiou に含まれるなら 1 の印を付けます（1 文字の母音も含みます）。累積和の配列を作ります。各クエリは l-r の形式なのでハイフンで分割し、pre[r] - pre[l-1] を出力します。すべての答えは空白で区切ります。"
+    ],
+    "ko": [
+      "문자열이 조건(첫 문자와 마지막 문자가 모두 모음)을 만족하는지는 그 문자열에만 의존하므로, 먼저 각 문자열을 0 또는 1로 표시할 수 있습니다.",
+      "각 질의는 연속된 인덱스 구간의 1의 개수를 묻는 것이므로 누적 합 문제입니다. pre[i]를 처음 i개 중 조건을 만족하는 문자열의 수라고 하면 [l, r]의 답은 pre[r] - pre[l-1]입니다.",
+      "문자열을 하나씩 읽으면서 첫 문자와 마지막 문자가 모두 aeiou에 속하면 1로 표시하고(모음 한 글자도 해당) 누적 합 배열을 만듭니다. 각 질의는 l-r 형태이므로 하이픈에서 나누어 pre[r] - pre[l-1]을 출력하며, 모든 답은 공백으로 구분합니다."
+    ],
+    "vi": [
+      "Việc một xâu có thỏa mãn hay không (cả ký tự đầu và ký tự cuối đều là nguyên âm) chỉ phụ thuộc vào chính xâu đó, nên mỗi xâu có thể được đánh dấu trước là 0 hoặc 1.",
+      "Mỗi truy vấn hỏi số lượng số 1 trong một đoạn chỉ số liên tiếp, đây là việc của tổng tiền tố: đặt pre[i] là số xâu thỏa mãn trong i xâu đầu, khi đó đáp án cho [l, r] là pre[r] - pre[l-1].",
+      "Đọc lần lượt từng xâu, đánh dấu xâu là 1 khi cả ký tự đầu và ký tự cuối đều thuộc aeiou (một ký tự nguyên âm đơn cũng tính), và tích lũy mảng tổng tiền tố; mỗi truy vấn có dạng l-r, nên tách tại dấu gạch nối và in pre[r] - pre[l-1]; phân tách mọi đáp án bằng dấu cách."
     ]
   },
   "explanationEn": "## Approach\n\nMark each string with 0/1, build prefix sums, and answer each query with a difference over the range.\n\n## Proof of correctness\n\nThe mark of a single string is equivalent to the definition; subtracting the prefix count before l from the prefix count up to r leaves exactly the qualifying items in the closed range.\n\n## Complexity\n\nTime O(total input characters + q), space O(n+q)."

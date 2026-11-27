@@ -13,6 +13,21 @@
       "What is counted is the number of integer moments covered by at least one interval, that is, the size of the union of all closed intervals; overlaps count only once.",
       "After sorting by start, overlapping intervals chain into blocks. Keep the left and right end of the current merged block: if the next interval starts no later than the current right end, merge it; otherwise the current block is final and can be settled.",
       "Sort by (start, end); initialize left and right from the first interval; for each following interval, if start > right add right - left + 1 to the answer and restart from that interval, otherwise set right to max(right, end); finally add right - left + 1 for the last block."
+    ],
+    "ja": [
+      "数えるのは、少なくとも1つの区間に覆われる整数の時刻の個数、つまりすべての閉区間の和集合の大きさです。重なっている部分は1回しか数えません。",
+      "start でソートすると、重なる区間は連なってブロックになります。現在併合中のブロックの左端と右端を保持します。次の区間の開始が現在の右端以前なら併合し、そうでなければ現在のブロックは確定して精算できます。",
+      "(start, end) でソートし、最初の区間で left と right を初期化します。以降の各区間について、start > right なら right - left + 1 を答えに加えてその区間から再開し、そうでなければ right を max(right, end) に更新します。最後のブロックの right - left + 1 を最後に加えます。"
+    ],
+    "ko": [
+      "세는 대상은 적어도 하나의 구간에 덮이는 정수 시각의 수, 즉 모든 닫힌 구간의 합집합의 크기입니다. 겹치는 부분은 한 번만 셉니다.",
+      "start로 정렬하면 겹치는 구간들이 연쇄적으로 하나의 블록이 됩니다. 현재 병합된 블록의 왼쪽과 오른쪽 끝을 유지합니다. 다음 구간의 시작이 현재 오른쪽 끝보다 늦지 않으면 병합하고, 그렇지 않으면 현재 블록이 확정되어 정산할 수 있습니다.",
+      "(start, end)로 정렬합니다. 첫 구간으로 left와 right를 초기화하고, 이후 각 구간에 대해 start > right이면 답에 right - left + 1을 더하고 그 구간에서 다시 시작하며, 아니면 right를 max(right, end)로 갱신합니다. 마지막에 마지막 블록의 right - left + 1을 더합니다."
+    ],
+    "vi": [
+      "Cái cần đếm là số thời điểm nguyên được ít nhất một khoảng phủ, tức là kích thước của hợp mọi khoảng đóng; phần chồng nhau chỉ được tính một lần.",
+      "Sau khi sắp xếp theo start, các khoảng chồng nhau nối thành từng khối. Giữ đầu mút trái và phải của khối đã gộp hiện tại: nếu khoảng tiếp theo bắt đầu không muộn hơn đầu mút phải hiện tại thì gộp vào; ngược lại khối hiện tại đã xong và có thể chốt.",
+      "Sắp xếp theo (start, end); khởi tạo left và right từ khoảng đầu tiên; với mỗi khoảng tiếp theo, nếu start > right thì cộng right - left + 1 vào đáp án và bắt đầu lại từ khoảng đó, ngược lại đặt right bằng max(right, end); cuối cùng cộng right - left + 1 cho khối cuối."
     ]
   },
   "explanationEn": "## Approach\n\nSort the intervals by left end and maintain the current merged interval; when a new interval does not intersect it, settle the length of the old block, otherwise extend the right end.\n\n## Proof of correctness\n\nAfter sorting by start, if a new interval starts after the current right end, no later interval can fill anything back into the old block either, so it can be settled for good. When they intersect, replace the block with the union of the two intervals. Induction shows that the settled blocks are pairwise disjoint and, together with the current block, cover exactly the processed intervals, so the final total is the size of the union.\n\n## Complexity\n\nTime O(n log n), space O(n)."

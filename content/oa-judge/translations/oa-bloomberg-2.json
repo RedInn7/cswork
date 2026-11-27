@@ -11,5 +11,35 @@
     "hints": [
       "Use a bitmask to determine whether the digits of each number from 1 up to the largest right endpoint repeat, building prefix counts at the same time; the answer for an interval is pre[m]−pre[n−1]."
     ]
+  },
+  "ja": {
+    "title": "範囲内で桁の重複がない整数",
+    "description": "各閉区間 [n,m] について、10 進表記のすべての桁が互いに異なる正の整数の個数を数えてください。0 も桁の 1 つであり、2 回現れると重複として扱います。先頭に 0 を補うことはしません。\n\n入力と出力の形式はこのサイトが用意したものです。",
+    "input": "このサイトの簡略化された入力プロトコル: 1 行目に q が与えられ、続く q 行にそれぞれ 2 つの整数 n m が与えられます (元の関数ラッパーの固定の列数 2 は省略されています)。1≤q≤100000、1≤n≤m≤1000000。",
+    "output": "クエリの順に、1 行に 1 つずつ個数を出力してください。",
+    "explanation": "1 から 20 までで無効なのは 11 だけで、答えは 19 です。98 から 102 までで有効なのは 98 と 102 だけです。単一の点 10 と 123 はどちらも有効ですが、100 は 0 が重複するので無効です。",
+    "hints": [
+      "ビットマスクを使って、1 から最大の右端までの各数の桁が重複するかどうかを判定し、同時に prefix count を作ります。区間の答えは pre[m]−pre[n−1] です。"
+    ]
+  },
+  "ko": {
+    "title": "구간 내 숫자가 중복되지 않는 정수의 개수",
+    "description": "각 닫힌 구간 [n,m]에 대해, 십진 표기의 모든 숫자가 서로 다른 양의 정수의 개수를 세세요. 0도 숫자이며 두 번 나타나면 중복입니다. 앞에 0을 붙이지 않습니다.\n\n입력과 출력 형식은 이 사이트에서 준비했습니다.",
+    "input": "이 사이트의 단순화된 입력 규약입니다. 첫 번째 줄에 q가 주어지고, 이어서 q개의 줄에 각각 두 정수 n m이 주어집니다(원본 함수 래퍼의 고정 열 수 2는 생략되었습니다). 1≤q≤100000, 1≤n≤m≤1000000.",
+    "output": "질의 순서대로 한 줄에 개수 하나씩 출력합니다.",
+    "explanation": "1부터 20까지는 11만 조건을 만족하지 않아 19개입니다. 98부터 102까지는 98과 102만 유효합니다. 단일 값 10과 123은 모두 유효하고, 100은 0이 반복되므로 유효하지 않습니다.",
+    "hints": [
+      "1부터 가장 큰 오른쪽 끝점까지 각 수의 숫자가 중복되는지 비트마스크로 판정하면서 동시에 누적 개수를 만듭니다. 구간의 답은 pre[m]−pre[n−1]입니다."
+    ]
+  },
+  "vi": {
+    "title": "Số nguyên không có chữ số lặp trong một khoảng",
+    "description": "Với mỗi đoạn đóng [n,m], đếm các số nguyên dương mà biểu diễn thập phân có mọi chữ số đôi một khác nhau. 0 cũng là một chữ số, và xuất hiện hai lần được tính là lặp; không thêm số 0 ở đầu.\n\nĐịnh dạng nhập và xuất do trang này chuẩn bị.",
+    "input": "Giao thức đầu vào đơn giản hóa của trang này: dòng đầu chứa q, tiếp theo là q dòng mỗi dòng có hai số nguyên n m (số cột cố định 2 của wrapper hàm gốc được bỏ qua). 1≤q≤100000, 1≤n≤m≤1000000.",
+    "output": "In ra mỗi số đếm trên một dòng, theo thứ tự truy vấn.",
+    "explanation": "Từ 1 đến 20 chỉ có 11 không hợp lệ, cho 19; từ 98 đến 102 chỉ có 98 và 102 hợp lệ; các điểm đơn 10 và 123 đều hợp lệ, trong khi 100 không hợp lệ vì 0 lặp lại.",
+    "hints": [
+      "Dùng bitmask để xác định các chữ số của mỗi số từ 1 tới điểm cuối phải lớn nhất có lặp hay không, đồng thời xây các số đếm tiền tố; đáp án của một đoạn là pre[m]−pre[n−1]."
+    ]
   }
 }

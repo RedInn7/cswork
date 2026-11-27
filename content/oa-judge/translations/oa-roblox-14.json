@@ -13,5 +13,41 @@
       "Use the lexicographically smallest of all rotations of the digit string as the representative.",
       "Use a hash table to count how many times each representative appears."
     ]
+  },
+  "ja": {
+    "title": "Roblox OA #14：巡回シフトのペア",
+    "description": "巡回シフトとは、数（10 進数）の末尾のいくつかの桁を先頭に移し、残りの桁を元の順序のまま後ろへずらす操作です。桁数が同じ 2 つの整数 a と b について、a が（0 桁以上の）巡回シフトによって b になれるなら、a と b は巡回ペアをなします。\n\n正の整数の配列 a が与えられます。0≤i<j<n を満たす添字の組 (i,j) のうち、a[i] と a[j] の桁数が同じで、a[i] が a[j] のある巡回シフトに等しいものの個数を数えてください。",
+    "input": "1 行目に n、2 行目に n 個の正の整数 a[0..n−1] が与えられます。1≤n≤100000、1≤a[i]≤10^9。",
+    "output": "巡回ペアの個数を整数 1 つで出力してください。",
+    "explanation": "例 1：a=[13,5604,31,2,13,4560,546,654,456] の巡回ペアは (0,2)、(0,4)、(2,4)（13 と 31）、(1,5)（5604 と 4560）、(6,7)（546 と 654）の計 5 組です。546 とペアになれるのは 546、465、654 だけなので、456 とは巡回ペアをなしません。4560 と 456 は桁数が異なります。\n例 2：[10,1,100,10] では、2 つの 10 だけがペアをなします。\n例 3：123、231、312 はどの 2 つも互いの巡回シフトであり、計 3 組です。",
+    "hints": [
+      "巡回シフトの関係は同値関係です。",
+      "桁の文字列のすべての回転のうち、辞書順で最小のものを代表元に使ってください。",
+      "各代表元が何回現れたかを、ハッシュテーブルで数えてください。"
+    ]
+  },
+  "ko": {
+    "title": "Roblox OA #14: 순환 이동 쌍",
+    "description": "순환 이동(cyclic shift)은 (십진수로 쓴) 수의 뒤쪽 몇 자리를 앞으로 옮기고, 나머지 자리는 원래 순서대로 뒤로 미는 연산입니다. 자릿수가 같은 두 정수 a와 b에 대해, a가 0자리 이상의 순환 이동으로 b가 될 수 있으면 a와 b는 순환 쌍입니다.\n\n양의 정수 배열 a가 주어질 때, 0≤i<j<n이면서 a[i]와 a[j]의 자릿수가 같고 a[i]가 a[j]의 어떤 순환 이동과 같은 인덱스 쌍 (i,j)의 개수를 세세요.",
+    "input": "첫 줄에 n이, 둘째 줄에 n개의 양의 정수 a[0..n−1]이 주어집니다. 1≤n≤100000, 1≤a[i]≤10^9.",
+    "output": "정수 하나를 출력합니다. 순환 쌍의 개수입니다.",
+    "explanation": "예제 1: a=[13,5604,31,2,13,4560,546,654,456]에서 순환 쌍은 (0,2), (0,4), (2,4)(13과 31), (1,5)(5604와 4560), (6,7)(546과 654)로 모두 5쌍입니다. 546은 546, 465, 654하고만 짝이 될 수 있으므로 456과는 순환 쌍이 아니며, 4560과 456은 자릿수가 다릅니다.\n예제 2: [10,1,100,10]에서는 두 10만 쌍을 이룹니다.\n예제 3: 123, 231, 312는 서로 순환 이동 관계이므로 모두 3쌍입니다.",
+    "hints": [
+      "순환 이동 관계는 동치 관계입니다.",
+      "모든 회전 중 사전식으로 가장 작은 숫자 문자열을 대표로 사용하세요.",
+      "해시 테이블로 각 대표가 몇 번 나타나는지 세세요."
+    ]
+  },
+  "vi": {
+    "title": "Roblox OA #14: Các cặp dịch vòng",
+    "description": "Một phép dịch vòng chuyển một số chữ số cuối của một số (ở hệ thập phân) lên đầu, các chữ số còn lại dịch về sau theo thứ tự ban đầu. Với hai số nguyên a và b có cùng số chữ số, nếu a có thể trở thành b qua một phép dịch vòng (dịch 0 chữ số trở lên) thì a và b tạo thành một cặp dịch vòng.\n\nCho một mảng a gồm các số nguyên dương, hãy đếm các cặp chỉ số (i,j) với 0≤i<j<n sao cho a[i] và a[j] có cùng số chữ số và a[i] bằng một phép dịch vòng nào đó của a[j].",
+    "input": "Dòng đầu chứa n; dòng thứ hai chứa n số nguyên dương a[0..n−1]. 1≤n≤100000, 1≤a[i]≤10^9.",
+    "output": "In ra một số nguyên: số cặp dịch vòng.",
+    "explanation": "Ví dụ 1: a=[13,5604,31,2,13,4560,546,654,456]; các cặp dịch vòng là (0,2), (0,4), (2,4) (13 và 31), (1,5) (5604 và 4560), và (6,7) (546 và 654), tổng cộng 5 cặp. 546 chỉ có thể ghép với 546, 465, 654, nên không tạo thành cặp dịch vòng với 456; 4560 và 456 có số chữ số khác nhau.\nVí dụ 2: trong [10,1,100,10], chỉ hai số 10 tạo thành một cặp.\nVí dụ 3: 123, 231, 312 là dịch vòng của nhau từng đôi một, tổng cộng 3 cặp.",
+    "hints": [
+      "Quan hệ dịch vòng là một quan hệ tương đương.",
+      "Dùng phép quay có thứ tự từ điển nhỏ nhất của xâu chữ số làm đại diện.",
+      "Dùng bảng băm để đếm mỗi đại diện xuất hiện bao nhiêu lần."
+    ]
   }
 }

@@ -13,6 +13,21 @@
       "A way is determined only by which column and which word each target character uses. Within a column there are as many choices as words having the needed letter there, so first count each letter's frequency in every column.",
       "Run a DP over columns from left to right: dp[j] is the number of ways to have built the first j characters of target. For each column, every way either skips it or uses it for the next character.",
       "dp[0] = 1; for each column i, go j from min(i+1, |target|) down to 1: add dp[j-1] * freq[i][target[j-1]] to dp[j] modulo 10^9+7; the reverse order ensures a column is used at most once. The answer is dp[|target|]."
+    ],
+    "ja": [
+      "方法は、target の各文字がどの列のどの単語を使うかだけで決まります。1 つの列の中では、必要な文字をその列に持つ単語の数だけ選択肢があるので、まず各列の各文字の出現回数を数えます。",
+      "列を左から右へ DP します。dp[j] は target の先頭 j 文字を作る方法の数です。各列について、どの方法もその列を使わないか、次の文字のために使うかのどちらかです。",
+      "dp[0] = 1 とし、各列 i について j を min(i+1, |target|) から 1 まで降順に回し、dp[j] に dp[j-1] * freq[i][target[j-1]] を 10^9+7 で割った余りで加えます。降順にすることで、1 つの列が高々 1 回しか使われません。答えは dp[|target|] です。"
+    ],
+    "ko": [
+      "하나의 방법은 target의 각 문자가 어느 열과 어느 단어를 쓰는지만으로 결정됩니다. 한 열 안에서 선택지의 수는 그 열에 필요한 글자를 가진 단어의 수와 같으므로, 먼저 각 열의 글자별 빈도를 셉니다.",
+      "열을 왼쪽에서 오른쪽으로 훑는 DP를 수행합니다. dp[j]는 target의 앞 j글자를 만든 방법의 수입니다. 각 열에 대해 모든 방법은 그 열을 건너뛰거나 다음 글자를 위해 사용합니다.",
+      "dp[0] = 1로 두고, 각 열 i마다 j를 min(i+1, |target|)에서 1까지 내려가며 dp[j]에 dp[j-1] * freq[i][target[j-1]]을 10^9+7로 나눈 나머지로 더합니다. 역순으로 처리하면 한 열이 최대 한 번만 쓰입니다. 답은 dp[|target|]입니다."
+    ],
+    "vi": [
+      "Một cách chỉ được xác định bởi cột nào và từ nào mà mỗi ký tự của target dùng. Trong một cột, số lựa chọn bằng số từ có chữ cái cần thiết ở đó, nên trước hết đếm tần suất của mỗi chữ cái trong từng cột.",
+      "Chạy DP qua các cột từ trái sang phải: dp[j] là số cách đã tạo j ký tự đầu của target. Với mỗi cột, mỗi cách hoặc bỏ qua cột đó hoặc dùng nó cho ký tự kế tiếp.",
+      "dp[0] = 1; với mỗi cột i, cho j chạy từ min(i+1, |target|) xuống 1: cộng dp[j-1] * freq[i][target[j-1]] vào dp[j] theo modulo 10^9+7; thứ tự ngược đảm bảo mỗi cột chỉ được dùng nhiều nhất một lần. Đáp án là dp[|target|]."
     ]
   },
   "explanationEn": "## Approach\n\nCount the frequency of each letter in every column, scan column by column, and update the number of ways for each prefix of target in reverse order.\n\n## Correctness\n\nFor the current column, each way either does not use it or uses it for the next character of the target. The latter comes from the old prefix count multiplied by the frequency of the needed target letter in the current column. The reverse order prevents using the same column twice, so every way with strictly increasing columns is generated exactly once.\n\n## Complexity\n\nTime O(total word length + number of columns × target length), space O(26 × number of columns + target length)."

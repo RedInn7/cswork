@@ -11,5 +11,35 @@
     "hints": [
       "The reference solution greedily puts as many words as possible on each line; ordinary non-final lines split spaces evenly using the quotient and remainder, while final or single-word lines compute left and right centering spaces. Other valid line breaks are equally correct."
     ]
+  },
+  "ja": {
+    "title": "任意の正しい改行を許す星枠付き段落レイアウト",
+    "description": "各段落の単語を順番どおりにテキストボックスへ配置します。単語を分割したり、段落をまたいだりしてはいけません。各行の内容の幅は width です。段落の最終行ではなく、かつ単語が複数ある行は両端揃え（均等割り付け）にします。空白は均等に配分し、余りは左側の隙間から順に 1 つずつ割り当てます。段落の最終行と、単語が 1 つだけの行は中央揃えにし、余白が奇数のときは余る 1 つを右側に置きます。外側の両端にはそれぞれ空白 1 つとアスタリスク 1 つを付け、上下の辺はアスタリスクの枠にします。貪欲法での改行も行数の最小化も必須ではなく、規則を満たす改行であればどれでも正解として受理されます。段落の間に空行は入れません。元のサイトの例では揃えのための空白が表示で省略されていましたが、本サイトでは補っています。\n\n本サイトでは標準入出力を明示しています。元の問題で与えられていない範囲は、本サイトの取り決めとして明記しています。",
+    "input": "1 行目に幅 width と段落数 P が与えられます。続く P 行には、各段落の単語数とその単語が順に並びます。5≤width≤50、1≤P≤20 で、各段落の単語数は 1..10、各単語の長さは 1..width です。本サイトでは、単語は空白を含まない印字可能な ASCII 文字からなります（* も使えます）。",
+    "output": "星枠付きのプレーンテキスト全体を出力します。行数は出力しません。どの行も width+4 桁です。レイアウト規則を満たす改行であればどれでも構わず、例と一致している必要はありません。",
+    "explanation": "例 1: 各単語を 1 行ずつ中央揃えにした有効なレイアウトで、内容の行は合計 12 行です。Hello は長さ 5 で、内容部分は 16 桁なので左に空白 5 つ、右に 6 つが入り、外側の余白と星枠を含めて各行は 20 桁です。参照プログラムのように貪欲に分割して内容 5 行にすることもでき、どちらも受理されます。例 2: a、b、c をそれぞれ 1 行にし、内容部分の両側に空白 2 つずつを置いた例です。段落全体 a b c を 1 行にしても同様に有効です。例 3: abc は内容幅が 3 で、空白が 3 つ余るため、左に 1 つ、右に 2 つ置きます。外側の余白と両側のアスタリスクを加えると、全体の幅は 10 です。",
+    "hints": [
+      "参照解法は各行にできるだけ多くの単語を貪欲に詰めます。最終行でも単語 1 つの行でもない通常の行は、商と余りで空白を均等に配分し、最終行または単語 1 つの行は左右の中央揃えの空白を計算します。他の有効な改行でも同じく正解です。"
+    ]
+  },
+  "ko": {
+    "title": "별 테두리 문단 배치 (유효한 줄바꿈 아무거나 허용)",
+    "description": "각 문단의 단어를 순서대로 텍스트 상자에 배치합니다. 단어를 쪼개거나 문단을 넘나들어서는 안 되며, 각 줄의 내용 너비는 width입니다. 문단의 마지막 줄이 아니면서 단어가 여러 개인 줄은 양쪽 정렬(fully justified)해야 합니다. 공백은 균등하게 분배하고, 나머지는 왼쪽 간격부터 하나씩 더 배정합니다. 문단의 마지막 줄과 단어가 하나뿐인 줄은 가운데 정렬해야 하며, 남는 공백이 홀수이면 추가 공백 하나는 오른쪽에 둡니다. 바깥쪽 양옆에는 공백 하나와 별표 하나를 붙이고, 위아래는 별표 테두리로 감쌉니다. 탐욕적 줄바꿈이나 최소 줄 수는 요구하지 않으며, 규칙을 만족하는 줄바꿈이면 무엇이든 허용됩니다. 문단 사이에 빈 줄은 넣지 않습니다. 원문 사이트의 예제는 표시 과정에서 정렬용 공백이 생략되어 있었으며, 이 사이트에서는 이를 채워 넣었습니다.\n\n이 사이트의 표준 입출력은 명시적으로 정의되어 있으며, 원문 문제에서 주어지지 않은 범위는 이 사이트의 규약으로 표시합니다.",
+    "input": "첫째 줄에 너비 width와 문단 수 P가 주어집니다. 이어지는 P개의 줄에는 각각 해당 문단의 단어 수와 그 단어들이 주어집니다. 5≤width≤50, 1≤P≤20이며, 각 문단은 1..10개의 단어로 이루어지고 각 단어의 길이는 1..width입니다. 이 사이트에서 단어는 공백이 아닌 출력 가능한 ASCII 문자로 이루어지며(*도 허용됩니다).",
+    "output": "줄 수 없이 완성된 별 테두리 일반 텍스트 전체를 출력합니다. 모든 줄의 너비는 width+4열입니다. 배치 규칙을 만족하는 줄바꿈이면 어떤 것이든 허용되며, 예제와 같을 필요는 없습니다.",
+    "explanation": "예제 1: 각 단어를 한 줄에 하나씩 가운데 정렬한 유효한 배치로, 내용 줄은 모두 12줄입니다. Hello는 길이가 5이므로 16열 내용 영역에서 왼쪽에 공백 5개, 오른쪽에 공백 6개가 들어가며, 바깥 여백과 별 테두리를 포함한 각 줄은 20열입니다. 참조 프로그램처럼 탐욕적으로 나누면 내용 줄이 5줄이 되며, 두 방식 모두 허용됩니다. 예제 2: a, b, c를 각각 한 줄에 두고 내용 영역의 양쪽에 공백 2개씩 채운 배치입니다. 문단 전체 a b c를 한 줄에 놓는 것도 똑같이 유효합니다. 예제 3: abc의 내용 너비는 3이므로 남는 공백 3개 중 왼쪽에 1개, 오른쪽에 2개가 들어가며, 바깥 여백과 양쪽 별표를 포함한 전체 너비는 10입니다.",
+    "hints": [
+      "참조 풀이는 한 줄에 가능한 한 많은 단어를 탐욕적으로 담습니다. 마지막 줄이 아닌 일반 줄은 몫과 나머지를 이용해 공백을 균등 분배하고, 마지막 줄이나 단어가 하나인 줄은 왼쪽과 오른쪽 가운데 정렬 공백을 계산합니다. 다른 유효한 줄바꿈도 똑같이 정답입니다."
+    ]
+  },
+  "vi": {
+    "title": "Dàn trang đoạn văn trong khung dấu sao với cách ngắt dòng hợp lệ bất kỳ",
+    "description": "Đặt lần lượt các từ của mỗi đoạn văn vào một khung văn bản, không tách từ và không vượt qua ranh giới giữa các đoạn; phần nội dung của mỗi dòng rộng đúng width. Một dòng không phải dòng cuối của đoạn và có nhiều từ phải được căn đều hai bên: các khoảng trắng được chia đều, phần dư ưu tiên dồn vào các khe bên trái trước. Dòng cuối của đoạn và mọi dòng chỉ có một từ phải được căn giữa; khi số khoảng trắng còn lại là số lẻ, khoảng trắng thừa nằm ở bên phải. Thêm một khoảng trắng và một dấu sao ở mỗi phía ngoài, viền trên và viền dưới là các dấu sao. Không yêu cầu ngắt dòng tham lam hay số dòng tối thiểu; mọi cách ngắt dòng thỏa các quy tắc đều được chấp nhận. Giữa các đoạn không chèn dòng trống. Các ví dụ của trang gốc đã lược bỏ các khoảng trắng căn lề khi hiển thị; trang này đã điền đầy đủ.\n\nĐầu vào/đầu ra chuẩn của trang này được nêu rõ; những phạm vi mà bài gốc không cho đều được đánh dấu là quy ước của trang này.",
+    "input": "Dòng đầu chứa width và P; sau đó là P dòng, mỗi dòng cho số từ rồi đến các từ của đoạn đó. 5≤width≤50, 1≤P≤20, mỗi đoạn có 1..10 từ, và mỗi từ có độ dài 1..width. Trên trang này, các từ gồm các ký tự ASCII in được, không phải khoảng trắng (cho phép cả *).",
+    "output": "In ra toàn bộ khung dấu sao dạng văn bản thuần, không kèm số dòng; mỗi dòng có width+4 cột. Mọi cách ngắt dòng thỏa quy tắc dàn trang đều được phép và không cần trùng với ví dụ.",
+    "explanation": "Ví dụ 1: thể hiện một cách dàn trang hợp lệ với mỗi từ được căn giữa trên một dòng riêng, tổng cộng 12 dòng nội dung; Hello có độ dài 5, nên trong vùng nội dung 16 cột nó có 5 khoảng trắng bên trái và 6 bên phải, và mỗi dòng dài 20 cột tính cả lề ngoài và khung sao. Cũng có thể ngắt tham lam như chương trình tham chiếu, thành 5 dòng nội dung; cả hai đều được chấp nhận. Ví dụ 2: ví dụ đặt a, b và c mỗi chữ trên một dòng với 2 khoảng trắng đệm ở mỗi bên của vùng nội dung; để cả đoạn a b c trên một dòng cũng hợp lệ như vậy. Ví dụ 3: abc có độ rộng nội dung 3, còn lại 3 khoảng trắng, 1 bên trái và 2 bên phải; cùng với lề ngoài và dấu sao hai bên, tổng độ rộng là 10.",
+    "hints": [
+      "Lời giải tham chiếu xếp tham lam càng nhiều từ càng tốt vào mỗi dòng; các dòng thường không phải dòng cuối chia đều khoảng trắng bằng thương và số dư, còn dòng cuối hoặc dòng một từ thì tính số khoảng trắng căn giữa bên trái và bên phải. Các cách ngắt dòng hợp lệ khác cũng đúng như vậy."
+    ]
   }
 }

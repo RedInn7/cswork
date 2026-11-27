@@ -11,5 +11,35 @@
     "hints": [
       "Keep the ID frequencies and the total. When r changes to v, move c=count[r] over, apply total+=(v−r)*c, and output the updated total."
     ]
+  },
+  "ja": {
+    "title": "毎日の一括サーバー置換後の総リクエスト数",
+    "description": "最初に n 台のサーバーがあり、各サーバーの ID はそのサーバーが処理するリクエスト数でもあります。以降の n 日間、j 日目には、ID が replaced[j] であるすべてのサーバーの ID を newId[j] に変更します。各日の操作後の ID の合計を出力してください。存在しない ID の置換や、ID を自分自身に置換する操作では、結果は変わりません。\n\n標準入出力、例、解説は本サイトが独自に作成したものです。本サイトのものと明記された範囲は、元の問題の制約ではありません。",
+    "input": "1 行目に n、続く 3 行にそれぞれ n 個の整数（初期 ID、replaced、newId）が与えられます。元の範囲は上付き文字なしで 105 と 104 と書かれていますが、本サイトでは 1≤n≤100000、1≤すべての ID≤10000 と明示します。",
+    "output": "各日の操作後の総リクエスト数を表す n 個の整数を出力してください。",
+    "explanation": "答えは 40 2、2 10、11 7 11 です。置換は、それ以前の日にすでに ID が変更されたサーバーにも影響します。",
+    "hints": [
+      "ID ごとの台数と合計を保持します。r が v に変わるときは c=count[r] 台を移し、total+=(v−r)*c を適用して、更新後の合計を出力します。"
+    ]
+  },
+  "ko": {
+    "title": "매일 서버 ID를 일괄 교체한 뒤의 총 요청 수",
+    "description": "처음에 서버가 n대 있고, 각 서버의 ID는 그 서버가 처리하는 요청 수와 같습니다. 이후 n일 동안, j일째에는 ID가 replaced[j]인 모든 서버의 ID를 newId[j]로 바꿉니다. 매일 작업이 끝난 뒤 ID의 합을 출력하세요. 존재하지 않는 ID를 교체하거나 ID를 자기 자신으로 교체하면 결과는 변하지 않습니다.\n\n표준 입출력, 예제, 해설은 이 사이트에서 독립적으로 작성했으며, 이 사이트 기준이라고 명시한 범위는 원문의 원래 제약 조건이 아닙니다.",
+    "input": "첫째 줄에 n이 주어지고, 이어서 각각 n개의 정수로 이루어진 세 줄이 주어집니다. 초기 ID, replaced, newId입니다. 원문의 범위는 위 첨자 없이 105와 104로 적혀 있으며, 이 사이트에서는 1≤n≤100000, 1≤모든 ID≤10000으로 설정했습니다.",
+    "output": "매일 작업이 끝난 뒤의 총 요청 수를 n개의 정수로 출력합니다.",
+    "explanation": "정답은 40 2, 2 10, 11 7 11입니다. 교체는 앞선 날에 이미 ID가 바뀐 서버에도 적용됩니다.",
+    "hints": [
+      "ID별 개수와 총합을 유지합니다. r이 v로 바뀔 때 c=count[r]만큼을 옮기고 total+=(v−r)*c를 적용한 뒤, 갱신된 총합을 출력합니다."
+    ]
+  },
+  "vi": {
+    "title": "Tổng số yêu cầu sau mỗi ngày thay thế hàng loạt máy chủ",
+    "description": "Ban đầu có n máy chủ, ID của mỗi máy chủ cũng chính là số yêu cầu mà nó xử lý. Trong n ngày tiếp theo, ở ngày j mọi máy chủ có ID bằng replaced[j] đổi ID thành newId[j]; in ra tổng các ID sau thao tác của mỗi ngày. Thay một ID không tồn tại, hoặc thay một ID bằng chính nó, không làm thay đổi kết quả.\n\nĐề bài chuẩn hóa vào/ra, các ví dụ và lời giải được trang này tự biên soạn; những khoảng giá trị được ghi rõ là của trang này không phải ràng buộc gốc của nguồn.",
+    "input": "Dòng đầu chứa n, tiếp theo là ba dòng, mỗi dòng n số nguyên: các ID ban đầu, replaced và newId. Cận gốc được viết là 105 và 104 do mất chỉ số trên; trang này dùng rõ ràng 1≤n≤100000 và 1≤mọi ID≤10000.",
+    "output": "In ra n số nguyên, là tổng số yêu cầu sau thao tác của mỗi ngày.",
+    "explanation": "Các đáp án lần lượt là 40 2, 2 10 và 11 7 11; một phép thay cũng ảnh hưởng đến những máy chủ đã đổi ID ở ngày trước.",
+    "hints": [
+      "Giữ tần suất của các ID và tổng. Khi r đổi thành v, chuyển c=count[r] sang, áp dụng total+=(v−r)*c rồi in tổng đã cập nhật."
+    ]
   }
 }

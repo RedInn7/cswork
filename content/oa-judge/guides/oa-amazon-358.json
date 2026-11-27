@@ -13,6 +13,21 @@
       "Since insert positions are free, only the counts matter: the lowest prefix balance fixes the minimum number of '(' and the final balance then fixes the number of ')'.",
       "Beyond the required brackets, extra ones can only be added in matched pairs of one '(' and one ')'; for a fixed count of each type, take the highest-scoring ones.",
       "Compute L=−min(0, lowest prefix balance) and R=L+final balance. Sort the kit's '(' scores and ')' scores in descending order, take the first L and the first R (even if negative), then keep adding the next '(' and ')' together while their score sum is positive."
+    ],
+    "ja": [
+      "挿入位置は自由なので、重要なのは個数だけです。接頭辞バランスの最小値から '(' の最小個数が決まり、最終バランスから ')' の個数が決まります。",
+      "必須の括弧以外に追加できるのは、'(' と ')' を1つずつ組にしたペアだけです。各種類の個数を固定したとき、スコアの高いものから取るのが最適です。",
+      "L=−min(0, 接頭辞バランスの最小値)、R=L+最終バランスを計算します。キットの '(' のスコアと ')' のスコアをそれぞれ降順にソートし、最初の L 個と R 個を(負であっても)取ります。その後、次の '(' と ')' のスコアの和が正である間、一緒に追加し続けます。"
+    ],
+    "ko": [
+      "삽입 위치는 자유이므로 개수만 중요합니다. 최저 접두사 균형이 필요한 '('의 최소 개수를 정하고, 그다음 최종 균형이 ')'의 개수를 정합니다.",
+      "필수 괄호 외에 추가로 넣는 괄호는 '(' 하나와 ')' 하나가 짝을 이루는 쌍으로만 가능합니다. 각 종류의 개수가 정해지면 점수가 가장 높은 것을 고릅니다.",
+      "L=−min(0, 최저 접두사 균형)과 R=L+최종 균형을 계산합니다. 키트의 '(' 점수와 ')' 점수를 각각 내림차순으로 정렬해 앞의 L개와 R개를(음수여도) 고르고, 그다음 다음 '('와 ')'를 함께 추가하는 것을 점수 합이 양수인 동안 반복합니다."
+    ],
+    "vi": [
+      "Vì vị trí chèn là tự do, chỉ số lượng mới quan trọng: cân bằng tiền tố thấp nhất quyết định số '(' tối thiểu, và cân bằng cuối sau đó quyết định số ')'.",
+      "Ngoài các ngoặc bắt buộc, các ngoặc thêm chỉ có thể được thêm theo từng cặp gồm một '(' và một ')'; với số lượng mỗi loại cố định, hãy lấy những ngoặc có điểm cao nhất.",
+      "Tính L=−min(0, cân bằng tiền tố thấp nhất) và R=L+cân bằng cuối. Sắp xếp điểm các '(' và các ')' của kit giảm dần, lấy L phần tử đầu và R phần tử đầu (kể cả khi âm), rồi tiếp tục thêm '(' và ')' kế tiếp cùng nhau chừng nào tổng điểm của chúng còn dương."
     ]
   },
   "explanationEn": "## Approach\n\nCompute the lowest prefix balance and the final balance of the original string to determine the minimum required numbers of left and right brackets. For each bracket type, take the required ones in descending order of score; after that, keep taking pairs while the marginal score of the pair is still positive.\n\n## Proof of correctness\n\nAny negative prefix requires left brackets to be added before it, at least L=−min(0, lowest balance), and the final balance then requires R=L+final balance. Putting L left brackets at the front and R right brackets at the end achieves this. Extra left and right brackets must be chosen in equal numbers; for a fixed count, taking the highest scores of each type is optimal, and the marginal sum of the next pair is non-increasing, so adding only pairs with a positive margin reaches the global maximum.\n\n## Complexity\n\nO(|s|+m log m) time and O(m) space."

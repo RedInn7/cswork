@@ -13,6 +13,21 @@
       "Roads are unweighted, so delivering in order of shortest-path distance means delivering in BFS layer order, and within a layer by city number.",
       "Run one BFS from the factory city to get every reachable city's shortest edge count, then output the reachable cities other than the start sorted by (distance, number).",
       "Build an undirected adjacency list; set every distance to -1 and the start to 0, then BFS; collect the cities with distance >= 0 other than the start, sort by distance ascending and then by number ascending; print them space-separated, or an empty line when no other city is reachable."
+    ],
+    "ja": [
+      "道路には重みがないので、最短経路の距離の順に配送することは、BFS の層の順に配送し、同じ層の中では都市番号の順にすることを意味します。",
+      "工場の都市から BFS を 1 回行って、到達可能な各都市までの最短の辺数を求め、出発都市以外の到達可能な都市を (距離, 番号) でソートして出力します。",
+      "無向の隣接リストを作ります。すべての距離を -1、出発地点を 0 にして BFS を行い、距離が >= 0 で出発地点以外の都市を集めて、距離の昇順、次に番号の昇順でソートします。スペース区切りで出力し、他に到達できる都市がなければ空行を出力します。"
+    ],
+    "ko": [
+      "도로에 가중치가 없으므로 최단 경로 거리 순서로 배송한다는 것은 BFS 레이어 순서로 배송한다는 뜻이고, 같은 레이어 안에서는 도시 번호 순입니다.",
+      "공장 도시에서 BFS를 한 번 실행해 도달 가능한 각 도시의 최단 간선 수를 구하고, 출발 도시를 제외한 도달 가능한 도시를 (거리, 번호)로 정렬해 출력합니다.",
+      "무방향 인접 리스트를 만들고, 모든 거리를 -1로, 출발 도시를 0으로 설정한 뒤 BFS를 합니다. 거리가 >= 0인 도시 중 출발 도시를 제외한 것을 모아 거리 오름차순, 그다음 번호 오름차순으로 정렬합니다. 공백으로 구분해 출력하고, 도달 가능한 다른 도시가 없으면 빈 줄을 출력합니다."
+    ],
+    "vi": [
+      "Các con đường không có trọng số, nên giao hàng theo thứ tự khoảng cách đường đi ngắn nhất tức là giao theo thứ tự các tầng của BFS, và trong cùng một tầng thì theo số hiệu thành phố.",
+      "Chạy một lần BFS từ thành phố có nhà máy để có số cạnh ngắn nhất tới mọi thành phố đến được, rồi in các thành phố đến được ngoài điểm xuất phát, sắp xếp theo (khoảng cách, số hiệu).",
+      "Xây danh sách kề vô hướng; đặt mọi khoảng cách bằng -1 và điểm xuất phát bằng 0, rồi chạy BFS; thu các thành phố có khoảng cách >= 0 ngoài điểm xuất phát, sắp xếp theo khoảng cách tăng dần rồi theo số hiệu tăng dần; in chúng cách nhau bằng dấu cách, hoặc một dòng trống khi không có thành phố nào khác đến được."
     ]
   },
   "explanationEn": "## Approach\n\nRun BFS from the factory city to get the shortest edge-count distance of every reachable city, then sort them by (distance, number) for output.\n\n## Correctness\n\nBFS on an unweighted graph expands layer by layer, so the layer at which a node is first reached is its shortest distance. Sorting by distance and then by number matches exactly the problem's two-level ordering; filtering out the start and the unvisited nodes respectively avoids delivering twice and ignores unreachable cities.\n\n## Complexity\n\nTime O(n + m), space O(n + m)."

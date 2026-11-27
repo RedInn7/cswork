@@ -13,6 +13,21 @@
       "Among the kept cars, any two neighbors must weigh at most the capacity together, and no single car may exceed it. Scanning left to right, whether later cars fit depends only on the last kept car.",
       "Greedy: the lighter the last car, the better. When a new car conflicts with the last one, one of the two must go, and removing the heavier one never makes the future worse.",
       "Keep last (the last kept car, initially none) and a removal count. For each car: if it alone exceeds the capacity, remove it; otherwise, if last exists and the two together exceed the capacity, count a removal and set last to the lighter of the two; otherwise set last to this car. Print the removal count."
+    ],
+    "ja": [
+      "残す車のうち、隣り合う任意の 2 台は合計で上限以下で、どの 1 台も上限を超えてはいけません。左から右へ走査すると、後続の車が収まるかどうかは、最後に残した車だけで決まります。",
+      "貪欲法：最後の車は軽いほど良いです。新しい車が最後の車と衝突するとき、2 台のうちどちらかは取り除くことになり、重い方を取り除くと、将来が悪くなることはありません。",
+      "last（最後に残した車、最初はなし）と除去数を保持します。各車について、単独で上限を超えるなら取り除きます。そうでなく、last があって 2 台の合計が上限を超えるなら、除去を 1 つ数え、last を 2 台のうち軽い方にします。そうでなければ last をこの車にします。除去数を出力します。"
+    ],
+    "ko": [
+      "남긴 차량 중 인접한 두 대의 무게 합은 용량 이하여야 하고, 한 대가 용량을 넘어서도 안 됩니다. 왼쪽에서 오른쪽으로 훑을 때 이후 차량이 들어갈 수 있는지는 마지막으로 남긴 차량에만 달려 있습니다.",
+      "탐욕: 마지막 차량이 가벼울수록 좋습니다. 새 차량이 마지막 차량과 충돌하면 둘 중 하나는 나가야 하며, 더 무거운 쪽을 제거하면 앞으로의 상황이 나빠지는 일은 없습니다.",
+      "last(마지막으로 남긴 차량, 처음에는 없음)와 제거 횟수를 유지합니다. 각 차량에 대해 혼자서 용량을 넘으면 제거하고, 그렇지 않을 때 last가 있고 둘의 합이 용량을 넘으면 제거 횟수를 세고 last를 둘 중 더 가벼운 쪽으로 설정하며, 그렇지 않으면 last를 이 차량으로 설정합니다. 제거 횟수를 출력합니다."
+    ],
+    "vi": [
+      "Trong các xe được giữ, hai xe kề nhau bất kỳ phải có tổng trọng lượng không quá sức chứa, và không xe đơn nào được vượt quá nó. Khi duyệt từ trái sang phải, các xe sau có vừa hay không chỉ phụ thuộc vào xe cuối cùng được giữ.",
+      "Tham lam: xe cuối càng nhẹ càng tốt. Khi một xe mới xung đột với xe cuối, một trong hai phải bị loại, và loại xe nặng hơn không bao giờ làm tương lai tệ hơn.",
+      "Giữ last (xe cuối cùng được giữ, ban đầu là không có) và số lần loại bỏ. Với mỗi xe: nếu riêng nó đã vượt sức chứa thì loại nó; ngược lại, nếu last tồn tại và hai xe cộng lại vượt sức chứa thì tính một lần loại bỏ và đặt last là xe nhẹ hơn trong hai xe; ngược lại đặt last là xe này. In số lần loại bỏ."
     ]
   },
   "explanationEn": "## Approach\n\nScan while keeping track of the current last kept car. A car that overloads on its own is removed directly; if it overloads together with the last car, one of the two must be removed, so keep the lighter one; otherwise append it.\n\n## Correctness\n\nWhen two adjacent cars overload, at least one of them must be removed, and keeping the lighter one never reduces future compatibility. If the old tail car is replaced, the new car is lighter, so it is still compatible with the car before the old tail. An exchange argument shows that each step's choice extends to an optimal solution.\n\n## Complexity\n\nTime O(N), space O(1) apart from the input."

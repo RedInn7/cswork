@@ -11,5 +11,35 @@
     "hints": [
       "Sort and take the median point. If the median's cost exceeds the budget, the answer is 0; otherwise binary search for the leftmost feasible integer between the left end and the median, and for the rightmost feasible integer between the median and the right end. Compute costs with sorted prefix sums and a binary-searched split point; the answer is R−L+1."
     ]
+  },
+  "ja": {
+    "title": "往復予算内で元の数直線上に置ける整数の倉庫位置",
+    "description": "配送センターの座標 centers が与えられます。倉庫は −10^9 から 10^9(両端を含む)までの整数位置に置かなければなりません。倉庫は各センターへ個別に往復するので、総距離は 2·Σ|center[i]−warehouse| です。総距離が d を超えない倉庫の位置の数を求めてください。\n\n標準入出力、例、解説は本サイトが独自に作成したものです。本サイト独自と明記した範囲は、出典の元の制約ではありません。",
+    "input": "1行目に n d、2行目に centers が与えられます。元の制約は 1≤n≤100000、−10^9≤centers[i]≤10^9、0≤d≤10^15 です。数直線上の位置に関する元の範囲は維持され、無限の整数直線には拡張されません。",
+    "output": "答えとなる整数を1つ出力してください。",
+    "explanation": "答えは 5、5、0 です。2つ目の例では、−2 から 2 までのどの点でも往復の総距離は 8 です。予算がいくら大きくても、元の ±10^9 の数直線の外にある位置は数えられません。",
+    "hints": [
+      "ソートして中央値の点を取ります。中央値のコストが予算を超えるなら答えは 0 です。そうでなければ、左端から中央値までの間で実行可能な最も左の整数を、中央値から右端までの間で実行可能な最も右の整数を、それぞれ二分探索します。コストはソート済みの累積和と、二分探索で求めた分割点で計算します。答えは R−L+1 です。"
+    ]
+  },
+  "ko": {
+    "title": "왕복 예산 안에서 원래 수직선상의 정수 창고 위치",
+    "description": "물류 센터의 좌표 centers가 주어집니다. 창고는 −10^9 이상 10^9 이하(경계 포함)의 정수 위치에 설치해야 합니다. 창고는 각 센터로 따로따로 왕복하므로 총 이동 거리는 2·Σ|center[i]−warehouse|입니다. 총 거리가 d를 넘지 않는 창고 위치의 수를 구하세요.\n\n표준 입출력, 예제, 해설은 이 사이트에서 독자적으로 작성했습니다. 이 사이트가 직접 정했다고 표시된 범위는 원문의 제약 조건이 아닙니다.",
+    "input": "첫째 줄에 n d가, 둘째 줄에 centers가 주어집니다. 원문의 범위는 1≤n≤100000, −10^9≤centers[i]≤10^9, 0≤d≤10^15입니다. 수직선 위 위치에 대한 원문의 범위는 그대로 유지하며, 무한한 정수 직선으로 확장하지 않습니다.",
+    "output": "정답을 정수 하나로 출력합니다.",
+    "explanation": "정답은 각각 5, 5, 0입니다. 두 번째 예제에서는 −2부터 2까지의 모든 점의 총 왕복 거리가 8입니다. 예산이 아무리 크더라도 원래의 ±10^9 수직선 밖의 위치는 셀 수 없습니다.",
+    "hints": [
+      "정렬하여 중앙값 점을 잡습니다. 중앙값의 비용이 예산을 넘으면 답은 0이고, 아니면 왼쪽 끝과 중앙값 사이에서 가능한 가장 왼쪽 정수를, 중앙값과 오른쪽 끝 사이에서 가능한 가장 오른쪽 정수를 이분 탐색합니다. 비용은 정렬된 접두 합과 이분 탐색한 분할 지점으로 계산하며, 답은 R−L+1입니다."
+    ]
+  },
+  "vi": {
+    "title": "Các vị trí nguyên của kho trên trục số gốc trong ngân sách đi về",
+    "description": "Cho tọa độ các trung tâm phân phối centers, kho phải được đặt tại một vị trí nguyên từ −10^9 đến 10^9 (bao gồm cả hai đầu). Kho thực hiện một chuyến đi về riêng cho từng trung tâm, nên tổng quãng đường là 2·Σ|center[i]−warehouse|. Hãy tìm số vị trí kho có tổng quãng đường không vượt quá d.\n\nĐầu vào/đầu ra chuẩn, các ví dụ và phần lời giải do trang này tự viết; các khoảng giá trị được đánh dấu rõ là của trang này không phải ràng buộc gốc của đề.",
+    "input": "Dòng đầu chứa n d và dòng thứ hai chứa centers. Cận gốc là 1≤n≤100000, −10^9≤centers[i]≤10^9, 0≤d≤10^15. Các cận gốc về vị trí trên trục số được giữ nguyên và không mở rộng thành đường thẳng nguyên vô hạn.",
+    "output": "In ra một số nguyên duy nhất, là đáp án.",
+    "explanation": "Các đáp án lần lượt là 5, 5 và 0. Ở ví dụ thứ hai, mọi điểm từ −2 đến 2 đều có tổng quãng đường đi về là 8. Dù ngân sách lớn đến đâu, các vị trí nằm ngoài trục số gốc ±10^9 cũng không thể được tính.",
+    "hints": [
+      "Sắp xếp và lấy điểm trung vị. Nếu chi phí tại trung vị vượt quá ngân sách thì đáp án là 0; ngược lại, tìm kiếm nhị phân số nguyên khả thi ngoài cùng bên trái giữa đầu trái và trung vị, và số nguyên khả thi ngoài cùng bên phải giữa trung vị và đầu phải. Tính chi phí bằng tổng tiền tố đã sắp xếp và một điểm tách tìm bằng tìm kiếm nhị phân; đáp án là R−L+1."
+    ]
   }
 }

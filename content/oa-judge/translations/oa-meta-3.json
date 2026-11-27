@@ -11,5 +11,35 @@
     "hints": [
       "Convert the adjacent comparisons into a sequence of −1, 0, 1, match the whole pattern with KMP, and after each successful match fall back via the prefix function to keep overlapping matches."
     ]
+  },
+  "ja": {
+    "title": "隣接比較パターンに一致する部分配列",
+    "description": "整数配列 a と長さ m のパターン p が与えられます。p の値は 1、0、−1 で、それぞれ次の要素が前の要素より大きい、等しい、小さいことを要求します。長さがちょうど m+1 の連続部分配列のうち、隣接する要素の比較がすべてパターンに一致するものの個数を数えてください。重なりは許されます。\n\n入出力形式、例、テストデータは CSWork が作成しました。",
+    "input": "1 行目に n m（2≤n≤10000、1≤m<n）、2 行目に n 個の整数（−10⁹..10⁹）、3 行目に m 個のパターン値が与えられます。",
+    "output": "説明どおりに答えを出力してください。複数の結果はスペース区切りで順に出力し、空配列の場合は空行を出力してください。",
+    "explanation": "例 1：0 から始まる [1,4,4,1] と 4 から始まる [3,5,5,3] は、どちらも順に「上がる、等しい、下がる」となります。ほかに一致するウィンドウはなく、合計 2 個です。",
+    "hints": [
+      "隣接する比較を −1、0、1 の列に変換し、パターン全体を KMP で照合します。一致に成功するたびに接頭辞関数でフォールバックして、重なる一致も残します。"
+    ]
+  },
+  "ko": {
+    "title": "인접 비교 패턴과 일치하는 부분 배열",
+    "description": "정수 배열 a와 길이 m의 패턴 p가 주어집니다. p의 값은 1, 0, −1이며, 각각 다음 원소가 이전 원소보다 크거나, 같거나, 작아야 함을 뜻합니다. 길이가 정확히 m+1이면서 인접한 원소끼리의 비교가 모두 패턴과 일치하는 연속 부분 배열의 개수를 구하세요. 겹치는 것도 허용됩니다.\n\n입력 형식, 예제, 테스트 데이터는 CSWork가 정리하고 작성했습니다.",
+    "input": "첫째 줄에 n m(2≤n≤10000, 1≤m<n)이 주어지고, 둘째 줄에 n개의 정수(−10⁹..10⁹)가, 셋째 줄에 m개의 패턴 값이 주어집니다.",
+    "output": "설명된 대로 답을 출력합니다. 결과가 여러 개이면 순서대로 공백으로 구분하여 출력하고, 빈 배열이면 빈 줄을 출력합니다.",
+    "explanation": "예제 1: 0에서 시작하는 [1,4,4,1]과 4에서 시작하는 [3,5,5,3]은 모두 차례로 증가, 동일, 감소합니다. 다른 구간은 일치하지 않으므로 모두 2개입니다.",
+    "hints": [
+      "인접 비교를 −1, 0, 1의 수열로 바꾸고 KMP로 패턴 전체를 매칭하며, 매칭에 성공할 때마다 접두사 함수로 되돌아가 겹치는 매칭도 유지합니다."
+    ]
+  },
+  "vi": {
+    "title": "Các mảng con khớp với mẫu so sánh các phần tử kề nhau",
+    "description": "Cho một mảng số nguyên a và một mẫu p có độ dài m. Các giá trị của p là 1, 0 và −1, lần lượt yêu cầu phần tử kế tiếp lớn hơn, bằng hoặc nhỏ hơn phần tử trước. Đếm các mảng con liên tiếp có độ dài đúng m+1 mà mọi phép so sánh giữa các phần tử kề nhau đều khớp với mẫu; cho phép chồng lấn.\n\nĐịnh dạng đầu vào, các ví dụ và dữ liệu kiểm thử do CSWork biên soạn và viết.",
+    "input": "Dòng đầu chứa n m (2≤n≤10000, 1≤m<n); dòng thứ hai chứa n số nguyên (−10⁹..10⁹); dòng thứ ba chứa m giá trị của mẫu.",
+    "output": "In ra đáp án như mô tả; nhiều kết quả được phân tách bằng dấu cách theo thứ tự, và với mảng rỗng thì in một dòng trống.",
+    "explanation": "Ví dụ 1: [1,4,4,1] bắt đầu tại 0 và [3,5,5,3] bắt đầu tại 4 đều lần lượt tăng, giữ nguyên rồi giảm; không có cửa sổ nào khác khớp, nên tổng cộng có 2.",
+    "hints": [
+      "Chuyển các phép so sánh kề nhau thành một dãy −1, 0, 1, khớp toàn bộ mẫu bằng KMP, và sau mỗi lần khớp thành công thì lùi theo hàm tiền tố để giữ các lần khớp chồng lấn."
+    ]
   }
 }

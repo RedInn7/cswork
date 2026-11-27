@@ -13,5 +13,41 @@
       "So the segment must match all the way from the start until it leaves the matrix.",
       "For each direction, compute from the exit side the length that \"matches all the way until leaving the matrix\"."
     ]
+  },
+  "ja": {
+    "title": "Roblox OA #7：最長の対角線セグメント",
+    "description": "R 行 C 列の行列が与えられ、各要素は 0、1、2 のいずれかです。パターン 1, 2, 0, 2, 0, 2, 0, …（最初の要素が 1 で、その後は 2 と 0 が交互に続く）に従い、行列の境界で終わる最長の対角線セグメントを求め、その長さを出力してください。\n\nセグメントは行列の任意の要素から始めることができ、4 つの対角方向のどれに進んでもかまいません。終端は、1 行目、最終行、1 列目、最終列のいずれかの要素でなければなりません。長さが 2 以上のそのようなセグメントが少なくとも 1 つ存在することが保証されています。",
+    "input": "1 行目に R と C が与えられ、続く R 行にそれぞれ C 個の整数（0、1、2）が与えられます。1≤R,C≤500。",
+    "output": "最長のセグメントの長さを整数 1 つで出力してください。",
+    "explanation": "例 1：行 3、列 4（1 始まり）の 1 から左上へ進むと、経路は 2 と 0 を通って 1 行目に到達します。セグメント [1,2,0] の長さは 3 です。\n例 2：左上隅の 1 から右下へ進むと 2 に達し、長さは 2 です。\n例 3：行 3、列 3（1 始まり）の 1 から左上へ進むと 2、次も 2 となり、2 つ目は 0 ではないので失敗です。左下へ進むと最終行の 2 に達し、長さは 2 です。",
+    "hints": [
+      "対角線に沿って進むとき、始点の後で最初に到達する境界のセルが最後のセルです。",
+      "したがって、セグメントは始点から行列を出るまで、ずっとパターンに一致していなければなりません。",
+      "各方向について、出口側から「行列を出るまでずっと一致する」長さを計算してください。"
+    ]
+  },
+  "ko": {
+    "title": "Roblox OA #7: 가장 긴 대각선 구간",
+    "description": "R행 C열의 행렬이 있고 각 원소는 0, 1, 2 중 하나입니다. 1, 2, 0, 2, 0, 2, 0, … 패턴(첫 원소는 1이고 이후 2와 0이 계속 번갈아 나옴)을 따르면서 행렬 경계에서 끝나는 가장 긴 대각선 구간을 찾으세요. 이 구간의 길이를 출력합니다.\n\n구간은 행렬의 어느 원소에서든 시작할 수 있고, 네 대각선 방향 중 어느 쪽으로든 진행할 수 있으며, 첫 행, 마지막 행, 첫 열, 마지막 열에 있는 원소에서 끝나야 합니다. 길이가 2 이상인 구간이 적어도 하나 존재함이 보장됩니다.",
+    "input": "첫 줄에 R과 C가 주어지고, 이어서 R개의 줄에 각각 C개의 정수(0, 1 또는 2)가 주어집니다. 1≤R,C≤500.",
+    "output": "정수 하나를 출력합니다. 가장 긴 구간의 길이입니다.",
+    "explanation": "예제 1: 3행 4열(1-기준)의 1에서 시작하여 왼쪽 위로 이동하면 경로가 2와 0을 지나 1행에 도달하며, 구간 [1,2,0]의 길이는 3입니다.\n예제 2: 왼쪽 위 모서리의 1에서 오른쪽 아래로 이동하면 2에 도달하며, 길이는 2입니다.\n예제 3: 3행 3열(1-기준)의 1에서 왼쪽 위로 이동하면 2가 나오고 그다음도 2인데, 두 번째는 0이 아니므로 실패합니다. 왼쪽 아래로 이동하면 마지막 행의 2에 도달하며 길이는 2입니다.",
+    "hints": [
+      "대각선을 따라 걸을 때, 시작 칸 이후 처음 만나는 경계 칸이 마지막 칸입니다.",
+      "따라서 구간은 시작부터 행렬을 벗어날 때까지 끝까지 일치해야 합니다.",
+      "각 방향에 대해, 출구 쪽에서부터 \"행렬을 벗어날 때까지 끝까지 일치하는\" 길이를 계산하세요."
+    ]
+  },
+  "vi": {
+    "title": "Roblox OA #7: Đoạn chéo dài nhất",
+    "description": "Cho một ma trận R hàng C cột, mỗi phần tử là 0, 1 hoặc 2. Hãy tìm đoạn chéo dài nhất theo mẫu 1, 2, 0, 2, 0, 2, 0, … (phần tử đầu là 1, sau đó 2 và 0 xen kẽ mãi mãi) và kết thúc ở biên của ma trận. In ra độ dài của đoạn này.\n\nMột đoạn có thể bắt đầu tại bất kỳ phần tử nào của ma trận, có thể đi theo bất kỳ hướng nào trong bốn hướng chéo, và phải kết thúc tại một phần tử ở hàng đầu, hàng cuối, cột đầu hoặc cột cuối. Đảm bảo luôn tồn tại ít nhất một đoạn như vậy có độ dài ít nhất là 2.",
+    "input": "Dòng đầu chứa R và C; sau đó là R dòng, mỗi dòng chứa C số nguyên (0, 1 hoặc 2). 1≤R,C≤500.",
+    "output": "In ra một số nguyên: độ dài của đoạn dài nhất.",
+    "explanation": "Ví dụ 1: bắt đầu từ số 1 ở hàng 3, cột 4 (đánh số từ 1) và đi lên trái, đường đi qua 2 và 0 rồi đến hàng 1; đoạn [1,2,0] có độ dài 3.\nVí dụ 2: từ số 1 ở góc trên bên trái, đi xuống phải gặp một số 2, độ dài 2.\nVí dụ 3: từ số 1 ở hàng 3, cột 3 (đánh số từ 1), đi lên trái được 2, rồi lại 2; số thứ hai không phải 0, nên không được; đi xuống trái đến số 2 ở hàng cuối, độ dài 2.",
+    "hints": [
+      "Khi đi dọc theo một đường chéo, ô biên đầu tiên bạn gặp sau ô xuất phát chính là ô cuối.",
+      "Vì vậy đoạn phải khớp mẫu liên tục từ điểm bắt đầu cho đến khi ra khỏi ma trận.",
+      "Với mỗi hướng, hãy tính từ phía thoát ra độ dài \"khớp mẫu liên tục cho đến khi ra khỏi ma trận\"."
+    ]
   }
 }

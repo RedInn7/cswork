@@ -11,5 +11,35 @@
     "hints": [
       "First sort by start and merge the covered intervals, then subtract the do-not-disturb interval from each segment, keeping the non-empty left and right parts."
     ]
+  },
+  "ja": {
+    "title": "会議の区間から応答不可時間を除く",
+    "description": "すべての会議がカバーする時間を統合し、応答不可の期間を 1 つ引いて、残った互いに重ならない極大の会議区間を出力してください。区間は [start,end) で、接している区間は統合し、空の区間は出力しません。\n\n標準の入出力・例・テストは CSWork が作成したものです。「本サイト」と記した範囲は採点上の取り決めであり、面接の原典の制約であると主張するものではありません。",
+    "input": "本サイトの標準入力：1行目に n（0..100000）が与えられ、続く n 行に会議の開始時刻と終了時刻、最後の 1 行に応答不可期間の開始時刻と終了時刻が与えられます。時刻は −10⁹..10⁹ の整数で、各開始は終了より小さい値です。",
+    "output": "まず区間の個数を出力し、続いて各区間の開始と終了を、開始時刻の昇順に出力します。",
+    "explanation": "例 1：統合後の会議の区間は [1,10)、[12,30)、[40,50)、[60,70) です。[18,25) を取り除くと 2 番目の区間が [12,18) と [25,30) に分かれ、合計 5 区間になります。例 2：[1,10) から [3,7) を引くと [1,3)、[7,10) です。例 3：会議がないので、結果の個数は 0 です。",
+    "hints": [
+      "まず開始時刻でソートして、カバーされた区間を統合します。次に各区間から応答不可の区間を引き、空でない左側と右側の部分を残します。"
+    ]
+  },
+  "ko": {
+    "title": "회의 구간에서 방해 금지 시간 빼기",
+    "description": "모든 회의가 차지하는 시간을 병합하고, 방해 금지 시간 하나를 뺀 뒤, 남은 서로 겹치지 않는 극대 회의 구간을 출력합니다. 구간은 [start,end)이며, 맞닿은 구간은 병합하고 빈 구간은 출력하지 않습니다.\n\n표준 입력/출력, 예제, 테스트는 CSWork가 작성했습니다. \"이 사이트\"로 표시된 범위는 채점 기준일 뿐이며, 실제 면접의 원래 제한이라고 주장하지 않습니다.",
+    "input": "이 사이트의 표준 입력: 첫째 줄에 n(0..100000)이 주어지고, 이어서 n개의 줄에 회의의 시작 및 종료 시각이, 마지막 줄에 방해 금지 시간의 시작 및 종료 시각이 주어집니다. 시각은 −10⁹..10⁹ 범위의 정수이며 각 시작은 종료보다 작습니다.",
+    "output": "먼저 구간의 개수를 출력하고, 이어서 각 구간의 시작과 끝을 시작 시각이 증가하는 순서로 출력합니다.",
+    "explanation": "예제 1: 병합 후 회의 구간은 [1,10), [12,30), [40,50), [60,70)입니다. [18,25)를 제거하면 두 번째 구간이 [12,18)과 [25,30)으로 나뉘어 모두 5개가 됩니다. 예제 2: [1,10)에서 [3,7)을 빼면 [1,3), [7,10)입니다. 예제 3: 회의가 없으므로 결과 개수는 0입니다.",
+    "hints": [
+      "먼저 시작 시각으로 정렬하여 덮인 구간을 병합한 뒤, 각 구간에서 방해 금지 구간을 빼고 비어 있지 않은 왼쪽과 오른쪽 부분을 남깁니다."
+    ]
+  },
+  "vi": {
+    "title": "Khoảng thời gian họp trừ đi thời gian không làm phiền",
+    "description": "Hợp nhất thời gian được phủ bởi mọi cuộc họp, trừ đi một khoảng thời gian không làm phiền, và xuất các khoảng họp cực đại không giao nhau còn lại. Các khoảng có dạng [start,end); các khoảng tiếp giáp nhau được hợp nhất, và các khoảng rỗng không được xuất.\n\nĐầu vào/đầu ra chuẩn, các ví dụ và bộ test do CSWork biên soạn; các phạm vi được đánh dấu \"trang này\" là quy ước chấm bài, không được xem là giới hạn gốc của buổi phỏng vấn.",
+    "input": "Đầu vào chuẩn của trang này: dòng đầu chứa n (0..100000), tiếp theo là n dòng chứa thời điểm bắt đầu và kết thúc của các cuộc họp, và dòng cuối chứa thời điểm bắt đầu và kết thúc của khoảng không làm phiền. Các thời điểm là số nguyên trong −10⁹..10⁹, và mỗi thời điểm bắt đầu nhỏ hơn thời điểm kết thúc của nó.",
+    "output": "Trước hết xuất số khoảng, sau đó xuất thời điểm bắt đầu và kết thúc của mỗi khoảng theo thứ tự tăng dần của thời điểm bắt đầu.",
+    "explanation": "Ví dụ 1: sau khi hợp nhất, các đoạn họp là [1,10), [12,30), [40,50), [60,70); loại bỏ [18,25) tách đoạn thứ hai thành [12,18) và [25,30), tổng cộng 5 đoạn. Ví dụ 2: [1,10) trừ [3,7) cho [1,3), [7,10). Ví dụ 3: không có cuộc họp nào nên số khoảng kết quả là 0.",
+    "hints": [
+      "Trước hết sắp xếp theo thời điểm bắt đầu và hợp nhất các khoảng được phủ, sau đó trừ khoảng không làm phiền khỏi mỗi đoạn, giữ lại các phần trái và phải không rỗng."
+    ]
   }
 }

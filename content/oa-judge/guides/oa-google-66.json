@@ -13,6 +13,21 @@
       "Every step costs one second, so reaching the target within maxTime is the same as the shortest number of steps being at most maxTime.",
       "For a grid where every move costs 1, use breadth-first search: BFS dequeues cells in increasing distance, so the first time the target is reached gives the minimum time.",
       "BFS from (0,0), moving only to in-bounds, unvisited '.' cells. When the target is dequeued, print Yes if its distance is at most maxTime and No otherwise; cells already at distance maxTime need no expansion. If the queue empties first, print No."
+    ],
+    "ja": [
+      "1 歩ごとに 1 秒かかるので、maxTime 以内に目的地に着くことは、最短の歩数が maxTime 以下であることと同じです。",
+      "すべての移動のコストが 1 のグリッドでは、幅優先探索を使います。BFS は距離の増加する順にセルを取り出すので、最初に目的地に着いたときが最小の時間です。",
+      "(0,0) から BFS を行い、範囲内で未訪問の '.' のセルにだけ移動します。目的地が取り出されたとき、その距離が maxTime 以下なら Yes、そうでなければ No を出力します。すでに距離が maxTime のセルは展開する必要がありません。先にキューが空になったら No を出力します。"
+    ],
+    "ko": [
+      "한 걸음에 1초가 걸리므로, maxTime 안에 목표에 도달하는 것은 최단 걸음 수가 maxTime 이하인 것과 같습니다.",
+      "모든 이동의 비용이 1인 격자에서는 너비 우선 탐색을 사용합니다. BFS는 거리가 증가하는 순서로 칸을 꺼내므로, 목표에 처음 도달한 때가 최소 시간입니다.",
+      "(0,0)에서 BFS를 시작하여 범위 안에 있고 방문하지 않은 '.' 칸으로만 이동합니다. 목표를 꺼냈을 때 거리가 maxTime 이하이면 Yes, 아니면 No를 출력합니다. 이미 거리가 maxTime인 칸은 확장할 필요가 없습니다. 그 전에 큐가 비면 No를 출력합니다."
+    ],
+    "vi": [
+      "Mỗi bước tốn một giây, nên đến đích trong vòng maxTime tương đương với số bước ngắn nhất không quá maxTime.",
+      "Với lưới mà mỗi nước đi tốn 1, hãy dùng tìm kiếm theo chiều rộng (BFS): BFS lấy các ô ra theo khoảng cách tăng dần, nên lần đầu đến đích cho thời gian nhỏ nhất.",
+      "BFS từ (0,0), chỉ đi tới các ô '.' nằm trong biên và chưa thăm. Khi đích được lấy ra, in Yes nếu khoảng cách của nó không quá maxTime và No trong trường hợp ngược lại; các ô đã ở khoảng cách maxTime không cần mở rộng. Nếu hàng đợi cạn trước thì in No."
     ]
   },
   "explanationEn": "## Idea\n\nRun a breadth-first search for the shortest distance; when the target is reached compare the distance with the limit. Layers beyond the limit need not be expanded.\n\n## Correctness\n\nEvery edge costs 1 and BFS processes cells in increasing distance, so the first time the target is reached gives the minimum time. A plan within the limit exists exactly when that distance does not exceed the limit.\n\n## Complexity\n\nO(rc) time, O(rc) space."

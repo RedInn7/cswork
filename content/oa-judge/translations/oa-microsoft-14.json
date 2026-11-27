@@ -11,5 +11,35 @@
     "hints": [
       "Precompute the encoding lengths of all prefixes and suffixes, along with the lengths of the runs at the boundaries. Enumerate the deletion position; if the boundary characters on both sides are the same, merge their two runs and update the encoding length."
     ]
+  },
+  "ja": {
+    "title": "部分文字列を削除したあとの最短ランレングス符号化",
+    "description": "連続する K 文字をちょうど1つ削除したあと、同じ文字の連なり（ラン）を、個数のあとにその文字を続けた形で符号化します。長さ 1 のランは文字だけを書きます。符号化後の長さとして可能な最小値を求めてください。元サイトの2番目の例は計算が誤っていたため、当サイトで独自に計算し直しました。\n\n入力の形式、当サイトが追加した範囲、例、テストは、すべて CSWork が独自に作成したものです。",
+    "input": "当サイトの入力: 1行目に 1..100000 文字の英大文字、2行目に K (0..N) が与えられます。",
+    "output": "答えを表す整数を1つ出力します。",
+    "explanation": "例 1: DDC を削除すると ABBBCCCC となり、A3B4C と符号化されて長さは 5 です。\n\n例 2: 最短の長さは 7 です。たとえば BC を削除すると ADDDCEFG となり、A3DCEFG と符号化されます。元サイトの 6 は文字を数え落としていました。\n\n例 3: すべての文字を削除すると、符号化は空になり長さは 0 です。",
+    "hints": [
+      "すべての接頭辞と接尾辞の符号化長を、境界にあるランの長さとともに事前に計算します。削除位置を列挙し、両側の境界の文字が同じなら2つのランを結合して符号化長を更新します。"
+    ]
+  },
+  "ko": {
+    "title": "부분 문자열 삭제 후 최단 런 렝스 인코딩",
+    "description": "연속한 K개의 문자를 정확히 삭제한 다음, 같은 문자가 반복되는 각 구간(run)을 횟수 뒤에 문자를 붙여 인코딩합니다. 길이가 1인 구간은 문자만 씁니다. 가능한 가장 짧은 인코딩 길이를 구하세요. 원본 사이트의 두 번째 예제는 계산이 틀렸으므로 이 사이트에서 독자적으로 다시 계산했습니다.\n\n입력 형식, 이 사이트에서 추가한 범위, 예제, 테스트는 모두 CSWork가 독자적으로 작성했습니다.",
+    "input": "이 사이트의 입력: 첫 줄에 대문자 1..100000개가 주어지고, 둘째 줄에 K(0..N)가 주어집니다.",
+    "output": "정답을 나타내는 정수 하나를 출력합니다.",
+    "explanation": "예제 1: DDC를 삭제하면 ABBBCCCC가 되고, A3B4C로 인코딩되어 길이는 5입니다.\n\n예제 2: 최단 길이는 7입니다. 예를 들어 BC를 삭제하면 ADDDCEFG가 되고 A3DCEFG로 인코딩됩니다. 원본 사이트의 6은 문자를 빠뜨린 값이었습니다.\n\n예제 3: 모든 문자를 삭제하면 인코딩이 비어 길이는 0입니다.",
+    "hints": [
+      "모든 접두사와 접미사의 인코딩 길이와 경계에 있는 구간의 길이를 미리 계산합니다. 삭제 위치를 열거하면서 양쪽 경계 문자가 같으면 두 구간을 합쳐 인코딩 길이를 갱신합니다."
+    ]
+  },
+  "vi": {
+    "title": "Mã hóa độ dài chạy ngắn nhất sau khi xóa một xâu con",
+    "description": "Xóa đúng K ký tự liên tiếp, sau đó mã hóa mỗi đoạn ký tự lặp lại bằng số lần lặp theo sau là ký tự đó; đoạn có độ dài 1 chỉ viết ký tự. Tìm độ dài mã hóa ngắn nhất có thể. Ví dụ thứ hai của trang gốc bị tính sai, nên trang này đã tính lại độc lập.\n\nGiao thức đầu vào, các phạm vi do trang này bổ sung, các ví dụ và bộ test đều do CSWork tự viết độc lập.",
+    "input": "Đầu vào của trang này: dòng đầu chứa 1..100000 chữ cái in hoa, dòng thứ hai chứa K (0..N).",
+    "output": "In ra một số nguyên duy nhất, là đáp án.",
+    "explanation": "Ví dụ 1: xóa DDC được ABBBCCCC, mã hóa thành A3B4C với độ dài 5.\n\nVí dụ 2: độ dài ngắn nhất là 7; chẳng hạn xóa BC được ADDDCEFG, mã hóa thành A3DCEFG. Đáp án 6 của trang gốc đã bỏ sót ký tự.\n\nVí dụ 3: xóa toàn bộ ký tự thì còn lại một mã hóa rỗng với độ dài 0.",
+    "hints": [
+      "Tính trước độ dài mã hóa của mọi tiền tố và hậu tố, cùng với độ dài của các đoạn ở biên. Duyệt vị trí xóa; nếu các ký tự ở biên hai phía giống nhau thì gộp hai đoạn của chúng lại và cập nhật độ dài mã hóa."
+    ]
   }
 }

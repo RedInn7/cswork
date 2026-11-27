@@ -13,6 +13,21 @@
       "First compute the strength with no swaps as a baseline; swapping neighbors i and i+1 changes the strength by an amount that depends only on those two elements and not on any other swap.",
       "Swapping i and i+1 gains arr[i]−arr[i+1], and a negative gain is worse than not swapping. Each element takes part in at most one swap, so the chosen pairs cannot share elements: pick disjoint adjacent pairs along a line to maximize the total gain.",
       "Run a DP from right to left: dp[i] is the best gain using only the elements from i on, the larger of dp[i+1] (i is not swapped) and dp[i+2] plus the larger of arr[i]−arr[i+1] and 0 (swap i and i+1). The answer is the baseline Σ arr[i]×(i+1) plus dp[0], which needs 64-bit integers."
+    ],
+    "ja": [
+      "まずスワップなしの強度を基準として計算します。隣り合う i と i+1 を入れ替えたときの強度の変化は、その 2 要素だけで決まり、ほかのスワップには依存しません。",
+      "i と i+1 を入れ替えると arr[i]−arr[i+1] だけ増え、負の増分なら入れ替えないほうが良くなります。各要素が参加できるスワップは高々 1 回なので、選ぶペアは要素を共有できません。直線上で互いに素な隣接ペアを選び、増分の合計を最大化する問題になります。",
+      "右から左へ DP を行います。dp[i] は i 以降の要素だけを使ったときの最大増分で、dp[i+1]（i を入れ替えない場合）と、dp[i+2] に arr[i]−arr[i+1] と 0 の大きいほうを足したもの（i と i+1 を入れ替える場合）のうち大きいほうです。答えは基準値 Σ arr[i]×(i+1) に dp[0] を足したものです。64 ビット整数が必要です。"
+    ],
+    "ko": [
+      "먼저 교환이 없을 때의 강도를 기준값으로 계산합니다. 이웃한 i와 i+1을 교환하면 강도가 변하는 양은 그 두 원소에만 의존하며 다른 교환과는 무관합니다.",
+      "i와 i+1을 교환하면 arr[i]−arr[i+1]만큼 이득이 생기고, 이득이 음수이면 교환하지 않는 편이 낫습니다. 각 원소는 최대 한 번만 교환에 참여하므로 선택한 쌍은 원소를 공유할 수 없습니다. 즉 일렬로 늘어선 위치에서 서로 겹치지 않는 인접 쌍을 골라 이득의 합을 최대화하는 문제입니다.",
+      "오른쪽에서 왼쪽으로 DP를 수행합니다. dp[i]는 i 이후의 원소만 사용했을 때의 최대 이득이며, dp[i+1](i를 교환하지 않음)과 dp[i+2]에 arr[i]−arr[i+1]과 0 중 큰 값을 더한 값(i와 i+1을 교환) 중 더 큰 값입니다. 답은 기준값 Σ arr[i]×(i+1)에 dp[0]을 더한 값이며, 64비트 정수가 필요합니다."
+    ],
+    "vi": [
+      "Trước hết tính sức mạnh khi không hoán đổi làm mốc; hoán đổi hai phần tử kề nhau i và i+1 làm sức mạnh thay đổi một lượng chỉ phụ thuộc vào hai phần tử đó, không phụ thuộc vào bất kỳ phép hoán đổi nào khác.",
+      "Hoán đổi i và i+1 mang lại lợi ích arr[i]−arr[i+1], và lợi ích âm còn tệ hơn việc không hoán đổi. Mỗi phần tử tham gia nhiều nhất một lần hoán đổi, nên các cặp được chọn không được dùng chung phần tử: hãy chọn các cặp kề nhau rời nhau trên một đường thẳng sao cho tổng lợi ích lớn nhất.",
+      "Chạy quy hoạch động từ phải sang trái: dp[i] là lợi ích tốt nhất chỉ dùng các phần tử từ i trở đi, bằng giá trị lớn hơn giữa dp[i+1] (không hoán đổi i) và dp[i+2] cộng với giá trị lớn hơn giữa arr[i]−arr[i+1] và 0 (hoán đổi i và i+1). Đáp án là mốc Σ arr[i]×(i+1) cộng dp[0], cần dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nUse the contribution without any swaps as the baseline. Swapping i and i+1 gains arr[i]−arr[i+1]; use a linear DP to take the better of making an adjacent swap or skipping.\n\n## Proof of correctness\n\nAll operations form a matching of disjoint adjacent edges. If i and i+1 are swapped, the change in the weighted sum is (i+1)arr[i+1]+(i+2)arr[i]−(i+1)arr[i]−(i+2)arr[i+1]=arr[i]−arr[i+1]. For each i, the optimal choice either skips i or takes the edge (i,i+1) and skips the next edge, and the recurrence covers every valid plan.\n\n## Complexity\n\nTime O(n), space O(n).\n\n## Source note\n\nThis site separately compiled the standard input/output protocol; it does not claim that the original site provided this protocol."

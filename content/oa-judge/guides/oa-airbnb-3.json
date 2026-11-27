@@ -13,6 +13,21 @@
       "Every jump costs 1 no matter how many cells it spans, so this is a shortest path in an unweighted graph: use BFS. A jump moves 1..k cells along one direction, and every cell on the way must be empty.",
       "From the current cell scan each of the four directions cell by cell, up to k cells, stopping at a wall or the border; unvisited empty cells on the way get the current distance plus one. A visited empty cell is not a wall, so keep scanning past it.",
       "If the start or target is blocked, print -1; set all distances to -1, give the start 0 and enqueue it; for each dequeued cell scan the four directions with step = 1..k: break at the border or a wall, and set the distance and enqueue when unvisited; finally print the target's distance (-1 if unreachable, 0 for an empty 1x1 grid)."
+    ],
+    "ja": [
+      "1 回のジャンプは何マス進んでもコスト 1 なので、重みなしグラフの最短経路です。BFS を使います。ジャンプは 1 方向に 1..k マス進み、途中のマスはすべて空でなければなりません。",
+      "現在のマスから 4 方向それぞれを、最大 k マス、1 マスずつ走査し、壁か境界で止めます。途中の未訪問の空のマスには、現在の距離に 1 を加えた値を設定します。訪問済みの空のマスは壁ではないので、その先も走査を続けます。",
+      "開始か目標が塞がっていれば -1 を出力します。すべての距離を -1 にし、開始を 0 にしてキューに入れます。取り出した各マスについて、step = 1..k で 4 方向を走査します。境界か壁に当たったら break し、未訪問なら距離を設定してキューに入れます。最後に目標の距離を出力します (到達不能なら -1、空の 1x1 グリッドなら 0)。"
+    ],
+    "ko": [
+      "점프가 몇 칸에 걸치든 비용은 1이므로, 이것은 가중치 없는 그래프의 최단 경로입니다. BFS를 사용하십시오. 점프는 한 방향으로 1..k칸을 이동하며 지나는 모든 칸이 비어 있어야 합니다.",
+      "현재 칸에서 네 방향 각각을 최대 k칸까지 한 칸씩 훑되, 벽이나 경계에서 멈춥니다. 도중에 만나는 방문하지 않은 빈 칸에는 현재 거리 + 1을 줍니다. 방문한 빈 칸은 벽이 아니므로 그 너머까지 계속 훑으십시오.",
+      "시작이나 목표가 막혀 있으면 -1을 출력합니다. 모든 거리를 -1로 설정하고 시작에 0을 준 뒤 큐에 넣습니다. 큐에서 꺼낸 칸마다 step = 1..k로 네 방향을 훑습니다. 경계나 벽이면 break하고, 방문하지 않았으면 거리를 설정하고 큐에 넣습니다. 마지막에 목표의 거리를 출력합니다(도달 불가능하면 -1, 비어 있는 1x1 격자는 0)."
+    ],
+    "vi": [
+      "Mỗi bước nhảy tốn 1 bất kể nó trải qua bao nhiêu ô, nên đây là đường đi ngắn nhất trong đồ thị không trọng số: dùng BFS. Một bước nhảy di chuyển 1..k ô theo một hướng, và mọi ô trên đường đi phải trống.",
+      "Từ ô hiện tại, quét từng ô một theo mỗi trong bốn hướng, tối đa k ô, dừng khi gặp tường hoặc biên; các ô trống chưa thăm trên đường nhận khoảng cách hiện tại cộng một. Một ô trống đã thăm không phải là tường, nên hãy tiếp tục quét qua nó.",
+      "Nếu ô xuất phát hoặc đích bị chặn, in -1; đặt mọi khoảng cách là -1, gán 0 cho ô xuất phát và đưa nó vào hàng đợi; với mỗi ô được lấy ra, quét bốn hướng với step = 1..k: break khi gặp biên hoặc tường, và đặt khoảng cách rồi đưa vào hàng đợi khi chưa thăm; cuối cùng in khoảng cách của ô đích (-1 nếu không đến được, 0 cho lưới 1x1 trống)."
     ]
   },
   "explanationEn": "## Approach\n\nRun BFS over empty cells. Each time, scan up to k cells in each of the four directions and stop at a wall; a visited empty cell is not an obstacle, so keep scanning to positions further away.\n\n## Proof of correctness\n\nEvery legal jump is an edge of unit weight. The ray scan enumerates exactly the legal edges and only those, and BFS reaches each cell for the first time with the fewest steps, so the target's distance is correct.\n\n## Complexity\n\nO(nmk) time and O(nm) space, at most about 4 million ray checks."

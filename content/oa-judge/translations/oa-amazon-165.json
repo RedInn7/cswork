@@ -11,5 +11,35 @@
     "hints": [
       "Precompute, for each position, the maximum smooth contiguous length extending left and right. A change only affects the substrings containing that position; enumerate the 26 replacements and compute the new (left extension+1)(right extension+1) minus the old contribution."
     ]
+  },
+  "ja": {
+    "title": "1 文字を変更した後の滑らかな部分文字列の最大得点",
+    "description": "空でない連続部分文字列は、隣り合うすべての文字がアルファベット順で高々 1 しか違わないとき 1 点を寄与します。1 文字だけの部分文字列は合計 1 点を寄与します。元の文字列の高々 1 文字を任意の小文字に変更でき、合計得点の最大値を求めてください。条件は隣接する文字にのみ課されます。区間全体の最大の文字と最小の文字の差が ≤1 であることは要求されません。\n\n標準入出力、例、解法はこのサイトが独自に作成したものです。このサイトのものと明記された範囲は、元の出典の制約ではありません。",
+    "input": "小文字からなる文字列が 1 行で与えられます。元のスナップショットには長さの上限がありません。このサイトでは 1≤長さ≤100000 とします。",
+    "output": "答えを表す整数を 1 つ出力してください。",
+    "explanation": "例 1: c を b に変えると aababfgh になります。長さ 5 の最初の区間が 15 を、長さ 3 の最後の区間が 6 を寄与し、合計 21 です。例 2: 文字列全体がすでに滑らかなので、10 個すべての部分文字列が得点します。例 3: e を a に変えると abaz になります。最初の 3 文字が 6 を、z が 1 を寄与し、合計 7 です。",
+    "hints": [
+      "各位置について、左へ伸ばせる最大の滑らかな連続長と、右へ伸ばせる最大の滑らかな連続長を前計算します。変更が影響するのはその位置を含む部分文字列だけです。26 通りの置換を列挙し、新しい (左の延長+1)(右の延長+1) から古い寄与を引いて計算します。"
+    ]
+  },
+  "ko": {
+    "title": "문자 하나를 바꾼 뒤 얻을 수 있는 최대 매끄러운 부분 문자열 점수",
+    "description": "비어 있지 않은 연속 부분 문자열은 인접한 모든 문자 쌍의 알파벳 순서 차이가 최대 1이면 1점을 기여하며, 문자 하나는 합쳐서 1점을 기여합니다. 원래 문자열의 문자를 최대 하나까지 임의의 소문자로 바꿀 수 있을 때 얻을 수 있는 가장 높은 총점을 구하세요. 조건은 인접한 문자에만 적용되며, 구간 전체의 가장 큰 문자와 가장 작은 문자의 차이가 ≤1일 필요는 없습니다.\n\n표준 입출력, 예제, 풀이는 이 사이트에서 독자적으로 작성했으며, 이 사이트가 정한 것으로 표시된 범위는 원 출처의 제약 조건이 아닙니다.",
+    "input": "첫 번째 줄에 소문자 문자열이 주어집니다. 원본 스냅샷에는 길이 제한이 없으며, 이 사이트는 1≤길이≤100000으로 정했습니다.",
+    "output": "정수 하나를 출력합니다.",
+    "explanation": "예제 1: c를 b로 바꾸면 aababfgh가 됩니다. 길이 5인 첫 구간이 15점, 길이 3인 마지막 구간이 6점을 기여해 총 21점입니다. 예제 2: 문자열 전체가 이미 매끄러우므로 10개의 부분 문자열이 모두 점수를 얻습니다. 예제 3: e를 a로 바꾸면 abaz가 됩니다. 앞의 세 문자가 6점, z가 1점을 기여해 총 7점입니다.",
+    "hints": [
+      "각 위치에 대해 왼쪽과 오른쪽으로 뻗어 나갈 수 있는 최대 매끄러운 연속 길이를 미리 계산합니다. 문자 하나를 바꾸면 그 위치를 포함하는 부분 문자열만 영향을 받습니다. 26가지 대체 문자를 열거하며 새로운 (왼쪽 확장+1)(오른쪽 확장+1)에서 기존 기여분을 뺀 값을 계산하세요."
+    ]
+  },
+  "vi": {
+    "title": "Điểm xâu con mượt lớn nhất sau khi đổi một chữ cái",
+    "description": "Một xâu con liên tiếp không rỗng đóng góp 1 điểm nếu mọi cặp ký tự kề nhau chênh nhau tối đa 1 về vị trí trong bảng chữ cái; một ký tự đơn đóng góp tổng cộng 1 điểm. Bạn có thể đổi tối đa một ký tự của xâu ban đầu thành một chữ cái thường bất kỳ; hãy tìm tổng điểm cao nhất. Điều kiện chỉ ràng buộc các ký tự kề nhau; không yêu cầu chênh lệch giữa chữ cái lớn nhất và nhỏ nhất của cả đoạn phải ≤1.\n\nĐầu vào/đầu ra chuẩn, các ví dụ và lời giải do trang này tự viết; các khoảng giá trị được đánh dấu là của trang này không phải là ràng buộc gốc của nguồn.",
+    "input": "Một dòng chứa xâu chữ cái thường. Ảnh chụp gốc không cho giới hạn độ dài; trang này đặt 1≤độ dài≤100000.",
+    "output": "In ra một số nguyên là đáp án.",
+    "explanation": "Ví dụ 1: đổi c thành b được aababfgh; đoạn đầu độ dài 5 đóng góp 15 và đoạn cuối độ dài 3 đóng góp 6, tổng cộng 21. Ví dụ 2: cả xâu đã mượt, nên mọi 10 xâu con đều được điểm. Ví dụ 3: đổi e thành a được abaz; ba ký tự đầu đóng góp 6 và z đóng góp 1, tổng cộng 7.",
+    "hints": [
+      "Tính trước, với mỗi vị trí, độ dài liên tiếp mượt lớn nhất mở rộng sang trái và sang phải. Một thay đổi chỉ ảnh hưởng đến các xâu con chứa vị trí đó; duyệt 26 phép thay thế và tính (phần mở rộng trái+1)(phần mở rộng phải+1) mới trừ đi đóng góp cũ."
+    ]
   }
 }

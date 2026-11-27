@@ -13,6 +13,21 @@
       "Every pair i<j counts: 01 contributes x and 10 contributes y. If x>y, reversing the string turns 01 into 10 and vice versa, which is the same as swapping x and y, so you may assume x ≤ y.",
       "With x ≤ y, if two question marks are filled 1 then 0, changing them to 0 then 1 never increases the total cost. So some optimal solution fills the marks with all 0s first and then all 1s from left to right, and you only need to try every split point.",
       "Reverse the string and swap x and y if needed; fill every mark with 1, compute the full cost, and note the total counts of 0s and 1s; scan from left to right keeping the counts of 0s and 1s on each side, and at each mark change it to 0, which changes the cost by (left ones × y) − (left zeros × x) + (right ones × x) − (right zeros × y); keep the minimum over all split points, comparing exact 64-bit values, and only at the end print it modulo 10^9+7."
+    ],
+    "ja": [
+      "すべてのペア i<j が対象で、01 は x、10 は y のコストです。x>y のとき、文字列を反転すると 01 が 10 に(またその逆に)なり、これは x と y を入れ替えるのと同じなので、x ≤ y と仮定できます。",
+      "x ≤ y のとき、2 つの ? が先に 1、後に 0 と埋められているなら、0 の次に 1 に変えても総コストは増えません。したがって、左から順にまず 0、次に 1 と埋める最適解が存在し、すべての分割点を試すだけで済みます。",
+      "必要なら文字列を反転して x と y を入れ替えます。すべての ! を 1 にして総コストを計算し、0 と 1 の総数を記録します。左から走査しながら両側の 0 と 1 の個数を保持し、各 ! を 0 に変えたときのコスト変化 (左の 1 の数 × y) − (左の 0 の数 × x) + (右の 1 の数 × x) − (右の 0 の数 × y) を加えます。すべての分割点で 64 ビットの正確な値を比較して最小値を保持し、最後にだけ 10^9+7 で割った余りを出力します。"
+    ],
+    "ko": [
+      "모든 쌍 i<j가 계산됩니다. 01은 x, 10은 y를 냅니다. x>y이면 문자열을 뒤집을 때 01과 10이 서로 바뀌며 이는 x와 y를 교환하는 것과 같으므로, x ≤ y라고 가정해도 됩니다.",
+      "x ≤ y일 때 물음표 두 개가 1, 0 순으로 채워져 있다면 0, 1 순으로 바꿔도 전체 비용이 늘지 않습니다. 따라서 왼쪽부터 먼저 모두 0, 그다음 모두 1로 채우는 최적해가 있으며, 모든 분할 지점만 시도하면 됩니다.",
+      "필요하면 문자열을 뒤집고 x와 y를 교환합니다. 모든 물음표를 1로 채워 전체 비용을 계산하고 0과 1의 전체 개수를 기록합니다. 왼쪽에서 오른쪽으로 스캔하며 양쪽의 0과 1의 개수를 유지하고, 각 물음표를 0으로 바꿀 때 비용 변화는 (왼쪽 1의 개수 × y) − (왼쪽 0의 개수 × x) + (오른쪽 1의 개수 × x) − (오른쪽 0의 개수 × y)입니다. 모든 분할 지점에서 정확한 64비트 값을 비교해 최솟값을 구하고, 마지막에만 10^9+7로 나눈 나머지를 출력합니다."
+    ],
+    "vi": [
+      "Mọi cặp i<j đều được tính: 01 đóng góp x và 10 đóng góp y. Nếu x>y, đảo ngược xâu biến 01 thành 10 và ngược lại, tương đương với việc hoán đổi x và y, nên có thể giả sử x ≤ y.",
+      "Với x ≤ y, nếu hai dấu hỏi được điền 1 rồi 0, đổi chúng thành 0 rồi 1 không bao giờ làm tăng tổng chi phí. Vì vậy có một nghiệm tối ưu điền các dấu bằng toàn 0 trước rồi toàn 1 sau, từ trái sang phải, và bạn chỉ cần thử mọi điểm chia.",
+      "Đảo xâu và hoán đổi x với y nếu cần; điền mọi dấu bằng 1, tính toàn bộ chi phí, và ghi lại tổng số 0 và 1; quét từ trái sang phải, giữ số lượng 0 và 1 ở mỗi bên, và tại mỗi dấu đổi nó thành 0, làm chi phí thay đổi (số 1 bên trái × y) − (số 0 bên trái × x) + (số 1 bên phải × x) − (số 0 bên phải × y); giữ giá trị nhỏ nhất qua mọi điểm chia, so sánh các giá trị 64 bit chính xác, và chỉ ở cuối mới in ra theo modulo 10^9+7."
     ]
   },
   "explanationEn": "## Approach\n\nReversing the string and swapping x/y lets you assume x≤y. Then some optimal solution sets the wildcards to 0 first and 1 afterward. Start with every ! set to 1, scan and change them to 0 one at a time, compute each change in the full cost from the counts of 0/1 on the left and right, take the minimum over all split points, and apply the modulus at the end.\n\n## Proof of correctness\n\nWhen x≤y, swapping an inverted 1, 0 pair of wildcards into 0, 1 leaves the total contribution of pairs outside the range unchanged; the change contributed by these two positions and every position between them is a non-negative multiple of x−y, so the total cost does not increase. Repeating such swaps gives the single-split form. Changing a 1 at some position to 0 changes the cost by left1*y−left0*x+right1*x−right0*y, which counts all and only the pairs involving that position. The scan covers every single-split form, so it finds the global optimum rather than a local one.\n\n## Complexity\n\nTime O(n), space O(n); costs are compared exactly in 64 bits before taking the modulus."

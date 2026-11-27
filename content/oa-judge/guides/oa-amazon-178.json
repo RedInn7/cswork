@@ -13,6 +13,21 @@
       "Each item needs at least |value - target| calls, and adjusting the items one by one achieves that, so each query's answer is the sum of absolute differences from the target.",
       "There are many queries, so do not loop over all items each time. After sorting and building prefix sums, binary search the number c of items not above the target: those c are raised to it and the rest lowered, and both parts come from the prefix sums in O(1).",
       "Sort ascending and build prefix sums pre; for each target t, binary search the count c of items <= t, and the answer is c*t - pre[c] + (pre[n] - pre[c]) - (n - c)*t; print the answers in query order. Results reach about 10^11, so use 64-bit integers."
+    ],
+    "ja": [
+      "各要素には少なくとも |value - target| 回の呼び出しが必要で、要素を 1 つずつ調整すればそれが達成できます。したがって各クエリの答えは、ターゲットとの差の絶対値の合計です。",
+      "クエリが多いので、毎回すべての要素をループしてはいけません。ソートして累積和を作ったあと、ターゲット以下の要素の個数 c を二分探索で求めます。その c 個はターゲットまで引き上げ、残りは引き下げます。どちらも累積和から O(1) で求められます。",
+      "昇順にソートして累積和 pre を作ります。各ターゲット t について、t 以下の要素の個数 c を二分探索で求めると、答えは c*t - pre[c] + (pre[n] - pre[c]) - (n - c)*t になります。答えはクエリの順に出力してください。結果は約 10^11 に達するので、64 ビット整数を使ってください。"
+    ],
+    "ko": [
+      "각 항목은 최소 |value - target|번의 호출이 필요하며, 항목을 하나씩 조정하면 그 횟수로 충분합니다. 따라서 각 질의의 답은 목표값과의 절대 차이의 합입니다.",
+      "질의가 많으므로 매번 모든 항목을 순회하지 마세요. 정렬하고 누적 합을 만든 뒤, 목표값 이하인 항목의 수 c를 이분 탐색으로 구합니다. 그 c개는 목표값까지 올리고 나머지는 내리면 되며, 두 부분 모두 누적 합으로 O(1)에 계산됩니다.",
+      "오름차순으로 정렬하고 누적 합 pre를 만듭니다. 각 목표값 t에 대해 이분 탐색으로 항목 <= t의 개수 c를 구하면 답은 c*t - pre[c] + (pre[n] - pre[c]) - (n - c)*t이고, 이 답들을 질의 순서대로 출력합니다. 결과가 약 10^11에 이르므로 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Mỗi phần tử cần ít nhất |value - target| lần gọi, và điều chỉnh từng phần tử một đạt đúng con số đó, nên đáp án của mỗi truy vấn là tổng các chênh lệch tuyệt đối so với mục tiêu.",
+      "Có nhiều truy vấn, nên đừng duyệt mọi phần tử mỗi lần. Sau khi sắp xếp và dựng tổng tiền tố, hãy tìm kiếm nhị phân số c các phần tử không vượt quá mục tiêu: c phần tử đó được nâng lên mục tiêu còn các phần tử còn lại bị hạ xuống, và cả hai phần đều lấy được từ tổng tiền tố trong O(1).",
+      "Sắp xếp tăng dần và dựng tổng tiền tố pre; với mỗi mục tiêu t, tìm kiếm nhị phân số c các phần tử <= t, và đáp án là c*t - pre[c] + (pre[n] - pre[c]) - (n - c)*t; in các đáp án theo thứ tự truy vấn. Kết quả đạt khoảng 10^11, nên dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nSort and build prefix sums; binary search the split point for the target, and compute separately the total costs of increasing the left part and decreasing the right part.\n\n## Proof of correctness\n\nEach item needs at least as many calls as its absolute difference from the target, and adjusting each item separately achieves this. After sorting, binary search splits the items into those not greater than the target and those greater than it; the prefix-sum formula computes the sum of absolute differences exactly, and queries do not affect each other.\n\n## Complexity\n\nTime O(n log n + q log n), space O(n + q)."

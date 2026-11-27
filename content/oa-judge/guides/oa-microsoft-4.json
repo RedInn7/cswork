@@ -13,6 +13,21 @@
       "Every operation acts on a prefix, and cyclic increments commute: what a position finally becomes depends only on how many operations cover it.",
       "Position i is covered by exactly the operations whose k is greater than i. Record each \"add 1 to the first k\" in a difference array instead of touching the characters one by one.",
       "For each k, add 1 at index 0 of the difference array and subtract 1 at index k; then accumulate from left to right to get the increment count c of each position, replace the letter by the one at (its index plus c) modulo 26, and print the whole string."
+    ],
+    "ja": [
+      "各操作は接頭辞に作用し、循環的なインクリメントは可換です。ある位置が最終的にどうなるかは、その位置を覆う操作の回数だけで決まります。",
+      "位置 i を覆う操作は、k が i より大きいものだけです。文字を1つずつ書き換える代わりに、「先頭の k 個に 1 を加える」操作を差分配列に記録します。",
+      "各 k について、差分配列のインデックス 0 に 1 を加え、インデックス k から 1 を引きます。その後、左から右へ累積して各位置のインクリメント回数 c を求め、文字を (そのインデックス + c) を 26 で割った余りの位置の文字に置き換えて、文字列全体を出力します。"
+    ],
+    "ko": [
+      "모든 연산은 접두사에 작용하고 순환 증가는 교환 가능하므로, 한 위치가 최종적으로 무엇이 되는지는 그 위치를 덮는 연산의 수에만 달려 있습니다.",
+      "위치 i를 덮는 연산은 정확히 k가 i보다 큰 연산들입니다. 문자를 하나씩 건드리는 대신 각각의 \"처음 k개에 1을 더한다\"를 차분 배열에 기록합니다.",
+      "각 k에 대해 차분 배열의 인덱스 0에 1을 더하고 인덱스 k에서 1을 뺍니다. 그런 다음 왼쪽에서 오른쪽으로 누적하여 각 위치의 증가 횟수 c를 구하고, 글자를 (인덱스 더하기 c)를 26으로 나눈 나머지의 글자로 바꾼 뒤 문자열 전체를 출력합니다."
+    ],
+    "vi": [
+      "Mỗi thao tác tác động lên một tiền tố, và các phép tăng vòng tròn giao hoán: một vị trí cuối cùng thành gì chỉ phụ thuộc vào có bao nhiêu thao tác phủ nó.",
+      "Vị trí i được phủ bởi đúng các thao tác có k lớn hơn i. Ghi mỗi phép \"cộng 1 cho k vị trí đầu\" vào mảng hiệu thay vì đụng vào từng ký tự một.",
+      "Với mỗi k, cộng 1 tại chỉ số 0 của mảng hiệu và trừ 1 tại chỉ số k; sau đó cộng dồn từ trái sang phải để có số lần tăng c của mỗi vị trí, thay chữ cái bằng chữ cái ở (chỉ số của nó cộng c) modulo 26, và in cả xâu."
     ]
   },
   "explanationEn": "## Approach\n\nUse a difference array to record each prefix increment of 1, scan the prefix sums to get the total number of increments at each position, then take it modulo 26.\n\n## Proof of correctness\n\nThe increments at each position are commutative additions modulo 26. Each operation adds 1 at index 0 and subtracts 1 at index k, so the prefix sum counts exactly the operations covering that position; one scan is therefore equivalent to performing all the operations.\n\n## Complexity\n\nTime O(|s|+m), space O(|s|)."

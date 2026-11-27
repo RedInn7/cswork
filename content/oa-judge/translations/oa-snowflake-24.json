@@ -13,5 +13,41 @@
       "Process roles in topological order, and once a parent role is done, merge its set into its children.",
       "Represent sets as bitsets, so each merge takes only P/64 word ORs."
     ]
+  },
+  "ja": {
+    "title": "Snowflake OA #24: ロールの有効な権限",
+    "description": "0..n−1 の番号を持つ n 個のロールがあり、ロール i は直接の権限の集合を持ちます。付与 [u, v] は、ロール v がロール u のすべての権限を継承することを意味します。継承は推移的で、付与は有向非巡回グラフを成します。\n\nロールの有効な権限は、そのロール自身の直接の権限と、すべての祖先ロールの直接の権限を合わせたものです。各ロールについて、重複を除いた有効な権限を辞書順の昇順に並べて求めてください。",
+    "input": "1 行目に 2 つの整数 n と m が与えられます。続く n 行はそれぞれ 1 つのロールを表し、i 行目は整数 k で始まり、その後にロール i−1 の k 個の直接の権限の文字列が続きます（重複がありえ、k は 0 でもかまいません）。続く m 行にはそれぞれ 2 つの整数 u v が与えられ、ロール v がロール u を継承することを表します。\n\n1≤n≤2000、0≤m≤200000、すべての k の合計は高々 200000 です。0≤u,v<n で、付与のグラフは非巡回であり、同じ付与が複数回現れることもあります。権限の文字列は長さ 1..10 で、可視 ASCII 文字（33..126）からなり、空白を含みません。相異なる権限の文字列は高々 2000 個です。",
+    "output": "n 行を出力してください。i 行目はロール i−1 に対応します。まず有効な権限の個数 c を出力し、続いて c 個の相異なる権限の文字列を、辞書順（ASCII 順）で空白区切りで出力します。",
+    "explanation": "例 1：ロール 1 はロール 0 を継承し、ロール 2 はロール 1 を介してロール 0 を間接的に継承するので、有効な権限は {A}、{A,B}、{A,B,C} です。\n例 2：ロール 2 はロール 0 と 1 の両方を継承し、ロール 3 はロール 2 を継承するので、4 つの権限すべてを得ます。\n例 3：ロール 0 の直接の権限 A は複数回現れますが、重複排除により 1 つだけ残ります。ロール 2 は直接の権限を持ちませんが、A を継承します。",
+    "hints": [
+      "まずすべての権限の文字列をソートして番号を付けます。番号の順がそのまま出力の順になります。",
+      "ロールをトポロジカル順に処理し、親ロールが終わったら、その集合を子にマージします。",
+      "集合をビットセットで表すと、各マージは P/64 回のワードの OR だけで済みます。"
+    ]
+  },
+  "ko": {
+    "title": "Snowflake OA #24: 역할의 유효 권한",
+    "description": "0..n−1번의 역할 n개가 있고, i번 역할은 직접 권한 집합을 가집니다. 부여 [u, v]는 역할 v가 역할 u의 모든 권한을 상속한다는 뜻입니다. 상속은 추이적이며 부여 관계는 방향 비순환 그래프를 이룹니다.\n\n역할의 유효 권한은 그 역할의 직접 권한과 모든 조상 역할의 직접 권한을 합한 것입니다. 각 역할에 대해 중복을 제거하고 사전순 오름차순으로 정렬한 유효 권한을 구하세요.",
+    "input": "첫 줄에 두 정수 n과 m이 주어집니다. 이어지는 n줄은 각 역할을 설명하며, i번째 줄은 정수 k로 시작하고 그 뒤에 역할 i−1의 직접 권한 문자열 k개가 옵니다(중복이 있을 수 있고 k는 0일 수 있음). 다음 m줄에는 각각 두 정수 u v가 주어지며 역할 v가 역할 u를 상속한다는 뜻입니다.\n\n1≤n≤2000, 0≤m≤200000이고 모든 k의 합은 최대 200000입니다. 0≤u,v<n이며 부여 그래프는 비순환이고 같은 부여가 여러 번 나올 수 있습니다. 권한 문자열의 길이는 1..10이고 공백이 없는 눈에 보이는 ASCII 문자(33..126)로 이루어지며, 서로 다른 권한 문자열은 최대 2000개입니다.",
+    "output": "n줄을 출력합니다. i번째 줄은 역할 i−1에 대응하며, 먼저 유효 권한의 수 c를 출력하고, 이어서 서로 다른 c개의 권한 문자열을 사전순(ASCII)으로 공백으로 구분하여 출력합니다.",
+    "explanation": "예제 1: 역할 1은 역할 0을 상속하고 역할 2는 역할 1을 통해 역할 0을 간접 상속하므로, 유효 권한은 {A}, {A,B}, {A,B,C}입니다.\n예제 2: 역할 2는 역할 0과 1을 모두 상속하고 역할 3은 역할 2를 상속하므로 네 권한을 모두 얻습니다.\n예제 3: 역할 0의 직접 권한 A가 여러 번 나오지만 중복 제거 후 한 번만 남고, 직접 권한이 없는 역할 2는 A를 상속합니다.",
+    "hints": [
+      "먼저 모든 권한 문자열을 정렬하여 번호를 매깁니다. 번호 순서가 곧 출력 순서입니다.",
+      "위상 정렬 순서로 역할을 처리하고, 부모 역할의 처리가 끝나면 그 집합을 자식들에게 병합합니다.",
+      "집합을 비트셋으로 표현하면 병합마다 P/64번의 워드 OR만 필요합니다."
+    ]
+  },
+  "vi": {
+    "title": "Snowflake OA #24: Quyền hiệu lực của vai trò",
+    "description": "Có n vai trò được đánh số 0..n−1, và vai trò i có một tập quyền trực tiếp. Một lần cấp [u, v] có nghĩa là vai trò v kế thừa mọi quyền của vai trò u. Việc kế thừa có tính bắc cầu, và các lần cấp tạo thành một đồ thị có hướng không chu trình.\n\nQuyền hiệu lực của một vai trò gồm các quyền trực tiếp của nó cộng với các quyền trực tiếp của mọi vai trò tổ tiên của nó. Với mỗi vai trò, hãy tìm các quyền hiệu lực đã loại trùng của nó, sắp xếp tăng dần theo thứ tự từ điển.",
+    "input": "Dòng đầu tiên chứa hai số nguyên n và m. Mỗi dòng trong n dòng tiếp theo mô tả một vai trò: dòng i bắt đầu bằng một số nguyên k, theo sau là k xâu quyền trực tiếp của vai trò i−1 (có thể trùng, và k có thể bằng 0). Mỗi dòng trong m dòng tiếp theo chứa hai số nguyên u v, nghĩa là vai trò v kế thừa vai trò u.\n\n1≤n≤2000, 0≤m≤200000, và tổng mọi k không quá 200000; 0≤u,v<n, đồ thị cấp quyền không có chu trình, và cùng một lần cấp có thể xuất hiện nhiều lần. Một xâu quyền có độ dài 1..10, gồm các ký tự ASCII hiển thị được (33..126), và không chứa dấu cách; có tối đa 2000 xâu quyền phân biệt.",
+    "output": "In n dòng; dòng i ứng với vai trò i−1: trước hết in số quyền hiệu lực c, sau đó in c xâu quyền phân biệt theo thứ tự từ điển (ASCII), cách nhau bằng dấu cách.",
+    "explanation": "Ví dụ 1: vai trò 1 kế thừa vai trò 0, và vai trò 2 kế thừa vai trò 0 gián tiếp qua vai trò 1, nên các quyền hiệu lực là {A}, {A,B} và {A,B,C}.\nVí dụ 2: vai trò 2 kế thừa cả vai trò 0 và 1, và vai trò 3 kế thừa vai trò 2, nên nó có cả bốn quyền.\nVí dụ 3: quyền trực tiếp A của vai trò 0 xuất hiện nhiều lần và chỉ được giữ một lần sau khi loại trùng; vai trò 2 không có quyền trực tiếp nhưng kế thừa A.",
+    "hints": [
+      "Trước hết sắp xếp mọi xâu quyền và đánh số chúng; thứ tự đánh số chính là thứ tự đầu ra.",
+      "Xử lý các vai trò theo thứ tự tô-pô, và khi một vai trò cha xong thì trộn tập của nó vào các vai trò con.",
+      "Biểu diễn các tập bằng bitset, nên mỗi lần trộn chỉ tốn P/64 phép OR trên từ máy."
+    ]
   }
 }

@@ -13,6 +13,21 @@
       "As soon as there is a drop (an element smaller than the one before it), no contiguous segment crossing that edge can be valid.",
       "Maintain the length of the longest non-decreasing run ending at the current element: extend it by one when there is no drop, and restart from 1 after a drop.",
       "Set current = answer = 1; for i = 1..n-1, if a[i-1] <= a[i] increment current, otherwise set current = 1; update answer with current at each step and print it."
+    ],
+    "ja": [
+      "減少（直前より小さい要素）が現れた時点で、その辺をまたぐ連続区間は有効にならなくなります。",
+      "現在の要素で終わる最長の非減少区間の長さを保持します。減少がなければ 1 延ばし、減少があれば 1 から再開します。",
+      "current = answer = 1 とします。i = 1..n-1 について、a[i-1] <= a[i] なら current を 1 増やし、そうでなければ current = 1 にします。各ステップで answer を current で更新し、最後に出力します。"
+    ],
+    "ko": [
+      "값이 떨어지는 지점(바로 앞보다 작은 원소)이 있으면, 그 경계를 가로지르는 연속 구간은 유효할 수 없습니다.",
+      "현재 원소에서 끝나는 가장 긴 비감소 구간의 길이를 유지합니다. 하락이 없으면 1 늘리고, 하락이 있으면 1부터 다시 시작합니다.",
+      "current = answer = 1로 둡니다. i = 1..n-1에 대해 a[i-1] <= a[i]이면 current를 1 늘리고, 아니면 current = 1로 합니다. 매 단계마다 current로 answer를 갱신한 뒤 출력합니다."
+    ],
+    "vi": [
+      "Ngay khi có một chỗ giảm (phần tử nhỏ hơn phần tử đứng trước), không đoạn liên tiếp nào đi qua cạnh đó có thể hợp lệ.",
+      "Duy trì độ dài của đoạn không giảm dài nhất kết thúc tại phần tử hiện tại: tăng thêm một khi không có chỗ giảm, và bắt đầu lại từ 1 sau một chỗ giảm.",
+      "Đặt current = answer = 1; với i = 1..n-1, nếu a[i-1] <= a[i] thì tăng current, ngược lại đặt current = 1; ở mỗi bước cập nhật answer bằng current và in ra."
     ]
   },
   "explanationEn": "## Approach\n\nMaintain the length of the non-decreasing run ending at the current element: reset it to 1 on a drop, otherwise increase it.\n\n## Correctness\n\nWhen the current value is not smaller than the previous one, it can and can only extend the previous non-decreasing tail run. When a drop occurs, no segment crossing that edge is valid, so the run must restart from the current element. The largest tail length over the whole scan covers all contiguous segments.\n\n## Complexity\n\nTime O(n), extra space O(1) (not counting the input)."

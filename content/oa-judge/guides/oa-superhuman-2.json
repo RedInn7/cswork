@@ -13,6 +13,21 @@
       "The points are non-decreasing, so the spread of the solved problems is the score at the last position reached minus the first score, which never decreases as the last index grows. To reach the threshold quickly, move as far as quickly as possible.",
       "Each step moves +1 or +2, so reaching index j takes at least ceil(j/2) steps, and always moving +2 meets that bound exactly. So greedily jump by 2, and by 1 only when 2 is impossible.",
       "Set i = 0 and c = 1. While a[i] - a[0] < threshold: if i + 2 < n then i += 2, else if i + 1 < n then i += 1, else the end is reached without meeting the threshold, so output n; each move adds one to c. When the loop ends, output c."
+    ],
+    "ja": [
+      "points は非減少なので、解いた問題のばらつきは、到達した最後の位置のスコアから最初のスコアを引いたものであり、最後のインデックスが増えても減りません。threshold に素早く到達するには、できるだけ速く遠くへ進みます。",
+      "各ステップで +1 か +2 進むので、インデックス j に到達するには少なくとも ceil(j/2) ステップかかり、常に +2 で進めばこの下界にちょうど達します。したがって貪欲に 2 ずつ跳び、2 が不可能なときだけ 1 進みます。",
+      "i = 0、c = 1 とします。a[i] - a[0] < threshold の間、i + 2 < n なら i += 2、そうでなく i + 1 < n なら i += 1、そうでもなければ threshold に届かないまま末尾に達したので n を出力します。移動のたびに c を1増やします。ループが終わったら c を出力します。"
+    ],
+    "ko": [
+      "점수가 비내림차순이므로 푼 문제들의 점수 차이는 마지막으로 도달한 위치의 점수에서 첫 점수를 뺀 값이며, 마지막 인덱스가 커질수록 줄어들지 않습니다. threshold에 빨리 도달하려면 가능한 한 빨리 멀리 이동해야 합니다.",
+      "한 단계는 +1 또는 +2만큼 이동하므로 인덱스 j에 도달하려면 최소 ceil(j/2)번의 단계가 필요하고, 항상 +2씩 이동하면 이 하한을 정확히 달성합니다. 따라서 탐욕적으로 2씩 점프하고, 2가 불가능할 때만 1씩 이동합니다.",
+      "i = 0, c = 1로 둡니다. a[i] - a[0] < threshold인 동안: i + 2 < n이면 i += 2, 아니면 i + 1 < n이면 i += 1, 그렇지 않으면 threshold를 만족하지 못한 채 끝에 도달했으므로 n을 출력합니다. 이동할 때마다 c에 1을 더합니다. 루프가 끝나면 c를 출력합니다."
+    ],
+    "vi": [
+      "Các điểm không giảm, nên độ chênh lệch của các bài đã giải là điểm ở vị trí cuối cùng đạt tới trừ điểm đầu tiên, và nó không bao giờ giảm khi chỉ số cuối tăng. Để đạt threshold nhanh, hãy đi xa nhanh nhất có thể.",
+      "Mỗi bước di chuyển +1 hoặc +2, nên đến chỉ số j cần ít nhất ceil(j/2) bước, và luôn di chuyển +2 đạt đúng cận đó. Vì vậy hãy nhảy tham lam 2 bước, và chỉ nhảy 1 bước khi không thể nhảy 2.",
+      "Đặt i = 0 và c = 1. Khi a[i] - a[0] < threshold: nếu i + 2 < n thì i += 2, nếu không thì nếu i + 1 < n thì i += 1, còn không thì đã đến cuối mà chưa đạt threshold, nên in n; mỗi lần di chuyển cộng một vào c. Khi vòng lặp kết thúc, in c."
     ]
   },
   "explanationEn": "## Approach\n\nBecause the scores are non-decreasing, the spread grows monotonically with the last index; jumping +2 every time reaches the farthest position with the fewest steps.\n\n## Proof of correctness\n\nEvery path moves at most two cells per step, so reaching any index j takes at least ceil(j/2) steps; jumping two cells repeatedly reaches this lower bound.\n\n## Complexity\n\nO(n) time, O(1) space."

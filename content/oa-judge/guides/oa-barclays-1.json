@@ -13,6 +13,21 @@
       "N can be as large as 2^31-1, so you cannot iterate the recurrence up to N. Look at the range of the terms first: two numbers that are at most 18 each have a digit sum of at most 9.",
       "Every term lies in 0..18, so the state formed by the last two terms has at most 19*19 possibilities; once a state repeats, the rest of the sequence repeats periodically.",
       "Iterate from (0, 1) and record where each pair state first appears until some state repeats, which gives the cycle start and the period. If N is smaller than the generated length, read the term directly; otherwise read the term at index start + (N - start) mod period."
+    ],
+    "ja": [
+      "N は最大 2^31-1 になりうるので、N まで漸化式を反復することはできません。まず項の範囲を見てください。それぞれ 18 以下の 2 つの数の各桁の和は、最大でも 9 です。",
+      "すべての項は 0..18 の範囲にあるので、直近の 2 項が作る状態は高々 19*19 通りです。状態が一度繰り返されれば、数列の残りは周期的に繰り返されます。",
+      "(0, 1) から反復し、どれかの状態が繰り返されるまで、各ペアの状態が最初に現れた位置を記録すると、循環の開始位置と周期が得られます。N が生成した長さより小さければ項を直接読み取り、そうでなければインデックス start + (N - start) mod period の項を読み取ります。"
+    ],
+    "ko": [
+      "N은 2^31-1까지 커질 수 있으므로 N까지 점화식을 반복할 수 없습니다. 먼저 항의 범위를 살펴보세요. 18 이하인 두 수의 자릿수 합은 각각 9 이하입니다.",
+      "모든 항이 0..18 범위에 있으므로 마지막 두 항이 이루는 상태는 최대 19*19가지이고, 상태가 한 번 반복되면 나머지 수열은 주기적으로 반복됩니다.",
+      "(0, 1)에서 시작해 어떤 상태가 반복될 때까지 각 쌍 상태가 처음 나타난 위치를 기록하면 사이클 시작점과 주기를 얻습니다. N이 생성된 길이보다 작으면 항을 바로 읽고, 그렇지 않으면 인덱스 start + (N - start) mod period의 항을 읽습니다."
+    ],
+    "vi": [
+      "N có thể lớn tới 2^31-1, nên không thể lặp công thức truy hồi tới N. Hãy xem phạm vi của các số hạng trước: hai số mỗi số không quá 18 có tổng chữ số không quá 9.",
+      "Mọi số hạng nằm trong 0..18, nên trạng thái tạo bởi hai số hạng cuối có tối đa 19*19 khả năng; một khi một trạng thái lặp lại, phần còn lại của dãy lặp lại tuần hoàn.",
+      "Lặp từ (0, 1) và ghi lại nơi mỗi trạng thái cặp xuất hiện lần đầu cho đến khi có trạng thái lặp lại, từ đó có điểm bắt đầu chu trình và chu kỳ. Nếu N nhỏ hơn độ dài đã sinh thì đọc trực tiếp số hạng; ngược lại đọc số hạng tại chỉ số start + (N - start) mod period."
     ]
   },
   "explanationEn": "## Approach\n\nThe state is the two most recent terms (a,b), and the next term is digitSum(a)+digitSum(b). All terms lie in 0..18: the initial 0 and 1 satisfy this; if both terms are at most 18, each digit sum is at most 9, so the next term is at most 18. A finite state space must repeat, so record the pair states and detect the cycle, which locates any supported N directly.\n\n## Proof of Correctness\n\nThe first two terms are 0 and 1. Assuming the two terms at the current position agree with the original recurrence, the next term is computed strictly by the definition, adding the digit sums of the two terms, so the next term also agrees. The two most recent terms always lie in 0..18, so the state must repeat within a finite number of steps; all terms after a repeated state are exactly the same as before, so mapping a query through the cycle does not change the N-th term.\n\n## Complexity\n\nPreprocessing visits at most 19² bounded pair states, so time and space are both O(1) with respect to the input N; each query is O(1)."

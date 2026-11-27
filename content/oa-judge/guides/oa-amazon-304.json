@@ -13,6 +13,21 @@
       "Each child gets 1 or 2 games, so k children hold at least k and at most 2k games; when it is feasible, the number of children who get two games is fixed.",
       "There are exactly p=n−k two-game groups. Intuitively, large games should stay alone and the smallest 2p games should be paired up, with the largest of them paired with the smallest, the second largest with the second smallest, and so on.",
       "If k>n or n>2k, output −1. Otherwise sort ascending, start the answer at the size of the largest game, and update the maximum with a[i]+a[2p−1−i] for i=0..p−1."
+    ],
+    "ja": [
+      "各子どもが受け取るゲームは 1 つか 2 つなので、k 人の子どもが持てるゲームは少なくとも k 個、多くても 2k 個です。実行可能なとき、2 つのゲームを受け取る子どもの人数は決まります。",
+      "2 つのゲームのグループはちょうど p=n−k 個です。直感的には、大きいゲームは単独にし、最小の 2p 個のゲームを組み合わせます。その中で最大のものを最小のものと、2 番目に大きいものを 2 番目に小さいものと、というように組み合わせます。",
+      "k>n または n>2k なら −1 を出力します。そうでなければ昇順にソートし、答えを最大のゲームのサイズで初期化して、i=0..p−1 について a[i]+a[2p−1−i] で最大値を更新します。"
+    ],
+    "ko": [
+      "각 아이는 게임을 1개 또는 2개 받으므로 k명의 아이는 최소 k개, 최대 2k개의 게임을 가질 수 있으며, 가능할 때 게임을 두 개 받는 아이의 수는 고정됩니다.",
+      "두 게임 그룹은 정확히 p=n−k개입니다. 직관적으로 큰 게임은 혼자 두고 가장 작은 2p개의 게임을 짝지으며, 그중 가장 큰 것은 가장 작은 것과, 두 번째로 큰 것은 두 번째로 작은 것과 짝짓는 식으로 합니다.",
+      "k>n 또는 n>2k이면 −1을 출력합니다. 아니면 오름차순으로 정렬하고, 답을 가장 큰 게임의 크기로 시작해 i=0..p−1에 대해 a[i]+a[2p−1−i]로 최댓값을 갱신합니다."
+    ],
+    "vi": [
+      "Mỗi đứa trẻ nhận 1 hoặc 2 trò chơi, nên k đứa trẻ giữ ít nhất k và nhiều nhất 2k trò chơi; khi khả thi, số trẻ nhận hai trò chơi là cố định.",
+      "Có đúng p=n−k nhóm hai trò chơi. Theo trực giác, các trò chơi lớn nên đứng riêng và 2p trò chơi nhỏ nhất nên được ghép cặp, với trò chơi lớn nhất trong số đó ghép với nhỏ nhất, lớn thứ hai ghép với nhỏ thứ hai, và cứ thế.",
+      "Nếu k>n hoặc n>2k, in ra −1. Ngược lại sắp xếp tăng dần, bắt đầu đáp án bằng kích thước của trò chơi lớn nhất, và cập nhật giá trị lớn nhất bằng a[i]+a[2p−1−i] với i=0..p−1."
     ]
   },
   "explanationEn": "## Approach\n\nIf k>n or n>2k, there is no solution. Otherwise there must be exactly p=n−k two-game groups. After sorting, pair the smallest 2p games from both ends, put each remaining larger game in a group by itself, and take the maximum load over all groups.\n\n## Proof of correctness\n\nThe numbers of groups and games force exactly p two-game groups. If a larger game is in a two-game group while a smaller game is alone, swapping them does not raise any new group above the original maximum load, so pairing the smallest 2p games is never worse. Among these numbers, if the largest is not paired with the smallest, swap the partners of the two groups involved; neither new sum exceeds the larger of the two original sums. By induction, pairing the extremes is optimal. Including the loads of all single-game groups gives the answer.\n\n## Complexity\n\nTime O(n log n), space O(n)."

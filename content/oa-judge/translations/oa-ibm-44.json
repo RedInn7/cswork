@@ -11,5 +11,35 @@
     "hints": [
       "Maintain the call stack and the last settled time; on a start, credit the old stack top up to just before t; on an end, credit the current function up to t and set the next time to t+1."
     ]
+  },
+  "ja": {
+    "title": "シングルスレッド関数の排他的実行時間",
+    "description": "1 つのスレッドの実際の呼び出しログが与えられたとき、各関数の排他的実行時間を、すべての呼び出しにわたって合計して求めてください。開始ログはその秒の始まりに CPU を引き継ぎ、終了ログはその秒を含みます。戻ったあとは直前の呼び出しが再開されます。再帰も許されます。\n\n標準的な入出力形式は本サイトが整備したものです。追加した数値の範囲や解なしの場合の表現は本サイト独自のものと明記しており、出典の元の制約ではありません。",
+    "input": "1 行目に n m、続く m 行に id:start/end:timestamp が与えられます。1≤n≤100、1≤m≤500、各 ID は 0..n−1 の範囲で、時刻は 0..1000 の範囲で非減少です。開始時刻は互いに異なり、終了時刻も互いに異なり、すべての開始に対応する終了があります。ログは正当なコールスタックの実行を表します。一時停止中の呼び出しが先に終了することはありません。",
+    "output": "n 個の整数を、ID 0 から ID n−1 まで順に出力してください。",
+    "explanation": "例の答えはそれぞれ 7 4、1、2 1 です。",
+    "hints": [
+      "コールスタックと、最後に精算した時刻を保持します。開始時には、これまでのスタックの先頭に t の直前までを加算します。終了時には、現在の関数に t までを加算し、次の時刻を t+1 にします。"
+    ]
+  },
+  "ko": {
+    "title": "단일 스레드 함수의 배타적 실행 시간",
+    "description": "단일 스레드의 실제 호출 로그가 주어질 때, 각 함수의 배타적 시간(exclusive time)을 모든 호출에 걸쳐 합산하여 구하세요. 시작 로그는 해당 초가 시작되는 시점에 CPU를 넘겨받고, 종료 로그는 해당 초를 포함하며, 반환 후에는 이전 호출이 재개됩니다. 재귀 호출도 허용됩니다.\n\n표준 입출력 형식은 이 사이트에서 정리한 것이며, 추가한 수치 범위와 해가 없는 경우의 표현은 이 사이트의 기준임을 명시한 것으로 원문의 제약 조건이 아닙니다.",
+    "input": "첫 줄에 n m이 주어지고, 이어서 m개의 줄에 id:start/end:timestamp가 주어집니다. 1≤n≤100, 1≤m≤500, 각 ID는 0..n−1이며, 시각은 0..1000이고 비감소 순서입니다. 시작 시각은 서로 다르고 종료 시각도 서로 다르며, 모든 시작에는 대응하는 종료가 있습니다. 로그는 유효한 호출 스택 실행을 나타내므로, 일시 중지된 호출이 먼저 끝날 수는 없습니다.",
+    "output": "ID 0부터 ID n−1까지 순서대로 n개의 정수를 출력합니다.",
+    "explanation": "예제의 답은 각각 7 4; 1; 2 1입니다.",
+    "hints": [
+      "호출 스택과 마지막으로 정산한 시각을 유지합니다. 시작 시점에는 이전 스택 최상단에 t 직전까지의 시간을 더하고, 종료 시점에는 현재 함수에 t까지의 시간을 더한 뒤 다음 기준 시각을 t+1로 설정합니다."
+    ]
+  },
+  "vi": {
+    "title": "Thời gian thực thi riêng của các hàm trên một luồng",
+    "description": "Cho nhật ký lời gọi thực tế của một luồng, tính thời gian thực thi riêng (exclusive time) của mỗi hàm, cộng dồn qua mọi lần gọi. Nhật ký start chiếm CPU từ đầu giây đó, nhật ký end bao gồm cả giây đó, và sau khi trả về thì lời gọi trước đó được tiếp tục; cho phép đệ quy.\n\nĐịnh dạng đầu vào/đầu ra chuẩn do trang này biên soạn; các giới hạn số được bổ sung và cách mã hóa trường hợp vô nghiệm đều được đánh dấu rõ, không phải ràng buộc gốc của đề.",
+    "input": "Dòng đầu chứa n m, tiếp theo là m dòng dạng id:start/end:timestamp. 1≤n≤100, 1≤m≤500, mỗi ID thuộc 0..n−1, và thời gian thuộc 0..1000 và không giảm; các thời điểm start phân biệt, các thời điểm end phân biệt, và mỗi start đều có một end. Nhật ký biểu diễn một lần thực thi ngăn xếp lời gọi hợp lệ: một lời gọi đang tạm dừng không thể kết thúc trước.",
+    "output": "In ra n số nguyên, theo thứ tự ID 0 đến ID n−1.",
+    "explanation": "Các ví dụ lần lượt cho 7 4; 1; và 2 1.",
+    "hints": [
+      "Duy trì ngăn xếp lời gọi và thời điểm đã tính gần nhất; khi gặp start, tính cho đỉnh ngăn xếp cũ đến ngay trước t; khi gặp end, tính cho hàm hiện tại đến hết t và đặt thời điểm kế tiếp là t+1."
+    ]
   }
 }

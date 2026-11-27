@@ -13,6 +13,21 @@
       "The number of online visitors only changes when someone arrives or leaves; a closed interval means the visitor is still online at time end and leaves only at end+1.",
       "Use a difference array that adds 1 at start and subtracts 1 at end+1; a prefix sum in increasing time order gives the online count from each event time onward. Several events at the same time must be merged before checking.",
       "Collect all events and sort them by time, merge the changes that share a time and add them to the current count; update the maximum and its time only when the current count is strictly greater than the recorded maximum, so ties keep the earliest time."
+    ],
+    "ja": [
+      "オンラインの来訪者数が変わるのは、誰かが来たとき、または去ったときだけです。閉区間なので、来訪者は時刻 end でもまだオンラインで、end+1 に去ります。",
+      "start で 1 を加え、end+1 で 1 を引く差分配列を使います。時刻の昇順に累積和を取ると、各イベント時刻以降のオンライン数が得られます。同じ時刻の複数のイベントは、確認する前にまとめる必要があります。",
+      "すべてのイベントを集めて時刻でソートし、同じ時刻の変化をまとめて現在のカウントに加えます。現在のカウントが記録済みの最大値より真に大きいときだけ、最大値とその時刻を更新します。これで、同数のときは最も早い時刻が残ります。"
+    ],
+    "ko": [
+      "접속 중인 방문자 수는 누군가 들어오거나 나갈 때만 바뀝니다. 닫힌 구간이므로 방문자는 시각 end에도 여전히 접속해 있고 end+1에 나갑니다.",
+      "start에서 1을 더하고 end+1에서 1을 빼는 차이 배열을 쓰며, 시각 순서로 누적 합을 구하면 각 이벤트 시각부터의 접속자 수를 얻습니다. 같은 시각의 여러 이벤트는 검사하기 전에 합쳐야 합니다.",
+      "모든 이벤트를 모아 시각순으로 정렬하고, 같은 시각의 변화량을 합쳐서 현재 개수에 더합니다. 현재 개수가 기록된 최댓값보다 엄격히 클 때만 최댓값과 그 시각을 갱신하므로 동점이면 가장 이른 시각이 유지됩니다."
+    ],
+    "vi": [
+      "Số khách trực tuyến chỉ thay đổi khi có người đến hoặc rời đi; khoảng đóng nghĩa là khách vẫn trực tuyến tại thời điểm end và chỉ rời đi tại end+1.",
+      "Dùng mảng hiệu cộng 1 tại start và trừ 1 tại end+1; tổng tiền tố theo thứ tự thời gian tăng dần cho số khách trực tuyến từ mỗi thời điểm sự kiện trở đi. Nhiều sự kiện cùng thời điểm phải được gộp lại trước khi kiểm tra.",
+      "Thu thập mọi sự kiện và sắp xếp theo thời gian, gộp các thay đổi cùng thời điểm và cộng vào số đếm hiện tại; chỉ cập nhật giá trị lớn nhất và thời điểm của nó khi số đếm hiện tại lớn hơn chặt giá trị lớn nhất đã ghi, để khi hòa vẫn giữ thời điểm sớm nhất."
     ]
   },
   "explanationEn": "## Approach\n\nAdd 1 at start and subtract 1 at end+1, merge events by time and scan; record the time only when the maximum count is strictly exceeded.\n\n## Proof of correctness\n\nThe count does not change between event points, and with closed intervals a visitor is still online at end and leaves only at end+1, so the prefix sum of the differences equals the online count exactly. Scanning in increasing order and updating only on strictly larger values keeps the first time at which the maximum count appears.\n\n## Complexity\n\nTime O(n log n), space O(n)."

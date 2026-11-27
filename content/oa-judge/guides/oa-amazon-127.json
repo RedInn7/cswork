@@ -13,6 +13,21 @@
       "Every palindromic substring is uniquely determined by its center and radius; the center can be on a character (odd length) or between two adjacent characters (even length).",
       "With length only up to 1000, enumerate all 2n-1 centers and expand outward from each; every time both ends match you have found one more palindromic substring.",
       "For center from 0 to 2n-2, set left = center/2 and right = (center+1)/2; while left >= 0, right < n and s[left] == s[right], add one to the answer and move left down and right up; print the answer after all centers."
+    ],
+    "ja": [
+      "回文部分文字列は、中心と半径によって一意に決まります。中心は、文字の上（奇数長）にも、隣り合う 2 文字の間（偶数長）にも置けます。",
+      "長さが高々 1000 なので、2n-1 個の中心をすべて列挙し、それぞれから外側に広げます。両端が一致するたびに、回文部分文字列が 1 個増えます。",
+      "center を 0 から 2n-2 まで動かし、left = center/2、right = (center+1)/2 とします。left >= 0、right < n、s[left] == s[right] の間、答えに 1 を加え、left を下げ right を上げます。すべての中心を処理したら答えを出力します。"
+    ],
+    "ko": [
+      "모든 회문 부분 문자열은 중심과 반지름으로 유일하게 결정됩니다. 중심은 문자 위(홀수 길이)에 있거나 인접한 두 문자 사이(짝수 길이)에 있습니다.",
+      "길이가 최대 1000이므로 2n-1개의 모든 중심을 열거하여 각 중심에서 바깥쪽으로 확장합니다. 양 끝이 일치할 때마다 회문 부분 문자열이 하나 더 발견됩니다.",
+      "center를 0부터 2n-2까지 돌며 left = center/2, right = (center+1)/2로 둡니다. left >= 0, right < n이고 s[left] == s[right]인 동안 답에 1을 더하고 left는 줄이고 right는 늘립니다. 모든 중심을 처리한 뒤 답을 출력합니다."
+    ],
+    "vi": [
+      "Mọi xâu con palindrome được xác định duy nhất bởi tâm và bán kính của nó; tâm có thể nằm trên một ký tự (độ dài lẻ) hoặc giữa hai ký tự kề nhau (độ dài chẵn).",
+      "Với độ dài chỉ tối đa 1000, duyệt tất cả 2n-1 tâm và mở rộng ra ngoài từ mỗi tâm; mỗi lần cả hai đầu khớp nhau là bạn tìm thêm được một xâu con palindrome.",
+      "Với center từ 0 đến 2n-2, đặt left = center/2 và right = (center+1)/2; trong khi left >= 0, right < n và s[left] == s[right], cộng một vào đáp án rồi giảm left và tăng right; in đáp án sau khi xử lý hết các tâm."
     ]
   },
   "explanationEn": "## Approach\n\nEnumerate odd and even centers and expand to both sides until the characters differ; each successful expansion counts one palindrome.\n\n## Correctness\n\nEvery palindrome corresponds uniquely to its center and radius. Expanding from a center visits exactly all valid radii for that center, and different centers or radii give different index ranges, so nothing is missed or counted twice.\n\n## Complexity\n\nTime O(n^2), auxiliary space O(1)."

@@ -11,5 +11,35 @@
     "hints": [
       "Sort by user and time, and count the positions where the user changes or the adjacent gap is greater than t."
     ]
+  },
+  "ja": {
+    "title": "ユーザーごとのタイムアウトによるセッション分割",
+    "description": "各ユーザーのイベントを時刻でソートし、時間差が t を超えない連続するイベントは同じセッションに属し、そうでなければ新しいセッションが始まります。すべてのユーザーにわたるセッションの総数を求めてください。異なるユーザーが統合されることはありません。\n\n標準入出力の形式と例は本サイトが整備したものです。本サイトのものと明記された範囲は、元の問題の制約ではありません。",
+    "input": "1 行目に n t、続く n 行にユーザー ID と時刻が与えられます。元の問題には数値の範囲がありません。本サイトでは 1≤n≤200000、0≤time,t≤10^12 で、ID は ASCII の英数字 1〜32 文字です。イベントは順不同でも重複していてもかまいません。",
+    "output": "答えを表す整数を 1 つ出力します。",
+    "explanation": "例の答えはそれぞれ 3、1、2 です。間隔がちょうどタイムアウトと等しい場合は、同じセッションにとどまります。",
+    "hints": [
+      "ユーザーと時刻でソートし、ユーザーが変わる位置、または隣り合う間隔が t より大きい位置を数えます。"
+    ]
+  },
+  "ko": {
+    "title": "사용자별 타임아웃으로 세션 나누기",
+    "description": "각 사용자의 이벤트를 시간순으로 정렬하고, 연속한 이벤트의 시간 차이가 t를 넘지 않으면 같은 세션에 속하며 그렇지 않으면 새 세션이 시작됩니다. 모든 사용자의 세션 총수를 구하세요. 서로 다른 사용자는 절대 합쳐지지 않습니다.\n\n표준 입출력 형식과 예제는 이 사이트에서 정리한 것이며, 이 사이트의 것이라고 명시한 범위는 원본의 제약 조건이 아닙니다.",
+    "input": "첫째 줄에 n t가 주어지고, 이어서 사용자 ID와 시간이 n개의 줄로 주어집니다. 원본에는 수치 범위가 없으며, 이 사이트에서는 1≤n≤200000, 0≤time,t≤10^12이고 ID는 ASCII 영문자 또는 숫자 1~32자입니다. 이벤트는 정렬되어 있지 않거나 중복될 수 있습니다.",
+    "output": "답에 해당하는 정수 하나를 출력합니다.",
+    "explanation": "예제의 답은 각각 3, 1, 2입니다. 간격이 타임아웃과 정확히 같으면 여전히 같은 세션에 남습니다.",
+    "hints": [
+      "사용자와 시간으로 정렬한 뒤, 사용자가 바뀌거나 인접한 간격이 t보다 큰 위치의 수를 셉니다."
+    ]
+  },
+  "vi": {
+    "title": "Chia phiên theo thời gian chờ của từng người dùng",
+    "description": "Sắp xếp các sự kiện của mỗi người dùng theo thời gian; các sự kiện liên tiếp có hiệu thời gian không vượt quá t thuộc cùng một phiên, nếu không thì một phiên mới bắt đầu. Hãy tìm tổng số phiên trên tất cả người dùng. Những người dùng khác nhau không bao giờ bị gộp chung.\n\nĐịnh dạng đầu vào/đầu ra chuẩn và các ví dụ do trang này biên soạn; các khoảng giá trị được đánh dấu rõ là của trang này không phải ràng buộc gốc của nguồn.",
+    "input": "Dòng đầu chứa n t, tiếp theo là n dòng gồm ID người dùng và thời gian. Nguồn không có giới hạn số; với trang này 1≤n≤200000, 0≤time,t≤10^12; ID gồm 1 đến 32 chữ cái hoặc chữ số ASCII; các sự kiện có thể không theo thứ tự hoặc bị lặp.",
+    "output": "In ra một số nguyên, là đáp án.",
+    "explanation": "Các ví dụ cho lần lượt 3, 1 và 2; một khoảng cách đúng bằng thời gian chờ vẫn nằm trong cùng một phiên.",
+    "hints": [
+      "Sắp xếp theo người dùng và thời gian, rồi đếm các vị trí mà người dùng đổi hoặc khoảng cách liền kề lớn hơn t."
+    ]
   }
 }

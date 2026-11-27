@@ -13,6 +13,21 @@
       "For k >= 2 there are at most about 60 positive powers of k not exceeding 10^18 (2^1..2^59 when k = 2).",
       "Generate all of these powers into a table (a set) first, then check whether each array element is in the table; no factoring or logarithms per element are needed.",
       "Start from p = k and keep multiplying by k; before each multiplication check p > 10^18 / k and stop if so, which avoids overflow (10^18 fits in a signed 64-bit integer). Do not decide with floating-point logarithms, since the precision fails. All elements are at least 2, so k^0 = 1 never matters. Count the hits."
+    ],
+    "ja": [
+      "k >= 2 のとき、10^18 を超えない k の正のべき乗は高々 60 個程度です（k = 2 なら 2^1..2^59）。",
+      "まずこれらのべき乗をすべて表（集合）に生成し、各配列要素がその表に含まれるかを調べます。要素ごとの素因数分解や対数は不要です。",
+      "p = k から始めて k を掛け続けます。各掛け算の前に p > 10^18 / k かを確認し、そうなら停止します。これでオーバーフローを避けられます（10^18 は符号付き 64 ビット整数に収まります）。判定に浮動小数点の対数を使ってはいけません。精度が足りなくなります。すべての要素は 2 以上なので、k^0 = 1 は問題になりません。該当した要素を数えます。"
+    ],
+    "ko": [
+      "k >= 2이면 10^18을 넘지 않는 k의 양의 거듭제곱은 최대 약 60개입니다(k = 2일 때 2^1..2^59).",
+      "이 거듭제곱들을 먼저 모두 표(집합)로 생성한 뒤, 각 배열 원소가 표에 있는지 확인합니다. 원소마다 소인수분해나 로그가 필요 없습니다.",
+      "p = k에서 시작해 k를 계속 곱합니다. 곱하기 전에 p > 10^18 / k인지 확인하여 그렇다면 멈추면 오버플로를 피할 수 있습니다(10^18은 부호 있는 64비트 정수에 들어갑니다). 부동소수점 로그로 판단하지 마세요. 정밀도가 부족합니다. 모든 원소가 2 이상이므로 k^0 = 1은 중요하지 않습니다. 일치하는 개수를 세세요."
+    ],
+    "vi": [
+      "Với k >= 2 có tối đa khoảng 60 lũy thừa dương của k không vượt quá 10^18 (2^1..2^59 khi k = 2).",
+      "Hãy sinh trước tất cả các lũy thừa này vào một bảng (một tập hợp), rồi kiểm tra xem mỗi phần tử của mảng có nằm trong bảng không; không cần phân tích thừa số hay logarit cho từng phần tử.",
+      "Bắt đầu từ p = k và liên tục nhân với k; trước mỗi phép nhân kiểm tra p > 10^18 / k và dừng nếu đúng, cách này tránh tràn số (10^18 vừa trong số nguyên 64 bit có dấu). Đừng quyết định bằng logarit dấu phẩy động vì độ chính xác không đủ. Mọi phần tử đều ít nhất là 2, nên k^0 = 1 không bao giờ quan trọng. Đếm số lần khớp."
     ]
   },
   "explanationEn": "## Problem\n\nGiven an array arr and an integer k, count how many numbers in arr are powers of k (k^1, k^2, ...). In this problem both k and the elements of arr are at least 2.\n\n## Approach\n\nFor k >= 2 there are at most 60 powers of k not exceeding 10^18. First generate all the powers by starting from k and repeatedly multiplying by k; before each multiplication check p > 10^18/k to see whether it would exceed the bound, which avoids overflow. Then check whether each element is in this table.\n\n## Correctness\n\nAll elements are >= 2, so k^0=1 never occurs; the generated table contains exactly all positive powers <= 10^18. Comparing element by element gives the count.\n\n## Complexity\n\nO(n*log_k 10^18), at most about 60n comparisons.\n\n## Independent verification\n\nThe oracle repeatedly divides each element by k until it is no longer divisible, and the element is a power if what remains is 1 (Python big integers, no overflow); this differs from the reference's power-table approach. All arrays of length 1..3 with k=2..4 and elements 2..20 were exhausted, running the reference program on each. The formal cases include powers and non-powers close to 10^18 (such as 10^18-1), a very large k with only its first power, all 60 powers of k=2, and so on. The wrong solutions cover floating-point logarithms, checking only divisibility, looking only at the first and second powers, and 32-bit input."

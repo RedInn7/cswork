@@ -12,5 +12,38 @@
       "After sorting, an interior element is never a better choice to remove than an element at either end.",
       "Only three end elements are removed in total; enumerate the number removed from the left end, from 0 to 3."
     ]
+  },
+  "ja": {
+    "title": "最小の振幅",
+    "description": "整数配列 A が与えられます。要素を高々 3 つ、任意の整数に置き換えることができます。配列の振幅は最大値から最小値を引いた値です。操作後に得られる最小の振幅を求めてください。\n\nこのサイトが対応する範囲: 1≤N≤200000、-10^9≤A[i]≤10^9。これらの範囲は同じ問題の出典ページに基づくもので、途中で切れた OAMaster のスナップショットに由来するものではありません。\n\n問題の出典: https://oamaster.com/docs/companies/google#48-min-amplitude。同じ問題の完全なルール、例、制約: https://www.fastprep.io/problems/google-min-amplitude。",
+    "input": "1 行目に N、2 行目に N 個の整数 A[i] が与えられます。",
+    "output": "高々 3 つの要素を変更した後の、配列の最大値と最小値の差の最小値を出力してください。",
+    "explanation": "ソート後、変更する要素が高々 3 つなら、最適解で残る最小値と最大値は、ソート済み配列の両端から合計 3 つの要素を取り除くことで決まります。左から i 個、右から 3-i 個を取り除く場合（i=0..3）を列挙し、残った範囲の幅の最小値を取ります。N≤4 のときはすべての要素を同じ値にできるので、答えは 0 です。",
+    "hints": [
+      "ソート後、内側の要素を取り除くことは、どちらかの端の要素を取り除くよりも良い選択になりません。",
+      "取り除くのは両端の要素を合わせて 3 つだけです。左端から取り除く個数を 0 から 3 まで列挙します。"
+    ]
+  },
+  "ko": {
+    "title": "최소 진폭",
+    "description": "정수 배열 A가 주어지며, 원소를 최대 3개까지 임의의 정수로 바꿀 수 있습니다. 배열의 진폭은 최댓값에서 최솟값을 뺀 값입니다. 연산 후 가능한 최소 진폭을 구하세요.\n\n이 사이트에서 지원하는 범위: 1≤N≤200000, -10^9≤A[i]≤10^9. 이 범위는 같은 문제의 원본 페이지에서 가져온 것이며, 잘려 있는 OAMaster 스냅샷에서 가져온 것이라고 주장하지 않습니다.\n\n문제 출처: https://oamaster.com/docs/companies/google#48-min-amplitude. 같은 문제의 전체 규칙, 예제, 제약 조건: https://www.fastprep.io/problems/google-min-amplitude.",
+    "input": "첫째 줄에 N이 주어지고, 둘째 줄에 N개의 정수 A[i]가 주어집니다.",
+    "output": "최대 세 개의 원소를 바꾼 뒤 배열의 최댓값과 최솟값의 차이로 가능한 최솟값을 출력합니다.",
+    "explanation": "정렬한 뒤 최대 세 개의 원소를 바꿀 때, 최적해에서 유지되는 최솟값과 최댓값은 정렬된 배열의 양 끝에서 총 세 개의 원소를 제거하는 것으로 결정됩니다. 왼쪽에서 i개, 오른쪽에서 3-i개(i=0..3)를 제거하는 경우를 열거하고, 남은 범위의 폭 중 최솟값을 취합니다. N≤4이면 모든 원소를 같은 값으로 바꿀 수 있으므로 답은 0입니다.",
+    "hints": [
+      "정렬하면, 안쪽 원소를 제거하는 것이 양 끝의 원소를 제거하는 것보다 더 좋은 선택이 되는 경우는 없습니다.",
+      "제거하는 원소는 양 끝에서 총 세 개뿐이므로, 왼쪽 끝에서 제거하는 개수를 0부터 3까지 열거합니다."
+    ]
+  },
+  "vi": {
+    "title": "Biên độ nhỏ nhất",
+    "description": "Cho một mảng số nguyên A, bạn có thể thay tối đa 3 phần tử của nó bằng các số nguyên tùy ý. Biên độ của một mảng là giá trị lớn nhất trừ giá trị nhỏ nhất; hãy tìm biên độ nhỏ nhất có thể sau các thao tác.\n\nPhạm vi được hỗ trợ của trang này: 1≤N≤200000, -10^9≤A[i]≤10^9. Các phạm vi này lấy từ trang nguồn của cùng bài toán và không được cho là xuất phát từ snapshot OAMaster bị cắt ngắn.\n\nNguồn đề bài: https://oamaster.com/docs/companies/google#48-min-amplitude. Quy tắc, ví dụ và ràng buộc đầy đủ của cùng bài toán: https://www.fastprep.io/problems/google-min-amplitude.",
+    "input": "Dòng đầu chứa N; dòng thứ hai chứa N số nguyên A[i].",
+    "output": "In ra hiệu nhỏ nhất có thể giữa giá trị lớn nhất và giá trị nhỏ nhất của mảng sau khi thay đổi tối đa ba phần tử.",
+    "explanation": "Sau khi sắp xếp, với tối đa ba phần tử bị thay đổi, giá trị nhỏ nhất và lớn nhất được giữ lại trong một phương án tối ưu được xác định bằng cách bỏ đi tổng cộng ba phần tử ở hai đầu của mảng đã sắp xếp. Liệt kê việc bỏ i phần tử từ bên trái và 3-i phần tử từ bên phải (i=0..3), và lấy độ rộng nhỏ nhất của đoạn còn lại. Khi N≤4, có thể đổi mọi phần tử thành cùng một giá trị, nên đáp án là 0.",
+    "hints": [
+      "Sau khi sắp xếp, bỏ một phần tử ở bên trong không bao giờ tốt hơn bỏ một phần tử ở hai đầu.",
+      "Tổng cộng chỉ bỏ ba phần tử ở hai đầu; hãy liệt kê số phần tử bỏ từ đầu bên trái, từ 0 đến 3."
+    ]
   }
 }

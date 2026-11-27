@@ -13,6 +13,21 @@
       "The sum of the inner part of a segment [l,r] can be written with prefix sums; the condition consists of two equalities: equal ends, and the inner sum equal to the end value.",
       "With prefix[i] the sum of the first i items, the inner sum is prefix[r] - prefix[l+1] = prefix[r] - prefix[l] - arr[l], so the condition becomes arr[l] = arr[r] and prefix[l] + 2*arr[l] = prefix[r]. Encode each left end as the key (arr[l], prefix[l] + 2*arr[l]) and count keys in a hash table; a right end only needs to look up (arr[r], prefix[r]).",
       "Build prefix sums; sweep the right end r from 2 to n-1: first increment the count of the key (arr[l], prefix[l] + 2*arr[l]) for l = r-2 (so the table holds exactly the left ends l <= r-2, which guarantees length at least 3), then add the count of the key (arr[r], prefix[r]) to the answer. Use 64-bit integers for the prefix sums and the answer."
+    ],
+    "ja": [
+      "区間 [l,r] の内側の和は接頭辞和で書けます。条件は 2 つの等式、すなわち両端が等しいことと、内側の和が端の値に等しいことからなります。",
+      "prefix[i] を最初の i 個の和とすると、内側の和は prefix[r] - prefix[l+1] = prefix[r] - prefix[l] - arr[l] なので、条件は arr[l] = arr[r] かつ prefix[l] + 2*arr[l] = prefix[r] になります。各左端をキー (arr[l], prefix[l] + 2*arr[l]) として符号化し、ハッシュテーブルでキーを数えます。右端は (arr[r], prefix[r]) を引くだけです。",
+      "接頭辞和を作り、右端 r を 2 から n-1 まで走査します。まず l = r-2 についてキー (arr[l], prefix[l] + 2*arr[l]) のカウントを 1 増やし（これでテーブルには l <= r-2 の左端だけが入り、長さが 3 以上であることが保証されます）、その後キー (arr[r], prefix[r]) のカウントを答えに加えます。接頭辞和と答えには 64 ビット整数を使います。"
+    ],
+    "ko": [
+      "구간 [l,r]의 안쪽 합은 접두사 합으로 나타낼 수 있습니다. 조건은 두 개의 등식으로 이루어집니다. 양 끝이 같고, 안쪽 합이 끝 값과 같아야 합니다.",
+      "prefix[i]를 처음 i개 항목의 합이라 하면 안쪽 합은 prefix[r] - prefix[l+1] = prefix[r] - prefix[l] - arr[l]이므로 조건은 arr[l] = arr[r]이고 prefix[l] + 2*arr[l] = prefix[r]이 됩니다. 각 왼쪽 끝을 키 (arr[l], prefix[l] + 2*arr[l])로 인코딩해 해시 테이블에서 개수를 세고, 오른쪽 끝은 (arr[r], prefix[r])만 조회하면 됩니다.",
+      "접두사 합을 만들고 오른쪽 끝 r을 2부터 n-1까지 훑습니다. 먼저 l = r-2에 대한 키 (arr[l], prefix[l] + 2*arr[l])의 개수를 증가시키고(그러면 테이블에는 정확히 l <= r-2인 왼쪽 끝만 들어 있어 길이가 3 이상임이 보장됩니다), 그다음 키 (arr[r], prefix[r])의 개수를 답에 더합니다. 접두사 합과 답에는 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Tổng phần bên trong của đoạn [l,r] có thể viết bằng tổng tiền tố; điều kiện gồm hai đẳng thức: hai đầu bằng nhau, và tổng bên trong bằng giá trị ở đầu.",
+      "Với prefix[i] là tổng của i phần tử đầu, tổng bên trong là prefix[r] - prefix[l+1] = prefix[r] - prefix[l] - arr[l], nên điều kiện trở thành arr[l] = arr[r] và prefix[l] + 2*arr[l] = prefix[r]. Mã hóa mỗi đầu trái thành khóa (arr[l], prefix[l] + 2*arr[l]) và đếm các khóa trong bảng băm; mỗi đầu phải chỉ cần tra cứu (arr[r], prefix[r]).",
+      "Xây tổng tiền tố; quét đầu phải r từ 2 đến n-1: trước hết tăng số đếm của khóa (arr[l], prefix[l] + 2*arr[l]) với l = r-2 (để bảng chứa đúng các đầu trái l <= r-2, đảm bảo độ dài ít nhất 3), rồi cộng số đếm của khóa (arr[r], prefix[r]) vào đáp án. Dùng số nguyên 64 bit cho các tổng tiền tố và đáp án."
     ]
   },
   "explanationEn": "## Approach\n\nLet prefix[i] be the sum of the first i items. For a segment [l,r], the condition is arr[l] = arr[r] and prefix[l] + 2*arr[l] = prefix[r]. While iterating over the right end r, first add l = r-2 to a hash table, then query (arr[r], prefix[r]).\n\n## Why it works\n\nThe inner sum is prefix[r] - prefix[l+1], and prefix[l+1] = prefix[l] + arr[l]; rearranging gives the hash-key condition. Right before each query, exactly the left ends with l <= r-2 have been inserted, which guarantees a length of at least 3. Each valid pair of left and right ends is counted once.\n\n## Complexity\n\nExpected time O(n), extra space O(n). Use 64-bit integers for the prefix sums and the answer."

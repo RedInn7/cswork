@@ -13,6 +13,21 @@
       "After matched people leave, the remaining girls keep their original order, so the nearest unmatched girl ahead of a boy is always the most recent unmatched girl.",
       "That is last-in, first-out: push girls in order of appearance and pop the top when a boy appears.",
       "Scan left to right: on 0 push her 1-based index; on 1 pop the top as his partner if the stack is non-empty, otherwise record −1. Print the results in the order the boys appear, separated by spaces, or an empty line if there are no boys."
+    ],
+    "ja": [
+      "ペアになった人が抜けても、残った女の子の元の順序は変わらないので、男の子の前にいる、ペアになっていない最も近い女の子は、常に直近のペアになっていない女の子です。",
+      "これは後入れ先出し（LIFO）です。女の子を現れた順に push し、男の子が現れたら先頭を pop します。",
+      "左から右へ走査します。0 のときは 1 始まりの番号を push します。1 のときは、スタックが空でなければ先頭を pop してパートナーとし、そうでなければ −1 を記録します。結果を男の子が現れる順にスペース区切りで出力します。男の子がいなければ空行を出力します。"
+    ],
+    "ko": [
+      "짝이 된 사람들이 빠져도 남은 여학생들은 원래 순서를 유지하므로, 남학생 앞에 있는 짝 없는 가장 가까운 여학생은 항상 가장 최근의 짝 없는 여학생입니다.",
+      "이는 후입선출(LIFO)입니다. 여학생은 등장 순서대로 푸시하고, 남학생이 나타나면 맨 위를 팝합니다.",
+      "왼쪽에서 오른쪽으로 스캔합니다. 0이면 그 학생의 1-기반 인덱스를 푸시하고, 1이면 스택이 비어 있지 않을 때 맨 위를 짝으로 팝하며, 비어 있으면 −1을 기록합니다. 결과는 남학생이 나타나는 순서대로 공백으로 구분해 출력하며, 남학생이 없으면 빈 줄을 출력합니다."
+    ],
+    "vi": [
+      "Sau khi những người đã ghép cặp rời đi, các bạn nữ còn lại giữ nguyên thứ tự ban đầu, nên bạn nữ chưa ghép cặp gần nhất phía trước một bạn nam luôn là bạn nữ chưa ghép cặp xuất hiện gần đây nhất.",
+      "Đó là last-in, first-out: push các bạn nữ theo thứ tự xuất hiện và pop phần tử trên cùng khi một bạn nam xuất hiện.",
+      "Quét từ trái sang phải: với 0 thì push chỉ số 1-based của bạn; với 1 thì pop phần tử trên cùng làm bạn nhảy nếu stack không rỗng, ngược lại ghi nhận −1. In kết quả theo thứ tự các bạn nam xuất hiện, cách nhau bằng dấu cách, hoặc một dòng trống nếu không có bạn nam nào."
     ]
   },
   "explanationEn": "## Idea\n\nKeep the indices of unmatched girls on a stack. When a boy comes, pop the top; if there is no girl, output -1.\n\n## Proof of correctness\n\nThe girls still in line after people leave keep their original order, so the nearest unmatched girl ahead is exactly the top of the stack. Each girl is pushed and popped only once, and processing boy by boy gives all the pairings.\n\n## Complexity\n\nO(N) time, O(N) space."

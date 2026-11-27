@@ -11,5 +11,35 @@
     "hints": [
       "Use union-find with union by size and path compression, maintaining the component size at each root; a query returns the size of its root."
     ]
+  },
+  "ja": {
+    "title": "問い合わせたユーザーから見える連結成分の大きさ",
+    "description": "ユーザーには 1..n の番号が付いており、無向の接続は複数のホップをたどれます。各クエリでは、そのユーザーが属する連結成分に含まれるユーザー数(そのユーザー自身を含む)を返します。孤立したユーザーの答えは 1 です。元の例では、孤立したノードの見えるリストを空と書いていましたが、ユーザー自身は明示的に数えていたため、本問題の記述ではそれに合わせて修正しています。\n\n入出力の形式は当サイトが整えたもので、不足していた数値の制約は当サイトが補ったものとして明示しています。",
+    "input": "1行目に n m q、続く m 行に辺 u v、最後に q 個のクエリの番号が与えられます。元の文章には数値の範囲がありません。当サイトでは 1≤n,q≤200000、0≤m≤200000 を追加し、すべての端点とクエリは 1..n の範囲にあります。自己ループや多重辺も許され、グラフは連結とは限りません。",
+    "output": "クエリの順に q 個の整数を出力します。",
+    "explanation": "3つの公開例の出力は、順に 4 4 2 1、1 1 1、2 1 2 です。これらの答えは、独立した全探索または直接のシミュレーションで確認済みです。",
+    "hints": [
+      "サイズによる併合とパス圧縮を使った Union-Find を使い、各根に成分のサイズを保持します。クエリには、その根のサイズを返します。"
+    ]
+  },
+  "ko": {
+    "title": "질의한 사용자가 볼 수 있는 연결 요소의 크기",
+    "description": "사용자는 1..n번으로 번호가 매겨져 있고, 무방향 연결은 여러 홉에 걸쳐 따라갈 수 있습니다. 각 질의는 해당 사용자가 속한 연결 요소의 사용자 수를 사용자 본인을 포함하여 반환합니다. 고립된 사용자의 답은 1입니다. 원문 예제는 고립된 노드의 가시 목록을 비어 있다고 적었으면서도 사용자 본인은 명시적으로 센 것으로 되어 있어, 본 문제는 이에 맞게 정정했습니다.\n\n입출력 형식은 본 사이트에서 정리한 것이며, 원문에 없던 수치 제약은 본 사이트에서 추가한 것임을 명시했습니다.",
+    "input": "첫째 줄에 n m q가, 이어서 m줄에 간선 u v가, 마지막으로 q개의 질의 번호가 주어집니다. 원문에는 수치 범위가 없으며, 본 사이트에서는 1≤n,q≤200000, 0≤m≤200000으로 하고 모든 끝점과 질의는 1..n 범위입니다. 자기 루프와 다중 간선이 허용되며, 그래프가 연결되어 있을 필요는 없습니다.",
+    "output": "질의 순서대로 q개의 정수를 출력합니다.",
+    "explanation": "공개된 세 예제의 출력은 순서대로 4 4 2 1; 1 1 1; 2 1 2입니다. 이 답들은 독립적인 완전 탐색 또는 직접 시뮬레이션으로 검증했습니다.",
+    "hints": [
+      "크기 기준 합치기와 경로 압축을 적용한 유니온 파인드를 사용하고, 각 루트에서 연결 요소의 크기를 유지합니다. 질의에는 해당 루트의 크기를 반환합니다."
+    ]
+  },
+  "vi": {
+    "title": "Kích thước thành phần liên thông mà người dùng được truy vấn nhìn thấy",
+    "description": "Người dùng được đánh số 1..n, và các kết nối vô hướng có thể được đi theo qua nhiều bước. Mỗi truy vấn trả về số người dùng trong thành phần liên thông của người dùng đó, kể cả chính họ; đáp án cho người dùng cô lập là 1. Ví dụ gốc ghi danh sách nhìn thấy của một nút cô lập là rỗng, nhưng lại tính rõ cả bản thân người dùng; đề này đã sửa cho phù hợp.\n\nGiao thức nhập/xuất do trang này biên soạn; các ràng buộc số còn thiếu được đánh dấu rõ là phần trang này bổ sung.",
+    "input": "Dòng đầu chứa n m q, tiếp theo là m dòng cạnh u v, và cuối cùng là q số truy vấn. Đề gốc không có phạm vi số; trang này bổ sung 1≤n,q≤200000, 0≤m≤200000, và mọi đầu mút cùng các truy vấn nằm trong 1..n. Cho phép khuyên và cạnh bội, và đồ thị không nhất thiết liên thông.",
+    "output": "In q số nguyên theo thứ tự truy vấn.",
+    "explanation": "Đầu ra của ba ví dụ công khai lần lượt là: 4 4 2 1; 1 1 1; 2 1 2. Các đáp án này đã được kiểm chứng bằng liệt kê độc lập hoặc mô phỏng trực tiếp.",
+    "hints": [
+      "Dùng union-find với hợp theo kích thước và nén đường đi, duy trì kích thước thành phần tại mỗi gốc; một truy vấn trả về kích thước của gốc của nó."
+    ]
   }
 }

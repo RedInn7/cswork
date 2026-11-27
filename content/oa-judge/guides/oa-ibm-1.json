@@ -13,6 +13,21 @@
       "Among n labelled vertices there are n(n−1)/2 distinct vertex pairs, and each pair independently has an edge or not.",
       "Different choices correspond one to one to different graphs, so by the multiplication principle the answer is 2^(n(n−1)/2).",
       "n can be 10^9, so the exponent n(n−1)/2 is about 5×10^17, still within 64 bits; compute 2 to that power modulo 1000000007 with fast exponentiation, reducing after every multiplication."
+    ],
+    "ja": [
+      "n 個のラベル付き頂点には、異なる頂点ペアが n(n−1)/2 個あり、各ペアに辺があるかどうかは独立に決まります。",
+      "選び方の違いは異なるグラフと 1 対 1 に対応するので、積の法則により答えは 2^(n(n−1)/2) です。",
+      "n は 10^9 になりうるので、指数 n(n−1)/2 は約 5×10^17 で、64 ビットに収まります。高速べき乗で 2 のその累乗を 1000000007 で割った余りを計算し、乗算のたびに剰余を取ってください。"
+    ],
+    "ko": [
+      "레이블이 붙은 n개의 정점에는 서로 다른 정점 쌍이 n(n−1)/2개 있으며, 각 쌍은 독립적으로 간선이 있거나 없습니다.",
+      "선택이 다르면 서로 다른 그래프에 일대일로 대응하므로, 곱의 법칙에 따라 답은 2^(n(n−1)/2)입니다.",
+      "n이 10^9까지 될 수 있으므로 지수 n(n−1)/2는 약 5×10^17이며 64비트 안에 들어갑니다. 2의 그 거듭제곱을 1000000007로 나눈 나머지를 빠른 거듭제곱으로 계산하고, 곱할 때마다 나머지를 취합니다."
+    ],
+    "vi": [
+      "Trong n đỉnh có nhãn có n(n−1)/2 cặp đỉnh phân biệt, và mỗi cặp độc lập có cạnh hoặc không có cạnh.",
+      "Các lựa chọn khác nhau tương ứng một–một với các đồ thị khác nhau, nên theo quy tắc nhân đáp án là 2^(n(n−1)/2).",
+      "n có thể là 10^9, nên số mũ n(n−1)/2 vào khoảng 5×10^17, vẫn nằm trong 64 bit; tính 2 mũ số đó theo modulo 1000000007 bằng lũy thừa nhanh, lấy dư sau mỗi phép nhân."
     ]
   },
   "explanationEn": "## Idea\n\nEach distinct vertex pair corresponds to one independent optional edge; compute 2 to the power n(n−1)/2 with fast exponentiation.\n\n## Proof of correctness\n\nThere are n(n−1)/2 vertex pairs, and each pair either has an edge or not; all choices correspond one to one to graphs, and the multiplication principle gives the result.\n\n## Complexity\n\nO(log n) time, O(1) extra space."

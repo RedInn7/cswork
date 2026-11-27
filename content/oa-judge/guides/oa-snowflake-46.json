@@ -13,6 +13,21 @@
       "Every query rotates the original array, so queries are independent; the maximum is unique, and rotation only moves it without changing which element it is.",
       "One left rotation decreases every index by 1 modulo n, so r rotations decrease it by r. All you need is the index p of the maximum in the original array.",
       "Find p with one scan, then for each rotation count r print ((p - r) mod n + n) mod n (r can be 10^9, so make sure the result is non-negative); print m first, then the m indices."
+    ],
+    "ja": [
+      "各クエリは元の配列を回転するので、クエリは独立です。最大値は 1 つだけで、回転は位置を動かすだけで、どの要素かは変わりません。",
+      "左へ 1 回回転するとすべてのインデックスが n を法として 1 減るので、r 回回転すると r 減ります。必要なのは、元の配列における最大値のインデックス p だけです。",
+      "1 回の走査で p を求め、各回転回数 r について ((p - r) mod n + n) mod n を出力します(r は 10^9 になり得るので、結果が非負になるようにします)。最初に m を出力し、続いて m 個のインデックスを出力します。"
+    ],
+    "ko": [
+      "각 질의는 원래 배열을 회전하므로 질의들은 독립적입니다. 최댓값은 유일하며, 회전은 위치만 옮길 뿐 어떤 원소인지는 바꾸지 않습니다.",
+      "왼쪽으로 한 번 회전하면 모든 인덱스가 n으로 나눈 나머지 기준 1씩 줄어들므로, r번 회전하면 r만큼 줄어듭니다. 필요한 것은 원래 배열에서 최댓값의 인덱스 p뿐입니다.",
+      "한 번의 스캔으로 p를 찾은 뒤, 각 회전 횟수 r에 대해 ((p - r) mod n + n) mod n을 출력합니다(r이 10^9일 수 있으므로 결과가 음수가 되지 않게 하세요). 먼저 m을 출력하고, 이어서 m개의 인덱스를 출력합니다."
+    ],
+    "vi": [
+      "Mỗi truy vấn xoay mảng gốc, nên các truy vấn độc lập; phần tử lớn nhất là duy nhất, và phép xoay chỉ dời nó chứ không đổi phần tử đó là phần tử nào.",
+      "Một lần xoay trái làm mọi chỉ số giảm 1 modulo n, nên r lần xoay làm giảm r. Tất cả những gì cần là chỉ số p của phần tử lớn nhất trong mảng gốc.",
+      "Tìm p bằng một lần quét, rồi với mỗi số lần xoay r in ((p - r) mod n + n) mod n (r có thể là 10^9, nên hãy bảo đảm kết quả không âm); in m trước, rồi đến m chỉ số."
     ]
   },
   "explanationEn": "## Approach\n\nFirst find the index p of the original maximum element; each query directly outputs (p−r) mod n, normalized to 0..n−1.\n\n## Correctness\n\nOne left rotation decreases every position by 1 modulo n, so r consecutive rotations decrease it by r. The identity of the maximum does not change under rotation, and distinctness guarantees that it is unique, so tracking its index is enough. Computing from the same original index every time keeps the queries independent.\n\n## Complexity\n\nO(n+m) time, O(n+m) space including input and output."

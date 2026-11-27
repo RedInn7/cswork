@@ -13,6 +13,21 @@
       "Each round's candidates are the union of the first k and the last k people of the remaining list. Treat the people not yet exposed on either side as one contiguous middle range, which only shrinks from its two ends.",
       "Keep every exposed candidate in one heap ordered by score descending, then index ascending. When someone is picked, their side loses one candidate, so just refill from the same end of the unexposed range.",
       "Use pointers left and right: push up to k people from the left end, then up to k from the right end (only while left <= right); repeat t times: pop the top and add its score, and if left <= right, refill with a[left++] or a[right--] depending on which side the popped person came from. Print the total as a 64-bit integer."
+    ],
+    "ja": [
+      "各ラウンドの候補は、残りのリストの先頭 k 人と末尾 k 人の和集合です。どちら側にもまだ露出していない人は 1 つの連続した中間区間として扱います。この区間は両端からしか縮みません。",
+      "露出している候補をすべて、スコアの降順、次に添字の昇順で並べた 1 つのヒープで管理します。誰かが選ばれると、その側の候補が 1 人減るので、未露出区間の同じ端から補充するだけです。",
+      "ポインタ left と right を使います。まず左端から最大 k 人、次に右端から最大 k 人を push します（left <= right の間のみ）。その後 t 回、先頭を pop してスコアを加算し、left <= right なら、pop した人がどちら側だったかに応じて a[left++] または a[right--] を補充します。合計は 64 ビット整数で出力してください。"
+    ],
+    "ko": [
+      "매 라운드의 후보는 남은 목록의 앞쪽 k명과 뒤쪽 k명의 합집합입니다. 어느 쪽에도 노출되지 않은 사람들은 하나의 연속된 가운데 구간으로 볼 수 있으며, 이 구간은 양 끝에서만 줄어듭니다.",
+      "노출된 후보를 모두 하나의 힙에 넣고 점수 내림차순, 인덱스 오름차순으로 정렬합니다. 누군가를 뽑으면 그쪽 후보가 하나 줄어들므로, 노출되지 않은 구간의 같은 쪽 끝에서 하나를 채우면 됩니다.",
+      "포인터 left와 right를 두고, 왼쪽 끝에서 최대 k명, 오른쪽 끝에서 최대 k명을 힙에 넣습니다(단 left <= right인 동안만). 이후 t번 반복합니다. 힙의 top을 꺼내 점수를 더하고, left <= right이면 꺼낸 사람의 출신 쪽에 따라 a[left++] 또는 a[right--]로 다시 채웁니다. 합계는 64비트 정수로 출력합니다."
+    ],
+    "vi": [
+      "Ứng viên của mỗi vòng là hợp của k người đầu và k người cuối trong danh sách còn lại. Hãy coi những người chưa lộ ra ở cả hai phía là một đoạn giữa liên tục, đoạn này chỉ co lại từ hai đầu.",
+      "Giữ mọi ứng viên đã lộ ra trong một heap, sắp theo điểm giảm dần rồi chỉ số tăng dần. Khi một người được chọn, phía của họ mất một ứng viên, nên chỉ cần bổ sung từ cùng đầu của đoạn chưa lộ ra.",
+      "Dùng hai con trỏ left và right: đẩy tối đa k người từ đầu trái, rồi tối đa k người từ đầu phải (chỉ khi left <= right); lặp t lần: pop phần tử trên cùng và cộng điểm của nó, nếu left <= right thì bổ sung bằng a[left++] hoặc a[right--] tùy người vừa pop đến từ phía nào. In tổng dưới dạng số nguyên 64-bit."
     ]
   },
   "explanationEn": "## Approach\n\nOne heap holds the candidates from both sides, ordered by negative score and original index, and records which side each came from; after a pop, refill from the corresponding side with an element that has not been exposed yet.\n\n## Correctness\n\nThe unexposed range is always contiguous, and the heap contains exactly the deduplicated union of the selectable first k and last k elements; refilling from the same side keeps this invariant, and once the range is exhausted the heap contains everyone who remains. The order of original indices is the same as the relative order after deletions, so the top of the heap is exactly the person chosen by the rule.\n\n## Complexity\n\nTime O(n log n), space O(n)."

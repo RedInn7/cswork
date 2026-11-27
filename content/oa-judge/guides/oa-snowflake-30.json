@@ -13,6 +13,21 @@
       "The number of changes in a subsequence depends only on whether consecutive chosen elements are equal, so the state just needs the last value and the number of changes used so far.",
       "Let dp[v][j] be the longest length ending with value v using at most j changes, and best[j] the maximum over all ending values. A new element with value v can follow a subsequence ending with v (no new change) or any subsequence with at most j - 1 changes.",
       "For each element v, go j from k down to 0: dp[v][j] = max(dp[v][j] + 1, best[j-1] + 1 if j > 0 else 1), then update best[j] with it; the decreasing order keeps best[j-1] at its value from before this element. Values are large, so map each value to its own array with a hash map. The answer is best[k]."
+    ],
+    "ja": [
+      "部分列の変化回数は、連続して選んだ要素が等しいかどうかだけで決まります。したがって状態は、最後の値と、これまでに使った変化回数があれば十分です。",
+      "dp[v][j] を、値 v で終わり変化が高々 j 回の最長の長さとし、best[j] を終端の値すべてにわたる最大値とします。値 v の新しい要素は、v で終わる部分列の後ろ（新たな変化なし）か、変化が高々 j - 1 回の任意の部分列の後ろに続けられます。",
+      "各要素 v について、j を k から 0 まで降順に回します。dp[v][j] = max(dp[v][j] + 1, j > 0 なら best[j-1] + 1、そうでなければ 1) とし、その値で best[j] を更新します。降順にすることで、best[j-1] はこの要素を処理する前の値のまま使えます。値が大きいので、各値をハッシュマップで専用の配列に対応づけます。答えは best[k] です。"
+    ],
+    "ko": [
+      "부분 수열의 변화 횟수는 연속해서 선택된 원소가 서로 같은지에만 달려 있으므로, 상태는 마지막 값과 지금까지 사용한 변화 횟수만 있으면 됩니다.",
+      "dp[v][j]를 값 v로 끝나고 변화가 최대 j번인 가장 긴 길이, best[j]를 모든 끝 값에 대한 최댓값이라 합니다. 값이 v인 새 원소는 v로 끝나는 부분 수열 뒤에 붙거나(새 변화 없음), 변화가 최대 j - 1번인 임의의 부분 수열 뒤에 붙을 수 있습니다.",
+      "각 원소 v에 대해 j를 k부터 0까지 내려가며 dp[v][j] = max(dp[v][j] + 1, j > 0이면 best[j-1] + 1, 아니면 1)로 갱신하고 best[j]를 갱신합니다. 감소 순서로 처리하면 best[j-1]이 이 원소를 처리하기 전의 값으로 유지됩니다. 값의 범위가 크므로 해시 맵으로 각 값마다 별도의 배열을 둡니다. 답은 best[k]입니다."
+    ],
+    "vi": [
+      "Số lần đổi của một dãy con chỉ phụ thuộc vào việc các phần tử được chọn liên tiếp có bằng nhau hay không, nên trạng thái chỉ cần giá trị cuối cùng và số lần đổi đã dùng.",
+      "Gọi dp[v][j] là độ dài lớn nhất của dãy con kết thúc bằng giá trị v với tối đa j lần đổi, và best[j] là giá trị lớn nhất trên mọi giá trị kết thúc. Một phần tử mới có giá trị v có thể nối sau dãy con kết thúc bằng v (không thêm lần đổi) hoặc sau bất kỳ dãy con nào có tối đa j - 1 lần đổi.",
+      "Với mỗi phần tử v, cho j chạy từ k xuống 0: dp[v][j] = max(dp[v][j] + 1, best[j-1] + 1 nếu j > 0, ngược lại là 1), rồi cập nhật best[j] bằng nó; thứ tự giảm dần giữ best[j-1] ở giá trị trước khi xử lý phần tử này. Giá trị lớn nên ánh xạ mỗi giá trị tới mảng riêng bằng hash map. Đáp án là best[k]."
     ]
   },
   "explanationEn": "## Approach\n\nMaintain dp[value][j], the longest length ending with value using at most j changes, and the global best best[j] for each j. Update j in decreasing order, taking the better of extending the same value and best[j-1]+1.\n\n## Correctness\n\nExtending with the same value adds no change; extending any subsequence that has at most j-1 changes adds at most one change, so the second term is valid. Remove the last element of an optimal non-empty subsequence: if the last value equals the one before it, the case falls under the first term, otherwise under the second, so the transitions are complete. The decreasing order ensures that the current element is not used twice.\n\n## Complexity\n\nTime O(nk), space O(nk)."

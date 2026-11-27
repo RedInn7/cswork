@@ -11,5 +11,35 @@
     "hints": [
       "The chosen distinct values must be consecutive, and every interior value other than the two end values must appear at least 2 times. Count the frequencies and scan consecutive keys: if the previous key has only 1 item, extending to a new key must restart from that previous key; otherwise, keep accumulating."
     ]
+  },
+  "ja": {
+    "title": "隣接する出力の差が 1 以下になる最大のリング",
+    "description": "サーバーをできるだけ多く選び、隣り合うすべてのペア（先頭と末尾も含む）の出力の差の絶対値が ≤1 になるように、任意の順序でリング状に並べます。サーバーを 1 台だけ選ぶことも許されます。\n\n標準入出力・例・判定は本サイトが独自に作成したものです。",
+    "input": "1 行目に n (1..200000)、2 行目に n 個の出力値 (0..10⁹) が与えられます。",
+    "output": "整数 1 つ（答え）を出力してください。",
+    "explanation": "例 1: 1, 1, 2, 2, 3 を選んで 1, 1, 2, 3, 2 と並べると、5 台になります。出力 3 のサーバーは 1 台しかないので、リングは 4 へ渡って戻ってくることはできません。例 2: 3 つの値がそれぞれ 1 回ずつ現れ、両端の値 1 と 3 は 2 違うので、選べるのは 2 台だけです。例 3: 値が同じ 2 台のサーバーは両方選べます。",
+    "hints": [
+      "選んだ異なる値は連続していなければならず、両端の 2 つ以外の内部の値は、それぞれ少なくとも 2 回現れる必要があります。出現回数を数え、連続するキーを走査します。直前のキーの個数が 1 個だけなら、新しいキーへ延ばすには、その直前のキーからやり直す必要があります。そうでなければ、累積を続けます。"
+    ]
+  },
+  "ko": {
+    "title": "인접한 전력 차이가 1 이하인 가장 큰 링",
+    "description": "서버를 최대한 많이 골라 임의의 순서로 링(원형)으로 배치하되, 인접한 모든 쌍(처음과 마지막 포함)의 전력 차이의 절댓값이 ≤1이 되게 합니다. 서버를 하나만 고르는 것도 허용됩니다.\n\n표준 입출력 형식, 예제, 채점은 이 사이트가 독자적으로 작성했습니다.",
+    "input": "첫째 줄에 n(1..200000)이 주어지고, 둘째 줄에 n개의 전력 값(0..10⁹)이 주어집니다.",
+    "output": "정수 하나로 답을 출력합니다.",
+    "explanation": "예제 1: 1, 1, 2, 2, 3을 골라 1, 1, 2, 3, 2로 배치하면 서버 5개입니다. 전력이 3인 서버가 하나뿐이므로 링이 4로 넘어갔다가 돌아올 수는 없습니다. 예제 2: 세 값이 각각 한 번씩 나타나고 양 끝 값 1과 3은 2만큼 차이 나므로 2개만 고를 수 있습니다. 예제 3: 값이 같은 서버 두 개를 모두 고를 수 있습니다.",
+    "hints": [
+      "고른 서로 다른 값들은 연속해야 하며, 양 끝 값 두 개를 제외한 모든 내부 값은 최소 2번 나타나야 합니다. 빈도를 세고 연속한 키를 훑습니다. 이전 키의 개수가 1이면 새 키로 확장할 때 그 이전 키부터 다시 시작해야 하고, 그렇지 않으면 계속 누적합니다."
+    ]
+  },
+  "vi": {
+    "title": "Vòng tròn lớn nhất với chênh lệch công suất giữa các cặp kề nhau không quá một",
+    "description": "Chọn càng nhiều máy chủ càng tốt và sắp xếp chúng thành một vòng tròn theo thứ tự bất kỳ sao cho hiệu tuyệt đối của công suất của mọi cặp kề nhau (kể cả cặp đầu và cuối) đều ≤1. Cho phép chỉ chọn một máy chủ.\n\nTrang này tự biên soạn độc lập đầu vào/đầu ra chuẩn, các ví dụ và bộ chấm.",
+    "input": "Dòng đầu tiên chứa n (1..200000), dòng thứ hai chứa n giá trị công suất (0..10⁹).",
+    "output": "In ra một số nguyên duy nhất là đáp án.",
+    "explanation": "Ví dụ 1: chọn 1, 1, 2, 2, 3 và sắp xếp thành 1, 1, 2, 3, 2, được 5 máy chủ; chỉ có một máy chủ có công suất 3, nên vòng tròn không thể vượt sang 4 rồi quay lại. Ví dụ 2: mỗi giá trong ba giá trị xuất hiện một lần, và hai giá trị ở hai đầu là 1 và 3 chênh nhau 2, nên chỉ chọn được 2. Ví dụ 3: hai máy chủ có cùng giá trị đều có thể được chọn.",
+    "hints": [
+      "Các giá trị phân biệt được chọn phải liên tiếp nhau, và mọi giá trị ở giữa khác hai giá trị đầu mút phải xuất hiện ít nhất 2 lần. Đếm tần suất và quét các khóa liên tiếp: nếu khóa trước chỉ có 1 phần tử, việc mở rộng sang một khóa mới phải bắt đầu lại từ khóa trước đó; ngược lại, tiếp tục cộng dồn."
+    ]
   }
 }

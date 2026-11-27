@@ -11,5 +11,35 @@
     "hints": [
       "Map the records by start, find the starting key that does not appear in the set of end keys, walk along end from it record by record collecting payloads, and concatenate them once at the end."
     ]
+  },
+  "ja": {
+    "title": "一意なキーでつながったレコードのペイロードの連結",
+    "description": "レコード (start,end,payload) はちょうど 1 本の鎖を成し、各レコードの end は次のレコードの start と等しくなります。入力はシャッフルされているので、鎖の順にペイロードを連結してください。内容に含まれるスペースはそのまま保持する必要があります。\n\n本サイトでは標準入出力の形式を使い、元の問題で与えられていない範囲は明示します。",
+    "input": "1 行目に N が与えられ、続く各レコードは 2 行で、start end の行と、ペイロード全体の行です。1≤N≤200000 です。元の問題では文字列に制限がないため、本サイトではキーを 1..12 文字の ASCII 英数字、ペイロードを 0..10 文字の可視 ASCII 文字またはスペースとします。すべてのレコードは、閉路も分岐もないちょうど 1 本の鎖を成すことが保証されます。",
+    "output": "連結した内容全体を出力し、末尾に改行を付けてください。内容が空の場合は空行を出力します。",
+    "explanation": "例 1：鎖 aaa→bbb→ccc→ddd を連結すると 213 になります。例 2：レコードは 1 つだけなので、出力は X です。例 3：まず a→b、次に b→c の順で、先頭と末尾にスペースが 1 つずつある \" ab \" になります。",
+    "hints": [
+      "start でレコードを引けるようにし、end のキー集合に現れない先頭のキーを見つけます。そこから end をたどってレコードを 1 つずつ進めながらペイロードを集め、最後に 1 回だけ連結します。"
+    ]
+  },
+  "ko": {
+    "title": "고유한 키로 연결된 레코드의 페이로드 이어 붙이기",
+    "description": "레코드 (start,end,payload)가 정확히 하나의 체인을 이루며, 각 레코드의 end는 다음 레코드의 start와 같습니다. 입력은 뒤섞여 있으며, 체인 순서대로 페이로드를 이어 붙이세요. 내용에 포함된 공백은 그대로 유지해야 합니다.\n\n이 사이트는 표준 입출력 방식을 사용하며, 원문에 주어지지 않은 범위는 명시적으로 밝혀 둡니다.",
+    "input": "첫째 줄에 N이 주어지고, 이어서 각 레코드가 두 줄씩 주어집니다. 첫 줄은 start end, 둘째 줄은 페이로드 전체입니다. 1≤N≤200000이며, 원문은 문자열에 제한을 두지 않지만 이 사이트에서는 키를 1..12자의 ASCII 영숫자, 페이로드를 0..10자의 보이는 ASCII 문자 또는 공백으로 합니다. 모든 레코드는 사이클과 분기 없이 정확히 하나의 체인을 이룬다고 보장됩니다.",
+    "output": "이어 붙인 전체 내용을 출력하고 마지막에 줄바꿈을 붙입니다. 내용이 비어 있으면 빈 줄을 출력합니다.",
+    "explanation": "예제 1: 체인 aaa→bbb→ccc→ddd의 페이로드를 이어 붙이면 213입니다. 예제 2: 레코드가 하나뿐이므로 X를 출력합니다. 예제 3: 먼저 a→b, 다음 b→c이며, 앞뒤에 공백이 하나씩 있는 \" ab \"가 됩니다.",
+    "hints": [
+      "start를 키로 레코드를 매핑하고, end 키 집합에 나타나지 않는 시작 키를 찾습니다. 그 키에서 출발해 end를 따라가며 레코드마다 페이로드를 모은 뒤, 마지막에 한 번만 이어 붙입니다."
+    ]
+  },
+  "vi": {
+    "title": "Nối payload của các bản ghi liên kết bằng khóa duy nhất",
+    "description": "Các bản ghi (start,end,payload) tạo thành đúng một chuỗi, trong đó end của mỗi bản ghi bằng start của bản ghi kế tiếp. Dữ liệu đầu vào bị xáo trộn; hãy nối các payload theo thứ tự trong chuỗi. Các dấu cách trong nội dung phải được giữ nguyên chính xác.\n\nTrang này dùng giao thức đầu vào/đầu ra chuẩn; những khoảng giá trị mà đề gốc không nêu được ghi rõ ràng.",
+    "input": "Dòng đầu tiên chứa N, sau đó mỗi bản ghi chiếm hai dòng: start end, và payload đầy đủ. 1≤N≤200000; đề gốc không giới hạn các xâu, nên trang này dùng khóa gồm 1..12 ký tự chữ-số ASCII và payload gồm 0..10 ký tự ASCII hiển thị được hoặc dấu cách. Đảm bảo mọi bản ghi tạo thành đúng một chuỗi, không có chu trình và không rẽ nhánh.",
+    "output": "In ra toàn bộ nội dung đã nối, theo sau là một ký tự xuống dòng kết thúc; nếu nội dung rỗng, in ra một dòng trống.",
+    "explanation": "Ví dụ 1: chuỗi aaa→bbb→ccc→ddd nối lại thành 213. Ví dụ 2: bản ghi duy nhất cho ra X. Ví dụ 3: đầu tiên là a→b, sau đó là b→c, nối lại thành \" ab \" với một dấu cách ở đầu và một dấu cách ở cuối.",
+    "hints": [
+      "Ánh xạ các bản ghi theo start, tìm khóa bắt đầu không xuất hiện trong tập các khóa end, đi theo end từ đó qua từng bản ghi để thu thập payload, rồi nối chúng một lần ở cuối."
+    ]
   }
 }

@@ -13,6 +13,21 @@
       "A zero-sum segment is the same as two equal prefix sums; and a 0 in the original array is a zero-sum single-element segment by itself that no insertion can remove, so then there is no solution.",
       "An inserted number can be made large enough (for example the sum of absolute values plus 1) that no segment crossing it sums to 0, which effectively cuts the array. The problem becomes: make the fewest cuts so that prefix sums inside each piece are all distinct. Go greedily from left to right, cutting only when forced, in the last gap of the conflict.",
       "If the array contains 0 print -1. Otherwise keep the set of prefix sums of the current piece (initially just 0) and the current prefix; for each element v, if prefix+v is already in the set, cut before v: add one to the answer, reset the set to {0} and prefix to 0; then add v to prefix and insert it into the set. Use 64-bit integers and print the answer."
+    ],
+    "ja": [
+      "和が 0 の区間は、2 つの累積和が等しいことと同じです。また、元の配列にある 0 はそれだけで和が 0 の要素 1 つの区間であり、挿入では取り除けないので、その場合は解がありません。",
+      "挿入する数を十分大きく（たとえば絶対値の和 + 1 に）すれば、それをまたぐ区間の和は 0 になりえず、配列が事実上切断されます。すると問題は、各断片の中の累積和がすべて異なるように、切断をできるだけ少なくすることになります。左から貪欲に進み、必要なときだけ、衝突の最後の隙間で切ります。",
+      "配列に 0 が含まれるなら -1 を出力します。そうでなければ、現在の断片の累積和の集合（最初は 0 だけ）と現在の累積和を持ちます。各要素 v について、prefix+v がすでに集合にあれば v の前で切ります。答えに 1 を加え、集合を {0}、prefix を 0 にリセットします。その後、v を prefix に加えて集合に挿入します。64 ビット整数を使い、答えを出力します。"
+    ],
+    "ko": [
+      "합이 0인 구간은 두 누적 합이 같다는 것과 같습니다. 그리고 원래 배열에 있는 0은 그 자체로 합이 0인 단일 원소 구간이어서 어떤 삽입으로도 없앨 수 없으므로, 이 경우 해가 없습니다.",
+      "삽입하는 수를 충분히 크게(예를 들어 절댓값의 합에 1을 더한 값) 잡으면 그 수를 지나는 어떤 구간도 합이 0이 될 수 없어 사실상 배열을 끊는 효과가 있습니다. 문제는 각 조각 안의 누적 합이 모두 서로 다르도록 최소 횟수로 끊는 것이 됩니다. 왼쪽에서 오른쪽으로 탐욕적으로 진행하되, 충돌이 생겼을 때만 그 충돌 구간의 마지막 틈에서 끊습니다.",
+      "배열에 0이 있으면 -1을 출력합니다. 그렇지 않으면 현재 조각의 누적 합 집합(처음에는 0만 있음)과 현재 누적 합을 유지합니다. 각 원소 v에 대해 prefix+v가 이미 집합에 있으면 v 앞에서 끊습니다. 즉 답에 1을 더하고, 집합을 {0}으로, prefix를 0으로 초기화합니다. 그런 다음 v를 prefix에 더하고 집합에 넣습니다. 64비트 정수를 사용하고 답을 출력합니다."
+    ],
+    "vi": [
+      "Một đoạn có tổng bằng 0 tương đương với hai tổng tiền tố bằng nhau; và số 0 trong mảng gốc tự nó là một đoạn một phần tử có tổng bằng 0 mà không phép chèn nào loại bỏ được, nên khi đó vô nghiệm.",
+      "Có thể chọn số chèn đủ lớn (ví dụ tổng các giá trị tuyệt đối cộng 1) để không đoạn nào đi qua nó có tổng bằng 0, nghĩa là nó thực chất cắt mảng ra. Bài toán trở thành: thực hiện ít nhát cắt nhất sao cho các tổng tiền tố trong mỗi mảnh đều khác nhau. Đi tham lam từ trái sang phải, chỉ cắt khi bị buộc, và cắt ở khe cuối cùng của xung đột.",
+      "Nếu mảng chứa 0 thì in -1. Nếu không, giữ tập các tổng tiền tố của mảnh hiện tại (ban đầu chỉ có 0) và tiền tố hiện tại; với mỗi phần tử v, nếu prefix+v đã có trong tập thì cắt trước v: cộng một vào đáp án, đặt lại tập thành {0} và prefix thành 0; sau đó cộng v vào prefix và thêm nó vào tập. Dùng số nguyên 64 bit và in đáp án."
     ]
   },
   "explanationEn": "## Approach\n\nScan while keeping the set of prefix sums of the current unseparated segment. If adding the current item repeats a prefix sum, insert a separator value before the current item and start a new segment containing only the current item.\n\n## Correctness\n\nA repeated prefix sum is equivalent to the existence of a zero-sum segment, and any valid insertion plan must insert something inside that segment. Choosing the last inner gap of the conflict that ends earliest leaves no more future conflicts than choosing an earlier gap, so the greedy is optimal. Every separator can be set to the sum of the absolute values of the original array plus 1, so any segment that crosses a separator has a strictly positive sum, which guarantees that the cutting plan can really be realized.\n\n## Complexity\n\nTime O(n), space O(n)."

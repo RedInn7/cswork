@@ -13,6 +13,21 @@
       "In lexicographic order earlier positions matter most; after deleting one character, the first place the result differs from the original string is near the deleted position.",
       "If s[i]>s[i+1] somewhere, deleting s[i] makes that position smaller, and the first such descent is the best place to delete. If the string never decreases, deleting any non-final character cannot help, so delete the last character.",
       "Scan left to right for the first i with s[i]>s[i+1]; if it exists delete s[i], otherwise delete the last character, and print what remains."
+    ],
+    "ja": [
+      "辞書順では前のほうの位置が最も重要です。1文字を削除したあと、結果が元の文字列と最初に異なる場所は、削除した位置の近くになります。",
+      "どこかで s[i]>s[i+1] なら、s[i] を削除するとその位置が小さくなり、最初のそのような降下が削除に最適な場所です。文字列がまったく減少しないなら、最後以外の文字を削除しても得にならないので、最後の文字を削除します。",
+      "左から右へ走査して、s[i]>s[i+1] となる最初の i を探します。あれば s[i] を削除し、なければ最後の文字を削除して、残りを出力します。"
+    ],
+    "ko": [
+      "사전순에서는 앞쪽 위치가 가장 중요합니다. 한 문자를 삭제한 뒤 결과가 원래 문자열과 처음으로 달라지는 곳은 삭제한 위치 근처입니다.",
+      "어딘가에 s[i]>s[i+1]이 있으면 s[i]를 삭제할 때 그 위치가 더 작아지며, 첫 번째 하강이 삭제하기 가장 좋은 곳입니다. 문자열이 한 번도 감소하지 않으면 마지막이 아닌 문자를 삭제해도 도움이 되지 않으므로 마지막 문자를 삭제합니다.",
+      "왼쪽에서 오른쪽으로 스캔하여 s[i]>s[i+1]인 첫 번째 i를 찾고, 있으면 s[i]를, 없으면 마지막 문자를 삭제한 뒤 남은 문자열을 출력합니다."
+    ],
+    "vi": [
+      "Theo thứ tự từ điển, các vị trí đứng trước quan trọng nhất; sau khi xóa một ký tự, nơi đầu tiên kết quả khác xâu gốc nằm gần vị trí bị xóa.",
+      "Nếu ở đâu đó có s[i]>s[i+1], xóa s[i] làm vị trí đó nhỏ đi, và chỗ giảm đầu tiên là nơi xóa tốt nhất. Nếu xâu không bao giờ giảm, xóa bất kỳ ký tự nào không phải cuối cùng cũng không giúp được gì, nên hãy xóa ký tự cuối.",
+      "Quét từ trái sang phải để tìm i đầu tiên có s[i]>s[i+1]; nếu có thì xóa s[i], ngược lại xóa ký tự cuối, rồi in phần còn lại."
     ]
   },
   "explanationEn": "## Approach\n\nDelete at the first position whose character is strictly greater than the next one; if there is no descent, delete the last character.\n\n## Proof of correctness\n\nBefore the first descent the characters are non-decreasing, so deleting an earlier position is no better than keeping the smaller current character; deleting at the first descent makes the first differing position smaller. When there is no descent, keeping the longest prefix and deleting the last character is optimal.\n\n## Complexity\n\nTime O(N), output space O(N)."

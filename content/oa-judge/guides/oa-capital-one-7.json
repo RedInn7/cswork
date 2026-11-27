@@ -13,6 +13,21 @@
       "A square of side s fits if and only if some s consecutive buildings all have height at least s; and if side s fits, every smaller side fits too.",
       "Feasibility is monotone in the side, so binary search on s; each check is one linear scan asking whether a run of buildings with height >= s reaches length s.",
       "Search s in [0, min(n, maximum height)]; check(s) keeps run, the number of consecutive buildings with height >= s, resetting it on a shorter building, and succeeds once run >= s (s = 0 always succeeds); take the largest feasible s and print s * s using 64-bit integers."
+    ],
+    "ja": [
+      "1辺 s の正方形が収まるための必要十分条件は、連続する s 棟のビルの高さがすべて s 以上であることです。また、辺 s が収まるなら、それより小さい辺もすべて収まります。",
+      "収まるかどうかは辺の長さについて単調なので、s に対して二分探索します。各判定は1回の線形走査で、高さ >= s のビルの連続が長さ s に達するかを調べます。",
+      "s を [0, min(n, 最大の高さ)] で探索します。check(s) は、高さ >= s のビルの連続数 run を保持し、それより低いビルが来たら 0 に戻し、run >= s になれば成功とします(s = 0 は常に成功)。収まる最大の s を求め、s * s を64ビット整数で出力します。"
+    ],
+    "ko": [
+      "한 변이 s인 정사각형이 들어가는 것은, 연속된 s개의 빌딩이 모두 높이 s 이상인 구간이 존재할 때이며 그때에 한합니다. 또한 변 s가 들어가면 그보다 작은 변도 모두 들어갑니다.",
+      "변의 길이에 대해 가능 여부가 단조이므로 s에 대해 이분 탐색을 합니다. 각 검사는 높이가 >= s인 빌딩이 연속으로 s개 이상 이어지는지 선형 스캔 한 번으로 확인합니다.",
+      "s를 [0, min(n, 최대 높이)] 범위에서 탐색합니다. check(s)는 높이가 >= s인 연속된 빌딩의 수 run을 유지하며, 더 낮은 빌딩을 만나면 초기화하고, run >= s가 되면 성공합니다(s = 0은 항상 성공). 가능한 가장 큰 s를 구해 64비트 정수로 s * s를 출력합니다."
+    ],
+    "vi": [
+      "Một hình vuông cạnh s đặt vừa khi và chỉ khi có s tòa nhà liên tiếp đều có chiều cao ít nhất s; và nếu cạnh s đặt vừa thì mọi cạnh nhỏ hơn cũng vừa.",
+      "Tính khả thi là đơn điệu theo cạnh, nên tìm kiếm nhị phân theo s; mỗi lần kiểm tra là một lượt quét tuyến tính xem có một dãy các tòa nhà cao >= s đạt độ dài s hay không.",
+      "Tìm s trong [0, min(n, chiều cao lớn nhất)]; check(s) giữ run, số tòa nhà liên tiếp có chiều cao >= s, đặt lại về 0 khi gặp tòa thấp hơn, và thành công khi run >= s (s = 0 luôn thành công); lấy s khả thi lớn nhất và in s * s bằng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nTest whether a side length s is feasible: scan the heights and check whether there are at least s consecutive buildings whose heights are all at least s. Feasibility can only stay the same or become false as s grows, so binary search for the largest s; the answer is s².\n\n## Correctness\n\nA group of consecutive buildings all at least s tall can hold a square of width s and height s; conversely, any square of side s must cover at least s consecutive buildings, all of height at least s. So the check is equivalent to feasibility, and the monotone binary search finds the largest side.\n\n## Complexity\n\nThe binary search takes O(n log(min(n,max(h)))) time and O(1) extra space."

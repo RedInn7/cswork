@@ -13,6 +13,21 @@
       "The problem counts distinct value pairs, regardless of indices or repetitions; and with k fixed, choosing a determines b = a + k.",
       "Deduplicate the array into a set and check for each value a in the set whether a+k is also present; since an index may pair with itself, every distinct value forms a pair when k=0.",
       "Put all numbers in a hash set; for each a in the set add one to the count when a+k is in the set; print the count."
+    ],
+    "ja": [
+      "数えるのは、インデックスや重複によらない、異なる値のペアです。k が固定なので、a を選べば b = a + k が決まります。",
+      "配列の重複を除いて集合にし、集合内の各値 a について a+k も存在するかを調べます。同じインデックスとペアになってもよいので、k=0 のときはすべての異なる値がペアになります。",
+      "すべての数をハッシュ集合に入れ、集合内の各 a について、a+k が集合にあれば個数を 1 増やします。最後に個数を出力します。"
+    ],
+    "ko": [
+      "이 문제는 인덱스나 반복과 무관하게 서로 다른 값의 쌍을 셉니다. k가 고정되어 있으므로 a를 고르면 b = a + k가 정해집니다.",
+      "배열을 집합으로 만들어 중복을 제거하고, 집합의 각 값 a에 대해 a+k도 집합에 있는지 확인합니다. 같은 인덱스를 쌍에 쓸 수 있으므로 k=0이면 서로 다른 모든 값이 쌍을 이룹니다.",
+      "모든 수를 해시 집합에 넣고, 집합의 각 a에 대해 a+k가 집합에 있으면 카운트를 하나 늘립니다. 카운트를 출력합니다."
+    ],
+    "vi": [
+      "Bài toán đếm các cặp giá trị phân biệt, không quan tâm chỉ số hay sự lặp lại; và với k cố định, chọn a xác định b = a + k.",
+      "Loại trùng mảng thành một tập hợp và kiểm tra với mỗi giá trị a trong tập xem a+k có mặt không; vì một chỉ số có thể ghép với chính nó, mỗi giá trị phân biệt tạo thành một cặp khi k=0.",
+      "Đặt tất cả các số vào một hash set; với mỗi a trong tập, cộng một vào số đếm khi a+k nằm trong tập; in số đếm."
     ]
   },
   "explanationEn": "## Approach\n\nAfter removing duplicates, check for each a whether a+k exists.\n\n## Correctness\n\nOnce k is fixed, a uniquely determines b, so each a in the set that satisfies the condition corresponds to exactly one distinct value pair. Pairing a value with itself does not require two indices, so the same reasoning applies directly when k=0.\n\n## Complexity\n\nExpected time O(n), space O(n)."

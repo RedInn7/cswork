@@ -11,5 +11,35 @@
     "hints": [
       "Treat allowed flow directions as directed edges, and use breadth-first search to compute the shortest number of edges from the start to each cell."
     ]
+  },
+  "ja": {
+    "title": "雨水が各セルに最初に届く時刻",
+    "description": "水は指定されたセルから始まり、そのセルは時刻 0 に濡れます。各ステップで、水は現在のセルより高さが高くない上下左右の隣接セルへ同時に広がります。各セルが最初に濡れる時刻を返してください。到達できないセルは −1 です。\n\n本サイトでは標準入出力の形式を明確にしています。出題元に記載のない範囲は、本サイト独自の仕様として定めています。",
+    "input": "1 行目に n m startRow startCol、続く n 行に m 個の高さが与えられます（0-indexed）。出題元には大きさの上限の記載がないため、本サイトでは 1≤n,m≤500、高さは −10⁹..10⁹ とします。",
+    "output": "最初に濡れる時刻を n 行 m 列で出力してください。",
+    "explanation": "例 1：5 から始まり、水は最初に上の 2 と右の 4 に届き、その後 1 に届きます。ほかのセルはより高く到達できないので、出力は問題文の行列と一致します。例 2：高さが等しいセル間では水が流れるので、すべての時刻は (1,2) までのマンハッタン距離に等しくなります。例 3：開始セルが 1 つだけなので、時刻は 0 です。",
+    "hints": [
+      "流れてよい向きを有向辺と見なし、幅優先探索で開始セルから各セルまでの最短の辺数を求めます。"
+    ]
+  },
+  "ko": {
+    "title": "빗물이 각 칸에 처음 도달하는 시간",
+    "description": "물은 주어진 칸에서 시작하며 그 칸은 시간 0에 젖습니다. 매 단계마다 물은 높이가 현재 칸의 높이를 넘지 않는 상하좌우 이웃 칸으로 동시에 퍼집니다. 각 칸이 처음 젖는 시간을 반환하세요. 도달할 수 없는 칸은 −1입니다.\n\n이 사이트는 표준 입출력을 명시적으로 정했으며, 원문에 범위가 없는 부분은 모두 이 사이트의 규약으로 표시했습니다.",
+    "input": "첫 줄에 n m startRow startCol이 주어지고, 이어서 m개의 높이로 이루어진 줄이 n개 주어지며 모두 0-indexed입니다. 원문에는 크기 제한이 없으며, 이 사이트에서는 1≤n,m≤500이고 높이는 −10⁹..10⁹입니다.",
+    "output": "처음 젖는 시간을 n행 m열로 출력합니다.",
+    "explanation": "예제 1: 5에서 출발한 물은 먼저 위쪽의 2와 오른쪽의 4에 도달하고 그다음 1에 도달합니다. 나머지 칸은 더 높아 도달할 수 없으므로 출력은 문제의 행렬과 같습니다. 예제 2: 물은 같은 높이 사이에서도 흐를 수 있으므로 모든 시간이 (1,2)까지의 맨해튼 거리와 같습니다. 예제 3: 시작 칸이 하나뿐이므로 그 시간은 0입니다.",
+    "hints": [
+      "흐를 수 있는 방향을 방향 간선으로 보고, 너비 우선 탐색으로 시작 칸에서 각 칸까지의 최단 간선 수를 구합니다."
+    ]
+  },
+  "vi": {
+    "title": "Thời điểm nước mưa lần đầu chạm tới từng ô",
+    "description": "Nước bắt đầu từ một ô cho trước, ô đó ướt tại thời điểm 0. Ở mỗi bước, nước đồng thời lan sang các ô lân cận trên, dưới, trái, phải có độ cao không vượt quá độ cao của ô hiện tại. Trả về thời điểm mỗi ô ướt lần đầu; các ô không bao giờ tới được là −1.\n\nTrang này nêu rõ định dạng đầu vào/đầu ra chuẩn; mọi khoảng giá trị mà nguồn không cho đều được đánh dấu là quy ước của trang này.",
+    "input": "Dòng đầu tiên chứa n m startRow startCol, tiếp theo là n dòng m độ cao, đánh chỉ số từ 0. Nguồn không cho cận kích thước; trên trang này 1≤n,m≤500 và độ cao nằm trong −10⁹..10⁹.",
+    "output": "In ra thời điểm ướt đầu tiên dưới dạng n hàng m cột.",
+    "explanation": "Ví dụ 1: từ số 5, nước trước hết chạm tới số 2 ở trên và số 4 ở bên phải, rồi tới số 1; các ô khác cao hơn và không tới được, nên đầu ra khớp với ma trận trong đề bài. Ví dụ 2: nước có thể chảy giữa các độ cao bằng nhau, nên mọi thời điểm đều bằng khoảng cách Manhattan tới (1,2). Ví dụ 3: ô xuất phát duy nhất có thời điểm 0.",
+    "hints": [
+      "Xem các hướng chảy được phép như các cạnh có hướng, và dùng tìm kiếm theo chiều rộng để tính số cạnh ngắn nhất từ ô xuất phát tới mỗi ô."
+    ]
   }
 }

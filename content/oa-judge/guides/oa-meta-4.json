@@ -13,6 +13,21 @@
       "Everyone is free at a minute exactly when that minute lies in no busy interval, so all employees' busy intervals can be handled together as one list.",
       "Sort the busy intervals by start and sweep forward in time, tracking the rightmost point covered by busy time so far; the gap before each interval starts is a stretch when everyone is free.",
       "Keep end, starting at 0. For each interval, if its start minus end is at least the meeting length, print end; otherwise set end to the larger of end and the interval's finish. After the sweep, print end if 1440 minus end is at least the meeting length, and −1 otherwise."
+    ],
+    "ja": [
+      "ある分に全員が空いているというのは、その分がどの予定区間にも含まれないということなので、全従業員の予定区間は 1 つのリストとしてまとめて扱えます。",
+      "予定区間を開始時刻でソートして時間の順に走査し、ここまでの予定が覆う最も右の点を追跡します。各区間が始まる前の隙間は、全員が空いている時間帯です。",
+      "end を 0 から始めます。各区間について、その開始時刻から end を引いた値が会議の長さ以上なら end を出力し、そうでなければ end を end と区間の終了時刻の大きい方に更新します。走査後、1440 から end を引いた値が会議の長さ以上なら end を、そうでなければ −1 を出力します。"
+    ],
+    "ko": [
+      "어떤 분에 모두가 비어 있다는 것은 그 분이 어떤 바쁜 구간에도 속하지 않는다는 뜻이므로, 모든 직원의 바쁜 구간을 하나의 목록으로 함께 처리할 수 있습니다.",
+      "바쁜 구간을 시작 시각으로 정렬하고 시간 순서대로 훑으면서, 지금까지 바쁜 시간이 덮은 가장 오른쪽 지점을 추적합니다. 각 구간이 시작되기 전의 틈은 모두가 비어 있는 시간입니다.",
+      "end를 0에서 시작해 유지합니다. 각 구간에서 시작 시각 − end가 회의 길이 이상이면 end를 출력하고, 아니면 end를 end와 구간의 finish 중 큰 값으로 갱신합니다. 훑기가 끝난 뒤 1440 − end가 회의 길이 이상이면 end를, 아니면 −1을 출력합니다."
+    ],
+    "vi": [
+      "Tại một phút nào đó mọi người đều rảnh đúng khi phút đó không nằm trong khoảng bận nào, nên các khoảng bận của tất cả nhân viên có thể xử lý cùng nhau như một danh sách.",
+      "Sắp xếp các khoảng bận theo thời điểm bắt đầu và quét tiến theo thời gian, theo dõi điểm ngoài cùng bên phải được thời gian bận phủ tới; khoảng trống trước khi mỗi khoảng bắt đầu là một đoạn mà mọi người đều rảnh.",
+      "Giữ end, bắt đầu từ 0. Với mỗi khoảng, nếu start của nó trừ end không nhỏ hơn độ dài cuộc họp thì in end; ngược lại đặt end bằng giá trị lớn hơn giữa end và finish của khoảng. Sau khi quét xong, in end nếu 1440 trừ end không nhỏ hơn độ dài cuộc họp, và in −1 nếu ngược lại."
     ]
   },
   "explanationEn": "## Approach\n\nSort the intervals by start and keep the rightmost end of the busy time scanned so far; as soon as the gap before an interval is long enough, return the start of that gap.\n\n## Why it works\n\nAll employees being free together is equivalent to not belonging to any busy interval. The sorted scan keeps merging overlapping busy time, so the gaps it checks come in increasing time order; the first gap that is long enough is necessarily the earliest.\n\n## Complexity\n\nTime O(b log b), space O(b)."

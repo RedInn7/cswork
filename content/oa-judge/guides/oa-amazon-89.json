@@ -13,6 +13,21 @@
       "Every move costs the same, so this is a shortest-path problem on an unweighted grid.",
       "Run a breadth-first search from the top-left corner: when expanding level by level, the step count at which a cell is first reached is its shortest distance. Cells with 0 cannot be entered, and visited cells are never enqueued again.",
       "Number each cell as row times width plus column, and use a distance array initialized to -1 plus an array-based queue. When you dequeue a 9, print its distance; otherwise look at the four neighbors and enqueue each passable unvisited one with distance plus one. If the queue empties without reaching 9, print -1."
+    ],
+    "ja": [
+      "どの移動も同じコストなので、重みなしグリッド上の最短経路問題です。",
+      "左上隅から幅優先探索を行います。レベルごとに広げていくと、マスに初めて到達したときのステップ数がそのマスの最短距離です。0 のマスには入れず、訪問済みのマスは再びキューに入れません。",
+      "各マスを「行 × 幅 + 列」で番号付けし、-1 で初期化した距離配列と配列ベースのキューを使います。9 を取り出したらその距離を出力し、そうでなければ 4 方向の隣接マスを見て、通行可能で未訪問のものを距離 + 1 でキューに入れます。9 に到達せずキューが空になったら -1 を出力します。"
+    ],
+    "ko": [
+      "모든 이동의 비용이 같으므로 가중치 없는 격자에서의 최단 경로 문제입니다.",
+      "왼쪽 위 칸에서 너비 우선 탐색을 수행합니다. 레벨 단위로 확장하면 어떤 칸에 처음 도달한 이동 횟수가 곧 그 칸까지의 최단 거리입니다. 0인 칸에는 들어갈 수 없고, 이미 방문한 칸은 다시 큐에 넣지 않습니다.",
+      "각 칸에 행 × 너비 + 열로 번호를 붙이고, -1로 초기화한 거리 배열과 배열 기반 큐를 사용합니다. 9를 꺼내면 그 거리를 출력하고, 그렇지 않으면 네 이웃을 확인하여 통과할 수 있고 방문하지 않은 칸을 거리 + 1로 큐에 넣습니다. 9에 도달하기 전에 큐가 비면 -1을 출력합니다."
+    ],
+    "vi": [
+      "Mọi bước đi có chi phí như nhau, nên đây là bài toán đường đi ngắn nhất trên lưới không trọng số.",
+      "Chạy tìm kiếm theo chiều rộng từ góc trên bên trái: khi mở rộng theo từng tầng, số bước tại thời điểm một ô được đến lần đầu chính là khoảng cách ngắn nhất của nó. Không thể đi vào các ô 0, và các ô đã thăm không bao giờ được đưa vào hàng đợi lần nữa.",
+      "Đánh số mỗi ô bằng hàng nhân với chiều rộng cộng với cột, rồi dùng mảng khoảng cách khởi tạo bằng -1 cùng một hàng đợi dựa trên mảng. Khi lấy ra một ô 9, in khoảng cách của nó; nếu không thì xét bốn ô lân cận và đưa mỗi ô đi được, chưa thăm vào hàng đợi với khoảng cách cộng một. Nếu hàng đợi cạn mà chưa đến 9, in -1."
     ]
   },
   "explanationEn": "## Approach\n\nRun BFS with a one-dimensional distance array and an index queue, entering only non-0 cells and marking each cell when it is first enqueued.\n\n## Proof of Correctness\n\nEvery move costs 1, so BFS visits cells in increasing order of distance and the first distance assigned to a cell is the shortest; reaching 9 gives the shortest route. If the queue runs out, the destination is unreachable.\n\n## Complexity\n\nTime O(rc), space O(rc), using compact integer arrays to store the queue and the distances."

@@ -13,6 +13,21 @@
       "The leftmost item can always be discarded, so the next item added to the result can be any item of the remaining part; for the lexicographically largest result, it must be the maximum of the remaining part.",
       "Among several equal maxima pick the leftmost, because the suffix it leaves contains the suffix left by picking a later one; and the next suffix maximum never exceeds the current value, so the non-increasing condition holds automatically.",
       "Precompute from right to left the earliest index of the maximum of every suffix (update on greater-or-equal); starting at i=0, take that index j, output a[j], and set i=j+k+1 until i>=n; k can reach 10^9, so use 64-bit indices."
+    ],
+    "ja": [
+      "左端の要素は常に捨てられるので、次に結果へ追加する要素は、残りの部分のどの要素でもかまいません。辞書順で最大にするには、それは残りの部分の最大値でなければなりません。",
+      "等しい最大値が複数あるときは最も左のものを選びます。それが残す接尾辞は、後ろのものを選んだときに残る接尾辞を含んでいるからです。また、次の接尾辞の最大値は現在の値を超えないので、非増加の条件は自動的に満たされます。",
+      "右から左へ、すべての接尾辞の最大値の最も左の添字を前計算します（以上のときに更新します）。i=0 から始めて、その添字 j を取り、a[j] を出力し、i>=n になるまで i=j+k+1 とします。k は 10^9 に達し得るので、64 ビットの添字を使います。"
+    ],
+    "ko": [
+      "가장 왼쪽 항목은 언제든 버릴 수 있으므로, 결과에 추가할 다음 항목은 남은 부분의 어느 항목이든 될 수 있습니다. 사전순으로 가장 큰 결과를 위해서는 남은 부분의 최댓값이어야 합니다.",
+      "같은 최댓값이 여러 개이면 가장 왼쪽 것을 고릅니다. 그 선택이 남기는 접미사가 뒤쪽 것을 골랐을 때 남는 접미사를 포함하기 때문입니다. 또 다음 접미사의 최댓값은 현재 값을 넘지 않으므로 비증가 조건은 자동으로 성립합니다.",
+      "오른쪽에서 왼쪽으로 각 접미사의 최댓값이 처음 나오는 인덱스를 계산합니다(크거나 같을 때 갱신). i=0에서 시작하여 그 인덱스 j를 구해 a[j]를 출력하고, i=j+k+1로 옮기며 i>=n이 될 때까지 반복합니다. k가 10^9까지 가능하므로 64비트 인덱스를 사용하세요."
+    ],
+    "vi": [
+      "Phần tử ngoài cùng bên trái luôn có thể bị bỏ, nên phần tử tiếp theo được thêm vào kết quả có thể là bất kỳ phần tử nào của phần còn lại; để kết quả lớn nhất theo thứ tự từ điển, nó phải là giá trị lớn nhất của phần còn lại.",
+      "Trong nhiều giá trị lớn nhất bằng nhau thì chọn cái ngoài cùng bên trái, vì hậu tố còn lại của nó chứa hậu tố còn lại khi chọn cái đứng sau; và giá trị lớn nhất của hậu tố kế tiếp không bao giờ vượt quá giá trị hiện tại, nên điều kiện không tăng tự động được thỏa.",
+      "Tính từ phải sang trái chỉ số sớm nhất của giá trị lớn nhất của mọi hậu tố (cập nhật khi lớn hơn hoặc bằng); bắt đầu từ i=0, lấy chỉ số j đó, in a[j], và đặt i=j+k+1 cho đến khi i>=n; k có thể lên tới 10^9, nên dùng chỉ số 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nPrecompute the earliest index of the maximum in each suffix. Each round, take that maximum and continue from its index+k+1.\n\n## Proof of correctness\n\nSince items can be discarded freely, any position of the suffix can become the next item, so the lexicographically best choice must take the maximum. Among several equal maxima, the suffix left after choosing the earliest one contains the suffix left after choosing a later one, and the latter can be simulated by discarding more, so the earliest is never worse. The next suffix maximum does not exceed the current maximum, so the non-increasing order holds automatically. Induction over the items proves optimality.\n\n## Complexity\n\nTime O(n), space O(n)."

@@ -13,6 +13,21 @@
       "If character c first appears at f and last at l, shifting the window s[f..l-1] one step right to s[f+1..l] removes one c and adds one c, so the two windows have equal frequencies.",
       "These two windows have identical contents only when f..l is all c (a single run); conversely, one can prove that any valid answer is at most last-first of some character spanning different runs.",
       "While scanning, number the runs of equal characters and record each character's first and last positions together with their run numbers; take the maximum last-first over characters whose first and last runs differ, or output -1 if there is none."
+    ],
+    "ja": [
+      "文字 c が最初に位置 f、最後に位置 l に現れるなら、ウィンドウ s[f..l-1] を右へ 1 つずらして s[f+1..l] にすると、c が 1 つ減って 1 つ増えるので、2 つのウィンドウの出現回数は等しくなります。",
+      "この 2 つのウィンドウの内容が同一になるのは、f..l がすべて c（1 つのラン）のときだけです。逆に、有効な答えはどれも、異なるランにまたがるある文字の last-first 以下であることが証明できます。",
+      "走査しながら、同じ文字のランに番号を振り、各文字の最初と最後の位置を、そのラン番号とともに記録します。最初と最後のランが異なる文字についての last-first の最大値を求め、なければ -1 を出力します。"
+    ],
+    "ko": [
+      "문자 c가 처음 f에, 마지막으로 l에 나타난다면, 윈도우 s[f..l-1]을 한 칸 오른쪽으로 밀어 s[f+1..l]로 만들면 c 하나가 빠지고 c 하나가 들어오므로 두 윈도우의 빈도는 같습니다.",
+      "이 두 윈도우의 내용이 같은 것은 f..l이 모두 c인 경우(런 하나)뿐입니다. 반대로, 유효한 모든 답은 서로 다른 런에 걸치는 어떤 문자의 last-first 이하임을 증명할 수 있습니다.",
+      "스캔하면서 같은 문자가 연속된 런에 번호를 매기고, 각 문자의 처음과 마지막 위치를 그 런 번호와 함께 기록합니다. 처음과 마지막의 런이 서로 다른 문자에 대한 last-first의 최댓값을 취하고, 없으면 -1을 출력합니다."
+    ],
+    "vi": [
+      "Nếu ký tự c xuất hiện đầu tiên tại f và cuối cùng tại l, thì dịch cửa sổ s[f..l-1] sang phải một bước thành s[f+1..l] loại đi một c và thêm một c, nên hai cửa sổ có tần suất bằng nhau.",
+      "Hai cửa sổ này chỉ có nội dung giống hệt khi f..l toàn là c (một đoạn duy nhất); ngược lại, có thể chứng minh mọi đáp án hợp lệ đều nhiều nhất bằng last-first của một ký tự trải qua các đoạn khác nhau.",
+      "Khi duyệt, đánh số các đoạn ký tự bằng nhau và ghi lại vị trí đầu tiên và cuối cùng của mỗi ký tự cùng số hiệu đoạn của chúng; lấy giá trị lớn nhất của last-first trên các ký tự có đoạn đầu và đoạn cuối khác nhau, hoặc in -1 nếu không có."
     ]
   },
   "explanationEn": "## Approach\n\nRecord each character's first and last positions, and whether it appears in two different runs of identical characters. For each character c that appears in multiple runs, the candidate is last[c]−first[c]; take the maximum, and return −1 if there is no candidate.\n\n## Proof of correctness\n\nIf the characters between the first and last c are not all c, the two windows s[f:l] and s[f+1:l+1] differ only by removing one c and adding one c, so they have equal frequencies; if their contents were identical, all of f..l would be c, a contradiction, which gives the candidate as a lower bound. Conversely, for any valid A=s[i:i+L], B=s[j:j+L] with i<j, subtracting the equal frequencies shows that s[i:j] and s[i+L:j+L] have equal frequencies. Let c=s[i]; the right block must contain a c at some q≥i+L, so the global distance between the first and last c is ≥L. A cannot consist of a single repeated character, otherwise B, having equal frequencies, would be identical to A; the first-to-last range of c contains A, so c spans different runs and is a candidate. Every valid length is at most the largest candidate, and the lower bound is attained, so it is optimal.\n\n## Complexity\n\nTime O(n), auxiliary space O(26)."

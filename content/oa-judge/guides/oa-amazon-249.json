@@ -13,6 +13,21 @@
       "Each slide removes one element and adds one, which suits a structure counting elements by value, in which the k-th smallest is then located.",
       "Compress the values and keep, in a Fenwick tree, how many elements of each value are in the window; the k-th smallest is where the prefix count first reaches k, found by binary lifting on the tree in O(log n).",
       "Sort and deduplicate the values, and insert the first m elements; for each window start (after the first, remove a[start-1] and add a[start+m-1]), start from the largest power of two not exceeding the number of values, and jump whenever the count after the jump is still below the remaining target, subtracting it; the value just after the final position is the answer, printed in window order."
+    ],
+    "ja": [
+      "ウィンドウを 1 つずらすたびに、要素が 1 つ取り除かれ、1 つ加えられます。これは値ごとに要素数を数える構造に向いており、その上で k 番目に小さい要素を探します。",
+      "値を座標圧縮し、ウィンドウ内に各値が何個あるかを Fenwick tree で持ちます。k 番目に小さい要素は、接頭辞の個数が初めて k に達する位置で、木上の二分リフティングにより O(log n) で求められます。",
+      "値をソートして重複を除き、最初の m 個の要素を挿入します。各ウィンドウの開始位置について（最初以外は a[start-1] を取り除き、a[start+m-1] を加える）、値の個数以下で最大の 2 の冪から始めます。ジャンプ後の個数がまだ残りの目標より小さければジャンプし、その個数を目標から引きます。最終位置の次の値が答えで、ウィンドウの順に出力します。"
+    ],
+    "ko": [
+      "윈도우를 한 칸 밀 때마다 원소 하나를 제거하고 하나를 추가하므로, 값별 개수를 세는 자료구조가 적합하며 그 위에서 k번째로 작은 값을 찾습니다.",
+      "값을 좌표 압축하고, 윈도우 안에 각 값이 몇 개 있는지를 펜윅 트리에 유지합니다. k번째로 작은 값은 접두사 개수가 처음 k에 도달하는 위치이며, 트리에서 이진 리프팅으로 O(log n)에 찾을 수 있습니다.",
+      "값을 정렬하고 중복을 제거한 뒤 처음 m개의 원소를 삽입합니다. 각 윈도우 시작에 대해(첫 윈도우 이후에는 a[start-1]을 제거하고 a[start+m-1]을 추가), 값의 개수를 넘지 않는 가장 큰 2의 거듭제곱에서 시작하여, 점프한 뒤의 개수가 남은 목표보다 여전히 작으면 점프하며 그 개수를 목표에서 뺍니다. 최종 위치 바로 다음의 값이 정답이며, 윈도우 순서대로 출력합니다."
+    ],
+    "vi": [
+      "Mỗi lần trượt loại một phần tử và thêm một phần tử, rất hợp với cấu trúc đếm phần tử theo giá trị, trong đó phần tử nhỏ thứ k được xác định sau đó.",
+      "Nén giá trị và giữ trong cây Fenwick số phần tử của từng giá trị trong cửa sổ; phần tử nhỏ thứ k nằm ở nơi số đếm tiền tố lần đầu đạt k, tìm bằng nhảy nhị phân trên cây trong O(log n).",
+      "Sắp xếp và khử trùng lặp các giá trị, rồi chèn m phần tử đầu; với mỗi vị trí bắt đầu cửa sổ (sau cửa sổ đầu thì loại a[start-1] và thêm a[start+m-1]), bắt đầu từ lũy thừa của hai lớn nhất không vượt quá số giá trị, và nhảy mỗi khi số đếm sau bước nhảy vẫn nhỏ hơn mục tiêu còn lại, đồng thời trừ nó đi; giá trị ngay sau vị trí cuối cùng là đáp án, in theo thứ tự cửa sổ."
     ]
   },
   "explanationEn": "## Approach\n\nCompress the values and maintain the frequency of each value in the current window with a Fenwick tree. Use binary lifting to find the position where the prefix frequency first reaches k; when sliding, remove the old element and add the new one.\n\n## Proof of correctness\n\nInitially the Fenwick tree holds exactly the frequencies of the first window, and one removal plus one insertion per step keeps this invariant. The compressed coordinate of the k-th smallest value is the coordinate where the cumulative frequency first reaches k; binary lifting finds the largest prefix whose cumulative count is still below k, so the next coordinate is exactly right. The frequencies of repeated elements count every occurrence.\n\n## Complexity\n\nTime O(n log n), space O(n)."

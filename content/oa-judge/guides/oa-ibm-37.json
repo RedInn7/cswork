@@ -13,6 +13,21 @@
       "Every descent a[i]<a[i−1] in the original array can only be fixed by increasing the right end without increasing the left end, so the right end of a descent must be chosen and its left end must not be.",
       "All forced positions receive the same x, so x is at least the largest descent amount; if two forced positions are adjacent, the non-adjacency rule is violated and there is no solution at once.",
       "Mark the right end of every descent and take x as the largest descent amount; print -1 if two marked positions are adjacent; otherwise add x only to the marked positions and check whether the whole array is non-decreasing: print x if it is, otherwise -1 (a new descent then cannot be fixed by a larger x or by choosing more positions). With no descent, x is 0."
+    ],
+    "ja": [
+      "元の配列の下降 a[i]<a[i−1] は、左端を増やさずに右端だけを増やすことでしか解消できません。したがって下降の右端は必ず選ばれ、左端は選ばれてはいけません。",
+      "強制された位置にはすべて同じ x が加わるので、x は下降量の最大値以上です。強制された位置が 2 つ隣り合っていれば隣接禁止のルールに反し、ただちに解なしです。",
+      "すべての下降の右端に印を付け、x を下降量の最大値とします。印のある位置が 2 つ隣り合っていれば -1 を出力します。そうでなければ印のある位置にだけ x を加え、配列全体が非減少かを確認します。非減少なら x を、そうでなければ -1 を出力します (新たな下降は、x を大きくしても、位置を増やしても解消できません)。下降がなければ x は 0 です。"
+    ],
+    "ko": [
+      "원래 배열의 모든 감소 지점 a[i]<a[i−1]은 왼쪽 끝은 올리지 않고 오른쪽 끝만 올려야 해결할 수 있으므로, 감소 지점의 오른쪽 끝은 반드시 선택하고 왼쪽 끝은 선택하지 않아야 합니다.",
+      "강제된 위치에는 모두 같은 x를 더하므로 x는 가장 큰 감소량 이상이어야 합니다. 강제된 두 위치가 인접하면 인접 금지 규칙에 어긋나므로 즉시 해가 없습니다.",
+      "모든 감소 지점의 오른쪽 끝에 표시하고 x를 가장 큰 감소량으로 잡습니다. 표시된 두 위치가 인접하면 -1을 출력합니다. 그렇지 않으면 표시된 위치에만 x를 더한 뒤 배열 전체가 비감소인지 확인하여, 비감소이면 x를, 아니면 -1을 출력합니다(이때 새로 생긴 감소는 더 큰 x나 더 많은 위치를 선택해도 해결할 수 없습니다). 감소 지점이 없으면 x는 0입니다."
+    ],
+    "vi": [
+      "Mỗi chỗ giảm a[i]<a[i−1] trong mảng gốc chỉ có thể được sửa bằng cách tăng đầu phải mà không tăng đầu trái, nên đầu phải của chỗ giảm phải được chọn còn đầu trái thì không.",
+      "Mọi vị trí bắt buộc đều được cộng cùng một x, nên x ít nhất bằng mức giảm lớn nhất; nếu hai vị trí bắt buộc kề nhau thì vi phạm quy tắc không kề nhau và vô nghiệm ngay.",
+      "Đánh dấu đầu phải của mọi chỗ giảm và lấy x là mức giảm lớn nhất; in -1 nếu hai vị trí được đánh dấu kề nhau; ngược lại cộng x chỉ vào các vị trí đã đánh dấu rồi kiểm tra toàn mảng có không giảm không: nếu có thì in x, nếu không thì in -1 (một chỗ giảm mới khi đó không thể sửa bằng x lớn hơn hay bằng cách chọn thêm vị trí). Nếu không có chỗ giảm nào thì x bằng 0."
     ]
   },
   "explanationEn": "## Approach\n\nEach descent in the original array forces its right end to be chosen and its left end not to be chosen; if two forced positions are adjacent, there is immediately no solution. Take the maximum descent amount as x, add x only to the forced positions, then verify the whole array.\n\n## Proof of correctness\n\nA descent can only be repaired by increasing its right end without increasing its left end, so these choices are mandatory and x is at least the largest descent amount. No additional choice changes this lower bound. After increasing the forced positions by this lower-bound x, if a new descent appears to the right of one of them, that right neighbor cannot be chosen (adjacent positions are forbidden), and increasing x does not help either; so in that case there is no solution. Otherwise a valid solution reaching the lower bound has been constructed.\n\n## Complexity\n\nTime O(n), space O(n)."

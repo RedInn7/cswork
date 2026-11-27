@@ -13,6 +13,21 @@
       "Whether a transaction can be taken depends only on the last type of the current selection and how many times it repeats at the end; a negative-profit transaction can still be worth taking to break up a streak.",
       "Define dp[c][r] as the best profit of a selection from the processed prefix that ends with type c repeated exactly r times; k can be capped at min(k, n).",
       "For a transaction of type c with profit v: for r from high to low, update dp[c][r] with dp[c][r−1]+v, then update dp[c][1] with max(0, best of the other types)+v. Keep the best value per type; the answer is the maximum of 0 and all states."
+    ],
+    "ja": [
+      "取引を選べるかどうかは、現在の選択の最後の種類と、末尾で何回繰り返されているかだけで決まります。利益が負の取引でも、連続を断ち切るために選ぶ価値があることがあります。",
+      "dp[c][r] を、処理済みの接頭辞から選んだ列のうち、種類 c がちょうど r 回連続して終わるものの最大利益と定義します。k は min(k, n) に抑えられます。",
+      "種類 c で利益 v の取引について、r を大きい方から小さい方へ、dp[c][r] を dp[c][r−1]+v で更新し、次に dp[c][1] を max(0, 他の種類の最良値)+v で更新します。種類ごとの最良値を保持しておき、答えは 0 とすべての状態の最大値です。"
+    ],
+    "ko": [
+      "거래를 선택할 수 있는지는 현재 선택의 마지막 유형과 그 유형이 끝에서 몇 번 반복되는지에만 달려 있습니다. 이익이 음수인 거래도 연속을 끊기 위해 선택할 가치가 있을 수 있습니다.",
+      "dp[c][r]을 처리한 접두사에서 유형 c가 정확히 r번 반복되며 끝나는 선택의 최대 이익으로 정의합니다. k는 min(k, n)으로 제한할 수 있습니다.",
+      "유형 c, 이익 v인 거래에 대해: r을 큰 값에서 작은 값으로 내려가며 dp[c][r]을 dp[c][r−1]+v로 갱신하고, 그다음 dp[c][1]을 max(0, 다른 유형의 최선 값)+v로 갱신합니다. 유형별 최선 값을 유지하며, 답은 0과 모든 상태 중 최댓값입니다."
+    ],
+    "vi": [
+      "Một giao dịch có lấy được hay không chỉ phụ thuộc vào loại cuối cùng của dãy đang chọn và số lần nó lặp ở cuối; giao dịch có lợi nhuận âm vẫn có thể đáng lấy để cắt đứt một chuỗi.",
+      "Định nghĩa dp[c][r] là lợi nhuận tốt nhất của một cách chọn từ tiền tố đã xử lý kết thúc bằng loại c lặp lại đúng r lần; k có thể bị chặn bởi min(k, n).",
+      "Với giao dịch loại c có lợi nhuận v: cho r từ cao xuống thấp, cập nhật dp[c][r] bằng dp[c][r−1]+v, rồi cập nhật dp[c][1] bằng max(0, giá trị tốt nhất của các loại khác)+v. Giữ giá trị tốt nhất cho mỗi loại; đáp án là max của 0 và mọi trạng thái."
     ]
   },
   "explanationEn": "## Approach\n\ndp[c][r] stores the best profit among selections of the processed prefix that end with type c repeated r times in a row. For a transaction of type c with profit v, keep the skip states; the best profit ending in another type, or the empty selection, extends to r=1, and the same type with r−1 extends to r. Update r in decreasing order so that the current transaction cannot be reused in the same round.\n\n## Proof of correctness\n\nEvery valid non-empty selection has a unique last type and a unique length of its final streak. When the current transaction is chosen, the previously chosen one either does not exist or has a different type, in which case the new streak length is 1, or has the same type with a streak one shorter. These mutually exclusive cases are exactly all transitions, and skipping keeps the old state. Reading the old best values of the other types and updating the same type in decreasing order guarantees that each original transaction is used at most once. By induction over prefixes, all valid subsequences are covered; taking the maximum of 0 and all states gives the optimum, and negative-profit separators are kept as well.\n\n## Complexity\n\nO(n·min(n,k)+26n) time and O(26·min(n,k)) space."

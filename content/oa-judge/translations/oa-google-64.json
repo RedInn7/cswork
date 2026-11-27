@@ -13,5 +13,41 @@
       "The longest common prefix of a pair of strings corresponds to the last node they both pass through in the trie.",
       "At each node, take the longest strings coming from different branches (including a string that ends at that node) and compute the sum of their remaining lengths."
     ]
+  },
+  "ja": {
+    "title": "2 進文字列間の最大距離",
+    "description": "2 進文字列が少なくとも 2 つ与えられます。2 つの文字列の距離は、それぞれから最長共通接頭辞を取り除いた後に残る部分の長さの和です。異なるインデックスの文字列のすべてのペアについて、距離の最大値を返してください。2 つのインデックスに同一の文字列が入っていても、有効なペアになります。\n\nこのサイトの入力範囲: 2≤N≤100000。すべての文字列は空でなく 0/1 のみを含み、全文字列の長さの合計は ≤200000 です。\n\n出典: https://oamaster.com/docs/companies/google#64-max-distance（問題文のフィンガープリント ae5df8e78cb84a95bd9b371d7609216f4deadf90e5e47a2b45a65686d5cec03f で固定）。完全な意味づけとエッジケースは、元の LeetCode のディスカッション投稿と、同じ問題の FastPrep のページと照らし合わせて確認しました。",
+    "input": "1 行目に N、続く N 行にそれぞれ空でない 2 進文字列が 1 つ与えられます。",
+    "output": "異なるインデックスの文字列のすべてのペアについての、距離の最大値を出力してください。",
+    "explanation": "距離は 2 つの文字列の長さの和から、最長共通接頭辞の長さの 2 倍を引いたものです。異なるインデックスの文字列のすべてのペアについて、最大値を取ります。",
+    "hints": [
+      "文字列を 2 進トライに挿入します。",
+      "文字列のペアの最長共通接頭辞は、トライ上で 2 つが共に通る最後のノードに対応します。",
+      "各ノードで、異なる枝から来る最も長い文字列（そのノードで終わる文字列を含む）を取り、それぞれの残りの長さの和を計算します。"
+    ]
+  },
+  "ko": {
+    "title": "이진 문자열 간 최대 거리",
+    "description": "이진 문자열이 둘 이상 주어집니다. 두 문자열 사이의 거리는 각 문자열에서 최장 공통 접두사를 제거한 뒤 남는 부분의 길이의 합입니다. 서로 다른 인덱스에 있는 모든 문자열 쌍에 대해 최대 거리를 반환하세요. 서로 다른 두 인덱스에 동일한 문자열이 있더라도 유효한 쌍입니다.\n\n이 사이트의 입력 범위: 2≤N≤100000이며, 모든 문자열은 비어 있지 않고 0/1로만 이루어져 있으며, 모든 문자열의 길이의 합은 ≤200000입니다.\n\n출처: https://oamaster.com/docs/companies/google#64-max-distance (고정된 문제 지문 ae5df8e78cb84a95bd9b371d7609216f4deadf90e5e47a2b45a65686d5cec03f). 전체 의미와 예외 상황은 원본 LeetCode 토론 글과 FastPrep의 같은 문제 페이지를 대조하여 확인했습니다.",
+    "input": "첫째 줄에 N이 주어지고, 이어지는 N개의 줄에 각각 비어 있지 않은 이진 문자열이 하나씩 주어집니다.",
+    "output": "서로 다른 인덱스에 있는 모든 문자열 쌍에 대한 최대 거리를 출력합니다.",
+    "explanation": "거리는 두 문자열의 길이의 합에서 최장 공통 접두사 길이의 두 배를 뺀 값입니다. 서로 다른 인덱스에 있는 모든 문자열 쌍에 대해 그 최댓값을 취합니다.",
+    "hints": [
+      "문자열들을 이진 트라이에 삽입합니다.",
+      "한 쌍의 문자열의 최장 공통 접두사는 트라이에서 두 문자열이 함께 지나는 마지막 노드에 해당합니다.",
+      "각 노드에서 서로 다른 가지에서 오는(그 노드에서 끝나는 문자열 포함) 가장 긴 문자열들을 취하여 남은 길이의 합을 계산합니다."
+    ]
+  },
+  "vi": {
+    "title": "Khoảng cách lớn nhất giữa các xâu nhị phân",
+    "description": "Cho ít nhất hai xâu nhị phân. Khoảng cách giữa hai xâu là tổng độ dài của phần còn lại sau khi loại bỏ tiền tố chung dài nhất khỏi mỗi xâu. Trên mọi cặp xâu có chỉ số khác nhau, trả về khoảng cách lớn nhất. Ngay cả khi hai chỉ số chứa các xâu giống hệt nhau, chúng vẫn tạo thành một cặp hợp lệ.\n\nPhạm vi đầu vào của trang này: 2≤N≤100000; mọi xâu đều khác rỗng và chỉ chứa 0/1; tổng độ dài của tất cả các xâu ≤200000.\n\nNguồn: https://oamaster.com/docs/companies/google#64-max-distance (dấu vân tay đề bài được ghim ae5df8e78cb84a95bd9b371d7609216f4deadf90e5e47a2b45a65686d5cec03f). Ngữ nghĩa đầy đủ và các trường hợp biên được đối chiếu với bài thảo luận LeetCode gốc và trang của cùng bài toán trên FastPrep.",
+    "input": "Dòng đầu chứa N; mỗi dòng trong N dòng tiếp theo chứa một xâu nhị phân khác rỗng.",
+    "output": "In ra khoảng cách lớn nhất trên mọi cặp xâu có chỉ số khác nhau.",
+    "explanation": "Khoảng cách bằng tổng độ dài của hai xâu trừ đi hai lần độ dài tiền tố chung dài nhất của chúng; lấy giá trị lớn nhất trên mọi cặp xâu có chỉ số khác nhau.",
+    "hints": [
+      "Chèn các xâu vào một trie nhị phân.",
+      "Tiền tố chung dài nhất của một cặp xâu tương ứng với nút cuối cùng mà cả hai cùng đi qua trong trie.",
+      "Tại mỗi nút, lấy các xâu dài nhất đến từ các nhánh khác nhau (bao gồm cả xâu kết thúc tại nút đó) và tính tổng độ dài phần còn lại của chúng."
+    ]
   }
 }

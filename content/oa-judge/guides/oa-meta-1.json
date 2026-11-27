@@ -13,6 +13,21 @@
       "The shape falls as a whole without rotating or deforming and stops when its lowest asterisk reaches the bottom row, so the fall distance D is fixed: the bottom row index minus the row of the lowest asterisk.",
       "While falling, each asterisk passes through the D cells below it in its column; every obstacle on a cell swept by some asterisk must be removed, and once those are gone no step collides. One obstacle may be swept by several asterisks but counts only once.",
       "After finding D, handle one column at a time: for every asterisk in row i of that column, mark the row range [i+1, i+D] in a difference array; a prefix sum tells which rows are covered, count the covered cells holding #, and add the counts of all columns."
+    ],
+    "ja": [
+      "図形は回転も変形もせずに全体として落下し、最下のアスタリスクが最下行に達したところで止まります。したがって落下距離 D は固定で、最下行のインデックスから最下のアスタリスクの行を引いた値です。",
+      "落下中、各アスタリスクは同じ列の下にある D マスを通過します。いずれかのアスタリスクに掃引されるマスの障害物はすべて取り除く必要があり、それらを取り除けばどのステップでも衝突しません。1 つの障害物が複数のアスタリスクに掃引されても、数えるのは 1 回だけです。",
+      "D を求めたら、列ごとに処理します。その列の行 i にあるアスタリスクごとに、差分配列で行範囲 [i+1, i+D] に印を付けます。累積和でどの行が覆われているかが分かるので、覆われたマスのうち # のものを数え、全列の合計を取ります。"
+    ],
+    "ko": [
+      "도형은 회전이나 변형 없이 통째로 떨어지고 가장 낮은 별이 맨 아래 행에 닿으면 멈추므로, 낙하 거리 D는 고정됩니다. 맨 아래 행의 인덱스에서 가장 낮은 별이 있는 행을 뺀 값입니다.",
+      "떨어지는 동안 각 별은 자신의 열에서 아래의 D개 칸을 지나가며, 어떤 별이 쓸고 지나가는 칸 위의 장애물은 모두 제거해야 합니다. 이들을 제거하면 어떤 단계에서도 충돌하지 않습니다. 하나의 장애물을 여러 별이 지나갈 수 있지만 한 번만 셉니다.",
+      "D를 구한 뒤 열 하나씩 처리합니다. 그 열의 i행에 있는 별마다 차이 배열에 행 범위 [i+1, i+D]를 표시하고, 누적 합으로 덮인 행을 알아내 #가 있는 덮인 칸을 세어 모든 열의 개수를 더합니다."
+    ],
+    "vi": [
+      "Hình rơi xuống như một khối, không xoay hay biến dạng, và dừng khi dấu sao thấp nhất chạm hàng dưới cùng, nên khoảng cách rơi D cố định: chỉ số hàng dưới cùng trừ đi hàng của dấu sao thấp nhất.",
+      "Khi rơi, mỗi dấu sao đi qua D ô bên dưới nó trong cột của mình; mọi chướng ngại vật trên ô bị một dấu sao quét qua đều phải gỡ, và khi đã gỡ hết thì không bước nào va chạm. Một chướng ngại vật có thể bị nhiều dấu sao quét qua nhưng chỉ được đếm một lần.",
+      "Sau khi tìm D, xử lý từng cột một: với mỗi dấu sao ở hàng i của cột đó, đánh dấu khoảng hàng [i+1, i+D] trong mảng hiệu; tổng tiền tố cho biết những hàng nào được phủ, đếm các ô được phủ chứa #, rồi cộng kết quả của tất cả các cột."
     ]
   },
   "explanationEn": "## Approach\n\nThe downward distance is determined by the shape's lowest cell. Each asterisk sweeps a row interval in its own column; merge the intervals with a per-column difference array, then count the covered obstacles.\n\n## Why it is correct\n\nBefore the lowest cell reaches the bottom row, the shape must pass through every intermediate shift exactly; every obstacle at a swept position must be removed. After removing all obstacles at swept positions, no step collides, so counting these distinct obstacles is both necessary and sufficient.\n\n## Complexity\n\nTime and space O(RC)."

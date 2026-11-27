@@ -13,5 +13,41 @@
       "Group words by signature in a hash map, so each group only needs to be sorted once.",
       "Words identical to the query must be output too."
     ]
+  },
+  "ja": {
+    "title": "JPMorgan Chase OA #26: Get Search Results",
+    "description": "オートコレクト機能を実装します。単語リスト words と複数のクエリ queries が与えられたとき、各クエリについて、リスト内のそのクエリのアナグラムであるすべての単語を辞書順の昇順で返してください。\n\nアナグラムとは、別の文字列の文字を並べ替えて得られる文字列のことで、各文字の出現回数がちょうど同じでなければなりません。クエリと同一の単語もアナグラムに含まれます。",
+    "input": "1行目に整数 n、続けて n 行に単語が1つずつ与えられます。次に整数 q の行があり、続けて q 行にクエリが1つずつ与えられます。\n\n1≤n≤750、1≤q≤750。すべての単語とクエリの長さは 1..100 で、英小文字のみからなります。リスト内の単語は互いに異なります。各クエリには、リスト内に少なくとも1つのアナグラムがあることが保証されています。",
+    "output": "q 行を出力します。i 行目には、まずクエリ i の結果の個数 k を出力し、続けてその k 個の単語を辞書順の昇順に、空白区切りで出力します。",
+    "explanation": "例 1: spede のアナグラムは speed だけで、deul のアナグラムは duel と dule です。cars はどのクエリのアナグラムでもありません。\n例 2: stop、pots、tops、opts、post、spot はすべて互いにアナグラムで、辞書順に出力されます。クエリ post 自身も結果に含まれます。stops は s が1つ多いので、それ自身にしか一致しません。\n例 3: aabb、abab、bbaa は baba のアナグラムです。ab は ab だけに一致し、cab は abc だけに一致します。",
+    "hints": [
+      "単語の文字をソートしたものをシグネチャとして使います。アナグラムは同じシグネチャを持ちます。",
+      "単語をシグネチャごとにハッシュマップでグループ化すれば、各グループは1回ソートするだけで済みます。",
+      "クエリと同一の単語も出力しなければなりません。"
+    ]
+  },
+  "ko": {
+    "title": "JPMorgan Chase OA #26: 검색 결과 가져오기",
+    "description": "자동 교정 기능을 구현하세요. 단어 목록 words와 여러 질의 queries가 주어졌을 때, 각 질의에 대해 목록에서 그 질의의 애너그램인 모든 단어를 사전순 오름차순으로 반환합니다.\n\n애너그램은 다른 문자열의 글자를 재배열해 얻은 문자열이므로 모든 글자의 등장 횟수가 정확히 같아야 합니다. 질의와 동일한 단어도 포함됩니다.",
+    "input": "첫 줄에 정수 n이 주어지고, 이어서 n개의 줄에 단어가 하나씩 주어집니다. 그다음 줄에 정수 q가 주어지고, 이어서 q개의 줄에 질의가 하나씩 주어집니다.\n\n1≤n≤750, 1≤q≤750. 모든 단어와 질의의 길이는 1..100이며 영문 소문자로만 이루어져 있습니다. 목록의 단어는 서로 다르며, 모든 질의에는 목록에 애너그램이 최소 하나 존재함이 보장됩니다.",
+    "output": "q줄을 출력합니다. i번째 줄에는 먼저 i번째 질의의 결과 수 k를 쓰고, 이어서 그 k개의 단어를 사전순 오름차순으로 공백으로 구분해 씁니다.",
+    "explanation": "예제 1: spede의 유일한 애너그램은 speed이고, deul의 애너그램은 duel과 dule입니다. cars는 어떤 질의의 애너그램도 아닙니다.\n예제 2: stop, pots, tops, opts, post, spot은 모두 서로의 애너그램이며 사전순으로 출력됩니다. 질의 post 자신도 결과에 포함됩니다. stops는 s가 하나 더 많으므로 자기 자신하고만 일치합니다.\n예제 3: aabb, abab, bbaa는 baba의 애너그램이고, ab는 ab하고만, cab는 abc하고만 일치합니다.",
+    "hints": [
+      "단어의 정렬된 문자를 시그니처로 사용하세요. 애너그램은 같은 시그니처를 가집니다.",
+      "단어를 시그니처별로 해시 맵에 묶으면 각 그룹을 한 번만 정렬하면 됩니다.",
+      "질의와 동일한 단어도 출력해야 합니다."
+    ]
+  },
+  "vi": {
+    "title": "JPMorgan Chase OA #26: Lấy kết quả tìm kiếm",
+    "description": "Hãy cài đặt tính năng tự động sửa lỗi: cho danh sách từ words và một số truy vấn queries, với mỗi truy vấn trả về mọi từ trong danh sách là đảo chữ của nó, sắp xếp theo thứ tự từ điển tăng dần.\n\nĐảo chữ (anagram) là xâu thu được bằng cách sắp xếp lại các chữ cái của một xâu khác, nên mỗi chữ cái phải xuất hiện đúng cùng số lần; một từ giống hệt truy vấn cũng được tính.",
+    "input": "Dòng đầu chứa một số nguyên n, tiếp theo là n dòng, mỗi dòng một từ. Sau đó là một dòng chứa số nguyên q, tiếp theo là q dòng, mỗi dòng một truy vấn.\n\n1≤n≤750, 1≤q≤750; mỗi từ và mỗi truy vấn có độ dài 1..100 và chỉ gồm các chữ cái tiếng Anh thường; các từ trong danh sách đôi một khác nhau; mỗi truy vấn được đảm bảo có ít nhất một đảo chữ trong danh sách.",
+    "output": "In ra q dòng. Dòng i đầu tiên cho số k kết quả của truy vấn i, theo sau là k từ đó theo thứ tự từ điển tăng dần, cách nhau bằng dấu cách.",
+    "explanation": "Ví dụ 1: đảo chữ duy nhất của spede là speed; các đảo chữ của deul là duel và dule. cars không phải đảo chữ của truy vấn nào.\nVí dụ 2: stop, pots, tops, opts, post và spot đều là đảo chữ của nhau và được in theo thứ tự từ điển; bản thân truy vấn post cũng nằm trong kết quả. stops có thêm một chữ s nên chỉ khớp với chính nó.\nVí dụ 3: aabb, abab và bbaa là đảo chữ của baba; ab chỉ khớp với ab; cab chỉ khớp với abc.",
+    "hints": [
+      "Dùng các ký tự đã sắp xếp của một từ làm chữ ký; các đảo chữ có cùng chữ ký.",
+      "Nhóm các từ theo chữ ký trong một bảng băm, để mỗi nhóm chỉ cần sắp xếp một lần.",
+      "Các từ giống hệt truy vấn cũng phải được in ra."
+    ]
   }
 }

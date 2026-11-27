@@ -13,6 +13,21 @@
       "Counting \"exactly k\" directly does not suit a sliding window, but subarrays with max − min ≤ K are monotonic: for a fixed right end, the further right the left end, the easier the condition holds.",
       "The number with range exactly k = the number with range ≤k − the number with range ≤k−1. The number with range ≤K can be computed in O(n) with two pointers and two monotonic queues (one for the maximum, one for the minimum); it is 0 when K<0.",
       "For atMost(K), move the right end one step at a time and push the new element into a decreasing queue and an increasing queue; while front maximum − front minimum > K, move the left end right, popping a queue front whose index equals the old left end; add right−left+1 at each step. Output atMost(k)−atMost(k−1), using 64-bit integers for the counts and the value differences."
+    ],
+    "ja": [
+      "「ちょうど k」を直接数えるのはスライディングウィンドウには向きませんが、max − min ≤ K となる部分配列は単調です。右端を固定すると、左端が右にあるほど条件は成り立ちやすくなります。",
+      "値の幅がちょうど k の個数 = 値の幅が k 以下の個数 − 値の幅が k−1 以下の個数 です。値の幅が K 以下の個数は、しゃくとり法と2つの単調キュー(最大値用と最小値用)で O(n) で求められます。K<0 のときは 0 です。",
+      "atMost(K) では、右端を1つずつ進めて新しい要素を減少キューと増加キューに追加します。先頭の最大値 − 先頭の最小値 > K の間、左端を右に進め、インデックスが古い左端と等しいキューの先頭を取り除きます。各ステップで right−left+1 を加えます。atMost(k)−atMost(k−1) を出力します。個数と値の差には 64 ビット整数を使ってください。"
+    ],
+    "ko": [
+      "'정확히 k'를 직접 세는 것은 슬라이딩 윈도에 맞지 않지만, max − min ≤ K인 부분 배열은 단조적입니다. 오른쪽 끝이 고정되면 왼쪽 끝이 오른쪽에 있을수록 조건이 더 쉽게 성립합니다.",
+      "범위가 정확히 k인 개수 = 범위가 ≤k인 개수 − 범위가 ≤k−1인 개수입니다. 범위가 ≤K인 개수는 투 포인터와 두 개의 단조 큐(최댓값용, 최솟값용)로 O(n)에 계산할 수 있으며, K<0이면 0입니다.",
+      "atMost(K)에서는 오른쪽 끝을 한 칸씩 옮기며 새 원소를 감소 큐와 증가 큐에 넣고, 앞쪽 최댓값 − 앞쪽 최솟값 > K인 동안 왼쪽 끝을 오른쪽으로 옮기면서 인덱스가 이전 왼쪽 끝과 같은 큐의 앞쪽 원소를 제거합니다. 각 단계에서 right−left+1을 더합니다. atMost(k)−atMost(k−1)을 출력하며, 개수와 값의 차이에는 64비트 정수를 사용합니다."
+    ],
+    "vi": [
+      "Đếm trực tiếp \"đúng bằng k\" không phù hợp với cửa sổ trượt, nhưng các mảng con có max − min ≤ K có tính đơn điệu: với đầu phải cố định, đầu trái càng dịch sang phải thì điều kiện càng dễ thỏa.",
+      "Số lượng có hiệu đúng bằng k = số lượng có hiệu ≤k − số lượng có hiệu ≤k−1. Số lượng có hiệu ≤K có thể tính trong O(n) bằng hai con trỏ và hai hàng đợi đơn điệu (một cho giá trị lớn nhất, một cho giá trị nhỏ nhất); nó bằng 0 khi K<0.",
+      "Với atMost(K), dịch đầu phải từng bước và đẩy phần tử mới vào một hàng đợi giảm và một hàng đợi tăng; trong khi max ở đầu − min ở đầu > K, dịch đầu trái sang phải, lấy ra phần đầu của hàng đợi có chỉ số bằng đầu trái cũ; ở mỗi bước cộng right−left+1. In atMost(k)−atMost(k−1), dùng số nguyên 64 bit cho các số đếm và hiệu giá trị."
     ]
   },
   "explanationEn": "## Approach\n\nUse two monotonic queues to maintain the window maximum and minimum, and compute atMost(K), the number of windows whose range is ≤K, by adding the length of the valid suffix at each right end. The answer is atMost(k)−atMost(k−1), and a negative K returns 0.\n\n## Proof of correctness\n\nFor a fixed right end, removing elements from the left never increases the range, so the valid left ends form a suffix. Once two pointers find the earliest valid left end, every later left end is valid too, giving right−left+1 windows. The max/min monotonic queues give the exact window extremes, and each element enters and leaves them at most once. An integer range is exactly k if and only if it is ≤k but not ≤k−1, so subtracting the two counts neither double counts nor misses anything.\n\n## Complexity\n\nTime O(n), space O(n); the result uses 64-bit integers."

@@ -13,6 +13,21 @@
       "Every prefix uses the same ranking (popularity descending, then name ascending). If you sort the products by that ranking once and hand them out in order, each prefix receives its matches already in ranked order.",
       "Which prefixes of the search word a product matches depends only on its longest common prefix with the word: with common length L it matches the prefixes of length 1..L.",
       "Sort all products by (−popularity, name). For each product in order, compare it with the search word character by character from position 0; while they agree, append it to that prefix's list unless the list already has k items, and stop at the first mismatch. Finally print each prefix's list size and names."
+    ],
+    "ja": [
+      "すべての接頭辞で同じ順位（人気の降順、次に名前の昇順）を使います。商品をその順位で 1 回ソートして順に配れば、各接頭辞には一致するものがすでに順位順で渡されます。",
+      "商品が検索語のどの接頭辞に一致するかは、検索語との最長共通接頭辞だけで決まります。共通の長さが L なら、長さ 1..L の接頭辞に一致します。",
+      "すべての商品を (−popularity, name) でソートします。順に各商品を、位置 0 から 1 文字ずつ検索語と比較し、一致する間は、その接頭辞のリストがまだ k 個に達していなければ追加し、最初に一致しなかったところで止めます。最後に、各接頭辞のリストの大きさと名前を出力します。"
+    ],
+    "ko": [
+      "모든 접두사가 같은 순위 기준(인기도 내림차순, 그다음 이름 오름차순)을 사용합니다. 상품을 이 기준으로 한 번 정렬하고 순서대로 나누어 주면, 각 접두사는 일치하는 상품을 이미 순위 순서대로 받게 됩니다.",
+      "상품이 검색어의 어떤 접두사들과 일치하는지는 검색어와의 최장 공통 접두사에만 달려 있습니다. 공통 길이가 L이면 길이 1..L인 접두사들과 일치합니다.",
+      "모든 상품을 (−popularity, name)으로 정렬합니다. 순서대로 각 상품을 검색어와 0번째 위치부터 문자 단위로 비교하며, 일치하는 동안 그 접두사의 목록이 아직 k개가 아니면 상품을 추가하고, 처음 불일치하는 곳에서 멈춥니다. 마지막으로 각 접두사의 목록 크기와 이름들을 출력합니다."
+    ],
+    "vi": [
+      "Mọi tiền tố dùng cùng một thứ hạng (độ phổ biến giảm dần, rồi tên tăng dần). Nếu sắp xếp các sản phẩm theo thứ hạng đó một lần và phân phát theo thứ tự, mỗi tiền tố nhận các kết quả khớp của nó đã sẵn theo thứ hạng.",
+      "Sản phẩm khớp với những tiền tố nào của từ tìm kiếm chỉ phụ thuộc vào tiền tố chung dài nhất của nó với từ đó: với độ dài chung L thì nó khớp các tiền tố có độ dài 1..L.",
+      "Sắp xếp mọi sản phẩm theo (−popularity, name). Với mỗi sản phẩm theo thứ tự, so sánh với từ tìm kiếm từng ký tự từ vị trí 0; khi chúng còn giống nhau thì thêm nó vào danh sách của tiền tố đó trừ khi danh sách đã đủ k phần tử, và dừng ở chỗ khác nhau đầu tiên. Cuối cùng in kích thước danh sách và các tên của từng tiền tố."
     ]
   },
   "explanationEn": "## Idea\n\nSort the products by the common ranking first. For each product, compute its longest common prefix with the search word and append it to every corresponding prefix list that does not yet have k items.\n\n## Correctness\n\nScanning in ranking order, each prefix receives all of its matching products in ranking order; keeping only the first k means every list is exactly the best suggestions for that prefix.\n\n## Complexity\n\nSorting takes O(n log n·L) comparisons in the worst case and matching takes O(total name length); space is O(total name length + length of the search word·k), where L is the maximum name length."

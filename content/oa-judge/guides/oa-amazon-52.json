@@ -13,6 +13,21 @@
       "First merge the existing intervals into blocks that do not touch, merging whenever two intervals intersect or share an endpoint; the new interval can only join some consecutive blocks into one.",
       "To connect block l with block r, the shortest bridge runs from block l's right end to block r's left end, passing through every block in between; so it is possible exactly when left[r] - right[l] <= k. Connecting t blocks reduces the count by t-1.",
       "Sort by left endpoint and merge (merge when a <= the current block's right end); then use two pointers: advance right one block at a time and move left forward while left[right] - right[left] > k, keeping the largest right-left+1 as best; print the number of merged blocks - best + 1."
+    ],
+    "ja": [
+      "まず既存の区間を、接しないブロックに結合します。2 つの区間が交差するか端点を共有するときに結合します。新しい区間がつなげられるのは、連続するいくつかのブロックだけです。",
+      "ブロック l とブロック r をつなぐ最短の橋は、l の右端から r の左端まで、その間のすべてのブロックを通って伸びるものです。したがって、それが可能なのは left[r] - right[l] <= k のときちょうどです。t 個のブロックをつなぐと、ブロック数は t-1 減ります。",
+      "左端でソートして結合します（a <= 現在のブロックの右端 のとき結合）。次に 2 ポインタを使います。right を 1 ブロックずつ進め、left[right] - right[left] > k の間は left を進め、right-left+1 の最大値を best として保持します。結合後のブロック数 - best + 1 を出力します。"
+    ],
+    "ko": [
+      "먼저 기존 구간을 서로 닿지 않는 블록으로 합칩니다. 두 구간이 교차하거나 끝점을 공유하면 합칩니다. 새 구간은 연속한 몇 개의 블록만 하나로 이을 수 있습니다.",
+      "블록 l과 블록 r을 연결하는 가장 짧은 다리는 블록 l의 오른쪽 끝에서 블록 r의 왼쪽 끝까지이며 그 사이의 모든 블록을 지납니다. 따라서 left[r] - right[l] <= k일 때 그리고 그때에만 가능합니다. t개의 블록을 연결하면 개수는 t-1만큼 줄어듭니다.",
+      "왼쪽 끝점으로 정렬하여 합칩니다(a <= 현재 블록의 오른쪽 끝이면 합침). 이후 투 포인터를 씁니다. right를 한 블록씩 늘리면서 left[right] - right[left] > k인 동안 left를 앞으로 이동하고, 가장 큰 right-left+1을 best로 유지합니다. 합쳐진 블록 수 - best + 1을 출력하세요."
+    ],
+    "vi": [
+      "Trước hết gộp các đoạn có sẵn thành các khối không chạm nhau, gộp mỗi khi hai đoạn giao nhau hoặc chung một đầu mút; đoạn mới chỉ có thể nối một số khối liên tiếp thành một.",
+      "Để nối khối l với khối r, cầu ngắn nhất chạy từ đầu phải của khối l đến đầu trái của khối r, đi qua mọi khối ở giữa; vì vậy điều đó khả thi đúng khi left[r] - right[l] <= k. Nối t khối làm giảm số lượng đi t-1.",
+      "Sắp xếp theo đầu trái và gộp (gộp khi a <= đầu phải của khối hiện tại); sau đó dùng hai con trỏ: tăng right từng khối một và dịch left tiến lên khi left[right] - right[left] > k, giữ right-left+1 lớn nhất làm best; in số khối đã gộp - best + 1."
     ]
   },
   "explanationEn": "## Approach\n\nFirst merge the existing intersecting intervals. One new interval can connect a run of consecutive blocks if and only if the last block's left end minus the first block's right end is <= k; use two pointers to find the largest number of blocks that can be connected.\n\n## Proof of correctness\n\nThe shortest bridge spanning the first and last blocks goes from the first block's right end to the last block's left end, and every block in between is necessarily crossed by the bridge, so the condition is necessary and sufficient. If the bridge connects t blocks, the number of connected blocks drops by t-1. A sliding window over the sorted endpoints finds the largest t.\n\n## Complexity\n\nO(n log n) time and O(n) space."

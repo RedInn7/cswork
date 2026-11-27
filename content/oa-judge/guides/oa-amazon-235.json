@@ -13,6 +13,21 @@
       "The number of pairs with a sum in the closed range [L, R] equals the pairs with sum <= R minus the pairs with sum <= L-1; a pair depends only on the two skills, not on index order, so the skills can be sorted first.",
       "After sorting, count pairs with sum at most K using two pointers moving toward each other: if the current leftmost plus rightmost is at most K, the leftmost pairs validly with everyone in between.",
       "count(K): left=0, right=n-1; while left<right, if a[left]+a[right] <= K add right-left and move left right, otherwise move right left; the answer is count(maxSkill) - count(minSkill-1), using 64-bit integers for counts and sums."
+    ],
+    "ja": [
+      "和が閉区間 [L, R] に入る組の数は、和が <= R の組の数から和が <= L-1 の組の数を引いたものに等しくなります。組は 2 つのスキルだけで決まり、添字の順序には依存しないので、先にスキルをソートできます。",
+      "ソートしたあと、互いに向かって動く 2 ポインタで、和が K 以下の組を数えます。現在の左端と右端の和が K 以下なら、左端はその間のすべての要素と有効に組めます。",
+      "count(K): left=0、right=n-1 として、left<right の間、a[left]+a[right] <= K なら right-left を加えて left を右へ動かし、そうでなければ right を左へ動かします。答えは count(maxSkill) - count(minSkill-1) で、個数と和には 64 ビット整数を使います。"
+    ],
+    "ko": [
+      "합이 닫힌 구간 [L, R]에 속하는 쌍의 수는 합이 <= R인 쌍의 수에서 합이 <= L-1인 쌍의 수를 뺀 것과 같습니다. 쌍은 두 기술 수치에만 의존하고 인덱스 순서와는 무관하므로 먼저 정렬해도 됩니다.",
+      "정렬한 뒤 서로를 향해 움직이는 두 포인터로 합이 K 이하인 쌍을 셉니다. 현재 가장 왼쪽과 가장 오른쪽의 합이 K 이하이면, 가장 왼쪽 원소는 그 사이의 모든 원소와 유효한 쌍을 이룹니다.",
+      "count(K): left=0, right=n-1; left<right인 동안 a[left]+a[right] <= K이면 right-left를 더하고 left를 오른쪽으로, 아니면 right를 왼쪽으로 옮깁니다. 정답은 count(maxSkill) - count(minSkill-1)이며, 개수와 합에 64비트 정수를 사용합니다."
+    ],
+    "vi": [
+      "Số cặp có tổng trong khoảng đóng [L, R] bằng số cặp có tổng <= R trừ số cặp có tổng <= L-1; một cặp chỉ phụ thuộc vào hai kỹ năng, không phụ thuộc thứ tự chỉ số, nên có thể sắp xếp các kỹ năng trước.",
+      "Sau khi sắp xếp, đếm số cặp có tổng không vượt quá K bằng hai con trỏ chạy về phía nhau: nếu tổng của phần tử trái nhất và phải nhất hiện tại không vượt quá K, phần tử trái nhất ghép hợp lệ với mọi phần tử ở giữa.",
+      "count(K): left=0, right=n-1; khi left<right, nếu a[left]+a[right] <= K thì cộng right-left và dịch left sang phải, nếu không thì dịch right sang trái; đáp án là count(maxSkill) - count(minSkill-1), dùng số nguyên 64-bit cho số đếm và tổng."
     ]
   },
   "explanationEn": "## Approach\n\nSort, and use two pointers to count the pairs with sum ≤K. The answer is count(maxSkill)−count(minSkill−1).\n\n## Proof of correctness\n\nFor a fixed left end, if its sum with the current largest right end is ≤K, then it also qualifies with every right end in between, contributing right−left at once; otherwise that right end cannot pair with the current or any larger left end and can be discarded. Grouping by the left end this way counts every pair exactly once, and subtracting the two prefix thresholds leaves exactly the closed range.\n\n## Complexity\n\nTime O(n log n), space O(n); counts use 64-bit integers."

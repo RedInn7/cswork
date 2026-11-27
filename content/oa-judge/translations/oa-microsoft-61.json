@@ -11,5 +11,35 @@
     "hints": [
       "Precompute the compressed length of every prefix and suffix and the lengths of the runs at the boundaries. Enumerate the deletion window: if the characters on the two sides differ, simply add the two lengths; if they are the same, remove the old costs of the two runs and add the cost of the merged run."
     ]
+  },
+  "ja": {
+    "title": "連続する K 文字を削除した後の最短の圧縮長",
+    "description": "ちょうど K 個の連続する文字を削除してから、同じ文字の連なりをそれぞれ「個数+文字」の形に圧縮します。1 文字だけの連なりは、その文字だけで書きます。圧縮後の長さの最小値を返してください。K=0 と K=N も許されます。本サイトでは、例をカタログで整えたまま残し、実際の文字数から計算しています。このバージョンの例は、元のスナップショットの文字列とは完全には一致しません。\n\n本サイトでは標準入出力の形式を使い、元の問題で与えられていない範囲は明示します。",
+    "input": "1 行目に K、2 行目に大文字の文字列 S が与えられます。カタログの範囲をそのまま使い、1≤N≤1000000、0≤K≤min(100000,N) です。",
+    "output": "答えを整数 1 つで出力します。",
+    "explanation": "例 1：DDC を削除すると ABBBCCCC が残り、A3B4C に圧縮されて長さは 5 です。例 2：両側に A が 10 個ずつあり、BXX を削除すると 20A になって長さは 3 です。カタログではここが 21A と書かれていますが、その入力とは一致しません。元のスナップショットは 11+10 個の A を使っており、その場合は 21A が正しくなります。例 3：EF を削除すると ABC3DG になり、長さは 6 です。",
+    "hints": [
+      "すべての接頭辞と接尾辞の圧縮長、および境界にある連なりの長さを前計算します。削除する区間を全探索し、両側の文字が異なるなら 2 つの長さを足すだけです。同じ場合は、2 つの連なりの元のコストを取り除き、結合した連なりのコストを足します。"
+    ]
+  },
+  "ko": {
+    "title": "연속된 K개 문자를 삭제한 뒤 압축한 최단 길이",
+    "description": "정확히 K개의 연속된 문자를 삭제한 다음, 같은 문자가 연속된 각 구간(run)을 \"개수+문자\"로 압축합니다. 한 글자짜리 run은 문자만 씁니다. 압축된 길이의 최솟값을 구하세요. K=0과 K=N도 허용됩니다. 이 사이트는 카탈로그에 정리된 대로 예제를 유지하고 실제 문자 개수로 계산하므로, 이 버전의 예제는 원본 스냅샷의 문자열과 정확히 일치하지 않습니다.\n\n이 사이트는 표준 입출력 방식을 사용하며, 원문에 주어지지 않은 범위는 명시적으로 밝혀 둡니다.",
+    "input": "첫째 줄에 K가 주어지고, 둘째 줄에 대문자 문자열 S가 주어집니다. 카탈로그의 범위를 그대로 유지하여 1≤N≤1000000, 0≤K≤min(100000,N)입니다.",
+    "output": "정답을 정수 하나로 출력합니다.",
+    "explanation": "예제 1: DDC를 삭제하면 ABBBCCCC가 남고, 이를 압축하면 A3B4C이며 길이는 5입니다. 예제 2: 양쪽에 A가 10개씩 있으며, BXX를 삭제하면 20A가 되어 길이는 3입니다. 카탈로그에는 여기에 21A라고 적혀 있으나 입력과 맞지 않으며, 원본 스냅샷은 11+10개의 A를 사용하므로 거기서는 21A가 맞습니다. 예제 3: EF를 삭제하면 ABC3DG이며 길이는 6입니다.",
+    "hints": [
+      "모든 접두사와 접미사의 압축 길이, 그리고 경계에 있는 run의 길이를 미리 계산합니다. 삭제 구간을 열거하면서 양쪽 문자가 다르면 두 길이를 더하기만 하고, 같으면 두 run의 기존 비용을 빼고 합쳐진 run의 비용을 더합니다."
+    ]
+  },
+  "vi": {
+    "title": "Độ dài nén ngắn nhất sau khi xóa K ký tự liên tiếp",
+    "description": "Xóa đúng K ký tự liên tiếp, sau đó nén mỗi đoạn các ký tự giống nhau thành \"số lượng+ký tự\"; đoạn chỉ có một ký tự thì viết là chính ký tự đó. Trả về độ dài nén ngắn nhất; cho phép K=0 và K=N. Trang này giữ các ví dụ như đã biên soạn trong danh mục và tính chúng từ số lượng ký tự thực tế; các ví dụ trong phiên bản này không khớp hoàn toàn với các xâu trong bản chụp gốc.\n\nTrang này dùng giao thức đầu vào/đầu ra chuẩn; những khoảng giá trị mà đề gốc không nêu được ghi rõ ràng.",
+    "input": "Dòng đầu tiên chứa K, dòng thứ hai chứa xâu chữ in hoa S. Giữ nguyên các khoảng giá trị của danh mục: 1≤N≤1000000, 0≤K≤min(100000,N).",
+    "output": "In ra một số nguyên duy nhất, là đáp án.",
+    "explanation": "Ví dụ 1: xóa DDC còn lại ABBBCCCC, nén thành A3B4C có độ dài 5. Ví dụ 2: mỗi bên có 10 chữ A; xóa BXX được 20A, độ dài 3. Danh mục ghi 21A ở đây, không khớp với đầu vào của nó; bản chụp gốc dùng 11+10 chữ A, với trường hợp đó 21A của nó là đúng. Ví dụ 3: xóa EF được ABC3DG, độ dài 6.",
+    "hints": [
+      "Tính trước độ dài nén của mọi tiền tố và hậu tố cùng độ dài của các đoạn ở biên. Duyệt cửa sổ xóa: nếu hai ký tự ở hai bên khác nhau, chỉ cần cộng hai độ dài; nếu giống nhau, bỏ chi phí cũ của hai đoạn và cộng chi phí của đoạn đã gộp."
+    ]
   }
 }

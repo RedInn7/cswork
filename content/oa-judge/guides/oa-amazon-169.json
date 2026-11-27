@@ -13,6 +13,21 @@
       "Packages of different weights never share a trip, so each weight can be handled on its own and the answer is the sum over weights.",
       "A weight with c packages: if c is 1, no trip of 2 or 3 can take it, so there is no solution; otherwise each trip carries at most 3, giving the lower bound c/3 rounded up, and some threes plus one or two twos always reach it.",
       "Count the packages of each weight; if any weight occurs exactly once, print -1; otherwise add (c+2)/3 with integer division for each count c and print the total."
+    ],
+    "ja": [
+      "重さの異なる荷物が同じ配達に乗ることはないので、各重さは別々に扱え、答えは重さごとの合計です。",
+      "荷物が c 個の重さについて、c が 1 なら 2 個または 3 個の配達では運べないので、解はありません。そうでなければ各配達は最大 3 個なので、下限は c/3 の切り上げで、3 個の配達に 1 つか 2 つの 2 個の配達を加えれば、常にそれを達成できます。",
+      "重さごとの荷物の個数を数え、ちょうど 1 回だけ現れる重さがあれば -1 を出力します。そうでなければ、各個数 c について整数除算で (c+2)/3 を加え、合計を出力します。"
+    ],
+    "ko": [
+      "무게가 다른 택배는 같은 운행에 함께 실을 수 없으므로 각 무게를 독립적으로 처리할 수 있고, 답은 무게별 합입니다.",
+      "택배가 c개인 무게를 봅니다. c가 1이면 2개나 3개로 이루어진 운행으로는 실을 수 없으므로 해가 없습니다. 그렇지 않으면 한 번에 최대 3개를 싣기 때문에 올림한 c/3이 하한이며, 3개짜리 몇 번에 2개짜리 한두 번을 더하면 항상 이 하한에 도달합니다.",
+      "무게별 택배 개수를 센 뒤, 어떤 무게가 정확히 한 번만 나타나면 -1을 출력합니다. 그렇지 않으면 각 개수 c에 대해 정수 나눗셈으로 (c+2)/3을 더하고 총합을 출력합니다."
+    ],
+    "vi": [
+      "Các gói khác khối lượng không bao giờ chung một chuyến, nên có thể xử lý từng khối lượng riêng và đáp án là tổng trên các khối lượng.",
+      "Một khối lượng có c gói: nếu c là 1, không chuyến 2 hoặc 3 nào chở được nó, nên không có nghiệm; nếu không, mỗi chuyến chở tối đa 3, cho cận dưới c/3 làm tròn lên, và một số nhóm ba cộng một hoặc hai nhóm hai luôn đạt được cận đó.",
+      "Đếm số gói của mỗi khối lượng; nếu có khối lượng nào xuất hiện đúng một lần, in -1; nếu không, cộng (c+2)/3 với phép chia nguyên cho mỗi số đếm c và in tổng."
     ]
   },
   "explanationEn": "## Approach\n\nCount by weight; if some weight occurs exactly once there is no solution, otherwise each weight needs ceil(count/3) trips.\n\n## Proof of correctness\n\nDifferent weights cannot be mixed, so each is solved separately and the results are added. Each trip carries at most 3, which gives the lower bound ceil(c/3); with remainder 0 use only 3s, with remainder 2 add one trip of 2, and with remainder 1 and c>=4 turn one 3 and the leftover 1 into two 2s; all of these reach the lower bound.\n\n## Complexity\n\nTime O(n), space O(n)."

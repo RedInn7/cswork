@@ -13,6 +13,21 @@
       "Any route that must visit the waypoint can be cut where it reaches the waypoint into start→waypoint and waypoint→target, and the two parts constrain each other in no way (revisiting nodes is allowed).",
       "So the constrained shortest distance is dist(start, waypoint) + dist(waypoint, target), and the plain one is dist(start, target). Weights are non-negative, so use Dijkstra.",
       "Build the directed graph with edges u→v and run Dijkstra once from start and once from waypoint. The first answer is the distance from start to target; the second is the sum of the two parts when both are reachable, otherwise −1. Distances can reach about 10^14, so use 64-bit integers."
+    ],
+    "ja": [
+      "waypoint を必ず訪れる経路は、waypoint に着いた地点で start→waypoint と waypoint→target に切り分けられ、2 つの部分は互いに何の制約も与えません（ノードの再訪が許されているため）。",
+      "したがって制約付きの最短距離は dist(start, waypoint) + dist(waypoint, target)、制約なしの最短距離は dist(start, target) です。重みは非負なので、ダイクストラ法を使います。",
+      "辺 u→v だけで有向グラフを作り、start から 1 回、waypoint から 1 回ダイクストラ法を実行します。1 つ目の答えは start から target への距離です。2 つ目は、2 つの部分がどちらも到達可能ならその和、そうでなければ −1 です。距離は 10^14 程度になり得るので、64 ビット整数を使ってください。"
+    ],
+    "ko": [
+      "waypoint를 반드시 지나는 경로는 waypoint에 도달하는 지점에서 start→waypoint와 waypoint→target 두 부분으로 나눌 수 있고, 두 부분은 서로 아무 제약도 주지 않습니다(노드 재방문이 허용되기 때문입니다).",
+      "따라서 제약이 있는 최단 거리는 dist(start, waypoint) + dist(waypoint, target)이고, 제약이 없는 최단 거리는 dist(start, target)입니다. 가중치가 음수가 아니므로 Dijkstra를 사용합니다.",
+      "간선 u→v로 방향 그래프를 만들고, start에서 한 번, waypoint에서 한 번 Dijkstra를 실행합니다. 첫 번째 답은 start에서 target까지의 거리이고, 두 번째 답은 두 부분이 모두 도달 가능할 때 두 부분의 합, 그렇지 않으면 −1입니다. 거리는 약 10^14까지 커질 수 있으므로 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Mọi đường đi bắt buộc phải thăm waypoint đều có thể cắt tại chỗ nó tới waypoint thành start→waypoint và waypoint→target, và hai phần này không ràng buộc nhau chút nào (được phép thăm lại các đỉnh).",
+      "Vì vậy khoảng cách ngắn nhất có ràng buộc là dist(start, waypoint) + dist(waypoint, target), còn khoảng cách thông thường là dist(start, target). Trọng số không âm nên dùng Dijkstra.",
+      "Xây đồ thị có hướng với các cạnh u→v và chạy Dijkstra một lần từ start và một lần từ waypoint. Đáp án đầu tiên là khoảng cách từ start đến target; đáp án thứ hai là tổng hai phần khi cả hai đều đến được, nếu không thì là −1. Khoảng cách có thể lên đến khoảng 10^14, nên dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Idea\n\nAdd every edge strictly as `u→v`. Run Dijkstra from `start` and from `waypoint` separately to get `dist(start,target)` and `dist(start,waypoint)+dist(waypoint,target)`; output -1 when either required part is unreachable. Use 64-bit integers.\n\n## Correctness\n\nAny route through the waypoint splits into the two parts start→waypoint and waypoint→target, so its length is at least the sum of the two shortest distances; concatenating the two shortest paths gives a valid route, since the statement allows revisiting nodes. Therefore that sum is exactly the constrained shortest distance. The other value comes from the single Dijkstra run from start.\n\n## Complexity\n\nTwo Dijkstra runs: O((n+m)log n) time, O(n+m) space.\n\n## Source and site additions\n\nOAMaster snapshot of the original problem: https://oamaster.com/docs/companies/google#71-shortest-path-with-mandatory-waypoint (fingerprint `4d31616fb9d1c0719e2f004736c5753a5a0f456c36c5bb410ef58394d0fb7fed`). Its text labels the edges undirected, but example two `[2,-1]` contradicts both that and the three-language code that \"adds a reverse edge for every edge\": in an undirected graph the target is reachable via `2→0→1→3`. An external version with the same function signature, examples and constraints explicitly specifies directed edges and gives the same two answers: https://www.fastprep.io/problems/google-shortest-path-with-mandatory-waypoint. This site therefore treats the graph as directed and removes the reverse edges. Allowing a route to revisit nodes is an explicit addition by this site, so that \"route\" is precisely defined rather than meaning a simple path. This site stores the returned distances as 64-bit values to cover large-weight paths under the original constraints. The third-party version's `int[]` return signature does not fit the largest constraints; this site's data flow uses 64-bit results."

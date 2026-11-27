@@ -13,6 +13,21 @@
       "Both two-wheelers and four-wheelers have an even number of wheels, so an odd total has no solution; an option is determined only by how many vehicles of each type there are, not by their order.",
       "For an even total w, the number of four-wheelers can be any value from 0 to floor(w/4), and each choice fixes the number of two-wheelers uniquely.",
       "For each query print 0 if w is odd, otherwise floor(w/4) + 1, one line per query in input order."
+    ],
+    "ja": [
+      "二輪車も四輪車も車輪の数が偶数なので、総数が奇数なら解はありません。選択肢は各種類の台数だけで決まり、順序には依存しません。",
+      "偶数の総数 w では、四輪車の台数は 0 から floor(w/4) までの任意の値を取ることができ、その選び方ごとに二輪車の台数がただ 1 つ決まります。",
+      "各クエリについて、w が奇数なら 0、そうでなければ floor(w/4) + 1 を、入力順に 1 行ずつ出力します。"
+    ],
+    "ko": [
+      "이륜차와 사륜차는 모두 바퀴 수가 짝수이므로 총합이 홀수이면 해가 없습니다. 한 구성은 순서가 아니라 각 유형의 차량 수로만 결정됩니다.",
+      "짝수 합계 w에서 사륜차의 수는 0부터 floor(w/4)까지의 어떤 값이든 될 수 있으며, 각 선택이 이륜차의 수를 유일하게 정합니다.",
+      "각 쿼리마다 w가 홀수이면 0을, 아니면 floor(w/4) + 1을 입력 순서대로 한 줄에 하나씩 출력합니다."
+    ],
+    "vi": [
+      "Cả xe hai bánh và xe bốn bánh đều có số bánh chẵn, nên tổng lẻ không có nghiệm; một phương án chỉ được xác định bởi số xe của mỗi loại, không phụ thuộc thứ tự của chúng.",
+      "Với tổng chẵn w, số xe bốn bánh có thể là bất kỳ giá trị nào từ 0 đến floor(w/4), và mỗi lựa chọn xác định duy nhất số xe hai bánh.",
+      "Với mỗi truy vấn in 0 nếu w lẻ, ngược lại in floor(w/4) + 1, mỗi truy vấn một dòng theo thứ tự đầu vào."
     ]
   },
   "explanationEn": "## Approach\n\nOdd totals are impossible; for an even total, the number of four-wheelers ranges from 0 to w//4, and each such count uniquely determines the number of two-wheelers.\n\n## Proof of correctness\n\nBoth vehicle types have an even number of wheels, so odd totals have no solution. For an even total, every four-wheeler count in 0..floor(w/4) leaves a non-negative even number of wheels, which corresponds to a unique number of two-wheelers, so the number of options is floor(w/4)+1.\n\n## Complexity\n\nO(n) time and O(n) output space."

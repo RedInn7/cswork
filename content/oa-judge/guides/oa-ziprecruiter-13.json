@@ -13,6 +13,21 @@
       "The total time depends only on each step between two adjacent years, and the steps are independent.",
       "Charge each step by the rule: 1 if the next year is later, 2 if it is earlier, 0 if it is the same.",
       "Read n and the years, loop i = 1..n−1 comparing a[i] with a[i−1] and adding 1, 2 or 0, then print the total; when n = 1 print 0."
+    ],
+    "ja": [
+      "合計時間は隣り合う2つの年の間の各ステップだけで決まり、各ステップは互いに独立です。",
+      "各ステップを規則どおりに課金します。次の年が後なら 1、前なら 2、同じなら 0 です。",
+      "n と年を読み込み、i = 1..n−1 について a[i] と a[i−1] を比べて 1、2、0 のいずれかを足し、合計を出力します。n = 1 のときは 0 を出力します。"
+    ],
+    "ko": [
+      "총 시간은 인접한 두 연도 사이의 각 이동에만 의존하며, 이동끼리는 서로 독립입니다.",
+      "각 이동에 규칙대로 비용을 매깁니다. 다음 연도가 더 늦으면 1, 더 이르면 2, 같으면 0입니다.",
+      "n과 연도들을 읽고, i = 1..n−1에 대해 a[i]와 a[i−1]을 비교해 1, 2 또는 0을 더한 뒤 총합을 출력합니다. n = 1이면 0을 출력합니다."
+    ],
+    "vi": [
+      "Tổng thời gian chỉ phụ thuộc vào từng bước giữa hai năm liền kề, và các bước này độc lập với nhau.",
+      "Tính phí mỗi bước theo quy tắc: 1 nếu năm kế tiếp muộn hơn, 2 nếu sớm hơn, 0 nếu giống nhau.",
+      "Đọc n và các năm, lặp i = 1..n−1 so sánh a[i] với a[i−1] và cộng 1, 2 hoặc 0, rồi in tổng; khi n = 1 thì in 0."
     ]
   },
   "explanationEn": "## Approach\n\nCompare adjacent years pair by pair: count 1 for an increase, 2 for a decrease and 0 when equal, then sum.\n\n## Proof of correctness\n\nThe journey consists of exactly n−1 transitions between adjacent years; each transition independently contributes the 0, 1 or 2 defined by the statement, and summing them gives the total time.\n\n## Complexity\n\nTime O(n), space O(n) (to store the input).\n\n## Source notes\n\nThis site adds a definite standard input/output protocol. The dense-arrival example of upstream problem 9 omitted the completion time of one admitted guest; following the explicit 300-second service and queue rules, the site corrected it to 3301 and states this truthfully in the source evidence."

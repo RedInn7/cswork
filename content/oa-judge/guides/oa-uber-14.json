@@ -13,6 +13,21 @@
       "After sorting by height, the optimal pair is always the two ends of some contiguous range in sorted order: if a height range contains two positions whose indices differ by at least gap, its height span bounds a feasible difference. The task becomes finding the narrowest such height range.",
       "Sort by height and run two pointers over the sorted list, using two monotonic deques to track the smallest and largest original index in the window. Whenever the largest index minus the smallest index reaches gap, the window is feasible: record its span and shrink it from the left.",
       "Sort the pairs (height, original index) by height. For each new right element, pop from the back of each deque the entries that can no longer be the smallest or largest index, then push it. While the indices at the two deque fronts differ by at least gap, update the answer with the right height minus the left height, pop any front that equals the left position, and move left forward. Print the minimum at the end."
+    ],
+    "ja": [
+      "高さでソートすると、最適なペアは常に、ソート順のある連続した範囲の両端になります。ある高さの範囲に、添字が gap 以上離れた 2 つの位置が含まれるなら、その高さの幅が実現可能な差の上界になるからです。問題は、そのような最も狭い高さの範囲を見つけることになります。",
+      "高さでソートし、ソート済みのリストに対して 2 つのポインタを走らせます。窓内の元の添字の最小値と最大値は、2 つの単調な deque で追跡します。最大の添字から最小の添字を引いた値が gap に達するたびに窓は実現可能なので、その幅を記録し、左から縮めます。",
+      "(height, 元の添字) の組を高さでソートします。右端に新しい要素が入るたびに、各 deque の後ろから、もう最小または最大の添字になりえない要素を取り除いてから追加します。2 つの deque の先頭の添字の差が gap 以上である間は、答えを 右の高さ - 左の高さ で更新し、left の位置に等しい先頭を取り出し、left を進めます。最後に最小値を出力します。"
+    ],
+    "ko": [
+      "높이 순으로 정렬하면 최적의 쌍은 항상 정렬된 순서에서 어떤 연속 구간의 양 끝입니다. 어떤 높이 구간에 인덱스 차가 gap 이상인 두 위치가 있으면 그 구간의 높이 폭이 가능한 차이의 상한이 됩니다. 문제는 그런 가장 좁은 높이 구간을 찾는 일로 바뀝니다.",
+      "높이 순으로 정렬한 뒤, 정렬된 목록 위에서 투 포인터를 돌리면서 두 개의 단조 덱으로 윈도우 안의 원래 인덱스의 최솟값과 최댓값을 추적합니다. 최대 인덱스에서 최소 인덱스를 뺀 값이 gap 이상이 될 때마다 윈도우가 유효하므로 그 폭을 기록하고 왼쪽에서 윈도우를 줄입니다.",
+      "(높이, 원래 인덱스) 쌍을 높이 기준으로 정렬합니다. 새 오른쪽 원소마다, 더 이상 최소 또는 최대 인덱스가 될 수 없는 항목을 각 덱의 뒤에서 제거한 뒤 추가합니다. 두 덱의 앞쪽 인덱스가 gap 이상 차이 나는 동안, 오른쪽 높이에서 왼쪽 높이를 뺀 값으로 정답을 갱신하고, 왼쪽 위치와 같은 앞쪽 항목은 제거한 뒤 left를 앞으로 옮깁니다. 마지막에 최솟값을 출력합니다."
+    ],
+    "vi": [
+      "Sau khi sắp xếp theo độ cao, cặp tối ưu luôn là hai đầu của một đoạn liên tiếp trong thứ tự đã sắp: nếu một khoảng độ cao chứa hai vị trí có chỉ số chênh nhau ít nhất gap thì độ rộng độ cao của nó là cận trên của một chênh lệch khả thi. Bài toán trở thành tìm khoảng độ cao hẹp nhất như vậy.",
+      "Sắp xếp theo độ cao và chạy hai con trỏ trên danh sách đã sắp, dùng hai deque đơn điệu để theo dõi chỉ số gốc nhỏ nhất và lớn nhất trong cửa sổ. Mỗi khi chỉ số lớn nhất trừ chỉ số nhỏ nhất đạt gap, cửa sổ là khả thi: ghi lại độ rộng của nó và thu hẹp từ bên trái.",
+      "Sắp xếp các cặp (height, original index) theo độ cao. Với mỗi phần tử bên phải mới, lấy ra từ cuối mỗi deque các phần tử không thể là chỉ số nhỏ nhất hoặc lớn nhất nữa, rồi đẩy nó vào. Trong khi các chỉ số ở đầu hai deque chênh nhau ít nhất gap, cập nhật đáp án bằng độ cao bên phải trừ độ cao bên trái, lấy ra mọi phần tử ở đầu bằng vị trí trái, và dịch biên trái lên. Cuối cùng in giá trị nhỏ nhất."
     ]
   },
   "explanationEn": "## Approach\n\nSort by height, and inside the two-pointer window use two monotonic deques to maintain the minimum and maximum original index. When the difference of the two indices reaches gap, record the height span and shrink the left boundary.\n\n## Correctness\n\nA height range contains a valid pair of positions if and only if its largest and smallest original indices differ by at least gap. The span of a sorted window is an upper bound on every height difference inside it; the height range of any optimal pair is either checked by the two pointers or replaced by a narrower feasible window, so the minimum width of a feasible window is the optimal difference.\n\n## Complexity\n\nTime O(n log n), space O(n)."

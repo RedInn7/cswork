@@ -11,5 +11,35 @@
     "hints": [
       "Scan from right to left. Whenever you meet a pair of equal adjacent characters, every different character in the suffix to its right can be changed to it one at a time; add the number of differing characters and reset the suffix frequencies."
     ]
+  },
+  "ja": {
+    "title": "3文字置換の最大操作回数",
+    "description": "連続する3文字で、先頭の2文字が等しく3文字目が異なるものを選び、3文字目を先頭2文字と同じ文字に置き換えます。各操作は置換のみで、削除は行いません。実行できる操作の最大回数を求めてください。元サイトの解説では文字列が短くなっていましたが、当サイトでは元の長さを保ちます。\n\n入力の形式、当サイトが追加した範囲、例、テストは、すべて CSWork が独自に作成したものです。",
+    "input": "3..200000 文字の英小文字からなる1行。",
+    "output": "答えを表す整数を1つ出力します。",
+    "explanation": "例 1: aabaab では、まず最後の b を a に変え、次に3文字目の b を a に変えて aaaaaa になり、操作は2回です。\n\n例 2: 隣り合って等しい文字の組がないため操作はできず、答えは 0 です。\n\n例 3: 条件を満たす3文字は aa b だけで、b を a に変えるので答えは 1 です。",
+    "hints": [
+      "右から左へ走査します。隣り合って等しい文字の組に出会うたび、その右側の接尾辞にある異なる文字を1つずつすべて同じ文字に変えられます。異なる文字の個数を加算し、接尾辞の頻度をリセットします。"
+    ]
+  },
+  "ko": {
+    "title": "세 문자 치환 연산의 최대 횟수",
+    "description": "연속한 세 문자 중 앞의 두 문자가 같고 세 번째 문자가 다를 때, 세 번째 문자를 앞의 두 문자와 같은 문자로 바꿉니다. 각 연산은 치환만 하고 문자를 삭제하지 않습니다. 수행할 수 있는 연산의 최대 횟수를 구하세요. 원본 사이트의 풀이 과정에서는 문자열이 짧아졌지만, 이 사이트에서는 원래 길이를 유지합니다.\n\n입력 형식, 이 사이트에서 추가한 범위, 예제, 테스트는 모두 CSWork가 독자적으로 작성했습니다.",
+    "input": "3..200000 길이의 영문 소문자로 이루어진 한 줄이 주어집니다.",
+    "output": "정답을 나타내는 정수 하나를 출력합니다.",
+    "explanation": "예제 1: aabaab에서 먼저 마지막 b를 a로 바꾸고, 이어서 세 번째 위치의 b를 a로 바꾸면 aaaaaa가 되어 연산은 2번입니다.\n\n예제 2: 서로 같은 인접 문자 쌍이 없으므로 연산을 할 수 없어 정답은 0입니다.\n\n예제 3: 유일한 세 문자 aa b에서 b를 a로 바꾸므로 정답은 1입니다.",
+    "hints": [
+      "오른쪽에서 왼쪽으로 스캔합니다. 같은 인접 문자 쌍을 만날 때마다 그 오른쪽 접미사에서 다른 문자들을 하나씩 모두 그 문자로 바꿀 수 있으므로, 다른 문자의 개수를 더하고 접미사의 빈도를 초기화합니다."
+    ]
+  },
+  "vi": {
+    "title": "Số thao tác thay thế ba ký tự tối đa",
+    "description": "Chọn ba ký tự liên tiếp trong đó hai ký tự đầu bằng nhau còn ký tự thứ ba khác, rồi thay ký tự thứ ba bằng ký tự của hai ký tự đầu. Mỗi thao tác chỉ thay thế chứ không xóa. Tìm số thao tác tối đa có thể thực hiện. Phần hướng dẫn của trang gốc đã rút ngắn xâu; trang này giữ nguyên độ dài ban đầu.\n\nGiao thức đầu vào, các phạm vi do trang này bổ sung, các ví dụ và bộ test đều do CSWork tự viết độc lập.",
+    "input": "Một dòng gồm 3..200000 chữ cái tiếng Anh viết thường.",
+    "output": "In ra một số nguyên duy nhất, là đáp án.",
+    "explanation": "Ví dụ 1: với aabaab, đổi b cuối thành a trước, rồi đổi b ở vị trí thứ ba thành a, được aaaaaa, tổng cộng 2 thao tác.\n\nVí dụ 2: không có cặp ký tự kề nhau nào bằng nhau nên không thể thực hiện thao tác nào; đáp án là 0.\n\nVí dụ 3: bộ ba duy nhất aa b đổi b thành a, nên đáp án là 1.",
+    "hints": [
+      "Duyệt từ phải sang trái. Mỗi khi gặp một cặp ký tự kề nhau bằng nhau, mọi ký tự khác nó trong hậu tố bên phải đều có thể lần lượt được đổi thành nó; cộng số ký tự khác đó vào đáp án rồi đặt lại tần suất của hậu tố."
+    ]
   }
 }

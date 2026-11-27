@@ -11,5 +11,35 @@
     "hints": [
       "If x servers are kept and upgraded, at most n−x can be sold. Therefore x≤n and x(upgrade+sell)≤money+n×sell; just round down."
     ]
+  },
+  "ja": {
+    "title": "サーバーを売却した後の最大アップグレード数",
+    "description": "各ネットワークは独立しています。それぞれ n 台のサーバーと資金 money から始まり、サーバーを売ると sell が得られ、サーバーをアップグレードするには upgrade かかります。売却したサーバーはアップグレードできません。各ネットワークでアップグレードできるサーバーの最大数を求めてください。\n\n入出力プロトコルと明示された補足制約は本サイトが整備したものであり、元の解法は実行していません。",
+    "input": "1 行目にネットワーク数 q が与えられ、続く q 行に num_servers money sell upgrade が与えられます。1≤q≤100000 で、4 つの値はすべて 1..10000 の範囲です。",
+    "output": "まずネットワーク数を出力し、続いて各ネットワークのアップグレード数の最大値を出力してください。",
+    "explanation": "3 つの公開例の答えは順に 2\n3 2; 1\n0; 1\n10 です。例は、独立した全探索・状態探索・直接シミュレーションで再確認済みです。",
+    "hints": [
+      "x 台を残してアップグレードするとき、売却できるのは最大 n−x 台です。したがって x≤n かつ x(upgrade+sell)≤money+n×sell となり、切り捨てればよいです。"
+    ]
+  },
+  "ko": {
+    "title": "일부 서버를 판매한 뒤 업그레이드할 수 있는 최대 개수",
+    "description": "네트워크들은 서로 독립적입니다. 각 네트워크는 n대의 서버와 자금 money로 시작하며, 서버 한 대를 판매하면 sell만큼 얻고, 서버 한 대를 업그레이드하는 데 upgrade가 듭니다. 판매한 서버는 더 이상 업그레이드할 수 없습니다. 각 네트워크에서 업그레이드할 수 있는 서버의 최대 개수를 구하세요.\n\n입출력 규약과 명시된 보충 제약 조건은 이 사이트에서 정리한 것이며, 원본 풀이는 실행하여 검증하지 않았습니다.",
+    "input": "첫 번째 줄에 네트워크의 수 q가 주어지고, 이어서 q개의 줄에 num_servers money sell upgrade가 주어집니다. 1≤q≤100000이며, 네 값은 모두 1..10000 범위입니다.",
+    "output": "먼저 네트워크의 수를 출력하고, 이어서 각 네트워크의 최대 업그레이드 횟수를 출력합니다.",
+    "explanation": "세 공개 예제의 답은 순서대로 2\n3 2; 1\n0; 1\n10입니다. 예제는 독립적인 완전 탐색, 상태 탐색 또는 직접 시뮬레이션으로 다시 검증했습니다.",
+    "hints": [
+      "x대를 유지하며 업그레이드한다면 최대 n−x대를 판매할 수 있습니다. 따라서 x≤n이고 x(upgrade+sell)≤money+n×sell이며, 내림만 하면 됩니다."
+    ]
+  },
+  "vi": {
+    "title": "Số máy chủ nâng cấp tối đa sau khi bán bớt",
+    "description": "Các mạng độc lập với nhau. Mỗi mạng bắt đầu với n máy chủ và số tiền money; bán một máy chủ thu về sell, nâng cấp một máy chủ tốn upgrade. Máy chủ đã bán thì không thể nâng cấp nữa. Hãy tìm số máy chủ tối đa có thể nâng cấp trong mỗi mạng.\n\nGiao thức đầu vào/đầu ra và các ràng buộc bổ sung được đánh dấu rõ do trang này biên soạn; lời giải của nguồn gốc không được chạy.",
+    "input": "Dòng đầu tiên chứa số mạng q, tiếp theo là q dòng num_servers money sell upgrade. 1≤q≤100000, và cả bốn giá trị đều nằm trong khoảng 1..10000.",
+    "output": "In ra số mạng, sau đó in số lần nâng cấp tối đa của từng mạng.",
+    "explanation": "Đáp án của ba ví dụ công khai lần lượt là: 2\n3 2; 1\n0; 1\n10. Các ví dụ đã được kiểm tra lại bằng liệt kê độc lập, tìm kiếm trạng thái hoặc mô phỏng trực tiếp.",
+    "hints": [
+      "Nếu giữ lại và nâng cấp x máy chủ thì có thể bán tối đa n−x máy. Do đó x≤n và x(upgrade+sell)≤money+n×sell; chỉ cần làm tròn xuống."
+    ]
   }
 }

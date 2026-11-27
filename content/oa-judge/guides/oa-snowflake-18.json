@@ -13,6 +13,21 @@
       "A single-point interval [a, a] holds only one integer, so it can never contain two distinct numbers; if one appears there is no solution. Otherwise, picking points further right helps later intervals more.",
       "Process intervals by right endpoint ascending (left endpoint descending on ties). Since later intervals end further right, whether the chosen points cover the current interval depends only on the two largest chosen numbers a < b.",
       "Keep a = b = -1 and a counter: if l > b the interval has no chosen point, so choose r - 1 and r and add 2; else if l > a only b lies inside, so choose r, set a = b, b = r and add 1; otherwise it is already satisfied. Print -1 if any single-point interval exists, otherwise the counter."
+    ],
+    "ja": [
+      "1 点だけの区間 [a, a] には整数が 1 つしか含まれないので、相異なる 2 つの数を含むことはできません。そのような区間があれば解はありません。そうでなければ、より右の点を選ぶほうが後の区間に有利です。",
+      "区間を右端の昇順（右端が等しければ左端の降順）に処理します。後の区間ほど右に終わるので、現在の区間が選んだ点で十分にカバーされているかどうかは、選んだ数のうち最大の 2 つ a < b だけで決まります。",
+      "a = b = -1 とカウンタを用意します。l > b なら区間に選んだ点がないので r - 1 と r を選び、2 を加えます。そうでなくて l > a なら b だけが区間内にあるので、r を選び、a = b、b = r とし、1 を加えます。それ以外はすでに条件を満たしています。1 点だけの区間が 1 つでもあれば -1、そうでなければカウンタを出力してください。"
+    ],
+    "ko": [
+      "한 점짜리 구간 [a, a]에는 정수가 하나뿐이어서 서로 다른 두 수를 포함할 수 없으므로, 그런 구간이 있으면 해가 없습니다. 그렇지 않다면 더 오른쪽의 점을 고르는 편이 이후 구간에 더 유리합니다.",
+      "구간을 오른쪽 끝점 오름차순(같으면 왼쪽 끝점 내림차순)으로 처리합니다. 이후 구간일수록 더 오른쪽에서 끝나므로, 선택한 점들이 현재 구간을 충분히 덮는지는 선택된 수 중 가장 큰 두 수 a < b에만 달려 있습니다.",
+      "a = b = -1과 카운터를 두고, l > b이면 구간 안에 선택된 점이 없으므로 r - 1과 r을 고르고 2를 더합니다. 그렇지 않고 l > a이면 b만 구간 안에 있으므로 r을 고르고 a = b, b = r로 바꾼 뒤 1을 더합니다. 그 외에는 이미 조건을 만족합니다. 한 점짜리 구간이 하나라도 있으면 -1을, 아니면 카운터를 출력합니다."
+    ],
+    "vi": [
+      "Khoảng một điểm [a, a] chỉ chứa một số nguyên, nên không bao giờ chứa được hai số phân biệt; nếu có khoảng như vậy thì vô nghiệm. Ngược lại, chọn điểm càng về bên phải càng có lợi cho các khoảng sau.",
+      "Xử lý các khoảng theo đầu phải tăng dần (đầu trái giảm dần khi bằng nhau). Vì các khoảng sau kết thúc xa hơn về bên phải, việc các điểm đã chọn có phủ khoảng hiện tại hay không chỉ phụ thuộc vào hai số lớn nhất đã chọn a < b.",
+      "Giữ a = b = -1 và một bộ đếm: nếu l > b thì khoảng không có điểm nào đã chọn, hãy chọn r - 1 và r và cộng 2; ngược lại nếu l > a thì chỉ b nằm trong khoảng, hãy chọn r, đặt a = b, b = r và cộng 1; còn lại thì khoảng đã thỏa. In -1 nếu có khoảng một điểm, ngược lại in bộ đếm."
     ]
   },
   "explanationEn": "## Approach\n\nProcess intervals by right endpoint in ascending order, and by left endpoint in descending order for equal right endpoints, maintaining the two largest numbers in the chosen set; when coverage is insufficient, choose numbers as close as possible to the current right endpoint.\n\n## Correctness\n\nAfter sorting by right endpoint, whether the existing points cover the current interval depends only on the two largest of them. When points must be added, choosing the rightmost available integers is never worse for later intervals further to the right than any other choice, and the added points of an optimal solution can be exchanged for the greedy points without breaking the intervals already processed. Induction gives the minimum set. A single point cannot contain two distinct integers, so -1 is returned.\n\n## Complexity\n\nTime O(n log n), space O(n)."

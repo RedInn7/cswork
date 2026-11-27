@@ -13,6 +13,21 @@
       "A subject really needs max(0, needed - answered) more answers, independent of the other subjects; to pass as many subjects as possible, prefer the ones with the smallest gap.",
       "Sort all gaps ascending and pay for them from the smallest, until what is left of q cannot cover the next gap; the number of subjects paid for is the answer.",
       "Compute each gap max(0, needed[i] - answered[i]) and sort ascending; go through them: stop when a gap exceeds q, otherwise subtract it from q and count one more subject. Subjects already passing have gap 0 and are counted automatically."
+    ],
+    "ja": [
+      "科目が実際に必要とする追加の正解数は max(0, needed - answered) で、ほかの科目とは無関係です。合格する科目をできるだけ多くするには、差が最も小さいものを優先します。",
+      "すべての差を昇順にソートし、小さいものから、q の残りが次の差を賄えなくなるまで支払います。支払った科目の数が答えです。",
+      "各差 max(0, needed[i] - answered[i]) を計算して昇順にソートし、順に見ていきます。差が q を超えたら止め、そうでなければ q からその差を引いて、科目数を 1 増やします。すでに合格している科目は差が 0 なので、自動的に数えられます。"
+    ],
+    "ko": [
+      "각 과목이 실제로 더 맞혀야 하는 개수는 다른 과목과 무관하게 max(0, needed - answered)입니다. 최대한 많은 과목을 통과하려면 부족분이 가장 작은 과목을 우선해야 합니다.",
+      "모든 부족분을 오름차순으로 정렬하고 가장 작은 것부터 지불하다가, q의 남은 양으로 다음 부족분을 감당할 수 없게 되면 멈춥니다. 지불한 과목의 수가 답입니다.",
+      "각 부족분 max(0, needed[i] - answered[i])를 계산해 오름차순으로 정렬합니다. 순서대로 보면서 부족분이 q를 넘으면 멈추고, 그렇지 않으면 q에서 빼고 과목 수를 하나 늘립니다. 이미 통과한 과목은 부족분이 0이므로 자동으로 포함됩니다."
+    ],
+    "vi": [
+      "Một môn thực sự cần thêm max(0, needed - answered) câu, không phụ thuộc các môn khác; để đạt nhiều môn nhất, ưu tiên các môn có khoảng thiếu nhỏ nhất.",
+      "Sắp xếp mọi khoảng thiếu tăng dần và trả từ nhỏ nhất, cho đến khi phần q còn lại không đủ cho khoảng thiếu kế tiếp; số môn đã trả chính là đáp án.",
+      "Tính mỗi khoảng thiếu max(0, needed[i] - answered[i]) và sắp xếp tăng dần; duyệt qua chúng: dừng khi một khoảng thiếu vượt quá q, nếu không thì trừ nó khỏi q và đếm thêm một môn. Các môn đã đạt có khoảng thiếu 0 và được đếm tự động."
     ]
   },
   "explanationEn": "## Approach\n\nCompute each subject's non-negative shortfall, sort them in ascending order, and pay for the cheapest subjects first.\n\n## Proof of correctness\n\nAny choice of t subjects needs at least the sum of the t smallest shortfalls, and choosing those subjects meets this lower bound exactly. Adding subjects one by one until the next would exceed q gives the maximum number of subjects that can pass; subjects with zero shortfall are counted automatically.\n\n## Complexity\n\nTime O(n log n), space O(n)."

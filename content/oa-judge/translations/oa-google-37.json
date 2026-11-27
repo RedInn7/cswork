@@ -13,5 +13,41 @@
       "For the same remaining total, the reachable differences between the left and right counts form a contiguous range of the same parity.",
       "Each digit only needs to update the two endpoints of the difference range."
     ]
+  },
+  "ja": {
+    "title": "数字で指定された個数の括弧を削除した後の個数の釣り合い",
+    "description": "文字列は、左括弧 `(`、右括弧 `)`、数字の文字だけを含みます。左から右へ処理し、数字 d に出会うたびに、その左にあるまだ削除されていない括弧のうち、任意の d 個を削除できます。数字は 1 文字ずつ処理します。たとえば `11` は、1 を処理してからもう一度 1 を処理することを意味します。処理後、残った左括弧の個数と残った右括弧の個数が等しければ、その文字列は釣り合っているとします。どの接頭辞も有効な括弧列である必要はありません。\n\n**注意：**元の例は `())` を釣り合っているとしていますが、個数が等しくないので、正しい結果は 0 です。\n\n本サイトによる追記：標準入力は、`(`、`)`、`0`..`9` だけを含む長さ 1..200000 の 1 行の文字列です。数字が、その前にあるまだ削除されていない括弧の個数を超える場合は、残っているすべての括弧を削除します。元の問題には、長さの範囲も入出力の形式も示されていません。",
+    "input": "1行に文字列 s が与えられます。\n\n本サイトによる追記：標準入力は、`(`、`)`、`0`..`9` だけを含む長さ 1..200000 の 1 行の文字列です。数字が、その前にあるまだ削除されていない括弧の個数を超える場合は、残っているすべての括弧を削除します。元の問題には、長さの範囲も入出力の形式も示されていません。",
+    "output": "削除の選び方によって、左括弧と右括弧の個数が等しくなる場合があれば 1、そうでなければ 0 を出力します。",
+    "explanation": "詳細については、付属ノートの端点を用いた動的計画法の証明を参照してください。",
+    "hints": [
+      "同じ接頭辞を処理した後は、残った括弧の合計個数は削除の選び方に依存しません。",
+      "残りの合計が同じなら、到達可能な左右の個数の差は、同じ偶奇を持つ連続した範囲をなします。",
+      "各数字では、差の範囲の 2 つの端点だけを更新すればよいです。"
+    ]
+  },
+  "ko": {
+    "title": "숫자가 지정한 개수만큼 괄호를 지운 뒤 균형 판정",
+    "description": "문자열은 왼쪽 괄호 `(`, 오른쪽 괄호 `)`, 숫자 문자로만 이루어집니다. 왼쪽에서 오른쪽으로 처리하며, 숫자 d를 만날 때마다 그 왼쪽에 아직 지워지지 않은 괄호 중 임의의 d개를 삭제할 수 있습니다. 숫자는 한 문자씩 처리하며, 예를 들어 `11`은 1을 처리한 뒤 다시 1을 처리하는 것입니다. 처리 후 남은 왼쪽 괄호의 수와 오른쪽 괄호의 수가 같으면 균형이 맞는 것으로 보며, 어떤 접두사도 올바른 괄호열일 필요는 없습니다.\n\n**참고:** 원 출처의 예제는 `())`를 균형이 맞다고 잘못 적었습니다. 두 개수가 다르므로 올바른 결과는 0입니다.\n\n이 사이트가 추가한 내용: 표준 입력은 `(`, `)`, `0`..`9`로만 이루어진 길이 1..200000의 한 줄 문자열입니다. 숫자가 그 앞에서 아직 지워지지 않은 괄호의 수보다 크면 남은 괄호를 모두 삭제합니다. 원 문제는 길이 범위나 입출력 규약을 제시하지 않습니다.",
+    "input": "한 줄에 문자열 s가 주어집니다.\n\n이 사이트가 추가한 내용: 표준 입력은 `(`, `)`, `0`..`9`로만 이루어진 길이 1..200000의 한 줄 문자열입니다. 숫자가 그 앞에서 아직 지워지지 않은 괄호의 수보다 크면 남은 괄호를 모두 삭제합니다. 원 문제는 길이 범위나 입출력 규약을 제시하지 않습니다.",
+    "output": "올바른 삭제 선택으로 왼쪽 괄호와 오른쪽 괄호의 수를 같게 만들 수 있으면 1, 아니면 0을 출력합니다.",
+    "explanation": "자세한 내용은 함께 제공되는 노트의 끝점 동적 계획법 증명을 참고하세요.",
+    "hints": [
+      "같은 접두사를 처리한 뒤 남은 괄호의 총수는 삭제 선택과 무관합니다.",
+      "남은 총수가 같으면, 도달 가능한 왼쪽·오른쪽 괄호 수의 차이는 같은 홀짝성을 가진 연속된 범위를 이룹니다.",
+      "각 숫자는 차이 범위의 두 끝점만 갱신하면 됩니다."
+    ]
+  },
+  "vi": {
+    "title": "Cân bằng số lượng sau khi xóa số ngoặc do chữ số chỉ định",
+    "description": "Xâu chỉ chứa dấu ngoặc trái `(`, dấu ngoặc phải `)` và các ký tự chữ số. Xử lý nó từ trái sang phải; mỗi khi gặp một chữ số d, bạn có thể xóa d dấu ngoặc bất kỳ chưa bị xóa nằm bên trái nó. Các chữ số được xử lý từng ký tự một; ví dụ `11` nghĩa là xử lý 1 rồi lại xử lý 1. Sau khi xử lý, xâu được coi là cân bằng miễn là số dấu ngoặc trái còn lại bằng số dấu ngoặc phải còn lại; không yêu cầu tiền tố nào là dãy ngoặc hợp lệ.\n\n**Lưu ý:** Ví dụ của nguồn gốc liệt kê sai `())` là cân bằng; số lượng của nó không bằng nhau, nên kết quả đúng là 0.\n\nTrang này bổ sung: đầu vào chuẩn là một xâu một dòng độ dài 1..200000 chỉ chứa `(`, `)`, `0`..`9`; nếu một chữ số lớn hơn số dấu ngoặc chưa bị xóa phía trước nó, thì xóa tất cả các dấu ngoặc còn lại. Đề gốc không đưa ra phạm vi độ dài hay giao thức đầu vào/đầu ra.",
+    "input": "Một dòng duy nhất chứa xâu s.\n\nTrang này bổ sung: đầu vào chuẩn là một xâu một dòng độ dài 1..200000 chỉ chứa `(`, `)`, `0`..`9`; nếu một chữ số lớn hơn số dấu ngoặc chưa bị xóa phía trước nó, thì xóa tất cả các dấu ngoặc còn lại. Đề gốc không đưa ra phạm vi độ dài hay giao thức đầu vào/đầu ra.",
+    "output": "Xuất 1 nếu tồn tại một cách xóa hợp lệ để lại số dấu ngoặc trái và phải bằng nhau, ngược lại xuất 0.",
+    "explanation": "Xem phần chứng minh quy hoạch động theo đầu mút trong ghi chú đi kèm để biết chi tiết.",
+    "hints": [
+      "Sau khi xử lý cùng một tiền tố, tổng số dấu ngoặc còn lại không phụ thuộc vào các lựa chọn xóa.",
+      "Với cùng tổng số còn lại, các hiệu có thể đạt được giữa số dấu ngoặc trái và phải tạo thành một khoảng liên tục có cùng tính chẵn lẻ.",
+      "Mỗi chữ số chỉ cần cập nhật hai đầu mút của khoảng hiệu."
+    ]
   }
 }

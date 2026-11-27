@@ -13,5 +13,41 @@
       "Put only successfully published logs with positive size into the active queue.",
       "Compare against the window length using t−old_time, and compute sum+size in 64 bits."
     ]
+  },
+  "ja": {
+    "title": "閉じた時間ウィンドウでのログのレート制限",
+    "description": "ログは時刻順に発行されます。時刻 t において、閉区間のウィンドウ [t−window,t] ですでに発行に成功したログの合計バイト数を取ります。現在のログのサイズを加えても bytesLimit を超えなければそのログを発行し、そうでなければログ全体を破棄します。破棄されたログは、以降の枠を消費しません。発行に成功したすべてのログの合計バイト数を返してください。成功したログのインデックスや、オフラインで選ぶ合計の最大値ではありません。",
+    "input": "3 行で順に bytesLimit、window、n が与えられ、続いて timestamp size を表す n 行が与えられます。元の OCR の符号なしインターフェースに従い、Linux64 モデル (64 ビット Linux) を明示的に採用して、bytesLimit/window/size はすべて 0..4294967295、timestamp は 0..18446744073709551615 の範囲です。タイムスタンプは狭義単調増加です。n はログの個数 (非負) で、元には上限が示されていません。本サイトでは小さな上限を追加せず、既存のケースあたり 32MiB の入力予算内で送信できる有効なインスタンスをすべてサポートします。",
+    "output": "実際に発行された合計バイト数を表す非負整数を 1 つ出力してください。64 ビット整数を使ってください。サイズ 0、上限 0、ウィンドウ 0、ログが空の場合もすべて有効です。",
+    "explanation": "最初の例は元の OCR019 によるものです。limit10/window5 の場合、時刻 0 と 3 でサイズ 2 と 4 が発行されます。時刻 5 のサイズ 5 は閉じたウィンドウの合計が 11 になるので拒否されます。時刻 7 のサイズ 5 は発行され、合計は 11 になります。カタログの編集版はインデックスのリストを返しますが、これは 018 の実際のインターフェースと食い違うので、本サイトでは 018–020 に基づいて合計バイト数に戻しています。他の公開例は本サイトが導出したものです。範囲の型の解釈と n に追加の上限がないことについては、解説を参照してください。",
+    "hints": [
+      "ウィンドウの左端は、まだウィンドウの内側です。",
+      "発行に成功した、サイズが正のログだけをアクティブなキューに入れます。",
+      "ウィンドウ長との比較には t−old_time を使い、sum+size は 64 ビットで計算します。"
+    ]
+  },
+  "ko": {
+    "title": "닫힌 시간 구간에서의 로그 속도 제한",
+    "description": "로그는 시간 순서대로 발행됩니다. 시각 t에, 닫힌 구간 [t−window,t]에서 이미 성공적으로 발행된 로그의 총 바이트 수를 구하고, 현재 로그의 크기를 더해도 bytesLimit를 넘지 않으면 발행하고, 그렇지 않으면 로그 전체를 버립니다. 버려진 로그는 이후의 어떤 할당량도 소모하지 않습니다. 성공적으로 발행된 모든 로그의 총 바이트 수를 반환하세요. 성공한 로그의 인덱스를 반환하는 것도, 오프라인으로 총합이 최대가 되는 선택도 아닙니다.",
+    "input": "세 줄에 bytesLimit, window, n이 차례로 주어지고, 이어서 n개의 줄에 timestamp size가 주어집니다. 원본 OCR의 부호 없는 인터페이스를 따르고 Linux64 모델(64비트 Linux)을 명시적으로 채택하여, bytesLimit/window/size는 모두 0..4294967295 범위이고 timestamp는 0..18446744073709551615 범위입니다. 타임스탬프는 엄격하게 증가합니다. n은 로그의 개수(음이 아닌 정수)이며, 원본에는 상한이 없고 이 사이트도 별도의 작은 상한을 두지 않습니다. 케이스당 입력 32MiB 예산 안에서 전달 가능한 모든 유효한 인스턴스를 지원합니다.",
+    "output": "실제로 발행된 총 바이트 수를 음이 아닌 정수 하나로 출력합니다. 64비트 정수를 사용하세요. 크기가 0인 로그, 한도 0, 윈도우 0, 로그가 없는 경우 모두 유효합니다.",
+    "explanation": "첫 번째 예제는 원본 OCR019에서 가져왔습니다. limit10/window5에서 크기 2와 4가 시각 0과 3에 발행되고, 시각 5의 5는 닫힌 구간 합이 11이 되므로 거부되며, 시각 7의 5는 발행되어 총합은 11입니다. 카탈로그의 편집본은 인덱스 목록을 반환하는데 이는 018의 실제 인터페이스와 맞지 않으므로, 이 사이트는 018–020을 근거로 총 바이트 수를 복원했습니다. 나머지 공개 예제는 이 사이트에서 만든 것이며, 범위 타입의 해석과 n에 별도의 상한이 없다는 점은 해설을 참고하세요.",
+    "hints": [
+      "윈도우의 왼쪽 끝점은 여전히 윈도우 안에 포함됩니다.",
+      "성공적으로 발행되었고 크기가 양수인 로그만 활성 큐에 넣으세요.",
+      "윈도우 길이와는 t−old_time으로 비교하고, sum+size는 64비트로 계산하세요."
+    ]
+  },
+  "vi": {
+    "title": "Giới hạn tốc độ nhật ký trong cửa sổ thời gian đóng",
+    "description": "Các nhật ký được phát hành theo thứ tự thời gian. Tại thời điểm t, lấy tổng số byte của các nhật ký đã được phát hành thành công trong cửa sổ đóng [t−window,t]; nếu cộng thêm kích thước của nhật ký hiện tại mà không vượt quá bytesLimit thì phát hành nó, ngược lại loại bỏ toàn bộ nhật ký đó. Các nhật ký bị loại bỏ không dùng hạn mức nào về sau. Trả về tổng số byte của mọi nhật ký được phát hành thành công, không phải chỉ số của các nhật ký thành công và không phải một lựa chọn ngoại tuyến cho tổng lớn nhất.",
+    "input": "Ba dòng lần lượt là bytesLimit, window và n, tiếp theo là n dòng timestamp size. Theo giao diện không dấu của OCR gốc và chấp nhận rõ ràng mô hình Linux64 (Linux 64-bit), bytesLimit/window/size đều thuộc 0..4294967295 và timestamp thuộc 0..18446744073709551615. Các timestamp tăng chặt. n là số nhật ký không âm; đề gốc không nêu cận trên cho nó, và trang này không đặt thêm cận nhỏ nào, hỗ trợ mọi trường hợp hợp lệ truyền được trong ngân sách đầu vào 32MiB hiện có cho mỗi test.",
+    "output": "In ra một số nguyên không âm, tổng số byte thực sự được phát hành; hãy dùng số nguyên 64-bit. Kích thước bằng 0, giới hạn bằng 0, cửa sổ bằng 0 và tập nhật ký rỗng đều hợp lệ.",
+    "explanation": "Ví dụ đầu tiên đến từ OCR019 gốc: với limit10/window5, các kích thước 2 và 4 được phát hành ở thời điểm 0 và 3; kích thước 5 ở thời điểm 5 sẽ làm tổng trong cửa sổ đóng là 11 nên bị từ chối; kích thước 5 ở thời điểm 7 được phát hành, tổng cộng 11. Bản chỉnh sửa của catalog trả về danh sách chỉ số, không khớp với giao diện thật trong 018, nên trang này khôi phục tổng số byte dựa trên 018–020. Các ví dụ công khai khác do trang này suy ra; xem lời giải để biết cách diễn giải kiểu của các miền giá trị và việc không có cận trên bổ sung cho n.",
+    "hints": [
+      "Đầu mút trái của cửa sổ vẫn nằm trong cửa sổ.",
+      "Chỉ đặt vào hàng đợi hoạt động các nhật ký đã phát hành thành công và có kích thước dương.",
+      "So sánh với độ dài cửa sổ bằng t−old_time, và tính sum+size trong 64 bit."
+    ]
   }
 }

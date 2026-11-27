@@ -13,6 +13,21 @@
       "If a minimum gap d is achievable, every smaller gap is achievable too; feasibility is monotone in d, so the answer can be binary searched.",
       "To test a given d: after sorting, start from the leftmost point and repeatedly choose the first point at least d away from the last chosen one; replacing the points of any feasible selection one by one with these earlier greedy choices never hurts, so the greedy picks the most points.",
       "Sort the coordinates and binary search on [0, max coordinate − min coordinate], rounding the midpoint up; if the greedy count is at least k move the lower bound to the midpoint, otherwise move the upper bound to the midpoint minus 1; the final lower bound is the answer."
+    ],
+    "ja": [
+      "最小間隔 d が達成可能なら、それより小さい間隔もすべて達成可能です。可否は d について単調なので、答えは二分探索できます。",
+      "ある d を判定するには、ソートしたあと、最も左の点から始めて、直前に選んだ点から d 以上離れた最初の点を繰り返し選びます。実行可能な選び方の点を 1 つずつこの貪欲な選択に置き換えても悪くならないので、貪欲法が最も多くの点を選べます。",
+      "座標をソートし、[0, 最大座標 − 最小座標] で二分探索します。中点は切り上げます。貪欲法で数えた個数が k 以上なら下限を中点に、そうでなければ上限を中点 −1 に動かします。最終的な下限が答えです。"
+    ],
+    "ko": [
+      "최소 간격 d를 달성할 수 있다면 그보다 작은 모든 간격도 달성할 수 있습니다. 가능 여부가 d에 대해 단조이므로 답을 이분 탐색으로 찾을 수 있습니다.",
+      "주어진 d를 검사하려면, 정렬한 뒤 가장 왼쪽 점에서 시작하여 마지막으로 고른 점에서 d 이상 떨어진 첫 번째 점을 반복해서 고릅니다. 가능한 임의의 선택에서 점들을 하나씩 이렇게 더 앞선 탐욕적 선택으로 바꿔도 손해가 없으므로, 탐욕법이 가장 많은 점을 고릅니다.",
+      "좌표를 정렬한 뒤 [0, 최대 좌표 − 최소 좌표] 범위에서 이분 탐색을 하되, 중간값은 올림합니다. 탐욕법으로 센 개수가 k 이상이면 하한을 중간값으로 옮기고, 아니면 상한을 중간값 − 1로 옮깁니다. 최종 하한이 답입니다."
+    ],
+    "vi": [
+      "Nếu khoảng cách nhỏ nhất d đạt được thì mọi khoảng cách nhỏ hơn cũng đạt được; tính khả thi đơn điệu theo d, nên có thể tìm kiếm nhị phân đáp án.",
+      "Để kiểm tra một d: sau khi sắp xếp, bắt đầu từ điểm ngoài cùng bên trái và liên tục chọn điểm đầu tiên cách điểm được chọn cuối cùng ít nhất d; thay lần lượt các điểm của một phương án khả thi bằng các lựa chọn tham lam sớm hơn này không bao giờ tệ hơn, nên tham lam chọn được nhiều điểm nhất.",
+      "Sắp xếp các tọa độ và tìm kiếm nhị phân trên [0, tọa độ lớn nhất − tọa độ nhỏ nhất], làm tròn điểm giữa lên; nếu số điểm tham lam ít nhất k thì dời cận dưới lên điểm giữa, ngược lại dời cận trên xuống điểm giữa trừ 1; cận dưới cuối cùng là đáp án."
     ]
   },
   "explanationEn": "## Approach\n\nAfter sorting, binary search on the candidate distance; greedily start from the leftmost point and each time choose the earliest point at least that distance from the last chosen point, then check whether k points can be chosen.\n\n## Proof of correctness\n\nFor a fixed distance, replacing the first point of any feasible selection with the leftmost point does not harm later choices, and the same holds point by point, so the greedy picks the most points. Feasibility is monotone in the distance, so the last feasible integer distance found by binary search is optimal.\n\n## Complexity\n\nTime O(n log n + n log 10^9), space O(n)."

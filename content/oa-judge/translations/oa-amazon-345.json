@@ -11,5 +11,35 @@
     "hints": [
       "Build a mapping from characters to their order 0..255, turn each string into a byte sort key of the same length, and sort the original strings by the lexicographic order of these byte strings."
     ]
+  },
+  "ja": {
+    "title": "独自の Unicode 文字順で商品コードをソートする",
+    "description": "order は文字を小さい方から大きい方へ並べたものです。2つの商品コードを比較するには、最初に異なる文字を見ます。一方が他方の接頭辞なら、短い方が小さいとします。重複するコードは残し、ソートした結果を返してください。文字は、UTF-16 のサロゲート単位ではなく、Unicode のコードポイントとして数えます。\n\n本サイトが標準入出力、解説、テストを独自に作成しました。元の範囲が欠けている点や、例の訂正は、問題文中に明記しています。",
+    "input": "入力は JSON 配列 [order,productCodes] で、標準的な JSON の空白とエスケープを含むことがあります。元の制約は途中で切れていて、完全な個数や文字の範囲は示されていません。本サイトでは、order は 1..256 個の互いに異なる Unicode スカラー値からなり、1≤コードの数≤100000、全コードの長さの合計は ≤1000000 コードポイントとします。コードは空でもよく、すべての文字は order に現れます。空白、制御文字、NUL、非 BMP の文字は保持され、孤立したサロゲートは許されません。UTF-8 での入力全体の上限は 16MiB です(標準的なコンパクトな最悪ケースは 12303100 バイト未満です)。",
+    "output": "文字列の正規なコンパクトな ASCII の JSON 配列を出力してください。要素の間にはカンマだけを置き、構造上の余分な空白は置きません。引用符とバックスラッシュは \\\" と \\\\ と書きます。バックスペース/タブ/改行/フォームフィード/復帰は \\b/\\t/\\n/\\f/\\r と書きます。残りの U+0000..001F と、U+007F 以上のすべてのコードポイントは、小文字の16進数の \\uXXXX を使い、非 BMP の文字は UTF-16 のサロゲートペアに分けます。引用符とバックスラッシュを除く U+0020..007E は、空白と / を含め、そのまま出力します。末尾には改行を1つだけ付けます。この出力規約は符号化を正規化するだけで、文字を取り除くことはありません。",
+    "explanation": "3つの公開例の出力は [\"abc\",\"adc\"]、[\"\",\"b\",\"b\",\"ba\",\"a\"]、[\"\",\"\\ud83d\\ude00\",\"\\ud83d\\ude00a\",\"\\u0000\",\" \",\"a\"] で、独立した列挙または直接のシミュレーションで確認済みです。",
+    "hints": [
+      "文字から order 上の順位 0..255 への対応を作り、各文字列を同じ長さのバイトのソートキーに変換し、元の文字列をこれらのバイト列の辞書順でソートします。"
+    ]
+  },
+  "ko": {
+    "title": "사용자 정의 유니코드 문자 순서로 상품 코드 정렬하기",
+    "description": "order는 문자를 작은 것부터 큰 것 순으로 나열한 것입니다. 두 상품 코드를 비교할 때는 처음으로 다른 문자를 보고, 한쪽이 다른 쪽의 접두사이면 짧은 쪽이 더 작습니다. 중복된 코드를 유지한 채 정렬된 결과를 반환하세요. 문자는 UTF-16 서로게이트 단위가 아니라 유니코드 코드 포인트 단위로 셉니다.\n\n이 사이트가 표준 입출력, 해설, 테스트를 독자적으로 작성했으며, 누락된 원문 범위와 예제의 정정 사항은 문제 설명에 명시했습니다.",
+    "input": "입력은 JSON 배열 [order,productCodes]이며, 표준 JSON 공백과 이스케이프가 들어 있을 수 있습니다. 원문의 제약은 잘려 있어 개수나 문자 영역이 완전하지 않으며, 이 사이트에서 order는 서로 다른 유니코드 스칼라 값 1..256개를 포함하고, 1≤코드 개수≤100000이며, 모든 코드의 길이 합은 ≤1000000 코드 포인트로 정했습니다. 코드는 비어 있을 수 있고, 모든 문자는 order에 등장하며, 공백, 제어 문자, NUL, BMP 밖의 문자도 그대로 유지되고 단독 서로게이트는 허용되지 않습니다. UTF-8 입력의 총 한도는 16MiB입니다(표준 압축 최악의 경우 12303100바이트 미만).",
+    "output": "문자열의 정규 압축 ASCII JSON 배열을 출력하며, 원소 사이에는 쉼표만 있고 구조를 위한 불필요한 공백은 없습니다. 따옴표와 역슬래시는 \\\"와 \\\\로 쓰고, 백스페이스/탭/줄바꿈/폼 피드/캐리지 리턴은 \\b/\\t/\\n/\\f/\\r로 씁니다. 나머지 U+0000..001F와 U+007F 이상의 모든 코드 포인트는 소문자 16진수 \\uXXXX를 사용하며 BMP 밖의 문자는 UTF-16 서로게이트 쌍으로 나눕니다. 따옴표와 역슬래시를 제외한 U+0020..007E는 공백과 /를 포함하여 그대로 출력합니다. 끝에 개행 문자 하나를 붙입니다. 이 출력 규약은 인코딩만 정규화할 뿐 어떤 문자도 제거하지 않습니다.",
+    "explanation": "공개 예제 세 개의 출력은 각각 [\"abc\",\"adc\"], [\"\",\"b\",\"b\",\"ba\",\"a\"], [\"\",\"\\ud83d\\ude00\",\"\\ud83d\\ude00a\",\"\\u0000\",\" \",\"a\"]이며, 독립적인 전수 조사 또는 직접 시뮬레이션으로 확인했습니다.",
+    "hints": [
+      "문자에서 order 상의 순위 0..255로 가는 매핑을 만들고, 각 문자열을 같은 길이의 바이트 정렬 키로 바꾼 뒤, 원래 문자열을 이 바이트 문자열의 사전식 순서로 정렬합니다."
+    ]
+  },
+  "vi": {
+    "title": "Sắp xếp mã sản phẩm theo thứ tự ký tự Unicode tùy chỉnh",
+    "description": "order liệt kê các ký tự từ nhỏ đến lớn. Để so sánh hai mã sản phẩm, hãy xét ký tự đầu tiên mà chúng khác nhau; nếu một mã là tiền tố của mã kia thì mã ngắn hơn nhỏ hơn. Giữ các mã trùng lặp và trả về kết quả đã sắp xếp. Ký tự được đếm theo điểm mã Unicode, không phải theo đơn vị surrogate UTF-16.\n\nTrang này tự viết đầu vào/ra chuẩn, lời giải và các bộ kiểm thử; các giới hạn gốc bị thiếu và các chỗ sửa ví dụ được nêu rõ trong đề bài.",
+    "input": "Đầu vào là một mảng JSON [order,productCodes], có thể chứa khoảng trắng và dấu thoát JSON chuẩn. Các ràng buộc gốc bị cắt cụt và không cho đầy đủ số lượng hay miền ký tự; trên trang này order chứa 1..256 giá trị vô hướng Unicode phân biệt, 1≤số mã≤100000, và tổng độ dài của mọi mã là ≤1000000 điểm mã. Mã có thể rỗng, và mọi ký tự đều xuất hiện trong order; dấu cách, ký tự điều khiển, NUL và ký tự ngoài BMP được giữ nguyên, còn surrogate đơn lẻ không được phép. Ngân sách tổng đầu vào UTF-8 là 16MiB (trường hợp xấu nhất ở dạng gọn chuẩn dưới 12303100 byte).",
+    "output": "In ra một mảng JSON ASCII gọn chuẩn tắc gồm các xâu, chỉ có dấu phẩy giữa các phần tử và không có khoảng trắng cấu trúc thừa. Dấu nháy kép và dấu gạch chéo ngược được viết là \\\" và \\; backspace/tab/xuống dòng/form feed/carriage return được viết là \\b/\\t/\\n/\\f/\\r; các mã còn lại U+0000..001F và mọi điểm mã từ U+007F trở lên dùng \\uXXXX thập lục phân viết thường, với ký tự ngoài BMP được tách thành cặp surrogate UTF-16; U+0020..007E trừ dấu nháy kép và gạch chéo ngược được in trực tiếp, kể cả dấu cách và /. Kết thúc bằng đúng một ký tự xuống dòng. Quy ước đầu ra này chỉ chuẩn hóa cách mã hóa và không loại bỏ ký tự nào.",
+    "explanation": "Đầu ra của ba ví dụ công khai là [\"abc\",\"adc\"]; [\"\",\"b\",\"b\",\"ba\",\"a\"]; và [\"\",\"\\ud83d\\ude00\",\"\\ud83d\\ude00a\",\"\\u0000\",\" \",\"a\"], được kiểm tra bằng liệt kê độc lập hoặc mô phỏng trực tiếp.",
+    "hints": [
+      "Dựng ánh xạ từ ký tự sang thứ hạng trong order 0..255, biến mỗi xâu thành một khóa sắp xếp dạng byte cùng độ dài, và sắp xếp các xâu gốc theo thứ tự từ điển của các xâu byte này."
+    ]
   }
 }

@@ -11,5 +11,35 @@
     "hints": [
       "Count by the (name,price,weight) tuple and add up the full counts of all groups that appear ≥2 times."
     ]
+  },
+  "ja": {
+    "title": "名前・価格・重量がすべて同じ相手がいる商品の総数",
+    "description": "各商品は名前、価格、重量で記録されています。他のある商品が3つの項目すべてで一致するとき、その商品は重複しているといいます。この条件を満たす商品の数を求めてください。重複グループの最初の商品も数に含めるので、同一の商品が2つなら 2、3つなら 3 を寄与します。これは重複を取り除くために必要な削除数ではありません。\n\n標準入出力、例、解説は本サイトが独自に作成したものです。本サイト独自と明記した範囲は、出典の元の制約ではありません。",
+    "input": "標準入力は、各要素が [name,price,weight] である JSON 配列です。元の制約は 1≤n≤100000、1≤price,weight≤1000 で、name は英小文字のみで長さは高々 10 です。長さ 0 の空の name も保持され、JSON 文字列 \"\" として表現されます。空でないという下限は追加していません。",
+    "output": "答えとなる整数を1つ出力してください。",
+    "explanation": "答えは 2、0、3 です。本サイトでは、元の商品ごとの定義「同一の商品が他にあれば、その商品は重複している」に従って曖昧さを解消しています。出典の解説にある「最初の商品は通常数えない」という主張は、正式な定義およびそのコードと異なるため採用していません。",
+    "hints": [
+      "(name,price,weight) のタプルで数え、2 回以上現れるすべてのグループの個数の合計を足し合わせます。"
+    ]
+  },
+  "ko": {
+    "title": "이름, 가격, 무게가 모두 같은 짝이 있는 상품의 총 개수",
+    "description": "각 상품은 이름, 가격, 무게로 기록됩니다. 다른 어떤 상품이 세 필드 모두 일치하면 그 상품은 중복입니다. 이 조건을 만족하는 상품의 수를 구하세요. 중복 그룹의 첫 번째 상품도 포함하므로 똑같은 상품 2개는 2를, 3개는 3을 기여합니다. 중복을 제거하기 위해 삭제해야 하는 개수가 아닙니다.\n\n표준 입출력, 예제, 해설은 이 사이트에서 독자적으로 작성했습니다. 이 사이트가 직접 정했다고 표시된 범위는 원문의 제약 조건이 아닙니다.",
+    "input": "표준 입력은 각 항목이 [name,price,weight]인 JSON 배열입니다. 원문의 범위는 1≤n≤100000, 1≤price,weight≤1000이며, name은 소문자로만 이루어지고 길이는 최대 10입니다. 길이 0의 빈 name도 유지되며 JSON 문자열 \"\"로 인코딩하고, 비어 있지 않아야 한다는 하한은 추가하지 않습니다.",
+    "output": "정답을 정수 하나로 출력합니다.",
+    "explanation": "정답은 각각 2, 0, 3입니다. 이 사이트는 모호한 부분을 \"똑같은 다른 상품이 있으면 그 상품은 중복\"이라는 원문의 상품별 정의로 분명하게 해결했습니다. 첫 번째 상품은 보통 세지 않는다는 원문 해설의 주장은 공식 정의 및 그 코드와 다르므로 채택하지 않았습니다.",
+    "hints": [
+      "(name,price,weight) 튜플별로 개수를 세고, 2번 이상 나타나는 모든 그룹의 전체 개수를 더합니다."
+    ]
+  },
+  "vi": {
+    "title": "Tổng số sản phẩm có sản phẩm khác trùng cả tên, giá và khối lượng",
+    "description": "Mỗi sản phẩm được ghi nhận bằng tên, giá và khối lượng. Một sản phẩm là bản trùng nếu có một sản phẩm khác khớp với nó ở cả ba trường. Hãy tìm số sản phẩm thỏa điều kiện này; sản phẩm đầu tiên của mỗi nhóm trùng cũng được tính, nên hai sản phẩm giống hệt nhau đóng góp 2 và ba sản phẩm đóng góp 3. Đây không phải là số lần xóa cần thiết để loại bỏ các bản trùng.\n\nĐầu vào/đầu ra chuẩn, các ví dụ và phần lời giải do trang này tự viết; các khoảng giá trị được đánh dấu rõ là của trang này không phải ràng buộc gốc của đề.",
+    "input": "Đầu vào chuẩn là một mảng JSON có các phần tử dạng [name,price,weight]. Cận gốc là 1≤n≤100000, 1≤price,weight≤1000, và name chỉ gồm chữ cái thường với tối đa 10 ký tự. Một name rỗng có độ dài 0 được giữ nguyên và mã hóa thành chuỗi JSON \"\", và không thêm cận dưới là không rỗng.",
+    "output": "In ra một số nguyên duy nhất, là đáp án.",
+    "explanation": "Các đáp án lần lượt là 2, 0 và 3. Trang này giải quyết sự mơ hồ một cách công khai bằng định nghĩa gốc theo từng sản phẩm, \"một sản phẩm là bản trùng nếu tồn tại sản phẩm giống hệt khác\". Khẳng định trong phần giải thích của nguồn rằng sản phẩm đầu tiên thường không được tính khác với định nghĩa chính thức và mã của nó, nên không được áp dụng.",
+    "hints": [
+      "Đếm theo bộ (name,price,weight) và cộng tổng số lượng đầy đủ của mọi nhóm xuất hiện ≥2 lần."
+    ]
   }
 }

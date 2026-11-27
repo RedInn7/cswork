@@ -11,5 +11,35 @@
     "hints": [
       "Compute the lowest prefix balance and the final balance of the original string to determine the minimum required numbers of left and right brackets. For each kind of bracket, take the required ones in descending order of score; after that, keep taking pairs while the combined marginal score of a pair is still positive."
     ]
+  },
+  "ja": {
+    "title": "括弧を補完してキットのスコアを最大化する",
+    "description": "元の括弧列の順序を保ったまま、キットの未使用の括弧を任意の位置に挿入して、最終的な文字列がバランスのとれた括弧列になるようにし、使用した括弧のスコアの合計を最大化します。元の文字列自体のスコアは 0 です。元の問題文は、実行可能な補完が存在することを保証しています。必須の括弧は、スコアが負であっても選ばなければなりません。\n\n本サイトでは標準入出力と解説を独自にまとめています。出典で欠けている制約の補足やサンプルの訂正は、プロトコル中に明記しています。",
+    "input": "1行目に s、2行目に m、3行目に kit、4行目に m 個のスコアが与えられます。m=0 のとき、後ろの2行は空です。元の厳密な制約は 1≤|s|≤199999、0≤m≤199999 で、kit の長さは m、左括弧と右括弧のみを含み、スコアは −10^9..10^9 です。",
+    "output": "答えとなる整数を1つ出力してください。",
+    "explanation": "元の TODO のサンプルは 6 と補っています。2つ目のサンプルは、スコアが −5 の右括弧を追加するしかないので、答えは −5 です。3つ目のサンプルの答えは 0 です。",
+    "hints": [
+      "元の文字列の接頭辞バランスの最小値と最終バランスを計算し、必要な左括弧と右括弧の最小個数を求めます。それぞれの種類について、必須の分はスコアの高い順に取ります。その後は、ペアのスコアの合計がまだ正である間、ペアを取り続けます。"
+    ]
+  },
+  "ko": {
+    "title": "괄호를 완성하고 키트 점수를 최대화",
+    "description": "원래 괄호 문자열의 순서를 유지한 채, 키트에서 사용하지 않은 괄호를 임의의 위치에 삽입해 최종 문자열이 균형을 이루게 하고, 사용한 괄호의 총점을 최대화하십시오. 원래 문자열 자체의 점수는 0입니다. 원문은 가능한 완성이 존재함을 보장하며, 반드시 필요한 괄호는 점수가 음수여도 선택해야 합니다.\n\n이 사이트에서 표준 입출력과 해설을 독자적으로 정리했으며, 출처에 빠진 범위의 보완과 예제의 정정 사항은 프로토콜에 명시했습니다.",
+    "input": "첫째 줄에 s, 둘째 줄에 m, 셋째 줄에 kit, 넷째 줄에 m개의 점수가 주어집니다. m=0이면 마지막 두 줄은 비어 있습니다. 원문의 엄격한 범위는 1≤|s|≤199999, 0≤m≤199999이며, kit의 길이는 m이고 여는 괄호와 닫는 괄호만 포함하며 점수는 −10^9..10^9 범위입니다.",
+    "output": "정수 하나, 즉 답을 출력합니다.",
+    "explanation": "원문의 TODO 예제는 6으로 채웠습니다. 두 번째 예제는 점수가 음수 5인 닫는 괄호만 추가할 수 있으므로 답이 −5이고, 세 번째 예제의 답은 0입니다.",
+    "hints": [
+      "원래 문자열의 최저 접두사 균형과 최종 균형을 계산해 필요한 여는 괄호와 닫는 괄호의 최소 개수를 정합니다. 각 종류의 괄호에서 필요한 개수만큼 점수가 높은 순서로 고르고, 그 후에는 한 쌍의 합산 한계 점수가 여전히 양수인 동안 쌍을 계속 고릅니다."
+    ]
+  },
+  "vi": {
+    "title": "Hoàn thiện dãy ngoặc và tối đa điểm của bộ ngoặc",
+    "description": "Giữ nguyên thứ tự của xâu ngoặc ban đầu, chèn các ngoặc chưa dùng từ bộ ngoặc vào các vị trí tùy ý sao cho xâu cuối cùng cân bằng, và tối đa hóa tổng điểm của các ngoặc đã dùng. Bản thân xâu ban đầu có điểm 0. Đề gốc đảm bảo tồn tại một cách hoàn thiện khả thi, và các ngoặc bắt buộc phải chọn thì vẫn phải chọn ngay cả khi điểm của chúng âm.\n\nTrang này tự biên soạn phần đầu vào/đầu ra chuẩn và lời giải; những giới hạn gốc còn thiếu và các chỗ sửa lại ví dụ đều được nêu rõ trong đặc tả.",
+    "input": "Dòng đầu chứa s, dòng thứ hai chứa m, dòng thứ ba chứa kit, và dòng thứ tư chứa m điểm; khi m=0 hai dòng cuối để trống. Giới hạn gốc chặt là 1≤|s|≤199999 và 0≤m≤199999; kit có độ dài m và chỉ chứa ngoặc trái và ngoặc phải, điểm nằm trong khoảng −10^9..10^9.",
+    "output": "In ra một số nguyên duy nhất, là đáp án.",
+    "explanation": "Ví dụ TODO gốc được điền là 6; ví dụ thứ hai chỉ có thể thêm một ngoặc phải trị giá âm 5, nên đáp án là −5; ví dụ thứ ba cho 0.",
+    "hints": [
+      "Tính cân bằng tiền tố thấp nhất và cân bằng cuối của xâu gốc để xác định số ngoặc trái và ngoặc phải tối thiểu bắt buộc. Với mỗi loại ngoặc, lấy các ngoặc bắt buộc theo thứ tự điểm giảm dần; sau đó tiếp tục lấy từng cặp chừng nào điểm biên tổng của một cặp vẫn còn dương."
+    ]
   }
 }

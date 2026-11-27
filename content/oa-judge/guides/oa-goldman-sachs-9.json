@@ -13,6 +13,21 @@
       "A key's divisibility is the number of list elements greater than 1 that divide it, with duplicates counted once per occurrence. So for each key, count how many times its divisors greater than 1 appear in the list.",
       "First record how many times each value occurs in a frequency array, then for each key enumerate its divisors and add up their frequencies to get its divisibility; take the maximum over all keys.",
       "Build freq[0..max(keys)]; for each key v, enumerate d from 1 to sqrt(v): if d divides v, add freq[d] when d > 1, and add freq[v/d] when the co-divisor v/d differs from d and is greater than 1; let best be the maximum divisibility; strength = best * 100000; print \"1 strength\" if instructionCount * validityPeriod >= strength, otherwise \"0 strength\". The product can reach 10^16, so use 64-bit integers."
+    ],
+    "ja": [
+      "鍵の可除性とは、リスト内で 1 より大きく、その鍵を割り切る要素の個数で、重複は出現ごとに数えます。そこで各鍵について、1 より大きい約数がリスト内に何回現れるかを数えます。",
+      "まず頻度配列に各値の出現回数を記録し、各鍵について約数を列挙して頻度を足し合わせ、可除性を求めます。すべての鍵にわたる最大値を取ります。",
+      "freq[0..max(keys)] を作ります。各鍵 v について、d を 1 から sqrt(v) まで列挙します。d が v を割り切るなら、d > 1 のとき freq[d] を加え、対の約数 v/d が d と異なり 1 より大きいとき freq[v/d] を加えます。best を可除性の最大値とし、strength = best * 100000 とします。instructionCount * validityPeriod >= strength なら「1 strength」、そうでなければ「0 strength」を出力します。積は 10^16 に達しうるので、64 ビット整数を使います。"
+    ],
+    "ko": [
+      "키의 약수성은 목록에서 1보다 크면서 그 키를 나누는 원소의 개수이며, 중복은 등장할 때마다 한 번씩 셉니다. 따라서 각 키에 대해 1보다 큰 약수가 목록에 몇 번 나타나는지 세면 됩니다.",
+      "먼저 빈도 배열에 각 값이 몇 번 나타나는지 기록한 다음, 각 키마다 약수를 열거하여 그 빈도를 더해 약수성을 구합니다. 모든 키에 대한 최댓값을 취합니다.",
+      "freq[0..max(keys)]를 만듭니다. 각 키 v에 대해 d를 1부터 sqrt(v)까지 열거합니다. d가 v를 나누면 d > 1일 때 freq[d]를 더하고, 짝 약수 v/d가 d와 다르고 1보다 크면 freq[v/d]를 더합니다. best를 최대 약수성으로 두고 strength = best * 100000으로 계산합니다. instructionCount * validityPeriod >= strength이면 \"1 strength\"를, 아니면 \"0 strength\"를 출력합니다. 곱은 10^16에 이를 수 있으므로 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Độ chia hết của một khóa là số phần tử trong danh sách lớn hơn 1 và chia hết khóa đó, các phần tử trùng nhau được tính một lần cho mỗi lần xuất hiện. Vì vậy với mỗi khóa, hãy đếm xem các ước lớn hơn 1 của nó xuất hiện bao nhiêu lần trong danh sách.",
+      "Trước tiên ghi lại mỗi giá trị xuất hiện bao nhiêu lần trong một mảng tần suất, rồi với mỗi khóa duyệt các ước của nó và cộng các tần suất để được độ chia hết; lấy giá trị lớn nhất trên mọi khóa.",
+      "Xây freq[0..max(keys)]; với mỗi khóa v, duyệt d từ 1 đến sqrt(v): nếu d chia hết v thì cộng freq[d] khi d > 1, và cộng freq[v/d] khi ước đối v/d khác d và lớn hơn 1; gọi best là độ chia hết lớn nhất; strength = best * 100000; in \"1 strength\" nếu instructionCount * validityPeriod >= strength, ngược lại in \"0 strength\". Tích có thể lên tới 10^16, nên hãy dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nStore the number of occurrences of each key in a frequency array. For each key, enumerate its divisors greater than 1 and add up their frequencies to get the maximum divisibility, then compute the strength and whether the encryption can be broken according to the definition.\n\n## Proof of correctness\n\nThe frequency array keeps the contribution of the duplicate items in the list; adding up the frequencies of all divisors of key counts exactly the list elements greater than 1 that divide it. Taking the maximum gives the base of the strength defined in the statement, and finally the product comparison decides whether it can be broken.\n\n## Complexity\n\nWith M=max(keys), O(M log M + n) time and O(M) space."

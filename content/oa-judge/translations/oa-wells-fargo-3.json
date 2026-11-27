@@ -11,5 +11,35 @@
     "hints": [
       "Use multi-source BFS to get each cell's Manhattan distance to the nearest *, then run a maximum-bottleneck path search: when expanding a neighbor, its safety value is the smaller of the current value and the neighbor's distance, and maintain the best known maximum safety value for each cell."
     ]
+  },
+  "ja": {
+    "title": "Find Maximum Distance",
+    "description": "S、E、.、* を含む長方形のグリッドが与えられます。パスは S から E まで、各ステップで上下左右に移動し、同じセルを再訪しません。* は障害物ですが、通過することはできます。パスの安全値は、パス上のセルについて、最も近い障害物までのマンハッタン距離の最小値です。すべてのパスにわたる安全値の最大値を求めてください。\n\n問題の出典と、本サイトが追加した入力プロトコルについては、問題文とレビューノートを参照してください。",
+    "input": "1行目に rows cols、続く rows 行にそれぞれ長さ cols の文字列が与えられます。元の範囲は 2≤rows,cols≤200 です。本サイトでは、S と E がちょうど1つずつ、* が少なくとも1つあり、それ以外の文字はすべて . または * であることを明示的に求めます。",
+    "output": "保証される最小のマンハッタン距離の最大値を出力します。",
+    "explanation": "問題の規則に従って入力を処理します。詳しい考え方は付属のノートを参照してください。",
+    "hints": [
+      "多始点 BFS で各セルから最も近い * までのマンハッタン距離を求め、続いて最大ボトルネックのパス探索を行います。隣接セルに広げるとき、その安全値は現在の値と隣接セルの距離の小さいほうとし、各セルについてこれまでに分かっている最大の安全値を保持します。"
+    ]
+  },
+  "ko": {
+    "title": "Find Maximum Distance",
+    "description": "S, E, ., *를 포함하는 직사각형 격자가 주어집니다. 경로는 S에서 E까지 한 걸음에 상하좌우로 이동하며 같은 칸을 다시 방문하지 않습니다. *는 장애물이지만 지나갈 수 있습니다. 경로의 안전도는 경로 위의 칸들에 대한 가장 가까운 장애물까지의 맨해튼 거리의 최솟값입니다. 모든 경로 중 안전도의 최댓값을 구하십시오.\n\n문제의 출처와 이 사이트에서 추가한 입력 프로토콜은 문제 설명과 검토 노트를 참고하십시오.",
+    "input": "첫 번째 줄에 rows cols가 주어지고, 이어서 길이가 cols인 문자열이 rows개 줄로 주어집니다. 원문 범위는 2≤rows,cols≤200입니다. 이 사이트는 S가 정확히 하나, E가 정확히 하나, *가 하나 이상 있어야 하고 나머지 문자는 . 또는 *여야 한다고 명시합니다.",
+    "output": "보장되는 최소 맨해튼 거리의 최댓값을 출력합니다.",
+    "explanation": "문제 규칙에 따라 입력을 처리하십시오. 자세한 접근법은 함께 제공되는 노트를 참고하십시오.",
+    "hints": [
+      "다중 시작점 BFS로 각 칸에서 가장 가까운 *까지의 맨해튼 거리를 구한 뒤, 최대 병목 경로 탐색을 수행합니다. 이웃으로 확장할 때 그 이웃의 안전도는 현재 값과 이웃의 거리 중 작은 값이며, 각 칸에 대해 알려진 최선의 최대 안전도를 유지합니다."
+    ]
+  },
+  "vi": {
+    "title": "Find Maximum Distance",
+    "description": "Cho một lưới chữ nhật chứa các ký tự S, E, . và *. Một đường đi từ S đến E, mỗi bước đi lên, xuống, trái hoặc phải mà không đi lại ô đã qua; * là chướng ngại vật nhưng vẫn có thể đi qua. Giá trị an toàn của một đường đi là giá trị nhỏ nhất, trên các ô của đường đi, của khoảng cách Manhattan đến chướng ngại vật gần nhất. Tìm giá trị an toàn lớn nhất trên mọi đường đi.\n\nXem phần đề bài và ghi chú đánh giá để biết nguồn của bài toán và giao thức nhập mà trang này bổ sung.",
+    "input": "Dòng đầu chứa rows cols; tiếp theo là rows dòng, mỗi dòng là một xâu độ dài cols. Phạm vi gốc: 2≤rows,cols≤200. Trang này quy định rõ có đúng một S, đúng một E và ít nhất một *, mọi ký tự còn lại là . hoặc *.",
+    "output": "In ra khoảng cách Manhattan nhỏ nhất lớn nhất có thể đảm bảo.",
+    "explanation": "Xử lý đầu vào theo quy tắc của bài; xem các ghi chú đi kèm để biết cách tiếp cận chi tiết.",
+    "hints": [
+      "Dùng BFS đa nguồn để lấy khoảng cách Manhattan từ mỗi ô đến * gần nhất, rồi chạy tìm đường có nút thắt lớn nhất: khi mở rộng sang ô lân cận, giá trị an toàn của nó là giá trị nhỏ hơn giữa giá trị hiện tại và khoảng cách của ô lân cận, đồng thời duy trì giá trị an toàn lớn nhất đã biết cho mỗi ô."
+    ]
   }
 }

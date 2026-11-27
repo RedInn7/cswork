@@ -13,6 +13,21 @@
       "The nodes to delete are the ones with even values, and the remaining nodes keep their order; handling the deletion of the head separately from deletions in the middle is clumsy.",
       "Put a sentinel node before the list and keep a predecessor pointer: if the node after the predecessor is even, link the predecessor directly to that node's successor; if it is odd, keep it and move the predecessor forward one step.",
       "Build the list from the input with the sentinel pointing at the first node; start the predecessor at the sentinel and loop until its successor is empty: skip the successor if its value is even (negative values are tested by divisibility by 2 as well), otherwise advance the predecessor; finally walk from the sentinel's successor, print the number of remaining nodes, then their values on the second line, which is empty for an empty list."
+    ],
+    "ja": [
+      "削除するのは値が偶数のノードで、残りのノードは順序を保ちます。先頭の削除と途中の削除を別々に扱うのは面倒です。",
+      "リストの前に番兵ノードを置き、先行ポインタを持ちます。先行ノードの次のノードが偶数なら、先行ノードをそのノードの後続に直接つなぎ、奇数ならそれを残して先行ポインタを 1 つ進めます。",
+      "入力からリストを作り、番兵が最初のノードを指すようにします。先行ポインタを番兵から始め、その後続が空になるまでループします。後続の値が偶数ならそれを飛ばし（負の値も 2 で割り切れるかで判定します）、そうでなければ先行ポインタを進めます。最後に番兵の後続から走査し、残ったノードの個数を出力し、続いて 2 行目に値を出力します。リストが空なら 2 行目は空です。"
+    ],
+    "ko": [
+      "삭제할 노드는 값이 짝수인 노드이고 남은 노드는 순서를 유지합니다. 머리 노드의 삭제와 중간 노드의 삭제를 따로 처리하면 번거롭습니다.",
+      "리스트 앞에 sentinel 노드를 두고 선행 노드 포인터를 유지합니다. 선행 노드의 다음 노드가 짝수이면 선행 노드를 그 노드의 다음 노드에 직접 연결하고, 홀수이면 그대로 두고 선행 노드를 한 칸 앞으로 옮깁니다.",
+      "입력으로 리스트를 만들고 sentinel이 첫 노드를 가리키게 합니다. 선행 노드를 sentinel에서 시작해 그 다음 노드가 없을 때까지 반복하며, 다음 노드의 값이 짝수이면 건너뛰고(음수도 2로 나누어떨어지는지로 판별합니다) 아니면 선행 노드를 전진시킵니다. 마지막으로 sentinel의 다음 노드부터 훑어 남은 노드의 수를 출력하고, 둘째 줄에 값들을 출력합니다. 빈 리스트이면 둘째 줄이 비어 있습니다."
+    ],
+    "vi": [
+      "Các nút cần xóa là những nút có giá trị chẵn, và các nút còn lại giữ nguyên thứ tự; xử lý việc xóa đầu danh sách tách biệt với xóa ở giữa thì khá rườm rà.",
+      "Đặt một nút lính canh trước danh sách và giữ một con trỏ tiền nhiệm: nếu nút sau tiền nhiệm là chẵn, nối tiền nhiệm trực tiếp với nút kế tiếp của nút đó; nếu là lẻ, giữ lại và tiến con trỏ tiền nhiệm một bước.",
+      "Xây danh sách từ đầu vào với lính canh trỏ đến nút đầu tiên; bắt đầu con trỏ tiền nhiệm tại lính canh và lặp cho đến khi nút kế của nó rỗng: bỏ qua nút kế nếu giá trị của nó chẵn (các giá trị âm cũng kiểm tra bằng tính chia hết cho 2), ngược lại tiến con trỏ tiền nhiệm; cuối cùng duyệt từ nút kế của lính canh, in số nút còn lại, rồi các giá trị của chúng ở dòng thứ hai, dòng này để trống nếu danh sách rỗng."
     ]
   },
   "explanationEn": "## Approach\n\nUse a sentinel node and a predecessor pointer: on an even node, link the predecessor to its successor; on an odd node, move the predecessor forward.\n\n## Proof of correctness\n\nThe nodes kept before the predecessor are all odd and in their original order. Each step either skips exactly one even node that must not be kept or confirms one odd node, so no node is missed, and at the end the list is exactly the target list.\n\n## Complexity\n\nTime O(n); building the input list takes O(n) space, and the deletion pass uses O(1) extra."

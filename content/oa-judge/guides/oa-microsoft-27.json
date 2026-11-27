@@ -13,6 +13,21 @@
       "The size of an OR is decided mainly by its highest bit. Spreading the doublings over several elements is never better than putting them all on one element, whose highest bit then rises above every bit the spread-out plan can reach.",
       "So only enumerate which element receives all K doublings, shift it left by K, OR it with all the other elements, and take the maximum.",
       "Precompute suffix ORs and sweep left to right keeping a prefix OR. For each i the candidate is prefix OR | (a[i] shifted left by K) | suffix OR from i+1; take the maximum, then add a[i] into the prefix OR. Shifting by up to 30 can exceed 32 bits, so use 64-bit integers."
+    ],
+    "ja": [
+      "OR の大きさは、主に最上位ビットで決まります。倍加を複数の要素に分散させても、すべてを1つの要素に集中させたときより良くなることはありません。その要素の最上位ビットは、分散させた計画で到達できるどのビットよりも高くなるからです。",
+      "したがって、K 回の倍加すべてを受ける要素だけを列挙し、それを K ビット左へシフトして他のすべての要素と OR し、最大値を取ります。",
+      "接尾辞 OR を事前に計算し、左から右へ走査しながら接頭辞 OR を保持します。各 i の候補は、接頭辞 OR | (a[i] を K ビット左シフトしたもの) | i+1 以降の接尾辞 OR で、その最大値を取り、そのあと a[i] を接頭辞 OR に加えます。最大 30 ビットのシフトは32ビットを超えることがあるので、64ビット整数を使います。"
+    ],
+    "ko": [
+      "OR의 크기는 주로 최상위 비트로 결정됩니다. 두 배 연산을 여러 원소에 나누는 것은 하나의 원소에 모두 몰아주는 것보다 결코 낫지 않으며, 그 원소의 최상위 비트가 나누어 쓰는 계획이 닿을 수 있는 어떤 비트보다도 높아집니다.",
+      "따라서 K번의 두 배를 모두 받을 원소만 열거하면 됩니다. 그 원소를 K만큼 왼쪽으로 시프트하고 나머지 모든 원소와 OR한 뒤 최댓값을 취합니다.",
+      "접미사 OR을 미리 계산하고, 왼쪽에서 오른쪽으로 스윕하며 접두사 OR을 유지합니다. 각 i에 대해 후보는 접두사 OR | (a[i]를 K만큼 왼쪽 시프트) | i+1부터의 접미사 OR이며, 최댓값을 취한 뒤 a[i]를 접두사 OR에 합칩니다. 최대 30만큼 시프트하면 32비트를 넘을 수 있으므로 64비트 정수를 사용합니다."
+    ],
+    "vi": [
+      "Độ lớn của một phép OR chủ yếu do bit cao nhất quyết định. Rải các lần nhân đôi lên nhiều phần tử không bao giờ tốt hơn dồn tất cả vào một phần tử, vì bit cao nhất của nó khi đó vượt lên trên mọi bit mà phương án rải rác có thể đạt tới.",
+      "Vì vậy chỉ cần duyệt xem phần tử nào nhận cả K lần nhân đôi, dịch trái nó K bit, OR nó với tất cả các phần tử khác, và lấy giá trị lớn nhất.",
+      "Tính trước OR hậu tố và quét từ trái sang phải giữ một OR tiền tố. Với mỗi i, ứng viên là OR tiền tố | (a[i] dịch trái K bit) | OR hậu tố từ i+1; lấy giá trị lớn nhất, rồi gộp a[i] vào OR tiền tố. Dịch tới 30 bit có thể vượt quá 32 bit, vì vậy hãy dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nConcentrate all doublings on a single element; prefix and suffix ORs give the OR of the remaining elements for each candidate in constant time.\n\n## Proof of correctness\n\nIn an optimal allocation, let the final highest non-zero bit belong to x. Transfer the operations used on the other elements to x: if anything is actually transferred, x's highest bit strictly rises above every bit of the original answer, so the result is larger. Hence some optimal solution applies all operations to one element. The conclusion also holds when everything is zero.\n\n## Complexity\n\nTime O(n), space O(n)."

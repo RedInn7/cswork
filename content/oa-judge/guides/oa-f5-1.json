@@ -13,6 +13,21 @@
       "Tweets outside the time window can be ignored entirely; inside the window you only need to scan each tweet character by character to find and count tags, then sort and take the top three.",
       "A tag is a # followed by the longest run of at least one ASCII letter, digit or underscore; a # not followed by such a character is not a tag. The time window is the closed interval [currentTime - timeWindow, currentTime].",
       "Read n, currentTime and timeWindow from the first line; split each following line at its first tab into the timestamp and the text. If the time is inside the window, scan left to right: at a #, extend to the first non-tag character, and if the run is longer than 1, count that substring (including the #) and continue scanning from where it ended. Finally sort by (-count, tag in lexicographic order) and print at most three tags, one per line; print nothing if there are no tags."
+    ],
+    "ja": [
+      "時間枠の外のツイートは完全に無視できます。時間枠の中では、各ツイートを文字ごとに走査してタグを見つけて数え、ソートして上位 3 件を取るだけです。",
+      "タグは、# とそれに続く ASCII の英字、数字、アンダースコアの最長の連なり (1 文字以上) です。そのような文字が続かない # はタグではありません。時間枠は閉区間 [currentTime - timeWindow, currentTime] です。",
+      "1 行目から n、currentTime、timeWindow を読みます。続く各行は最初のタブでタイムスタンプとテキストに分割します。時刻が時間枠内なら、左から右へ走査します。# に出会ったら、タグでない最初の文字まで伸ばし、その連なりが 1 より長ければ、その部分文字列 (# を含む) を数えて、終わった位置から走査を続けます。最後に (-count, 辞書順のタグ) でソートし、高々 3 件のタグを 1 行に 1 つ出力します。タグがなければ何も出力しません。"
+    ],
+    "ko": [
+      "시간 구간 밖의 트윗은 완전히 무시해도 됩니다. 구간 안에서는 각 트윗을 한 글자씩 훑어 태그를 찾아 세고, 정렬해서 상위 세 개를 취하면 됩니다.",
+      "태그는 #과 그 뒤에 이어지는 ASCII 문자, 숫자, 밑줄이 하나 이상 연속된 가장 긴 열입니다. 그런 문자가 뒤따르지 않는 #은 태그가 아닙니다. 시간 구간은 닫힌 구간 [currentTime - timeWindow, currentTime]입니다.",
+      "첫 줄에서 n, currentTime, timeWindow를 읽고, 이어지는 각 줄은 첫 탭에서 타임스탬프와 본문으로 나눕니다. 시간이 구간 안이면 왼쪽에서 오른쪽으로 훑습니다. #을 만나면 태그가 아닌 첫 문자까지 늘리고, 그 열이 1보다 길면 그 부분 문자열(#을 포함)을 세고 끝난 곳부터 다시 훑습니다. 마지막으로 (-count, 사전순 tag)로 정렬하여 최대 세 개의 태그를 한 줄에 하나씩 출력하고, 태그가 없으면 아무것도 출력하지 않습니다."
+    ],
+    "vi": [
+      "Các tweet ngoài cửa sổ thời gian có thể bỏ qua hoàn toàn; trong cửa sổ bạn chỉ cần quét từng ký tự của mỗi tweet để tìm và đếm tag, rồi sắp xếp và lấy ba tag đầu.",
+      "Một tag là # theo sau là chuỗi dài nhất gồm ít nhất một chữ cái, chữ số hoặc dấu gạch dưới ASCII; một # không theo sau bởi ký tự như vậy thì không phải tag. Cửa sổ thời gian là đoạn đóng [currentTime - timeWindow, currentTime].",
+      "Đọc n, currentTime và timeWindow từ dòng đầu tiên; tách mỗi dòng sau tại ký tự tab đầu tiên thành timestamp và văn bản. Nếu thời gian nằm trong cửa sổ, quét từ trái sang phải: tại một #, mở rộng đến ký tự đầu tiên không thuộc tag, và nếu chuỗi dài hơn 1, đếm xâu con đó (kể cả #) rồi tiếp tục quét từ chỗ nó kết thúc. Cuối cùng sắp xếp theo (-count, tag theo thứ tự từ điển) và in tối đa ba tag, mỗi tag một dòng; không in gì nếu không có tag."
     ]
   },
   "explanationEn": "## Approach\n\nScan only the text inside the time window, recognize and count tags character by character, then sort by `(-count, tag)`. The total scan is O(total text length), and sorting is O(H log H).\n\n## Proof of correctness\n\nThe scan recognizes complete hashtags only inside the valid time window and counts each occurrence once; the sort key matches the required order of frequency descending and lexicographic ascending exactly, and taking the first three items gives the answer.\n\n## Complexity\n\nThe text is scanned according to the ASCII hashtag syntax; an empty # does not form a tag; timestamps and the window are non-negative integers.\n\nO(T + H log H) time and O(H) space, where T is the length of the scanned text and H is the number of distinct tags.\n\n## Reference implementation\n\n```python\ndef solve(raw):\n z=raw.splitlines();n,now,w=map(int,z[0].split());c={}\n for line in z[1:1+n]:\n  t,tw=line.split('\\t',1);t=int(t)\n  if now-w<=t<=now:\n   i=0\n   while i<len(tw):\n    if tw[i]=='#':\n     j=i+1\n     while j<len(tw) and (tw[j].isascii() and (tw[j].isalnum() or tw[j]=='_')):j+=1\n     if j>i+1:c[tw[i:j]]=c.get(tw[i:j],0)+1\n     i=j\n    else:i+=1\n return '\\n'.join(sorted(c,key=lambda x:(-c[x],x))[:3])\n```"

@@ -13,5 +13,41 @@
       "Maintain three states: not yet modified, currently being modified, and modification finished.",
       "Negative numbers must be rounded toward 0; do not simply add up the best sums of two incompatible ranges."
     ]
+  },
+  "ja": {
+    "title": "連続区間をちょうど 1 回変更した後の最大品質スコア（範囲を統合）",
+    "description": "整数配列 ratings と正の整数 impactFactor が与えられます。空でない連続区間をちょうど 1 回選び、その区間のすべての要素に impactFactor を掛けるか、すべての要素を impactFactor で割り、0 方向に丸めます（正の数は切り捨て、負の数は切り上げ）。使える戦略はどちらか一方だけです。操作の後、配列全体から空でない連続部分配列を選び、その要素の和を品質スコアとします。達成できる最大の品質スコアを求めてください。変更した区間と、最終的にスコアを数える区間が同じである必要はありません。\n\n本サイトの標準入力と統合された範囲は、1≤n≤200000、1≤impactFactor≤10000、−10^9≤ratings[i]≤10^9 です。完全な原文では n≤200000、|ratings[i]|≤100000 で、カタログでは n≤100000、|ratings[i]|≤10^9 とされ、係数の範囲は保持されていません。本サイトでは 2 つの範囲の包絡を取り、原文の正の整数の係数の範囲を採用しています。これらを元の原文の制約だと主張するものではありません。",
+    "input": "1 行目に n impactFactor、2 行目に n 個の整数 ratings[i] が与えられます。\n\n本サイトの標準入力と統合された範囲は、1≤n≤200000、1≤impactFactor≤10000、−10^9≤ratings[i]≤10^9 です。完全な原文では n≤200000、|ratings[i]|≤100000 で、カタログでは n≤100000、|ratings[i]|≤10^9 とされ、係数の範囲は保持されていません。本サイトでは 2 つの範囲の包絡を取り、原文の正の整数の係数の範囲を採用しています。これらを元の原文の制約だと主張するものではありません。",
+    "output": "ちょうど 1 回の操作の後の、空でない連続部分配列の和の最大値を整数 1 つで出力します。",
+    "explanation": "例 1：最後の 2 つを掛けると 4 と 8 になり、答えは 12 です。例 2：同じ配列で係数が 3 の場合、最後の 2 つを掛けると 6 と 12 になり、答えは 18 です。これはカタログが当初誤って書いていた 12 を訂正したものです。例 3：係数 1 では配列が変わらないので、答えは 3 です。例 4：−5 を 2 で 0 方向に丸めて割ると −2 になります。",
+    "hints": [
+      "掛ける戦略と割る戦略を別々に扱います。",
+      "「まだ変更していない」「変更中」「変更が終わった」の 3 つの状態を保持します。",
+      "負の数は 0 方向に丸めなければなりません。両立しない 2 つの区間の最良の和を単純に足してはいけません。"
+    ]
+  },
+  "ko": {
+    "title": "정확히 한 구간만 바꾼 뒤 최대 품질 점수 (병합 범위)",
+    "description": "정수 배열 ratings와 양의 정수 impactFactor가 주어집니다. 비어 있지 않은 연속 구간을 정확히 한 번 골라, 그 구간의 모든 원소에 impactFactor를 곱하거나, 모든 원소를 impactFactor로 나누어 0 방향으로 버림합니다(양수는 내림, 음수는 올림). 두 전략 중 하나만 사용할 수 있습니다. 연산 후 전체 배열에서 비어 있지 않은 연속 부분 배열을 골라 그 원소의 합을 품질 점수로 삼습니다. 달성 가능한 최대 품질 점수를 구하세요. 수정한 구간과 최종 점수를 매기는 구간이 같을 필요는 없습니다.\n\n이 사이트의 표준 입력과 병합된 범위: 1≤n≤200000, 1≤impactFactor≤10000, −10^9≤ratings[i]≤10^9. 원문 전체에서는 n≤200000, |ratings[i]|≤100000이고, 카탈로그에서는 n≤100000, |ratings[i]|≤10^9이며 인수의 범위는 보존되어 있지 않습니다. 이 사이트는 두 범위의 포락선을 취하고 인수 범위는 원문의 양의 정수 범위를 채택했으며, 이것이 원문의 원래 제약 조건이라고 주장하지 않습니다.",
+    "input": "첫째 줄에 n impactFactor가 주어지고, 둘째 줄에 n개의 정수 ratings[i]가 주어집니다.\n\n이 사이트의 표준 입력과 병합된 범위: 1≤n≤200000, 1≤impactFactor≤10000, −10^9≤ratings[i]≤10^9. 원문 전체에서는 n≤200000, |ratings[i]|≤100000이고, 카탈로그에서는 n≤100000, |ratings[i]|≤10^9이며 인수의 범위는 보존되어 있지 않습니다. 이 사이트는 두 범위의 포락선을 취하고 인수 범위는 원문의 양의 정수 범위를 채택했으며, 이것이 원문의 원래 제약 조건이라고 주장하지 않습니다.",
+    "output": "정수 하나를 출력합니다. 정확히 한 번 연산한 뒤 비어 있지 않은 연속 부분 배열 합의 최댓값입니다.",
+    "explanation": "예제 1: 마지막 두 항목에 곱하면 4와 8이 되므로 답은 12입니다. 예제 2: 같은 배열에 인수 3을 사용하며, 마지막 두 항목에 곱하면 6과 12가 되므로 답은 18입니다. 이는 카탈로그에 잘못 적혀 있던 12를 바로잡은 것입니다. 예제 3: 인수가 1이면 배열이 바뀌지 않으므로 답은 3입니다. 예제 4: −5를 2로 0 방향으로 나누면 −2입니다.",
+    "hints": [
+      "곱하는 전략과 나누는 전략을 따로 처리하세요.",
+      "수정 전, 수정 중, 수정 완료의 세 가지 상태를 유지하세요.",
+      "음수는 0 방향으로 버림해야 합니다. 서로 호환되지 않는 두 구간의 최적 합을 단순히 더하지 마세요."
+    ]
+  },
+  "vi": {
+    "title": "Điểm chất lượng lớn nhất sau khi đổi đúng một đoạn liên tiếp (các phạm vi đã gộp)",
+    "description": "Cho một mảng số nguyên ratings và một số nguyên dương impactFactor. Bạn phải chọn đúng một lần một đoạn liên tiếp không rỗng và hoặc nhân mọi phần tử của nó với impactFactor, hoặc chia mọi phần tử cho impactFactor, làm tròn về phía 0 (xuống với số dương, lên với số âm). Chỉ được dùng một trong hai chiến lược. Sau thao tác, chọn một mảng con liên tiếp không rỗng của toàn mảng; tổng các phần tử của nó là điểm chất lượng. Tìm điểm chất lượng lớn nhất có thể đạt được. Đoạn bị sửa và đoạn được tính điểm cuối cùng không cần trùng nhau.\n\nĐầu vào chuẩn và các phạm vi đã gộp của trang này: 1≤n≤200000, 1≤impactFactor≤10000, −10^9≤ratings[i]≤10^9. Nguồn thô đầy đủ cho n≤200000, |ratings[i]|≤100000; danh mục cho n≤100000, |ratings[i]|≤10^9 và không giữ phạm vi của hệ số. Trang này lấy bao của hai phạm vi và dùng phạm vi số nguyên dương của hệ số từ nguồn thô, mà không tuyên bố đây là các ràng buộc gốc của nguồn thô.",
+    "input": "Dòng đầu chứa n impactFactor; dòng thứ hai chứa n số nguyên ratings[i].\n\nĐầu vào chuẩn và các phạm vi đã gộp của trang này: 1≤n≤200000, 1≤impactFactor≤10000, −10^9≤ratings[i]≤10^9. Nguồn thô đầy đủ cho n≤200000, |ratings[i]|≤100000; danh mục cho n≤100000, |ratings[i]|≤10^9 và không giữ phạm vi của hệ số. Trang này lấy bao của hai phạm vi và dùng phạm vi số nguyên dương của hệ số từ nguồn thô, mà không tuyên bố đây là các ràng buộc gốc của nguồn thô.",
+    "output": "Xuất một số nguyên, là tổng mảng con liên tiếp không rỗng lớn nhất sau đúng một thao tác.",
+    "explanation": "Ví dụ 1: nhân hai phần tử cuối được 4 và 8, nên đáp án là 12. Ví dụ 2: cùng mảng với hệ số 3; nhân hai phần tử cuối được 6 và 12, nên đáp án là 18, sửa giá trị 12 mà danh mục ban đầu ghi nhầm. Ví dụ 3: hệ số 1 không làm đổi mảng, nên đáp án là 3. Ví dụ 4: chia −5 cho 2 làm tròn về phía 0 được −2.",
+    "hints": [
+      "Xử lý riêng hai chiến lược nhân và chia.",
+      "Duy trì ba trạng thái: chưa sửa, đang sửa, và đã sửa xong.",
+      "Số âm phải được làm tròn về phía 0; đừng đơn giản cộng các tổng tốt nhất của hai đoạn không tương thích."
+    ]
   }
 }

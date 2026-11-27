@@ -13,6 +13,21 @@
       "Each final target region is formed by merging some original regions; merging k regions into one takes at least k - 1 moves, and adjusting the total to the target then takes |total - target| increments or decrements.",
       "With n at most 10, enumerate for every original region whether it goes to target group 0, 1 or 2 or stays unused; all three groups must be non-empty, and the cost is the sum over groups of (regions - 1) * c + |group total - target|.",
       "Recurse over region i: first try leaving it unused, then try each of the three groups (update that group's total and count, undo on backtrack); prune when the remaining regions cannot fill the empty groups; at the end, if all three groups are non-empty, compute the cost and keep the minimum, using 64-bit integers."
+    ],
+    "ja": [
+      "最終的な各目標地域は、元のいくつかの地域を統合したものです。k 個の地域を 1 つに統合するには少なくとも k - 1 回の移設が必要で、その後に合計を目標に合わせるのに |合計 - 目標| 回の増減が必要です。",
+      "n は高々 10 なので、元の各地域が目標グループ 0、1、2 のどれに行くか、または未使用のままかを列挙します。3 つのグループはすべて空でなければならず、コストは各グループの (地域数 - 1) * c + |グループの合計 - 目標| の総和です。",
+      "地域 i について再帰し、まず未使用にしてみて、次に 3 つのグループをそれぞれ試します（そのグループの合計と個数を更新し、バックトラックで元に戻します）。残りの地域では空のグループを埋められない場合は枝刈りします。最後にすべてのグループが空でなければコストを計算して最小値を保持します。整数は 64 ビットを使います。"
+    ],
+    "ko": [
+      "최종 목표 지역 하나는 몇몇 원래 지역을 합쳐서 만들어집니다. k개 지역을 하나로 합치려면 최소 k - 1번의 이전이 필요하고, 그 뒤 총합을 목표에 맞추려면 |total - target|번의 증가 또는 감소가 필요합니다.",
+      "n이 최대 10이므로, 각 원래 지역이 목표 그룹 0, 1, 2 중 하나에 속하는지 사용되지 않는지를 열거합니다. 세 그룹은 모두 비어 있지 않아야 하며, 비용은 그룹별 (지역 수 - 1) * c + |그룹 총합 - 목표|의 합입니다.",
+      "지역 i에 대해 재귀합니다. 먼저 사용하지 않는 경우를 시도하고, 그다음 세 그룹을 각각 시도합니다(그 그룹의 합과 개수를 갱신하고, 백트래킹 시 되돌림). 남은 지역으로 빈 그룹을 채울 수 없으면 가지치기합니다. 끝에서 세 그룹이 모두 비어 있지 않으면 비용을 계산해 최솟값을 유지합니다. 64비트 정수를 사용합니다."
+    ],
+    "vi": [
+      "Mỗi vùng mục tiêu cuối cùng được tạo bằng cách gộp một số vùng ban đầu; gộp k vùng thành một cần ít nhất k - 1 lần di chuyển, rồi điều chỉnh tổng về mục tiêu cần |total - target| lần tăng hoặc giảm.",
+      "Với n tối đa 10, hãy liệt kê cho mỗi vùng ban đầu xem nó thuộc nhóm mục tiêu 0, 1 hay 2 hoặc không được dùng; cả ba nhóm phải không rỗng, và chi phí là tổng trên các nhóm của (số vùng - 1) * c + |tổng nhóm - target|.",
+      "Đệ quy trên vùng i: trước hết thử bỏ qua nó (không dùng), rồi thử từng nhóm trong ba nhóm (cập nhật tổng và số đếm của nhóm đó, hoàn tác khi quay lui); cắt tỉa khi các vùng còn lại không đủ để lấp các nhóm đang rỗng; ở cuối, nếu cả ba nhóm không rỗng thì tính chi phí và giữ giá trị nhỏ nhất, dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nEnumerate, for every initial region, whether it belongs to target group 0/1/2 or is unused. All three target groups are non-empty, and a group costs (number of regions - 1)c + |machine total - target|. The recursion only maintains the three totals and counts.\n\n## Proof of correctness\n\nEvery final selected region is formed by merging some original regions, and the three source groups are pairwise disjoint and non-empty. A group needs at least k-1 merges, and the net increments and decrements are at least the absolute difference between its total and its target. Conversely, merging each group first and then adjusting up or down to the positive target reaches exactly this lower bound without affecting the unselected regions; the enumeration therefore contains and realizes an optimal plan.\n\n## Complexity\n\nO(4^n) time and O(n) auxiliary recursion space; the groupings are not stored."

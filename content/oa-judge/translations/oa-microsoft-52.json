@@ -11,5 +11,35 @@
     "hints": [
       "Process the carry from low to high: add the carry to the current height, leave 1 if the result is odd, and send half of the rest to the next stack; after the input ends, keep processing the binary bits of the carry."
     ]
+  },
+  "ja": {
+    "title": "隣のスタックと 2 対 1 で交換した後のトークンの最小総数",
+    "description": "0 から番号が付いた無限個のスタックがあります。最初の N 個のスタックの高さが与えられ、残りは空です。各操作では、あるスタックからトークンを 2 個取り、次のスタックにトークンを 1 個加えます。何回でも操作を行った後のトークンの総数の最小値を求めてください。\n\n本サイトでは標準入出力の形式を使い、元の問題で与えられていない範囲は明示します。",
+    "input": "1 行目に N、2 行目に N 個の高さが与えられます。元の問題には数値の範囲がなく、本サイトでは 1≤N≤200000、高さは 0..10⁹ とします。",
+    "output": "答えを整数 1 つで出力します。",
+    "explanation": "例 1：総重みは 2+3×2=8 で、最終的にスタック 3 にトークンが 1 個残ります。例 2：トークンがないので 0 です。例 3：3 個のトークンは、スタック 0 と 1 に 1 個ずつ、合計 2 個のトークンになります。",
+    "hints": [
+      "桁上がりを低い方から高い方へ処理します。現在の高さに桁上がりを足し、結果が奇数なら 1 個残し、残りの半分を次のスタックへ送ります。入力が終わった後も、桁上がりの 2 進のビットを処理し続けます。"
+    ]
+  },
+  "ko": {
+    "title": "인접한 스택 사이에서 둘을 하나로 교환한 뒤 남는 최소 토큰 수",
+    "description": "0번부터 번호가 매겨진 스택이 무한히 있습니다. 처음 N개 스택의 높이가 주어지고 나머지는 비어 있습니다. 한 번의 연산은 한 스택에서 토큰 2개를 꺼내 다음 스택에 토큰 1개를 추가합니다. 연산을 몇 번이든 수행한 뒤 남는 토큰의 총수의 최솟값을 구하세요.\n\n이 사이트는 표준 입출력 규약을 사용하며, 출처에 명시되지 않은 범위는 별도로 밝혀 두었습니다.",
+    "input": "첫째 줄에 N, 둘째 줄에 N개의 높이가 주어집니다. 출처에는 수치 범위가 없으며, 이 사이트에서는 1≤N≤200000, 높이는 0..10⁹을 사용합니다.",
+    "output": "정답을 나타내는 정수 하나를 출력합니다.",
+    "explanation": "예제 1: 전체 가중치는 2+3×2=8이며 3번 스택에 토큰 1개가 남습니다. 예제 2: 토큰이 없으므로 0입니다. 예제 3: 토큰 3개는 0번과 1번 스택에 각각 1개씩 되어 총 2개가 됩니다.",
+    "hints": [
+      "낮은 스택에서 높은 스택 순으로 올림수를 처리합니다. 올림수를 현재 높이에 더하고, 결과가 홀수이면 1개를 남기며, 나머지의 절반을 다음 스택으로 보냅니다. 입력이 끝난 뒤에도 올림수의 이진 비트를 계속 처리합니다."
+    ]
+  },
+  "vi": {
+    "title": "Số token tối thiểu sau khi đổi hai lấy một giữa các chồng kề nhau",
+    "description": "Có vô hạn các chồng được đánh số từ 0. Chiều cao của N chồng đầu tiên được cho, các chồng còn lại rỗng. Mỗi thao tác lấy 2 token từ một chồng và thêm 1 token vào chồng kế tiếp. Tìm tổng số token tối thiểu sau một số thao tác bất kỳ.\n\nTrang này dùng giao thức vào/ra chuẩn; các phạm vi mà nguồn không nêu đều được ghi rõ.",
+    "input": "Dòng đầu chứa N, dòng thứ hai chứa N chiều cao. Nguồn không cho cận số; trang này dùng 1≤N≤200000 và chiều cao 0..10⁹.",
+    "output": "In ra một số nguyên duy nhất, là đáp án.",
+    "explanation": "Ví dụ 1: tổng trọng số là 2+3×2=8, kết thúc với 1 token ở chồng 3. Ví dụ 2: không có token, nên 0. Ví dụ 3: 3 token có thể thành mỗi chồng 0 và 1 một token, tổng cộng 2 token.",
+    "hints": [
+      "Xử lý số nhớ từ thấp lên cao: cộng số nhớ vào chiều cao hiện tại, để lại 1 nếu kết quả lẻ, và chuyển một nửa phần còn lại sang chồng kế tiếp; sau khi hết đầu vào, tiếp tục xử lý các bit nhị phân của số nhớ."
+    ]
   }
 }

@@ -13,6 +13,21 @@
       "The two halves of a length-2h substring match exactly when each of the h pairs of characters at distance h can become the same letter; the pairs share no positions, so question marks are filled independently.",
       "A pair is compatible when its characters are equal or at least one is a question mark. For a fixed h, it suffices to find h consecutive compatible pairs.",
       "Let h go from n/2 down to 1: scan i=0..n−h−1, increasing run when s[i] and s[i+h] are compatible and resetting it otherwise; once run reaches h, print 2h. If nothing works, print 0. With n≤5000, O(n²) is fine."
+    ],
+    "ja": [
+      "長さ 2h の部分文字列の前半と後半が一致する条件は、距離 h の h 組の文字がそれぞれ同じ文字にできることです。これらのペアは位置を共有しないので、疑問符は独立に埋められます。",
+      "文字が等しいか、少なくとも一方が疑問符なら、そのペアは互換です。h を固定すると、互換なペアが h 個連続するところを見つければ十分です。",
+      "h を n/2 から 1 まで下げます。i=0..n−h−1 を走査し、s[i] と s[i+h] が互換なら run を増やし、そうでなければ 0 に戻します。run が h に達したら 2h を出力します。どれも成り立たなければ 0 を出力します。n≤5000 なので O(n²) で十分です。"
+    ],
+    "ko": [
+      "길이 2h인 부분 문자열의 두 반쪽이 일치한다는 것은 거리 h인 문자 쌍 h개가 모두 같은 문자가 될 수 있다는 뜻입니다. 쌍들은 위치를 공유하지 않으므로 물음표는 독립적으로 채울 수 있습니다.",
+      "쌍이 호환된다는 것은 두 문자가 같거나 적어도 하나가 물음표라는 뜻입니다. h를 고정했을 때 호환되는 쌍이 h개 연속인 곳을 찾기만 하면 됩니다.",
+      "h를 n/2부터 1까지 줄여 가며 i=0..n−h−1을 훑습니다. s[i]와 s[i+h]가 호환되면 run을 늘리고 아니면 0으로 리셋하며, run이 h에 도달하면 2h를 출력합니다. 아무것도 안 되면 0을 출력합니다. n≤5000이므로 O(n²)로 충분합니다."
+    ],
+    "vi": [
+      "Hai nửa của một xâu con độ dài 2h khớp nhau đúng khi mỗi cặp trong h cặp ký tự cách nhau h có thể trở thành cùng một chữ cái; các cặp không dùng chung vị trí, nên các dấu hỏi được điền độc lập.",
+      "Một cặp là tương thích khi các ký tự của nó bằng nhau hoặc ít nhất một ký tự là dấu hỏi. Với h cố định, chỉ cần tìm h cặp tương thích liên tiếp.",
+      "Cho h chạy từ n/2 xuống 1: quét i=0..n−h−1, tăng run khi s[i] và s[i+h] tương thích và đặt lại về 0 nếu ngược lại; khi run đạt h, in 2h. Nếu không có gì thỏa mãn, in 0. Với n≤5000, O(n²) là đủ."
     ]
   },
   "explanationEn": "## Approach\n\nEnumerate the half length h from large to small and scan the character pairs at distance h, checking whether they are equal or contain a question mark; h consecutive compatible pairs give the answer 2h.\n\n## Proof of correctness\n\nThe two halves of a substring of length 2h correspond to h character pairs that share no positions. Each pair is compatible exactly when it can independently be replaced by the same letter, so all h pairs being compatible is equivalent to the substring having a valid replacement. Scanning runs of consecutive compatible pairs checks every start, and the first solution found with h in decreasing order is the longest.\n\n## Complexity\n\nO(n²) time and O(1) extra space."

@@ -11,5 +11,35 @@
     "hints": [
       "For each set mask of used lenders, record the smallest final payback that can be reached. The empty set owes 0. Enumerate the last chosen lender j: as long as the minimum debt of mask without j does not exceed lender[j], j can go last, and the candidate final debt is payback[j]. The largest number of elements among all reachable sets is the answer. Sort the distinct payback values and compress them to 1..r, using 0 for the empty set and r+1 for unreachable; store the states in a bytearray, which takes only 2^n bytes."
     ]
+  },
+  "ja": {
+    "title": "貸し手を再利用しない場合の、債務不履行にならない連続日数の最大値",
+    "description": "毎日、まだ使っていない貸し手から借ります。貸し手 i は lender[i] を貸し、翌日には payback[i] として返済しなければなりません。初日は任意の貸し手を選べます。その後の各日は、新しい借入れで前日の借入れを返済できなければならず、余った現金はその日のうちに使われ、持ち越されません。借入れに成功した連続日数の最大値を求めてください。最終日は借入れを得た時点で数えられ、この最後の借入れを返済するための次の借入れは必要ありません。各貸し手は高々 1 回しか使えません。\n\n元の問題には数値の制約がまったくありません。以下の n と金額の範囲は、本サイトが正確な解のために明示的に追加したもので、元の問題の範囲であるとは主張せず、payback≥lender という仮定も加えていません。元の例 3 の 2 日目は、2 を借りて 2 を返済し、その後 3 を負うとするのが正しく、元の文の「1 を借りて 2 を返済する」は誤りです。",
+    "input": "1 行目に n、2 行目に n 個の lender の値、3 行目に n 個の payback の値が与えられます。本サイトで追加した制約：1≤n≤20、1≤lender[i],payback[i]≤10^9 で、両方の配列の長さは同じです。payback は対応する lender より小さくても、等しくても、大きくてもかまいません。",
+    "output": "借入れに成功する日数の最大値を、1..n の整数として出力してください。",
+    "explanation": "例 1 では、1→4→8 の借入れで 3 日間続きます。例 2 では、1→2→5 の借入れで 3 日間続き、ちょうど返済することも有効です。例 3 では、インデックス（1 始まり）2→1→3 の順に借りると 3 日間続きますが、初日に最も payback が小さい貸し手 1 を貪欲に選ぶと 2 日間しか続きません。",
+    "hints": [
+      "使用済みの貸し手の集合 mask ごとに、到達可能な最小の最終 payback を記録します。空集合の債務は 0 です。最後に選ぶ貸し手 j を列挙します。j を除いた mask の最小債務が lender[j] を超えない限り、j を最後にでき、その場合の最終債務の候補は payback[j] です。到達可能な集合のうち要素数が最大のものが答えです。異なる payback の値をソートして 1..r に圧縮し、0 を空集合、r+1 を到達不能として使います。状態は bytearray に格納し、2^n バイトだけで済みます。"
+    ]
+  },
+  "ko": {
+    "title": "대출처를 재사용하지 않을 때 연체 없이 이어지는 최장 일수",
+    "description": "매일 아직 쓰지 않은 대출처에서 돈을 빌립니다. 대출처 i는 lender[i]를 빌려주며, 다음 날 payback[i]로 상환해야 합니다. 첫날에는 어느 대출처든 고를 수 있고, 그 이후에는 새 대출금이 전날의 대출을 갚기에 충분해야 하며, 남은 현금은 그날 모두 쓰고 이월되지 않습니다. 연속으로 대출에 성공하는 최대 일수를 구하세요. 마지막 날은 대출을 받는 즉시 일수로 세며, 이 마지막 대출을 갚기 위한 이후의 대출은 필요하지 않습니다. 각 대출처는 최대 한 번만 사용할 수 있습니다.\n\n원문에는 수치 제약이 전혀 없습니다. 아래의 n과 금액의 범위는 정확한 풀이를 위해 본 사이트가 명시적으로 추가한 범위이며, 원문의 범위라고 주장하지 않고, payback≥lender라는 가정도 추가하지 않았습니다. 원문 예제 3의 둘째 날에는 2를 빌려 2를 갚고 이어서 3을 빚지는 것이 맞으며, 원문의 \"borrow 1, repay 2\"는 잘못되었습니다.",
+    "input": "첫째 줄에 n이 주어지고, 둘째 줄에 n개의 lender 값, 셋째 줄에 n개의 payback 값이 주어집니다. 본 사이트가 추가한 조건: 1≤n≤20, 1≤lender[i],payback[i]≤10^9이며 두 배열의 길이는 같습니다. payback은 대응하는 lender보다 작거나, 같거나, 클 수 있습니다.",
+    "output": "대출에 성공하는 최대 일수를 1..n 범위의 정수로 출력합니다.",
+    "explanation": "예제 1에서는 1→4→8 순서로 대출하면 3일이 이어집니다. 예제 2에서는 1→2→5 순서로 대출하면 3일이 이어지며, 정확히 맞춰 갚는 것도 유효합니다. 예제 3에서는 (1부터 번호를 매긴) 인덱스 2→1→3 순서로 대출하면 3일이 이어지지만, 첫날 payback이 가장 작은 대출처 1을 탐욕적으로 고르면 2일밖에 이어지지 않습니다.",
+    "hints": [
+      "사용한 대출처의 집합 mask마다 도달할 수 있는 가장 작은 최종 상환액을 기록합니다. 공집합의 빚은 0입니다. 마지막에 고른 대출처 j를 열거하여, j를 뺀 mask의 최소 빚이 lender[j] 이하이면 j를 마지막에 둘 수 있고 후보 최종 빚은 payback[j]입니다. 도달 가능한 모든 집합 중 원소가 가장 많은 것의 크기가 답입니다. 서로 다른 payback 값을 정렬해 1..r로 압축하고, 0은 공집합, r+1은 도달 불가로 쓰며, 상태는 2^n바이트만 쓰는 bytearray에 저장합니다."
+    ]
+  },
+  "vi": {
+    "title": "Chuỗi ngày vay liên tiếp dài nhất không vỡ nợ khi không dùng lại chủ nợ",
+    "description": "Mỗi ngày bạn vay từ một chủ nợ chưa dùng trước đó. Chủ nợ i cho vay lender[i], số tiền này phải được hoàn trả là payback[i] vào ngày hôm sau. Ngày đầu tiên bạn có thể chọn chủ nợ bất kỳ; mỗi ngày sau đó, khoản vay mới phải đủ để trả khoản vay trước, và tiền thừa được tiêu hết trong ngày đó, không chuyển sang hôm sau. Tìm số ngày vay thành công liên tiếp nhiều nhất. Ngày cuối được tính ngay khi nhận được khoản vay; không cần có khoản vay sau đó để trả cho khoản cuối này. Mỗi chủ nợ chỉ được dùng nhiều nhất một lần.\n\nĐề gốc hoàn toàn không có ràng buộc số. Các cận của n và các số tiền dưới đây là khoảng giá trị cho lời giải chính xác do trang này bổ sung rõ ràng; không khẳng định đó là cận gốc của đề nguồn, và không thêm giả định payback≥lender. Ở ngày thứ hai của ví dụ gốc 3, bạn nên vay 2 và trả 2, rồi nợ 3; nguyên văn \"vay 1, trả 2\" là sai.\n\nĐịnh dạng vào/ra chuẩn, các ví dụ và lời giải được trang này tự biên soạn độc lập; những khoảng giá trị được đánh dấu rõ là của trang này không phải ràng buộc gốc của đề nguồn.",
+    "input": "Dòng đầu chứa n, dòng thứ hai chứa n giá trị lender, và dòng thứ ba chứa n giá trị payback. Do trang này bổ sung: 1≤n≤20, 1≤lender[i],payback[i]≤10^9, và hai mảng có cùng độ dài. payback có thể nhỏ hơn, bằng hoặc lớn hơn lender tương ứng.",
+    "output": "In ra số ngày vay thành công nhiều nhất, là một số nguyên trong khoảng 1..n.",
+    "explanation": "Ở ví dụ 1, vay các khoản 1→4→8 kéo dài được 3 ngày. Ở ví dụ 2, vay các khoản 1→2→5 kéo dài được 3 ngày; trả đúng bằng số nợ cũng hợp lệ. Ở ví dụ 3, vay theo các chỉ số 2→1→3 (đánh số từ 1) kéo dài được 3 ngày, trong khi chọn tham lam chủ nợ 1, người có payback nhỏ nhất, vào ngày đầu chỉ kéo dài được 2 ngày.",
+    "hints": [
+      "Với mỗi tập mask các chủ nợ đã dùng, ghi lại khoản payback cuối nhỏ nhất có thể đạt được. Tập rỗng nợ 0. Duyệt chủ nợ cuối cùng được chọn là j: miễn là khoản nợ tối thiểu của mask bỏ j không vượt quá lender[j], thì j có thể đứng cuối, và khoản nợ cuối ứng viên là payback[j]. Số phần tử lớn nhất trong các tập có thể đạt được là đáp án. Sắp xếp các giá trị payback phân biệt và nén chúng về 1..r, dùng 0 cho tập rỗng và r+1 cho trạng thái không đạt được; lưu các trạng thái trong một bytearray, chỉ tốn 2^n byte."
+    ]
   }
 }

@@ -77,6 +77,9 @@ void test('OA page titles, breadcrumbs and English statement headings', () => {
   const samples = [{ input: '1\n', expectedOutput: '2\n' }];
   assert.match(oaStatementMarkdown(spec, samples, 'en'), /## Input\n\nI\n\n## Output[\s\S]*## Example 1\n\nInput:[\s\S]*## Example notes\n\nE$/);
   assert.match(oaStatementMarkdown(spec, samples), /## 输入格式[\s\S]*## 样例 1\n\n输入：/);
+  assert.match(oaStatementMarkdown(spec, samples, 'ja'), /## 入力\n\nI\n\n## 出力[\s\S]*## 例 1\n\n入力：[\s\S]*## 説明\n\nE$/);
+  assert.match(oaStatementMarkdown(spec, samples, 'ko'), /## 입력[\s\S]*## 예시 1\n\n입력:[\s\S]*## 설명/);
+  assert.match(oaStatementMarkdown(spec, samples, 'vi'), /## Đầu vào[\s\S]*## Ví dụ 1\n\nĐầu vào:[\s\S]*## Giải thích/);
   const statement = (id: string) =>
     catalog().items.find((item: { id: string }) => item.id === id).statement;
   // Chinese prose full of English identifiers, and English prose with a few Chinese notes.

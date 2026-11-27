@@ -13,6 +13,21 @@
       "Draw the merging process as a binary tree: each initial value contributes its value times the depth of its leaf to the total cost, so smaller values should take part in more merges.",
       "This is the Huffman coding structure: some optimal plan merges the two smallest numbers first, and after that merge the problem keeps the same form with one fewer element, so always merging the two smallest works.",
       "Put all numbers in a min-heap. While it holds more than one number, pop the two smallest, add their sum to the answer, and push the sum back. The answer can exceed 32 bits, so use a 64-bit integer; zero values work the same way."
+    ],
+    "vi": [
+      "Hãy vẽ quá trình gộp thành một cây nhị phân: mỗi giá trị ban đầu đóng góp vào tổng chi phí bằng giá trị đó nhân với độ sâu của lá tương ứng, nên các giá trị nhỏ hơn nên tham gia vào nhiều lần gộp hơn.",
+      "Đây chính là cấu trúc của mã hóa Huffman: tồn tại một phương án tối ưu gộp hai số nhỏ nhất trước, sau lần gộp đó bài toán giữ nguyên dạng nhưng ít hơn một phần tử, nên luôn gộp hai số nhỏ nhất là đúng.",
+      "Đưa tất cả các số vào một min-heap. Khi heap còn nhiều hơn một số, lấy ra hai số nhỏ nhất, cộng tổng của chúng vào đáp án rồi đẩy tổng đó trở lại. Đáp án có thể vượt quá 32 bit nên dùng số nguyên 64 bit; các giá trị 0 được xử lý như bình thường."
+    ],
+    "ja": [
+      "マージの過程を二分木として描くと、各初期値は「値 × 葉の深さ」だけ総コストに寄与します。したがって小さい値ほど多くのマージに参加させるべきです。",
+      "これはハフマン符号と同じ構造です。最小の 2 つを最初にマージするような最適解が存在し、その後は要素が 1 つ減った同じ形の問題になるので、常に最小の 2 つをマージすれば最適です。",
+      "すべての数を最小ヒープに入れます。ヒープに 2 つ以上あるあいだ、最小の 2 つを取り出してその和を答えに加え、和をヒープに戻します。答えは 32 ビットを超えうるので 64 ビット整数を使います。0 も同じように扱えます。"
+    ],
+    "ko": [
+      "병합 과정을 이진 트리로 그려 보세요. 초기 값 하나하나는 자신의 값에 리프의 깊이를 곱한 만큼 총비용에 기여하므로, 작은 값일수록 더 많은 병합에 참여해야 합니다.",
+      "이것은 허프만 부호화 구조입니다. 가장 작은 두 수를 먼저 병합하는 최적 해가 존재하며, 그 병합 이후에는 원소가 하나 줄어든 같은 형태의 문제가 되므로 항상 가장 작은 두 수를 병합하면 됩니다.",
+      "모든 수를 최소 힙에 넣습니다. 힙에 수가 둘 이상인 동안 가장 작은 두 수를 꺼내 그 합을 답에 더하고 합을 다시 넣습니다. 답이 32비트를 넘을 수 있으므로 64비트 정수를 사용하세요. 0인 값도 같은 방식으로 처리됩니다."
     ]
   },
   "explanationEn": "## Approach\n\nWith a min-heap, repeatedly pop the two smallest numbers, merge them, add the merged value to the total, and push it back into the heap.\n\n## Proof of correctness\n\nView the merging process as a binary tree: each initial value's total cost is its value times its leaf depth. The deepest sibling leaves can be swapped for the two smallest weights without increasing the total cost; contracting them gives a problem of the same kind with one fewer element. So some optimal solution merges the two smallest items first, and by induction the greedy is optimal; zero weights also satisfy the exchange inequality.\n\n## Complexity\n\nO(n log n) time, O(n) space."

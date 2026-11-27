@@ -11,5 +11,35 @@
     "hints": [
       "First pin down the problem's definitions of counting, paths, or splitting, then choose a suitable graph traversal, frequency count, or dynamic programming approach."
     ]
+  },
+  "ja": {
+    "title": "Pair Sum Queries",
+    "description": "整数配列 a と b が与えられ、2種類のクエリを順に処理します。`0 i x` は a[i] に x を加算します(i は0始まりの添字)。`1 x` は、a[i]+b[j]=x を満たす添字のペア (i,j) の個数を尋ねます。位置が異なるものは別々に数えます。\n\n「サイト補足」と記された入力形式や制約の一部は、このサイトが作成したものであり、元の問題の追加条件ではありません。",
+    "input": "1行目に n m q が与えられます。2行目に a の n 個の整数、3行目に b の m 個の整数、続く q 行がクエリです。サイト補足の範囲: 1≤n,m≤200000、1≤q≤200000。初期値、加算値、目標値の絶対値は ≤10^9 で、更新後の a[i] の絶対値も ≤10^12 であることが保証されます。また、すべての種類1のクエリについて Σ min(Da,Db)≤10^7 が保証されます。ここで Da と Db はそのクエリ時点での a と b の異なる値の個数です。この制限は、プログラムが各クエリで頻度テーブルの小さい方を走査することに対応しています。",
+    "output": "各 `1 x` クエリについて、該当する添字ペアの個数を順に空白区切りで出力してください。そのようなクエリがなければ空行を出力してください。",
+    "explanation": "上記の規則に従って入力を処理してください。解法、正しさの証明、計算量については、付属の解説を参照してください。",
+    "hints": [
+      "まず問題における数え方、パス、分割の定義を明確にし、そのうえで適切なグラフ探索、頻度カウント、または動的計画法を選んでください。"
+    ]
+  },
+  "ko": {
+    "title": "Pair Sum Queries",
+    "description": "정수 배열 a와 b가 주어집니다. 두 종류의 쿼리를 순서대로 처리하세요. `0 i x`는 a[i]를 x만큼 증가시키며 i는 0부터 시작하는 인덱스입니다. `1 x`는 a[i]+b[j]=x를 만족하는 인덱스 쌍 (i,j)의 개수를 묻습니다. 서로 다른 위치는 별개로 셉니다.\n\n\"사이트 보충\"으로 표시된 입력 형식과 제약 조건의 일부는 이 사이트에서 정리한 것이며 원문 문제의 추가 조건이 아닙니다.",
+    "input": "첫째 줄에 n m q가 주어집니다. 둘째 줄에 a의 n개 정수, 셋째 줄에 b의 m개 정수가 주어지고, 이어서 q개의 쿼리 줄이 주어집니다. 사이트에서 보충한 범위: 1≤n,m≤200000, 1≤q≤200000이며, 초깃값, 증가량, 목표값의 절댓값은 ≤10^9이고, 갱신된 모든 a[i]의 절댓값은 ≤10^12임이 보장됩니다. 또한 모든 타입 1 쿼리에 대해 Σ min(Da,Db)≤10^7이 보장되며, Da와 Db는 해당 쿼리 시점에 a와 b에 있는 서로 다른 값의 개수입니다. 이 제한은 프로그램이 쿼리마다 더 작은 빈도 테이블을 순회하는 것에 대응합니다.",
+    "output": "각 `1 x` 쿼리에 대해 해당하는 인덱스 쌍의 개수를 순서대로 공백으로 구분하여 출력합니다. 해당 쿼리가 없으면 빈 줄을 출력합니다.",
+    "explanation": "위의 규칙에 따라 입력을 처리하세요. 접근 방법, 정당성 증명, 복잡도는 함께 제공되는 해설을 참고하세요.",
+    "hints": [
+      "먼저 문제에서 말하는 개수 세기, 경로, 분할의 정의를 정확히 파악한 뒤, 적절한 그래프 탐색, 빈도 계산 또는 동적 계획법을 선택합니다."
+    ]
+  },
+  "vi": {
+    "title": "Pair Sum Queries",
+    "description": "Cho hai mảng số nguyên a và b, xử lý lần lượt hai loại truy vấn: `0 i x` tăng a[i] thêm x, trong đó i là chỉ số tính từ 0; `1 x` hỏi số cặp chỉ số (i,j) sao cho a[i]+b[j]=x. Các vị trí khác nhau được đếm riêng.\n\nCác phần của giao thức đầu vào và các ràng buộc được đánh dấu \"bổ sung của trang\" do trang này biên soạn, không phải điều kiện bổ sung của đề gốc.",
+    "input": "Dòng đầu tiên chứa n m q. Dòng thứ hai chứa n số nguyên của a, dòng thứ ba chứa m số nguyên của b, và q dòng tiếp theo là các truy vấn. Các khoảng bổ sung của trang: 1≤n,m≤200000, 1≤q≤200000; giá trị ban đầu, giá trị tăng thêm và giá trị đích có giá trị tuyệt đối ≤10^9, và mọi a[i] sau khi cập nhật được đảm bảo có giá trị tuyệt đối ≤10^12; đồng thời đảm bảo rằng trên mọi truy vấn loại 1, Σ min(Da,Db)≤10^7, trong đó Da và Db là số giá trị phân biệt của a và b tại thời điểm truy vấn đó. Giới hạn này tương ứng với việc chương trình duyệt bảng tần suất nhỏ hơn ở mỗi truy vấn.",
+    "output": "Với mỗi truy vấn `1 x`, in ra theo thứ tự số cặp chỉ số tương ứng, cách nhau bởi dấu cách; nếu không có truy vấn như vậy, in một dòng trống.",
+    "explanation": "Xử lý đầu vào theo các quy tắc ở trên; xem bản phân tích đi kèm để biết cách tiếp cận, chứng minh tính đúng đắn và độ phức tạp.",
+    "hints": [
+      "Trước hết hãy xác định chính xác các định nghĩa về đếm, đường đi hoặc cách chia của đề, rồi chọn phép duyệt đồ thị, đếm tần suất hoặc quy hoạch động phù hợp."
+    ]
   }
 }

@@ -13,6 +13,21 @@
       "A composite number always has a prime factor no larger than its square root; for positive 32-bit values that root is at most 46340, and every value below 2 (including 0, 1 and negatives) is printed as Composite.",
       "Sieve all primes up to 46340 once; test a value by trial division with those primes until p² > value, and cache the verdict for repeated values.",
       "Build the prime table with a sieve; for each input value use the cached verdict if there is one; otherwise a value < 2 is Composite, else divide by the primes in order, stopping once p * p > value: any exact division means Composite, none means Prime; print one verdict per line and nothing for an empty list."
+    ],
+    "ja": [
+      "合成数は必ず平方根以下の素因数を持ちます。正の 32 ビット値ではその平方根は高々 46340 です。2 未満のすべての値 (0、1、負の数を含む) は Composite と出力します。",
+      "46340 までの素数を一度だけふるいで求めます。値の判定は、それらの素数で p² > value になるまで試し割りして行い、繰り返し現れる値は判定をキャッシュします。",
+      "ふるいで素数の表を作ります。各入力値について、キャッシュがあればその判定を使います。なければ、値が < 2 なら Composite、そうでなければ素数で順に割り、p * p > value になったら止めます。割り切れたものがあれば Composite、なければ Prime です。要素ごとに判定を 1 行ずつ出力し、リストが空なら何も出力しません。"
+    ],
+    "ko": [
+      "합성수에는 항상 그 제곱근 이하의 소인수가 있습니다. 양의 32비트 값에서 그 제곱근은 최대 46340이며, 2보다 작은 모든 값(0, 1, 음수 포함)은 Composite로 출력합니다.",
+      "46340까지의 모든 소수를 체로 한 번 구합니다. 값은 그 소수들로 p² > value가 될 때까지 시험 나눗셈하여 판별하고, 반복되는 값의 결과는 캐시합니다.",
+      "소수 표를 체로 만듭니다. 입력 값마다 캐시된 판정이 있으면 사용합니다. 없으면 < 2인 값은 Composite이고, 그렇지 않으면 소수들로 차례로 나누며 p * p > value가 되면 멈춥니다. 나누어떨어지는 소수가 있으면 Composite, 없으면 Prime입니다. 한 줄에 판정을 하나씩 출력하고, 빈 리스트이면 아무것도 출력하지 않습니다."
+    ],
+    "vi": [
+      "Một hợp số luôn có ước nguyên tố không lớn hơn căn bậc hai của nó; với các giá trị 32 bit dương, căn đó tối đa là 46340, và mọi giá trị nhỏ hơn 2 (kể cả 0, 1 và số âm) được in là Composite.",
+      "Sàng mọi số nguyên tố tới 46340 một lần; kiểm tra một giá trị bằng phép chia thử với các số nguyên tố đó cho đến khi p² > value, và lưu đệm kết quả cho các giá trị lặp lại.",
+      "Dựng bảng số nguyên tố bằng một cái sàng; với mỗi giá trị đầu vào, dùng kết quả đã lưu đệm nếu có; nếu không thì giá trị < 2 là Composite, còn lại chia cho các số nguyên tố theo thứ tự, dừng khi p * p > value: bất kỳ phép chia hết nào cho Composite, không có phép nào cho Prime; in một kết quả mỗi dòng và không in gì cho danh sách rỗng."
     ]
   },
   "explanationEn": "## Approach\n\nSieve all primes up to 46340 and, for a positive number, trial-divide by prime factors until p²>value; numbers below 2 are non-prime directly, and the verdict for repeated values is cached.\n\n## Proof of correctness\n\nEvery composite number has a prime factor no larger than its square root, since otherwise the product of its two smallest non-trivial factors would exceed the number itself. The square root of a 32-bit positive integer is at most 46340, so the sieve table contains every factor that can be needed; a number with a divisor is composite and one without is prime. Numbers below 2 are excluded by the definition of a prime. The cache only reuses the settled verdict of the same integer.\n\n## Complexity\n\nThe sieve takes O(V log log V) time and each distinct positive number needs at most 4792 trial divisions, with V=46340; space is O(V+N)."

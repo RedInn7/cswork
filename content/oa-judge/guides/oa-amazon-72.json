@@ -13,6 +13,21 @@
       "For a fixed plan, its best partner is always the most expensive compatible feature; so sort the features by price in descending order and, for each plan, walk from the front until the first compatible one.",
       "Worried this degrades to n*m? It does not: every skipped feature corresponds to a different incompatible pair, so across all plans there are at most X failures plus n successes.",
       "Encode each incompatible pair as (plan-1)*m + (feature-1) and store it in a set (or a sorted array searched by binary search); sort feature indices by price in descending order; for each plan find the first feature in that order not in the set and update the maximum with the sum of the two prices; the answer can exceed 32 bits, so use a 64-bit integer."
+    ],
+    "ja": [
+      "あるプランを固定したとき、その最良の相手は常に、互換な機能のうち最も高価なものです。そこで機能を価格の降順にソートし、各プランについて先頭から、最初の互換な機能に当たるまで進みます。",
+      "n*m に悪化しないか心配になるかもしれませんが、そうはなりません。スキップされる機能はそれぞれ異なる非互換の組に対応するので、全プランを通じて失敗は高々 X 回、成功は n 回です。",
+      "各非互換の組を (plan-1)*m + (feature-1) としてエンコードし、集合に格納します（ソート済み配列に二分探索を使っても構いません）。機能のインデックスを価格の降順にソートし、各プランについて、その順序で集合に含まれない最初の機能を探し、2 つの価格の和で最大値を更新します。答えは 32 ビットを超えうるので、64 ビット整数を使います。"
+    ],
+    "ko": [
+      "요금제를 고정하면 그 최적의 짝은 항상 호환되는 가장 비싼 기능입니다. 따라서 기능을 가격의 내림차순으로 정렬하고, 각 요금제마다 앞에서부터 처음으로 호환되는 기능이 나올 때까지 훑습니다.",
+      "n*m으로 나빠지지 않을까 걱정되나요? 그렇지 않습니다. 건너뛴 기능 하나하나가 서로 다른 호환 불가 쌍에 대응하므로, 모든 요금제를 통틀어 실패는 많아야 X번이고 성공은 n번입니다.",
+      "각 호환 불가 쌍을 (plan-1)*m + (feature-1)로 인코딩해 집합(또는 이분 탐색할 정렬된 배열)에 저장합니다. 기능 인덱스를 가격의 내림차순으로 정렬합니다. 각 요금제마다 그 순서에서 집합에 없는 첫 번째 기능을 찾아 두 가격의 합으로 최댓값을 갱신합니다. 답이 32비트를 넘을 수 있으므로 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Với một gói cố định, đối tác tốt nhất luôn là tính năng tương thích đắt nhất; vì vậy hãy sắp xếp các tính năng theo giá giảm dần và với mỗi gói, đi từ đầu đến tính năng tương thích đầu tiên.",
+      "Lo rằng sẽ thoái hóa thành n*m? Không đâu: mỗi tính năng bị bỏ qua ứng với một cặp không tương thích khác nhau, nên trên mọi gói có tối đa X lần thất bại cộng n lần thành công.",
+      "Mã hóa mỗi cặp không tương thích thành (plan-1)*m + (feature-1) và lưu vào một tập hợp (hoặc mảng đã sắp xếp tìm bằng tìm kiếm nhị phân); sắp xếp chỉ số tính năng theo giá giảm dần; với mỗi gói tìm tính năng đầu tiên theo thứ tự đó không có trong tập, và cập nhật giá trị lớn nhất bằng tổng hai giá; đáp án có thể vượt quá 32 bit nên dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nSort the features by price in descending order, and for each plan scan to the first compatible feature. The total number of failed checks is at most X; take the maximum of each plan's best total price.\n\n## Proof of correctness\n\nFor a fixed plan, the first valid feature is the most expensive one. Every skip corresponds to a different incompatible edge, so the scans over all plans have at most X failures and n successes; this enumerates the optimum completely without degenerating into nm enumeration.\n\n## Complexity\n\nO(m log m + n + X) time and O(n + m + X) space."

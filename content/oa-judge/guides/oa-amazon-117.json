@@ -13,6 +13,21 @@
       "The number of connected components only depends on which nodes the edges join together; duplicate edges and self-loops add no new connectivity, and each isolated node is its own component.",
       "Use union-find: initially every node is its own component, n in total; for each edge, if the two endpoints have different roots, merge them and decrease the count by one, otherwise nothing changes.",
       "Initialize parent[i]=i, size[i]=1 and answer=n; for each edge (u,v) find both roots with path compression, and if they differ attach the smaller tree under the larger one and decrement answer; print answer after all edges."
+    ],
+    "ja": [
+      "連結成分の個数は、辺がどの頂点同士を結ぶかだけで決まります。重複する辺や自己ループは新しい連結性を生まず、孤立した頂点はそれぞれが 1 つの連結成分です。",
+      "Union-Find を使います。最初はすべての頂点がそれぞれ 1 つの連結成分で、合計 n 個です。各辺について、2 つの端点の根が異なれば併合して個数を 1 減らし、同じなら何もしません。",
+      "parent[i]=i、size[i]=1、answer=n と初期化します。各辺 (u,v) について、経路圧縮つきで両方の根を求め、異なっていれば小さい木を大きい木の下につなげて answer を 1 減らします。すべての辺を処理したあと、answer を出力します。"
+    ],
+    "ko": [
+      "연결 요소의 개수는 간선이 어떤 노드들을 이어 주는지에만 달려 있습니다. 중복 간선과 자기 자신으로의 간선은 새로운 연결성을 만들지 않고, 고립된 노드는 각각 하나의 연결 요소입니다.",
+      "유니온 파인드를 사용합니다. 처음에는 모든 노드가 각자 하나의 연결 요소로 총 n개이고, 간선마다 두 끝점의 루트가 다르면 합치고 개수를 하나 줄이며, 같으면 아무 일도 일어나지 않습니다.",
+      "parent[i]=i, size[i]=1, answer=n으로 초기화합니다. 간선 (u,v)마다 경로 압축으로 두 루트를 찾고, 다르면 작은 트리를 큰 트리 아래에 붙인 뒤 answer를 하나 줄입니다. 모든 간선을 처리한 뒤 answer를 출력합니다."
+    ],
+    "vi": [
+      "Số thành phần liên thông chỉ phụ thuộc vào việc các cạnh nối những nút nào với nhau; cạnh trùng lặp và khuyên không thêm tính liên thông mới, và mỗi nút cô lập là một thành phần riêng.",
+      "Dùng union-find: ban đầu mỗi nút là một thành phần riêng, tổng cộng n; với mỗi cạnh, nếu hai đầu mút có gốc khác nhau thì gộp chúng và giảm số đếm đi một, ngược lại không có gì thay đổi.",
+      "Khởi tạo parent[i]=i, size[i]=1 và answer=n; với mỗi cạnh (u,v) tìm cả hai gốc kèm nén đường đi, và nếu chúng khác nhau thì gắn cây nhỏ hơn vào cây lớn hơn và giảm answer đi một; in answer sau khi xử lý hết các cạnh."
     ]
   },
   "explanationEn": "## Approach\n\nUse union-find to merge the two endpoints of each edge; there are n components initially, and each merge of two different roots removes one.\n\n## Correctness\n\nInitially every node is on its own, and adding an edge can only connect the two components containing its endpoints. If the roots differ the count drops by exactly one; if they are the same nothing changes. After all edges are processed, the structure reflects exactly the connectivity of the graph.\n\n## Complexity\n\nTime O((n+m) alpha(n)), space O(n+m) including the input."

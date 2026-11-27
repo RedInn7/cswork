@@ -13,6 +13,21 @@
       "The remaining letters keep their original order, so the kept part is a non-decreasing subsequence of the word; deleting as few as possible means keeping as many as possible.",
       "The answer is |S| minus the length of the longest non-decreasing subsequence. It is non-decreasing, so equal letters may all be kept.",
       "Maintain an array tails whose entry i is the smallest possible last letter of a non-decreasing subsequence of length i+1. For each letter, find the first entry strictly greater than it (upper_bound) and replace it, or append the letter if there is none. Print |S| minus the length of tails."
+    ],
+    "ja": [
+      "残る文字は元の順序を保つので、残す部分は単語の非減少部分列です。できるだけ少なく削除するとは、できるだけ多く残すことです。",
+      "答えは |S| から最長非減少部分列の長さを引いた値です。非減少なので、同じ文字はすべて残せます。",
+      "配列 tails を保持します。その i 番目の要素は、長さ i+1 の非減少部分列の末尾の文字として可能な最小のものです。各文字について、それより厳密に大きい最初の要素を探し（upper_bound）、それを置き換えます。なければ文字を追加します。|S| から tails の長さを引いた値を出力します。"
+    ],
+    "ko": [
+      "남은 글자들은 원래 순서를 유지하므로 남기는 부분은 단어의 비내림차순 부분 수열입니다. 최소로 삭제하려면 최대로 남겨야 합니다.",
+      "정답은 |S|에서 가장 긴 비내림차순 부분 수열의 길이를 뺀 값입니다. 비내림차순이므로 같은 글자는 모두 남길 수 있습니다.",
+      "배열 tails를 유지합니다. tails의 i번째 항목은 길이 i+1인 비내림차순 부분 수열의 마지막 글자로 가능한 가장 작은 값입니다. 각 글자에 대해 그 글자보다 엄격히 큰 첫 항목을 찾아(upper_bound) 교체하고, 없으면 글자를 덧붙입니다. |S|에서 tails의 길이를 뺀 값을 출력합니다."
+    ],
+    "vi": [
+      "Các chữ cái còn lại giữ nguyên thứ tự ban đầu, nên phần được giữ là một dãy con không giảm của từ; xóa càng ít càng tốt nghĩa là giữ càng nhiều càng tốt.",
+      "Đáp án là |S| trừ đi độ dài của dãy con không giảm dài nhất. Nó không giảm, nên các chữ cái bằng nhau đều có thể được giữ.",
+      "Duy trì một mảng tails mà phần tử thứ i là chữ cái cuối nhỏ nhất có thể của một dãy con không giảm có độ dài i+1. Với mỗi chữ cái, tìm phần tử đầu tiên lớn hơn nó hẳn (upper_bound) và thay thế, hoặc thêm chữ cái vào cuối nếu không có. In |S| trừ đi độ dài của tails."
     ]
   },
   "explanationEn": "## Approach\n\nThe kept letters must form a subsequence of the original string that is lexicographically non-decreasing. Let L be the length of the longest non-decreasing subsequence; then at most L letters can be kept, and the answer is `n-L`. Use tails to maintain the smallest ending character of a non-decreasing subsequence of each length; for each character, use upper_bound to find the first position greater than it and replace it, or otherwise extend the sequence.\n\n## Correctness\n\nEvery way of keeping letters is a non-decreasing subsequence of the original string, so its length is at most L and at least n−L characters must be deleted. Conversely, the longest non-decreasing subsequence itself is obtained by deleting all the other characters, so deleting n−L characters suffices. The upper_bound update of tails is the classic longest non-decreasing subsequence algorithm; repeated letters can extend the sequence, and the final length is exactly L.\n\n## Complexity\n\nTime O(n log n), space O(n)."

@@ -13,6 +13,21 @@
       "Every bomb must be defused, one at a time and without interruption, so with no idle time the total time is simply the sum of all durations. The real question is whether some order meets every deadline.",
       "Defuse in order of increasing deadline. If a feasible schedule had two adjacent tasks with deadlines out of order, swapping them would not make any task late, so if the deadline order fails, no order works.",
       "Sort the bombs by (deadline, duration) in ascending order. Start time at 0 and add each bomb's duration in turn; as soon as time exceeds that bomb's deadline, print -1. If all bombs are processed, print time, using a 64-bit integer."
+    ],
+    "ja": [
+      "すべての爆弾を、1 つずつ中断せずに解除しなければなりません。空き時間がなければ、合計時間は単に所要時間の総和です。本当の問題は、すべての期限を守れる順序があるかどうかです。",
+      "期限の昇順に解除します。実行可能なスケジュールの中に期限の順序が逆の隣り合う 2 つの作業があっても、入れ替えてどの作業も遅れることはありません。したがって期限順で失敗するなら、どの順序でも成功しません。",
+      "爆弾を (期限, 所要時間) の昇順に並べ替えます。時刻を 0 から始めて各爆弾の所要時間を順に足し、時刻がその爆弾の期限を超えたらすぐに -1 を出力します。すべて処理できたら、64 ビット整数で time を出力します。"
+    ],
+    "ko": [
+      "모든 폭탄을 한 번에 하나씩, 중단 없이 해체해야 하므로 쉬는 시간이 없다면 총 시간은 소요 시간의 합과 같습니다. 진짜 문제는 모든 마감을 지키는 순서가 존재하는가입니다.",
+      "마감 시각이 이른 순으로 해체합니다. 가능한 스케줄에서 마감 순서가 뒤바뀐 인접한 두 작업이 있다면 둘을 바꿔도 늦어지는 작업이 생기지 않으므로, 마감 순서로 실패하면 어떤 순서도 불가능합니다.",
+      "폭탄을 (마감 시각, 소요 시간)의 오름차순으로 정렬합니다. 시간을 0에서 시작해 각 폭탄의 소요 시간을 차례로 더하고, 시간이 그 폭탄의 마감 시각을 넘는 즉시 -1을 출력합니다. 모든 폭탄을 처리하면 time을 64비트 정수로 출력합니다."
+    ],
+    "vi": [
+      "Mọi quả bom đều phải được gỡ, từng quả một và không bị ngắt, nên nếu không có thời gian rảnh thì tổng thời gian đơn giản là tổng mọi thời lượng. Câu hỏi thực sự là có thứ tự nào đáp ứng mọi hạn chót hay không.",
+      "Gỡ theo thứ tự hạn chót tăng dần. Nếu một lịch khả thi có hai công việc liền kề với hạn chót sai thứ tự, hoán đổi chúng sẽ không làm công việc nào bị trễ, nên nếu thứ tự theo hạn chót thất bại thì không thứ tự nào thành công.",
+      "Sắp xếp các quả bom theo (hạn chót, thời lượng) tăng dần. Bắt đầu với time bằng 0 và lần lượt cộng thời lượng của từng quả bom; ngay khi time vượt quá hạn chót của quả bom đó, in -1. Nếu xử lý hết các quả bom, in time, dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nProcess in ascending order of deadline, accumulating the durations; if at any moment the time exceeds the current deadline there is no solution, otherwise the answer is the total time.\n\n## Correctness\n\nIn a feasible schedule, if two adjacent tasks have deadlines in reverse order, swapping them makes the earlier-deadline task finish earlier, and the later-deadline task finishes at the time the original pair finished, which does not violate its deadline either. Repeated swaps reach the deadline order, so if that order fails, no feasible schedule exists. All tasks must be executed, so the total time is fixed, and a schedule with no idle time reaches this lower bound.\n\n## Complexity\n\nTime O(n log n), space O(n)."

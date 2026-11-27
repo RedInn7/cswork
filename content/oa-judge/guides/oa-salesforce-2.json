@@ -13,6 +13,21 @@
       "A model with features 00 never helps either feature, so it is never bought. An 11 model satisfies both features at once, while 01 and 10 must be bought in pairs to raise both counts by one.",
       "After fixing t models of type 11, you need k-t models each of 01 and 10, and of course the cheapest ones. Pair the i-th cheapest 01 with the i-th cheapest 10 into one dual-feature unit; unit prices increase with i. Put the units together with all 11 prices, and the task becomes taking the k cheapest items of one list.",
       "Sort the costs of 01, 10, and 11 separately. For i < min(|01|,|10|), create the paired unit a[i]+b[i]. Merge the units with all 11 costs, sort, and take prefix sums. For k=1..n, output the prefix sum if it exists, otherwise -1. Print n first, then these n answers."
+    ],
+    "ja": [
+      "特徴が 00 のモデルはどちらの特徴にも役立たないので、買いません。11 のモデルは両方の特徴を同時に満たしますが、01 と 10 は組にして買わないと両方の個数を 1 ずつ増やせません。",
+      "11 のモデルを t 個に固定すると、01 と 10 のモデルがそれぞれ k-t 個必要で、もちろん最も安いものを選びます。i 番目に安い 01 と i 番目に安い 10 を組にして 1 つの二重特徴ユニットとすると、ユニットの価格は i とともに増加します。ユニットとすべての 11 の価格を合わせると、1 つのリストから最も安い k 個を取る問題になります。",
+      "01、10、11 のコストをそれぞれソートします。i < min(|01|,|10|) について、組のユニット a[i]+b[i] を作ります。ユニットとすべての 11 のコストをマージしてソートし、累積和を取ります。k=1..n について、累積和が存在すればそれを出力し、なければ -1 を出力します。最初に n を出力し、続いてこれらの n 個の答えを出力します。"
+    ],
+    "ko": [
+      "기능이 00인 모델은 어느 기능에도 도움이 되지 않으므로 절대 사지 않습니다. 11 모델은 두 기능을 동시에 만족시키는 반면, 01과 10은 짝을 지어 사야 두 개수를 모두 하나씩 올릴 수 있습니다.",
+      "11 모델을 t개 고정하면 01 모델과 10 모델을 각각 k-t개씩 가장 저렴한 것으로 사야 합니다. i번째로 저렴한 01과 i번째로 저렴한 10을 짝지어 이중 기능 단위 하나로 만들면, 단위 가격은 i가 커질수록 증가합니다. 이 단위들을 모든 11 가격과 함께 두면 하나의 리스트에서 가장 저렴한 k개를 고르는 문제가 됩니다.",
+      "01, 10, 11의 비용을 각각 정렬합니다. i < min(|01|,|10|)에 대해 짝지은 단위 a[i]+b[i]를 만듭니다. 단위들을 모든 11 비용과 합쳐 정렬하고 누적 합을 구합니다. k=1..n에 대해 누적 합이 있으면 출력하고, 없으면 -1을 출력합니다. 먼저 n을 출력하고 이어서 n개의 답을 출력합니다."
+    ],
+    "vi": [
+      "Mô hình có tính năng 00 không bao giờ giúp ích cho tính năng nào, nên không bao giờ mua. Mô hình 11 thỏa mãn cả hai tính năng cùng lúc, trong khi 01 và 10 phải được mua theo cặp để tăng cả hai số đếm lên một.",
+      "Sau khi cố định t mô hình loại 11, bạn cần k-t mô hình mỗi loại 01 và 10, và dĩ nhiên là những mô hình rẻ nhất. Ghép 01 rẻ thứ i với 10 rẻ thứ i thành một đơn vị hai tính năng; giá đơn vị tăng theo i. Đặt các đơn vị cùng với mọi giá 11, và bài toán trở thành lấy k phần tử rẻ nhất của một danh sách.",
+      "Sắp xếp riêng chi phí của 01, 10 và 11. Với i < min(|01|,|10|), tạo đơn vị ghép cặp a[i]+b[i]. Hợp nhất các đơn vị với mọi chi phí 11, sắp xếp, và lấy tổng tiền tố. Với k=1..n, in tổng tiền tố nếu tồn tại, ngược lại in -1. In n trước, rồi đến n đáp án đó."
     ]
   },
   "explanationEn": "## Approach\n\nSort the costs of 01, 10, and 11 separately. Pair the i-th cheapest 01 with the i-th cheapest 10 to form one dual-feature unit, merge these units with all 11 costs in sorted order, and take prefix sums one by one.\n\n## Correctness\n\nBecause costs are positive, once t models of type 11 are chosen, we only need k-t single-feature models of each kind, and we take the cheapest ones. 01 and 10 are each increasing, so the paired costs are increasing too; the 11 costs are increasing. The k cheapest items of the two sorted lists naturally respect the prefix dependence within each list, which is equivalent to enumerating t to get the minimum cost. 00 never improves any constraint.\n\n## Complexity\n\nTime O(n log n), space O(n)."

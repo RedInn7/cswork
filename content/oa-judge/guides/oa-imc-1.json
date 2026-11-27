@@ -13,6 +13,21 @@
       "Each order uses its own container, so a group's total waste is the sum of the waste of each order; for a single order, the smallest container that can hold it wastes the least.",
       "Sort each group's capacities and, for each demand, binary search the first container whose capacity is not less than the demand; if there is none, the group is infeasible. Compute each group's total waste and take the minimum.",
       "For each group: sort the capacities, binary search the first position not less than each demand, mark the group infeasible and stop if it falls off the end, otherwise add capacity minus demand (in 64-bit integers); while scanning the groups update the answer only when the total waste is strictly smaller, so ties keep the smaller index; output -1 if no group is feasible."
+    ],
+    "ja": [
+      "各注文はそれぞれ自分のコンテナを使うので、グループの総廃棄量は各注文の廃棄量の和です。1 つの注文については、それを収められる最小のコンテナが最も廃棄が少なくなります。",
+      "各グループの容量をソートし、各需要について、容量が需要以上である最初のコンテナを二分探索します。見つからなければそのグループは実行不可能です。各グループの総廃棄量を計算し、最小のものを取ります。",
+      "各グループについて、容量をソートし、各需要以上である最初の位置を二分探索します。末尾を超えてしまったらそのグループを実行不可能とマークして止め、そうでなければ容量から需要を引いた値を加えます（64 ビット整数で）。グループを走査しながら、総廃棄量が厳密に小さい場合にだけ答えを更新するので、同点なら小さい番号が残ります。実行可能なグループがなければ -1 を出力します。"
+    ],
+    "ko": [
+      "각 주문은 자기 용기를 사용하므로 그룹의 총 낭비는 주문별 낭비의 합이며, 한 주문에서는 그것을 담을 수 있는 가장 작은 용기가 낭비가 가장 적습니다.",
+      "각 그룹의 용량을 정렬하고, 각 요구량에 대해 용량이 요구량 이상인 첫 번째 용기를 이분 탐색합니다. 없으면 그 그룹은 실행 불가능합니다. 각 그룹의 총 낭비를 계산하여 최솟값을 취합니다.",
+      "각 그룹마다 용량을 정렬하고, 각 요구량 이상인 첫 위치를 이분 탐색합니다. 끝을 벗어나면 그룹을 실행 불가능으로 표시하고 중단하며, 그렇지 않으면 용량에서 요구량을 뺀 값을 더합니다(64비트 정수). 그룹을 훑으며 총 낭비가 엄밀히 더 작을 때만 정답을 갱신하여 동점이면 더 작은 인덱스가 유지되게 합니다. 실행 가능한 그룹이 없으면 -1을 출력합니다."
+    ],
+    "vi": [
+      "Mỗi đơn hàng dùng container riêng của nó, nên tổng lãng phí của một nhóm là tổng lãng phí của từng đơn hàng; với một đơn hàng đơn lẻ, container nhỏ nhất còn chứa được nó gây lãng phí ít nhất.",
+      "Sắp xếp các dung tích của từng nhóm và, với mỗi nhu cầu, tìm kiếm nhị phân container đầu tiên có dung tích không nhỏ hơn nhu cầu; nếu không có thì nhóm không khả thi. Tính tổng lãng phí của từng nhóm và lấy giá trị nhỏ nhất.",
+      "Với mỗi nhóm: sắp xếp các dung tích, tìm kiếm nhị phân vị trí đầu tiên không nhỏ hơn mỗi nhu cầu, đánh dấu nhóm không khả thi và dừng nếu vượt quá cuối mảng, ngược lại cộng dung tích trừ nhu cầu (bằng số nguyên 64 bit); trong khi quét các nhóm, chỉ cập nhật đáp án khi tổng lãng phí nhỏ hơn hẳn, để khi hòa thì giữ chỉ số nhỏ hơn; xuất -1 nếu không nhóm nào khả thi."
     ]
   },
   "explanationEn": "## Approach\n\nSort each container group separately. For each demand r, use lower_bound to find the first container with capacity `c≥r`, contributing `c-r`. If some order finds no such container, the group is infeasible; otherwise accumulate the total waste. Scan the container groups and keep the one with strictly smaller total waste, so ties naturally keep the earlier index. If every group is infeasible, return -1 by this site's convention.\n\n## Correctness\n\nFor a fixed order r, every container that can fill it has capacity `c≥r`, and the waste grows as c grows, so the smallest feasible container found by lower_bound produces the least waste. Each order uses one container independently, so minimizing order by order and summing gives the minimum total waste of the group. Going through all feasible groups and updating on strictly smaller values gives the global optimum and the earliest index; when no group is feasible, output -1.\n\n## Complexity\n\nLet S be the number of container groups, R the number of orders, and C_i the number of capacities in group i. Time `O(Σ C_i log C_i + RΣ log C_i)`, space `O(max C_i)`."

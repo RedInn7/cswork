@@ -13,6 +13,21 @@
       "Think in sorted order: once the kept numbers are sorted, each adjacent difference spans the stretch between them in the sorted array. Intuitively, keeping n-k consecutive numbers of the sorted array is never worse.",
       "Sort and build the array gaps of adjacent differences; for n-k consecutive kept numbers, the largest adjacent difference is the maximum over a window of n-k-1 gaps. Take the smallest such window maximum, computing the sliding-window maxima with a monotonic queue.",
       "Sort; if n-k equals 1 print 0. Compute gaps[i] = a[i+1] - a[i] and scan them with a queue of indices whose values decrease: before pushing, pop every tail value not larger than the new one, drop the head once its index leaves the window, and once the window holds n-k-1 gaps update the minimum with the head's value. Differences can exceed 32 bits, so use 64-bit integers."
+    ],
+    "ja": [
+      "ソートされた順序で考えます。残した数をソートすると、隣接する差はソート済み配列でのそれらの間の区間にまたがります。直感的には、ソート済み配列の連続する n-k 個の数を残すのが悪くなることはありません。",
+      "ソートして隣接する差の配列 gaps を作ります。連続する n-k 個の数を残すとき、隣接する差の最大値は n-k-1 個の gap のウィンドウ上の最大値です。そのようなウィンドウ最大値の最小を取ります。スライディングウィンドウの最大値は単調キューで計算します。",
+      "ソートし、n-k が 1 なら 0 を出力します。gaps[i] = a[i+1] - a[i] を計算し、値が減少するインデックスのキューで走査します。プッシュの前に、新しい値以下の末尾の値をすべてポップし、先頭のインデックスがウィンドウから外れたら捨て、ウィンドウに n-k-1 個の gap が入ったら先頭の値で最小値を更新します。差は 32 ビットを超えうるので、64 ビット整数を使ってください。"
+    ],
+    "ko": [
+      "정렬된 순서로 생각해 보세요. 남긴 수를 정렬하면 인접한 차이는 정렬된 배열에서 그 둘 사이의 구간에 걸칩니다. 직관적으로 정렬된 배열에서 연속된 n-k개를 남기는 것이 더 나빠지는 일은 없습니다.",
+      "정렬한 뒤 인접한 차이의 배열 gaps를 만듭니다. 연속된 n-k개를 남기면 인접한 차이의 최댓값은 n-k-1개의 gap으로 이루어진 윈도우의 최댓값입니다. 그런 윈도우 최댓값 중 가장 작은 것을 취하며, 슬라이딩 윈도우 최댓값은 단조 큐로 계산합니다.",
+      "정렬하고, n-k가 1이면 0을 출력합니다. gaps[i] = a[i+1] - a[i]를 계산하고, 값이 감소하는 인덱스 큐로 스캔합니다. push하기 전에 새 값보다 크지 않은 꼬리 값을 모두 pop하고, 인덱스가 윈도우를 벗어나면 머리를 버리며, 윈도우에 n-k-1개의 gap이 차면 머리의 값으로 최솟값을 갱신합니다. 차이는 32비트를 넘을 수 있으므로 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Hãy nghĩ theo thứ tự đã sắp xếp: khi các số được giữ đã được sắp xếp, mỗi hiệu kề nhau bao trùm đoạn giữa chúng trong mảng đã sắp xếp. Theo trực giác, giữ n-k số liên tiếp của mảng đã sắp xếp không bao giờ tệ hơn.",
+      "Sắp xếp và xây dựng mảng gaps các hiệu kề nhau; với n-k số liên tiếp được giữ, hiệu kề nhau lớn nhất là giá trị lớn nhất trên một cửa sổ n-k-1 khoảng hiệu. Lấy giá trị lớn nhất cửa sổ nhỏ nhất, tính các cực đại cửa sổ trượt bằng hàng đợi đơn điệu.",
+      "Sắp xếp; nếu n-k bằng 1 thì in 0. Tính gaps[i] = a[i+1] - a[i] và quét chúng với một hàng đợi các chỉ số có giá trị giảm dần: trước khi đẩy vào, lấy ra mọi giá trị cuối hàng không lớn hơn giá trị mới, bỏ đầu hàng khi chỉ số của nó ra khỏi cửa sổ, và khi cửa sổ chứa n-k-1 khoảng hiệu thì cập nhật giá trị nhỏ nhất bằng giá trị đầu hàng. Các hiệu có thể vượt quá 32 bit, nên dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nAfter sorting, only n-k consecutive elements need to be considered; on the array of adjacent differences, maintain the maximum of each window of length n-k-1, then take the minimum.\n\n## Proof of correctness\n\nFor any selection that skips interior elements, compressing the chosen numbers into the same number of consecutive elements of the sorted sequence makes every new adjacent gap contained in some old gap, so the maximum gap does not increase. More directly: if a threshold is feasible, the chosen numbers cannot cross an original adjacent gap larger than the threshold, so they lie in the same contiguous connected block, whose length is at least n-k; hence a contiguous selection is feasible too. A monotone queue maintains the maximum difference of each window.\n\n## Complexity\n\nTime O(n log n), space O(n)."

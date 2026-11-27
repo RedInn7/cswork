@@ -6,14 +6,33 @@ import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { copyFileSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { createRequire, register } from 'node:module';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
+import { pathToFileURL } from 'node:url';
 import { drizzle } from 'drizzle-orm/better-sqlite3';
 import { migrate } from 'drizzle-orm/better-sqlite3/migrator';
 import type { Person } from '../lib/server/auth';
 import type { OjProblemPackage } from '../lib/oj-types';
 import { passingPrograms, programKey } from '../lib/oa-solution-evidence.mjs';
 
+// The public OA page renders here: stylesheets load as nothing, next/link is a plain link, and
+// next/headers says which language URL (/ja/oa/...) is being served.
+const urlLanguage: { current?: string } = {};
+Object.assign(globalThis, { urlLanguage });
+const react = JSON.stringify(pathToFileURL(createRequire(import.meta.url).resolve('react')).href);
+register(
+  `data:text/javascript,${encodeURIComponent(`const mocks={
+  'next/headers':'export const cookies=async()=>({get:()=>undefined});export const headers=async()=>new Headers(globalThis.urlLanguage.current?{"x-cswork-language":globalThis.urlLanguage.current}:{});',
+  'next/navigation':'export function notFound(){throw new Error("NEXT_NOT_FOUND");}',
+  'next/link':'import {createElement} from ${react.replaceAll("'", "\\'")};export default function Link({href,prefetch,...rest}){return createElement("a",{href,...rest});}'};
+export async function resolve(s,c,n){if(mocks[s])return {url:'mock:'+s,shortCircuit:true};return n(s,c);}
+export async function load(u,c,n){
+  if(u.startsWith('mock:'))return {format:'module',source:mocks[u.slice(5)],shortCircuit:true};
+  if(u.endsWith('.css'))return {format:'module',source:'',shortCircuit:true};
+  return n(u,c);}`)}`,
+  import.meta.url,
+);
 const dir = mkdtempSync(join(tmpdir(), 'cswork-oa-guides-'));
 process.env.DATABASE_PATH = join(dir, 'app.sqlite');
 const { sqlite } = await import('../db/sqlite');
@@ -24,11 +43,16 @@ const teacher: Person = { id: 'guide-teacher', name: 'T', email: 't@guides.test'
 const student: Person = { id: 'guide-student', name: 'S', email: 's@guides.test', role: 'student', verified: true };
 const GUIDED = 'oa-meta-10';
 const PLAIN = 'oa-capital-one-2';
+// Translated into Japanese: statement, hints and written editorial.
+const JA = 'oa-google-25';
 const guide = JSON.parse(readFileSync(`content/oa-judge/guides/${GUIDED}.json`, 'utf8'));
+// What a reader with no language of their own is sent.
+const ladder = { zh: guide.hints.zh, en: guide.hints.en };
 // Only GUIDED's sidecars, so PLAIN stays a problem without a guide however much content ships.
 const sidecars = join(dir, 'sidecars');
 for (const sub of ['guides', 'solutions', 'reports']) mkdirSync(join(sidecars, sub), { recursive: true });
 copyFileSync(`content/oa-judge/guides/${GUIDED}.json`, join(sidecars, 'guides', `${GUIDED}.json`));
+copyFileSync(`content/oa-judge/guides/${JA}.json`, join(sidecars, 'guides', `${JA}.json`));
 copyFileSync(`content/oa-judge/solutions/${GUIDED}.json`, join(sidecars, 'solutions', `${GUIDED}.json`));
 copyFileSync('content/oa-judge/reports/solutions-pilot.json', join(sidecars, 'reports', 'solutions-pilot.json'));
 (await import('../lib/server/oa-judge')).useOaSidecarRoot(sidecars);
@@ -40,7 +64,7 @@ before(async () => {
   db.prepare(
     "INSERT INTO lessons(id,course_id,title,summary,section,position,body,version,updated_at) VALUES('00-overview','gomall','x','x','x',0,'x','1',0)",
   ).run();
-  for (const id of [GUIDED, PLAIN]) {
+  for (const id of [GUIDED, PLAIN, JA]) {
     const pkg = JSON.parse(readFileSync(`content/oa-judge/packages/${id}.json`, 'utf8')) as OjProblemPackage;
     const draft = await saveProblemDraft(teacher, pkg, null);
     await publishProblemDraft(teacher, id, draft.draft!.revision);
@@ -51,14 +75,18 @@ after(() => {
   rmSync(dir, { recursive: true, force: true });
 });
 
-const get = async (path: string[], p: Person | null) => {
-  const response = await handleOj(new Request(`https://cswork.test/api/oj/${path.join('/')}`), p, path);
+const get = async (path: string[], p: Person | null, language?: string) => {
+  const response = await handleOj(
+    new Request(`https://cswork.test/api/oj/${path.join('/')}`, { headers: language ? { 'X-Language': language } : {} }),
+    p,
+    path,
+  );
   return response.json();
 };
 
 void test('a guided OA problem serves its ladder to everyone and drops the package hints, English ones included', async () => {
   const problem = await get(['problems', GUIDED], null);
-  assert.deepEqual(problem.oaHints, guide.hints);
+  assert.deepEqual(problem.oaHints, ladder);
   assert.deepEqual(problem.hints, []);
   assert.deepEqual(problem.translations.en.hints, []);
   assert.ok(problem.translations.en.description, 'the English statement stays');
@@ -108,7 +136,7 @@ void test('the editorial adds the written write-up and the verified languages; a
   assert.deepEqual([live.hints, live.translations.en.hints], [[], []]);
   await assert.rejects(get(['oa-library', GUIDED, 'solution'], student), { status: 403 });
   // Another learner, or a visitor, is not in that exam.
-  assert.deepEqual((await get(['problems', GUIDED], null)).oaHints, guide.hints);
+  assert.deepEqual((await get(['problems', GUIDED], null)).oaHints, ladder);
 });
 
 void test('only programs whose latest report passed every case of that package count as verified', () => {
@@ -201,4 +229,62 @@ void test('check-guides fails a guide whose English editorial translates an olde
   } finally {
     rmSync(root, { recursive: true, force: true });
   }
+});
+
+void test('a Japanese reader is served the Japanese statement, hints and editorial; other readers are not sent them', async () => {
+  const read = (dir: string) => JSON.parse(readFileSync(`content/${dir}/${JA}.json`, 'utf8'));
+  const problem = await get(['problems', JA], null, 'ja');
+  assert.deepEqual(Object.keys(problem.translations), ['en', 'ja']);
+  assert.equal(problem.translations.ja.title, read('oa-judge/translations').ja.title);
+  // The guide's ladder replaces the package hints in every language.
+  assert.deepEqual(problem.translations.ja.hints, []);
+  const hints = read('oa-judge/guides').hints;
+  assert.deepEqual(problem.oaHints, { zh: hints.zh, en: hints.en, ja: hints.ja });
+  assert.deepEqual((await get(['oa-library', JA, 'solution'], student, 'ja')).explanationLocal, { ja: read('oa-master/editorials').explanationJa });
+  for (const language of [undefined, 'en', 'zh-Hant']) {
+    const other = await get(['problems', JA], null, language);
+    assert.deepEqual([Object.keys(other.translations), Object.keys(other.oaHints)], [['en'], ['zh', 'en']], String(language));
+    assert.equal('explanationLocal' in (await get(['oa-library', JA, 'solution'], student, language)), false);
+  }
+  // A Korean reader gets Korean, never the Japanese text.
+  const korean = await get(['problems', JA], null, 'ko');
+  assert.deepEqual([Object.keys(korean.translations), Object.keys(korean.oaHints)], [['en', 'ko'], ['zh', 'en', 'ko']]);
+});
+
+void test('the public OA page is Japanese on /ja when translated, its own canonical page and in the ja sitemap; otherwise English', async () => {
+  const { renderToStaticMarkup } = await import('react-dom/server');
+  const { default: Page, generateMetadata } = await import('../app/oa/[company]/[id]/page');
+  const { oaLibrary } = await import('../lib/server/oa-library');
+  const { oaReadyProblems, oaTranslations } = await import('../lib/server/oa-judge');
+  const ja = JSON.parse(readFileSync(`content/oa-judge/translations/${JA}.json`, 'utf8')).ja;
+  const open = async (language: string, company: string, id: string) => {
+    urlLanguage.current = language;
+    const params = Promise.resolve({ company, id });
+    return { html: renderToStaticMarkup(await Page({ params })), meta: await generateMetadata({ params }) };
+  };
+  try {
+    const page = await open('ja', 'google', JA);
+    assert.match(page.html, new RegExp(`<h1 lang="ja">${ja.title}</h1>`));
+    assert.match(page.html, /<div class="public-library-prose" lang="ja">/);
+    assert.match(page.html, /<h2[^>]*>入力<\/h2>[\s\S]*<h2[^>]*>例 1<\/h2>/);
+    assert.ok(page.html.includes(ja.output));
+    assert.equal(page.meta.title, `Google OA: ${ja.title} | CSWork`);
+    assert.match(page.meta.description ?? '', /空でない整数配列/);
+    assert.equal(page.meta.alternates?.canonical, `https://cswork.org/ja/oa/google/${JA}`);
+    assert.deepEqual(Object.keys(page.meta.alternates?.languages ?? {}), ['zh-Hans', 'zh-Hant', 'en', 'ja', 'ko', 'vi', 'x-default']);
+    const korean = await open('ko', 'google', JA);
+    assert.match(korean.html, /<div class="public-library-prose" lang="ko">/);
+    assert.match(korean.html, /<h2[^>]*>입력<\/h2>/);
+    assert.doesNotMatch(korean.html, /lang="ja"|入力/);
+    assert.equal(korean.meta.alternates?.canonical, `https://cswork.org/ko/oa/google/${JA}`);
+  } finally {
+    urlLanguage.current = undefined;
+  }
+  // /ja/sitemap/1 lists the translated problems (app/sitemap/[page]/route.ts).
+  const ready = await oaReadyProblems();
+  const paths = (language: 'ja' | 'ko') =>
+    oaLibrary()
+      .sitemapEntries(ready, (id) => !!oaTranslations(id)?.[language])
+      .map((entry) => entry.path);
+  for (const language of ['ja', 'ko'] as const) assert.ok(paths(language).includes(`/oa/google/${JA}`), language);
 });

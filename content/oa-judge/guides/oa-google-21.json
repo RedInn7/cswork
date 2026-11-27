@@ -13,6 +13,21 @@
       "The sample [7,4,3,8,2] with answer 782 shows that the three digits must be picked in their original order without rearranging, and the leading digit must be non-zero.",
       "There are at most 50 digits, so enumerating every triple of increasing indices i < j < k is only about twenty thousand combinations; keep the largest number formed.",
       "Set best = -1; loop over all i < j < k, skip cases with nums[i] = 0, and update best with 100*nums[i] + 10*nums[j] + nums[k]; print best at the end (it stays -1 when no valid choice exists)."
+    ],
+    "ja": [
+      "例 [7,4,3,8,2] の答え 782 は、3 つの数字を並べ替えずに元の順序で選ぶ必要があり、先頭の数字は 0 であってはいけないことを示しています。",
+      "数字は最大でも 50 個なので、増加する添字 i < j < k のすべての 3 つ組を列挙しても約 2 万通りです。作れた数のうち最大のものを保持します。",
+      "best = -1 とし、すべての i < j < k を走査して、nums[i] = 0 のものは飛ばし、100*nums[i] + 10*nums[j] + nums[k] で best を更新します。最後に best を出力します (有効な選び方がなければ -1 のままです)。"
+    ],
+    "ko": [
+      "예제 [7,4,3,8,2]의 답이 782라는 것은, 세 숫자를 재배열하지 않고 원래 순서대로 골라야 하며 첫 자리가 0이 아니어야 함을 보여 줍니다.",
+      "숫자는 최대 50개이므로, 증가하는 인덱스 i < j < k의 모든 조합을 열거해도 약 2만 개에 불과합니다. 만들어지는 수 중 가장 큰 것을 유지합니다.",
+      "best = -1로 두고, 모든 i < j < k를 순회하며 nums[i] = 0인 경우는 건너뛰고 100*nums[i] + 10*nums[j] + nums[k]로 best를 갱신합니다. 마지막에 best를 출력합니다 (유효한 선택이 없으면 -1 그대로입니다)."
+    ],
+    "vi": [
+      "Ví dụ [7,4,3,8,2] với đáp án 782 cho thấy ba chữ số phải được chọn theo thứ tự ban đầu mà không sắp xếp lại, và chữ số đầu phải khác 0.",
+      "Có tối đa 50 chữ số, nên liệt kê mọi bộ ba chỉ số tăng dần i < j < k chỉ khoảng hai mươi nghìn tổ hợp; giữ lại số lớn nhất tạo được.",
+      "Đặt best = -1; lặp qua mọi i < j < k, bỏ qua các trường hợp nums[i] = 0, và cập nhật best bằng 100*nums[i] + 10*nums[j] + nums[k]; cuối cùng in best (nó giữ nguyên -1 khi không có cách chọn hợp lệ)."
     ]
   },
   "explanationEn": "## Approach\n\nEnumerate three indices `i < j < k`. If `nums[i]` is not zero, compute `100*nums[i] + 10*nums[j] + nums[k]` and update the maximum. The array has at most 50 elements, so a direct triple loop is enough. When there is no valid choice, output -1 as this site specifies.\n\n## Correctness\n\nEvery valid answer corresponds to a unique triple of increasing indices `i < j < k` whose first digit is non-zero. The algorithm enumerates all such triples and computes the corresponding three-digit number, so no valid answer is missed; taking the largest of them is exactly what the problem asks for. If no combination satisfies the non-zero leading digit condition, the result stays -1, matching the no-solution rule added by this site.\n\n## Complexity\n\nTime O(N^3), extra space O(1).\n\n## Sources and site conventions\n\nFixed OAMaster snapshot: https://oamaster.com/docs/companies/google#21-find-largest-number-google-early-career; content fingerprint `df9e04f772003ef1996bb410a0e9712db3d5fb1c857806257d19cdbea2362698`. Its example `[7,4,3,8,2] -> 782` agrees with choosing `7,8,2` in the original array order; if arbitrary rearrangement were allowed, the maximum would be 874. The 1Point3Acres material for the same problem only confirms that three elements are chosen from the array to form the largest three-digit number, and gives no example that settles the ordering: https://www.1point3acres.com/interview/problems/google-find-largest-number. The ordering is therefore recovered from the fixed OAMaster example. The original OA does not define the output when no valid three-digit number exists; this site specifies -1. N, the digit range and the standard input/output protocol are additions by this site and do not represent upstream constraints."

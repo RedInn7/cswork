@@ -13,6 +13,21 @@
       "Actually flipping the whole string costs O(n) each time, which is too slow. Notice that after one full flip, the number of 0s in a prefix becomes the prefix length minus the original number of 0s.",
       "Flipping twice is the same as not flipping, so only the parity of the number of flips matters. Precompute prefix counts of 0s in the initial string, and for a query choose either the original count or the prefix length minus it, depending on the current state.",
       "Build zero[i+1] = number of 0s among the first i+1 characters; flip just toggles a boolean; for count i let z = zero[i+1] and print z if not flipped, or (i+1) - z if flipped. Print all answers in order on one line separated by spaces, or an empty line if there are no queries."
+    ],
+    "ja": [
+      "文字列全体を実際に反転すると毎回 O(n) かかり、遅すぎます。1回全体を反転すると、接頭辞の 0 の個数は、接頭辞の長さから元の 0 の個数を引いたものになることに注目してください。",
+      "2回反転するのは反転しないのと同じなので、反転回数の偶奇だけが重要です。初期文字列の 0 の累積カウントを前計算し、クエリでは、現在の状態に応じて元のカウントまたは接頭辞の長さからそれを引いた値を選びます。",
+      "zero[i+1] = 最初の i+1 文字に含まれる 0 の個数とします。flip は真偽値を切り替えるだけです。count i では z = zero[i+1] とし、反転していなければ z、反転していれば (i+1) - z を出力します。すべての答えを順に1行で空白区切りで出力し、クエリがなければ空行を出力します。"
+    ],
+    "ko": [
+      "문자열 전체를 실제로 뒤집으면 매번 O(n)이 들어 너무 느립니다. 한 번 전체를 뒤집으면 접두사의 0의 개수가 접두사 길이에서 원래 0의 개수를 뺀 값이 된다는 점에 주목하세요.",
+      "두 번 뒤집는 것은 뒤집지 않는 것과 같으므로 뒤집은 횟수의 홀짝만 중요합니다. 초기 문자열에서 0의 접두사 개수를 미리 계산해 두고, 질의에서는 현재 상태에 따라 원래 개수 또는 접두사 길이에서 그것을 뺀 값을 고릅니다.",
+      "zero[i+1] = 처음 i+1개 문자 중 0의 개수로 만듭니다. flip은 불리언만 토글합니다. count i에서는 z = zero[i+1]로 두고 뒤집히지 않았으면 z를, 뒤집혔으면 (i+1) - z를 출력합니다. 모든 답을 순서대로 한 줄에 공백으로 구분하여 출력하며, 질의가 없으면 빈 줄을 출력합니다."
+    ],
+    "vi": [
+      "Việc thực sự lật toàn xâu tốn O(n) mỗi lần, quá chậm. Hãy nhận ra rằng sau một lần lật toàn bộ, số số 0 trong một tiền tố trở thành độ dài tiền tố trừ đi số số 0 ban đầu.",
+      "Lật hai lần giống như không lật, nên chỉ tính chẵn lẻ của số lần lật là quan trọng. Tính trước số số 0 tiền tố của xâu ban đầu, và với mỗi truy vấn chọn số đếm gốc hoặc độ dài tiền tố trừ đi nó, tùy theo trạng thái hiện tại.",
+      "Xây zero[i+1] = số số 0 trong i+1 ký tự đầu; flip chỉ đảo một boolean; với count i đặt z = zero[i+1] và in z nếu chưa lật, hoặc (i+1) - z nếu đã lật. In mọi đáp án theo thứ tự trên một dòng cách nhau bởi dấu cách, hoặc một dòng trống nếu không có truy vấn."
     ]
   },
   "explanationEn": "## Approach\n\nFirst compute prefix sums of 0s in the initial string. Flipping the whole string only toggles one boolean state; when querying position i, the answer is the original prefix count of 0s if unflipped, or (i+1) minus the original prefix count of 0s if flipped.\n\n## Proof of correctness\n\nThe initial prefix sums record exactly the number of 0s up to each position. A full flip swaps every 0 and 1 within the prefix, so the number of 0s becomes the prefix length minus the original count. Multiple flips depend only on the parity of the number of flips; outputting each operation by this rule is exactly equivalent to actually modifying the whole string and counting again.\n\n## Complexity\n\nO(n+q) time and O(n) space."

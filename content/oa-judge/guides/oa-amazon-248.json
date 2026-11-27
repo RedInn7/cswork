@@ -13,6 +13,21 @@
       "A string can be rearranged into a palindrome exactly when at most one character occurs an odd number of times; deleting one odd-count character reduces the number of odd counts by one.",
       "So a part can become a palindrome after deleting at most one character exactly when it has at most two odd-count characters; only the parity of each character's count matters.",
       "Represent parities with a 26-bit mask and compute the mask of the whole string; enumerate the cut from left to right (both parts non-empty), updating the prefix mask with XOR per character, with the right part's mask being the whole mask XOR the prefix mask; if both have at most 2 set bits output YES, otherwise output NO at the end."
+    ],
+    "ja": [
+      "文字列を回文に並べ替えられるのは、奇数回現れる文字が高々 1 種類であるときに限ります。奇数回現れる文字を 1 つ削除すると、奇数回の文字の種類が 1 つ減ります。",
+      "したがって、ある部分が高々 1 文字の削除で回文にできるのは、奇数回現れる文字が高々 2 種類であるときに限ります。重要なのは各文字の出現回数の偶奇だけです。",
+      "偶奇を 26 ビットのマスクで表し、文字列全体のマスクを計算します。切れ目を左から右へ列挙し（どちらの部分も空でない）、接頭辞のマスクを 1 文字ごとに XOR で更新します。右側の部分のマスクは、全体のマスクと接頭辞のマスクの XOR です。両方とも立っているビットが 2 つ以下なら YES を出力し、そうでなければ最後に NO を出力します。"
+    ],
+    "ko": [
+      "문자열이 회문으로 재배열될 필요충분조건은 홀수 번 나타나는 문자가 최대 한 종류라는 것입니다. 홀수 개수인 문자 하나를 지우면 홀수 개수의 문자 종류 수가 하나 줄어듭니다.",
+      "따라서 한 부분이 최대 한 글자를 지운 뒤 회문이 될 수 있는 것은 홀수 개수인 문자가 최대 2종류일 때와 정확히 일치합니다. 각 문자 개수의 홀짝만 중요합니다.",
+      "26비트 마스크로 홀짝을 표현하고 전체 문자열의 마스크를 구합니다. 분할 위치를 왼쪽에서 오른쪽으로 열거하며(양쪽 모두 비어 있지 않게), 글자마다 XOR로 접두사 마스크를 갱신합니다. 오른쪽 부분의 마스크는 전체 마스크 XOR 접두사 마스크입니다. 둘 다 켜진 비트가 2개 이하이면 YES를 출력하고, 끝까지 없으면 NO를 출력합니다."
+    ],
+    "vi": [
+      "Một xâu có thể sắp xếp lại thành palindrome khi và chỉ khi có tối đa một ký tự xuất hiện số lần lẻ; xóa một ký tự có số lần lẻ làm giảm số ký tự có số lần lẻ đi một.",
+      "Vì vậy một phần có thể thành palindrome sau khi xóa tối đa một ký tự khi và chỉ khi nó có tối đa hai ký tự có số lần lẻ; chỉ tính chẵn lẻ của số lần xuất hiện mỗi ký tự là quan trọng.",
+      "Biểu diễn tính chẵn lẻ bằng mặt nạ 26 bit và tính mặt nạ của toàn xâu; duyệt điểm cắt từ trái sang phải (cả hai phần không rỗng), cập nhật mặt nạ tiền tố bằng XOR theo từng ký tự, với mặt nạ của phần phải là mặt nạ toàn xâu XOR mặt nạ tiền tố; nếu cả hai có tối đa 2 bit bật thì in YES, ngược lại in NO ở cuối."
     ]
   },
   "explanationEn": "## Approach\n\nMaintain 26-bit parity masks of character frequencies for the whole string and for each prefix ending at a cut. If some cut leaves both sides with at most 2 odd-frequency characters, output YES; otherwise NO.\n\n## Proof of correctness\n\nA multiset can be rearranged into a palindrome exactly when at most one character has an odd frequency. Deleting one odd-frequency character reduces the number of odd frequencies by at most one, so deleting at most once works exactly when the original number of odd frequencies is ≤2. The two parts choose their deletions and arrangements independently, so enumerating every non-empty cut and checking both sides exhausts all possibilities.\n\n## Complexity\n\nTime O(n), auxiliary space O(26) excluding the input."

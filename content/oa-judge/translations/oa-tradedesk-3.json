@@ -13,5 +13,41 @@
       "All original contributions inside the window are cleared, and every day in the second half counts as a sell.",
       "Use prefix sums to evaluate each window in O(1), and don't forget that you may choose not to modify."
     ]
+  },
+  "ja": {
+    "title": "Trade Desk OA #3: 最大の利益を得る",
+    "description": "単一の通貨を取引するアルゴリズムを設計します。毎日、1 単位を買う、1 単位を売る、何もしない、のいずれかを選べます。rates[i] は i 日目の価格 (正の整数)、strategy[i] は i 日目の行動です。−1 は購入、0 は保持 (買いも売りもしない)、1 は売却を表します。偶数 k も与えられます。\n\n性能を上げるため、strategy を次のように 1 回だけ変更できます (しなくてもかまいません)。ちょうど k 個の連続する要素を選び、前半を 0、後半を 1 にします。\n\n利益は、売却価格の合計から購入価格の合計を引いたもので、負になることもあります。資金と保有量は常に十分であると仮定します。得られる最大の利益を求めてください。",
+    "input": "1 行目に 2 つの整数 n と k、2 行目に n 個の整数 rates、3 行目に n 個の整数 strategy が与えられます。2≤k≤n≤100000、k は偶数、1≤rates[i]≤100000、strategy[i]∈{−1,0,1}。",
+    "output": "最大の利益を整数 1 つで出力してください。",
+    "explanation": "例 1: rates=[2,4,1,5,10,6]、strategy=[−1,1,0,1,−1,0]、k=4。変更しない場合、利益は −2+4+5−10=−3 です。インデックス 2..5 を選ぶと strategy は [−1,1,0,0,1,1] になり、利益は −2+4+10+6=18 です。\n例 2: rates=[1,1,10,10] で毎日売る場合、元の利益は 22 です。k=2 のどの変更も売りを保持に変えてしまうので、変更しないのが最適です。\n例 3: 毎日買う場合、配列全体を選ぶと [0,0,1,1] になり、利益は 4+1=5 です。",
+    "hints": [
+      "まず、変更しない場合の利益を計算します。",
+      "区間内の元の寄与はすべて消え、後半の各日は売却として数えられます。",
+      "累積和を使って各区間を O(1) で評価します。変更しないという選択肢も忘れないでください。"
+    ]
+  },
+  "ko": {
+    "title": "Trade Desk OA #3: 최대 수익 내기",
+    "description": "단일 통화를 거래하는 알고리즘을 설계하고 있습니다. 매일 1단위를 사거나, 1단위를 팔거나, 아무것도 하지 않을 수 있습니다. rates[i]는 i일째의 가격(양의 정수)이고, strategy[i]는 i일째의 행동입니다. −1은 매수, 0은 보유(사지도 팔지도 않음), 1은 매도를 뜻합니다. 짝수 k도 주어집니다.\n\n성능을 높이기 위해 strategy를 다음과 같이 한 번 수정할 수 있습니다(수정하지 않아도 됩니다). 정확히 k개의 연속된 원소를 골라 그 앞 절반을 0으로, 뒤 절반을 1로 설정합니다.\n\n이익은 모든 매도 가격의 합에서 모든 매수 가격의 합을 뺀 값으로 정의되며 음수일 수 있습니다. 자금과 보유량은 항상 충분하다고 가정합니다. 얻을 수 있는 최대 이익을 구하세요.",
+    "input": "첫 번째 줄에 두 정수 n과 k가, 두 번째 줄에 n개의 정수 rates가, 세 번째 줄에 n개의 정수 strategy가 주어집니다. 2≤k≤n≤100000, k는 짝수, 1≤rates[i]≤100000, strategy[i]∈{−1,0,1}.",
+    "output": "최대 이익을 정수 하나로 출력합니다.",
+    "explanation": "예제 1: rates=[2,4,1,5,10,6], strategy=[−1,1,0,1,−1,0], k=4. 수정하지 않으면 이익은 −2+4+5−10=−3입니다. 인덱스 2..5를 선택하면 strategy가 [−1,1,0,0,1,1]로 바뀌어 이익은 −2+4+10+6=18이 됩니다.\n예제 2: rates=[1,1,10,10]이고 매일 매도하면 원래 이익은 22입니다. k=2인 어떤 수정이든 매도를 보유로 바꾸게 되므로 수정하지 않는 것이 최적입니다.\n예제 3: 매일 매수합니다. 배열 전체를 선택하면 [0,0,1,1]로 바뀌어 이익은 4+1=5입니다.",
+    "hints": [
+      "먼저 수정하지 않았을 때의 이익을 계산합니다.",
+      "구간 안의 원래 기여는 모두 지워지고, 뒤 절반의 모든 날은 매도로 계산됩니다.",
+      "누적 합으로 각 구간을 O(1)에 평가하고, 수정하지 않을 수도 있다는 점을 잊지 마세요."
+    ]
+  },
+  "vi": {
+    "title": "Trade Desk OA #3: Kiếm được nhiều nhất",
+    "description": "Bạn đang thiết kế một thuật toán giao dịch một loại tiền tệ duy nhất; mỗi ngày bạn có thể mua một đơn vị, bán một đơn vị, hoặc không làm gì. rates[i] là giá vào ngày i (số nguyên dương); strategy[i] là hành động vào ngày i: −1 là mua, 0 là giữ (không mua cũng không bán), và 1 là bán. Bạn cũng được cho một số chẵn k.\n\nĐể cải thiện hiệu quả, bạn có thể (nhưng không bắt buộc) sửa strategy một lần như sau: chọn đúng k phần tử liên tiếp, đặt nửa đầu của chúng bằng 0, và đặt nửa sau bằng 1.\n\nLợi nhuận được định nghĩa là tổng tất cả các giá bán trừ đi tổng tất cả các giá mua, và có thể âm. Giả sử vốn và lượng nắm giữ luôn đủ. Tìm lợi nhuận lớn nhất bạn có thể thu được.",
+    "input": "Dòng đầu chứa hai số nguyên n và k; dòng thứ hai chứa n số nguyên rates; dòng thứ ba chứa n số nguyên strategy. 2≤k≤n≤100000, k là số chẵn, 1≤rates[i]≤100000, strategy[i]∈{−1,0,1}.",
+    "output": "In ra một số nguyên: lợi nhuận lớn nhất.",
+    "explanation": "Ví dụ 1: rates=[2,4,1,5,10,6], strategy=[−1,1,0,1,−1,0], k=4. Khi không sửa đổi, lợi nhuận là −2+4+5−10=−3; chọn các chỉ số 2..5 đổi strategy thành [−1,1,0,0,1,1], cho lợi nhuận −2+4+10+6=18.\nVí dụ 2: rates=[1,1,10,10] với mọi ngày đều bán cho lợi nhuận ban đầu là 22; mọi sửa đổi với k=2 biến một lần bán thành giữ, nên không sửa đổi là tối ưu.\nVí dụ 3: mọi ngày đều mua; chọn toàn bộ mảng đổi nó thành [0,0,1,1], cho lợi nhuận 4+1=5.",
+    "hints": [
+      "Trước hết tính lợi nhuận khi không sửa đổi.",
+      "Mọi đóng góp ban đầu trong cửa sổ bị xóa, và mỗi ngày trong nửa sau được tính là một lần bán.",
+      "Dùng tổng tiền tố để đánh giá mỗi cửa sổ trong O(1), và đừng quên rằng bạn có thể chọn không sửa đổi."
+    ]
   }
 }

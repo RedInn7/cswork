@@ -11,5 +11,35 @@
     "hints": [
       "Each of the final two digits is a weighted sum of a stretch of adjacent digits with the binomial coefficients of row n−2. Use Lucas's theorem to compute modulo 2 and modulo 5 separately, then combine them into modulo 10."
     ]
+  },
+  "ja": {
+    "title": "隣接する桁の和による暗号化",
+    "description": "各ラウンドで、隣り合う 2 つの桁の和を 10 で割った余りを取り、長さが 1 短い新しい配列を作ります。これを 2 桁になるまで繰り返し、残った 2 桁からなる文字列を、先頭の 0 を残したまま出力してください。\n\n標準入力の形式、例、テストデータは CSWork が独自に作成したものです。",
+    "input": "1 行目に n (2..100000)、2 行目に n 個の桁 (0..9) が与えられます。",
+    "output": "問題が求める整数を 1 つ出力してください。",
+    "explanation": "例 1: [4,5,6,7] はまず [9,1,3] になり、次に [0,4] になるので、出力は 04 です。先頭の 0 を落としてはいけません。例 2: すでに 2 桁なので、00 をそのまま出力します。例 3: 隣接和 9+1 と 1+9 はどちらも 10 で割った余りが 0 なので、00 を出力します。",
+    "hints": [
+      "最後の 2 桁はそれぞれ、隣接する桁の連なりを、n−2 行目の二項係数で重み付けした和です。Lucas の定理で mod 2 と mod 5 を別々に計算し、それらを組み合わせて mod 10 を求めます。"
+    ]
+  },
+  "ko": {
+    "title": "인접 숫자 합 암호화",
+    "description": "매 라운드마다 인접한 두 숫자의 합을 10으로 나눈 나머지를 취해 길이가 1 줄어든 새 배열을 만듭니다. 2개의 숫자가 남을 때까지 반복한 뒤, 그 두 숫자로 이루어진 문자열을 앞자리 0을 유지한 채 출력하세요.\n\n표준 입력 형식, 예제, 테스트 데이터는 CSWork가 독자적으로 작성했습니다.",
+    "input": "첫째 줄에 n(2..100000)이 주어지고, 둘째 줄에 n개의 숫자(0..9)가 주어집니다.",
+    "output": "문제에서 요구하는 답을 정수 하나로 출력합니다.",
+    "explanation": "예제 1: [4,5,6,7]은 먼저 [9,1,3]이 되고 이어서 [0,4]가 되므로 출력은 04입니다. 앞자리 0을 버리면 안 됩니다. 예제 2: 이미 숫자가 2개 남아 있으므로 바로 00을 출력합니다. 예제 3: 인접한 합 9+1과 1+9는 모두 10으로 나눈 나머지가 0이므로 00을 출력합니다.",
+    "hints": [
+      "최종 두 숫자 각각은 인접한 숫자 구간에 n−2행의 이항 계수를 가중치로 곱해 더한 값입니다. 뤼카의 정리를 사용해 mod 2와 mod 5를 따로 계산한 뒤 mod 10으로 합칩니다."
+    ]
+  },
+  "vi": {
+    "title": "Mã hóa bằng tổng các chữ số liền kề",
+    "description": "Ở mỗi vòng, lấy tổng của từng cặp chữ số liền kề modulo 10 để được một mảng mới có độ dài giảm đi 1. Lặp lại cho đến khi còn 2 chữ số, rồi in ra xâu tạo bởi hai chữ số đó, giữ nguyên các số 0 ở đầu.\n\nĐịnh dạng đầu vào chuẩn, các ví dụ và dữ liệu kiểm thử do CSWork biên soạn độc lập.",
+    "input": "Dòng đầu tiên chứa n (2..100000); dòng thứ hai chứa n chữ số (0..9).",
+    "output": "In ra một số nguyên, là đáp án của bài toán.",
+    "explanation": "Ví dụ 1: [4,5,6,7] đầu tiên trở thành [9,1,3], rồi [0,4], nên kết quả là 04; không được bỏ số 0 ở đầu. Ví dụ 2: đã còn đúng hai chữ số, nên in thẳng 00. Ví dụ 3: các tổng liền kề 9+1 và 1+9 đều bằng 0 modulo 10, nên in 00.",
+    "hints": [
+      "Mỗi chữ số trong hai chữ số cuối cùng là tổng có trọng số của một đoạn các chữ số liền kề với trọng số là các hệ số nhị thức của hàng n−2. Dùng định lý Lucas để tính riêng modulo 2 và modulo 5, rồi kết hợp thành modulo 10."
+    ]
   }
 }

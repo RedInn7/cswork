@@ -13,6 +13,21 @@
       "Whether a position can follow the previous one depends only on whether the previous position took A or B, and whether that value is not greater than the current choice.",
       "Keep two states: the longest valid contiguous run ending at i when position i takes A[i], and when it takes B[i].",
       "Start with x = y = 1; for i ≥ 1, the new x can be x+1 if A[i−1] ≤ A[i] and y+1 if B[i−1] ≤ A[i], otherwise 1; the new y is the same comparison against B[i]; update the answer with max(x, y) at every step."
+    ],
+    "ja": [
+      "ある位置が直前の位置に続けられるかどうかは、直前の位置が A と B のどちらを取ったか、およびその値が現在の選択以下かどうかだけで決まります。",
+      "2 つの状態を持ちます: 位置 i で A[i] を取るときと B[i] を取るときの、i で終わる有効な連続区間の最大長です。",
+      "x = y = 1 から始めます。i ≥ 1 では、新しい x は A[i−1] ≤ A[i] なら x+1、B[i−1] ≤ A[i] なら y+1、どちらでもなければ 1 です。新しい y も同様に B[i] と比較します。各ステップで max(x, y) により答えを更新します。"
+    ],
+    "ko": [
+      "한 위치가 이전 위치 뒤에 올 수 있는지는 이전 위치에서 A를 골랐는지 B를 골랐는지, 그리고 그 값이 현재 선택한 값보다 크지 않은지에만 달려 있습니다.",
+      "두 가지 상태를 유지합니다. 위치 i에서 A[i]를 골랐을 때 i에서 끝나는 가장 긴 유효 연속 구간, 그리고 B[i]를 골랐을 때의 값입니다.",
+      "x = y = 1로 시작합니다. i ≥ 1에서 새로운 x는 A[i−1] ≤ A[i]이면 x+1, B[i−1] ≤ A[i]이면 y+1이 될 수 있고, 둘 다 아니면 1입니다. 새로운 y도 B[i]에 대해 같은 방식으로 비교합니다. 매 단계마다 max(x, y)로 답을 갱신합니다."
+    ],
+    "vi": [
+      "Một vị trí có thể nối tiếp vị trí trước hay không chỉ phụ thuộc vào việc vị trí trước đã lấy A hay B, và giá trị đó có không lớn hơn lựa chọn hiện tại hay không.",
+      "Giữ hai trạng thái: độ dài lớn nhất của đoạn liên tiếp hợp lệ kết thúc tại i khi vị trí i lấy A[i], và khi lấy B[i].",
+      "Bắt đầu với x = y = 1; với i ≥ 1, x mới có thể là x+1 nếu A[i−1] ≤ A[i] và y+1 nếu B[i−1] ≤ A[i], nếu không thì là 1; y mới được tính tương tự bằng cách so sánh với B[i]; cập nhật đáp án bằng max(x, y) ở mỗi bước."
     ]
   },
   "explanationEn": "## Approach\n\nMaintain two states: the longest valid contiguous run ending at the current position when it takes A[i], and when it takes B[i]. Check whether each of the previous position's two choices is ≤ the current value; if neither can be extended, restart from the current position.\n\n## Correctness\n\nA valid run reaching the current position can only come from the previous element A[i−1] or B[i−1], which must be no larger than the current value. The two states cover every possibility; taking the longest extendable run is optimal, and otherwise the length is 1.\n\n## Complexity\n\nTime O(n), space O(1)."

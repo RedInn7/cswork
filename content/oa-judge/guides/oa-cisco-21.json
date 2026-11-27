@@ -13,6 +13,21 @@
       "Every palindromic substring has a unique center (a character or the gap between two neighbours), and the longest palindrome grown from a center beats every other palindrome with that center.",
       "Enumerate all 2n - 1 odd and even centers, expand each as far as possible, and only treat each center's longest palindrome as a candidate; ignore candidates shorter than 2.",
       "For center middle in 0..2n - 2 set left = middle / 2 and right = left + middle % 2, and widen both ends while the characters match; the candidate is s[left + 1 .. right - 1]; if its length is at least 2 and it is longer than the current answer, or equally long and lexicographically smaller, take it; print None if the answer stays empty."
+    ],
+    "ja": [
+      "どの回文部分文字列にも一意な中心（1 文字、または隣り合う 2 文字の間）があり、ある中心から広げた最長の回文は、同じ中心を持つ他のどの回文よりも長くなります。",
+      "奇数・偶数の 2n - 1 個の中心すべてを列挙し、それぞれできるだけ広げて、各中心の最長の回文だけを候補にします。長さが 2 未満の候補は無視します。",
+      "中心 middle を 0..2n - 2 で動かし、left = middle / 2、right = left + middle % 2 として、文字が一致する間は両端を広げます。候補は s[left + 1 .. right - 1] です。その長さが 2 以上で、現在の答えより長いか、同じ長さで辞書順に小さければ置き換えます。答えが空のままなら None を出力します。"
+    ],
+    "ko": [
+      "모든 회문 부분 문자열은 유일한 중심(문자 하나 또는 이웃한 두 문자 사이의 틈)을 가지며, 한 중심에서 확장한 가장 긴 회문은 같은 중심의 다른 모든 회문보다 우선합니다.",
+      "홀수·짝수 중심 2n - 1개를 모두 순회하며 각각 가능한 한 멀리 확장하고, 각 중심의 가장 긴 회문만 후보로 취급합니다. 길이가 2보다 짧은 후보는 무시합니다.",
+      "중심 middle을 0..2n - 2로 두고 left = middle / 2, right = left + middle % 2로 설정한 뒤, 문자가 일치하는 동안 양 끝을 넓힙니다. 후보는 s[left + 1 .. right - 1]입니다. 길이가 2 이상이고 현재 답보다 길거나, 길이가 같으면서 사전순으로 더 작으면 채택합니다. 답이 비어 있으면 None을 출력합니다."
+    ],
+    "vi": [
+      "Mọi xâu con palindrome đều có một tâm duy nhất (một ký tự hoặc khoảng giữa hai ký tự kề nhau), và palindrome dài nhất mở rộng từ một tâm thắng mọi palindrome khác có cùng tâm đó.",
+      "Liệt kê tất cả 2n - 1 tâm lẻ và chẵn, mở rộng từng tâm hết mức có thể, và chỉ xem palindrome dài nhất của mỗi tâm là ứng viên; bỏ qua các ứng viên ngắn hơn 2.",
+      "Với tâm middle trong 0..2n - 2, đặt left = middle / 2 và right = left + middle % 2, rồi nới rộng cả hai đầu khi các ký tự còn khớp; ứng viên là s[left + 1 .. right - 1]; nếu độ dài của nó ít nhất 2 và dài hơn đáp án hiện tại, hoặc bằng nhau nhưng nhỏ hơn theo thứ tự từ điển, thì lấy nó; in None nếu đáp án vẫn rỗng."
     ]
   },
   "explanationEn": "## Approach\n\nEnumerate both kinds of palindrome centers, odd and even, expand each until it can no longer grow, and compare only the longest candidate from each center.\n\n## Proof of correctness\n\nEvery palindrome has a unique center. A non-maximal palindrome with the same center can never be better than the longest one at that center, so comparing only each center's longest candidate does not miss the global optimum; among equal lengths, the lexicographically smaller string is chosen explicitly.\n\n## Complexity\n\nO(n²) time; candidate slices need at most O(n) auxiliary space."

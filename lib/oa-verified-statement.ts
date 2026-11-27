@@ -16,6 +16,9 @@ const meta = new RegExp(
     String.raw`来源(?:原|笔误|缺失|未给|未提供|仓库|范围缺失)|源题未给|源未给出|原始(?:来源|题源)|题源未|题源与|题目来源与|原题来源与|公司来源|缺失原界|样例纠错|笔误恢复`,
     // "Added by this site" alone may introduce a real rule ("非负成本为本站补充"), so only ranges/formats/examples count.
     String.raw`由\s*(?:本站|CSWork)[^，。；]{0,10}?(?:编写|整理|定义|包装)|(?:本站|CSWork)\s*独立(?:编写|整理)|为本站(?:包装|整理)|(?:范围|上界|上限|下界|界|限制|约束|字符集|格式|协议|I/O|输入输出|样例|例)均?(?:由|为|是)本站(?:明确)?补充|标(?:为|明为|注为|记为)本站|属于本站(?:补充|整理|评测约定)|本站评测约定|站内判题约定|见(?:配套|候选)?(?:讲义|题解)`,
+    // ja/ko/vi translations. ponytail: any clause naming this site goes unless it carries a rule
+    // (see rule()); the harmless "this site reads stdin" goes with it.
+    String.raw`[本当この]サイト|[이본] 사이트|\btrang (?:web )?này\b|[\u3040-\u30ff\uac00-\ud7af\u1ea0-\u1ef9đ][^]*CSWork|CSWork[^]*[\u3040-\u30ff\uac00-\ud7af\u1ea0-\u1ef9đ]`,
     String.raw`^\s*(?:请?(?:按|依照)(?:题目|题面|以上|上述)?(?:确定)?规则(?:处理|计算)(?:输入)?|样例输入输出直接遵循上述规则|输出按题目规则计算的结果)[；;。\s]*$`,
   ].join('|'),
   'i',
@@ -150,12 +153,15 @@ export function oaStatementLang(text: string) {
 const headings = {
   zh: ['输入格式', '输出格式', '样例', '输入：', '输出：', '样例说明'],
   en: ['Input', 'Output', 'Example', 'Input:', 'Output:', 'Example notes'],
+  ja: ['入力', '出力', '例', '入力：', '出力：', '説明'],
+  ko: ['입력', '출력', '예시', '입력:', '출력:', '설명'],
+  vi: ['Đầu vào', 'Đầu ra', 'Ví dụ', 'Đầu vào:', 'Đầu ra:', 'Giải thích'],
 };
 /** One Markdown document for an already-cleaned statement and its public samples. */
 export function oaStatementMarkdown(
   spec: { description: string; input: string; output: string; explanation: string },
   samples: { input: string; expectedOutput: string }[],
-  locale: 'zh' | 'en' = 'zh',
+  locale: keyof typeof headings = 'zh',
 ) {
   const [input, output, example, sampleIn, sampleOut, notes] = headings[locale];
   const code = (value: string) => {

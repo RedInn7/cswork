@@ -13,6 +13,21 @@
       "Reading from the most significant bit down, every new bit doubles the weight of all earlier bits and then adds the new lowest bit.",
       "Starting from 0, apply value = 2 * value + bit for every node in order to get the value of the whole binary number; leading zeros change nothing.",
       "There are at most 64 bits and the maximum is 2^64 - 1, beyond signed 64-bit range: use an unsigned 64-bit integer in C++ or Go, and in Java accumulate in a long and print it as unsigned (or use a big integer); Python integers already have arbitrary precision."
+    ],
+    "ja": [
+      "最上位ビットから順に読むと、新しいビットが来るたびに、それまでのすべてのビットの重みが 2 倍になり、そこに新しい最下位ビットが加わります。",
+      "0 から始めて、各ノードを順に value = 2 * value + bit と更新すれば、2 進数全体の値が得られます。先頭の 0 は何も変えません。",
+      "ビットは最大 64 個で、最大値は 2^64 - 1 であり、符号付き 64 ビットの範囲を超えます。C++ や Go では符号なし 64 ビット整数を使い、Java では long で累積して符号なしとして出力する (または多倍長整数を使う) ことになります。Python の整数はすでに任意精度です。"
+    ],
+    "ko": [
+      "최상위 비트부터 읽을 때 새 비트마다 이전의 모든 비트의 가중치가 두 배가 되고 새 최하위 비트가 더해집니다.",
+      "0에서 시작하여 모든 노드에 순서대로 value = 2 * value + bit를 적용하면 전체 이진수의 값이 됩니다. 앞쪽의 0은 아무것도 바꾸지 않습니다.",
+      "비트는 최대 64개이고 최댓값은 2^64 - 1로 부호 있는 64비트 범위를 넘습니다. C++나 Go에서는 부호 없는 64비트 정수를 쓰고, Java에서는 long에 누적하되 부호 없는 값으로 출력하거나(또는 큰 정수를 사용) 하세요. Python의 정수는 이미 임의 정밀도입니다."
+    ],
+    "vi": [
+      "Đọc từ bit cao nhất xuống, mỗi bit mới nhân đôi trọng số của mọi bit trước đó rồi cộng bit thấp nhất mới.",
+      "Bắt đầu từ 0, áp dụng value = 2 * value + bit cho từng nút theo thứ tự để thu được giá trị của cả số nhị phân; các số 0 đứng đầu không thay đổi gì.",
+      "Có tối đa 64 bit và giá trị lớn nhất là 2^64 - 1, vượt quá phạm vi 64 bit có dấu: dùng số nguyên 64 bit không dấu trong C++ hoặc Go, còn trong Java thì tích lũy trong long và in ra dưới dạng không dấu (hoặc dùng số nguyên lớn); số nguyên của Python vốn đã có độ chính xác tùy ý."
     ]
   },
   "explanationEn": "## Approach\n\nGo from head to tail, setting value=2*value+bit each time. Python uses arbitrary-precision integers; other languages can use unsigned 64-bit integers or big integers.\n\n## Proof of correctness\n\nAfter processing the first k nodes, value equals the binary number formed by those k bits. Appending the next bit multiplies the weight of every existing bit by 2 and adds the new least significant bit, which is exactly 2*value+bit; by induction from 0 we get the exact value of all the bits. Leading zeros naturally do not change the result.\n\n## Complexity\n\nO(N) time, and O(1) auxiliary space under the fixed original bound of 64 bits."

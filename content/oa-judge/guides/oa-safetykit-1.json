@@ -13,6 +13,21 @@
       "The three transformations must run in exactly the stated order: first rotate clockwise by the given angle, then flip vertically if its flag is set, then flip horizontally if its flag is set. With n at most 500, direct simulation is enough.",
       "A rotation by 180 or 270 degrees is just rotation/90 repeated clockwise 90-degree rotations; after one clockwise 90-degree rotation the new matrix satisfies b[i][j]=a[n-1-j][i]. A vertical flip reverses the order of the rows, and a horizontal flip reverses each row.",
       "Read the matrix, then repeat rotation/90 times: build a new matrix with b[i][j]=a[n-1-j][i]. If vertical_flip is 1, reverse the row order; if horizontal_flip is 1, reverse every row. Print the rows one per line with single spaces between elements."
+    ],
+    "ja": [
+      "3つの変換は、規定の順序どおりに実行しなければなりません。まず指定角度だけ時計回りに回転し、次にフラグが立っていれば上下反転、最後にフラグが立っていれば左右反転です。n は最大 500 なので、直接シミュレーションで十分です。",
+      "180 度や 270 度の回転は、時計回りの 90 度回転を rotation/90 回繰り返すだけです。時計回りに 90 度回転した後の新しい行列は b[i][j]=a[n-1-j][i] を満たします。上下反転は行の順序を逆にし、左右反転は各行を逆にします。",
+      "行列を読み込み、rotation/90 回繰り返して、b[i][j]=a[n-1-j][i] となる新しい行列を作ります。vertical_flip が 1 なら行の順序を逆にし、horizontal_flip が 1 なら各行を逆にします。行を1行に1つずつ、要素の間を半角スペース1つで区切って出力します。"
+    ],
+    "ko": [
+      "세 변환은 정확히 명시된 순서로 실행해야 합니다. 먼저 주어진 각도만큼 시계 방향으로 회전하고, 플래그가 설정되어 있으면 수직으로 뒤집고, 그다음 플래그가 설정되어 있으면 수평으로 뒤집습니다. n이 최대 500이므로 직접 시뮬레이션으로 충분합니다.",
+      "180도 또는 270도 회전은 시계 방향 90도 회전을 rotation/90번 반복한 것과 같습니다. 시계 방향 90도 회전을 한 번 하면 새 행렬은 b[i][j]=a[n-1-j][i]를 만족합니다. 수직 뒤집기는 행의 순서를 뒤집고, 수평 뒤집기는 각 행을 뒤집습니다.",
+      "행렬을 읽은 뒤 rotation/90번 반복하여 b[i][j]=a[n-1-j][i]인 새 행렬을 만듭니다. vertical_flip이 1이면 행의 순서를 뒤집고, horizontal_flip이 1이면 모든 행을 뒤집습니다. 행을 한 줄에 하나씩, 원소는 공백 하나로 구분하여 출력합니다."
+    ],
+    "vi": [
+      "Ba phép biến đổi phải chạy đúng theo thứ tự đã nêu: trước tiên xoay theo chiều kim đồng hồ một góc cho trước, sau đó lật dọc nếu cờ của nó được đặt, rồi lật ngang nếu cờ của nó được đặt. Với n tối đa 500, mô phỏng trực tiếp là đủ.",
+      "Phép xoay 180 hoặc 270 độ chính là rotation/90 lần xoay 90 độ theo chiều kim đồng hồ lặp lại; sau một lần xoay 90 độ theo chiều kim đồng hồ, ma trận mới thỏa b[i][j]=a[n-1-j][i]. Lật dọc đảo ngược thứ tự các hàng, và lật ngang đảo ngược từng hàng.",
+      "Đọc ma trận, rồi lặp lại rotation/90 lần: xây ma trận mới với b[i][j]=a[n-1-j][i]. Nếu vertical_flip là 1, đảo ngược thứ tự hàng; nếu horizontal_flip là 1, đảo ngược mọi hàng. In các hàng, mỗi hàng một dòng, các phần tử cách nhau bằng một dấu cách."
     ]
   },
   "explanationEn": "## Approach\n\nApply the transformations specified by the problem one after another: a clockwise 90-degree rotation can be done with a new matrix `b[i][j]=a[n-1-j][i]`; after repeating it rotation/90 times, reverse the order of the rows if the vertical flip is enabled, and reverse each row if the horizontal flip is enabled.\n\n## Proof of correctness\n\nThe formula places the element at row `n-1-j`, column `i` of the old matrix at row `i`, column `j` of the new matrix, which is exactly a clockwise 90-degree rotation. Repeating this transformation gives the specified angle; afterwards, reversing the row order and reversing the columns within each row implement the top-bottom and left-right flips respectively. Every operation is executed strictly in the order of the statement, so the result is correct.\n\n## Complexity\n\nO(n^2) time and O(n^2) space."

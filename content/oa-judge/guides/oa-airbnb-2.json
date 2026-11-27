@@ -13,6 +13,21 @@
       "At speed d each pile needs ceil(a/d) time units on its own, and the total time never increases as the speed grows, so feasibility is monotone.",
       "Binary search the smallest feasible speed in [1, max(a)]; the test is whether the sum of ceil(a/d) over all piles is at most the deadline h.",
       "This site guarantees n <= h, and at speed max(a) every pile takes exactly one unit, so a solution always exists (with h < n it would be impossible); set lo = 1 and hi = max(a); for mid, add (a + mid - 1) / mid over all piles; if the total is <= h set hi = mid, else lo = mid + 1. h can reach 10^18, so read and compare it as a 64-bit integer."
+    ],
+    "ja": [
+      "速度 d では、各山はそれだけで ceil(a/d) 単位時間を必要とし、合計時間は速度が上がっても増えないので、実行可能性は単調です。",
+      "[1, max(a)] で実行可能な最小の速度を二分探索します。判定は、すべての山の ceil(a/d) の合計が期限 h 以下かどうかです。",
+      "当サイトでは n <= h が保証されており、速度 max(a) ではどの山もちょうど 1 単位時間なので、解は必ず存在します (h < n なら不可能です)。lo = 1、hi = max(a) とし、mid について全山の (a + mid - 1) / mid を足し合わせます。合計が h 以下なら hi = mid、そうでなければ lo = mid + 1 とします。h は 10^18 に達しうるので、64 ビット整数として読み込んで比較してください。"
+    ],
+    "ko": [
+      "속도 d에서 각 더미는 단독으로 ceil(a/d) 시간 단위가 필요하며, 속도가 커져도 총 시간은 늘지 않으므로 가능 여부는 단조입니다.",
+      "[1, max(a)]에서 가능한 최소 속도를 이분 탐색합니다. 검사는 모든 더미에 대한 ceil(a/d)의 합이 마감 시간 h 이하인지입니다.",
+      "본 사이트는 n <= h를 보장하고, 속도 max(a)에서는 모든 더미가 정확히 한 단위씩 걸리므로 해가 항상 존재합니다(h < n이면 불가능합니다). lo = 1, hi = max(a)로 둡니다. mid에 대해 모든 더미의 (a + mid - 1) / mid를 더하고, 합이 <= h이면 hi = mid, 아니면 lo = mid + 1로 합니다. h는 10^18까지 될 수 있으므로 64비트 정수로 읽고 비교하십시오."
+    ],
+    "vi": [
+      "Ở tốc độ d, mỗi đống cần ceil(a/d) đơn vị thời gian, và tổng thời gian không bao giờ tăng khi tốc độ tăng, nên tính khả thi là đơn điệu.",
+      "Tìm kiếm nhị phân tốc độ khả thi nhỏ nhất trong [1, max(a)]; phép kiểm tra là tổng ceil(a/d) trên mọi đống có không vượt quá thời hạn h hay không.",
+      "Trang này đảm bảo n <= h, và ở tốc độ max(a) mỗi đống tốn đúng một đơn vị, nên luôn có nghiệm (với h < n thì sẽ không thể); đặt lo = 1 và hi = max(a); với mid, cộng (a + mid - 1) / mid trên mọi đống; nếu tổng <= h thì đặt hi = mid, ngược lại lo = mid + 1. h có thể lên tới 10^18, nên đọc và so sánh nó dưới dạng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nBinary search the speed, testing it with the sum of the time each pile needs, ceil(a/d).\n\n## Proof of correctness\n\nAt a fixed speed each pile needs, and is satisfied by, ceil(a/d) exclusive time units. The total time is non-increasing in the speed, so binary searching for the first feasible speed is correct. Positive quantities make the minimum total time n, so there is no solution when h < n.\n\n## Complexity\n\nO(n log max(a)) time, O(n) input space."

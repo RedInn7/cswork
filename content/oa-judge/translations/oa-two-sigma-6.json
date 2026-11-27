@@ -11,5 +11,35 @@
     "hints": [
       "Since every parent has a strictly smaller index, add each subtree's flow to its parent in decreasing order of index, then try every non-root node as the root of the cut-off subtree."
     ]
+  },
+  "ja": {
+    "title": "排水ツリーの1辺を切断した後の流量差の最小化",
+    "description": "木は 0 を根とし、各ノードには直接の流入量があります。親子の辺をちょうど1本切断して木を2つの部分に分け、2つの部分の直接流入量の合計の差の絶対値を最小にします。\n\n本サイトは標準入出力と解法を独自に作成しています。元の問題に欠けていた制約の補足と、例の訂正はプロトコルに明記しています。",
+    "input": "1行目に n、2行目に n 個の parent の値、3行目に n 個の直接流入量が与えられます。元の制約はすべて次のとおりです。2≤n≤100000、流入量は 1..10000、parent[0]=−1、0≤parent[i]<i、木の深さは高々 500 です。",
+    "output": "整数の答えを1つ出力します。",
+    "explanation": "3つの公開例の出力は順に 0、2、9999 です。独立した全探索または直接シミュレーションで確認済みです。",
+    "hints": [
+      "どの親も添字が子より厳密に小さいので、添字の降順に各部分木の流量を親へ加算し、その後、切り離される部分木の根として根以外のすべてのノードを試します。"
+    ]
+  },
+  "ko": {
+    "title": "배수 트리에서 간선 하나를 끊었을 때 유량 차이의 최솟값",
+    "description": "트리는 노드 0을 루트로 하며 각 노드에는 직접 유입량이 있습니다. 부모-자식 간선을 정확히 하나 끊어 트리를 두 부분으로 나누었을 때, 두 부분의 직접 유입량 합의 차이(절댓값)를 최소로 만드십시오.\n\n이 사이트는 표준 입출력과 풀이를 독자적으로 작성했으며, 원문에 없는 범위를 보충한 내용과 예제를 바로잡은 내용은 프로토콜에 명시되어 있습니다.",
+    "input": "첫 번째 줄에 n, 두 번째 줄에 n개의 parent 값, 세 번째 줄에 n개의 직접 유입량이 주어집니다. 원래의 전체 제약 조건은 2≤n≤100000, 유입량 1..10000, parent[0]=−1, 0≤parent[i]<i이며 트리의 깊이는 최대 500입니다.",
+    "output": "정수 답 하나를 출력합니다.",
+    "explanation": "세 공개 예제의 출력은 순서대로 0; 2; 9999 입니다. 독립적인 전수 조사 또는 직접 시뮬레이션으로 확인했습니다.",
+    "hints": [
+      "모든 부모의 인덱스는 자식보다 엄격히 작으므로, 인덱스가 큰 순서대로 각 서브트리의 유량을 부모에 더한 뒤, 루트가 아닌 모든 노드를 잘려 나가는 서브트리의 루트로 시도해 봅니다."
+    ]
+  },
+  "vi": {
+    "title": "Chênh lệch lưu lượng nhỏ nhất sau khi cắt một cạnh của cây thoát nước",
+    "description": "Cây có gốc là 0, và mỗi nút có một lưu lượng nước chảy vào trực tiếp. Cắt đúng một cạnh cha-con để tách cây thành hai phần, sao cho chênh lệch tuyệt đối giữa tổng lưu lượng trực tiếp của hai phần là nhỏ nhất.\n\nTrang này tự biên soạn phần nhập/xuất chuẩn và lời giải; các bổ sung cho những giới hạn thiếu trong nguồn và các hiệu chỉnh cho ví dụ đều được nêu rõ trong phần giao thức.",
+    "input": "Dòng đầu chứa n, dòng thứ hai chứa n giá trị parent, và dòng thứ ba chứa n lưu lượng trực tiếp. Đầy đủ giới hạn gốc: 2≤n≤100000, lưu lượng 1..10000, parent[0]=−1, 0≤parent[i]<i, và độ sâu của cây tối đa là 500.",
+    "output": "In một số nguyên là đáp án.",
+    "explanation": "Đầu ra của ba ví dụ công khai lần lượt là: 0; 2; 9999. Các kết quả này đã được kiểm tra bằng liệt kê độc lập hoặc mô phỏng trực tiếp.",
+    "hints": [
+      "Vì mọi nút cha đều có chỉ số nhỏ hơn hẳn, hãy cộng lưu lượng của từng cây con vào nút cha theo thứ tự chỉ số giảm dần, rồi thử mọi nút không phải gốc làm gốc của cây con bị cắt rời."
+    ]
   }
 }

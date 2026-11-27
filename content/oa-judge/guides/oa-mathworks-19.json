@@ -13,6 +13,21 @@
       "Ignoring parity, taking every positive number gives the largest sum; if that sum is already even, it is the answer.",
       "If the sum of the positives is odd, some odd number's choice must flip to fix the parity: either drop a chosen positive odd number or add a negative odd number. Adding or dropping even numbers does not change parity and only makes the result worse.",
       "Compute S, the sum of all positive numbers; output it if it is even. Otherwise find the smallest positive odd p and the negative odd q closest to 0; the candidates are S - p and S + q (only those that exist), compared with 0 for choosing nothing, and the maximum is the answer. Mind the sign of the remainder for negative numbers when testing oddness."
+    ],
+    "ja": [
+      "偶奇を無視すれば、すべての正の数を取ったときの和が最大です。その和がすでに偶数なら、それが答えです。",
+      "正の数の和が奇数なら、ある奇数の選択を反転して偶奇を直す必要があります。選んだ正の奇数を 1 つ外すか、負の奇数を 1 つ加えるかです。偶数を加えたり外したりしても偶奇は変わらず、結果が悪くなるだけです。",
+      "すべての正の数の和 S を計算し、偶数ならそのまま出力します。そうでなければ、最小の正の奇数 p と、0 に最も近い負の奇数 q を探します。候補は S - p と S + q（存在するものだけ）で、何も選ばない場合の 0 とも比較し、最大値が答えです。負の数の奇数判定では、剰余の符号に注意してください。"
+    ],
+    "ko": [
+      "홀짝을 무시하면 모든 양수를 취할 때 합이 가장 큽니다. 이 합이 이미 짝수이면 그것이 답입니다.",
+      "양수의 합이 홀수이면 홀수 값 하나의 선택을 뒤집어 홀짝을 맞춰야 합니다. 선택한 양의 홀수 하나를 빼거나, 음의 홀수 하나를 더하는 방법입니다. 짝수를 더하거나 빼는 것은 홀짝을 바꾸지 못하고 결과만 나빠집니다.",
+      "모든 양수의 합 S를 계산하고, 짝수이면 그대로 출력합니다. 아니면 가장 작은 양의 홀수 p와 0에 가장 가까운 음의 홀수 q를 찾습니다. 후보는 S - p와 S + q(존재하는 것만)이며, 아무것도 고르지 않는 경우인 0과 비교해 최댓값이 답입니다. 음수의 홀짝을 판별할 때 나머지의 부호에 유의합니다."
+    ],
+    "vi": [
+      "Bỏ qua tính chẵn lẻ, lấy mọi số dương cho tổng lớn nhất; nếu tổng đó đã chẵn thì đó là đáp án.",
+      "Nếu tổng các số dương lẻ, thì việc chọn của một số lẻ nào đó phải bị đảo để sửa tính chẵn lẻ: hoặc bỏ một số lẻ dương đã chọn, hoặc thêm một số lẻ âm. Thêm hoặc bỏ số chẵn không đổi tính chẵn lẻ và chỉ làm kết quả tệ hơn.",
+      "Tính S, tổng của mọi số dương; in ra nếu nó chẵn. Ngược lại tìm số lẻ dương nhỏ nhất p và số lẻ âm q gần 0 nhất; các ứng viên là S - p và S + q (chỉ những cái tồn tại), so với 0 cho trường hợp không chọn gì, và giá trị lớn nhất là đáp án. Chú ý dấu của phần dư với số âm khi kiểm tra tính lẻ."
     ]
   },
   "explanationEn": "## Approach\n\nFirst take all positive numbers to get the maximum sum; if it is odd, compare two fixes: removing the smallest positive odd number, or adding the negative odd number closest to 0.\n\n## Proof of correctness\n\nThe sum of all positive numbers is the maximum when no parity condition is imposed. If it is odd, any feasible solution must at least remove a positive odd number or add a negative odd number; choosing whichever of these two adjustments loses the least gives the maximum even sum.\n\n## Complexity\n\nO(n), space O(n)."

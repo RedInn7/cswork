@@ -13,6 +13,21 @@
       "The return trip moves only left or up; reversed, it is another path from the top-left to the bottom-right moving only right or down. So the task is two people walking together from the top-left to the bottom-right, with each passenger counted once.",
       "Let them move in step: after t moves a person in row r is in column t - r, so the state only needs the two rows (a, b). If both pass the same cell they do so at the same step, and the passenger is added once.",
       "dp[a][b] is the most passengers after t moves with the people in rows a and b, minus infinity if unreachable; each step takes the best of the four predecessors (a, b), (a-1, b), (a, b-1), (a-1, b-1), skips states on walls, and adds both cells' passengers (once if a = b). Print 0 if the start or end is a wall, otherwise max(0, dp[n-1][n-1])."
+    ],
+    "ja": [
+      "復路は左・上のみの移動なので、反転すると左上から右下へ右・下のみで進む別の経路になります。したがって、2 人が左上から右下へ同時に歩き、各乗客は 1 回だけ数える問題になります。",
+      "2 人を同じステップで動かします。t 回移動した後、行 r にいる人の列は t - r なので、状態は 2 つの行 (a, b) だけで足ります。2 人が同じマスを通るなら同じステップで通るので、その乗客は 1 回だけ加算します。",
+      "dp[a][b] を、t 回移動した後に 2 人がそれぞれ行 a と行 b にいるときの乗客の最大数とし、到達不能なら負の無限大とします。各ステップで 4 つの遷移元 (a, b)、(a-1, b)、(a, b-1)、(a-1, b-1) の最良値を取り、壁のマスの状態はスキップし、両方のマスの乗客を加算します(a = b なら 1 回だけ)。始点または終点が壁なら 0 を出力し、そうでなければ max(0, dp[n-1][n-1]) を出力します。"
+    ],
+    "ko": [
+      "돌아오는 길은 왼쪽 또는 위로만 이동하는데, 이를 뒤집으면 오른쪽 또는 아래로만 이동하는 왼쪽 위에서 오른쪽 아래까지의 또 다른 경로가 됩니다. 따라서 두 사람이 함께 왼쪽 위에서 오른쪽 아래로 걷고, 각 승객은 한 번만 세는 문제가 됩니다.",
+      "두 사람이 같은 걸음 수로 움직이게 하면, t번 이동한 뒤 행 r에 있는 사람의 열은 t - r이므로 상태에는 두 행 (a, b)만 필요합니다. 둘이 같은 칸을 지난다면 같은 단계에서 지나므로 승객은 한 번만 더합니다.",
+      "dp[a][b]를 t번 이동한 뒤 두 사람이 행 a와 b에 있을 때의 최대 승객 수로 정의하고, 도달할 수 없으면 마이너스 무한대로 둡니다. 각 단계에서 이전 네 상태 (a, b), (a-1, b), (a, b-1), (a-1, b-1) 중 최선을 고르고, 벽 위의 상태는 건너뛰며, 두 칸의 승객을 더합니다(a = b이면 한 번만). 시작 또는 도착이 벽이면 0을 출력하고, 아니면 max(0, dp[n-1][n-1])을 출력합니다."
+    ],
+    "vi": [
+      "Lượt về chỉ đi sang trái hoặc lên; khi đảo ngược, nó là một đường đi khác từ góc trên bên trái đến góc dưới bên phải chỉ theo hướng phải hoặc xuống. Vì vậy bài toán trở thành hai người cùng đi từ góc trên bên trái đến góc dưới bên phải, mỗi hành khách chỉ được tính một lần.",
+      "Cho hai người đi đồng bộ từng bước: sau t bước, người ở hàng r đang ở cột t - r, nên trạng thái chỉ cần hai hàng (a, b). Nếu cả hai đi qua cùng một ô thì họ làm vậy ở cùng một bước, và hành khách chỉ được cộng một lần.",
+      "dp[a][b] là số hành khách lớn nhất sau t bước khi hai người ở hàng a và b, là âm vô cực nếu không đạt tới được; mỗi bước lấy giá trị tốt nhất trong bốn trạng thái trước (a, b), (a-1, b), (a, b-1), (a-1, b-1), bỏ qua các trạng thái nằm trên tường, và cộng hành khách của cả hai ô (chỉ một lần nếu a = b). In 0 nếu ô xuất phát hoặc ô đích là tường, ngược lại in max(0, dp[n-1][n-1])."
     ]
   },
   "explanationEn": "## Approach\n\nReverse the return trip so that it becomes two people walking simultaneously from the top-left to the bottom-right. The shared step count t determines the column t-row, so the DP state only records the two people's rows; a shared cell adds its passenger only once.\n\n## Correctness\n\nEvery round trip corresponds one-to-one to a pair of one-way paths moving right/down. Every cell has a fixed row+column sum, so if both paths pass through it, they reach it at the same synchronized step; therefore deduplicating shared cells implements picking up each passenger only once. Each step enumerates the four predecessor combinations of the two people moving right or down, covering all path pairs.\n\n## Complexity\n\nTime O(n^3), space O(n^2)."

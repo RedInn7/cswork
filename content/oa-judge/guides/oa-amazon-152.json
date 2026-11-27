@@ -13,6 +13,21 @@
       "Each slide removes one value and adds one, so the window's multiset barely changes; what you need is a structure that supports adding or removing a number and asking for the k-th smallest, not a fresh sort per window.",
       "Compress the values to ranks and keep a Fenwick tree of how many times each rank occurs in the current window; the k-th smallest is the first rank whose prefix count reaches k, which binary lifting on the Fenwick tree finds directly.",
       "After compression add 1 at the rank of each of the first m values. For the query, start from the largest power of two not above the number of ranks; whenever stepping forward keeps the accumulated count below k, step and subtract that node's count from k; the rank right after where you stop is the answer. Then for each later window remove a[i-m], add a[i] and query again, printing the answers in order of window start."
+    ],
+    "ja": [
+      "スライドのたびに値が 1 つ削除されて 1 つ追加されるので、窓の多重集合はほとんど変わりません。必要なのは、数の追加・削除と k 番目に小さい値の問い合わせをサポートする構造であり、窓ごとの新たなソートではありません。",
+      "値を順位に圧縮し、現在の窓における各順位の出現回数を Fenwick 木で保持します。k 番目に小さい値は、累積回数が k に達する最初の順位で、Fenwick 木上のバイナリリフティングで直接見つかります。",
+      "圧縮後、最初の m 個の値の順位にそれぞれ 1 を加えます。問い合わせでは、順位の数を超えない最大の 2 のべき乗から始め、前に進んでも累積回数が k 未満であれば、進んでそのノードの回数を k から引きます。止まった位置の直後の順位が答えです。その後、以降の各窓で a[i-m] を削除し、a[i] を追加して再び問い合わせ、窓の開始位置の順に答えを出力します。"
+    ],
+    "ko": [
+      "구간을 한 칸 밀 때마다 값 하나가 빠지고 하나가 들어오므로 구간의 멀티셋은 거의 변하지 않습니다. 필요한 것은 구간마다 새로 정렬하는 것이 아니라, 수를 추가하거나 제거하고 k번째로 작은 수를 물을 수 있는 자료구조입니다.",
+      "값을 순위로 압축하고, 현재 구간에서 각 순위가 몇 번 나타나는지를 펜윅 트리에 유지합니다. k번째로 작은 값은 접두사 개수가 처음으로 k에 도달하는 순위이며, 이는 펜윅 트리 위의 이진 리프팅으로 바로 찾을 수 있습니다.",
+      "압축한 뒤 처음 m개 값의 순위 위치에 각각 1을 더합니다. 질의에서는 순위 수를 넘지 않는 가장 큰 2의 거듭제곱에서 시작하여, 한 걸음 나아가도 누적 개수가 k 미만이면 나아가고 그 노드의 개수를 k에서 뺍니다. 멈춘 지점 바로 다음 순위가 답입니다. 이후의 각 구간에서는 a[i-m]을 제거하고 a[i]를 추가한 뒤 다시 질의하며, 답을 구간 시작 순서대로 출력합니다."
+    ],
+    "vi": [
+      "Mỗi lần trượt bỏ một giá trị và thêm một giá trị, nên đa tập của cửa sổ hầu như không đổi; cái bạn cần là cấu trúc hỗ trợ thêm hoặc bỏ một số và hỏi phần tử nhỏ thứ k, không phải sắp xếp lại từ đầu cho mỗi cửa sổ.",
+      "Nén các giá trị thành hạng và giữ một cây Fenwick về số lần mỗi hạng xuất hiện trong cửa sổ hiện tại; phần tử nhỏ thứ k là hạng đầu tiên có tổng tiền tố đạt k, và binary lifting trên cây Fenwick tìm được nó trực tiếp.",
+      "Sau khi nén, cộng 1 vào hạng của mỗi giá trị trong m giá trị đầu. Với truy vấn, bắt đầu từ lũy thừa của hai lớn nhất không vượt quá số hạng; mỗi khi bước tới mà tổng tích lũy vẫn nhỏ hơn k thì bước và trừ số lần của nút đó khỏi k; hạng ngay sau chỗ dừng là đáp án. Sau đó với mỗi cửa sổ tiếp theo, bỏ a[i-m], thêm a[i] và truy vấn lại, in các đáp án theo thứ tự điểm bắt đầu cửa sổ."
     ]
   },
   "explanationEn": "## Approach\n\nCompress all values into ranks; a Fenwick tree stores how many times each rank occurs in the current window. When the window moves, remove one value and add one, and use binary lifting to find the rank whose cumulative count first reaches k.\n\n## Proof of correctness\n\nThe counts in the tree are exactly the multiset of the current window. Prefix counts are monotone, and the rank of the k-th smallest value is exactly the rank at which the prefix count first reaches k; binary lifting keeps the largest prefix whose cumulative count is < k, and the next rank is the answer.\n\n## Complexity\n\nTime O(n log n), space O(n)."

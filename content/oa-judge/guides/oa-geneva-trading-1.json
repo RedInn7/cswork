@@ -13,6 +13,21 @@
       "A permutation splits into disjoint cycles. Each operation moves every element one step along its cycle, and a cycle of length L is restored exactly when the number of steps is a multiple of L.",
       "The whole array is restored only when all cycles are restored at once, so the answer is the least common multiple of all cycle lengths. That LCM can be huge, so do not compute it and then reduce; use prime factorization instead and take, for each prime, the highest power that appears in any cycle length.",
       "Find all cycles and their lengths with a visited array; build a smallest-prime-factor sieve up to n, factor each cycle length and record the maximum exponent of every prime; finally multiply each prime raised to its maximum exponent with fast modular exponentiation modulo 10^9+7 and print the product."
+    ],
+    "ja": [
+      "順列は互いに素なサイクルに分かれます。1 回の操作で、すべての要素がサイクルに沿って 1 歩進み、長さ L のサイクルが元に戻るのは、歩数が L の倍数のとき、かつそのときに限ります。",
+      "配列全体が元に戻るのは、すべてのサイクルが同時に元に戻ったときだけなので、答えはすべてのサイクルの長さの最小公倍数です。この最小公倍数は巨大になり得るので、計算してから剰余を取ってはいけません。代わりに素因数分解を使い、各素数について、いずれかのサイクルの長さに現れる最大のべきを取ります。",
+      "訪問済み配列を使ってすべてのサイクルとその長さを求め、n までの最小素因数の篩を作り、各サイクルの長さを素因数分解して各素数の最大の指数を記録します。最後に、各素数をその最大の指数でべき乗したものを、高速な剰余べき乗で 10^9+7 を法として掛け合わせ、その積を出力します。"
+    ],
+    "ko": [
+      "순열은 서로소인 사이클들로 나뉩니다. 연산 한 번은 모든 원소를 자신의 사이클을 따라 한 칸씩 옮기며, 길이 L의 사이클은 단계 수가 L의 배수일 때 정확히 복원됩니다.",
+      "전체 배열은 모든 사이클이 동시에 복원될 때에만 복원되므로 답은 모든 사이클 길이의 최소공배수입니다. 이 최소공배수는 매우 커질 수 있으므로 계산한 뒤 나머지를 취하지 말고, 소인수분해를 써서 각 소수에 대해 어느 사이클 길이에서든 나타나는 가장 높은 거듭제곱을 취하세요.",
+      "방문 배열로 모든 사이클과 그 길이를 찾습니다. n까지의 최소 소인수 체를 만들어 각 사이클 길이를 소인수분해하고 각 소수의 최대 지수를 기록합니다. 마지막으로 각 소수를 최대 지수만큼 거듭제곱한 값을 10^9+7로 나눈 나머지에서 빠른 거듭제곱으로 곱해 그 곱을 출력합니다."
+    ],
+    "vi": [
+      "Một hoán vị tách thành các chu trình rời nhau. Mỗi thao tác đưa mọi phần tử đi một bước dọc theo chu trình của nó, và một chu trình độ dài L được khôi phục chính xác khi số bước là bội của L.",
+      "Cả mảng chỉ được khôi phục khi mọi chu trình cùng được khôi phục, nên đáp án là bội chung nhỏ nhất của mọi độ dài chu trình. BCNN đó có thể rất lớn, nên đừng tính nó rồi mới rút gọn; thay vào đó hãy dùng phân tích thừa số nguyên tố và với mỗi số nguyên tố lấy lũy thừa cao nhất xuất hiện trong bất kỳ độ dài chu trình nào.",
+      "Tìm mọi chu trình và độ dài của chúng bằng mảng visited; dựng sàng ước nguyên tố nhỏ nhất đến n, phân tích từng độ dài chu trình và ghi lại số mũ lớn nhất của mỗi số nguyên tố; cuối cùng nhân mỗi số nguyên tố lũy thừa số mũ lớn nhất của nó bằng lũy thừa modulo nhanh theo modulo 10^9+7 và in tích."
     ]
   },
   "explanationEn": "## Approach\n\nA permutation consists of disjoint cycles. One operation moves the element at each position one step along the permutation; a cycle of length L returns to its original state only after L operations. So the total number of steps must be, and only needs to be, a common multiple of all cycle lengths, and the smallest positive number of steps is their least common multiple. Since the LCM can be very large, record the maximum exponent of each prime factor over the cycle lengths, then rebuild the LCM with modular multiplication.\n\n## Proof of correctness\n\nIf the array is restored after t operations, then because the elements are distinct, every position must return to its original element; on each cycle this is equivalent to L|t. All cycles are restored at the same time if and only if t is a common multiple of all cycle lengths. A number is divisible by every cycle length if and only if each of its prime exponents is at least the maximum exponent of that prime among the cycle lengths, so the product of the highest prime powers is exactly the smallest positive solution.\n\n## Complexity\n\nFactoring the cycle lengths and building the smallest-prime-factor table take O(n log n) time and O(n) space.\n\n## Source note\n\nThe statement is compiled from a fixed OAMaster snapshot; the standard input/output protocol is added by this site, and this site does not claim the original site provides it."

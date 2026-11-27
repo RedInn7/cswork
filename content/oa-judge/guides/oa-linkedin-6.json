@@ -13,6 +13,21 @@
       "A predecessor is always exactly one letter shorter than its successor, so word chains form a directed acyclic graph layered by length; words of equal length can never be linked.",
       "Process words from shortest to longest; a word's predecessor can only be the word obtained by deleting one of its positions, so keep a hash map from each word to the longest chain ending there and do dynamic programming.",
       "Sort the words by length; for each word, delete each position in turn, look up the resulting string's chain length in the map (0 if absent), store the maximum plus 1 for the word, and print the largest value seen. Duplicate words never make a chain longer."
+    ],
+    "ja": [
+      "先行語は後続語よりちょうど 1 文字短いので、ワードチェーンは長さで層に分かれた有向非巡回グラフになります。同じ長さの単語は決して結ばれません。",
+      "短い単語から長い単語の順に処理します。ある単語の先行語は、その単語のどれか 1 つの位置を削除して得られる単語に限られます。そこで、各単語からその単語で終わる最長チェーンの長さへのハッシュマップを持ち、動的計画法を行います。",
+      "単語を長さでソートします。各単語について、各位置を順に削除し、得られた文字列のチェーン長をマップから引き（なければ 0）、その最大値に 1 を足したものをその単語の値として保存します。見つかった最大値を出力します。重複した単語でチェーンが長くなることはありません。"
+    ],
+    "ko": [
+      "선행 단어는 항상 후속 단어보다 정확히 한 글자 짧으므로, 단어 체인은 길이로 계층이 나뉜 방향 비순환 그래프를 이룹니다. 길이가 같은 단어끼리는 연결될 수 없습니다.",
+      "단어를 짧은 것부터 긴 것 순으로 처리하세요. 어떤 단어의 선행 단어는 그 단어의 한 위치를 삭제해 얻은 단어뿐이므로, 각 단어를 그 단어로 끝나는 가장 긴 체인에 대응시키는 해시 맵을 유지하며 동적 계획법을 수행합니다.",
+      "단어를 길이순으로 정렬합니다. 각 단어에서 위치를 하나씩 삭제하여 얻은 문자열의 체인 길이를 맵에서 조회하고(없으면 0), 그 최댓값에 1을 더해 해당 단어의 값으로 저장하며, 지금까지 본 가장 큰 값을 출력합니다. 중복된 단어는 체인을 더 길게 만들지 않습니다."
+    ],
+    "vi": [
+      "Một từ tiền thân luôn ngắn hơn từ kế tiếp đúng một chữ cái, nên các chuỗi từ tạo thành một đồ thị có hướng không chu trình phân tầng theo độ dài; các từ cùng độ dài không bao giờ được nối với nhau.",
+      "Xử lý các từ từ ngắn đến dài; tiền thân của một từ chỉ có thể là từ thu được khi xoá một trong các vị trí của nó, nên dùng một bảng băm từ mỗi từ đến chuỗi dài nhất kết thúc tại đó và làm quy hoạch động.",
+      "Sắp xếp các từ theo độ dài; với mỗi từ, lần lượt xoá từng vị trí, tra độ dài chuỗi của xâu thu được trong bảng (0 nếu không có), lưu giá trị lớn nhất cộng 1 cho từ đó, và in giá trị lớn nhất đã gặp. Các từ trùng nhau không bao giờ làm chuỗi dài thêm."
     ]
   },
   "explanationEn": "## Approach\n\nSort by length; delete each position of the current word, look up the longest chain of the resulting predecessor, and take the maximum plus 1.\n\n## Proof of correctness\n\nEvery valid predecessor can be obtained from the current word by deleting exactly one position, so the enumeration misses nothing. Predecessors are shorter, so sorting guarantees their optimal values have already been computed; the longest-path recurrence on the DAG is correct by induction. Repeated identical words do not increase the length.\n\n## Complexity\n\nO(nL²) time including string construction and O(nL) space, with L≤16."

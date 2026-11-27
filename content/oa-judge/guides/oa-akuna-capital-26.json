@@ -13,6 +13,21 @@
       "The uploaded ranges cut the file into gaps that still need uploading; a chunk cannot cross an uploaded packet, so the gaps are independent.",
       "Chunk lengths must be powers of two and starts need no alignment, so a gap of length L needs at least popcount(L) chunks: splitting by L's binary representation reaches it, and when r powers of two add up to L, merging carries only reduces the number of terms, so fewer than popcount(L) is impossible.",
       "Sort the uploaded ranges by left end and append a sentinel (total+1, total+1); keep cursor as the next uncovered packet (initially 1); for each range add the number of one bits of the gap length l - cursor, then set cursor = r + 1. total is close to 10^18, so use 64-bit integers."
+    ],
+    "ja": [
+      "アップロード済みの区間によって、ファイルはまだアップロードが必要な隙間に分割されます。チャンクはアップロード済みのパケットをまたげないので、各隙間は互いに独立です。",
+      "チャンクの長さは 2 の冪で、開始位置の整列は不要なので、長さ L の隙間には少なくとも popcount(L) 個のチャンクが必要です。L の 2 進表現どおりに分割すればこの個数に達します。また、r 個の 2 の冪の和が L になるとき、繰り上がりをまとめると項の数は減るだけなので、popcount(L) より少なくすることはできません。",
+      "アップロード済みの区間を左端でソートし、末尾に番兵 (total+1, total+1) を追加します。cursor を次の未カバーのパケットとして保持し（初期値は 1）、各区間について隙間の長さ l - cursor の 1 のビット数を加算してから cursor = r + 1 とします。total は 10^18 に近いので、64 ビット整数を使ってください。"
+    ],
+    "ko": [
+      "업로드된 구간들이 파일을 아직 업로드해야 하는 공백들로 나눕니다. 청크는 업로드된 패킷을 가로지를 수 없으므로 공백끼리는 서로 독립입니다.",
+      "청크 길이는 2의 거듭제곱이고 시작 위치에 정렬 조건이 없으므로, 길이가 L인 공백에는 최소 popcount(L)개의 청크가 필요합니다. L을 이진 표현대로 나누면 이 값에 도달하고, 2의 거듭제곱 r개의 합이 L일 때 올림이 생기도록 합치면 항의 수가 줄어들기만 하므로 popcount(L)보다 적게 만들 수는 없습니다.",
+      "업로드된 구간을 왼쪽 끝 기준으로 정렬하고 센티넬 (total+1, total+1)을 끝에 추가합니다. cursor는 아직 처리되지 않은 다음 패킷(처음에는 1)으로 두고, 각 구간마다 공백 길이 l - cursor의 이진 표현에서 1인 비트 수를 더한 뒤 cursor = r + 1로 갱신합니다. total이 10^18에 가까우므로 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Các đoạn đã tải lên cắt tệp thành những khoảng trống còn cần tải; một chunk không thể vượt qua gói tin đã tải, nên các khoảng trống độc lập với nhau.",
+      "Độ dài chunk phải là lũy thừa của 2 và vị trí bắt đầu không cần căn chỉnh, nên một khoảng trống độ dài L cần ít nhất popcount(L) chunk: tách theo biểu diễn nhị phân của L là đạt được giá trị này, và khi r lũy thừa của 2 có tổng bằng L thì việc gộp các số hạng bằng nhau (nhớ sang bit cao hơn) chỉ làm giảm số số hạng, nên không thể có ít hơn popcount(L).",
+      "Sắp xếp các đoạn đã tải theo đầu trái và thêm phần tử chốt (total+1, total+1); giữ cursor là gói tin đầu tiên chưa được phủ (ban đầu là 1); với mỗi đoạn, cộng số bit một của độ dài khoảng trống l - cursor, rồi đặt cursor = r + 1. total gần bằng 10^18 nên hãy dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nSort the uploaded ranges and find the gaps of packets not yet uploaded between them. A gap of length L can be split into at least popcount(L) power-of-two chunks, and the answer is the sum of popcount over all gaps.\n\n## Correctness\n\nIf the binary representation of L has q ones, cutting the gap into those distinct power-of-two lengths covers it with q chunks. Conversely, if r power-of-two lengths cover L, the r powers sum to L; binary carries only reduce the number of terms, so popcount(L) is at most r. Different uncovered gaps cannot be spanned by one chunk across uploaded packets, so adding the optimal chunk counts of the gaps gives the global minimum. That chunk starts need not be aligned to their power-of-two length is a protocol statement this conclusion relies on.\n\n## Complexity\n\nTime O(m log m), space O(m)."
