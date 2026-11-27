@@ -187,7 +187,7 @@ test('the workspace offers it on an accepted formal submission; the page is neve
   const workspace = readFileSync(new URL('../components/problem-workspace.tsx', import.meta.url), 'utf8');
   assert.match(workspace, /inspected\.mode === 'judge' && inspected\.status === 'accepted' && communityProblem\(inspected\.problem_id\) && \(\s*<ReviewLink/);
   const { generateMetadata } = await import('../app/review/[token]/page.tsx');
-  for (const [locale, title] of [['zh', '代码评审 · cswork'], [undefined, '代码评审 · cswork'], ['en', 'Code review · cswork']]) {
+  for (const [locale, title] of [['zh', '代码评审 · CSWork'], [undefined, '代码评审 · CSWork'], ['en', 'Code review · CSWork']]) {
     globalThis.__locale = locale;
     const meta = await generateMetadata();
     assert.equal(meta.title, title);

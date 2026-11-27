@@ -93,6 +93,8 @@ const text = (value: unknown) => (typeof value === 'string' ? value : '');
 
 let companies: Promise<{ slug: string; name: string }[]> | null = null;
 let signedOut = false;
+/** The workspace knows who is signed in; telling the palette saves a guest two refused requests. */
+export const setPaletteSignedOut = (value: boolean) => void (signedOut = value);
 /** Every remote group for this query, each one failing alone. */
 async function searchSite(query: string, zh: boolean, signal: AbortSignal) {
   const q = encodeURIComponent(query);

@@ -9,7 +9,7 @@ export function PrivacyDocument() {
   // metadata is static English; keep the tab title and <html lang> in the reader's language.
   useEffect(() => {
     document.title =
-      locale === 'zh' ? '隐私说明 · cswork' : 'Privacy notice · cswork';
+      locale === 'zh' ? '隐私说明 · CSWork' : 'Privacy notice · CSWork';
     document.documentElement.lang = locale === 'zh' ? 'zh-CN' : 'en';
   }, [locale]);
   return (
