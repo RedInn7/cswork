@@ -13,6 +13,21 @@
       "An interval [l,r] is invalid exactly when some conflicting pair a<b has l <= a and b <= r; direction and duplicates do not change this test.",
       "For a fixed right end r, let M be the largest smaller endpoint among conflicts with b <= r; the valid left ends are exactly l > M. M only grows as r increases, so it can be maintained during a single scan.",
       "Normalize each pair to a<b and store, for each b, the largest a paired with it. Scan the right end r from 1 to n: set left = max(left, that stored value at r plus 1) and add r-left+1 to the answer. The answer can reach about 2x10^10, so use a 64-bit integer."
+    ],
+    "ja": [
+      "区間 [l,r] が無効になるのは、ある衝突ペア a<b について l <= a かつ b <= r であるとき、かつそのときに限ります。向きや重複はこの判定を変えません。",
+      "右端 r を固定したとき、b <= r であるような衝突のうち、小さいほうの端点の最大値を M とすると、有効な左端はちょうど l > M です。r が増えても M は増えるだけなので、1 回の走査の中で保持できます。",
+      "各ペアを a<b に正規化し、各 b について、それと対になる最大の a を保存します。右端 r を 1 から n まで走査し、left = max(left, r に保存された値 + 1) とし、r-left+1 を答えに加えます。答えは約 2x10^10 に達しうるので、64 ビット整数を使います。"
+    ],
+    "ko": [
+      "구간 [l,r]이 유효하지 않은 것은 정확히 l <= a이고 b <= r인 충돌 쌍 a<b가 있을 때입니다. 방향과 중복은 이 판정을 바꾸지 않습니다.",
+      "오른쪽 끝 r을 고정하고, b <= r인 충돌들의 작은 쪽 끝점 중 가장 큰 값을 M이라 하면 유효한 왼쪽 끝은 정확히 l > M입니다. M은 r이 증가해도 커지기만 하므로 한 번의 순회 중에 유지할 수 있습니다.",
+      "각 쌍을 a<b가 되도록 정규화하고 각 b에 대해 짝지어진 가장 큰 a를 저장합니다. 오른쪽 끝 r을 1부터 n까지 훑으며 left = max(left, r에 저장된 값 + 1)로 갱신하고 r-left+1을 답에 더합니다. 답은 약 2x10^10에 이를 수 있으므로 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Đoạn [l,r] không hợp lệ chính xác khi tồn tại một cặp xung đột a<b với l <= a và b <= r; hướng và các cặp trùng lặp không thay đổi phép kiểm tra này.",
+      "Với đầu phải r cố định, gọi M là đầu mút nhỏ hơn lớn nhất trong các xung đột có b <= r; các đầu trái hợp lệ chính xác là l > M. M chỉ tăng khi r tăng, nên có thể duy trì trong một lượt quét.",
+      "Chuẩn hóa mỗi cặp thành a<b và lưu, với mỗi b, giá trị a lớn nhất đi cùng nó. Quét đầu phải r từ 1 đến n: đặt left = max(left, giá trị đã lưu tại r cộng 1) và cộng r-left+1 vào đáp án. Đáp án có thể đạt khoảng 2x10^10, nên dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nNormalize each pair's endpoints to a<b and record the largest a for each b. When scanning the right end r, the left end must be at least the maximum smaller endpoint of all conflicts seen so far, plus one. Accumulate the number of possible left ends.\n\n## Correctness\n\nThe interval [l,r] is invalid if and only if there is a conflict a<b<=r with l<=a. So the valid left ends are exactly those with l>max(a), and that maximum can be maintained as r advances. Each interval is counted once, by its unique right end.\n\n## Complexity\n\nTime O(n+m), space O(n)."

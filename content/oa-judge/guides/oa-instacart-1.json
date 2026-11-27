@@ -13,6 +13,21 @@
       "Each query recolors a single position, and a position belongs only to the two adjacent pairs on its left and right; every other adjacent pair is unaffected.",
       "Keep the current color array and the total number of same-colored adjacent pairs. Before updating a position, subtract its old contribution with its left and right neighbours; after recoloring, add its new contribution.",
       "Start with the color array all 0, meaning uncolored; for each query (i, c): if a[i] is already colored, subtract one for each existing neighbour whose color equals a[i]; set a[i] = c; then add one for each neighbour whose color equals c (an uncolored neighbour is 0 and never equals a positive color); print the current total after each operation, separated by spaces."
+    ],
+    "ja": [
+      "各クエリは 1 つの位置の色を塗り替えるだけで、その位置が属する隣り合うペアは左右の 2 つだけです。他の隣り合うペアは影響を受けません。",
+      "現在の色の配列と、同じ色の隣り合うペアの総数を保持します。位置を更新する前に、左右の隣との古い寄与を引き、塗り替えた後で、新しい寄与を加えます。",
+      "色の配列を、色がついていないことを意味するすべて 0 で始めます。各クエリ (i, c) について、a[i] がすでに塗られている場合は、色が a[i] と等しい既存の隣 1 つにつき 1 を引きます。a[i] = c とし、色が c と等しい隣 1 つにつき 1 を加えます（色のない隣は 0 で、正の色とは決して等しくなりません）。各操作の後に現在の総数を、スペース区切りで出力します。"
+    ],
+    "ko": [
+      "각 쿼리는 한 위치만 다시 칠하며, 한 위치는 왼쪽과 오른쪽의 두 인접 쌍에만 속합니다. 그 밖의 인접 쌍은 영향을 받지 않습니다.",
+      "현재 색 배열과 같은 색의 인접 쌍의 총 개수를 유지합니다. 위치를 갱신하기 전에 왼쪽 및 오른쪽 이웃과의 예전 기여를 빼고, 다시 칠한 뒤에 새 기여를 더합니다.",
+      "색 배열을 모두 0(칠해지지 않음)으로 시작하고, 각 쿼리 (i, c)에 대해: a[i]가 이미 칠해져 있으면 색이 a[i]와 같은 이웃마다 하나씩 뺍니다. a[i] = c로 설정합니다. 그런 다음 색이 c와 같은 이웃마다 하나씩 더합니다(칠해지지 않은 이웃은 0이므로 양의 색과 같을 수 없음). 각 연산 후 현재 총합을 공백으로 구분해 출력합니다."
+    ],
+    "vi": [
+      "Mỗi truy vấn chỉ tô lại một vị trí duy nhất, và một vị trí chỉ thuộc hai cặp liền kề bên trái và bên phải của nó; mọi cặp liền kề khác không bị ảnh hưởng.",
+      "Giữ mảng màu hiện tại và tổng số cặp liền kề cùng màu. Trước khi cập nhật một vị trí, trừ đi đóng góp cũ của nó với các hàng xóm trái và phải; sau khi tô lại, cộng đóng góp mới của nó.",
+      "Bắt đầu với mảng màu toàn 0, nghĩa là chưa tô màu; với mỗi truy vấn (i, c): nếu a[i] đã được tô màu, trừ một cho mỗi hàng xóm tồn tại có màu bằng a[i]; đặt a[i] = c; sau đó cộng một cho mỗi hàng xóm có màu bằng c (hàng xóm chưa tô màu là 0 và không bao giờ bằng một màu dương); in tổng hiện tại sau mỗi thao tác, cách nhau bằng dấu cách."
     ]
   },
   "explanationEn": "## Approach\n\nMaintain the array and the number of adjacent same-colored pairs. Before an update, undo the old contribution of that position with its left and right neighbours; after changing the color, add the new contribution.\n\n## Correctness\n\nAn update can only change the two edges adjacent to that position; after removing the old contribution and adding the new one, all other edges are unchanged, so the count stays correct.\n\n## Complexity\n\nO(q) time, O(length) space."

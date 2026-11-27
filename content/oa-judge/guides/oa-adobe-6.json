@@ -13,6 +13,21 @@
       "More rounds can only help, so feasibility is monotone in the number of rounds and you can binary search the round count t. The key question is how to test a given t.",
       "Over t rounds every unfinished task gets at least y seconds per round, and being the main task adds x - y extra seconds. So a task needs ceil(max(0, time - t*y) / (x - y)) main slots, and the total must not exceed t.",
       "Use the sum of ceil(time / x) as an upper bound (every task finished by main slots alone); binary search t, add up the main slots each task needs and stop early once the sum exceeds t; shrink the upper bound when feasible, otherwise raise the lower bound. Watch for overflow in t*y: first check whether t*y already reaches time. The answer can reach 10^14, so use 64-bit integers."
+    ],
+    "ja": [
+      "ラウンドが増えても有利になるだけなので、実行可能性はラウンド数について単調であり、ラウンド数 t を二分探索できます。重要なのは、与えられた t をどう判定するかです。",
+      "t ラウンドの間、未完了のタスクはどれもラウンドごとに少なくとも y 秒を得て、メインタスクになると追加で x - y 秒を得ます。したがって、タスクに必要なメインの枠は ceil(max(0, time - t*y) / (x - y)) 個で、その合計が t を超えてはいけません。",
+      "上界には ceil(time / x) の合計を使います (すべてのタスクをメインの枠だけで終える場合)。t を二分探索し、各タスクに必要なメインの枠を合計して、合計が t を超えたら早期に打ち切ります。実行可能なら上界を縮め、そうでなければ下界を上げます。t*y のオーバーフローに注意し、先に t*y がすでに time に達しているかを確認してください。答えは 10^14 に達しうるので、64 ビット整数を使います。"
+    ],
+    "ko": [
+      "라운드가 많을수록 유리하기만 하므로 가능 여부는 라운드 수에 대해 단조이고, 라운드 수 t를 이분 탐색할 수 있습니다. 핵심은 주어진 t를 어떻게 검사하느냐입니다.",
+      "t 라운드 동안 완료되지 않은 모든 작업은 라운드마다 최소 y초를 받고, 주 작업이 되면 x - y초를 추가로 받습니다. 따라서 작업은 ceil(max(0, time - t*y) / (x - y))번의 주 작업 슬롯이 필요하며, 그 총합이 t를 넘지 않아야 합니다.",
+      "ceil(time / x)의 합을 상한으로 쓸 수 있습니다(모든 작업이 주 작업 슬롯만으로 끝나는 경우). t를 이분 탐색하며 각 작업에 필요한 주 작업 슬롯을 합하고, 합이 t를 넘으면 일찍 중단합니다. 가능하면 상한을 줄이고, 아니면 하한을 올립니다. t*y의 오버플로에 유의하십시오. 먼저 t*y가 이미 time에 도달했는지 확인하세요. 답은 10^14까지 커질 수 있으므로 64비트 정수를 사용하십시오."
+    ],
+    "vi": [
+      "Nhiều vòng hơn chỉ có lợi, nên tính khả thi là đơn điệu theo số vòng và có thể tìm kiếm nhị phân số vòng t. Câu hỏi then chốt là cách kiểm tra một giá trị t cho trước.",
+      "Qua t vòng, mỗi tác vụ chưa hoàn thành nhận ít nhất y giây mỗi vòng, và việc là tác vụ chính cộng thêm x - y giây. Vì vậy một tác vụ cần ceil(max(0, time - t*y) / (x - y)) lượt làm tác vụ chính, và tổng không được vượt quá t.",
+      "Dùng tổng của ceil(time / x) làm cận trên (mọi tác vụ được hoàn thành chỉ bằng các lượt làm tác vụ chính); tìm kiếm nhị phân t, cộng số lượt làm tác vụ chính mà mỗi tác vụ cần và dừng sớm khi tổng vượt quá t; thu hẹp cận trên khi khả thi, ngược lại nâng cận dưới. Chú ý tràn số ở t*y: trước hết kiểm tra xem t*y đã đạt tới time chưa. Đáp án có thể lên tới 10^14, nên dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nBinary search the number of rounds t. Each task first gets the baseline service t*y, and the rest needs ceil((time - t*y) / (x - y)) main-task slots; check whether the total is <= t.\n\n## Proof of correctness\n\nAny schedule of t rounds has only t main-task slots, so a total demand <= t is necessary. When it holds, give each task the slots it needs; if a task finishes early, handing its remaining slots to any still unfinished task only adds service and cannot prevent completion. So the test is sufficient, and feasibility is monotone in t. Processing every task with main slots only gives a finite upper bound, which also works when y = 0.\n\n## Complexity\n\nO(n log answer) time and O(n) input space; the answer can reach 10^14."

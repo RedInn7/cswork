@@ -13,6 +13,21 @@
       "Simulating forward, every global raise touches the whole array, which is too slow. Instead note that an item's final price depends only on its last point assignment and all the global lower bounds applied after it.",
       "Scan the operations backwards while keeping floor, the largest global lower bound seen so far. For each position, the first point assignment met in reverse is its last assignment in forward time, and floor at that moment is exactly the largest bound applied to it afterwards.",
       "Process in reverse: for a type 2 operation set floor = max(floor, v); for 1 x v when item x has no record yet, record max(v, floor). After the scan, a recorded position prints its record, and a position never assigned prints max(initial price, floor)."
+    ],
+    "ja": [
+      "前から順にシミュレーションすると、グローバルな引き上げのたびに配列全体に触れるので遅すぎます。代わりに、商品の最終価格は、その商品への最後の個別代入と、その後に適用されたすべてのグローバル下限だけで決まることに注目します。",
+      "操作を後ろから走査しながら、これまでに見た最大のグローバル下限 floor を保持します。各位置について、逆順で最初に出会う個別代入が、前向きの時間では最後の代入であり、その時点の floor がまさに、その後に適用された最大の下限です。",
+      "逆順に処理します。種類 2 の操作では floor = max(floor, v) とします。1 x v では、商品 x にまだ記録がなければ max(v, floor) を記録します。走査の後、記録のある位置はその記録を出力し、一度も代入されなかった位置は max(初期価格, floor) を出力します。"
+    ],
+    "ko": [
+      "앞에서부터 시뮬레이션하면 전역 상향이 매번 배열 전체를 건드려 너무 느립니다. 대신 한 품목의 최종 가격은 마지막 개별 대입과 그 이후에 적용된 모든 전역 하한에만 달려 있음에 주목하십시오.",
+      "연산을 뒤에서부터 훑으며 지금까지 본 가장 큰 전역 하한 floor를 유지합니다. 각 위치에서 역방향으로 처음 만나는 개별 대입이 정방향으로는 마지막 대입이며, 그 시점의 floor가 정확히 그 이후에 적용된 가장 큰 하한입니다.",
+      "역순으로 처리합니다. 타입 2 연산이면 floor = max(floor, v)로 두고, 1 x v에서 품목 x에 아직 기록이 없으면 max(v, floor)를 기록합니다. 훑은 뒤 기록이 있는 위치는 그 기록을 출력하고, 한 번도 대입되지 않은 위치는 max(초기 가격, floor)를 출력합니다."
+    ],
+    "vi": [
+      "Mô phỏng xuôi thì mỗi lần nâng sàn toàn cục đều chạm vào cả mảng, quá chậm. Thay vào đó hãy lưu ý rằng giá cuối cùng của một mặt hàng chỉ phụ thuộc vào lần gán điểm cuối cùng của nó và tất cả các cận dưới toàn cục được áp dụng sau đó.",
+      "Quét các thao tác ngược từ cuối trong khi giữ floor, cận dưới toàn cục lớn nhất đã gặp. Với mỗi vị trí, lần gán điểm đầu tiên gặp theo chiều ngược chính là lần gán cuối cùng theo thời gian xuôi, và floor tại thời điểm đó đúng bằng cận lớn nhất được áp dụng cho nó sau đó.",
+      "Xử lý ngược: với thao tác loại 2 đặt floor = max(floor, v); với 1 x v khi mặt hàng x chưa có bản ghi, ghi lại max(v, floor). Sau lượt quét, vị trí đã có bản ghi in bản ghi đó, còn vị trí chưa bao giờ được gán in max(giá ban đầu, floor)."
     ]
   },
   "explanationEn": "## Approach\n\nScan the operations in reverse while maintaining the largest lower bound of the later global raises; for each item we only need its last forward point assignment and the raises after it.\n\n## Correctness\n\nThe first point assignment met in reverse is the last forward assignment of that position, and the global operations after it affect its final value; if the position was never assigned, its initial price goes through every global lower bound. The two cases are computed exactly by the recorded array and by the initial values, respectively.\n\n## Complexity\n\nO(n+q) time and space."

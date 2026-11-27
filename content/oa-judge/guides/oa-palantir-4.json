@@ -13,6 +13,21 @@
       "A path's cost is not the sum of its weights but its largest edge weight; extending a path by an edge of weight w makes the new cost the larger of the old cost and w.",
       "This cost never decreases along a path, so the Dijkstra framework carries over: each time take the node with the smallest bottleneck value from a priority queue, whose value is then final, and relax its neighbours with max(current value, edge weight).",
       "If source equals destination, print 0. Otherwise build an undirected adjacency list, set best to infinity except best[source]=0, and push (0, source) into a min-heap. When popping (value, u), skip it if value differs from best[u]; if u is the destination, print the value; otherwise for each edge (u,v,w) compute max(value, w) and, if it is below best[v], update best[v] and push it. If the heap empties without reaching the destination, print -1."
+    ],
+    "ja": [
+      "経路のコストは重みの和ではなく、最大の辺の重みです。経路を重み w の辺で延長すると、新しいコストは、古いコストと w のうち大きい方になります。",
+      "このコストは経路に沿って減ることがないので、Dijkstra の枠組みがそのまま使えます。優先度付きキューからボトルネック値が最小のノードを取り出すたびにその値は確定し、その隣接ノードを max(現在の値, 辺の重み) で緩和します。",
+      "source が destination に等しければ 0 を出力します。そうでなければ、無向の隣接リストを構築し、best を best[source]=0 以外は無限大にして、(0, source) を最小ヒープに push します。(value, u) を取り出したとき、value が best[u] と異なればスキップし、u が destination ならその value を出力します。そうでなければ各辺 (u,v,w) について max(value, w) を計算し、それが best[v] より小さければ best[v] を更新して push します。destination に到達せずにヒープが空になれば、-1 を出力します。"
+    ],
+    "ko": [
+      "경로의 비용은 가중치의 합이 아니라 가장 큰 간선 가중치입니다. 경로를 가중치 w인 간선으로 확장하면 새 비용은 이전 비용과 w 중 큰 값이 됩니다.",
+      "이 비용은 경로를 따라 감소하지 않으므로 다익스트라의 틀을 그대로 쓸 수 있습니다. 매번 우선순위 큐에서 병목 값이 가장 작은 노드를 꺼내면 그 값이 최종이며, 이웃을 max(현재 값, 간선 가중치)로 완화합니다.",
+      "source가 destination과 같으면 0을 출력합니다. 아니면 무방향 인접 리스트를 만들고, best[source]=0을 제외한 모든 best를 무한대로 두고, (0, source)를 최소 힙에 넣습니다. (value, u)를 꺼낼 때 value가 best[u]와 다르면 건너뛰고, u가 destination이면 value를 출력하며, 아니면 각 간선 (u,v,w)에 대해 max(value, w)를 계산해 best[v]보다 작으면 갱신하고 push합니다. destination에 도달하지 못한 채 힙이 비면 -1을 출력합니다."
+    ],
+    "vi": [
+      "Chi phí của một đường đi không phải tổng các trọng số mà là trọng số cạnh lớn nhất; kéo dài đường đi thêm một cạnh có trọng số w làm chi phí mới bằng giá trị lớn hơn giữa chi phí cũ và w.",
+      "Chi phí này không bao giờ giảm dọc theo một đường đi, nên khung Dijkstra vẫn áp dụng được: mỗi lần lấy từ hàng đợi ưu tiên nút có giá trị thắt cổ chai nhỏ nhất, giá trị của nó khi đó là cuối cùng, và nới lỏng các láng giềng của nó bằng max(giá trị hiện tại, trọng số cạnh).",
+      "Nếu source bằng destination, in 0. Ngược lại dựng danh sách kề vô hướng, đặt best là vô cùng trừ best[source]=0, và đẩy (0, source) vào min-heap. Khi lấy ra (value, u), bỏ qua nếu value khác best[u]; nếu u là destination, in value; ngược lại với mỗi cạnh (u,v,w) tính max(value, w) và, nếu nhỏ hơn best[v], cập nhật best[v] và đẩy nó vào. Nếu heap rỗng mà chưa tới destination, in -1."
     ]
   },
   "explanationEn": "## Approach\n\nUse a Dijkstra-style priority queue, except that the path cost is not the sum of edge weights. Let `best[v]` be the minimum bottleneck value from source to v. When extending along an edge of weight w, the candidate value is `max(best[u], w)`; update if it is smaller.\n\n## Correctness\n\nExtending any path to v by one edge of weight w gives a bottleneck of exactly `max(old path bottleneck, w)`. The priority queue always takes the unsettled state with the smallest current bottleneck; since the extension function never decreases a path's bottleneck, going through other nodes afterwards cannot find a smaller state, so the update rule yields the optimal bottleneck for every reachable node. The undirected adjacency list allows travel in both directions; if destination is never reached, it is unreachable.\n\n## Complexity\n\nTime O((N+M) log N), space O(N+M)."

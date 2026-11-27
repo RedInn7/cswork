@@ -13,6 +13,21 @@
       "For a single flask type, each order should use the smallest marking that is not less than the order volume; any larger marking only adds waste, and orders do not affect each other.",
       "Sort the orders; a flask's markings are already ascending, so as orders grow, the position of the smallest fitting marking only moves right, and one monotone pointer finds it for every order.",
       "Sort the orders ascending. For each flask type, start a pointer at 0; for each order, advance the pointer to the first marking not less than the order. If it runs past the end, this type cannot serve all orders, so skip it; otherwise add marking minus order to its waste. Among feasible types take the smallest waste, breaking ties by the smaller index (update only on a strictly smaller waste while scanning in order); print -1 if none is feasible. Sum the waste in a 64-bit integer."
+    ],
+    "ja": [
+      "1 つのフラスコの種類について、各注文は注文量以上で最小の目盛りを使うのが最適です。それより大きい目盛りは無駄を増やすだけで、注文同士は互いに影響しません。",
+      "注文をソートします。フラスコの目盛りはすでに昇順なので、注文量が大きくなるにつれ、条件を満たす最小の目盛りの位置は右にしか動きません。したがって 1 本の単調なポインタですべての注文に対して求められます。",
+      "注文を昇順にソートします。各フラスコの種類についてポインタを 0 から始め、各注文について、注文量以上となる最初の目盛りまでポインタを進めます。末尾を越えたらその種類はすべての注文に対応できないので飛ばし、そうでなければ「目盛り − 注文量」を無駄に加えます。対応可能な種類の中から無駄が最小のものを選び、同点ならインデックスの小さいほうにします（順に走査し、厳密に小さいときだけ更新）。対応可能な種類がなければ -1 を出力します。無駄の合計は 64 ビット整数で計算してください。"
+    ],
+    "ko": [
+      "플라스크 종류 하나에서 각 주문은 주문량 이상인 가장 작은 눈금을 써야 합니다. 더 큰 눈금은 낭비만 늘리며, 주문들은 서로 영향을 주지 않습니다.",
+      "주문을 정렬합니다. 플라스크의 눈금은 이미 오름차순이므로 주문량이 커질수록 알맞은 가장 작은 눈금의 위치는 오른쪽으로만 이동하며, 단조 포인터 하나로 모든 주문에 대해 찾을 수 있습니다.",
+      "주문을 오름차순으로 정렬합니다. 각 플라스크 종류마다 포인터를 0에서 시작하고, 각 주문에 대해 포인터를 주문량 이상인 첫 눈금까지 전진시킵니다. 끝을 넘어가면 이 종류는 모든 주문을 처리할 수 없으므로 건너뛰고, 아니면 눈금에서 주문량을 뺀 값을 낭비량에 더합니다. 가능한 종류 중 낭비량이 가장 작은 것을 고르고, 동률이면 인덱스가 작은 쪽을 택합니다(순서대로 스캔하면서 낭비량이 엄격하게 작을 때만 갱신). 가능한 종류가 없으면 -1을 출력합니다. 낭비량의 합은 64비트 정수로 계산합니다."
+    ],
+    "vi": [
+      "Với một loại bình, mỗi đơn hàng nên dùng vạch đo nhỏ nhất không nhỏ hơn thể tích đơn hàng; vạch đo lớn hơn chỉ làm tăng lãng phí, và các đơn hàng không ảnh hưởng lẫn nhau.",
+      "Sắp xếp các đơn hàng; các vạch đo của bình đã tăng dần, nên khi đơn hàng tăng, vị trí của vạch đo nhỏ nhất vừa đủ chỉ dịch sang phải, và một con trỏ đơn điệu tìm được nó cho mọi đơn hàng.",
+      "Sắp xếp các đơn hàng tăng dần. Với mỗi loại bình, bắt đầu con trỏ ở 0; với mỗi đơn hàng, đẩy con trỏ đến vạch đo đầu tiên không nhỏ hơn đơn hàng. Nếu nó vượt quá cuối mảng thì loại này không phục vụ được mọi đơn hàng, nên bỏ qua; nếu không thì cộng vạch đo trừ đơn hàng vào lượng lãng phí. Trong các loại khả thi, lấy loại có lượng lãng phí nhỏ nhất, nếu hòa thì lấy chỉ số nhỏ hơn (chỉ cập nhật khi lãng phí nhỏ hơn hẳn trong lúc duyệt theo thứ tự); in -1 nếu không có loại nào khả thi. Cộng lượng lãng phí bằng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nFor each flask type, use a monotone pointer over its markings to find, for each order, the first marking not less than the order volume; accumulate the waste and take the minimum by `(waste, index)`. The independent oracle scans every marking linearly for each order.\n\n## Proof of correctness\n\nFor one flask, the first marking in ascending order that is not less than the order volume is the smallest capacity that order can use; any larger marking only increases the waste. Summing this minimum difference order by order, then ranking the flasks that can serve every order by waste and index, gives the global optimum.\n\n## Complexity\n\nEach flask's markings are ascending integers; flask capacities and orders are positive integers, 0<=f<=1000, and the total number of orders and markings is <=2x10^5.\n\nO(n log n + f*n + M) time and O(n + M) space, where M is the total number of markings.\n\n## Reference implementation\n\n```python\ndef solve(raw):\n z=raw.splitlines();p=0;n=int(z[p]);p+=1;req=list(map(int,z[p].split()));p+=1;req.sort();f=int(z[p]);p+=1;best=None\n for i in range(f):\n  m=int(z[p]);p+=1;a=list(map(int,z[p].split()))[:m];p+=1;j=0;cost=0;ok=True\n  for x in req:\n   while j<m and a[j]<x:j+=1\n   if j==m:ok=False;break\n   cost+=a[j]-x\n  if ok and (best is None or (cost,i)<best):best=(cost,i)\n return str(-1 if best is None else best[1])\n```"

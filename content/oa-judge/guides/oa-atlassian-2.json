@@ -13,6 +13,21 @@
       "A bouquet must consist of adjacent flowers and flowers cannot be removed to create new neighbors, so looking only at the last bouquet ending at the current position gives a prefix dynamic program.",
       "Let dp[i] be the best revenue from the first i flowers. Flower i is either unused (dp[i-1]), or ends a 01 or 10 bouquet with the previous flower (dp[i-2] + q), or ends a 000 bouquet with the previous two (dp[i-3] + p).",
       "Compute from left to right, taking the maximum of the three cases and keeping only the last three dp values; the answer is dp[n]."
+    ],
+    "ja": [
+      "花束は隣り合う花からなり、花を取り除いて新しい隣接を作ることはできないので、現在位置で終わる最後の花束だけを見れば、接頭辞に対する動的計画法になります。",
+      "dp[i] を最初の i 本の花からの最大収益とします。花 i は、使わない(dp[i-1])か、直前の花と 01 または 10 の花束を終える(dp[i-2] + q)か、直前の2本と 000 の花束を終える(dp[i-3] + p)かのいずれかです。",
+      "左から右へ、3つの場合の最大値を取りながら計算し、直近3つの dp の値だけを保持します。答えは dp[n] です。"
+    ],
+    "ko": [
+      "꽃다발은 인접한 꽃으로 이루어져야 하고 꽃을 제거하여 새 이웃을 만들 수 없으므로, 현재 위치에서 끝나는 마지막 꽃다발만 보면 접두사 동적 계획법이 됩니다.",
+      "dp[i]를 처음 i송이로 얻을 수 있는 최대 수익이라 합시다. i번째 꽃은 사용하지 않거나(dp[i-1]), 앞의 꽃과 함께 01 또는 10 꽃다발의 끝이 되거나(dp[i-2] + q), 앞의 두 송이와 함께 000 꽃다발의 끝이 됩니다(dp[i-3] + p).",
+      "왼쪽에서 오른쪽으로 계산하며 세 경우의 최댓값을 취하고 마지막 dp 값 세 개만 유지합니다. 답은 dp[n]입니다."
+    ],
+    "vi": [
+      "Một bó phải gồm các bông hoa kề nhau và không được bỏ hoa để tạo hàng xóm mới, nên chỉ cần xét bó cuối cùng kết thúc tại vị trí hiện tại là ra một quy hoạch động theo tiền tố.",
+      "Gọi dp[i] là doanh thu tốt nhất từ i bông hoa đầu tiên. Bông hoa i hoặc không dùng (dp[i-1]), hoặc kết thúc một bó 01 hay 10 cùng bông hoa trước (dp[i-2] + q), hoặc kết thúc một bó 000 cùng hai bông trước (dp[i-3] + p).",
+      "Tính từ trái sang phải, lấy giá trị lớn nhất của ba trường hợp và chỉ giữ ba giá trị dp cuối; đáp án là dp[n]."
     ]
   },
   "explanationEn": "## Approach\n\nA prefix DP can skip the last flower, or choose a valid bouquet made of the last two or last three flowers, keeping a rolling window of the previous 3 states.\n\n## Proof of Correctness\n\nIf an optimal plan does not use the last flower, it comes from the previous prefix; otherwise the bouquet containing the last flower must be an allowed pattern of the last two or last three flowers, and after removing that bouquet the remaining plan must be optimal. The recurrence enumerates all mutually exclusive possibilities, and induction completes the proof.\n\n## Complexity\n\nO(n) time, O(1) DP space, and O(n) for the input string."

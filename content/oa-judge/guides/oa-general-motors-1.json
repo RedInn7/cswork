@@ -13,6 +13,21 @@
       "If the message fits within K, print it unchanged; otherwise you may only keep a prefix of complete words followed by a space and an ellipsis, and the whole thing must not exceed K characters.",
       "The longer the prefix, the longer \"prefix + space + ...\" becomes, so the length grows monotonically with the number of words. Try adding words one at a time from the first; stop at the first one that overflows, and what you have is the longest feasible prefix.",
       "If the message length is at most K, print it; otherwise split it into words and try them in order: join the chosen words and the new word with spaces, append \" ...\" (4 characters), and stop if the total exceeds K, otherwise accept the word; finally print \"...\" if no word was accepted, else the accepted words followed by \" ...\"."
+    ],
+    "ja": [
+      "メッセージが K 文字以内に収まるなら、そのまま出力します。そうでなければ、完全な単語からなる接頭辞の後にスペースと省略記号を付けた形だけが許され、全体が K 文字を超えてはいけません。",
+      "接頭辞が長いほど「接頭辞 + スペース + ...」も長くなるので、長さは単語数に対して単調に増加します。最初の単語から 1 つずつ追加してみて、最初に超過した時点で止めれば、それまでが最長の実現可能な接頭辞です。",
+      "メッセージの長さが K 以下ならそのまま出力します。そうでなければ単語に分割して順に試します。選んだ単語と新しい単語をスペースで連結し、\" ...\"（4 文字）を付けて、合計が K を超えたら止め、そうでなければその単語を採用します。最後に、採用した単語がなければ \"...\" を、あれば採用した単語の後に \" ...\" を付けて出力します。"
+    ],
+    "ko": [
+      "메시지가 K 이내에 들어가면 그대로 출력합니다. 그렇지 않으면 완전한 단어의 접두사와 그 뒤의 공백 및 줄임표만 남길 수 있으며, 전체가 K자를 넘으면 안 됩니다.",
+      "접두사가 길수록 \"접두사 + 공백 + ...\"의 길이도 길어지므로, 길이는 단어 수에 대해 단조 증가합니다. 첫 단어부터 하나씩 추가해 보다가 처음 넘치는 곳에서 멈추면, 그때까지 가진 것이 가능한 가장 긴 접두사입니다.",
+      "메시지 길이가 K 이하이면 그대로 출력합니다. 그렇지 않으면 단어로 나누어 순서대로 시도합니다. 선택한 단어들과 새 단어를 공백으로 잇고 \" ...\"(4자)를 붙여 총 길이가 K를 넘으면 멈추고, 아니면 그 단어를 받아들입니다. 마지막으로 받아들인 단어가 없으면 \"...\"를, 있으면 받아들인 단어들 뒤에 \" ...\"를 붙여 출력합니다."
+    ],
+    "vi": [
+      "Nếu tin nhắn vừa trong K ký tự thì in nguyên văn; ngược lại bạn chỉ được giữ một tiền tố gồm các từ nguyên vẹn theo sau là một dấu cách và dấu ba chấm, và toàn bộ không được vượt quá K ký tự.",
+      "Tiền tố càng dài thì \"tiền tố + dấu cách + ...\" càng dài, nên độ dài tăng đơn điệu theo số từ. Thử thêm từng từ một bắt đầu từ từ đầu tiên; dừng ở từ đầu tiên làm vượt quá, và những gì bạn đang có là tiền tố khả thi dài nhất.",
+      "Nếu độ dài tin nhắn không quá K thì in nó; ngược lại tách thành các từ và thử theo thứ tự: nối các từ đã chọn và từ mới bằng dấu cách, thêm \" ...\" (4 ký tự), và dừng nếu tổng vượt quá K, ngược lại chấp nhận từ đó; cuối cùng in \"...\" nếu không từ nào được chấp nhận, hoặc các từ đã chấp nhận theo sau là \" ...\"."
     ]
   },
   "explanationEn": "## Approach\n\nTry adding complete words one at a time, and keep only the longest prefix whose length with the ellipsis does not exceed K.\n\n## Proof of correctness\n\nThe prefix length increases monotonically, so once the first prefix overflows, every longer prefix is infeasible too; the whole-word rule forbids cutting inside a word.\n\n## Complexity\n\nO(|message|) time, O(|message|) space."

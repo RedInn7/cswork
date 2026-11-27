@@ -13,6 +13,21 @@
       "At most one investor can be met per day, so schedule day by day from early to late; on a given day the possible investors are those whose window has started, has not ended, and who have not been met yet.",
       "Greedy: each day, choose among the currently available investors the one with the earliest last day; when nobody is available, jump straight to the next earliest start day instead of stepping through days up to 10⁹.",
       "Sort by start day and keep the available investors' last days in a min-heap; if the heap is empty, move day to the next start day; push everyone with start ≤ day, pop expired entries with last day < day; if the heap is non-empty, pop its top, add one to the answer and advance day by one; repeat until everyone is processed. Print 0 when n = 0."
+    ],
+    "ja": [
+      "1日に面会できる投資家は最大1人なので、日ごとに早いほうから遅いほうへ日程を組みます。ある日に面会しうるのは、期間がすでに始まっていて、まだ終わっておらず、まだ面会していない投資家です。",
+      "貪欲法です。毎日、その時点で面会可能な投資家のうち、最終日が最も早い人を選びます。誰も面会可能でなければ、10⁹ までの日を1日ずつ進めるのではなく、次に早い開始日へ直接ジャンプします。",
+      "開始日で整列し、面会可能な投資家の最終日を最小ヒープに保持します。ヒープが空なら day を次の開始日に進めます。開始 ≤ day の全員を push し、最終日 < day の期限切れのエントリを pop します。ヒープが空でなければ先頭を pop して答えに 1 を加え、day を 1 進めます。全員を処理し終えるまで繰り返します。n = 0 のときは 0 を出力します。"
+    ],
+    "ko": [
+      "하루에 투자자는 최대 한 명만 만날 수 있으므로 이른 날부터 늦은 날 순으로 하루씩 일정을 잡습니다. 어느 날 가능한 투자자는 가능 기간이 이미 시작되었고, 끝나지 않았으며, 아직 만나지 않은 사람들입니다.",
+      "탐욕: 매일 현재 가능한 투자자 중 마지막 날이 가장 이른 사람을 고릅니다. 가능한 사람이 없으면 10⁹까지의 날을 하나씩 넘기지 말고 다음으로 이른 시작일로 곧바로 건너뜁니다.",
+      "시작일 기준으로 정렬하고 가능한 투자자의 마지막 날을 최소 힙에 보관합니다. 힙이 비어 있으면 day를 다음 시작일로 옮기고, 시작일 ≤ day인 모든 사람을 넣고, 마지막 날 < day인 만료된 항목을 꺼내 버립니다. 힙이 비어 있지 않으면 맨 위를 꺼내 답에 1을 더하고 day를 하나 늘립니다. 모든 사람이 처리될 때까지 반복합니다. n = 0이면 0을 출력합니다."
+    ],
+    "vi": [
+      "Mỗi ngày chỉ gặp được tối đa một nhà đầu tư, nên xếp lịch từng ngày từ sớm đến muộn; vào một ngày nhất định, các nhà đầu tư khả dĩ là những người có khoảng rảnh đã bắt đầu, chưa kết thúc, và chưa được gặp.",
+      "Tham lam: mỗi ngày, trong số các nhà đầu tư hiện có thể gặp, chọn người có ngày cuối sớm nhất; khi không có ai, nhảy thẳng tới ngày bắt đầu sớm nhất kế tiếp thay vì bước qua từng ngày đến 10⁹.",
+      "Sắp xếp theo ngày bắt đầu và giữ các ngày cuối của những nhà đầu tư khả dụng trong một min-heap; nếu heap rỗng, chuyển day sang ngày bắt đầu kế tiếp; đẩy vào mọi người có ngày bắt đầu ≤ day, lấy ra các mục đã hết hạn có ngày cuối < day; nếu heap không rỗng, lấy phần tử đầu ra, cộng một vào đáp án và tăng day lên một; lặp lại cho đến khi mọi người đã được xử lý. In 0 khi n = 0."
     ]
   },
   "explanationEn": "## Approach\n\nAdd investors as candidates by their available start day; each day, pick the candidate whose window ends earliest; if there is currently no candidate, jump to the next start day.\n\n## Proof of correctness\n\nIf some day is given to an interval ending later while an interval ending earlier is kept, swapping the two does not reduce the number of meetings scheduled and leaves no fewer options for later. So taking the earliest deadline each day is a safe greedy choice; expired intervals can never be scheduled again.\n\n## Complexity\n\nO(n log n) time, O(n) space.\n\n## Source and additions\n\nhttps://oamaster.com/docs/companies/weride#9-meetup-schedule; the closed intervals and the daily limit in the statement are explicit; the original text lacks constraints, so this site adds upper bounds on dates and counts."

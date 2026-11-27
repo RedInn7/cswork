@@ -18,6 +18,16 @@
       "Dù mảng được sắp xếp thế nào, khi đi từ vị trí của phần tử nhỏ nhất đến vị trí của phần tử lớn nhất, tổng các giá trị tuyệt đối của hiệu dọc đường đi ít nhất bằng max trừ min.",
       "Vì vậy đáp án không thể nhỏ hơn max-min, và sắp xếp mảng không giảm làm các hiệu kề nhau triệt tiêu dần (telescoping) thành đúng max-min, đạt đúng cận dưới đó.",
       "Không cần sắp xếp hay in cách sắp xếp: chỉ cần một lượt duyệt để tìm giá trị lớn nhất và nhỏ nhất, hiệu của chúng chính là đáp án."
+    ],
+    "ja": [
+      "配列をどう並べても、最小値の位置から最大値の位置まで辿ると、その間の差の絶対値の和は少なくとも最大値 - 最小値になります。",
+      "したがって答えは max-min を下回れません。非減少順に並べると隣接差が打ち消し合って (望遠鏡和)ちょうど max-min になり、この下界に届きます。",
+      "ソートも並べ方の出力も不要です。1 回の走査で最大値と最小値を求め、その差が答えです。"
+    ],
+    "ko": [
+      "배열을 어떻게 배치하더라도 최솟값의 위치에서 최댓값의 위치까지 걸을 때 지나는 인접 차이의 절댓값 합은 최소 max 빼기 min 이상입니다.",
+      "따라서 답은 max-min보다 작을 수 없고, 배열을 비내림차순으로 배치하면 인접 차이가 망원급수처럼 소거되어 정확히 max-min이 되므로 이 하한에 도달합니다.",
+      "정렬이나 배치 출력은 필요 없습니다. 한 번 순회하며 최댓값과 최솟값을 구하고 그 차이를 출력하면 됩니다."
     ]
   },
   "explanationEn": "## Approach\n\nThe answer is the maximum minus the minimum, which takes a single scan.\n\n## Proof of correctness\n\nIn any arrangement, the sum of absolute differences along the path between the minimum and the maximum is at least their difference, so the total is not less than max-min. Arranging in non-decreasing order makes the differences telescope to exactly max-min, reaching the lower bound.\n\n## Complexity\n\nO(n) time; the reference reads the input in O(n) space, which streaming can reduce to O(1)."

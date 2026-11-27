@@ -13,6 +13,21 @@
       "The compressed result depends only on how the string splits into maximal runs of one letter, and each run independently becomes one piece of the output.",
       "Scan from left to right, find where each run of identical letters starts and ends, and choose the output form by the run length.",
       "Use two pointers: i is the start of a run and j moves right until the letter changes, so the length is L = j - i. For L = 1 output just the letter; for L > 1 output the letter followed by L in decimal (possibly several digits, such as a12). Concatenate the pieces and print once. Time O(n)."
+    ],
+    "ja": [
+      "圧縮結果は、文字列を同じ文字の極大な連続部分にどう分割できるかだけで決まり、各連続部分はそれぞれ独立に出力の1片になります。",
+      "左から右へ走査し、同じ文字の連続部分がどこから始まりどこで終わるかを見つけて、連続部分の長さに応じて出力の形を選びます。",
+      "2つのポインタを使います。i は連続部分の開始位置で、j は文字が変わるまで右へ進み、長さは L = j - i です。L = 1 なら文字だけを出力し、L > 1 なら文字に続けて L を10進数で出力します（a12 のように複数桁になることがあります）。各片を連結して、最後に一度だけ出力します。時間 O(n) です。"
+    ],
+    "ko": [
+      "압축 결과는 문자열을 한 글자로 이루어진 최대 연속 구간으로 나눈 방식에만 의존하며, 각 구간은 독립적으로 출력의 한 조각이 됩니다.",
+      "왼쪽에서 오른쪽으로 훑으며 같은 글자의 연속 구간이 어디서 시작해서 어디서 끝나는지 찾고, 구간 길이에 따라 출력 형태를 고릅니다.",
+      "두 포인터를 사용합니다. i는 구간의 시작이고 j는 글자가 바뀔 때까지 오른쪽으로 이동하므로 길이는 L = j - i입니다. L = 1이면 글자만 출력하고, L > 1이면 글자 뒤에 L을 십진수로 붙입니다(a12처럼 여러 자리일 수 있음). 조각들을 이어 붙여 한 번에 출력합니다. 시간 O(n)."
+    ],
+    "vi": [
+      "Kết quả nén chỉ phụ thuộc vào cách xâu tách thành các đoạn cực đại của cùng một chữ cái, và mỗi đoạn độc lập trở thành một phần của đầu ra.",
+      "Quét từ trái sang phải, tìm nơi mỗi đoạn các chữ cái giống nhau bắt đầu và kết thúc, và chọn dạng đầu ra theo độ dài đoạn.",
+      "Dùng hai con trỏ: i là đầu của một đoạn và j di chuyển sang phải cho đến khi chữ cái đổi, nên độ dài là L = j - i. Với L = 1 chỉ in chữ cái; với L > 1 in chữ cái theo sau là L ở dạng thập phân (có thể nhiều chữ số, như a12). Nối các phần lại và in một lần. Thời gian O(n)."
     ]
   },
   "explanationEn": "## Approach\n\nScan left to right and cut the string into **maximal** runs of one letter: from position `i`, move `j` right until the first character different from `s[i]`. Then `s[i..j-1]` is a run of length `j - i`. Output just the letter if the length is 1, otherwise the letter followed by the length, and continue from `j`.\n\n## Proof of correctness\n\nThe statement merges runs of adjacent equal letters, so each run must be maximal: all its letters are equal and its neighbours (if any) differ from it. The inner loop stops at the first different character, so every run is uniform; the next run starts at `j` with `s[j] != s[j-1]`, so neighbouring runs differ and nothing is split or merged wrongly. The runs are contiguous, cover the whole string without overlap, and are emitted in order, which is exactly the compressed form the statement defines.\n\n## Complexity\n\n`i` and `j` only move right, so each character is touched a constant number of times: O(n) time. Pieces are collected in a list and joined once: O(n) space.\n\n## Pitfalls\n\n- A run of length 1 gets no count (`a`, not `a1`).\n- Counts can have several digits (e.g. `a12`); print the full decimal number.\n- A letter that reappears later, not adjacent, starts a new run, like the final `a` in `aabbccca`.\n- Strip the trailing newline from the input."

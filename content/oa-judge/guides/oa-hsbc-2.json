@@ -13,6 +13,21 @@
       "One operation swaps positions row and col, then the next pair inward, until the pointers meet; the effect is reversing the whole segment [row, col].",
       "The segments never overlap, so the reversals are independent and their order does not matter, and position K is covered by at most one segment. N can be 10^9, so you cannot simulate an array.",
       "Go through all segments and find the one with l ≤ K ≤ r; after reversing, position K holds the soldier from position l+r−K, so the answer is l+r−K. If no segment covers K the answer is K. When reading, note that the second line gives the number of operations and the count of numbers per line (always 2)."
+    ],
+    "ja": [
+      "1 回の操作は、位置 row と col を入れ替え、続いて 1 つ内側のペアを入れ替え、ポインタが出会うまで続けます。その効果は、区間 [row, col] 全体の反転です。",
+      "区間は決して重ならないので、反転は互いに独立で順序は関係なく、位置 K を含む区間は高々 1 つです。N は 10^9 になりうるので、配列をシミュレーションすることはできません。",
+      "すべての区間を調べ、l ≤ K ≤ r を満たすものを見つけます。反転後、位置 K には位置 l+r−K の兵士がいるので、答えは l+r−K です。K を含む区間がなければ答えは K です。読み込むときは、2 行目が操作の回数と各行の数の個数(常に 2)であることに注意してください。"
+    ],
+    "ko": [
+      "한 번의 연산은 위치 row와 col을 교환하고, 포인터가 만날 때까지 그다음 안쪽 쌍을 교환합니다. 그 효과는 구간 [row, col] 전체를 뒤집는 것입니다.",
+      "구간은 서로 겹치지 않으므로 뒤집기는 서로 독립이고 순서는 상관없으며, 위치 K는 최대 하나의 구간에만 포함됩니다. N이 10^9까지 될 수 있으므로 배열을 시뮬레이션할 수 없습니다.",
+      "모든 구간을 훑어 l ≤ K ≤ r인 구간을 찾으세요. 뒤집은 후 위치 K에는 위치 l+r−K의 병사가 있으므로 답은 l+r−K입니다. K를 포함하는 구간이 없으면 답은 K입니다. 입력을 읽을 때 둘째 줄이 연산 횟수와 한 줄당 수의 개수(항상 2)를 준다는 점에 유의하세요."
+    ],
+    "vi": [
+      "Một thao tác đổi chỗ vị trí row và col, rồi đến cặp kế tiếp phía trong, cho đến khi hai con trỏ gặp nhau; kết quả là đảo ngược cả đoạn [row, col].",
+      "Các đoạn không bao giờ chồng lấn, nên các phép đảo ngược độc lập nhau và thứ tự không quan trọng, và vị trí K được bao bởi nhiều nhất một đoạn. N có thể là 10^9, nên không thể mô phỏng mảng.",
+      "Duyệt qua mọi đoạn và tìm đoạn có l ≤ K ≤ r; sau khi đảo ngược, vị trí K chứa người lính từ vị trí l+r−K, nên đáp án là l+r−K. Nếu không đoạn nào bao K thì đáp án là K. Khi đọc, lưu ý dòng thứ hai cho số thao tác và số lượng số trên mỗi dòng (luôn là 2)."
     ]
   },
   "explanationEn": "## Problem\n\nN soldiers stand in a row in ID order 1..N. Operation i first swaps positions row_i and col_i, then positions row_i+1 and col_i−1, and so on inward; the effect is reversing the whole segment [row_i,col_i]. Every position is covered by at most one operation's segment. Find the ID of the soldier at position K after all operations.\n\n## Idea\n\nThe segments do not overlap, so the reversals do not affect each other and their order does not matter. Just find the segment [l,r] covering K: after the reversal, position K holds the soldier originally at position l+r−K, whose ID is l+r−K; if no segment covers K, the answer is K. N can reach 10^9, so the array cannot really be simulated.\n\n## Correctness\n\nSwapping the symmetric pairs (l+m, r−m) until the two pointers meet is exactly a segment reversal, and the new content of position K (l≤K≤r) comes from position l+r−K. Non-overlapping segments guarantee that K belongs to at most one segment, and that the elements in that segment still have their initial IDs before the operation.\n\n## Complexity\n\nO(Q).\n\n## Independent verification\n\nThe oracle really simulates the pairwise swaps of every operation on small N (starting from m=0 and swapping inward as described), then reads position K; it does not use the l+r−K formula. It enumerates every set of non-overlapping segments for N=1..5 and every K, and runs the reference program on each. The wrong solutions cover swapping only the two ends, excluding the endpoints, an off-by-one mapping, and handling only the first operation."

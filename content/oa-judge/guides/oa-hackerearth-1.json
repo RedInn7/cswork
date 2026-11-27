@@ -13,6 +13,21 @@
       "The earliest day a window is fully occupied is the move-in day of its last occupied house, i.e. the maximum move-in day inside the window.",
       "So first turn the permutation into each house's move-in day; the answer is the minimum, over all windows of M consecutive houses, of the window's maximum move-in day.",
       "Record day[x]=i when house x is occupied on day i. Then compute every length-M window maximum with a monotonic deque: pop from the back indices whose day is not larger than the current one, pop from the front indices that left the window, and once the window is full update the answer with the front's day."
+    ],
+    "ja": [
+      "ウィンドウが初めてすべて埋まる日は、その中で最後に入居した家の入居日、すなわちウィンドウ内の入居日の最大値です。",
+      "そこで、まず順列を各家の入居日に変換します。答えは、M 軒の連続した家のすべてのウィンドウにわたる、そのウィンドウの入居日の最大値の最小値です。",
+      "家 x が日 i に入居したら day[x]=i と記録します。次に、単調 deque で長さ M のすべてのウィンドウの最大値を計算します。後ろから、現在のものより入居日が大きくない添字を取り除き、前から、ウィンドウを出た添字を取り除きます。ウィンドウが満たされたら、先頭の入居日で答えを更新します。"
+    ],
+    "ko": [
+      "한 윈도우가 완전히 입주되는 가장 이른 날은 마지막으로 입주하는 집의 입주 날짜, 즉 윈도우 안의 입주 날짜 최댓값입니다.",
+      "따라서 먼저 순열을 각 집의 입주 날짜로 바꿉니다. 정답은 연속한 M개의 집으로 이루어진 모든 윈도우에 대한 윈도우 내 입주 날짜 최댓값의 최솟값입니다.",
+      "집 x가 i일에 입주하면 day[x]=i로 기록합니다. 그런 다음 단조 덱으로 길이 M인 모든 윈도우의 최댓값을 구합니다. 뒤에서는 날짜가 현재 값보다 크지 않은 인덱스를 꺼내고, 앞에서는 윈도우를 벗어난 인덱스를 꺼내며, 윈도우가 가득 차면 앞쪽 인덱스의 날짜로 정답을 갱신합니다."
+    ],
+    "vi": [
+      "Ngày sớm nhất để một cửa sổ có đủ người ở là ngày chuyển vào của căn nhà có người ở cuối cùng, tức là ngày chuyển vào lớn nhất trong cửa sổ.",
+      "Vì vậy trước hết hãy biến hoán vị thành ngày chuyển vào của từng căn nhà; đáp án là giá trị nhỏ nhất, trên mọi cửa sổ gồm M căn nhà liên tiếp, của ngày chuyển vào lớn nhất trong cửa sổ.",
+      "Ghi day[x]=i khi căn nhà x có người ở vào ngày i. Sau đó tính giá trị lớn nhất của mọi cửa sổ độ dài M bằng deque đơn điệu: pop từ cuối các chỉ số có day không lớn hơn giá trị hiện tại, pop từ đầu các chỉ số đã ra khỏi cửa sổ, và khi cửa sổ đầy thì cập nhật đáp án bằng day của phần tử ở đầu."
     ]
   },
   "explanationEn": "## Idea\n\nRecord the move-in day of each house. For every window of M consecutive houses take the maximum move-in day, then take the minimum over all windows.\n\n## Proof of correctness\n\nThe earliest day on which a window is fully occupied equals the move-in day of the last house to be occupied in it, i.e. the window's maximum move-in day. Enumerating all windows and taking the minimum gives exactly the first day the condition holds.\n\n## Complexity\n\nO(N) time, O(N) space."

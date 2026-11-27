@@ -13,6 +13,21 @@
       "Digits are numbered from the ones digit, and you compare the digits of num1 + num2 and givenSum at the same position. When the lengths differ, the shorter number counts as 0 in the higher positions.",
       "There is no need to convert to strings and align them: take the ones digit of each number (mod 10), compare, then divide both by 10. This naturally moves from low to high positions, and the shorter number keeps giving 0 once it runs out.",
       "Let c = num1 + num2 (at most about 2 * 10^18, which fits in a 64-bit integer) and start index i at 0. While c or givenSum is non-zero: if c mod 10 differs from givenSum mod 10, output i; otherwise divide both by 10 and increase i. If the loop ends normally the numbers are identical, so output -1."
+    ],
+    "ja": [
+      "桁は1の位から数え、同じ位置にある num1 + num2 と givenSum の桁を比較します。長さが異なるときは、短い方の数の上位の位置は 0 として扱います。",
+      "文字列に変換して揃える必要はありません。それぞれの数の1の位（mod 10）を取って比較し、両方を10で割ります。これで自然に下位から上位へ進み、短い方の数は桁が尽きた後も 0 を返し続けます。",
+      "c = num1 + num2（最大で約 2 * 10^18 で、64 ビット整数に収まります）とし、位置 i を 0 から始めます。c または givenSum が 0 でない間: c mod 10 が givenSum mod 10 と異なれば i を出力し、そうでなければ両方を10で割って i を増やします。ループが正常に終了すれば2つの数は同一なので、-1 を出力します。"
+    ],
+    "ko": [
+      "자릿수는 일의 자리부터 번호가 매겨지며, num1 + num2와 givenSum의 같은 위치의 자릿수를 비교합니다. 길이가 다르면 더 짧은 수는 상위 위치에서 0으로 취급합니다.",
+      "문자열로 변환해 정렬할 필요가 없습니다. 각 수의 일의 자리(mod 10)를 꺼내 비교한 뒤 둘 다 10으로 나눕니다. 이렇게 하면 자연스럽게 낮은 자리에서 높은 자리로 진행되며, 더 짧은 수는 자릿수가 다 떨어진 뒤에도 계속 0을 줍니다.",
+      "c = num1 + num2 (최대 약 2 * 10^18이므로 64비트 정수에 들어감)로 두고 인덱스 i를 0에서 시작합니다. c 또는 givenSum이 0이 아닌 동안: c mod 10이 givenSum mod 10과 다르면 i를 출력하고, 같으면 둘 다 10으로 나누고 i를 늘립니다. 루프가 정상적으로 끝나면 두 수는 같으므로 -1을 출력합니다."
+    ],
+    "vi": [
+      "Các chữ số được đánh số từ hàng đơn vị, và bạn so sánh các chữ số của num1 + num2 và givenSum ở cùng một vị trí. Khi độ dài khác nhau, số ngắn hơn được coi là 0 ở các vị trí cao hơn.",
+      "Không cần chuyển thành xâu rồi căn chỉnh: lấy chữ số hàng đơn vị của mỗi số (mod 10), so sánh, rồi chia cả hai cho 10. Cách này tự nhiên đi từ vị trí thấp đến cao, và số ngắn hơn tiếp tục cho 0 khi hết chữ số.",
+      "Đặt c = num1 + num2 (tối đa khoảng 2 * 10^18, vừa trong số nguyên 64 bit) và chỉ số i bắt đầu từ 0. Khi c hoặc givenSum khác không: nếu c mod 10 khác givenSum mod 10 thì in i; nếu không thì chia cả hai cho 10 và tăng i. Nếu vòng lặp kết thúc bình thường thì hai số giống hệt nhau, nên in -1."
     ]
   },
   "explanationEn": "## Approach\n\nRepeatedly take the ones digit of both numbers and compare them, then divide each by 10; return the current index at the first difference.\n\n## Proof of Correctness\n\nEach round processes exactly the current lowest digit, so the comparison moves strictly from the ones digit toward the higher digits. If the loop finishes, neither number has digits left, and after padding missing digits with 0 the two are completely identical.\n\n## Complexity\n\nTime O(log(max(num1+num2,givenSum))), space O(1)."

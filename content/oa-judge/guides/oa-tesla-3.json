@@ -13,6 +13,21 @@
       "Treat L as +1 and R as -1. A segment has equally many L and R exactly when its sum is 0, and at the end of every segment of a full partition the prefix sum from the start must be 0.",
       "So the number of segments cannot exceed the number of positions where the prefix sum is 0. Conversely, cutting at every position where the prefix sum returns to 0 makes every segment valid and reaches that bound.",
       "Keep balance = 0 and answer = 0. For each character add 1 for L or subtract 1 for R, and whenever balance returns to 0, increment answer. Output answer."
+    ],
+    "ja": [
+      "L を +1、R を -1 として扱います。区間の L と R の個数が等しいことは、その和がちょうど 0 であることと同じで、完全な分割のすべての区間の末尾では、先頭からの累積和が 0 になっている必要があります。",
+      "したがって区間の数は、累積和が 0 になる位置の個数を超えられません。逆に、累積和が 0 に戻るすべての位置で区切れば、すべての区間が有効になり、この上界に到達します。",
+      "balance = 0、answer = 0 とします。各文字について、L なら 1 を足し、R なら 1 を引き、balance が 0 に戻るたびに answer を増やします。answer を出力します。"
+    ],
+    "ko": [
+      "L을 +1, R을 -1로 봅니다. 구간의 L과 R 개수가 같은 것은 그 합이 정확히 0일 때이며, 전체 분할에서 모든 구간의 끝에서는 처음부터의 누적 합이 0이어야 합니다.",
+      "따라서 구간의 수는 누적 합이 0인 위치의 수를 넘을 수 없습니다. 반대로 누적 합이 0으로 돌아오는 모든 위치에서 끊으면 모든 구간이 유효하며 그 상한에 도달합니다.",
+      "balance = 0, answer = 0으로 둡니다. 각 문자에 대해 L이면 1을 더하고 R이면 1을 빼며, balance가 0으로 돌아올 때마다 answer를 1 늘립니다. answer를 출력합니다."
+    ],
+    "vi": [
+      "Coi L là +1 và R là -1. Một đoạn có số L và R bằng nhau đúng khi tổng của nó bằng 0, và ở cuối mỗi đoạn của một cách chia đầy đủ, tổng tiền tố từ đầu phải bằng 0.",
+      "Vì vậy số đoạn không thể vượt quá số vị trí mà tổng tiền tố bằng 0. Ngược lại, cắt tại mọi vị trí mà tổng tiền tố quay về 0 làm cho mọi đoạn hợp lệ và đạt đúng cận đó.",
+      "Giữ balance = 0 và answer = 0. Với mỗi ký tự cộng 1 nếu là L hoặc trừ 1 nếu là R, và mỗi khi balance quay về 0, tăng answer. In answer."
     ]
   },
   "explanationEn": "## Approach\n\nCount L as 1 and R as -1, scan the prefix sums, and cut a segment every time the sum returns to 0.\n\n## Correctness\n\nIn any valid partition covering the whole string from the start, the global prefix sum at the end of every segment must be 0, so the number of segments is at most the number of zero prefixes. Cutting at every zero prefix makes the difference between adjacent cuts 0, so each segment is valid and all characters are covered, reaching the upper bound.\n\n## Complexity\n\nO(n) time and O(1) extra space."

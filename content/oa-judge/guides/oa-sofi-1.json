@@ -13,6 +13,21 @@
       "If the k-th processor can receive x jobs, it can also receive fewer: feasibility is monotone in x, so binary search the largest x.",
       "With x fixed, to use as few jobs as possible, decrease by 1 at every step away from processor k on both sides until reaching 1, then keep 1. This is the minimum-total valid assignment, so you only need to check whether it is at most m.",
       "Binary search x in [1, m]. need(x) = x + side(k - 1, x) + side(n - k, x), where side(cnt, x) puts x - 1, x - 2, ... on the first full = min(cnt, x - 1) positions (an arithmetic series) and 1 on each of the remaining cnt - full positions. If need(x) <= m, record x and search right, otherwise search left. Use 64-bit integers."
+    ],
+    "ja": [
+      "k 番目のプロセッサが x 個のジョブを受け取れるなら、それより少なくても受け取れます。実現可能性は x について単調なので、実現可能な最大の x を二分探索します。",
+      "x を固定したとき、ジョブを最小限にするには、プロセッサ k から離れるにつれて、両側で 1 に達するまで毎ステップ 1 ずつ減らし、その後は 1 にします。これが合計最小の有効な割り当てなので、それが m 以下かどうかを確認すれば十分です。",
+      "[1, m] で x を二分探索します。need(x) = x + side(k - 1, x) + side(n - k, x) で、side(cnt, x) は最初の full = min(cnt, x - 1) 個の位置に x - 1、x - 2、… (等差数列) を置き、残りの cnt - full 個の位置にそれぞれ 1 を置いたものです。need(x) <= m なら x を記録して右を探索し、そうでなければ左を探索します。64 ビット整数を使います。"
+    ],
+    "ko": [
+      "k번째 프로세서가 x개의 작업을 받을 수 있다면 그보다 적게도 받을 수 있습니다. x에 대해 가능 여부가 단조이므로 가능한 가장 큰 x를 이분 탐색합니다.",
+      "x를 고정했을 때 작업을 최소로 쓰려면, 프로세서 k에서 양쪽으로 멀어질수록 1에 이를 때까지 하나씩 줄이고 이후에는 1을 유지합니다. 이것이 총합이 최소인 유효한 배정이므로, 이 합이 m 이하인지만 확인하면 됩니다.",
+      "x를 [1, m]에서 이분 탐색합니다. need(x) = x + side(k - 1, x) + side(n - k, x)이며, side(cnt, x)는 처음 full = min(cnt, x - 1)개의 위치에 x - 1, x - 2, ...를 두고(등차수열) 나머지 cnt - full개의 위치에는 각각 1을 둡니다. need(x) <= m이면 x를 기록하고 오른쪽을 탐색하며, 아니면 왼쪽을 탐색합니다. 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Nếu bộ xử lý thứ k có thể nhận x công việc thì nó cũng có thể nhận ít hơn: tính khả thi đơn điệu theo x, nên hãy tìm kiếm nhị phân x lớn nhất.",
+      "Với x cố định, để dùng ít công việc nhất, giảm 1 ở mỗi bước xa dần bộ xử lý k về cả hai phía cho đến khi đạt 1, rồi giữ 1. Đây là cách phân công hợp lệ có tổng nhỏ nhất, nên bạn chỉ cần kiểm tra xem nó có nhỏ hơn hoặc bằng m không.",
+      "Tìm kiếm nhị phân x trong [1, m]. need(x) = x + side(k - 1, x) + side(n - k, x), trong đó side(cnt, x) đặt x - 1, x - 2, ... lên full = min(cnt, x - 1) vị trí đầu tiên (một cấp số cộng) và 1 lên mỗi vị trí trong cnt - full vị trí còn lại. Nếu need(x) <= m, ghi nhận x và tìm sang phải, nếu không thì tìm sang trái. Dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nBinary search the number of jobs x on the given processor. With x fixed, to use as few jobs as possible, put x - 1, x - 2, ... on the neighbouring processors to the left and right in turn, and once the value drops to 1 put 1 on every remaining position. Compute the minimum sum of each side with an arithmetic series. If the minimum total does not exceed m, x is feasible; this condition is monotone in x, so binary search the largest feasible value.\n\n## Proof of correctness\n\nWith adjacent differences at most 1 and the given value x, each step outward forces the processor's job count to be at least the previous value minus 1, and at least 1. The construction above takes this lower bound at every position, which gives the minimum total over all feasible configurations. So x is feasible if and only if this minimum sum is <= m; feasibility is monotone in x, and the binary search finds the maximum.\n\n## Complexity\n\nO(log m) time and O(1) space.\n\n## Source notes\n\nThe problem statement follows a fixed OAMaster snapshot; the standard input/output protocol is this site's addition, and the original site is not claimed to provide it."

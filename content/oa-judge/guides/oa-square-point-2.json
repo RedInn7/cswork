@@ -13,6 +13,21 @@
       "Sort the product names first. All products starting with a given prefix then form one contiguous block of the sorted array, and the first item of that block is the lexicographically smallest.",
       "For each prefix of the search word, binary search the first product that is not smaller than the prefix, then walk forward collecting products while they still start with the prefix, at most 3 of them.",
       "Sort the products. For i = 1..len(word), let prefix = word[:i], take j = lower_bound(prefix), and while j < n, p[j] starts with prefix and fewer than 3 are collected, collect p[j] and advance j. Print - if nothing was collected, otherwise the collected names joined by spaces."
+    ],
+    "ja": [
+      "まず商品名をソートします。すると、ある接頭辞で始まるすべての商品は、ソート済みの配列の中で連続した 1 つのブロックを成し、そのブロックの先頭が辞書順で最小です。",
+      "検索語の各接頭辞について、その接頭辞以上の最初の商品を二分探索で見つけ、商品が接頭辞で始まっている間、前方に進みながら最大 3 個を集めます。",
+      "商品をソートします。i = 1..len(word) について、prefix = word[:i]、j = lower_bound(prefix) とし、j < n かつ p[j] が prefix で始まり、集めた数が 3 未満の間、p[j] を集めて j を進めます。何も集まらなければ - を、そうでなければ集めた名前をスペース区切りで出力します。"
+    ],
+    "ko": [
+      "먼저 상품 이름을 정렬합니다. 그러면 주어진 접두사로 시작하는 모든 상품은 정렬된 배열에서 하나의 연속된 블록을 이루며, 그 블록의 첫 항목이 사전순으로 가장 작습니다.",
+      "검색어의 각 접두사에 대해 접두사보다 작지 않은 첫 상품을 이분 탐색한 뒤, 상품이 여전히 그 접두사로 시작하는 동안 앞으로 걸어가며 최대 3개를 모읍니다.",
+      "상품을 정렬합니다. i = 1..len(word)에 대해 prefix = word[:i]로 두고 j = lower_bound(prefix)를 구한 뒤, j < n이고 p[j]가 prefix로 시작하며 모은 것이 3개 미만인 동안 p[j]를 모으고 j를 전진시킵니다. 모은 것이 없으면 -를 출력하고, 있으면 모은 이름을 공백으로 이어 출력합니다."
+    ],
+    "vi": [
+      "Sắp xếp tên sản phẩm trước. Khi đó mọi sản phẩm bắt đầu bằng một tiền tố cho trước tạo thành một khối liên tiếp trong mảng đã sắp xếp, và mục đầu tiên của khối đó nhỏ nhất theo thứ tự từ điển.",
+      "Với mỗi tiền tố của từ tìm kiếm, tìm kiếm nhị phân sản phẩm đầu tiên không nhỏ hơn tiền tố, rồi đi tiếp về phía trước thu thập các sản phẩm khi chúng còn bắt đầu bằng tiền tố, tối đa 3 sản phẩm.",
+      "Sắp xếp các sản phẩm. Với i = 1..len(word), đặt prefix = word[:i], lấy j = lower_bound(prefix), và khi j < n, p[j] bắt đầu bằng prefix và đã thu thập ít hơn 3 sản phẩm, thu thập p[j] và tăng j. In - nếu không thu thập được gì, ngược lại in các tên đã thu thập nối bằng dấu cách."
     ]
   },
   "explanationEn": "## Approach\n\nSort the products first, then search each prefix in turn and collect the first 3 matches.\n\n## Proof of correctness\n\nAfter sorting, when all products are scanned in order, the first match found is the lexicographically smallest one; continuing the scan takes at most three items, so the output for each prefix is exactly what the problem asks for.\n\n## Complexity\n\nLet n be the number of products and m the length of the search word. Sorting is O(n log n), and each prefix is located by binary search and checks at most 3 results, so the time is O(n log n + m log n), not counting the cost of character comparisons.\n\n## Source notes\n\nThis site compiled the standard input/output protocol separately; the original site is not claimed to provide it."

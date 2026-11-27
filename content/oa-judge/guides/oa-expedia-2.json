@@ -13,6 +13,21 @@
       "To decide whether song x beats song y you only need the number of users who rank x above y. If a user's rank of a song can be looked up in O(1), the comparison is easy.",
       "First turn each user's preference permutation into a rank table pos[u][s]. For every pair of different songs (x, y), count the users v with pos[u][x] < pos[u][y]: x beats y if 2v > n, or 2v == n and x < y. With n, m <= 200, O(n * m^2) is fine.",
       "Accumulate wins[x], the number of songs each song beats, then sort the song ids by (-wins, id) and print them separated by spaces."
+    ],
+    "ja": [
+      "曲 x が曲 y に勝つかどうかを判定するには、x を y より上位にしているユーザーの数だけが必要です。ユーザーごとの曲の順位を O(1) で引ければ、比較は簡単です。",
+      "まず各ユーザーの好みの順列を順位表 pos[u][s] に変換します。異なる曲の組 (x, y) ごとに、pos[u][x] < pos[u][y] となるユーザー v を数えます。2v > n、または 2v == n かつ x < y のとき x は y に勝ちます。n, m <= 200 なので O(n * m^2) で十分です。",
+      "wins[x]、つまり各曲が勝つ曲の数を累積し、曲の id を (-wins, id) でソートして、スペース区切りで出力します。"
+    ],
+    "ko": [
+      "노래 x가 노래 y를 이기는지 판단하려면 x를 y보다 높게 평가한 사용자의 수만 알면 됩니다. 사용자가 매긴 노래의 순위를 O(1)에 조회할 수 있다면 비교는 쉽습니다.",
+      "먼저 각 사용자의 선호 순열을 순위 표 pos[u][s]로 바꿉니다. 서로 다른 모든 노래 쌍 (x, y)에 대해 pos[u][x] < pos[u][y]인 사용자 v의 수를 세어, 2v > n이거나 2v == n이고 x < y이면 x가 y를 이깁니다. n, m <= 200이므로 O(n * m^2)이면 충분합니다.",
+      "wins[x], 즉 각 노래가 이기는 노래의 수를 누적한 뒤 노래 id를 (-wins, id)로 정렬하고 공백으로 구분해 출력하세요."
+    ],
+    "vi": [
+      "Để quyết định bài hát x có thắng bài hát y hay không, chỉ cần số người dùng xếp x trên y. Nếu tra được thứ hạng của một bài hát của một người dùng trong O(1) thì phép so sánh rất dễ.",
+      "Trước hết biến hoán vị ưa thích của mỗi người dùng thành bảng thứ hạng pos[u][s]. Với mỗi cặp bài hát khác nhau (x, y), đếm số người dùng v có pos[u][x] < pos[u][y]: x thắng y nếu 2v > n, hoặc 2v == n và x < y. Với n, m <= 200, O(n * m^2) là đủ.",
+      "Cộng dồn wins[x], số bài hát mà mỗi bài thắng, rồi sắp xếp các id bài hát theo (-wins, id) và in ra cách nhau bằng dấu cách."
     ]
   },
   "explanationEn": "## Approach\n\nFirst convert each user's preference permutation into the rank of every song. For every pair of different songs (x,y), count the users who prefer x, and decide by the majority rule and the id tie rule whether x beats y. After counting how many songs each song beats, sort by that count descending and by id ascending.\n\n## Correctness\n\nThe rank table determines exactly whether each user prefers x over y. Examining every other song one by one and applying the majority/tie rules given in the problem, the accumulated value is exactly the number of songs beaten in the definition. The final sort key is identical to the one the problem specifies, so the ranking obtained is unique.\n\n## Complexity\n\nO(nm^2 + m log m) time and O(nm) space; this site limits n and m to 200."

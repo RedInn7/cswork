@@ -13,6 +13,21 @@
       "The range spans at most 366 days and each period yields at most 48 half-hour slots per day, so the candidates can be enumerated directly day by day and period by period. The subtle part is that the slot grid starts at each period's own start, not on the hour.",
       "For each day, find its weekday and take that weekday's working periods. From each period's start, produce a candidate every 30 minutes; it must lie entirely inside the period, start no earlier than the range start and end no later than the range end. Different periods can produce the same slot, so deduplicate.",
       "Convert date-times to absolute minutes for easy comparison. For each day and period, let cur run from the start while cur + 30 <= period end, and collect cur when cur >= range start and cur + 30 <= range end; 24:00 means the end of the day, i.e. the next midnight. Sort and deduplicate, then print the count and each slot as YYYY-MM-DD HH:MM,YYYY-MM-DD HH:MM."
+    ],
+    "ja": [
+      "範囲は高々 366 日で、各時間帯は 1 日に高々 48 個の 30 分枠を生成するので、候補は日ごと、時間帯ごとに直接列挙できます。細かい点は、枠の格子が正時ではなく、各時間帯自身の開始から始まることです。",
+      "各日について曜日を求め、その曜日の勤務時間帯を取り出します。各時間帯の開始から 30 分ごとに候補を作り、時間帯の内側に完全に収まり、範囲の開始以降に始まり、範囲の終了以前に終わるものだけを残します。異なる時間帯が同じ枠を生成することがあるので、重複を除きます。",
+      "日時を絶対的な分に変換すると比較しやすくなります。各日と各時間帯について、cur を開始から動かし、cur + 30 <= 時間帯の終了 である間続け、cur >= 範囲の開始 かつ cur + 30 <= 範囲の終了 のとき cur を集めます。24:00 は日の終わり、つまり翌日の午前 0 時を意味します。ソートして重複を除き、件数と、各枠を YYYY-MM-DD HH:MM,YYYY-MM-DD HH:MM の形式で出力します。"
+    ],
+    "ko": [
+      "범위는 최대 366일에 걸치고 각 시간대는 하루에 최대 48개의 30분 슬롯을 만들므로, 후보를 날짜별, 시간대별로 직접 나열할 수 있습니다. 까다로운 부분은 슬롯 격자가 정각이 아니라 각 시간대 자신의 시작에서 출발한다는 점입니다.",
+      "각 날짜의 요일을 구하고 그 요일의 근무 시간대를 가져옵니다. 각 시간대의 시작에서 30분마다 후보를 만듭니다. 후보는 시간대 안에 완전히 들어가야 하고, 범위 시작보다 일찍 시작하지 않아야 하며, 범위 종료보다 늦게 끝나지 않아야 합니다. 서로 다른 시간대가 같은 슬롯을 만들 수 있으므로 중복을 제거하세요.",
+      "날짜-시간을 절대 분 단위로 변환하면 비교가 쉽습니다. 각 날짜와 시간대에 대해 cur를 시작에서부터 cur + 30 <= 시간대 종료인 동안 진행하고, cur >= 범위 시작이고 cur + 30 <= 범위 종료이면 cur를 수집합니다. 24:00은 하루의 끝, 즉 다음 날 자정을 뜻합니다. 정렬하고 중복을 제거한 뒤 개수와 각 슬롯을 YYYY-MM-DD HH:MM,YYYY-MM-DD HH:MM 형식으로 출력하세요."
+    ],
+    "vi": [
+      "Khoảng ngày trải dài tối đa 366 ngày và mỗi khoảng làm việc sinh tối đa 48 khung giờ nửa tiếng mỗi ngày, nên có thể liệt kê trực tiếp các ứng viên theo từng ngày và từng khoảng. Điểm tinh tế là lưới khung giờ bắt đầu từ điểm bắt đầu của chính mỗi khoảng, không phải từ giờ chẵn.",
+      "Với mỗi ngày, xác định thứ trong tuần và lấy các khoảng làm việc của thứ đó. Từ điểm bắt đầu của mỗi khoảng, sinh một ứng viên mỗi 30 phút; nó phải nằm trọn trong khoảng, bắt đầu không sớm hơn điểm bắt đầu của khoảng ngày và kết thúc không muộn hơn điểm kết thúc của khoảng ngày. Các khoảng khác nhau có thể sinh cùng một khung giờ, nên phải loại trùng.",
+      "Chuyển các ngày giờ thành số phút tuyệt đối để dễ so sánh. Với mỗi ngày và mỗi khoảng, cho cur chạy từ điểm bắt đầu khi cur + 30 <= điểm kết thúc của khoảng, và thu cur khi cur >= điểm bắt đầu của khoảng ngày và cur + 30 <= điểm kết thúc của khoảng ngày; 24:00 nghĩa là cuối ngày, tức là nửa đêm hôm sau. Sắp xếp và loại trùng, rồi in số lượng và từng khung giờ dưới dạng YYYY-MM-DD HH:MM,YYYY-MM-DD HH:MM."
     ]
   },
   "explanationEn": "## Approach\n\nDay by day, take the working periods of that weekday and enumerate candidates from each period's start in 30-minute steps. Keep only the complete slots whose start is not earlier than the given range start and whose end is not later than the range end, then deduplicate and sort.\n\n## Correctness\n\nEvery valid slot belongs to some working period and starts an integer multiple of 30 minutes after that period's start, so the enumeration is sure to examine it. The boundary filters express exactly that the slot lies completely inside the given range. Conversely, a slot that passes both boundary checks after enumeration satisfies every condition. Deduplicating with a set handles overlapping or repeated periods, and sorting gives the required time order.\n\n## Complexity\n\nLet D be the number of dates, w the number of working periods and s the number of candidate slots. O(48Dw + s log s) time and O(s) space."

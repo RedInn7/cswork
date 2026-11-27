@@ -13,6 +13,21 @@
       "In a good subsequence every character that appears has the same count k, and each non-empty good subsequence has exactly one such k, so count by k and add up.",
       "For a fixed k the characters are independent: a character with cnt≥k occurrences is either skipped or contributes k of its cnt positions, in C(cnt,k) ways. Multiply 1+C(cnt,k) over those characters and subtract the one choice that picks nothing.",
       "Count the 26 letters and precompute factorials and inverse factorials modulo 1000000007 (inverses via Fermat's little theorem) to get binomial coefficients in O(1). For k from 1 to the largest count, multiply C(cnt,k)+1 over the letters with count at least k, subtract 1, and add it to the answer, all modulo the prime."
+    ],
+    "ja": [
+      "良い部分列では、出現する各文字の個数がすべて同じ k で、空でない良い部分列にはそのような k がちょうど 1 つ存在します。そこで k ごとに数えて足し合わせます。",
+      "k を固定すると、文字どうしは独立です。cnt≥k 回出現する文字は、使わないか、cnt 個の位置から k 個を選ぶ (C(cnt,k) 通り) かのどちらかです。これらの文字について 1+C(cnt,k) を掛け合わせ、何も選ばない 1 通りを引きます。",
+      "26 文字の出現数を数え、階乗と逆階乗を 1000000007 を法として前計算します (逆元はフェルマーの小定理で求めます)。これで二項係数が O(1) で得られます。k を 1 から最大の出現数まで動かし、k 回以上出現する文字について C(cnt,k)+1 を掛け合わせて 1 を引き、答えに足します。すべて素数を法として計算します。"
+    ],
+    "ko": [
+      "좋은 부분 수열에서는 등장하는 모든 문자의 개수가 같은 k이고, 비어 있지 않은 좋은 부분 수열마다 그러한 k는 정확히 하나이므로 k별로 세어 더하면 됩니다.",
+      "k를 고정하면 문자들은 서로 독립입니다. cnt≥k번 등장하는 문자는 건너뛰거나, cnt개의 위치 중 k개를 C(cnt,k)가지 방법으로 고릅니다. 그런 문자들에 대해 1+C(cnt,k)를 곱하고 아무것도 고르지 않는 한 가지 경우를 뺍니다.",
+      "26개 문자의 개수를 세고, 팩토리얼과 역팩토리얼을 모듈러 1000000007로 미리 계산하여(역원은 페르마의 소정리 이용) 이항계수를 O(1)에 구합니다. k를 1부터 최대 개수까지 돌며 개수가 k 이상인 문자들에 대해 C(cnt,k)+1을 곱하고, 1을 뺀 뒤 답에 더합니다. 모두 소수 모듈러로 계산합니다."
+    ],
+    "vi": [
+      "Trong một dãy con tốt, mọi ký tự xuất hiện đều có cùng số lần k, và mỗi dãy con tốt khác rỗng có đúng một giá trị k như vậy, nên đếm theo k rồi cộng lại.",
+      "Với k cố định, các ký tự độc lập với nhau: một ký tự có cnt≥k lần xuất hiện hoặc bị bỏ qua, hoặc đóng góp k trong số cnt vị trí của nó, theo C(cnt,k) cách. Nhân 1+C(cnt,k) trên các ký tự đó rồi trừ đi một cách chọn duy nhất là không chọn gì.",
+      "Đếm 26 chữ cái và tính trước giai thừa cùng nghịch đảo giai thừa theo modulo 1000000007 (nghịch đảo dùng định lý nhỏ Fermat) để có hệ số nhị thức trong O(1). Với k từ 1 đến số đếm lớn nhất, nhân C(cnt,k)+1 trên các chữ cái có số đếm ít nhất k, trừ 1, rồi cộng vào đáp án, mọi phép tính đều theo modulo số nguyên tố."
     ]
   },
   "explanationEn": "## Approach\n\nEnumerate the common frequency k. For each character that appears at least k times, either choose its indices in C(count,k) ways or leave the character out; the option where nothing is chosen must be excluded.\n\n## Proof of correctness\n\nEvery non-empty good subsequence has a unique positive frequency k. For a fixed k, the index choices of different characters are independent, so the product enumerates every subsequence in which each present character appears exactly k times; subtracting the empty choice leaves only non-empty ones. Summing over all k counts nothing twice.\n\n## Complexity\n\nTime O(n+26·maxCount), space O(n)."

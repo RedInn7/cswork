@@ -13,6 +13,21 @@
       "In a same-color connected group of size at least 3, every bubble either has two same-color neighbors itself or is next to such a bubble, so the whole group explodes; groups of size 1 or 2 have no bubble that explodes.",
       "So the task becomes: on the original board, find every same-color 4-connected group and mark the groups of size at least 3 as exploding. Do not modify the board while marking, because the explosion happens simultaneously.",
       "Find the groups with BFS or DFS and mark them; after all marking is done, treat marked cells as empty. Then for each column, collect the surviving bubbles from the bottom up, pack them against the bottom in the same relative order and fill the cells above with 0. Print the matrix row by row. Time O(rows * cols)."
+    ],
+    "ja": [
+      "大きさが 3 以上の同じ色の連結グループでは、どのバブルも自分自身が同じ色の隣接を 2 つ持つか、そのようなバブルの隣にあるため、グループ全体が爆発します。大きさが 1 や 2 のグループには、爆発するバブルがありません。",
+      "したがって問題は次のように言い換えられます。元の盤面で、同じ色の 4 方向連結なグループをすべて見つけ、大きさが 3 以上のグループに爆発の印を付けます。爆発は同時に起こるので、印を付ける間は盤面を変更しないでください。",
+      "グループは BFS または DFS で見つけて印を付けます。印付けがすべて終わったら、印のあるマスを空きとして扱います。その後、各列について残ったバブルを下から順に集め、同じ相対順序のまま下に詰め、その上のマスを 0 で埋めます。行列を 1 行ずつ出力します。計算量は O(rows * cols) です。"
+    ],
+    "ko": [
+      "같은 색으로 연결된 크기 3 이상의 그룹에서는 모든 버블이 자신이 같은 색 이웃을 두 개 가지고 있거나, 그런 버블과 인접해 있으므로 그룹 전체가 폭발합니다. 크기 1 또는 2인 그룹에는 폭발하는 버블이 없습니다.",
+      "따라서 문제는 원래 보드에서 같은 색으로 4방향 연결된 모든 그룹을 찾아 크기 3 이상인 그룹을 폭발 대상으로 표시하는 것입니다. 폭발은 동시에 일어나므로 표시하는 동안에는 보드를 수정하지 마세요.",
+      "BFS 또는 DFS로 그룹을 찾아 표시하고, 모든 표시가 끝난 뒤 표시된 칸을 빈 칸으로 취급합니다. 그다음 각 열에서 남은 버블을 아래에서 위로 모아 같은 상대 순서로 바닥에 붙이고 그 위 칸은 0으로 채웁니다. 행렬을 행 단위로 출력하세요. 시간 복잡도는 O(rows * cols)입니다."
+    ],
+    "vi": [
+      "Trong một nhóm cùng màu liên thông có kích thước ít nhất 3, mỗi bong bóng hoặc tự nó có hai bong bóng kề cùng màu, hoặc nằm cạnh một bong bóng như vậy, nên cả nhóm đều nổ; các nhóm kích thước 1 hoặc 2 không có bong bóng nào nổ.",
+      "Vậy bài toán trở thành: trên bàn chơi ban đầu, tìm mọi nhóm cùng màu liên thông 4 hướng và đánh dấu các nhóm có kích thước ít nhất 3 là nổ. Đừng sửa bàn chơi trong lúc đánh dấu, vì vụ nổ xảy ra đồng thời.",
+      "Tìm các nhóm bằng BFS hoặc DFS và đánh dấu; sau khi đánh dấu xong, coi các ô đã đánh dấu là trống. Rồi với mỗi cột, thu thập các bong bóng còn lại từ dưới lên, dồn chúng sát đáy giữ nguyên thứ tự tương đối và điền 0 vào các ô phía trên. In ma trận theo từng hàng. Thời gian O(rows * cols)."
     ]
   },
   "explanationEn": "## Approach\n\nFind same-color 4-neighbor connected groups on the original board: every group of size at least 3 is marked to explode as a whole. All marks are decided simultaneously from the original board, and then each column is stably compacted so the remaining bubbles sit at the bottom.\n\n## Correctness\n\nWithin a same-color connected group, every non-leaf node has at least two same-color neighbors and is therefore eligible; every leaf node is adjacent to some non-leaf node and is therefore marked together as a same-color neighbor of an eligible bubble. So whole groups of size at least 3, and only those, are marked; groups of size 1 or 2 have no eligible bubble. The problem requires a simultaneous explosion, so the group-marking phase does not modify the board; the column compaction afterwards keeps the relative order of the surviving bubbles and packs them against the bottom edge.\n\n## Complexity\n\nLet R = rows and C = cols. Time O(RC), space O(RC)."

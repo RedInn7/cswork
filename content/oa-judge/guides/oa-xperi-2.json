@@ -13,6 +13,21 @@
       "The process is fully determined: it is subtraction-based Euclid; but values reach 10¹⁸, so subtracting one step at a time is far too slow.",
       "Merge consecutive subtractions of the same number: with a > b, if a mod b = r ≠ 0, do a div b subtractions at once to reach (r, b); if r = 0, only a/b − 1 subtractions are needed to reach (b, b) and stop.",
       "Loop until a == b: keep a as the larger value, compute q = a/b and r = a%b; if r is 0 add q−1 to the cost and set a = b, otherwise add q and set a = r; print the total cost (up to 10¹⁸−1, so use 64-bit integers)."
+    ],
+    "ja": [
+      "処理は完全に決まっており、引き算に基づくユークリッドの互除法です。ただし値は 10¹⁸ に達するので、1 ステップずつ引くのでは遅すぎます。",
+      "同じ数の連続した引き算をまとめます。a > b のとき、a mod b = r ≠ 0 なら a div b 回の引き算を一度に行って (r, b) にし、r = 0 なら (b, b) になるまでの a/b − 1 回だけ引いて終了します。",
+      "a == b になるまでループします。a を大きい方に保ち、q = a/b と r = a%b を計算します。r が 0 なら q−1 をコストに加えて a = b とし、そうでなければ q を加えて a = r とします。最後に合計コストを出力します (最大で 10¹⁸−1 なので、64 ビット整数を使ってください)。"
+    ],
+    "ko": [
+      "과정이 완전히 정해져 있어 뺄셈 기반 유클리드 호제법과 같습니다. 그러나 값이 10¹⁸까지 가므로 한 단계씩 빼는 것은 너무 느립니다.",
+      "같은 수를 연속으로 빼는 과정을 묶습니다. a > b일 때 a mod b = r ≠ 0이면 a div b번의 뺄셈을 한 번에 수행해 (r, b)에 도달하고, r = 0이면 a/b − 1번만 빼면 (b, b)가 되어 멈춥니다.",
+      "a == b가 될 때까지 반복합니다. a가 더 큰 값이 되도록 유지하고 q = a/b, r = a%b를 계산합니다. r이 0이면 비용에 q−1을 더하고 a = b로 두며, 아니면 q를 더하고 a = r로 둡니다. 총 비용을 출력합니다(최대 10¹⁸−1이므로 64비트 정수를 사용하세요)."
+    ],
+    "vi": [
+      "Quá trình hoàn toàn xác định: đó là thuật toán Euclid dạng phép trừ; nhưng giá trị lên tới 10¹⁸ nên trừ từng bước một là quá chậm.",
+      "Gộp các phép trừ liên tiếp cùng một số: với a > b, nếu a mod b = r ≠ 0 thì thực hiện a div b phép trừ cùng lúc để đạt (r, b); nếu r = 0 thì chỉ cần a/b − 1 phép trừ để đạt (b, b) rồi dừng.",
+      "Lặp đến khi a == b: giữ a là giá trị lớn hơn, tính q = a/b và r = a%b; nếu r bằng 0 thì cộng q−1 vào chi phí và đặt a = b, ngược lại cộng q và đặt a = r; in tổng chi phí (tối đa 10¹⁸−1 nên dùng số nguyên 64-bit)."
     ]
   },
   "explanationEn": "## Problem\n\nTwo positive integers A and B. Each operation: if A>B then A=A−B; if B>A then B=B−A; each costs 1. Find the total cost to make A=B.\n\n## Approach\n\nThe operations are deterministic: this is subtraction-based Euclid. A and B can reach 10^18, so subtracting one step at a time is too slow; merge consecutive subtractions of the same number: let a≥b; if a mod b=r≠0, doing a div b subtractions in a row gives (r,b); if r=0, only a/b−1 subtractions are needed to reach (b,b) and stop. Repeat until the two are equal.\n\n## Correctness\n\nWhen a≥b and a>b, every operation subtracts b from a until a<b or a=b, and the merged count is exactly the quotient (one fewer when it divides evenly, because it stops once a=b). After that the two numbers swap roles, exactly like Euclid's algorithm, so the total number of rounds is O(log).\n\n## Complexity\n\nO(log min(A,B)). The answer can reach 10^18−1; use 64-bit unsigned integers.\n\n## Independent verification\n\nThe oracle simulates the subtractions one at a time (only for data up to 10^4) without merging by quotient; large data is computed separately by a recursive Python sum over quotients. All combinations of A,B∈[1,40] were enumerated and the reference program was actually run on each. Wrong solutions cover counting one extra step when it divides evenly, counting only Euclid steps, reading with 32 bits, and misusing the formula A/g+B/g−2."

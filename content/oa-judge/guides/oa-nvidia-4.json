@@ -13,6 +13,21 @@
       "There are only N-1 split positions: cut after element i for i from 0 to N-2, so both sides are non-empty.",
       "Compute the total first; at a cut, the left sum is a prefix sum and the right sum is the total minus that prefix, so nothing needs to be re-summed.",
       "Scan the array adding each element to the left sum, and for the first N-1 positions check whether the left sum is strictly greater than the total minus the left sum; count it if so. Equal sums do not count."
+    ],
+    "ja": [
+      "分割位置は N-1 個だけです。i が 0 から N-2 までの要素 i の後で切るので、両側とも空になりません。",
+      "まず合計を計算します。切る位置では、左の和は接頭辞和で、右の和は合計からその接頭辞を引いたものなので、再計算は不要です。",
+      "配列を走査して各要素を左の和に加え、最初の N-1 個の位置で、左の和が (合計 − 左の和) より厳密に大きいかを調べ、大きければ数えます。和が等しい場合は数えません。"
+    ],
+    "ko": [
+      "분할 위치는 N-1개뿐입니다. i가 0부터 N-2까지일 때 원소 i 뒤에서 자르면 양쪽이 모두 비어 있지 않습니다.",
+      "먼저 총합을 구합니다. 자르는 위치에서 왼쪽 합은 접두사 합이고 오른쪽 합은 총합에서 그 접두사를 뺀 값이므로 다시 합을 구할 필요가 없습니다.",
+      "배열을 훑으며 각 원소를 왼쪽 합에 더하고, 앞의 N-1개 위치에서 왼쪽 합이 총합에서 왼쪽 합을 뺀 값보다 엄격히 큰지 확인하여 그렇다면 셉니다. 합이 같은 경우는 세지 않습니다."
+    ],
+    "vi": [
+      "Chỉ có N-1 vị trí chia: cắt sau phần tử i với i từ 0 đến N-2, để cả hai bên đều khác rỗng.",
+      "Tính tổng trước; tại một điểm cắt, tổng bên trái là một tổng tiền tố và tổng bên phải là tổng toàn bộ trừ tiền tố đó, nên không cần cộng lại.",
+      "Quét mảng, cộng từng phần tử vào tổng bên trái, và với N-1 vị trí đầu tiên kiểm tra xem tổng bên trái có lớn hơn hẳn tổng toàn bộ trừ tổng bên trái hay không; nếu có thì đếm. Các tổng bằng nhau không được tính."
     ]
   },
   "explanationEn": "## Approach\n\nCompute the total first, then enumerate the first N-1 split positions and compare the prefix sum with the remaining sum.\n\n## Correctness\n\nValid splits correspond one-to-one with the first N-1 indices, and the strict comparison is exactly what the problem asks for.\n\n## Complexity\n\nTime O(N), O(1) besides the input."

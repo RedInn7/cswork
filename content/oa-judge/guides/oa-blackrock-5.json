@@ -13,6 +13,21 @@
       "The transformation is deterministic: the sequence after a given number is always the same. So as soon as a number appears for the second time, the sequence is stuck in a fixed cycle.",
       "Any number shrinks quickly after one step (a 10-digit number has a digit-square sum of at most 810), so the sequence eventually either reaches 1 or enters a cycle that does not contain 1.",
       "Keep a set of numbers already seen and repeatedly replace the number with the sum of the squares of its digits: print 1 when you reach 1, and print 0 when a number other than 1 repeats."
+    ],
+    "ja": [
+      "この変換は決定的です。ある数のあとに続く数列は常に同じです。したがって、ある数が 2 回目に現れたら、数列は固定された循環にはまっています。",
+      "どんな数も 1 ステップでたちまち小さくなります (10 桁の数の各桁の 2 乗の和は最大でも 810)。したがって数列は、最終的に 1 に到達するか、1 を含まない循環に入ります。",
+      "すでに見た数の集合を保持し、数を各桁の 2 乗の和で繰り返し置き換えます。1 に到達したら 1 を、1 以外の数が繰り返されたら 0 を出力します。"
+    ],
+    "ko": [
+      "변환은 결정적입니다. 어떤 수 다음에 오는 수열은 항상 같습니다. 따라서 어떤 수가 두 번째로 나타나는 순간, 수열은 고정된 사이클에 갇힌 것입니다.",
+      "어떤 수든 한 단계 만에 급격히 작아집니다(10자리 수의 자릿수 제곱의 합은 최대 810). 그래서 수열은 결국 1에 도달하거나 1을 포함하지 않는 사이클에 들어갑니다.",
+      "이미 본 수의 집합을 유지하면서 수를 각 자릿수의 제곱의 합으로 반복해 바꿉니다. 1에 도달하면 1을 출력하고, 1이 아닌 수가 반복되면 0을 출력합니다."
+    ],
+    "vi": [
+      "Phép biến đổi là tất định: dãy sau một số cho trước luôn giống nhau. Vì vậy ngay khi một số xuất hiện lần thứ hai, dãy đã mắc kẹt trong một chu trình cố định.",
+      "Mọi số đều giảm nhanh chỉ sau một bước (một số có 10 chữ số có tổng bình phương chữ số không quá 810), nên dãy cuối cùng hoặc đạt tới 1 hoặc rơi vào một chu trình không chứa 1.",
+      "Giữ một tập các số đã gặp và liên tục thay số bằng tổng bình phương các chữ số của nó: in 1 khi đạt tới 1, và in 0 khi một số khác 1 lặp lại."
     ]
   },
   "explanationEn": "## Approach\n\nSimulate the digit-square-sum transformation and store the visited numbers in a set. When 1 is reached the answer is 1; if some non-1 state repeats, the same cycle must repeat from then on, and the answer is 0.\n\n## Correctness\n\nThe transformation is deterministic, so a repeated state means the future sequence of states repeats exactly and does not contain 1. On the other hand, reaching 1 matches the definition of a happy number. The sequence of positive integers eventually reaches 1 or a repeated state, and the set detection distinguishes exactly these two cases.\n\n## Complexity\n\nIf there are k transformations and the numbers have d digits, the time is O(kd) and the space is O(k)."

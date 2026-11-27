@@ -13,6 +13,21 @@
       "Every operation's rectangle contains the bottom-left corner, and a cell's value equals the number of operations covering it; the maximum is q, reached exactly by the cells covered by every operation.",
       "The region covered by all rectangles at once is itself a rectangle anchored at the bottom-left corner; its two side lengths are the minimum of all r and the minimum of all c.",
       "Read the q pairs (r, c), keep the minimum r and the minimum c, and print their product; the product can reach 10^18, so use a 64-bit integer."
+    ],
+    "ja": [
+      "どの操作の長方形にも左下の隅が含まれ、セルの値はそのセルを覆う操作の回数に等しいので、最大値は q で、すべての操作に覆われるセルだけがそれに達します。",
+      "すべての長方形に同時に覆われる領域もまた、左下の隅を基準とする長方形で、その 2 辺の長さは、すべての r の最小値とすべての c の最小値です。",
+      "q 組の (r, c) を読み込み、最小の r と最小の c を保持して、その積を出力します。積は 10^18 に達しうるので、64 ビット整数を使ってください。"
+    ],
+    "ko": [
+      "모든 연산의 직사각형은 왼쪽 아래 모서리를 포함하고, 칸의 값은 그 칸을 덮는 연산의 수와 같습니다. 최댓값은 q이며, 모든 연산이 덮는 칸에서만 정확히 도달합니다.",
+      "모든 직사각형이 동시에 덮는 영역 자체가 왼쪽 아래 모서리에 붙은 직사각형이며, 그 두 변의 길이는 모든 r의 최솟값과 모든 c의 최솟값입니다.",
+      "q개의 쌍 (r, c)을 읽으며 r의 최솟값과 c의 최솟값을 유지하고 그 곱을 출력합니다. 곱은 10^18까지 갈 수 있으므로 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Hình chữ nhật của mỗi thao tác đều chứa góc dưới bên trái, và giá trị của một ô bằng số thao tác phủ lên nó; giá trị lớn nhất là q, đạt đúng tại những ô được mọi thao tác phủ.",
+      "Vùng được tất cả các hình chữ nhật phủ cùng lúc cũng là một hình chữ nhật neo ở góc dưới bên trái; độ dài hai cạnh của nó là giá trị nhỏ nhất của mọi r và giá trị nhỏ nhất của mọi c.",
+      "Đọc q cặp (r, c), giữ r nhỏ nhất và c nhỏ nhất, rồi in tích của chúng; tích có thể đạt 10^18 nên hãy dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nThe grid can be 10^9 x 10^9, so we cannot actually add anything. The key observation: every rectangle starts at the bottom-left corner `(1,1)`, so the final value of cell `(x,y)` is the number of operations with `r >= x` and `c >= y`.\n\nCell `(1,1)` is covered by all `q` operations, so the maximum is `q`. A cell reaches `q` exactly when every operation covers it, i.e. `x <= min r` and `y <= min c`. Those cells form a `min r x min c` rectangle, so the answer is `min(r) * min(c)`.\n\n## Proof of correctness\n\n- The maximum is `q`: no cell can exceed the number of operations, and `(1,1)` attains it.\n- Counting: if `x <= min r` and `y <= min c`, then `x <= r` and `y <= c` for every operation, so the cell is covered by all of them and holds `q`. If instead `x > min r`, the operation with the smallest `r` misses it and its value is at most `q-1`; the same goes for `y`. So the maximal cells are exactly `[1, min r] x [1, min c]`, and their count is the product.\n\n## Complexity\n\nOne pass for the two minima: O(q) time, O(q) space as written (the code stores all operations; reading them on the fly brings it to O(1)).\n\n## Pitfalls\n\n- Take the two minima independently; do not pick the operation with the smallest `r*c`.\n- The answer can reach 10^18; use 64-bit integers in other languages."

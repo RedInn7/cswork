@@ -13,6 +13,21 @@
       "A common decimal prefix of two positive integers is a prefix of each of them, and the non-empty prefixes of a number are exactly the numbers you get by repeatedly dropping its last digit (integer division by 10).",
       "Put every prefix of every number of the first array into a hash set. For each number of the second array, check its prefixes from longest to shortest; the first hit gives its longest common prefix with the first array.",
       "Each number has at most 9 digits, so the set holds about 9n values. While scanning the second array, divide by 10 step by step and look the value up; on a hit, update the answer with the digit count of that prefix and stop. If nothing ever hits, the answer is 0."
+    ],
+    "ja": [
+      "2 つの正の整数の 10 進の共通接頭辞は、それぞれの数の接頭辞でもあります。数の空でない接頭辞は、末尾の桁を繰り返し落とす (10 での整数除算) ことで得られる数とちょうど一致します。",
+      "1 つ目の配列のすべての数のすべての接頭辞をハッシュ集合に入れます。2 つ目の配列の各数について、接頭辞を長い方から短い方へ調べ、最初に見つかったものが 1 つ目の配列との最長共通接頭辞です。",
+      "各数は高々 9 桁なので、集合には約 9n 個の値が入ります。2 つ目の配列を走査しながら 10 で割り続けて集合を引き、見つかったらその接頭辞の桁数で答えを更新して止めます。一度も見つからなければ答えは 0 です。"
+    ],
+    "ko": [
+      "두 양의 정수의 십진 공통 접두사는 각각의 접두사이며, 어떤 수의 비어 있지 않은 접두사는 마지막 자릿수를 반복해서 떼어 낸(10으로 나눈 몫) 수와 정확히 같습니다.",
+      "첫 번째 배열의 모든 수의 모든 접두사를 해시 집합에 넣습니다. 두 번째 배열의 각 수에 대해 접두사를 긴 것부터 짧은 것 순으로 확인하면, 처음 일치하는 것이 첫 번째 배열과의 최장 공통 접두사입니다.",
+      "각 수는 최대 9자리이므로 집합에는 약 9n개의 값이 들어갑니다. 두 번째 배열을 훑을 때 10으로 하나씩 나누며 집합에서 조회하고, 일치하면 그 접두사의 자릿수로 답을 갱신한 뒤 멈춥니다. 한 번도 일치하지 않으면 답은 0입니다."
+    ],
+    "vi": [
+      "Tiền tố thập phân chung của hai số nguyên dương là tiền tố của từng số, và các tiền tố khác rỗng của một số chính là những số thu được khi bỏ liên tục chữ số cuối (chia nguyên cho 10).",
+      "Đưa mọi tiền tố của mọi số trong mảng thứ nhất vào một hash set. Với mỗi số của mảng thứ hai, kiểm tra các tiền tố từ dài nhất đến ngắn nhất; lần trúng đầu tiên cho tiền tố chung dài nhất của nó với mảng thứ nhất.",
+      "Mỗi số có tối đa 9 chữ số, nên tập chứa khoảng 9n giá trị. Khi quét mảng thứ hai, chia dần cho 10 và tra cứu giá trị; khi trúng, cập nhật đáp án bằng số chữ số của tiền tố đó rồi dừng. Nếu không bao giờ trúng, đáp án là 0."
     ]
   },
   "explanationEn": "## Approach\n\nRepeatedly divide each number in the first array by 10 to get all its non-empty prefixes and put them in a set; then enumerate the prefixes of the other array to find the longest match.\n\n## Proof of correctness\n\nThe non-empty decimal prefixes of a positive integer are exactly the positive numbers obtained by repeatedly removing the last digit. Two prefixes are equal if and only if the corresponding cross-array pair has a common prefix of that length, and taking the largest number of digits gives the answer.\n\n## Complexity\n\nO(9(n+m)) time and O(9n) space."

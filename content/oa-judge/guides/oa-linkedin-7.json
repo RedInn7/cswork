@@ -13,6 +13,21 @@
       "Peaks cannot be adjacent and endpoints never count, so n numbers can hold at most floor((n-1)/2) peaks; the first goal is to reach that bound, and only then to minimize the total increase.",
       "It is cheapest to raise only the chosen peaks and leave every other position unchanged; the cost of making one interior point a peak by itself is max(0, larger neighbor + 1 - its value), and non-adjacent peaks do not interfere with each other. The task becomes: among all position sets that reach the maximum number of peaks, pick the one with the smallest total cost.",
       "Compute the cost of every interior point first. For odd n the maximum set is unique, namely all odd indices 1, 3, 5, ..., so just add them up. For even n every maximum set is a run of odd indices followed by a run of even indices: start from the sum over all even indices, then swap in odd index 1 and swap out even index 2, then swap in 3 and swap out 4, and so on, updating the minimum after each swap. For n < 3 the answer is 0; sums can reach about 10^14, so use 64-bit integers."
+    ],
+    "ja": [
+      "ピークは隣り合えず、両端はカウントされないので、n 個の数には高々 floor((n-1)/2) 個のピークしか置けません。まずこの上限に到達することが目標で、そのうえで増加量の合計を最小化します。",
+      "選んだピークだけを増やし、他の位置は変えないのが最も安く済みます。内部の点を単独でピークにするコストは max(0, 大きいほうの隣 + 1 - その値) で、隣り合わないピークどうしは干渉しません。したがって、ピーク数が最大になる位置集合のうち、コストの合計が最小のものを選ぶ問題になります。",
+      "まず全ての内部点のコストを計算します。n が奇数の場合、最大の集合は一意で、奇数添字 1, 3, 5, ... のすべてなので、足し合わせるだけです。n が偶数の場合、最大の集合はすべて、奇数添字の連続のあとに偶数添字の連続が続く形です。全ての偶数添字の和から始め、奇数添字 1 を入れて偶数添字 2 を外し、次に 3 を入れて 4 を外し、というふうに入れ替えながら、そのたびに最小値を更新します。n < 3 の場合の答えは 0 です。和は約 10^14 に達しうるので、64 ビット整数を使います。"
+    ],
+    "ko": [
+      "봉우리는 서로 인접할 수 없고 양 끝점은 세지 않으므로, n개의 수에는 최대 floor((n-1)/2)개의 봉우리가 들어갈 수 있습니다. 먼저 이 상한에 도달하는 것이 목표이고, 그다음 증가량의 총합을 최소화합니다.",
+      "선택한 봉우리만 올리고 나머지 위치는 그대로 두는 것이 가장 저렴합니다. 내부 지점 하나를 단독으로 봉우리로 만드는 비용은 max(0, 더 큰 이웃 + 1 - 자기 값)이며, 인접하지 않은 봉우리들은 서로 영향을 주지 않습니다. 따라서 봉우리 수가 최대가 되는 위치 집합 중 총 비용이 가장 작은 것을 고르는 문제가 됩니다.",
+      "먼저 모든 내부 지점의 비용을 계산합니다. n이 홀수이면 최대 집합은 유일하게 홀수 인덱스 1, 3, 5, ...이므로 합하면 됩니다. n이 짝수이면 최대 집합은 모두 홀수 인덱스 구간 뒤에 짝수 인덱스 구간이 이어지는 형태입니다. 모든 짝수 인덱스의 합에서 시작하여, 홀수 인덱스 1을 넣고 짝수 인덱스 2를 빼고, 이어서 3을 넣고 4를 빼는 식으로 바꿔 가며 매번 최솟값을 갱신합니다. n < 3이면 답은 0입니다. 합은 약 10^14까지 커질 수 있으므로 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Các đỉnh nhọn không thể kề nhau và hai đầu mút không bao giờ được tính, nên n số chứa được tối đa floor((n-1)/2) đỉnh nhọn; mục tiêu đầu tiên là đạt cận này, chỉ sau đó mới tối thiểu hoá tổng lượng tăng.",
+      "Rẻ nhất là chỉ nâng các đỉnh nhọn được chọn và giữ nguyên mọi vị trí khác; chi phí để một điểm bên trong tự thành đỉnh nhọn là max(0, lân cận lớn hơn + 1 - giá trị của nó), và các đỉnh nhọn không kề nhau không ảnh hưởng lẫn nhau. Bài toán trở thành: trong mọi tập vị trí đạt số đỉnh nhọn tối đa, chọn tập có tổng chi phí nhỏ nhất.",
+      "Trước hết tính chi phí của mọi điểm bên trong. Với n lẻ, tập tối đa là duy nhất, gồm mọi chỉ số lẻ 1, 3, 5, ..., nên chỉ cần cộng lại. Với n chẵn, mọi tập tối đa là một đoạn các chỉ số lẻ rồi đến một đoạn các chỉ số chẵn: bắt đầu từ tổng trên mọi chỉ số chẵn, rồi đổi vào chỉ số lẻ 1 và đổi ra chỉ số chẵn 2, sau đó đổi vào 3 và đổi ra 4, cứ thế, cập nhật giá trị nhỏ nhất sau mỗi lần đổi. Với n < 3, đáp án là 0; tổng có thể đạt khoảng 10^14, nên dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nCompute the cost of turning each interior point into a peak on its own. For an odd length only odd indices can be chosen; for an even length, enumerate the switch point where a run of odd indices is followed by a run of even indices.\n\n## Proof of correctness\n\nPeaks cannot be adjacent, so there are at most floor((n-1)/2) of them. Raising only the chosen peaks and leaving everything else unchanged is cheapest, and non-adjacent peaks do not affect each other's constraints. For an odd length the maximum independent set is unique; for an even length every maximum independent set is exactly some leading odd indices followed by the even indices after them. Enumerating every set with this structure and taking the minimum cost is optimal. Each point needs an increase of at most 2x10^9+1, so the original upper limit of a single increment is sufficient.\n\n## Complexity\n\nO(n) time, O(n) space."

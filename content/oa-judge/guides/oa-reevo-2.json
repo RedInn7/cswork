@@ -13,6 +13,21 @@
       "p is a permutation, so the elements of any window are pairwise distinct. A window of length k is exactly {1..k} if and only if its minimum is 1 and its maximum is k.",
       "So for each length k, just check whether some window of length k has min = 1 and max = k. Two monotonic deques maintain the sliding window maximum and minimum.",
       "The outer loop runs k = 1..n and the inner loop slides from left to right: when a new element enters, pop from the back the indices that can no longer be the extreme, and pop the front index once it leaves the window; when the window holds k elements with maximum k and minimum 1, set the k-th character to 1 and stop for that length early. Total time O(n^2), fine for n <= 2000. Output the 0/1 string of length n."
+    ],
+    "ja": [
+      "p は順列なので、任意のウィンドウの要素は互いに異なります。長さ k のウィンドウがちょうど {1..k} になる必要十分条件は、最小値が 1 で最大値が k であることです。",
+      "したがって各長さ k について、長さ k のウィンドウのうち min = 1 かつ max = k となるものがあるかを調べるだけです。スライディングウィンドウの最大値と最小値は、2つの単調デックで管理します。",
+      "外側のループで k = 1..n を回し、内側のループでウィンドウを左から右へスライドさせます。新しい要素が入るときは、もう極値になりえない添字を後ろから pop し、ウィンドウから出た先頭の添字を pop します。ウィンドウが k 個の要素を持ち、最大値が k、最小値が 1 になったら、k 番目の文字を 1 にして、その長さについては早期に打ち切ります。全体の時間は O(n^2) で、n <= 2000 なら十分です。長さ n の 0/1 文字列を出力します。"
+    ],
+    "ko": [
+      "p는 순열이므로 어떤 창의 원소도 서로 다릅니다. 길이 k인 창이 정확히 {1..k}인 것은 그 창의 최솟값이 1이고 최댓값이 k인 것과 동치입니다.",
+      "따라서 각 길이 k에 대해 최솟값이 1이고 최댓값이 k인 길이 k의 창이 있는지만 확인하면 됩니다. 슬라이딩 윈도우의 최댓값과 최솟값은 두 개의 단조 덱으로 유지합니다.",
+      "바깥 루프는 k = 1..n, 안쪽 루프는 왼쪽에서 오른쪽으로 창을 밀며 진행합니다. 새 원소가 들어올 때 더 이상 극값이 될 수 없는 인덱스를 뒤에서 pop하고, 창을 벗어난 앞쪽 인덱스도 pop합니다. 창에 k개의 원소가 있고 최댓값이 k, 최솟값이 1이면 k번째 문자를 1로 두고 그 길이에 대해서는 일찍 중단합니다. 전체 시간은 O(n^2)이며 n <= 2000에서 충분합니다. 길이 n의 0/1 문자열을 출력하세요."
+    ],
+    "vi": [
+      "p là một hoán vị, nên các phần tử của mọi cửa sổ đôi một khác nhau. Một cửa sổ độ dài k đúng bằng {1..k} khi và chỉ khi giá trị nhỏ nhất của nó là 1 và giá trị lớn nhất là k.",
+      "Vậy với mỗi độ dài k, chỉ cần kiểm tra xem có cửa sổ độ dài k nào có min = 1 và max = k hay không. Hai deque đơn điệu duy trì giá trị lớn nhất và nhỏ nhất của cửa sổ trượt.",
+      "Vòng ngoài chạy k = 1..n và vòng trong trượt từ trái sang phải: khi một phần tử mới vào, lấy ra từ cuối các chỉ số không còn có thể là cực trị, và lấy ra chỉ số đầu khi nó rời cửa sổ; khi cửa sổ chứa k phần tử với giá trị lớn nhất là k và nhỏ nhất là 1, đặt ký tự thứ k thành 1 và dừng sớm cho độ dài đó. Tổng thời gian O(n^2), đủ cho n <= 2000. In xâu 0/1 có độ dài n."
     ]
   },
   "explanationEn": "## Approach\n\nSlide over the array once for each window length k. Two monotonic deques maintain the window maximum and minimum. Because p is a permutation, the elements of a window are distinct, so a window of length k is exactly {1,...,k} if and only if its minimum is 1 and its maximum is k.\n\n## Proof of correctness\n\nIf the window's value set is {1,...,k}, its minimum is 1 and its maximum is k. Conversely, if the window contains k distinct integers with minimum 1 and maximum k, these k integers all lie in [1,k], so they can only be all of the integers in [1,k]. Hence the condition is necessary and sufficient. The monotonic deques always maintain the maximum/minimum of the current window, so every window is checked correctly.\n\n## Complexity\n\nEach length scans n positions, and each deque entry enters and leaves a constant number of times; total time O(n^2), space O(n)."

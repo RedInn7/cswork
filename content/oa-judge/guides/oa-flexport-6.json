@@ -18,6 +18,16 @@
       "n và m đều không vượt quá 1000, nên bạn có thể đơn giản thử xóa từng nút (kể cả các nút khỏe mạnh) và chạy một lần duyệt đồ thị cho mỗi lựa chọn để đếm số nút bị nhiễm cuối cùng.",
       "Sau khi xóa một nút, tập nút bị nhiễm cuối cùng chính là tập các nút có thể đến được từ các nút nhiễm ban đầu còn lại trong đồ thị còn lại. Đánh dấu nút bị xóa là đã thăm tương đương với việc xóa nó cùng các cạnh của nó.",
       "Với mỗi nút bị xóa: tạo cờ đã thăm mới, đánh dấu nút bị xóa, đưa mọi nút nhiễm ban đầu trừ nút đó vào hàng đợi, rồi chạy BFS đa nguồn đếm số nút đã thăm (nút bị xóa không được đếm). Chỉ cập nhật đáp án khi số đếm nhỏ hơn hẳn, nhờ đó các trường hợp bằng nhau tự động giữ chỉ số nhỏ nhất; in chỉ số tính từ 1."
+    ],
+    "ja": [
+      "n と m はどちらも最大 1000 なので、すべてのノード (健全なものも含む) の削除を試し、そのたびにグラフを 1 回走査して最終的な感染数を数えれば十分です。",
+      "ノードを削除した後の最終的な感染集合は、残りのグラフにおいて、残った初期感染ノードから到達可能なノードの集合にちょうど一致します。削除したノードを訪問済みとしてマークすることは、そのノードを辺ごと取り除くことと同じです。",
+      "各削除ノードについて、新しい訪問フラグを用意し、削除ノードをマークし、それ以外のすべての初期感染ノードをキューに入れて、多始点 BFS で訪問したノードを数えます (削除したノードは数えません)。数が厳密に小さいときだけ答えを更新すれば、同数の場合は自動的に最小の添字が残ります。1 始まりの添字を出力します。"
+    ],
+    "ko": [
+      "n과 m이 모두 최대 1000이므로 모든 노드(건강한 노드 포함)를 삭제해 보고 선택마다 그래프를 한 번 순회하여 최종 감염 수를 세면 됩니다.",
+      "노드를 삭제한 후 최종 감염 집합은 남은 그래프에서 남은 초기 감염 노드들로부터 도달 가능한 노드들의 집합과 정확히 같습니다. 삭제된 노드를 방문한 것으로 표시하면 간선과 함께 제거한 것과 같습니다.",
+      "제거할 노드마다 새 방문 플래그를 만들고, 그 노드를 제거됨으로 표시하고, 그 노드를 제외한 모든 초기 감염 노드를 큐에 넣은 뒤 다중 시작점 BFS를 실행하며 방문한 노드를 셉니다(삭제된 노드는 세지 않습니다). 개수가 엄격히 더 작을 때만 답을 갱신하면 동률에서 가장 작은 인덱스가 자동으로 유지됩니다. 1부터 시작하는 인덱스를 출력합니다."
     ]
   },
   "explanationEn": "## Approach\n\nEnumerate every node that could be deleted. After blocking that node, run a multi-source DFS/BFS from the remaining initially infected nodes and count the reachable nodes; take the deletion with the fewest infections, and on ties the smallest index. Healthy nodes are candidates too.\n\n## Proof of correctness\n\nAfter a node is deleted, the final infected set is exactly the set reachable from the undeleted infection sources in the remaining undirected graph. The graph traversal visits exactly that set. The algorithm enumerates all nodes, so it covers every valid deletion, and comparing by infection count and then by index makes the chosen deletion satisfy the objective and the tie rule of the problem.\n\n## Complexity\n\nO(n(n+m)) time and O(n+m) extra space.\n\n## Reference implementation\n\n```python\nfrom collections import deque\ndef solve(d):\n    n,m=map(int,d[:2]);infected=list(map(int,d[2:2+n]));adj=[[] for _ in range(n)]\n    for i in range(m):\n        a,b=map(int,d[2+n+2*i:4+n+2*i]);a-=1;b-=1;adj[a].append(b);adj[b].append(a)\n    best=n+1;answer=0\n    for removed in range(n):\n        seen=[False]*n;seen[removed]=True;queue=deque()\n        for i,v in enumerate(infected):\n            if v and i!=removed:seen[i]=True;queue.append(i)\n        count=0\n        while queue:\n            u=queue.popleft();count+=1\n            for v in adj[u]:\n                if not seen[v]:seen[v]=True;queue.append(v)\n        if count<best:best=count;answer=removed\n    return str(answer+1)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n```"

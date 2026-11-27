@@ -13,6 +13,21 @@
       "Inside the try block only the integer division can throw, and integer division throws only when the divisor is 0; the return value is never printed.",
       "Follow the try/catch/finally order: with divisor 0, control enters catch and prints Exception, then runs finally and prints Finally; with a non-zero divisor, catch is skipped and only finally runs.",
       "Read a and b: if b is 0, print Exception Finally; otherwise print just Finally. Do not print the quotient, and do not treat other cases, such as the minimum integer divided by -1, as exceptions."
+    ],
+    "ja": [
+      "try ブロックの中で例外を投げうるのは整数の除算だけで、整数の除算が例外を投げるのは除数が 0 のときに限ります。戻り値は出力されません。",
+      "try/catch/finally の順序を追います。除数が 0 なら制御は catch に入って Exception を出力し、続いて finally が実行されて Finally を出力します。除数が 0 でなければ catch は飛ばされ、finally だけが実行されます。",
+      "a と b を読み込み、b が 0 なら Exception Finally を、そうでなければ Finally だけを出力します。商は出力せず、最小の整数を -1 で割る場合のような他のケースを例外として扱ってはいけません。"
+    ],
+    "ko": [
+      "try 블록 안에서 예외를 던질 수 있는 것은 정수 나눗셈뿐이고, 정수 나눗셈은 나누는 수가 0일 때만 예외를 던집니다. 반환값은 출력되지 않습니다.",
+      "try/catch/finally의 순서를 따라가세요. 나누는 수가 0이면 제어가 catch로 들어가 Exception을 출력하고, 이어서 finally를 실행해 Finally를 출력합니다. 0이 아니면 catch는 건너뛰고 finally만 실행됩니다.",
+      "a와 b를 읽습니다. b가 0이면 Exception Finally를 출력하고, 아니면 Finally만 출력합니다. 몫은 출력하지 마세요. 정수 최솟값을 -1로 나누는 경우처럼 다른 경우를 예외로 취급하지 마세요."
+    ],
+    "vi": [
+      "Trong khối try chỉ có phép chia nguyên mới có thể ném ngoại lệ, và phép chia nguyên chỉ ném ngoại lệ khi số chia bằng 0; giá trị trả về không bao giờ được in.",
+      "Theo dõi thứ tự try/catch/finally: với số chia bằng 0, luồng điều khiển vào catch và in Exception, rồi chạy finally và in Finally; với số chia khác 0, catch bị bỏ qua và chỉ finally chạy.",
+      "Đọc a và b: nếu b bằng 0, in Exception Finally; ngược lại chỉ in Finally. Đừng in thương, và đừng coi các trường hợp khác, chẳng hạn số nguyên nhỏ nhất chia cho -1, là ngoại lệ."
     ]
   },
   "explanationEn": "## Approach\n\nIf the divisor is 0, the integer division throws, and catch prints Exception first; then finally runs regardless of whether an exception occurred and prints Finally. If the divisor is non-zero, only Finally is printed. The returned c is never passed to a print statement, so it does not appear in the output.\n\n## Correctness\n\nInside try, only the division can throw ArithmeticException. When the divisor is zero, control enters catch and then leaves try/catch to run finally; when the divisor is non-zero, catch is skipped and finally still runs. The output order of each of the two paths matches the statement's definition uniquely. This site explicitly compares the text on the same System.err stream as the standard output trace.\n\n## Complexity\n\nTime and extra space are both O(1). This site generalizes the original fixed call divide(4,0) to arbitrary integer inputs, so both the normal and the exception branch can be tested."

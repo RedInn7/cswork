@@ -13,6 +13,21 @@
       "The two cores' totals always add up to the same sum, so each core maximizing its own total is the same as the lock holder maximizing (own total − other total).",
       "Work backward: let d be the best difference for the lock holder over the remaining suffix. Taking the current item hands over the lock and gives time − d; giving it away and keeping the lock gives d − time; the holder picks the larger, which is |time − d|.",
       "Start with d = 0 and process the times in reverse with d = |time − d|; this d belongs to core 1, the initial lock holder, so core 1 gets (sum + d)/2 and core 2 gets (sum − d)/2; the sum can reach 10^14, so use 64-bit integers."
+    ],
+    "ja": [
+      "2 つのコアの合計は常に同じ総和になるので、各コアが自分の合計を最大化することは、ロックを持つ側が (自分の合計 − 相手の合計) を最大化することと同じです。",
+      "後ろから処理します。d を、残りの接尾部分に対してロックを持つ側が得られる最良の差とします。現在の要素を取るとロックが渡り、time − d が得られます。他方に渡してロックを保持すると d − time が得られます。ロックを持つ側は大きいほうを選ぶので、結果は |time − d| です。",
+      "d = 0 から始めて、time を逆順に d = |time − d| で処理します。この d は最初にロックを持つコア 1 のものなので、コア 1 は (sum + d)/2、コア 2 は (sum − d)/2 になります。総和は 10^14 に達しうるので、64 ビット整数を使います。"
+    ],
+    "ko": [
+      "두 코어의 총합은 항상 같으므로, 각 코어가 자신의 총합을 최대화하는 것은 락 보유자가 (자신의 총합 − 상대의 총합)을 최대화하는 것과 같습니다.",
+      "뒤에서부터 계산합니다. d를 남은 접미 구간에서 락 보유자가 얻을 수 있는 최선의 차이라고 합시다. 현재 항목을 가져가면 락을 넘기게 되어 time − d를 얻고, 상대에게 주고 락을 유지하면 d − time을 얻습니다. 보유자는 더 큰 쪽을 택하므로 |time − d|가 됩니다.",
+      "d = 0에서 시작하여 time을 역순으로 처리하며 d = |time − d|를 반복합니다. 이 d는 처음 락을 가진 코어 1의 값이므로, 코어 1은 (sum + d)/2, 코어 2는 (sum − d)/2를 얻습니다. sum은 10^14까지 커질 수 있으므로 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Tổng của hai lõi luôn bằng cùng một giá trị, nên mỗi lõi tối đa hoá tổng của mình cũng chính là việc lõi giữ khoá tối đa hoá (tổng của mình − tổng của lõi kia).",
+      "Tính ngược: gọi d là hiệu tốt nhất của lõi giữ khoá trên phần hậu tố còn lại. Lấy phần tử hiện tại sẽ chuyển khoá đi và cho time − d; giao nó đi và giữ khoá cho d − time; lõi giữ khoá chọn giá trị lớn hơn, tức là |time − d|.",
+      "Bắt đầu với d = 0 và duyệt các time theo thứ tự ngược với d = |time − d|; d này thuộc về lõi 1, lõi giữ khoá ban đầu, nên lõi 1 nhận (sum + d)/2 và lõi 2 nhận (sum − d)/2; tổng có thể lên đến 10^14, nên dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nWorking backward, compute the current lock holder's optimal payoff difference d relative to the other core with the recurrence d=|time−d|; combine it with the total to recover both cores' payoffs.\n\n## Proof of correctness\n\nIf the current item goes to the holder itself, the lock changes hands and the suffix difference is negated, giving time−d; giving it to the other core and keeping the lock gives d−time. The lock holder picks the larger value, which is exactly the absolute value. The total payoff is fixed, so maximizing one's own payoff is equivalent to maximizing the difference. Backward induction yields the difference for core 1 at the start, and the two payoffs are then solved from the total and the difference.\n\n## Complexity\n\nO(n) time and O(1) space apart from the input; the total is ≤10^14."

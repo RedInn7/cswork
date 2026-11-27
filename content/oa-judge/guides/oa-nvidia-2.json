@@ -13,6 +13,21 @@
       "A subarray sum is a difference of prefix sums: with right end r and left prefix index l it is p[r]-p[l], and a length of at least K means l <= r-K.",
       "For a fixed right end r, the best sum subtracts the smallest prefix among p[0..r-K]. As r moves right, exactly one more prefix becomes available, so the minimum can be maintained on the fly.",
       "Compute prefix sums p[0..N]. Scan r from K to N: first update the running minimum with p[r-K], then update the answer with p[r] minus that minimum. Start the answer at negative infinity, since with all-negative input the result is negative and the empty subarray is not allowed."
+    ],
+    "ja": [
+      "部分配列の和は接頭辞和の差です。右端が r、左端の接頭辞の添字が l なら p[r]-p[l] で、長さが K 以上であることは l <= r-K を意味します。",
+      "右端 r を固定したとき、最良の和は p[0..r-K] の中で最小の接頭辞を引いたものです。r が右へ進むと、使える接頭辞がちょうど 1 つ増えるので、最小値はその場で更新できます。",
+      "接頭辞和 p[0..N] を計算します。r を K から N まで走査し、まず p[r-K] で実行中の最小値を更新し、次に p[r] からその最小値を引いたもので答えを更新します。入力がすべて負なら結果は負になり、空の部分配列は認められないので、答えは負の無限大で初期化します。"
+    ],
+    "ko": [
+      "부분 배열의 합은 누적 합의 차입니다. 오른쪽 끝이 r이고 왼쪽 누적 합 인덱스가 l이면 합은 p[r]-p[l]이고, 길이가 K 이상이라는 것은 l <= r-K를 뜻합니다.",
+      "고정된 오른쪽 끝 r에 대해 최선의 합은 p[0..r-K] 중 가장 작은 누적 합을 빼는 것입니다. r이 오른쪽으로 움직이면 사용할 수 있는 누적 합이 정확히 하나 늘어나므로 최솟값을 즉시 유지할 수 있습니다.",
+      "누적 합 p[0..N]을 계산합니다. r을 K부터 N까지 훑으며, 먼저 p[r-K]로 실행 중인 최솟값을 갱신한 다음 p[r]에서 그 최솟값을 뺀 값으로 답을 갱신합니다. 모든 원소가 음수이면 결과가 음수이고 빈 부분 배열은 허용되지 않으므로 답은 음의 무한대로 시작합니다."
+    ],
+    "vi": [
+      "Tổng một mảng con là hiệu của các tổng tiền tố: với đầu phải r và chỉ số tiền tố trái l, nó là p[r]-p[l], và độ dài ít nhất K nghĩa là l <= r-K.",
+      "Với đầu phải r cố định, tổng tốt nhất là trừ đi tổng tiền tố nhỏ nhất trong p[0..r-K]. Khi r dịch sang phải, đúng một tiền tố nữa trở nên khả dụng, nên có thể duy trì giá trị nhỏ nhất ngay trong lúc duyệt.",
+      "Tính các tổng tiền tố p[0..N]. Quét r từ K đến N: trước tiên cập nhật giá trị nhỏ nhất đang chạy bằng p[r-K], rồi cập nhật đáp án bằng p[r] trừ giá trị nhỏ nhất đó. Bắt đầu đáp án ở âm vô cực, vì khi toàn bộ đầu vào âm thì kết quả âm và không cho phép mảng con rỗng."
     ]
   },
   "explanationEn": "## Approach\n\nScan the right end r, and subtract from the prefix sum the minimum prefix sum among indices <= r-K.\n\n## Correctness\n\nAll valid left ends for a fixed right end correspond exactly to prefix indices 0..r-K; subtracting the minimum prefix gives the best value for that right end, and enumerating right ends gives the global optimum.\n\n## Complexity\n\nTime O(N), space O(N)."

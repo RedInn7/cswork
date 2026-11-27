@@ -13,6 +13,21 @@
       "Words are independent. Within a word, trouble only comes from runs of equal characters, and a run of length L needs at least floor(L/2) replacements.",
       "Go left to right greedily: when the current character equals the last kept character, replace the current one and treat it as a fresh letter different from both neighbours, so it cannot clash with the next original character either.",
       "For each word, track the last kept character (initially none) and a replacement count. Scan the characters: if one equals the last kept character, increment the count and reset the last kept character to none; otherwise set it to the current character. Print the counts in input order, separated by spaces."
+    ],
+    "ja": [
+      "単語どうしは独立です。1 つの単語の中で問題になるのは同じ文字が連続するランだけで、長さ L のランには少なくとも floor(L/2) 回の置き換えが必要です。",
+      "左から右へ貪欲に進めます。現在の文字が最後に残した文字と等しいときは、現在の文字を置き換え、両隣の文字と異なる新しい文字として扱います。そうすれば、次の元の文字と衝突することもありません。",
+      "各単語について、最後に残した文字(最初はなし)と置き換えの回数を追跡します。文字を走査し、最後に残した文字と等しければ回数を増やして、最後に残した文字をなしに戻します。そうでなければ、最後に残した文字を現在の文字にします。回数を入力順に、空白区切りで出力します。"
+    ],
+    "ko": [
+      "단어들은 서로 독립입니다. 한 단어 안에서 문제가 되는 것은 같은 문자가 이어진 구간뿐이며, 길이 L인 구간에는 최소 floor(L/2)번의 교체가 필요합니다.",
+      "왼쪽에서 오른쪽으로 그리디하게 진행합니다. 현재 문자가 마지막으로 유지한 문자와 같으면 현재 문자를 교체하고, 양쪽 이웃과 모두 다른 새 문자로 취급하면 다음 원래 문자와도 충돌하지 않습니다.",
+      "각 단어에서 마지막으로 유지한 문자(처음에는 없음)와 교체 횟수를 추적합니다. 문자를 스캔하면서 마지막으로 유지한 문자와 같으면 횟수를 증가시키고 마지막으로 유지한 문자를 없음으로 되돌리며, 아니면 마지막으로 유지한 문자를 현재 문자로 설정합니다. 횟수를 입력 순서대로 공백으로 구분해 출력하세요."
+    ],
+    "vi": [
+      "Các từ độc lập với nhau. Trong một từ, rắc rối chỉ đến từ các đoạn ký tự bằng nhau, và một đoạn độ dài L cần ít nhất floor(L/2) lần thay.",
+      "Duyệt tham lam từ trái sang phải: khi ký tự hiện tại bằng ký tự được giữ gần nhất, hãy thay ký tự hiện tại và coi nó là một chữ cái mới khác cả hai láng giềng, nên nó cũng không thể xung đột với ký tự gốc kế tiếp.",
+      "Với mỗi từ, theo dõi ký tự được giữ gần nhất (ban đầu là không có) và số lần thay. Quét các ký tự: nếu một ký tự bằng ký tự được giữ gần nhất, tăng biến đếm và đặt lại ký tự được giữ gần nhất về không có; ngược lại đặt nó bằng ký tự hiện tại. In các số đếm theo thứ tự đầu vào, cách nhau bởi dấu cách."
     ]
   },
   "explanationEn": "## Approach\n\nScan each word from left to right. If the current character equals the previous kept character, one of them must be replaced; replace the current one, and make it no longer form a repeat with the next original character. Otherwise keep the current character.\n\n## Correctness\n\nEach run of L consecutive equal characters needs at least floor(L/2) replacements, because one replacement can break at most one pair of adjacent repeats, and keeping every other character while replacing the rest reaches that bound exactly. The greedy replaces the current character at every adjacent clash, which counts exactly once for every two characters of each run, and it never affects later runs of different characters, so it reaches the global minimum.\n\n## Complexity\n\nWith L characters in total, time O(L) and extra space O(1) (output excluded)."

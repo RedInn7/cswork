@@ -13,6 +13,21 @@
       "Each deletion involves one adjacent pair; after it, the only new adjacency appears between the two sides of the deleted spot.",
       "Scan from left to right and keep the characters not yet removed on a stack: if the new character forms AB, BA, CD, or DC with the top, remove both; otherwise push the new character.",
       "Push when the stack is empty or the new character cannot pair with the top; when it can, pop the top and drop the new character. At the end, print the stack from bottom to top, or an empty line if it is empty."
+    ],
+    "ja": [
+      "削除は隣り合う 1 組に対して行われ、その後に新しく隣り合うのは、削除した箇所の両側の 2 つだけです。",
+      "左から右へ走査し、まだ取り除かれていない文字をスタックに持ちます。新しい文字がスタックの先頭と AB、BA、CD、DC のいずれかをなすなら両方を取り除き、そうでなければ新しい文字をプッシュします。",
+      "スタックが空か、新しい文字が先頭と組をなせないならプッシュします。組をなせるなら、先頭をポップして新しい文字を捨てます。最後にスタックを底から先頭の順に出力し、空なら空行を出力します。"
+    ],
+    "ko": [
+      "각 삭제는 인접한 한 쌍에 관한 것이며, 삭제 후 새로 생기는 인접 관계는 삭제된 자리의 양쪽 사이에서만 나타납니다.",
+      "왼쪽에서 오른쪽으로 훑으며 아직 제거되지 않은 문자를 스택에 유지합니다. 새 문자가 top과 AB, BA, CD 또는 DC를 이루면 둘 다 제거하고, 그렇지 않으면 새 문자를 push합니다.",
+      "스택이 비어 있거나 새 문자가 top과 쌍을 이룰 수 없으면 push합니다. 쌍을 이룰 수 있으면 top을 pop하고 새 문자는 버립니다. 마지막에는 스택을 아래에서 위로 출력하며, 비어 있으면 빈 줄을 출력합니다."
+    ],
+    "vi": [
+      "Mỗi lần xóa liên quan tới một cặp liền kề; sau đó, sự liền kề mới duy nhất xuất hiện giữa hai phía của chỗ bị xóa.",
+      "Quét từ trái sang phải và giữ các ký tự chưa bị xóa trên một ngăn xếp: nếu ký tự mới tạo thành AB, BA, CD hoặc DC với phần tử trên đỉnh, hãy xóa cả hai; nếu không thì đẩy ký tự mới vào.",
+      "Đẩy vào khi ngăn xếp rỗng hoặc ký tự mới không thể ghép cặp với phần tử trên đỉnh; khi có thể, lấy phần tử trên đỉnh ra và bỏ ký tự mới. Cuối cùng, in ngăn xếp từ đáy lên đỉnh, hoặc một dòng trống nếu nó rỗng."
     ]
   },
   "explanationEn": "## Approach\n\nScan from left to right and keep the characters not yet removed on a stack. When the new character forms AB, BA, CD, or DC with the top of the stack, pop the top; otherwise push the new character.\n\n## Proof of correctness\n\nAfter a prefix is scanned, the stack is one irreducible result of that prefix under the removal rules. After a new character is appended, any newly created adjacent removable pair can only span the new character and the end of the old prefix; if they match, both are removed, otherwise the new character stays. By induction, the final string cannot be transformed further and can be obtained from the original string by valid transformations.\n\n## Complexity\n\nO(n) time and O(n) space.\n\n## Source notes\n\nThe statement is compiled from a fixed OAMaster snapshot; the standard input/output protocol is added by this site, which does not claim that the original site provides this protocol."

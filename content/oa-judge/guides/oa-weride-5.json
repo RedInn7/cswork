@@ -13,6 +13,21 @@
       "Going forward there are two moves, which is awkward to search; looked at backwards, though, each point has a uniquely determined previous step.",
       "Coordinates are positive: if x > y the previous point can only be (x−y, y), and if y > x it can only be (x, y−x). Just keep stepping backwards from the target.",
       "Start from (x2, y2); while both coordinates are at least the start's and the start has not been reached, subtract the smaller coordinate from the larger; afterwards print Yes if the point equals (x1, y1) exactly, otherwise No."
+    ],
+    "ja": [
+      "順方向には2つの移動があり探索しにくいですが、逆向きに見ると、各点には直前のステップが一意に決まります。",
+      "座標は正なので、x > y なら直前の点は (x−y, y) しかありえず、y > x なら (x, y−x) しかありえません。目標から逆向きに進み続けるだけです。",
+      "(x2, y2) から始めます。両方の座標が始点以上で、かつ始点にまだ到達していない間は、大きいほうの座標から小さいほうの座標を引きます。その後、点が (x1, y1) とちょうど等しければ Yes、そうでなければ No を出力します。"
+    ],
+    "ko": [
+      "앞으로 가면 이동이 두 가지라 탐색이 번거롭지만, 거꾸로 보면 각 점의 직전 단계가 유일하게 정해집니다.",
+      "좌표는 양수입니다. x > y이면 직전 점은 (x−y, y)뿐이고, y > x이면 (x, y−x)뿐입니다. 목표에서 계속 거꾸로 이동하면 됩니다.",
+      "(x2, y2)에서 시작합니다. 두 좌표가 모두 시작점의 좌표 이상이고 아직 시작점에 도달하지 않았다면 큰 좌표에서 작은 좌표를 뺍니다. 끝난 뒤 점이 (x1, y1)과 정확히 같으면 Yes, 아니면 No를 출력합니다."
+    ],
+    "vi": [
+      "Đi xuôi có hai phép di chuyển, khó tìm kiếm; nhưng nhìn ngược lại thì mỗi điểm có bước trước được xác định duy nhất.",
+      "Tọa độ dương: nếu x > y thì điểm trước chỉ có thể là (x−y, y), và nếu y > x thì chỉ có thể là (x, y−x). Chỉ cần tiếp tục lùi từng bước từ đích.",
+      "Bắt đầu từ (x2, y2); chừng nào cả hai tọa độ còn ít nhất bằng tọa độ của điểm bắt đầu và chưa tới điểm bắt đầu, lấy tọa độ lớn trừ đi tọa độ nhỏ; sau đó in Yes nếu điểm đúng bằng (x1, y1), ngược lại in No."
     ]
   },
   "explanationEn": "## Approach\n\nWalk backwards from the target: if x>y, the last step can only have come from (x−y,y); otherwise it came from (x,y−x). Once a coordinate drops below the start's, reaching it is impossible.\n\n## Proof of correctness\n\nEach of the two forward moves increases only one coordinate, by an amount equal to the other coordinate, so the inverse step is unique. Repeatedly applying the inverse step strictly decreases the sum of the coordinates; the target is reachable if and only if this process arrives at the start.\n\n## Complexity\n\nAt most O(x2+y2) steps and O(1) extra space; this is enough within the given bound of 1000.\n\n## Source and additions\n\nhttps://oamaster.com/docs/companies/weride#5-bot-movement-reachability-two-move-types; the ranges of the start and end points and the two moves are precisely defined; this site specifies stdin/stdout."

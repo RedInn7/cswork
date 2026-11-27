@@ -13,6 +13,21 @@
       "Only adjacent A/B or C/D pairs (in either order) can be deleted, which is much like bracket matching: A and B cancel each other, and so do C and D.",
       "Keep a stack from left to right: if the new character forms a deletable pair with the top, pop; otherwise push. The stack always holds the irreducible form of the processed prefix.",
       "Scan character by character (ignoring newlines and other whitespace): pop when the stack is non-empty and its top differs from the current character while both belong to {A,B} or both to {C,D}; otherwise push; print the stack contents at the end, or an empty line for an empty result."
+    ],
+    "ja": [
+      "削除できるのは隣り合う A/B または C/D の組 (順序は問いません) だけで、括弧の対応づけとよく似ています。A と B が互いに打ち消し合い、C と D も同様です。",
+      "左から右へスタックを管理します。新しい文字が先頭と削除可能な組になるなら pop し、そうでなければ push します。スタックには常に、処理済みの接頭辞の簡約形が入っています。",
+      "1 文字ずつ走査します (改行やその他の空白は無視します)。スタックが空でなく、先頭が現在の文字と異なり、かつ両方が {A,B} に属するか両方が {C,D} に属する場合は pop し、そうでなければ push します。最後にスタックの内容を出力します。結果が空の場合は空行を出力します。"
+    ],
+    "ko": [
+      "인접한 A/B 쌍 또는 C/D 쌍(순서 무관)만 삭제할 수 있으므로 괄호 매칭과 매우 비슷합니다. A와 B가 서로 상쇄되고 C와 D도 서로 상쇄됩니다.",
+      "왼쪽에서 오른쪽으로 스택을 유지합니다. 새 문자가 top과 삭제 가능한 쌍이면 pop하고, 아니면 push합니다. 스택에는 항상 지금까지 처리한 접두사의 더 줄일 수 없는 형태가 들어 있습니다.",
+      "문자를 하나씩 스캔합니다(개행과 다른 공백은 무시). 스택이 비어 있지 않고 top이 현재 문자와 다르면서 둘 다 {A,B}에 속하거나 둘 다 {C,D}에 속하면 pop하고, 아니면 push합니다. 마지막에 스택 내용을 출력하며, 결과가 비어 있으면 빈 줄을 출력합니다."
+    ],
+    "vi": [
+      "Chỉ các cặp kề nhau A/B hoặc C/D (theo cả hai thứ tự) mới xóa được, rất giống việc ghép ngoặc: A và B triệt tiêu nhau, C và D cũng vậy.",
+      "Giữ một stack từ trái sang phải: nếu ký tự mới tạo với đỉnh một cặp xóa được thì lấy ra; ngược lại đẩy vào. Stack luôn chứa dạng không thể rút gọn của tiền tố đã xử lý.",
+      "Duyệt từng ký tự (bỏ qua ký tự xuống dòng và các khoảng trắng khác): lấy ra khi stack không rỗng và đỉnh khác ký tự hiện tại trong khi cả hai cùng thuộc {A,B} hoặc cùng thuộc {C,D}; ngược lại đẩy vào; cuối cùng in nội dung stack, hoặc một dòng trống nếu kết quả rỗng."
     ]
   },
   "explanationEn": "## Approach\n\nMaintain a stack from left to right. If the new character forms an A/B or C/D pair of different letters with the top of the stack, pop; otherwise push.\n\n## Proof of correctness\n\nThe rule is equivalent to adjacent reduction over two pairs of mutually inverse symbols, A↔B and C↔D. The stack algorithm keeps only the reduced form of the processed prefix; a new character can cancel at most with the top of the stack, and cascading cancellations are already handled by the stack. The reduced form over this alphabet of inverses is unique, so the output is a valid result that cannot be reduced further.\n\n## Complexity\n\nTime O(N), space O(N)."

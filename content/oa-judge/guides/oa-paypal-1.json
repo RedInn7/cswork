@@ -13,6 +13,21 @@
       "One increment or decrement changes a single character, and the vowel count changes only when a character crosses from vowel to consonant or back, by exactly 1 per crossing.",
       "With length n and v vowels, the target is n/2 vowels, so |v-n/2| characters must move from the larger class to the other. The cheapest way to move one character is its alphabet distance to the nearest letter of the other class, and characters do not affect each other.",
       "Count the vowels v. If v is greater than n/2, the candidates are all vowels, each costing its distance to the nearest consonant; otherwise the candidates are all consonants, costing their distance to the nearest vowel (when v equals n/2 the answer is 0). Find each candidate's minimum distance by trying all 26 letters, sort the costs, and print the sum of the smallest |v-n/2| of them."
+    ],
+    "ja": [
+      "1 回の進める／戻す操作で変わる文字は 1 つで、母音の個数が変わるのは、文字が母音から子音へ、または子音から母音へ越えるときだけで、1 回越えるごとにちょうど 1 変化します。",
+      "長さが n で母音が v 個なら、目標は母音が n/2 個で、多いほうのクラスから |v-n/2| 個の文字をもう一方へ移さなければなりません。1 文字を移す最も安い方法は、もう一方のクラスの最も近い文字までのアルファベット上の距離で、文字どうしは互いに影響しません。",
+      "母音の個数 v を数えます。v が n/2 より大きければ、候補はすべての母音で、それぞれのコストは最も近い子音までの距離です。そうでなければ、候補はすべての子音で、コストは最も近い母音までの距離です（v が n/2 に等しければ答えは 0）。各候補の最小距離は、26 文字すべてを試して求めます。コストをソートして、小さいほうから |v-n/2| 個の合計を出力します。"
+    ],
+    "ko": [
+      "한 번의 증가나 감소는 문자 하나만 바꾸고, 모음의 수는 문자가 모음에서 자음으로, 또는 그 반대로 넘어갈 때만 변하며 넘어갈 때마다 정확히 1씩 변합니다.",
+      "길이가 n이고 모음이 v개이면 목표는 모음 n/2개이므로, 더 많은 쪽 부류에서 |v-n/2|개의 문자가 다른 쪽으로 옮겨 가야 합니다. 문자 하나를 옮기는 가장 싼 방법은 다른 부류의 가장 가까운 문자까지의 알파벳 거리이며, 문자들은 서로 영향을 주지 않습니다.",
+      "모음의 수 v를 셉니다. v가 n/2보다 크면 후보는 모든 모음이며 각각의 비용은 가장 가까운 자음까지의 거리입니다. 그렇지 않으면 후보는 모든 자음이며 비용은 가장 가까운 모음까지의 거리입니다(v가 n/2와 같으면 답은 0). 각 후보의 최소 거리는 26개 문자를 모두 시도해 구하고, 비용을 정렬해 가장 작은 |v-n/2|개의 합을 출력합니다."
+    ],
+    "vi": [
+      "Một lần tăng hoặc giảm chỉ thay đổi một ký tự, và số nguyên âm chỉ thay đổi khi một ký tự chuyển từ nguyên âm sang phụ âm hoặc ngược lại, đúng 1 cho mỗi lần chuyển.",
+      "Với độ dài n và v nguyên âm, mục tiêu là n/2 nguyên âm, nên |v-n/2| ký tự phải chuyển từ lớp lớn hơn sang lớp còn lại. Cách rẻ nhất để chuyển một ký tự là khoảng cách trong bảng chữ cái đến chữ cái gần nhất của lớp kia, và các ký tự không ảnh hưởng lẫn nhau.",
+      "Đếm số nguyên âm v. Nếu v lớn hơn n/2, các ứng viên là mọi nguyên âm, mỗi cái tốn khoảng cách đến phụ âm gần nhất; ngược lại các ứng viên là mọi phụ âm, tốn khoảng cách đến nguyên âm gần nhất (khi v bằng n/2 thì đáp án là 0). Tìm khoảng cách nhỏ nhất của mỗi ứng viên bằng cách thử cả 26 chữ cái, sắp xếp các chi phí, và in tổng của |v-n/2| chi phí nhỏ nhất."
     ]
   },
   "explanationEn": "## Approach\n\nLet v be the number of vowels and n the length; the target vowel count is n/2, so |v-n/2| characters must be changed from the more numerous class to the other. Each candidate character's cost is the shortest distance, by incrementing and decrementing along the alphabet, to the opposite class. Sort these costs and take the smallest required number of them. This site restricts the length to even values, avoiding the return value the original problem leaves undefined for the unsolvable odd-length case.\n\n## Correctness\n\nEach operation changes only one character, the total changes only when a character crosses the vowel/consonant boundary, and one crossing changes the vowel count by exactly 1. So at least |v-n/2| characters must be converted. The cost of making a chosen character cross the boundary is at least its shortest distance to a letter of the opposite class, and that distance can be achieved on its own; characters do not affect each other. Choosing the cheapest characters in the required number reaches the lower bound for all of them at once.\n\n## Complexity\n\nWith L the password length, each character checks at most 26 letters and the costs are sorted, for O(26L+L log L) time and O(L) space."

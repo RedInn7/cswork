@@ -13,6 +13,21 @@
       "Minimizing the drivers who leave is the same as maximizing the vehicles that stay. Kept vehicles keep their original order, and only adjacent pairs must have a total weight of at most U; a vehicle heavier than U on its own must always leave.",
       "Let dp[i] be the length of the longest safe kept sequence ending at vehicle i; it is 1 plus the maximum dp over earlier vehicles whose weight is at most U - weight[i]. That is a prefix-maximum query keyed by a weight threshold.",
       "Sort and deduplicate all weights for coordinate compression and use a Fenwick tree of prefix maxima; process vehicles in their original order: skip a vehicle heavier than U, otherwise query the prefix maximum prior over weights at most U - w, set len = prior + 1, update the position of its own weight with len, and track the overall maximum best; print N - best."
+    ],
+    "ja": [
+      "立ち去るドライバーを最小にすることは、残る車を最大にすることと同じです。残った車は元の順序を保ち、隣り合うペアだけが合計の重さ U 以下である必要があります。単独で U より重い車は、常に立ち去らなければなりません。",
+      "dp[i] を、車 i で終わる最長の安全な残存列の長さとします。これは 1 に、重さが U - weight[i] 以下であるような、それより前の車の dp の最大値を加えたものです。これは重さのしきい値をキーとする接頭辞最大値のクエリです。",
+      "座標圧縮のためにすべての重さをソートして重複を除き、接頭辞最大値を持つ Fenwick 木を使います。車を元の順序で処理します。U より重い車はスキップします。そうでなければ、重さが U - w 以下の範囲の接頭辞最大値 prior を問い合わせ、len = prior + 1 とし、自分の重さの位置を len で更新し、全体の最大値 best を追跡します。最後に N - best を出力します。"
+    ],
+    "ko": [
+      "떠나는 운전자를 최소화하는 것은 남는 차량을 최대화하는 것과 같습니다. 남는 차량은 원래 순서를 유지하며, 인접한 쌍의 무게 합만 U 이하이면 됩니다. 혼자서 U보다 무거운 차량은 반드시 떠나야 합니다.",
+      "dp[i]를 차량 i에서 끝나는 가장 긴 안전한 남은 수열의 길이라고 하면, 이는 1에 무게가 U - weight[i] 이하인 이전 차량들의 dp 최댓값을 더한 값입니다. 이는 무게 임곗값을 키로 하는 접두사 최댓값 쿼리입니다.",
+      "좌표 압축을 위해 모든 무게를 정렬하고 중복을 제거한 뒤, 접두사 최댓값을 담는 펜윅 트리를 사용합니다. 차량을 원래 순서대로 처리합니다. U보다 무거운 차량은 건너뛰고, 그렇지 않으면 무게가 U - w 이하인 구간에 대한 접두사 최댓값 prior를 조회하고 len = prior + 1로 둡니다. 자신의 무게 위치를 len으로 갱신하고 전체 최댓값 best를 추적합니다. 마지막에 N - best를 출력합니다."
+    ],
+    "vi": [
+      "Tối thiểu hóa số tài xế phải rời đi cũng chính là tối đa hóa số xe được ở lại. Các xe được giữ phải giữ nguyên thứ tự ban đầu, và chỉ các cặp liền kề mới cần có tổng trọng lượng không quá U; một xe nặng hơn U ngay từ đầu thì luôn phải rời đi.",
+      "Gọi dp[i] là độ dài của dãy được giữ an toàn dài nhất kết thúc tại xe i; nó bằng 1 cộng với giá trị dp lớn nhất trong số các xe trước đó có trọng lượng không quá U - weight[i]. Đó là một truy vấn giá trị lớn nhất tiền tố được đánh khóa bởi ngưỡng trọng lượng.",
+      "Sắp xếp và loại trùng mọi trọng lượng để nén tọa độ, rồi dùng cây Fenwick lưu giá trị lớn nhất tiền tố; xử lý các xe theo thứ tự ban đầu: bỏ qua xe nặng hơn U, ngược lại truy vấn giá trị lớn nhất tiền tố prior trên các trọng lượng không quá U - w, đặt len = prior + 1, cập nhật vị trí của trọng lượng của chính nó bằng len, và theo dõi giá trị lớn nhất tổng thể best; in N - best."
     ]
   },
   "explanationEn": "## Approach\n\nFor each vehicle i, compute the longest safe subsequence ending at i: dp[i]=1+max(dp[j]), where j<i and weight[j]≤U−weight[i]. Coordinate-compress the weights and maintain prefix maxima with a Fenwick tree. If weight[i]>U, the vehicle cannot be kept.\n\n## Proof of correctness\n\nAny safe kept subsequence is listed in the original order; the predecessor of its last vehicle must be an earlier kept vehicle whose weight meets the threshold. The recurrence considers every possible predecessor and takes the maximum, and the Fenwick tree only speeds up that prefix-maximum query, so it yields the maximum number of vehicles that can be kept; the size of the complement is the minimum number that must leave.\n\n## Complexity\n\nO(N log N) time, O(N) space."

@@ -13,6 +13,21 @@
       "A girl can only be covered by one of her two directly adjacent empty seats. Scanning from the left, every girl before the first uncovered one is already handled.",
       "For that girl, place the boy on the right if that seat is empty: a boy there may also cover a later girl, so it is never worse than the left seat. Use the left seat only if the right one is unavailable, and if neither works there is no solution.",
       "Scan index i from left to right: skip it if it is not a girl or a boy already sits on its left; if the right seat is '-', place a boy at i+1 and jump to i+2; otherwise if the left seat is '-', place a boy at i−1; otherwise output −1. Finally output the number of boys placed."
+    ],
+    "ja": [
+      "女の子の隣に座れるのは、直接隣り合う 2 つの空席のどちらかだけです。左から走査すると、最初の未充足の女の子より前のすべての女の子はすでに処理済みです。",
+      "その女の子については、右の席が空いていれば右に男の子を置きます。そこにいる男の子は後ろの女の子も満たせるかもしれないので、左の席より悪くなることはありません。左の席を使うのは右の席が使えないときだけで、どちらも使えなければ解はありません。",
+      "添字 i を左から右へ走査します。女の子でない、または左にすでに男の子がいるならスキップします。右の席が '-' なら i+1 に男の子を置いて i+2 へ飛びます。そうでなく左の席が '-' なら i−1 に男の子を置きます。それ以外は −1 を出力します。最後に、置いた男の子の人数を出力します。"
+    ],
+    "ko": [
+      "여자는 바로 인접한 두 빈 좌석 중 하나로만 커버될 수 있습니다. 왼쪽에서 훑을 때, 커버되지 않은 첫 번째 여자 이전의 모든 여자는 이미 처리된 것입니다.",
+      "그 여자에 대해, 오른쪽 좌석이 비어 있으면 그곳에 남자를 배치하세요. 그곳의 남자는 뒤의 여자도 커버할 수 있으므로 왼쪽 좌석보다 나쁘지 않습니다. 오른쪽을 쓸 수 없을 때만 왼쪽 좌석을 쓰고, 둘 다 안 되면 해가 없습니다.",
+      "인덱스 i를 왼쪽에서 오른쪽으로 훑습니다. 여자가 아니거나 왼쪽에 이미 남자가 앉아 있으면 건너뜁니다. 오른쪽 좌석이 '-'이면 i+1에 남자를 배치하고 i+2로 건너뜁니다. 그렇지 않고 왼쪽 좌석이 '-'이면 i−1에 남자를 배치합니다. 그 외에는 −1을 출력합니다. 마지막으로 배치한 남자의 수를 출력합니다."
+    ],
+    "vi": [
+      "Một cô gái chỉ có thể được phủ bởi một trong hai ghế trống kề trực tiếp của mình. Khi quét từ trái, mọi cô gái đứng trước cô gái chưa được phủ đầu tiên đã được xử lý.",
+      "Với cô gái đó, hãy đặt chàng trai ở bên phải nếu ghế đó trống: một chàng trai ở đó còn có thể phủ một cô gái phía sau, nên không bao giờ tệ hơn ghế bên trái. Chỉ dùng ghế bên trái nếu ghế bên phải không dùng được, và nếu cả hai đều không được thì không có nghiệm.",
+      "Quét chỉ số i từ trái sang phải: bỏ qua nếu nó không phải cô gái hoặc đã có chàng trai ngồi bên trái; nếu ghế bên phải là '-', đặt một chàng trai tại i+1 và nhảy tới i+2; nếu không, nếu ghế bên trái là '-', đặt một chàng trai tại i−1; nếu không in −1. Cuối cùng in số chàng trai đã đặt."
     ]
   },
   "explanationEn": "## Idea\n\nProcess the not-yet-covered girls from left to right. Prefer the empty seat to her right, which can also cover the next adjacent girl; if it is not available, try the left one. Exhaustively enumerating all placement subsets serves as an independent oracle.\n\n## Proof of correctness\n\nConsider the leftmost girl not yet covered by a boy. Any feasible solution must place a boy in an empty seat to her left or right. If the right seat is available, moving the left-seat boy of some optimal solution to the right seat does not increase the count and also covers later girls. If the right seat is unavailable, only the left seat can be chosen. After repeated exchanges the greedy choices agree with some optimal solution.\n\n## Complexity\n\nEach boy is placed only in an originally empty seat; the count does not exceed |s|.\n\nO(n) time, O(n) space.\n\n## Reference implementation\n\n```python\ndef solve(raw):\n s=raw.strip();placed=set();i=0\n while i<len(s):\n  if s[i]!='G' or i-1 in placed:i+=1;continue\n  if i+1<len(s) and s[i+1]=='-':placed.add(i+1);i+=2\n  elif i>0 and s[i-1]=='-':placed.add(i-1);i+=1\n  else:return '-1'\n return str(len(placed))\n```"

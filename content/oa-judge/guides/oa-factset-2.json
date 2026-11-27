@@ -13,6 +13,21 @@
       "Every turn removes the two heaviest stones and may put one new stone back, which is exactly what a max-heap (priority queue) supports.",
       "Put all weights into a max-heap. Each turn pop the two largest values x >= y: if they are equal both disappear, otherwise push the difference x - y back. The heap shrinks by at least one every turn, so there are at most n turns.",
       "Repeat while the heap has more than one stone; at the end print the remaining stone's weight, or 0 if the heap is empty. Weights are at most 10^9 and differences never grow, so ordinary integers suffice (64-bit is the safe choice)."
+    ],
+    "ja": [
+      "各ターンで最も重い 2 つの石を取り除き、新しい石を 1 つ戻すことがあります。これはまさに最大ヒープ（優先度付きキュー）が得意な操作です。",
+      "すべての重さを最大ヒープに入れます。各ターンで最大の 2 つの値 x >= y を取り出します。等しければ両方消え、そうでなければ差 x - y をヒープに戻します。ヒープは毎ターン少なくとも 1 つ小さくなるので、ターン数は高々 n です。",
+      "ヒープに石が 2 つ以上ある間は繰り返し、最後に残った石の重さを出力します。ヒープが空なら 0 です。重さは高々 10^9 で、差が大きくなることはないので、通常の整数で足ります（安全のためには 64 ビットが無難です）。"
+    ],
+    "ko": [
+      "매 턴 가장 무거운 돌 두 개를 제거하고 새 돌을 최대 하나 다시 넣게 되는데, 이는 최대 힙(우선순위 큐)이 지원하는 연산 그대로입니다.",
+      "모든 무게를 최대 힙에 넣습니다. 매 턴 가장 큰 두 값 x >= y를 꺼내서, 같으면 둘 다 사라지고 다르면 차이 x - y를 다시 넣습니다. 힙은 매 턴 최소 하나씩 줄어들므로 턴은 최대 n번입니다.",
+      "힙에 돌이 두 개 이상인 동안 반복하고, 마지막에 남은 돌의 무게를 출력하며 힙이 비어 있으면 0을 출력합니다. 무게는 최대 10^9이고 차이는 커지지 않으므로 일반 정수로 충분합니다(64비트가 안전합니다)."
+    ],
+    "vi": [
+      "Mỗi lượt loại bỏ hai viên đá nặng nhất và có thể đặt một viên mới trở lại, đúng là thứ mà max-heap (priority queue) hỗ trợ.",
+      "Đưa mọi trọng lượng vào một max-heap. Mỗi lượt lấy ra hai giá trị lớn nhất x >= y: nếu bằng nhau thì cả hai biến mất, ngược lại đẩy hiệu x - y trở lại. Heap giảm ít nhất một phần tử mỗi lượt, nên có tối đa n lượt.",
+      "Lặp lại khi heap còn nhiều hơn một viên đá; cuối cùng in trọng lượng viên đá còn lại, hoặc 0 nếu heap rỗng. Trọng lượng tối đa 10^9 và các hiệu không bao giờ tăng, nên số nguyên thông thường là đủ (64 bit là lựa chọn an toàn)."
     ]
   },
   "explanationEn": "## Approach\n\nUse a max-heap to repeatedly take out the two heaviest stones; when they are not equal, put their difference back into the heap.\n\n## Proof of correctness\n\nThe top of the heap is always the heaviest stone currently present, so every turn selects stones exactly as the statement requires. With equal weights no stone is put back; with unequal weights only the weight difference is put back. When the loop ends, the single element in the heap (or the empty heap) is the required result.\n\n## Complexity\n\nO(n log n) time and O(n) space.\n\n## Source notes\n\nThe problem rules, examples, and n/weight constraints are complete.\n\nThis site separately compiled the standard input/output protocol; it does not claim that the original site provided that protocol."

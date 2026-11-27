@@ -13,6 +13,21 @@
       "Strictly increasing values keep the path graph acyclic. Every path has a unique first cell and a unique second cell, and the second cell is a larger neighbour of the first.",
       "Process cells by decreasing value and let ways[u] be the number of paths starting at u that take at least one more step. For each larger neighbour v, a path can end at v (1 path) or continue from v (ways[v] paths).",
       "Sort the existing cells by value descending and compute ways[u] = Σ(1 + ways[v]) over the existing larger neighbours v (up, down, left, right). The answer is the sum of all ways[u]. It can reach 2×10^10, so use 64-bit integers."
+    ],
+    "ja": [
+      "値が真に増加するのでパスのグラフは非巡回です。どのパスにも最初のセルと 2 番目のセルがそれぞれ一意にあり、2 番目のセルは最初のセルのより大きい隣接セルです。",
+      "セルを値の降順に処理し、ways[u] を、u から始まり少なくとも 1 歩進むパスの数とします。より大きい各隣接セル v について、パスは v で終わる (1 通り) か、v からさらに続く (ways[v] 通り) かのどちらかです。",
+      "存在するセルを値の降順にソートし、存在するより大きい隣接セル v (上下左右) すべてについて ways[u] = Σ(1 + ways[v]) を計算します。答えはすべての ways[u] の和です。最大で 2×10^10 に達するので、64 ビット整数を使ってください。"
+    ],
+    "ko": [
+      "값이 엄격하게 증가하므로 경로 그래프는 비순환입니다. 모든 경로에는 유일한 시작 칸과 유일한 두 번째 칸이 있으며, 두 번째 칸은 시작 칸의 더 큰 이웃입니다.",
+      "칸을 값이 감소하는 순서로 처리하고, ways[u]를 u에서 시작하여 최소 한 걸음 더 나아가는 경로의 수라고 합시다. 더 큰 이웃 v마다 경로는 v에서 끝나거나(경로 1개) v에서 계속 이어질 수 있습니다(경로 ways[v]개).",
+      "존재하는 칸을 값 내림차순으로 정렬하고, 존재하는 더 큰 이웃 v(상, 하, 좌, 우)에 대해 ways[u] = Σ(1 + ways[v])를 계산합니다. 답은 모든 ways[u]의 합입니다. 값이 2×10^10까지 커질 수 있으므로 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Các giá trị tăng nghiêm ngặt giữ cho đồ thị đường đi không có chu trình. Mỗi đường đi có đúng một ô đầu và đúng một ô thứ hai, và ô thứ hai là một ô kề lớn hơn của ô đầu.",
+      "Xử lý các ô theo giá trị giảm dần và gọi ways[u] là số đường đi bắt đầu tại u và đi thêm ít nhất một bước. Với mỗi ô kề lớn hơn v, một đường đi có thể kết thúc tại v (1 đường) hoặc tiếp tục từ v (ways[v] đường).",
+      "Sắp xếp các ô tồn tại theo giá trị giảm dần và tính ways[u] = Σ(1 + ways[v]) trên các ô kề lớn hơn v tồn tại (trên, dưới, trái, phải). Đáp án là tổng của tất cả ways[u]. Giá trị này có thể đạt 2×10^10, nên dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Idea\n\nTreat the cells as a directed acyclic graph where each cell points to its larger neighbours up, down, left and right. Process cells in decreasing order of value and let `ways[u]` be the number of increasing paths that start at u and take at least one more step; then `ways[u] = Σ(1 + ways[v])`, where v ranges over the larger neighbouring cells. The sum of all `ways[u]` is the answer.\n\n## Proof of correctness\n\nEvery increasing path has a unique first cell u and a unique second cell v. v must be a larger neighbour of u; the suffix starting at v either ends at v (counted by 1) or continues to a larger neighbour (counted by `ways[v]`). So summing over all valid v enumerates every path starting at u exactly once. Strict increase guarantees that all larger neighbours are finished when u is processed, and summing over all first cells gives every path, without omissions or repeats.\n\n## Complexity\n\nLet the number of cells be V≤225 and the number of adjacency edges E≤4V. Sorting takes O(V log V), the dynamic programming O(E), and space is O(V).\n\n## Source and sample correction\n\nPart 2 explicitly reuses Part 1 and only raises the bound on the number of paths to 20 billion. Two independent algorithms both compute `600537344` for the fixed 15×15 grid, while the original page states `601079908`. This site keeps the original grid, corrects the public answer and clearly notes the error in the source sample; the standard input/output format is an addition by this site."

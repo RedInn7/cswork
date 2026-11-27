@@ -13,6 +13,21 @@
       "The transcript has at most 3000 moves and each move scans and flips at most the whole row, so a quadratic direct simulation is fast enough.",
       "Odd moves (counting from 1) place black and even moves place white. A tile placed at the left end looks right for the nearest tile of its color, and one placed at the right end looks left; only if such a tile exists are all tiles between them flipped to that color, otherwise nothing changes.",
       "Store the row in an array with spare room on both sides (starting with black then white in the middle) and keep left and right pointers: a move at the left end moves the left pointer left and a move at the right end moves the right pointer right, so nothing is ever inserted at the front. On each move scan in the move's direction to the nearest tile of the same color and flip the tiles in between. Finally count black and white and print the two numbers separated by a space."
+    ],
+    "ja": [
+      "棋譜は高々 3000 手で、1 手ごとに列全体を走査して裏返しても高々その長さなので、素直な 2 乗のシミュレーションで十分間に合います。",
+      "（1 から数えて）奇数手目は黒、偶数手目は白を置きます。左端に置いた駒は右方向に同じ色の最も近い駒を探し、右端に置いた駒は左方向に探します。そのような駒がある場合に限り、間にあるすべての駒をその色に裏返し、なければ何も変わりません。",
+      "両側に余裕を持たせた配列に列を格納し（中央に黒、白の順で開始）、左ポインタと右ポインタを管理します。左端への手は左ポインタを左へ、右端への手は右ポインタを右へ動かすので、先頭への挿入は発生しません。各手で、手の方向に同じ色の最も近い駒まで走査し、間の駒を裏返します。最後に黒と白を数え、スペース区切りで 2 つの数を出力します。"
+    ],
+    "ko": [
+      "기록의 수는 최대 3000개이고 각 수마다 최대 줄 전체를 탐색하고 뒤집으므로, 이차 시간의 단순 시뮬레이션으로 충분히 빠릅니다.",
+      "홀수 번째 수(1부터 셈)는 검은 돌을, 짝수 번째 수는 흰 돌을 놓습니다. 왼쪽 끝에 놓은 돌은 오른쪽으로 같은 색의 가장 가까운 돌을 찾고, 오른쪽 끝에 놓은 돌은 왼쪽으로 찾습니다. 그런 돌이 있을 때만 둘 사이의 모든 돌이 그 색으로 뒤집히고, 없으면 아무 변화도 없습니다.",
+      "양쪽에 여유 공간이 있는 배열에 줄을 저장하고(가운데에 검은 돌, 흰 돌 순으로 시작) 왼쪽/오른쪽 포인터를 유지합니다. 왼쪽 끝에 놓으면 왼쪽 포인터를 왼쪽으로, 오른쪽 끝에 놓으면 오른쪽 포인터를 오른쪽으로 옮기므로 앞쪽에 삽입할 일이 없습니다. 각 수마다 수의 방향으로 같은 색의 가장 가까운 돌까지 탐색하여 그 사이의 돌을 뒤집습니다. 마지막으로 검은 돌과 흰 돌을 세어 두 수를 공백으로 구분해 출력합니다."
+    ],
+    "vi": [
+      "Xâu ghi lại có tối đa 3000 nước đi và mỗi nước quét và lật nhiều nhất cả hàng quân, nên mô phỏng trực tiếp với độ phức tạp bậc hai là đủ nhanh.",
+      "Các nước đi lẻ (đếm từ 1) đặt quân đen và các nước đi chẵn đặt quân trắng. Quân đặt ở đầu trái nhìn sang phải để tìm quân cùng màu gần nhất, còn quân đặt ở đầu phải nhìn sang trái; chỉ khi tồn tại quân như vậy thì mọi quân giữa chúng mới bị lật sang màu đó, nếu không thì không có gì thay đổi.",
+      "Lưu hàng quân trong một mảng có chừa chỗ trống hai bên (bắt đầu với quân đen rồi quân trắng ở giữa) và giữ hai con trỏ trái và phải: nước đi ở đầu trái dịch con trỏ trái sang trái và nước đi ở đầu phải dịch con trỏ phải sang phải, nên không bao giờ phải chèn vào đầu mảng. Ở mỗi nước đi, quét theo hướng của nước đi đến quân cùng màu gần nhất rồi lật các quân ở giữa. Cuối cùng đếm quân đen và quân trắng rồi in hai số cách nhau bởi một dấu cách."
     ]
   },
   "explanationEn": "## Approach\n\nSimulate the one-dimensional board step by step following the transcript. In the direction of the move, find the nearest tile of the same color and flip the tiles between it and the new tile.\n\n## Proof of correctness\n\nEach transcript character uniquely determines the color of the placed tile and the end of the board. The problem states that the middle range is flipped only when a nearest tile of the same color exists; maintaining the whole row step by step therefore matches the rules exactly.\n\n## Complexity\n\nTime O(|S|²), space O(|S|); this site limits the length to 3000 so that direct simulation fits."

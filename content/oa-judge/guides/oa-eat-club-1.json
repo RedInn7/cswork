@@ -13,6 +13,21 @@
       "N is only 1000, so you can fix the left end and extend the right end one step at a time, O(N^2) subarrays in total; the key is to update the current subarray's contribution cheaply whenever one value is added.",
       "After sorting, adjacent elements differ by more than 1 exactly when two consecutive present values in the value domain have a gap. Keep the present values in a bitset; inserting a new value v only affects its predecessor p and successor s: the pair p-s is replaced by p-v and v-s. A value that is already present changes nothing.",
       "For each left end, clear the bitset and the gap count. When adding a value v not yet present, find its predecessor p and successor s: if both exist and s - p > 1, decrement the count; if p exists and v - p > 1, increment it; if s exists and s - v > 1, increment it. A subarray of length 1 contributes 1, otherwise it contributes the current count; sum everything and reduce modulo 10^9+7. Predecessor and successor can be found by scanning 64-bit words for the highest or lowest set bit."
+    ],
+    "ja": [
+      "N は 1000 しかないので、左端を固定して右端を 1 つずつ伸ばすことができ、部分配列は全部で O(N^2) 個です。重要なのは、値が 1 つ加わるたびに現在の部分配列の寄与を安く更新することです。",
+      "ソート後に隣り合う要素の差が 1 を超えるのは、値の領域で連続して存在する 2 つの値の間に隙間があるとき、かつそのときに限ります。存在する値をビットセットに持ちます。新しい値 v の挿入が影響するのは、その前の値 p と後の値 s だけで、組 p-s が p-v と v-s に置き換わります。すでに存在する値を加えても何も変わりません。",
+      "各左端について、ビットセットと隙間の数をクリアします。まだ存在しない値 v を加えるときは、前の値 p と後の値 s を見つけ、両方が存在して s - p > 1 なら数を 1 減らし、p が存在して v - p > 1 なら 1 増やし、s が存在して s - v > 1 なら 1 増やします。長さ 1 の部分配列の寄与は 1、それ以外は現在の数です。すべてを合計して 10^9+7 で割った余りをとります。前の値と後の値は、64 ビットのワードを走査して最上位または最下位の立っているビットを探すことで見つけられます。"
+    ],
+    "ko": [
+      "N은 1000에 불과하므로 왼쪽 끝을 고정하고 오른쪽 끝을 한 칸씩 늘려 가면 전체 O(N^2)개의 부분 배열을 다룹니다. 핵심은 값이 하나 추가될 때마다 현재 부분 배열의 기여도를 싸게 갱신하는 것입니다.",
+      "정렬한 뒤 인접한 원소의 차가 1보다 크다는 것은 값 영역에서 연속한 두 존재하는 값 사이에 간격이 있다는 것과 정확히 같습니다. 존재하는 값을 비트셋에 유지하세요. 새 값 v를 삽입하면 선행 값 p와 후행 값 s만 영향을 받으며, 쌍 p-s가 p-v와 v-s로 대체됩니다. 이미 있는 값이면 아무것도 바뀌지 않습니다.",
+      "왼쪽 끝마다 비트셋과 간격 개수를 초기화합니다. 아직 없는 값 v를 추가할 때 선행 값 p와 후행 값 s를 찾습니다. 둘 다 있고 s - p > 1이면 개수를 1 줄이고, p가 있고 v - p > 1이면 1 늘리고, s가 있고 s - v > 1이면 1 늘립니다. 길이가 1인 부분 배열의 기여도는 1이고, 아니면 현재 개수입니다. 이를 모두 합산해 10^9+7로 나눈 나머지를 구하세요. 선행·후행 값은 64비트 워드를 훑어 가장 높은 또는 가장 낮은 설정된 비트로 찾을 수 있습니다."
+    ],
+    "vi": [
+      "N chỉ là 1000, nên bạn có thể cố định đầu trái và mở rộng đầu phải từng bước một, tổng cộng O(N^2) mảng con; mấu chốt là cập nhật đóng góp của mảng con hiện tại một cách rẻ mỗi khi thêm một giá trị.",
+      "Sau khi sắp xếp, các phần tử kề nhau chênh nhau hơn 1 chính xác khi hai giá trị có mặt liên tiếp trong miền giá trị có một khoảng trống giữa chúng. Giữ các giá trị có mặt trong một bitset; chèn giá trị mới v chỉ ảnh hưởng đến phần tử đứng trước p và phần tử đứng sau s của nó: cặp p-s được thay bằng p-v và v-s. Một giá trị đã có mặt thì không thay đổi gì.",
+      "Với mỗi đầu trái, xóa bitset và bộ đếm khoảng trống. Khi thêm giá trị v chưa có mặt, tìm phần tử đứng trước p và đứng sau s của nó: nếu cả hai đều tồn tại và s - p > 1, giảm bộ đếm; nếu p tồn tại và v - p > 1, tăng nó; nếu s tồn tại và s - v > 1, tăng nó. Mảng con độ dài 1 đóng góp 1, còn lại đóng góp bộ đếm hiện tại; cộng tất cả và rút gọn modulo 10^9+7. Phần tử đứng trước và đứng sau có thể tìm bằng cách quét các từ 64 bit để lấy bit được đặt cao nhất hoặc thấp nhất."
     ]
   },
   "explanationEn": "## Approach\n\nFix the left endpoint and extend the right endpoint step by step, maintaining a bitset of the values that have appeared. When inserting a new value, find its predecessor and successor and update the number of adjacent value pairs whose gap is greater than 1; a single-element subarray counts an extra 1.\n\n## Proof of correctness\n\nAfter sorting, adjacent distinct values are exactly the consecutive present values in the ordered value set. Inserting a new value can only split the one adjacency between its predecessor and successor and add its relations with the two sides; the predecessor and successor determined by the bitset therefore let the gap contribution of each subarray be maintained incrementally and exactly. Enumerating all contiguous ranges gives the total.\n\n## Complexity\n\nO(N^2) value-domain bit operations in time, and O(N) space."

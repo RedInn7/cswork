@@ -13,6 +13,21 @@
       "The counter serves one person at a time in arrival order, so the moment a person's check starts depends only on their arrival time and the moment the previous person finishes.",
       "Walk through the arrivals in order and keep the time at which the counter becomes free. Each person starts at the later of their arrival and that free time, and finishes 300 seconds after starting.",
       "Set finish = 0. For each arrival time in input order, set finish = max(finish, arrival) + 300. After the loop, finish is the time the last participant is done; print it."
+    ],
+    "ja": [
+      "カウンターは到着順に 1 人ずつ処理するので、ある人のチェックが始まる時刻は、その人の到着時刻と、直前の人が終わる時刻だけで決まります。",
+      "到着時刻を順に走査し、カウンターが空く時刻を保持します。各人は、到着時刻とその空き時刻のうち遅いほうに開始し、開始から 300 秒後に終わります。",
+      "finish = 0 とします。入力順の各到着時刻について finish = max(finish, arrival) + 300 とします。ループのあと、finish が最後の参加者の終了時刻なので、それを出力します。"
+    ],
+    "ko": [
+      "카운터는 도착 순서대로 한 번에 한 사람씩 처리하므로, 한 사람의 검사가 시작되는 순간은 그 사람의 도착 시각과 이전 사람이 끝나는 시각에만 달려 있습니다.",
+      "도착 순서대로 훑으면서 카운터가 비는 시각을 유지합니다. 각 사람은 자신의 도착 시각과 그 비는 시각 중 더 늦은 때에 시작하고, 시작 후 300초 뒤에 끝납니다.",
+      "finish = 0으로 둡니다. 입력 순서대로 각 도착 시각에 대해 finish = max(finish, arrival) + 300으로 설정합니다. 반복이 끝나면 finish가 마지막 참가자가 끝나는 시각이므로 그것을 출력합니다."
+    ],
+    "vi": [
+      "Quầy phục vụ từng người một theo thứ tự đến, nên thời điểm việc kiểm tra của một người bắt đầu chỉ phụ thuộc vào thời điểm đến của họ và thời điểm người trước xong.",
+      "Duyệt các thời điểm đến theo thứ tự và giữ thời điểm quầy rảnh. Mỗi người bắt đầu tại thời điểm muộn hơn giữa lúc họ đến và thời điểm rảnh đó, và kết thúc 300 giây sau khi bắt đầu.",
+      "Đặt finish = 0. Với mỗi thời điểm đến theo thứ tự đầu vào, đặt finish = max(finish, arrival) + 300. Sau vòng lặp, finish là thời điểm người tham gia cuối cùng xong; in nó ra."
     ]
   },
   "explanationEn": "## Approach\n\nMaintain the time at which the counter becomes free, following the arrival order. Each participant's start time is the larger of their arrival time and the previous participant's finish time, and the finish time is that plus 300 seconds.\n\n## Proof of correctness\n\nParticipants arrive in non-decreasing order and the counter is FIFO. If the counter is already free, the participant starts on arrival; otherwise they can only wait for the previous participant to finish. Therefore the recurrence gives exactly each participant's earliest, and actual, finish time, and the last step of the recurrence is the answer.\n\n## Complexity\n\nO(n) time and O(1) extra space."

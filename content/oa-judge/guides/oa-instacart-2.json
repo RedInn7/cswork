@@ -13,6 +13,21 @@
       "The bird's behaviour is fully determined: from the start it takes the nearest stick to the right, then to the left, then to the right again, returning to the start each time, until the total length is at least 100, so a direct simulation works.",
       "Each round, scan cell by cell from the start in the current direction, skipping empty positions of length 0; the first non-empty position is the nearest stick. Set it to 0 after taking it so it is never taken twice.",
       "Start with direction +1 (right); while the total is below 100: walk from bird + direction in that direction to the first non-zero position, record its index, add its length (which may exceed 32 bits, so use 64 bits), set it to zero, and flip the direction; finally print all indices in order, separated by spaces. The statement guarantees a stick always exists in the required direction."
+    ],
+    "ja": [
+      "鳥の動きは完全に決まっています。出発位置から右の最も近い棒、次に左、次にまた右と、毎回出発位置に戻りながら取り、合計が100以上になるまで続けるので、そのままシミュレーションできます。",
+      "各ラウンドでは、出発位置から現在の方向へ1マスずつ走査し、長さ0の空き位置を飛ばします。最初に見つかった空でない位置が最も近い棒です。取ったらその位置を0にして、二度取らないようにします。",
+      "方向を +1（右）で始め、合計が100未満の間は次を繰り返します。bird + direction からその方向へ進んで最初の0でない位置まで歩き、そのインデックスを記録し、長さ（32 ビットを超えることがあるので 64 ビットを使います）を加算し、その位置を0にして方向を反転します。最後にすべてのインデックスを順にスペース区切りで出力します。必要な方向には必ず棒が存在することが問題文で保証されています。"
+    ],
+    "ko": [
+      "새의 행동은 완전히 정해져 있습니다. 출발점에서 오른쪽 가장 가까운 막대기, 왼쪽 가장 가까운 막대기, 다시 오른쪽 … 순서로 매번 출발점으로 돌아오며 총 길이가 100 이상이 될 때까지 가져오므로 직접 시뮬레이션하면 됩니다.",
+      "매 라운드마다 출발점에서 현재 방향으로 한 칸씩 훑으며 길이 0인 빈 칸은 건너뜁니다. 처음 만나는 비어 있지 않은 칸이 가장 가까운 막대기입니다. 가져간 뒤에는 0으로 바꿔 다시 가져가지 않도록 합니다.",
+      "방향을 +1(오른쪽)로 시작합니다. 합이 100 미만인 동안 bird + direction에서 해당 방향으로 걸어가 처음 만나는 0이 아닌 위치를 찾아 인덱스를 기록하고, 길이를 더한 뒤(32비트를 넘을 수 있으므로 64비트 사용) 0으로 만들고 방향을 뒤집습니다. 마지막에 모든 인덱스를 순서대로 공백으로 구분하여 출력합니다. 문제에서 필요한 방향에 막대기가 항상 존재함이 보장됩니다."
+    ],
+    "vi": [
+      "Hành vi của con chim hoàn toàn xác định: từ điểm xuất phát nó lấy que gần nhất bên phải, rồi bên trái, rồi lại bên phải, mỗi lần đều quay về điểm xuất phát, cho đến khi tổng độ dài đạt ít nhất 100, nên mô phỏng trực tiếp là đủ.",
+      "Mỗi lượt, quét từng ô từ điểm xuất phát theo hướng hiện tại, bỏ qua các vị trí trống có độ dài 0; vị trí không rỗng đầu tiên là que gần nhất. Sau khi lấy thì gán nó về 0 để không bao giờ bị lấy lại.",
+      "Bắt đầu với hướng +1 (sang phải); khi tổng còn nhỏ hơn 100: đi từ bird + direction theo hướng đó đến vị trí khác 0 đầu tiên, ghi lại chỉ số của nó, cộng độ dài của nó (có thể vượt quá 32 bit nên dùng 64 bit), gán nó về 0 và đổi hướng; cuối cùng in tất cả chỉ số theo thứ tự, cách nhau bằng dấu cách. Đề bài đảm bảo luôn có que ở hướng cần lấy."
     ]
   },
   "explanationEn": "## Approach\n\nFrom the start, scan linearly in the current direction to the nearest remaining stick, take it, add its length, and reverse the direction; stop once the total length reaches 100.\n\n## Correctness\n\nThe linear scan finds the nearest non-empty position in that direction; setting it to zero guarantees it is not taken again. Alternating directions matches the statement, and the loop condition makes the process stop right after the threshold is first reached.\n\n## Complexity\n\nO(n²) in the worst case; on this site n≤2000, with O(1) extra space."

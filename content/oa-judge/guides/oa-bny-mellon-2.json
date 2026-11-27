@@ -13,6 +13,21 @@
       "MEX exactly k splits into independent conditions: every value below k is chosen at least once, no position holding k is chosen, and values above k are free. Different k never overlap, so count each k separately and add them up.",
       "Let cnt[v] be the number of occurrences of v and rest the number of elements greater than k. The number of subsequences with MEX k is the product of (2^cnt[v] - 1) over all v < k, times 2^rest. An array of length n cannot have MEX above n, so only k <= min(n, r) matters.",
       "Count only values that are at most n and precompute powers of two. Scan k upward from 0: subtract cnt[k] from the remaining count to get rest; if k >= l add (current product) * 2^rest to the answer; then multiply the product by (2^cnt[k] - 1). Work modulo 10^9+7 throughout."
+    ],
+    "ja": [
+      "MEX がちょうど k であることは、独立な条件に分かれます。k より小さいすべての値が少なくとも 1 回ずつ選ばれること、k を持つ位置は選ばれないこと、k より大きい値は自由であることです。異なる k は重ならないので、各 k を別々に数えて足し合わせます。",
+      "cnt[v] を v の出現回数、rest を k より大きい要素の個数とします。MEX が k である部分列の個数は、すべての v < k についての (2^cnt[v] - 1) の積に 2^rest を掛けたものです。長さ n の配列の MEX が n を超えることはないので、k <= min(n, r) だけが関係します。",
+      "n 以下の値だけを数え、2 の冪を前計算しておきます。k を 0 から上に向かって走査します。残りの個数から cnt[k] を引いて rest を求め、k >= l なら (現在の積) * 2^rest を答えに加え、そのあと積に (2^cnt[k] - 1) を掛けます。すべて 10^9+7 を法として計算します。"
+    ],
+    "ko": [
+      "MEX가 정확히 k라는 것은 독립적인 조건들로 나뉩니다. k보다 작은 모든 값이 최소 한 번 선택되고, k가 있는 위치는 하나도 선택되지 않으며, k보다 큰 값은 자유입니다. 서로 다른 k는 겹치지 않으므로 k마다 따로 세어 더하면 됩니다.",
+      "cnt[v]를 v의 등장 횟수, rest를 k보다 큰 원소의 개수라 합시다. MEX가 k인 부분 수열의 수는 모든 v < k에 대한 (2^cnt[v] - 1)의 곱에 2^rest를 곱한 값입니다. 길이 n인 배열의 MEX는 n을 넘을 수 없으므로 k <= min(n, r)만 의미가 있습니다.",
+      "n 이하의 값만 세고 2의 거듭제곱을 미리 계산합니다. k를 0부터 위로 훑으면서, 남은 개수에서 cnt[k]를 빼 rest를 구합니다. k >= l이면 (현재 곱) * 2^rest를 답에 더하고, 그다음 곱에 (2^cnt[k] - 1)을 곱합니다. 모든 계산은 10^9+7로 나눈 나머지로 합니다."
+    ],
+    "vi": [
+      "MEX đúng bằng k tách thành các điều kiện độc lập: mọi giá trị nhỏ hơn k được chọn ít nhất một lần, không vị trí nào chứa k được chọn, và các giá trị lớn hơn k tự do. Các k khác nhau không bao giờ chồng lấn, nên đếm từng k riêng rồi cộng lại.",
+      "Gọi cnt[v] là số lần xuất hiện của v và rest là số phần tử lớn hơn k. Số dãy con có MEX k là tích của (2^cnt[v] - 1) trên mọi v < k, nhân 2^rest. Một mảng độ dài n không thể có MEX vượt quá n, nên chỉ cần xét k <= min(n, r).",
+      "Chỉ đếm các giá trị không quá n và tiền tính các lũy thừa của 2. Quét k tăng dần từ 0: trừ cnt[k] khỏi số đếm còn lại để được rest; nếu k >= l thì cộng (tích hiện tại) * 2^rest vào đáp án; rồi nhân tích với (2^cnt[k] - 1). Làm việc theo modulo 10^9+7 xuyên suốt."
     ]
   },
   "explanationEn": "## Approach\n\nLet cnt[v] be the number of occurrences of value v in the original array. A position subsequence with MEX=k must choose at least one position for each v<k (2^cnt[v]−1 ways), must not choose any position with value k, and may choose any of the positions with values >k freely (2^rest ways in total). So its contribution is the product of these factors. Only k≤n needs to be enumerated, because a subsequence of length n cannot have a larger MEX.\n\n## Proof of Correctness\n\nFix k. The MEX is exactly k if and only if the subsequence contains at least one of each value smaller than k, contains no k, and may choose elements larger than k arbitrarily. For each v<k there are 2^cnt[v]−1 non-empty position subsets; the only choice for value k is the empty set; the remaining positions have 2^rest choices. A position set determines a unique subsequence choice, so the product counts exactly all subsequences with MEX=k, without duplicates. Different values of k give mutually exclusive MEX values, so adding the contributions inside the range gives the answer. MEX≤n, so scanning up to min(n,r) is enough.\n\n## Complexity\n\nTime O(n), space O(n); n≤3×10⁵."

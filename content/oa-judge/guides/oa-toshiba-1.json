@@ -13,6 +13,21 @@
       "Each element can be handled on its own without affecting the others; only each number's remainder modulo 3 matters.",
       "A remainder of 0 needs nothing; with remainder 1, subtracting 1 is fastest, and with remainder 2, adding 1 is fastest, one step each. In general, remainder r needs min(r, 3 - r) operations.",
       "Take each number's non-negative remainder r (adjust negatives into 0..2, e.g. ((x mod 3) + 3) mod 3), add min(r, 3 - r) to the total, and output the total as a 64-bit integer."
+    ],
+    "ja": [
+      "各要素は他の要素に影響を与えずに個別に扱えます。重要なのは各数を 3 で割った余りだけです。",
+      "余りが 0 なら何もしません。余りが 1 なら 1 を引くのが最短、余りが 2 なら 1 を足すのが最短で、いずれも 1 ステップです。一般に、余り r には min(r, 3 - r) 回の操作が必要です。",
+      "各数の非負の余り r を求め（負の数は 0..2 に調整します。例えば ((x mod 3) + 3) mod 3）、min(r, 3 - r) を合計に加え、合計を 64 ビット整数として出力します。"
+    ],
+    "ko": [
+      "각 원소는 다른 원소에 영향을 주지 않고 독립적으로 처리할 수 있으며, 각 수의 3에 대한 나머지만 중요합니다.",
+      "나머지가 0이면 아무것도 할 필요가 없습니다. 나머지가 1이면 1을 빼는 것이, 나머지가 2이면 1을 더하는 것이 가장 빠르며 각각 한 단계입니다. 일반적으로 나머지 r에는 min(r, 3 - r)번의 연산이 필요합니다.",
+      "각 수의 음이 아닌 나머지 r을 구하고(음수는 0..2로 보정합니다. 예: ((x mod 3) + 3) mod 3), min(r, 3 - r)을 총합에 더한 뒤 총합을 64비트 정수로 출력합니다."
+    ],
+    "vi": [
+      "Mỗi phần tử có thể xử lý độc lập mà không ảnh hưởng đến các phần tử khác; chỉ số dư của mỗi số khi chia cho 3 là quan trọng.",
+      "Số dư 0 không cần làm gì; với số dư 1, trừ 1 là nhanh nhất, với số dư 2, cộng 1 là nhanh nhất, mỗi trường hợp một bước. Tổng quát, số dư r cần min(r, 3 - r) thao tác.",
+      "Lấy số dư không âm r của từng số (chuyển số âm về 0..2, ví dụ ((x mod 3) + 3) mod 3), cộng min(r, 3 - r) vào tổng, và in tổng dưới dạng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nFor each number's remainder r modulo 3, the minimum change is `min(r,3-r)`; adding them up gives the answer. The independent oracle simulates the reachable set of +1/-1 steps.\n\n## Proof of correctness\n\nA remainder of 0 needs no operation; with remainder 1, subtracting one takes a single step, and with remainder 2, adding one takes a single step. Any step moves the remainder at most to an adjacent residue class, so a non-zero remainder needs at least one step; summing over all elements gives the minimum total number of operations.\n\n## Complexity\n\nOne operation is strictly a +1 or -1 on one element; array values may be negative.\n\nO(n) time, O(1) extra space.\n\n## Reference implementation\n\n```python\ndef solve(raw):\n z=list(map(int,raw.split()));n=z[0];return str(sum(min(x%3,3-x%3) for x in z[1:1+n]))\n```"

@@ -13,6 +13,21 @@
       "Every letter occurs an even number of times in a substring exactly when the two prefixes bounding it have the same parity for every letter.",
       "Pack the parities of the 26 letters into a 26-bit mask and flip one bit per character. Two positions with the same prefix mask enclose a valid substring, and for a fixed right end, the earliest matching left end gives the longest one.",
       "Store the first position where each mask appears in a hash map, with mask 0 of the empty prefix at position -1. At index i update the mask; if it has been seen, update the answer with i minus that earliest position, otherwise record i. If no non-empty valid substring exists the answer stays 0."
+    ],
+    "ja": [
+      "部分文字列内ですべての文字が偶数回出現するのは、その両端を区切る 2 つの接頭辞で、すべての文字の偶奇が一致しているときに限ります。",
+      "26 文字の偶奇を 26 ビットのマスクにまとめ、1 文字ごとに 1 ビットを反転します。接頭辞のマスクが同じ 2 つの位置に挟まれた区間は条件を満たす部分文字列となり、右端を固定したとき、一致する最も左の左端が最長の区間を与えます。",
+      "各マスクが最初に現れた位置をハッシュマップに保存します。空の接頭辞のマスク 0 は位置 -1 に置きます。インデックス i でマスクを更新し、すでに見たことがあれば、答えを i からその最初の位置を引いた値で更新し、なければ i を記録します。空でない条件を満たす部分文字列が存在しない場合、答えは 0 のままです。"
+    ],
+    "ko": [
+      "부분 문자열 안에서 모든 문자가 짝수 번 등장한다는 것은, 그 부분 문자열을 감싸는 두 접두사의 홀짝 상태가 모든 문자에 대해 같다는 것과 정확히 같은 의미입니다.",
+      "26개 문자의 홀짝을 26비트 마스크에 담고, 문자를 하나 볼 때마다 해당 비트를 뒤집습니다. 접두사 마스크가 같은 두 위치 사이는 조건을 만족하는 부분 문자열이 되며, 오른쪽 끝을 고정하면 가장 앞에서 일치하는 왼쪽 끝이 가장 긴 구간을 줍니다.",
+      "각 마스크가 처음 나타난 위치를 해시 맵에 저장하고, 빈 접두사의 마스크 0은 위치 -1에 둡니다. 인덱스 i에서 마스크를 갱신한 뒤 이미 본 마스크라면 i에서 그 최초 위치를 뺀 값으로 답을 갱신하고, 아니면 i를 기록합니다. 비어 있지 않은 유효한 부분 문자열이 없으면 답은 0으로 남습니다."
+    ],
+    "vi": [
+      "Mọi chữ cái xuất hiện một số chẵn lần trong một xâu con khi và chỉ khi hai tiền tố giới hạn nó có cùng tính chẵn lẻ ở mọi chữ cái.",
+      "Gói tính chẵn lẻ của 26 chữ cái vào một mask 26 bit và đảo một bit cho mỗi ký tự. Hai vị trí có cùng mask tiền tố sẽ bao quanh một xâu con hợp lệ, và với đầu phải cố định thì đầu trái sớm nhất khớp được cho xâu con dài nhất.",
+      "Lưu vị trí đầu tiên mà mỗi mask xuất hiện vào một hash map, với mask 0 của tiền tố rỗng ở vị trí -1. Tại chỉ số i cập nhật mask; nếu mask đã từng gặp thì cập nhật đáp án bằng i trừ đi vị trí sớm nhất đó, ngược lại ghi nhận i. Nếu không có xâu con hợp lệ khác rỗng thì đáp án giữ nguyên là 0."
     ]
   },
   "explanationEn": "## Approach\n\nEncode the parity of the occurrences of the 26 letters as a bitmask, and record the earliest position where each state appears.\n\n## Proof of correctness\n\nWhen two prefix parity masks are equal, every letter occurs an even number of times between them; for a fixed right end, choosing the earliest position gives the longest substring. Scanning all prefixes and taking the maximum length gives the global optimum.\n\n## Complexity\n\nO(n) time and O(min(n, 2^26)) space."

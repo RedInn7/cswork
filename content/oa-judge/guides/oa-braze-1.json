@@ -13,6 +13,21 @@
       "Items share no discount budget and no linked conditions, so minimizing the total is the same as taking the lowest price of each item separately and adding them up.",
       "The candidate prices of an item are its original price plus one price per valid tag: type 0 is the discounted price itself, type 1 is price * (100 - percent) / 100 rounded down, and type 2 is the price minus the amount off. Tags missing from the discount table are ignored.",
       "Read the discount tags into a hash map from tag name to (type, amount), then for each item go through its tags, take the minimum of the original price and all candidate prices, add it to the total, and print the total."
+    ],
+    "ja": [
+      "商品同士で割引の予算を共有することも、連動する条件もないので、合計の最小化は、各商品の最低価格を個別にとって足し合わせることと同じです。",
+      "商品の候補価格は、元の価格と、有効なタグごとに 1 つずつの価格です。type 0 は割引後の価格そのもの、type 1 は price * (100 - percent) / 100 の切り捨て、type 2 は price から値引き額を引いたものです。割引テーブルにないタグは無視します。",
+      "割引タグを、タグ名から (type, amount) へのハッシュマップとして読み込みます。次に各商品について、そのタグを順に調べ、元の価格とすべての候補価格の最小値をとって合計に加え、最後に合計を出力します。"
+    ],
+    "ko": [
+      "상품들은 할인 예산을 공유하지 않고 연결된 조건도 없으므로, 합계를 최소화하는 것은 상품마다 가장 낮은 가격을 따로 구해 더하는 것과 같습니다.",
+      "한 상품의 후보 가격은 원래 가격과 유효한 태그마다 하나씩의 가격입니다. type 0은 할인된 가격 자체, type 1은 price * (100 - percent) / 100을 내림한 값, type 2는 가격에서 할인액을 뺀 값입니다. 할인 표에 없는 태그는 무시합니다.",
+      "할인 태그를 태그 이름에서 (type, amount)로 가는 해시 맵으로 읽어 들인 뒤, 각 상품에 대해 그 태그들을 확인하여 원래 가격과 모든 후보 가격의 최솟값을 구해 합계에 더하고, 합계를 출력합니다."
+    ],
+    "vi": [
+      "Các mặt hàng không chia sẻ ngân sách ưu đãi và không có điều kiện liên kết, nên cực tiểu hóa tổng cũng chính là lấy giá thấp nhất của từng mặt hàng riêng rồi cộng lại.",
+      "Các giá ứng viên của một mặt hàng là giá gốc cộng với một giá cho mỗi thẻ hợp lệ: type 0 là chính giá ưu đãi, type 1 là price * (100 - percent) / 100 làm tròn xuống, và type 2 là giá trừ số tiền giảm. Các thẻ không có trong bảng ưu đãi bị bỏ qua.",
+      "Đọc các thẻ ưu đãi vào một hash map từ tên thẻ đến (type, amount), rồi với mỗi mặt hàng đi qua các thẻ của nó, lấy giá nhỏ nhất trong giá gốc và mọi giá ứng viên, cộng vào tổng, và in tổng."
     ]
   },
   "explanationEn": "## Approach\n\nEnumerate the original price and the prices computed from all valid tags, and take the minimum for each item. A percentage gives `floor(price×(100−percent)/100)`; the fixed amount off is bounded by the item's original price, so there is no ambiguity from negative prices.\n\n## Proof of Correctness\n\nDifferent items share no discount budget and no linked conditions, so minimizing the total price decomposes into minimizing each item independently. Enumerating the original price and the price of each valid tag, with percentage prices rounded down, and taking the minimum makes the resulting total the global minimum.\n\n## Complexity\n\nProduct descriptors are one line each; tags are whitespace-free identifiers; all values are integers.\n\nO(P + T + d) time and O(P + d) space, where P is the number of items and T is the total number of item tags.\n\n## Reference Implementation\n\n```python\ndef solve(raw):\n z=raw.splitlines();n,d=map(int,z[0].split());p=[]\n for line in z[1:1+n]:\n  a=line.split();p.append((int(a[0]),a[2:2+int(a[1])]))\n disc={}\n for line in z[1+n:1+n+d]:\n  k,t,v=line.split();disc[k]=(int(t),int(v))\n total=0\n for price,tags in p:\n  best=price\n  for tag in tags:\n   if tag not in disc:continue\n   t,v=disc[tag];x=v if t==0 else price*(100-v)//100 if t==1 else price-v;best=min(best,x)\n  total+=best\n return str(total)\n```"

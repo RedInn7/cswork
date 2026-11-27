@@ -13,6 +13,21 @@
       "Rearrange the equation: a[i] - b[j] = a[j] - b[i] is equivalent to a[i] + b[i] = a[j] + b[j], so each index only needs the single value c[i] = a[i] + b[i].",
       "The task becomes counting index pairs with i <= j and c[i] = c[j]; the pair i = j always satisfies the equation and must be counted. Scan from left to right and keep, in a hash map, how many times each value has appeared.",
       "At index j, first increment cnt[c[j]], then add the incremented value to the answer; it is exactly the number of pairs ending at j, including j itself. c[i] can reach +-2 * 10^9 and the answer about 2 * 10^10, so use 64-bit integers for both."
+    ],
+    "ja": [
+      "式を変形します。a[i] - b[j] = a[j] - b[i] は a[i] + b[i] = a[j] + b[j] と同値なので、各インデックスには c[i] = a[i] + b[i] という 1 つの値だけが必要です。",
+      "問題は、i <= j かつ c[i] = c[j] を満たすインデックスのペアを数えることになります。i = j のペアは常に式を満たすので、必ず数えます。左から右へ走査し、各値がこれまでに何回現れたかをハッシュマップに保持します。",
+      "インデックス j では、まず cnt[c[j]] を増やし、増やした後の値を答えに加えます。これは j を終点とするペアの数で、j 自身を含みます。c[i] は ±2 * 10^9 に達しえて、答えは約 2 * 10^10 になりうるので、どちらにも 64 ビット整数を使います。"
+    ],
+    "ko": [
+      "식을 정리하면 a[i] - b[j] = a[j] - b[i]는 a[i] + b[i] = a[j] + b[j]와 동치이므로, 각 인덱스에는 단일 값 c[i] = a[i] + b[i]만 필요합니다.",
+      "이제 i <= j이고 c[i] = c[j]인 인덱스 쌍을 세는 문제가 됩니다. i = j인 쌍은 항상 식을 만족하므로 반드시 세어야 합니다. 왼쪽에서 오른쪽으로 훑으면서 각 값이 몇 번 나타났는지를 해시 맵에 유지합니다.",
+      "인덱스 j에서 먼저 cnt[c[j]]를 증가시킨 뒤 증가한 값을 답에 더합니다. 이것이 j 자신을 포함하여 j에서 끝나는 쌍의 정확한 개수입니다. c[i]는 +-2 * 10^9에 이를 수 있고 답은 약 2 * 10^10이므로 둘 다 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Biến đổi phương trình: a[i] - b[j] = a[j] - b[i] tương đương với a[i] + b[i] = a[j] + b[j], nên mỗi chỉ số chỉ cần một giá trị c[i] = a[i] + b[i].",
+      "Bài toán trở thành đếm các cặp chỉ số với i <= j và c[i] = c[j]; cặp i = j luôn thỏa phương trình và phải được đếm. Quét từ trái sang phải và giữ trong một bảng băm số lần mỗi giá trị đã xuất hiện.",
+      "Tại chỉ số j, trước hết tăng cnt[c[j]], rồi cộng giá trị đã tăng vào đáp án; đó chính là số cặp kết thúc tại j, bao gồm cả chính j. c[i] có thể đạt +-2 * 10^9 và đáp án khoảng 2 * 10^10, nên dùng số nguyên 64 bit cho cả hai."
     ]
   },
   "explanationEn": "## Problem\n\nGiven two arrays a and b of equal length, count the index pairs (i, j) with i <= j and a[i] - b[j] = a[j] - b[i].\n\n## Approach\n\nRearrange: a[i] - b[j] = a[j] - b[i] <=> a[i] + b[i] = a[j] + b[j]. Let c[i] = a[i] + b[i]; the problem becomes counting pairs with i <= j and c[i] = c[j] (i = j always qualifies). Scan from left to right with a hash map storing how many times each value has appeared; at index i, increment that value's count and add the whole count to the answer (including i itself).\n\n## Correctness\n\nThe rearrangement is reversible; every qualifying (i, j) is counted exactly once, when the scan reaches j.\n\n## Complexity\n\nO(n) expected. c[i] can reach +-2 * 10^9 and the answer about 2 * 10^10, so both need 64-bit integers.\n\n## Independent verification\n\nThe oracle compares every pair i <= j directly with the original equation (O(n^2), small data only), without rearranging. Expected values of the large cases were computed with a Counter as sum of cnt * (cnt + 1) / 2. All array pairs of length 1..4 with elements -1..1 were enumerated and the reference program was actually run on each. The wrong solutions cover missing i = j, grouping by a - b by mistake, 32-bit counters and counting ordered pairs."

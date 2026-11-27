@@ -13,6 +13,21 @@
       "The result must be strictly smaller than the original, and changing one character makes the string smaller only if that character becomes a smaller letter. For the lexicographically smallest result, the change should be as early as possible and the new letter as small as possible.",
       "Changing the first non-'a' character in the first half to 'a' gives the smallest result, and since its mirror position is unchanged, the result is no longer a palindrome. If the first half is all 'a', the second half is too by symmetry, and only the center could be lowered, but changing the center keeps a palindrome.",
       "Scan indices 0 to len/2-1; at the first character that is not 'a', change it to 'a' and print the whole string. If none exists, print IMPOSSIBLE; a string of length 1 is always impossible. Do not use the common variant that changes the last character to 'b', because here the result must get smaller."
+    ],
+    "ja": [
+      "結果は元の文字列より厳密に小さくなければならず、1 文字を変えて文字列が小さくなるのは、その文字がより小さい文字になるときだけです。辞書順最小の結果にするには、変更をできるだけ早い位置で行い、新しい文字をできるだけ小さくします。",
+      "前半の最初の 'a' でない文字を 'a' に変えると結果は最小になり、その鏡像の位置は変わらないので、結果はもう回文ではありません。前半がすべて 'a' なら、対称性により後半もそうなので、小さくできるのは中央だけですが、中央を変えても回文のままです。",
+      "添字 0 から len/2-1 まで走査し、最初に 'a' でない文字を見つけたら 'a' に変えて文字列全体を出力します。なければ IMPOSSIBLE を出力します。長さ 1 の文字列は常に不可能です。よくある「最後の文字を 'b' に変える」変種は、ここでは結果が小さくならなければならないので使わないでください。"
+    ],
+    "ko": [
+      "결과는 원래 문자열보다 엄격히 작아야 하며, 한 글자를 바꿔 문자열이 작아지려면 그 글자가 더 작은 문자가 되어야 합니다. 사전순으로 가장 작은 결과를 만들려면 변경은 가능한 한 앞에서, 새 글자는 가능한 한 작아야 합니다.",
+      "전반부에서 처음으로 'a'가 아닌 글자를 'a'로 바꾸면 가장 작은 결과가 되며, 대칭 위치는 바뀌지 않으므로 결과는 더 이상 회문이 아닙니다. 전반부가 모두 'a'이면 대칭에 의해 후반부도 모두 'a'이고, 가운데 글자만 작게 만들 수 있지만 가운데를 바꾸면 회문이 유지됩니다.",
+      "인덱스 0부터 len/2-1까지 훑다가 'a'가 아닌 첫 글자를 'a'로 바꾸고 문자열 전체를 출력합니다. 그런 글자가 없으면 IMPOSSIBLE을 출력하며, 길이가 1인 문자열은 항상 불가능합니다. 마지막 글자를 'b'로 바꾸는 흔한 변형은 여기서는 결과가 작아져야 하므로 사용하지 마세요."
+    ],
+    "vi": [
+      "Kết quả phải nhỏ hơn hẳn xâu gốc, và đổi một ký tự chỉ làm xâu nhỏ đi nếu ký tự đó trở thành một chữ cái nhỏ hơn. Để kết quả nhỏ nhất theo thứ tự từ điển, thay đổi nên xảy ra càng sớm càng tốt và chữ cái mới càng nhỏ càng tốt.",
+      "Đổi ký tự đầu tiên khác 'a' trong nửa đầu thành 'a' cho kết quả nhỏ nhất, và vì vị trí đối xứng của nó không đổi nên kết quả không còn là palindrome. Nếu nửa đầu toàn 'a' thì nửa sau cũng vậy do đối xứng, và chỉ ký tự ở giữa mới có thể giảm, nhưng đổi ký tự giữa vẫn giữ palindrome.",
+      "Quét các chỉ số từ 0 đến len/2-1; tại ký tự đầu tiên không phải 'a', đổi nó thành 'a' và in cả xâu. Nếu không có thì in IMPOSSIBLE; xâu có độ dài 1 luôn là không thể. Đừng dùng biến thể phổ biến đổi ký tự cuối thành 'b', vì ở đây kết quả phải nhỏ đi."
     ]
   },
   "explanationEn": "## Approach\n\nChange the first non-'a' character of the first half to 'a'; if there is none, it is impossible. The common variant that changes the last character to 'b' cannot be used, because this problem explicitly requires the string to become smaller.\n\n## Correctness\n\nThe earliest position that can be lowered gives the lexicographically best change, and changing it to 'a' creates an asymmetry. If the first half is all 'a', the symmetric second half is all 'a' too, so only the center, which may be larger, can be lowered; but changing the center still leaves a palindrome, so there is no solution.\n\n## Complexity\n\nTime O(N), output space O(N)."

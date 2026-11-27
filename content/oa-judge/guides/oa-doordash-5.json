@@ -13,6 +13,21 @@
       "You repeatedly merge the groups of two people and ask for the size of a person's group, which is exactly what a disjoint-set union is for.",
       "Keep the group size at each root. An F operation merges the two roots by size, and a T operation finds both roots and adds the two sizes. The statement counts each person separately even when they share a group, so that case simply adds the size twice with no special handling.",
       "Initialize parent[i] = i and size[i] = 1. For F a b, find both roots and, if they differ, attach the smaller group under the larger one and add the sizes. For T a b, add size[find(a)] + size[find(b)] to the answer. Use path compression in find and a 64-bit total."
+    ],
+    "ja": [
+      "2 人のグループを繰り返し併合し、ある人のグループのサイズを尋ねるので、まさに素集合データ構造 (union-find) の出番です。",
+      "各根にグループのサイズを保持します。F 操作は、サイズによって 2 つの根を併合し、T 操作は 2 つの根を求めて 2 つのサイズを加えます。問題文は、同じグループにいる場合でも各人を別々に数えるので、その場合はサイズを 2 回加えるだけで、特別な処理は要りません。",
+      "parent[i] = i、size[i] = 1 で初期化します。F a b では 2 つの根を求め、異なれば小さいグループを大きい方の下につなぎ、サイズを足します。T a b では size[find(a)] + size[find(b)] を答えに加えます。find では経路圧縮を使い、合計は 64 ビットにします。"
+    ],
+    "ko": [
+      "두 사람의 그룹을 반복해서 합치고 한 사람의 그룹 크기를 묻고 있으므로, 이는 바로 서로소 집합(disjoint-set union)이 하는 일입니다.",
+      "각 루트에 그룹 크기를 유지합니다. F 연산은 두 루트를 크기 기준으로 합치고, T 연산은 두 루트를 찾아 두 크기를 더합니다. 문제는 같은 그룹에 속해 있어도 각 사람을 따로 세므로, 그 경우에는 크기를 두 번 더하면 되며 특별한 처리는 필요 없습니다.",
+      "parent[i] = i, size[i] = 1로 초기화합니다. F a b에서는 두 루트를 찾아 다르면 작은 그룹을 큰 그룹 아래에 붙이고 크기를 더합니다. T a b에서는 답에 size[find(a)] + size[find(b)]를 더합니다. find에는 경로 압축을 쓰고 합계는 64비트로 둡니다."
+    ],
+    "vi": [
+      "Bạn liên tục gộp nhóm của hai người và hỏi kích thước nhóm của một người, đúng là việc mà cấu trúc tập hợp rời nhau (disjoint-set union) làm.",
+      "Giữ kích thước nhóm tại mỗi gốc. Thao tác F gộp hai gốc theo kích thước, và thao tác T tìm cả hai gốc rồi cộng hai kích thước. Đề bài đếm riêng từng người ngay cả khi họ cùng một nhóm, nên trường hợp đó đơn giản là cộng kích thước hai lần mà không cần xử lý đặc biệt.",
+      "Khởi tạo parent[i] = i và size[i] = 1. Với F a b, tìm cả hai gốc và, nếu chúng khác nhau, gắn nhóm nhỏ hơn vào dưới nhóm lớn hơn rồi cộng các kích thước. Với T a b, cộng size[find(a)] + size[find(b)] vào đáp án. Dùng nén đường đi trong find và tổng 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nA union-find structure maintains representatives and group sizes. F merges by size, and T adds the sizes of the two groups to the running total.\n\n## Correctness\n\nThe representative identifies a connected component, and merging keeps the group sizes correct. Each Total query takes the group size separately for each of the two students, so when they are in the same group it is counted twice, as the statement says.\n\n## Complexity\n\nO((n+q) alpha(n)) time and O(n) space."

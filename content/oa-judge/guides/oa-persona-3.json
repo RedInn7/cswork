@@ -13,6 +13,21 @@
       "Every step costs the same on the grid, so the minimum number of steps is the BFS distance. On any shortest path each step goes from a cell at distance d to a cell at distance d + 1, and these edges form a directed acyclic graph.",
       "Run a DP alongside the BFS: best[cell] is the maximum number of treasures collectable on a shortest path to that cell, and it only takes transitions from neighbors whose distance is exactly one less.",
       "Set best at the start to whether the start holds a treasure. When BFS pops a cell u, look at the four neighbors z that are in bounds and not walls: if z is unvisited, set dist[z] = dist[u] + 1, best[z] = best[u] + [z has treasure] and enqueue it; if dist[z] == dist[u] + 1, raise best[z] to best[u] + [z has treasure] if larger. If the exit is unreachable print -1 0, otherwise print dist[end] and best[end]."
+    ],
+    "ja": [
+      "グリッド上では 1 ステップのコストがすべて同じなので、最小ステップ数は BFS の距離です。任意の最短経路では、各ステップが距離 d のマスから距離 d + 1 のマスへ進み、これらの辺は有向非巡回グラフ（DAG）をなします。",
+      "BFS と並行して DP を行います。best[cell] はそのマスへの最短経路上で集められる宝の最大数で、距離がちょうど 1 小さい隣接マスからの遷移のみを使います。",
+      "スタートの best を、スタートに宝があるかどうか（あれば 1、なければ 0）にします。BFS でマス u を取り出したら、範囲内で壁でない 4 つの隣接マス z を調べます。z が未訪問なら dist[z] = dist[u] + 1、best[z] = best[u] + [z に宝がある] とし、キューに追加します。dist[z] == dist[u] + 1 なら、best[u] + [z に宝がある] のほうが大きい場合に best[z] を更新します。出口に到達できなければ -1 0 を出力し、そうでなければ dist[end] と best[end] を出力します。"
+    ],
+    "ko": [
+      "격자에서 모든 이동의 비용이 같으므로 최소 걸음 수는 BFS 거리입니다. 모든 최단 경로에서 각 걸음은 거리 d인 칸에서 거리 d + 1인 칸으로 가며, 이러한 간선들은 방향 비순환 그래프를 이룹니다.",
+      "BFS와 함께 DP를 수행합니다. best[cell]은 그 칸까지의 최단 경로에서 모을 수 있는 보물의 최대 개수이며, 거리가 정확히 1 작은 이웃에서만 전이합니다.",
+      "시작 칸의 best는 그곳에 보물이 있는지 여부로 설정합니다. BFS가 칸 u를 꺼낼 때 범위 안이고 벽이 아닌 네 이웃 z를 확인합니다. z를 처음 방문하면 dist[z] = dist[u] + 1, best[z] = best[u] + [z에 보물이 있으면 1]로 설정하고 큐에 넣습니다. dist[z] == dist[u] + 1이면 best[u] + [z에 보물이 있으면 1]이 더 클 때 best[z]를 갱신합니다. 출구에 도달할 수 없으면 -1 0을 출력하고, 아니면 dist[end]와 best[end]를 출력합니다."
+    ],
+    "vi": [
+      "Mỗi bước trên lưới có chi phí như nhau, nên số bước tối thiểu chính là khoảng cách BFS. Trên bất kỳ đường đi ngắn nhất nào, mỗi bước đi từ một ô ở khoảng cách d đến một ô ở khoảng cách d + 1, và các cạnh này tạo thành một đồ thị có hướng không chu trình.",
+      "Chạy quy hoạch động song song với BFS: best[cell] là số kho báu tối đa có thể thu thập trên một đường đi ngắn nhất đến ô đó, và nó chỉ chuyển từ các ô kề có khoảng cách đúng nhỏ hơn một.",
+      "Đặt best tại điểm xuất phát bằng việc điểm xuất phát có kho báu hay không. Khi BFS lấy ra một ô u, xét bốn ô kề z nằm trong lưới và không phải tường: nếu z chưa được thăm, đặt dist[z] = dist[u] + 1, best[z] = best[u] + [z có kho báu] và đưa vào hàng đợi; nếu dist[z] == dist[u] + 1, nâng best[z] lên best[u] + [z có kho báu] nếu lớn hơn. Nếu không thể đến lối ra thì in -1 0, ngược lại in dist[end] và best[end]."
     ]
   },
   "explanationEn": "## Approach\n\nFirst run BFS from start to get the shortest distance to every cell; then do DP in increasing order of distance, transitioning only from neighbors whose distance is 1 smaller, and record for each cell the maximum number of treasures over shortest paths that reach it.\n\n## Proof of correctness\n\nWith the BFS distances, every edge of a shortest path goes from d to d+1, which forms a directed acyclic graph. Processing in increasing distance, the DP has already considered all shortest-path predecessors, so taking the maximum gives the maximum number of treasures over shortest paths to that cell. The exit's distance and DP value are exactly what is asked.\n\n## Complexity\n\nTime O(rows*cols), space O(rows*cols)."

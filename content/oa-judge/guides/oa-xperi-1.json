@@ -13,6 +13,21 @@
       "Every element is at most 50 < 64, so the XOR of any number of elements lies in 0..63; there are only 64 states.",
       "Do dynamic programming over positions: dp[x] is the number of filled prefixes whose XOR is x, and each new element enumerates its value 0..M as the transition.",
       "Set dp[0] = 1; repeat N times: start nxt at all zeros, and for every old state and every v in [0, M] add dp[old] to nxt[old^v] modulo 998244353; print dp[X] at the end."
+    ],
+    "ja": [
+      "どの要素も 50 < 64 以下なので、何個の要素の XOR を取っても 0..63 の範囲に収まります。状態は 64 通りしかありません。",
+      "位置ごとに動的計画法を行います。dp[x] は、XOR が x である埋め済みの接頭辞の個数で、新しい要素は値 0..M を列挙することで遷移になります。",
+      "dp[0] = 1 とし、N 回繰り返します。nxt をすべて 0 で初期化し、すべての古い状態と [0, M] のすべての v について、nxt[old^v] に dp[old] を 998244353 で割った余りで加算します。最後に dp[X] を出力します。"
+    ],
+    "ko": [
+      "모든 원소가 50 < 64 이하이므로 원소 몇 개를 XOR하든 결과는 0..63 범위에 있습니다. 상태는 64개뿐입니다.",
+      "위치별로 동적 계획법을 수행합니다. dp[x]는 XOR이 x인 채워진 접두사의 개수이며, 새 원소는 값 0..M을 모두 시도하는 것이 전이가 됩니다.",
+      "dp[0] = 1로 두고 N번 반복합니다. 매번 nxt를 모두 0으로 시작해, 모든 이전 상태와 모든 v∈[0, M]에 대해 nxt[old^v]에 dp[old]를 998244353으로 나눈 나머지로 더합니다. 마지막에 dp[X]를 출력합니다."
+    ],
+    "vi": [
+      "Mỗi phần tử đều nhỏ hơn hoặc bằng 50 < 64, nên XOR của bất kỳ số phần tử nào cũng nằm trong 0..63; chỉ có 64 trạng thái.",
+      "Quy hoạch động theo vị trí: dp[x] là số tiền tố đã điền có XOR bằng x, và mỗi phần tử mới liệt kê giá trị 0..M của nó làm phép chuyển.",
+      "Đặt dp[0] = 1; lặp N lần: bắt đầu với nxt toàn số 0, và với mọi trạng thái cũ và mọi v trong [0, M] cộng dp[old] vào nxt[old^v] theo modulo 998244353; cuối cùng in dp[X]."
     ]
   },
   "explanationEn": "## Approach\n\nMaintain a DP over the XOR states 0..63. For each new element, move every old state to old XOR value for each value∈[0,M].\n\n## Proof of correctness\n\nDP[i][x] is the number of sequences whose first i positions XOR to x. The value of the last element uniquely determines the previous state x XOR value; summing over values enumerates every valid last element, so the transition counts each sequence exactly once. The answer is DP[N][X].\n\n## Complexity\n\nTime O(N·64·(M+1)), space O(64)."

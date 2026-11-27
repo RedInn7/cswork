@@ -13,6 +13,21 @@
       "First find how many times each value occurs, then sort the distinct values in the order the statement gives and take the first k.",
       "The order is frequency descending and, for equal frequencies, value ascending, which is the same as sorting by the pair (-frequency, value) ascending. Values only range over -10000..10000, so a hash map or an offset array can do the counting.",
       "Count each value's frequency, put the distinct values into a list, sort it by (-frequency, value), and print the first k separated by spaces. The statement guarantees k does not exceed the number of distinct values."
+    ],
+    "ja": [
+      "まず各値の出現回数を調べ、異なる値を問題文の指定した順序でソートし、先頭の k 個を取ります。",
+      "順序は頻度の降順で、同頻度なら値の昇順です。これは (-frequency, value) のペアを昇順にソートするのと同じです。値の範囲は -10000..10000 だけなので、ハッシュマップやオフセット付きの配列で数えられます。",
+      "各値の頻度を数え、異なる値をリストに入れて (-frequency, value) でソートし、先頭の k 個をスペース区切りで出力します。k が異なる値の個数を超えないことは、問題文で保証されています。"
+    ],
+    "ko": [
+      "먼저 각 값이 몇 번 나타나는지 구한 뒤, 서로 다른 값들을 문제에서 주어진 순서로 정렬하여 앞의 k개를 취합니다.",
+      "순서는 빈도 내림차순이고 빈도가 같으면 값 오름차순이므로, 쌍 (-frequency, value)의 오름차순 정렬과 같습니다. 값의 범위가 -10000..10000뿐이므로 해시 맵이나 오프셋 배열로 셀 수 있습니다.",
+      "각 값의 빈도를 센 뒤 서로 다른 값들을 리스트에 넣고 (-frequency, value) 기준으로 정렬하여 앞의 k개를 공백으로 구분해 출력합니다. k가 서로 다른 값의 개수를 넘지 않는다는 것이 보장됩니다."
+    ],
+    "vi": [
+      "Trước hết tìm xem mỗi giá trị xuất hiện bao nhiêu lần, sau đó sắp xếp các giá trị phân biệt theo thứ tự đề bài đưa ra và lấy k giá trị đầu tiên.",
+      "Thứ tự là tần suất giảm dần và, với cùng tần suất, giá trị tăng dần, điều này tương đương với việc sắp xếp tăng dần theo cặp (-tần suất, giá trị). Các giá trị chỉ nằm trong khoảng -10000..10000, nên có thể đếm bằng hash map hoặc mảng có độ lệch (offset).",
+      "Đếm tần suất của từng giá trị, đưa các giá trị phân biệt vào một danh sách, sắp xếp theo (-tần suất, giá trị), rồi in k phần tử đầu tiên cách nhau bằng dấu cách. Đề bài đảm bảo k không vượt quá số giá trị phân biệt."
     ]
   },
   "explanationEn": "## Approach\n\nCount the frequencies, then sort by (-frequency, value).\n\n## Proof of correctness\n\nThis sort key satisfies, item by item, \"higher frequency first\" and \"on ties, the smaller value first\".\n\n## Complexity\n\nO(n+d log d) time, O(d) space."

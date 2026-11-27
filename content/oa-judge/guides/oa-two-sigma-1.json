@@ -13,6 +13,21 @@
       "A serial pipeline's throughput is the minimum over all services, so reaching throughput at least T requires every service to reach T. The scale-ups each service needs are independent and can be added up. A higher target never costs less, so feasibility is monotone.",
       "Binary search on T: for each service compute the fewest scale-ups needed to reach T times its unit cost, add these up and compare with the budget. If any tp is 0, the throughput is always 0. An upper bound is the smallest throughput any single service could reach if it took the whole budget.",
       "If some tp is 0, print 0. Otherwise use the minimum tp as the lower bound and the minimum of tp[i] * (1 + budget / cost[i]) as the upper bound. For a midpoint T, service i needs max(0, ceil(T / tp[i]) - 1) scale-ups; add up the costs and stop early once the budget is exceeded. If feasible, raise the lower bound, otherwise lower the upper bound; print the final lower bound."
+    ],
+    "ja": [
+      "直列パイプラインのスループットは全サービスの最小値なので、スループットを少なくとも T にするには、すべてのサービスが T に達する必要があります。各サービスに必要なスケールアップは独立で、足し合わせられます。目標が高いほどコストが小さくなることはないので、実現可能性は単調です。",
+      "T を二分探索します。各サービスについて T に達するのに必要な最小のスケールアップ回数に、その 1 回あたりのコストを掛けて足し合わせ、予算と比較します。tp のどれかが 0 なら、スループットは常に 0 です。上限は、単一のサービスが予算をすべて使った場合に達しうるスループットのうち、最も小さいものです。",
+      "tp のどれかが 0 なら 0 を出力します。そうでなければ、下限は最小の tp、上限は tp[i] * (1 + budget / cost[i]) の最小値とします。中点 T について、サービス i に必要なスケールアップは max(0, ceil(T / tp[i]) - 1) 回で、そのコストを足し合わせ、予算を超えた時点で打ち切ります。実現可能なら下限を上げ、そうでなければ上限を下げます。最終的な下限を出力します。"
+    ],
+    "ko": [
+      "직렬 파이프라인의 처리량은 모든 서비스 중 최솟값이므로, 처리량을 T 이상으로 만들려면 모든 서비스가 T에 도달해야 합니다. 각 서비스에 필요한 확장은 서로 독립이며 합산할 수 있습니다. 목표가 높아져도 비용이 줄어들지 않으므로 실현 가능성은 단조입니다.",
+      "T에 대해 이분 탐색을 합니다. 각 서비스에 대해 T에 도달하는 데 필요한 최소 확장 횟수에 단위 비용을 곱하고, 이를 모두 더하여 예산과 비교합니다. tp 중 하나라도 0이면 처리량은 항상 0입니다. 상한은 어떤 한 서비스가 전체 예산을 쓸 때 도달할 수 있는 처리량 중 가장 작은 값입니다.",
+      "어떤 tp가 0이면 0을 출력합니다. 그렇지 않으면 tp의 최솟값을 하한으로, tp[i] * (1 + budget / cost[i])의 최솟값을 상한으로 사용합니다. 중간값 T에 대해 서비스 i에는 max(0, ceil(T / tp[i]) - 1)번의 확장이 필요하며, 비용을 합산하고 예산을 넘는 즉시 중단합니다. 가능하면 하한을 올리고 아니면 상한을 내립니다. 최종 하한을 출력합니다."
+    ],
+    "vi": [
+      "Thông lượng của pipeline nối tiếp là giá trị nhỏ nhất trên các dịch vụ, nên để đạt thông lượng ít nhất T thì mọi dịch vụ đều phải đạt T. Số lần nâng cấp mà mỗi dịch vụ cần là độc lập và có thể cộng lại. Mục tiêu cao hơn không bao giờ rẻ hơn, nên tính khả thi là đơn điệu.",
+      "Tìm kiếm nhị phân trên T: với mỗi dịch vụ tính số lần nâng cấp ít nhất cần để đạt T nhân với chi phí đơn vị của nó, cộng lại và so sánh với ngân sách. Nếu có tp nào bằng 0, thông lượng luôn bằng 0. Một cận trên là thông lượng nhỏ nhất mà bất kỳ dịch vụ đơn lẻ nào có thể đạt được nếu nó dùng cả ngân sách.",
+      "Nếu có tp bằng 0, in 0. Ngược lại dùng tp nhỏ nhất làm cận dưới và giá trị nhỏ nhất của tp[i] * (1 + budget / cost[i]) làm cận trên. Với điểm giữa T, dịch vụ i cần max(0, ceil(T / tp[i]) - 1) lần nâng cấp; cộng các chi phí và dừng sớm khi vượt ngân sách. Nếu khả thi, nâng cận dưới, nếu không thì hạ cận trên; in cận dưới cuối cùng."
     ]
   },
   "explanationEn": "## Approach\n\nBinary search on the target throughput T, compute for each service the minimum scale-up cost needed to reach T, and sum them; if any tp is 0, output 0 directly.\n\n## Proof of correctness\n\nEvery service must reach T, and each one needs at least max(0,ceil(T/tp)−1) scale-ups; these counts add up independently to the minimum total cost, so the check is necessary and sufficient. Raising T never lowers the cost, so binary search applies. The throughput any single service could reach while taking the whole budget gives a global upper bound, and the minimum of these bounds is used.\n\n## Complexity\n\nO(n log(upper bound)) time and O(n) space; the answer can be as large as about 10^18, and the cost accumulation can stop as soon as it exceeds the budget."

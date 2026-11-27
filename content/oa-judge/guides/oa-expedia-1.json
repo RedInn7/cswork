@@ -13,6 +13,21 @@
       "Each step can only take the last layer and insert it elsewhere, so the layers that are never moved must form a prefix of current: to keep a layer in place, every layer after it has to be moved away.",
       "The unmoved prefix keeps its relative order, so it must be a subsequence of desired; conversely, if the prefix is a subsequence of desired, the remaining layers can be taken from the end one by one and inserted into their target positions. The answer is n minus the length of the longest prefix that can be kept.",
       "Use two pointers: i is the next position of current to match and j scans desired; whenever current[i] == desired[j], increment i, and advance j every step. When the scan ends, i is the length of the longest keepable prefix, so print n - i."
+    ],
+    "ja": [
+      "各ステップでは最後の層を取り出して別の場所に挿入することしかできないので、一度も動かされない層は current の接頭部分をなします。ある層をその場に残すには、その後ろの層をすべて取り除かなければならないからです。",
+      "動かさない接頭部分は相対順序を保つので、desired の部分列でなければなりません。逆に、接頭部分が desired の部分列であれば、残りの層を末尾から 1 つずつ取り出して目標の位置に挿入できます。答えは、n から、残せる最長の接頭部分の長さを引いたものです。",
+      "2 つのポインタを使います。i は current の次に照合する位置、j は desired を走査する位置です。current[i] == desired[j] のとき i を増やし、j は毎回進めます。走査が終わったとき i が残せる最長の接頭部分の長さなので、n - i を出力します。"
+    ],
+    "ko": [
+      "한 단계에서는 마지막 레이어만 꺼내 다른 곳에 삽입할 수 있으므로, 한 번도 옮기지 않는 레이어는 current의 접두사를 이루어야 합니다. 어떤 레이어를 제자리에 두려면 그 뒤의 모든 레이어를 옮겨야 하기 때문입니다.",
+      "옮기지 않은 접두사는 상대 순서를 유지하므로 desired의 부분 수열이어야 합니다. 반대로 접두사가 desired의 부분 수열이면 나머지 레이어를 끝에서부터 하나씩 꺼내 목표 위치에 삽입할 수 있습니다. 답은 n에서 유지할 수 있는 가장 긴 접두사의 길이를 뺀 값입니다.",
+      "투 포인터를 사용합니다. i는 매칭할 current의 다음 위치이고 j는 desired를 훑습니다. current[i] == desired[j]이면 i를 증가시키고, j는 매 단계 증가시킵니다. 훑기가 끝났을 때 i가 유지할 수 있는 가장 긴 접두사의 길이이므로 n - i를 출력합니다."
+    ],
+    "vi": [
+      "Mỗi bước chỉ lấy được lớp cuối cùng và chèn vào chỗ khác, nên các lớp không bao giờ bị di chuyển phải tạo thành một tiền tố của current: để giữ một lớp tại chỗ, mọi lớp đứng sau nó đều phải bị chuyển đi.",
+      "Tiền tố không bị di chuyển giữ nguyên thứ tự tương đối, nên nó phải là một dãy con của desired; ngược lại, nếu tiền tố là dãy con của desired, các lớp còn lại có thể được lấy từ cuối từng lớp một và chèn vào vị trí đích. Đáp án là n trừ độ dài của tiền tố dài nhất có thể giữ lại.",
+      "Dùng hai con trỏ: i là vị trí tiếp theo của current cần khớp và j quét desired; mỗi khi current[i] == desired[j] thì tăng i, và mỗi bước đều tăng j. Khi quét xong, i là độ dài của tiền tố dài nhất có thể giữ, nên in n - i."
     ]
   },
   "explanationEn": "## Approach\n\nLayers are moved from the end of current, so the part that is never moved must be a prefix of current. To use the fewest operations, find the longest prefix of current that still appears in its original order in desired; the remaining layers are taken from the end one by one and inserted into their target positions. Scan desired with two pointers to match the prefix of current; the answer is n minus the kept length.\n\n## Correctness\n\nAny element that is never moved can only come from a prefix of current; otherwise all elements after it would have to be moved away first, and that element itself would also be moved. The relative order of the unmoved prefix does not change, so it must be a subsequence of desired. Conversely, if the prefix is a subsequence of desired, the other elements can be taken one by one from the end of current and inserted into the corresponding gaps of desired, using exactly n minus the prefix length operations. Therefore the longest keepable prefix gives the minimum number of operations.\n\n## Complexity\n\nO(n) time and O(1) extra space."

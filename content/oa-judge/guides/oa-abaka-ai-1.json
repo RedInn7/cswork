@@ -13,6 +13,21 @@
       "Only tasks of the same type can run in parallel, so different taskType values never interact and each group can be solved on its own. The goal is to form as many pairs as possible; the total time is N minus the number of pairs.",
       "Inside a group, sort by memory and try to pair the smallest task with the largest: if the largest cannot fit even with the smallest, it must run alone; otherwise pairing those two is never worse.",
       "Group tasks by taskType; sort each group and use two pointers: if memory[left] + memory[right] <= maxMemory, count a pair and move left forward; in either case move right backward; when the pointers meet, go to the next group; finally print N minus the total number of pairs."
+    ],
+    "ja": [
+      "並列に実行できるのは同じ種類のタスクだけなので、異なる taskType の値同士が影響し合うことはなく、各グループを独立に解けます。目標はできるだけ多くのペアを作ることで、合計時間は N からペアの数を引いたものになります。",
+      "グループ内でメモリでソートし、最小のタスクと最大のタスクをペアにしてみます。最大のタスクが最小のタスクと組んでも収まらないなら、それは単独で実行するしかありません。そうでなければ、その 2 つをペアにするのが最悪になることはありません。",
+      "taskType でタスクをグループ化し、各グループをソートして two pointers を使います。memory[left] + memory[right] <= maxMemory ならペアを 1 つ数えて left を前に進め、どちらの場合も right を後ろに戻します。ポインタが出会ったら次のグループに進みます。最後に N からペアの総数を引いた値を出力します。"
+    ],
+    "ko": [
+      "같은 유형의 작업만 병렬로 실행할 수 있으므로 taskType이 다르면 서로 영향을 주지 않으며, 각 그룹을 따로 풀 수 있습니다. 목표는 가능한 한 많은 쌍을 만드는 것이고, 총 시간은 N에서 쌍의 수를 뺀 값입니다.",
+      "그룹 안에서 메모리 순으로 정렬한 뒤 가장 작은 작업과 가장 큰 작업을 짝지어 봅니다. 가장 큰 작업이 가장 작은 작업과도 함께 들어가지 못하면 단독으로 실행해야 하고, 들어간다면 그 둘을 짝짓는 것이 손해가 아닙니다.",
+      "taskType별로 묶고 각 그룹을 정렬한 뒤 투 포인터를 씁니다. memory[left] + memory[right] <= maxMemory이면 쌍을 하나 세고 left를 앞으로 옮기며, 어느 경우든 right를 뒤로 옮깁니다. 포인터가 만나면 다음 그룹으로 넘어갑니다. 마지막에 N에서 전체 쌍의 수를 뺀 값을 출력합니다."
+    ],
+    "vi": [
+      "Chỉ các tác vụ cùng loại mới chạy song song được, nên các giá trị taskType khác nhau không bao giờ ảnh hưởng nhau và mỗi nhóm có thể giải độc lập. Mục tiêu là tạo càng nhiều cặp càng tốt; tổng thời gian bằng N trừ đi số cặp.",
+      "Trong một nhóm, sắp xếp theo bộ nhớ và thử ghép tác vụ nhỏ nhất với tác vụ lớn nhất: nếu tác vụ lớn nhất không vừa ngay cả với tác vụ nhỏ nhất thì nó phải chạy riêng; ngược lại, ghép hai tác vụ đó không bao giờ tệ hơn.",
+      "Nhóm các tác vụ theo taskType; sắp xếp từng nhóm và dùng hai con trỏ: nếu memory[left] + memory[right] <= maxMemory thì đếm một cặp và dịch left tiến lên; trong cả hai trường hợp dịch right lùi lại; khi hai con trỏ gặp nhau thì chuyển sang nhóm tiếp theo; cuối cùng in N trừ tổng số cặp."
     ]
   },
   "explanationEn": "## Approach\n\nGroup tasks by taskType. Inside each group, sort by memory and try to pair the smallest with the largest; if their sum does not exceed the limit, the two run in parallel as a pair, otherwise the largest task can only run alone.\n\n## Proof of correctness\n\nIf the current largest task cannot be paired with the smallest task of its group, it cannot be paired with any larger task either, so it must run alone. If the two can be paired, an optimal solution can be rearranged by exchange to contain this pair without reducing the number of pairs; repeating this reaches the maximum number of pairs in the group, and different groups do not affect each other.\n\n## Complexity\n\nTime O(N log N), space O(N)."

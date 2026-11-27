@@ -13,6 +13,21 @@
       "With distinct elements, restoring the array is the same as the index permutation returning to the identity; look at the permutation as disjoint cycles.",
       "A cycle of length k is restored after t operations exactly when k divides t, so the smallest positive number of operations restoring everything is the least common multiple of all cycle lengths.",
       "Walk each cycle along p with a seen array to get its length; the LCM can far exceed 64 bits, so factor each length, keep the highest power of each prime, and multiply those powers modulo 10⁹+7."
+    ],
+    "ja": [
+      "要素が互いに異なる場合、配列が元に戻ることは、インデックスの順列が恒等に戻ることと同じです。順列を互いに素なサイクルとして見てください。",
+      "長さ k のサイクルが t 回の操作後に元に戻るのは、k が t を割り切るときに限ります。したがって、全体が元に戻る最小の正の操作回数は、すべてのサイクル長の最小公倍数です。",
+      "seen 配列を使って p をたどり、各サイクルの長さを求めます。最小公倍数は 64 ビットをはるかに超えうるので、各長さを素因数分解し、各素数の最大のべきを保持して、それらを 10⁹+7 を法として掛け合わせます。"
+    ],
+    "ko": [
+      "원소가 모두 서로 다르면 배열이 복원되는 것은 인덱스 순열이 항등 순열로 돌아오는 것과 같습니다. 순열을 서로소인 사이클로 보십시오.",
+      "길이 k인 사이클은 t번의 연산 후 복원되는 것이 k가 t를 나누는 것과 동치이므로, 전체를 복원하는 최소 양의 연산 횟수는 모든 사이클 길이의 최소공배수입니다.",
+      "seen 배열을 두고 p를 따라 각 사이클을 돌며 길이를 구합니다. LCM은 64비트를 훨씬 넘을 수 있으므로, 각 길이를 소인수분해하여 소수마다 가장 높은 거듭제곱을 유지하고 그 거듭제곱들을 10⁹+7로 나눈 나머지 위에서 곱합니다."
+    ],
+    "vi": [
+      "Với các phần tử phân biệt, khôi phục mảng tương đương với việc hoán vị chỉ số trở về hoán vị đơn vị; hãy xem hoán vị như các chu trình rời nhau.",
+      "Một chu trình độ dài k được khôi phục sau t thao tác khi và chỉ khi k chia hết t, nên số thao tác dương nhỏ nhất khôi phục mọi thứ là bội chung nhỏ nhất của độ dài mọi chu trình.",
+      "Đi theo từng chu trình dọc p với một mảng seen để lấy độ dài của nó; BCNN có thể vượt xa 64 bit, nên hãy phân tích từng độ dài ra thừa số nguyên tố, giữ lũy thừa cao nhất của mỗi số nguyên tố, và nhân các lũy thừa đó modulo 10⁹+7."
     ]
   },
   "explanationEn": "## Approach\n\nDecompose the permutation into disjoint cycles; the answer is the least common multiple of all cycle lengths.\n\n## Proof of correctness\n\nAn element on a cycle of length k returns to its place after t operations if and only if k divides t. The whole array is restored simultaneously if and only if every cycle length divides t, so the smallest positive t is the least common multiple of all lengths.\n\n## Complexity\n\nTime O(n), space O(n).\n\n## Source notes\n\nThe constraints are complete; the direction in which the permutation is applied does not affect the cycle lengths or the answer.\n\nThis site separately compiled the standard input/output protocol; it does not claim the original site provided it."

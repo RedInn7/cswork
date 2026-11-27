@@ -13,6 +13,21 @@
       "Add up all the pref values: every original element is counted exactly N-1 times, since only its own entry leaves it out.",
       "So the total T of the original array is sum(pref) divided by N-1, and since pref[i] is T minus a[i], we get a[i] = T - pref[i].",
       "Read the input, sum pref in a 64-bit integer (it can reach about 10^14), divide by N-1 to get T (the division is guaranteed to be exact), then output T - pref[i] for each index in the original order."
+    ],
+    "ja": [
+      "pref の値をすべて足します。各要素は自分自身の項でだけ除かれるので、元の各要素はちょうど N-1 回数えられます。",
+      "したがって元の配列の合計 T は sum(pref) を N-1 で割ったものです。pref[i] は T から a[i] を引いたものなので、a[i] = T - pref[i] になります。",
+      "入力を読み、pref を 64 ビット整数で合計し (約 10^14 に達しうる)、N-1 で割って T を求めます (割り切れることは保証されています)。その後、元の順序で各添字について T - pref[i] を出力します。"
+    ],
+    "ko": [
+      "모든 pref 값을 더해 보세요. 자기 자신의 항만 빠지므로 각 원래 원소는 정확히 N-1번 더해집니다.",
+      "따라서 원래 배열의 총합 T는 sum(pref)를 N-1로 나눈 값이고, pref[i]는 T에서 a[i]를 뺀 값이므로 a[i] = T - pref[i]입니다.",
+      "입력을 읽고 pref의 합을 64비트 정수로 구한 뒤(최대 약 10^14가 될 수 있습니다), N-1로 나누어 T를 구하고(나누어떨어짐이 보장됩니다), 각 인덱스에 대해 원래 순서대로 T - pref[i]를 출력합니다."
+    ],
+    "vi": [
+      "Cộng tất cả các giá trị pref: mỗi phần tử gốc được tính đúng N-1 lần, vì chỉ mục của chính nó mới loại nó ra.",
+      "Vậy tổng T của mảng gốc là sum(pref) chia cho N-1, và vì pref[i] là T trừ a[i], ta có a[i] = T - pref[i].",
+      "Đọc đầu vào, tính tổng pref bằng số nguyên 64 bit (có thể lên đến khoảng 10^14), chia cho N-1 để được T (phép chia đảm bảo chính xác), rồi in T - pref[i] cho từng chỉ số theo thứ tự gốc."
     ]
   },
   "explanationEn": "## Approach\n\nEach original element is counted N-1 times, so the total is T = sum(pref)/(N-1), and each answer is T-pref[i].\n\n## Correctness\n\nAdding up all the equations determines T uniquely, and subtracting term by term recovers the array uniquely; substituting back verifies the original equations. The independent small-input check instead derives the first element from p[0]-p[i]=a[i]-a[0], then directly recomputes each sum that excludes the element itself and verifies it.\n\n## Complexity\n\nTime O(N), O(1) besides input and output."

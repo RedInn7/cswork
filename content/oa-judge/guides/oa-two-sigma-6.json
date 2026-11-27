@@ -13,6 +13,21 @@
       "Cutting one parent-child edge leaves one part that is exactly the child's whole subtree and another part with all other nodes. So once you know every subtree's total inflow, the difference is |total - 2 * subtree sum|.",
       "Parents always have smaller ids than their children, so when nodes are processed from the largest id down, all descendants of a node are already done. You can add each subtree sum straight into its parent without recursion.",
       "Start sub as each node's own inflow. For i from n - 1 down to 1, add sub[i] to sub[parent[i]]. Let total = sub[0]. Then go over every non-root node i, take the minimum of |total - 2 * sub[i]|, and print it."
+    ],
+    "ja": [
+      "親子の辺を1本切ると、一方はその子の部分木全体、もう一方はそれ以外のすべてのノードになります。したがって各部分木の流入量の合計が分かれば、差は |total - 2 * subtree sum| です。",
+      "親の id は常に子より小さいので、ノードを id の大きいほうから処理すれば、あるノードの子孫はすべて処理済みです。再帰を使わずに、各部分木の和をそのまま親へ加算できます。",
+      "各ノードの sub を自身の流入量で初期化します。i を n - 1 から 1 まで下げながら sub[i] を sub[parent[i]] に加算します。total = sub[0] とします。その後、根以外のすべてのノード i について |total - 2 * sub[i]| の最小値を取り、出力します。"
+    ],
+    "ko": [
+      "부모-자식 간선 하나를 끊으면 한쪽은 정확히 그 자식의 서브트리 전체이고 다른 쪽은 나머지 모든 노드입니다. 따라서 각 서브트리의 총 유입량을 알면 차이는 |total - 2 * subtree sum|입니다.",
+      "부모의 번호는 항상 자식보다 작으므로 번호가 가장 큰 노드부터 처리하면 어떤 노드의 모든 자손은 이미 끝나 있습니다. 재귀 없이 각 서브트리 합을 곧바로 부모에 더할 수 있습니다.",
+      "sub를 각 노드 자신의 유입량으로 시작합니다. i를 n - 1부터 1까지 줄여 가며 sub[i]를 sub[parent[i]]에 더합니다. total = sub[0]으로 두고, 루트가 아닌 모든 노드 i에 대해 |total - 2 * sub[i]|의 최솟값을 구해 출력합니다."
+    ],
+    "vi": [
+      "Cắt một cạnh cha-con để lại một phần chính là toàn bộ cây con của nút con và một phần gồm tất cả các nút còn lại. Vì vậy, khi đã biết tổng lưu lượng của mọi cây con, chênh lệch là |total - 2 * subtree sum|.",
+      "Nút cha luôn có id nhỏ hơn nút con, nên khi xử lý các nút từ id lớn nhất xuống, mọi hậu duệ của một nút đều đã xong. Bạn có thể cộng thẳng tổng cây con vào nút cha mà không cần đệ quy.",
+      "Khởi tạo sub là lưu lượng riêng của mỗi nút. Với i từ n - 1 xuống 1, cộng sub[i] vào sub[parent[i]]. Đặt total = sub[0]. Sau đó duyệt mọi nút i không phải gốc, lấy giá trị nhỏ nhất của |total - 2 * sub[i]| và in ra."
     ]
   },
   "explanationEn": "## Approach\n\nSince parent ids are strictly smaller, add each subtree's inflow to its parent in decreasing id order, then go over the non-root nodes as the subtree being cut off.\n\n## Proof of correctness\n\nWhen nodes are processed in reverse order, all of a node's descendants have already been accumulated, so the exact subtree total inflow is obtained. After cutting the edge between that node and its parent, the two parts are its subtree and the remaining nodes, and the inflow difference is |total−2*sub|. Every cuttable edge corresponds uniquely to one non-root node, so taking the minimum misses nothing.\n\n## Complexity\n\nO(n) time and O(n) space, with no risk from recursion depth."

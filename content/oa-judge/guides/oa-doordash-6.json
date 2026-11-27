@@ -13,6 +13,21 @@
       "Each chef picks independently and a dish may be chosen by many chefs, so the chefs never conflict; the answer is the sum of each chef's own best profit.",
       "After sorting dishes by difficulty, the dishes a chef can make form a prefix (difficulty <= skill). Precompute the maximum profit of every prefix, and you only need to find how long that prefix is.",
       "Sort the (difficulty, profit) pairs by difficulty and build the prefix-maximum profit array best. For each chef, binary search (upper_bound) for the number i of dishes with difficulty <= skill; add best[i-1] if i > 0, otherwise 0. Keep the total in a 64-bit integer."
+    ],
+    "ja": [
+      "各シェフは独立に選び、1 つの料理を多数のシェフが選んでもかまいません。したがってシェフ同士は衝突せず、答えは各シェフ自身の最大利益の合計です。",
+      "料理を難易度でソートすると、シェフが作れる料理 (難易度 <= 技能) は接頭辞になります。すべての接頭辞の最大利益を前計算しておけば、あとはその接頭辞の長さを求めるだけです。",
+      "(難易度, 利益) の組を難易度でソートし、利益の接頭辞の最大値の配列 best を作ります。各シェフについて、二分探索 (upper_bound) で難易度 <= 技能の料理の数 i を求め、i > 0 なら best[i-1] を、そうでなければ 0 を加えます。合計は 64 ビット整数で保持します。"
+    ],
+    "ko": [
+      "각 요리사는 독립적으로 고르고 한 요리를 여러 요리사가 선택할 수 있으므로 요리사끼리 충돌하지 않습니다. 답은 각 요리사의 최대 이익을 모두 합한 값입니다.",
+      "요리를 난이도순으로 정렬하면, 한 요리사가 만들 수 있는 요리는 접두사(난이도 <= 실력)를 이룹니다. 모든 접두사의 최대 이익을 미리 계산해 두면, 그 접두사의 길이만 찾으면 됩니다.",
+      "(난이도, 이익) 쌍을 난이도순으로 정렬하고 접두사 최대 이익 배열 best를 만듭니다. 각 요리사에 대해 이분 탐색(upper_bound)으로 난이도 <= 실력인 요리의 수 i를 찾고, i > 0이면 best[i-1]을 더하고 아니면 0을 더합니다. 합계는 64비트 정수로 유지하십시오."
+    ],
+    "vi": [
+      "Mỗi đầu bếp chọn độc lập và một món có thể được nhiều đầu bếp chọn, nên các đầu bếp không bao giờ xung đột; đáp án là tổng lợi nhuận tốt nhất của riêng từng đầu bếp.",
+      "Sau khi sắp xếp các món theo độ khó, các món mà một đầu bếp làm được tạo thành một tiền tố (độ khó <= kỹ năng). Tính trước lợi nhuận lớn nhất của mọi tiền tố, và bạn chỉ cần tìm độ dài của tiền tố đó.",
+      "Sắp xếp các cặp (độ khó, lợi nhuận) theo độ khó và dựng mảng lợi nhuận lớn nhất theo tiền tố best. Với mỗi đầu bếp, tìm kiếm nhị phân (upper_bound) số i các món có độ khó <= kỹ năng; cộng best[i-1] nếu i > 0, ngược lại 0. Giữ tổng trong số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nSort by difficulty and precompute the prefix maximum profit; for each chef, binary search for the prefix of dishes they can make and add its maximum profit.\n\n## Correctness\n\nEach chef chooses independently and dishes are not exclusive; the feasible set of a chef is exactly a prefix in difficulty order, and the best choice is the maximum profit of that prefix.\n\n## Complexity\n\nO((n+m) log m) time and O(m) space."

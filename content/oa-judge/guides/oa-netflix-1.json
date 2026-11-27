@@ -13,6 +13,21 @@
       "Undo cannot be done with inverse operations: after multiplying by 0, division cannot restore the value. Save the state before every change instead.",
       "Undo always reverts the most recent change that has not been undone, which is last-in first-out: push the value before every ADD or MUL onto a stack. PRINT is not a change and pushes nothing.",
       "Keep the current value (starting at 0) and a stack: ADD and MUL push the current value and then compute; UNDO pops the top and makes it the current value; PRINT appends the current value to the output list. Print the number of PRINT commands first, then each recorded value on its own line. Use 64-bit integers throughout."
+    ],
+    "ja": [
+      "逆演算で UNDO を実現することはできません。0 を掛けた後は、除算で値を元に戻せないからです。代わりに、変更のたびにその直前の状態を保存します。",
+      "UNDO は、まだ取り消されていない直近の変更を元に戻します。これは後入れ先出しなので、ADD や MUL の前の値をスタックに積みます。PRINT は変更ではないので何も積みません。",
+      "現在値（初期値 0）とスタックを持ちます。ADD と MUL は現在値をスタックに積んでから計算します。UNDO は先頭を取り出して現在値にします。PRINT は現在値を出力リストに追加します。最初に PRINT の回数を出力し、続けて記録した値を1行に1つずつ出力します。全体を通して 64 ビット整数を使います。"
+    ],
+    "ko": [
+      "취소는 역연산으로 할 수 없습니다. 0을 곱한 뒤에는 나눗셈으로 값을 복원할 수 없기 때문입니다. 대신 변경하기 전에 매번 상태를 저장하세요.",
+      "UNDO는 항상 아직 취소되지 않은 가장 최근의 변경을 되돌리므로 후입선출입니다. ADD나 MUL 전의 값을 스택에 push하세요. PRINT는 변경이 아니므로 아무것도 push하지 않습니다.",
+      "현재 값(0에서 시작)과 스택을 유지합니다. ADD와 MUL은 현재 값을 push한 뒤 계산하고, UNDO는 맨 위를 pop하여 현재 값으로 삼으며, PRINT는 현재 값을 출력 목록에 추가합니다. 먼저 PRINT 명령의 개수를 출력하고, 이어서 기록된 값을 한 줄에 하나씩 출력합니다. 전체에 64비트 정수를 사용하세요."
+    ],
+    "vi": [
+      "Không thể hoàn tác bằng phép toán ngược: sau khi nhân với 0, phép chia không khôi phục được giá trị. Thay vào đó hãy lưu trạng thái trước mỗi thay đổi.",
+      "Hoàn tác luôn đảo ngược thay đổi gần nhất chưa bị hoàn tác, tức là vào sau ra trước: đẩy giá trị trước mỗi ADD hoặc MUL vào một ngăn xếp. PRINT không phải là thay đổi và không đẩy gì.",
+      "Giữ giá trị hiện tại (bắt đầu từ 0) và một ngăn xếp: ADD và MUL đẩy giá trị hiện tại vào rồi mới tính; UNDO lấy phần tử trên cùng ra và đặt làm giá trị hiện tại; PRINT thêm giá trị hiện tại vào danh sách kết quả. In số lệnh PRINT trước, rồi mỗi giá trị đã ghi trên một dòng riêng. Dùng số nguyên 64 bit xuyên suốt."
     ]
   },
   "explanationEn": "## Approach\n\nBefore each ADD or MUL, push the current state onto a stack; UNDO pops the top and restores it, and PRINT only records the current state.\n\n## Correctness\n\nThe stack holds, in order, the state before each change that has not been undone. A new change pushes its previous state, preserving this invariant; UNDO restores the last previous state and removes the corresponding stack entry, which undoes exactly the most recent change. Multiplying by zero needs no inverse operation either. PRINT changes neither the state nor the stack. By induction, every output is correct.\n\n## Complexity\n\nO(1) per command, O(q) total time, and O(q) space for the history and the output."

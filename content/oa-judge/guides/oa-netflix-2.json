@@ -13,6 +13,21 @@
       "Groups are independent; a group's score is the sum of its k largest similarities, and the scores are printed in input order without reordering the groups.",
       "For one group, collect its members' similarities and sort them in descending order; the sum of the first k is the group's score. All groups together have at most 2×10^5 members, so sorting each group is fast enough.",
       "Read every movie's similarity first; then for each group read its size m and the m indices, gather the similarities, sort them in descending order and add up the first k. Print G, then the group scores; an error of 1e-5 is allowed, so double-precision floats printed with enough significant digits are fine."
+    ],
+    "ja": [
+      "グループは互いに独立で、グループのスコアは類似度が高い上位 k 個の合計です。スコアはグループを並べ替えず入力順に出力します。",
+      "1つのグループについては、メンバーの類似度を集めて降順に並べ、先頭 k 個の和をそのグループのスコアとします。全グループを合わせてもメンバーは最大 2×10^5 個なので、グループごとにソートしても十分高速です。",
+      "まずすべての映画の類似度を読み込みます。次に各グループについて、大きさ m と m 個のインデックスを読み、類似度を集めて降順にソートし、先頭 k 個を足します。G を出力し、続けて各グループのスコアを出力します。誤差 1e-5 が許されるので、倍精度浮動小数点を十分な有効桁数で出力すれば問題ありません。"
+    ],
+    "ko": [
+      "그룹은 서로 독립이며, 그룹의 점수는 그 그룹에서 가장 큰 k개 유사도의 합입니다. 점수는 그룹을 재배열하지 않고 입력 순서대로 출력합니다.",
+      "한 그룹에 대해 구성원의 유사도를 모아 내림차순으로 정렬하면 앞의 k개의 합이 그룹의 점수입니다. 모든 그룹의 구성원 수의 합이 최대 2×10^5이므로 그룹별로 정렬해도 충분히 빠릅니다.",
+      "먼저 모든 영화의 유사도를 읽습니다. 그다음 각 그룹에 대해 크기 m과 m개의 인덱스를 읽고, 유사도를 모아 내림차순으로 정렬한 뒤 앞의 k개를 더합니다. G를 출력하고 이어서 그룹 점수를 출력합니다. 1e-5의 오차가 허용되므로 충분한 유효 숫자로 출력한 배정밀도 부동소수점을 써도 됩니다."
+    ],
+    "vi": [
+      "Các nhóm độc lập với nhau; điểm của một nhóm là tổng k độ tương đồng lớn nhất của nó, và các điểm được in theo thứ tự đầu vào, không sắp xếp lại các nhóm.",
+      "Với một nhóm, thu thập độ tương đồng của các thành viên và sắp xếp giảm dần; tổng k giá trị đầu là điểm của nhóm. Tất cả các nhóm cộng lại có tối đa 2×10^5 thành viên, nên sắp xếp từng nhóm là đủ nhanh.",
+      "Đọc độ tương đồng của mọi phim trước; sau đó với mỗi nhóm đọc kích thước m và m chỉ số, gom các độ tương đồng, sắp xếp giảm dần và cộng k giá trị đầu. In G, rồi các điểm của nhóm; cho phép sai số 1e-5, nên số thực dấu phẩy động độ chính xác kép in với đủ chữ số có nghĩa là ổn."
     ]
   },
   "explanationEn": "## Approach\n\nFor each group, take the members' scores, sort them in descending order, and add up the first k.\n\n## Correctness\n\nAny set of k elements that includes a smaller score while leaving out a larger one can swap the two without decreasing the total. Repeated swaps lead to the k largest values, so their sum is the highest total for the group. Each group is computed independently, keeping the input order.\n\n## Complexity\n\nWith M members in total, time O(N+Σm log m) and space O(max m) apart from input and output."

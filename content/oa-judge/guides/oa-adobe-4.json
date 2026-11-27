@@ -13,6 +13,21 @@
       "Every group has exactly k elements, so n must be divisible by k and there are n/k groups; a value can appear at most once inside one group.",
       "If some value occurs more often than the n/k groups, two copies must land in the same group. Conversely, if no value exceeds the number of groups, dealing equal values round-robin into different groups fills every group exactly.",
       "Check n % k == 0; count occurrences of each value and take the maximum; print Yes if the maximum is at most n/k, otherwise No. Subsequences only need the original index order, so after grouping you would just sort each group by index; no construction is needed."
+    ],
+    "ja": [
+      "各グループはちょうど k 個の要素を持つので、n は k で割り切れなければならず、グループ数は n/k です。1 つの値は、1 つのグループ内に高々 1 回しか現れません。",
+      "ある値の出現回数が n/k 個のグループより多ければ、2 つのコピーが同じグループに入ってしまいます。逆に、どの値もグループ数を超えないなら、等しい値を別々のグループに順番に配れば、すべてのグループがちょうど埋まります。",
+      "n % k == 0 を確認します。各値の出現回数を数えて最大値を取り、最大値が n/k 以下なら Yes、そうでなければ No を出力します。部分列に必要なのは元のインデックス順だけなので、グループ分けの後は各グループをインデックスでソートするだけです。構成は不要です。"
+    ],
+    "ko": [
+      "각 그룹은 정확히 k개의 원소를 가지므로 n은 k로 나누어떨어져야 하고 그룹은 n/k개입니다. 한 그룹 안에는 같은 값이 최대 한 번만 나올 수 있습니다.",
+      "어떤 값이 n/k개의 그룹 수보다 많이 나타나면, 두 사본은 반드시 같은 그룹에 들어갑니다. 반대로 어떤 값도 그룹 수를 넘지 않으면, 같은 값을 서로 다른 그룹에 라운드 로빈으로 나누어 넣으면 모든 그룹이 정확히 채워집니다.",
+      "n % k == 0인지 확인하고, 각 값의 등장 횟수를 세어 최댓값을 구합니다. 최댓값이 n/k 이하이면 Yes, 아니면 No를 출력합니다. 부분 수열은 원래 인덱스 순서만 지키면 되므로, 그룹이 정해진 뒤에는 각 그룹을 인덱스순으로 정렬하기만 하면 됩니다. 구성할 필요는 없습니다."
+    ],
+    "vi": [
+      "Mỗi nhóm có đúng k phần tử, nên n phải chia hết cho k và có n/k nhóm; một giá trị chỉ được xuất hiện nhiều nhất một lần trong một nhóm.",
+      "Nếu một giá trị xuất hiện nhiều lần hơn số nhóm n/k thì hai bản sao buộc phải rơi vào cùng một nhóm. Ngược lại, nếu không giá trị nào vượt quá số nhóm, việc chia các giá trị bằng nhau theo kiểu vòng tròn vào các nhóm khác nhau sẽ lấp đầy mọi nhóm một cách chính xác.",
+      "Kiểm tra n % k == 0; đếm số lần xuất hiện của mỗi giá trị và lấy giá trị lớn nhất; in Yes nếu giá trị lớn nhất không vượt quá n/k, ngược lại in No. Dãy con chỉ cần giữ thứ tự chỉ số ban đầu, nên sau khi chia nhóm bạn chỉ cần sắp xếp mỗi nhóm theo chỉ số; không cần dựng cụ thể."
     ]
   },
   "explanationEn": "## Approach\n\nCheck that n is divisible by k and that no value occurs more often than the number of groups n/k.\n\n## Proof of correctness\n\nNecessity: every group has length k and a value can appear at most once per group. Sufficiency: process the occurrences grouped by value and deal them round-robin into the n/k groups; since no value exceeds the number of groups, no group gets a duplicate; the total is k times the number of groups, so after the round-robin every group has exactly k items. Sorting each group by original index gives a valid subsequence, so the condition is sufficient.\n\n## Complexity\n\nO(n) expected time, O(number of distinct values) space."

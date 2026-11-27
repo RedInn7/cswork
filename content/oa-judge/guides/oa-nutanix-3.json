@@ -13,6 +13,21 @@
       "For every pair of points to have exactly one simple path, the chosen edges must form a tree, so this is a minimum spanning tree on the complete graph with Manhattan distances as edge weights.",
       "With n up to 1000 the complete graph has about half a million edges. Instead of listing and sorting them, run dense Prim without a heap in O(n^2): each round adds the point closest to the current tree.",
       "Keep best[i], the smallest distance from point i to the current tree: 0 for the start point, infinity for the rest. Repeat n times: among the points not yet added, pick u with the smallest best, add best[u] to the answer and mark u; then update best of every unadded point with its Manhattan distance to u. The total can exceed 32 bits, so sum it in a 64-bit integer."
+    ],
+    "ja": [
+      "任意の 2 点の間にちょうど 1 本の単純パスがあるようにするには、選んだ辺が木をなす必要があります。したがって、マンハッタン距離を辺の重みとする完全グラフの最小全域木を求める問題です。",
+      "n は最大 1000 なので、完全グラフの辺は約 50 万本です。それらを列挙してソートする代わりに、ヒープを使わない密グラフ版 Prim 法を O(n^2) で実行します。各ラウンドで、現在の木に最も近い点を 1 つ追加します。",
+      "best[i] を、点 i から現在の木への最短距離として持ちます。開始点は 0、他は無限大にします。n 回繰り返します。まだ追加されていない点のうち best が最小の u を選び、答えに best[u] を足して u に印を付けます。そのあと、追加されていない各点の best を、u へのマンハッタン距離で更新します。合計は 32 ビットを超えることがあるので、64 ビット整数で足してください。"
+    ],
+    "ko": [
+      "모든 점 쌍 사이에 단순 경로가 정확히 하나 있으려면 선택한 간선이 트리를 이뤄야 하므로, 이 문제는 맨해튼 거리를 간선 가중치로 하는 완전 그래프의 최소 신장 트리입니다.",
+      "n이 최대 1000이면 완전 그래프의 간선은 약 50만 개입니다. 간선을 나열하고 정렬하는 대신 힙 없이 O(n^2)의 dense Prim을 실행합니다. 매 라운드 현재 트리에서 가장 가까운 점을 하나 추가합니다.",
+      "best[i]를 점 i에서 현재 트리까지의 최소 거리로 유지합니다. 시작점은 0, 나머지는 무한대로 둡니다. n번 반복합니다. 아직 추가되지 않은 점 중 best가 가장 작은 u를 골라 best[u]를 답에 더하고 u를 표시한 뒤, 추가되지 않은 모든 점의 best를 u까지의 맨해튼 거리로 갱신합니다. 합계는 32비트를 넘을 수 있으므로 64비트 정수로 합산하세요."
+    ],
+    "vi": [
+      "Để mọi cặp điểm có đúng một đường đi đơn, các cạnh được chọn phải tạo thành một cây, nên đây là bài cây khung nhỏ nhất trên đồ thị đầy đủ với trọng số cạnh là khoảng cách Manhattan.",
+      "Với n lên đến 1000, đồ thị đầy đủ có khoảng nửa triệu cạnh. Thay vì liệt kê và sắp xếp chúng, hãy chạy Prim dạng dày không dùng heap trong O(n^2): mỗi vòng thêm điểm gần cây hiện tại nhất.",
+      "Giữ best[i], khoảng cách nhỏ nhất từ điểm i đến cây hiện tại: 0 cho điểm xuất phát, vô cùng cho các điểm còn lại. Lặp n lần: trong các điểm chưa được thêm, chọn u có best nhỏ nhất, cộng best[u] vào đáp án và đánh dấu u; sau đó cập nhật best của mọi điểm chưa được thêm bằng khoảng cách Manhattan của nó tới u. Tổng có thể vượt quá 32 bit, nên cộng trong số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nRun dense Prim on the complete graph: each time, add the unvisited point closest to the current tree, and update the other points' minimum Manhattan distances.\n\n## Proof of correctness\n\nIn each round Prim picks the minimum edge crossing between the current spanning tree and the set of unvisited points. Adding that edge cannot create a cycle; after the update, every unvisited point still holds its minimum edge weight to the tree. After n rounds the result is a minimum spanning tree.\n\n## Complexity\n\nTime O(n^2), space O(n)."

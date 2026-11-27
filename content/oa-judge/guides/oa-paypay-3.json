@@ -13,6 +13,21 @@
       "There are only |S| - 1 contiguous fragments of length 2, each made of two adjacent digits.",
       "Scan all adjacent digit pairs once, read each as a two-digit decimal number, and keep the maximum.",
       "For each i with 0 <= i < |S| - 1, the fragment value is (S[i] - '0') * 10 + (S[i+1] - '0'); a leading zero is handled naturally, so \"05\" is 5. Track the maximum and print it."
+    ],
+    "ja": [
+      "長さ 2 の連続する断片は |S| - 1 個しかなく、それぞれ隣り合う 2 つの数字からなります。",
+      "隣り合う数字のペアを 1 回ずつ走査し、それぞれを 2 桁の 10 進数として読み取り、最大値を保持します。",
+      "0 <= i < |S| - 1 の各 i について、断片の値は (S[i] - '0') * 10 + (S[i+1] - '0') です。先頭の 0 は自然に扱われ、\"05\" は 5 になります。最大値を追跡して出力します。"
+    ],
+    "ko": [
+      "길이가 2인 연속 조각은 |S| - 1개뿐이며, 각각 인접한 두 숫자로 이루어집니다.",
+      "인접한 숫자 쌍을 한 번 훑으며 각각을 두 자리 십진수로 읽고 최댓값을 유지합니다.",
+      "0 <= i < |S| - 1인 각 i에 대해 조각의 값은 (S[i] - '0') * 10 + (S[i+1] - '0')입니다. 앞자리 0은 자연스럽게 처리되므로 \"05\"는 5입니다. 최댓값을 추적하여 출력합니다."
+    ],
+    "vi": [
+      "Chỉ có |S| - 1 đoạn liên tiếp có độ dài 2, mỗi đoạn gồm hai chữ số kề nhau.",
+      "Quét một lần qua mọi cặp chữ số kề nhau, đọc mỗi cặp như một số thập phân hai chữ số và giữ giá trị lớn nhất.",
+      "Với mỗi i thỏa 0 <= i < |S| - 1, giá trị đoạn là (S[i] - '0') * 10 + (S[i+1] - '0'); chữ số 0 đứng đầu được xử lý tự nhiên, nên \"05\" là 5. Theo dõi giá trị lớn nhất và in ra."
     ]
   },
   "explanationEn": "## Approach\n\nA digit string of length `n` has only `n - 1` contiguous fragments of length 2, `S[i..i+1]`. Parse each one as an integer and keep the maximum.\n\nYou can also skip the slicing: the fragment's value is `10*S[i] + S[i+1]`, still a single linear scan.\n\n## Proof of correctness\n\nThe answer is by definition the largest value among the `n - 1` fragments. The loop visits each fragment exactly once, with nothing missed and nothing extra, so its maximum is the answer.\n\n## Complexity\n\nO(n) time, O(1) extra space (the generator yields fragments one at a time instead of building a list).\n\n## Pitfalls\n\n- Fragments with a leading zero are parsed as integers: `05` is 5. An all-zero string gives 0, printed as `0`, not `00`.\n- Only adjacent pairs count; you cannot combine any two digits.\n- Strip the trailing newline from the input, or the last fragment will pick it up."

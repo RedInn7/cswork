@@ -13,6 +13,21 @@
       "The value of node u is flipped only by operations on u itself and on its ancestors whose index has the same parity as u. When processing from the root downward, every ancestor's choice is already fixed by the time u is reached.",
       "So a greedy pass from the root works: carry the accumulated flip parity that ancestor operations apply to even-indexed nodes and to odd-indexed nodes. If u's current value still differs from the target when you reach it, no descendant can affect u, so an operation on u is required.",
       "Run a DFS from root 0 with an explicit stack to avoid deep recursion; each stack entry holds (node, parent, even flip bit, odd flip bit). For a popped node u, XOR initial[u] with the flip bit of u's parity; if the result differs from expected[u], increase the answer and toggle that bit. Then push every neighbor except the parent along with the updated flip bits. Output the answer at the end."
+    ],
+    "ja": [
+      "ノード u の値を反転させるのは、u 自身と、u と同じ偶奇のインデックスを持つ祖先への操作だけです。根から下へ処理すると、u に到達した時点で、すべての祖先の選択はすでに確定しています。",
+      "したがって根からの貪欲法で解けます。祖先の操作が偶数インデックスのノードと奇数インデックスのノードに及ぼす累積の反転の偶奇を持ち回ります。u に到達したとき、現在の値が目標とまだ異なっていれば、子孫は u に影響できないので、u への操作が必須です。",
+      "深い再帰を避けるため、明示的なスタックで根 0 から DFS を行います。各スタック要素は (node, parent, 偶数の反転ビット, 奇数の反転ビット) を保持します。取り出したノード u について、initial[u] を u の偶奇に対応する反転ビットと XOR し、結果が expected[u] と異なれば、答えを増やしてそのビットを反転します。その後、親以外のすべての隣接ノードを、更新した反転ビットとともに積みます。最後に答えを出力します。"
+    ],
+    "ko": [
+      "노드 u의 값은 u 자신과, 인덱스의 홀짝이 u와 같은 u의 조상에 대한 연산으로만 뒤집힙니다. 루트에서 아래로 처리하면 u에 도달했을 때 모든 조상의 선택이 이미 정해져 있습니다.",
+      "따라서 루트에서 시작하는 그리디 한 번의 순회로 충분합니다. 조상의 연산이 짝수 인덱스 노드와 홀수 인덱스 노드에 적용한 누적 뒤집기 홀짝을 들고 내려갑니다. u에 도달했을 때 현재 값이 목표와 다르다면 어떤 자손도 u에 영향을 줄 수 없으므로 u에서 연산이 반드시 필요합니다.",
+      "깊은 재귀를 피하기 위해 명시적 스택으로 루트 0에서 DFS를 수행합니다. 스택 항목은 (노드, 부모, 짝수 뒤집기 비트, 홀수 뒤집기 비트)를 담습니다. 꺼낸 노드 u에 대해 initial[u]를 u의 홀짝에 해당하는 뒤집기 비트와 XOR하고, 결과가 expected[u]와 다르면 답을 1 늘리고 그 비트를 토글합니다. 그런 다음 부모를 제외한 모든 이웃을 갱신된 뒤집기 비트와 함께 스택에 넣습니다. 마지막에 답을 출력합니다."
+    ],
+    "vi": [
+      "Giá trị của nút u chỉ bị lật bởi các thao tác trên chính u và trên các tổ tiên của u có chỉ số cùng tính chẵn lẻ với u. Khi xử lý từ gốc xuống, lựa chọn của mọi tổ tiên đã được cố định vào lúc đến u.",
+      "Vì vậy một lượt tham lam từ gốc là đủ: mang theo tính chẵn lẻ của số lần lật tích lũy mà các thao tác của tổ tiên áp dụng lên các nút chỉ số chẵn và các nút chỉ số lẻ. Nếu giá trị hiện tại của u vẫn khác mục tiêu khi đến nó, không nút con cháu nào có thể ảnh hưởng đến u, nên bắt buộc phải thao tác trên u.",
+      "Chạy DFS từ gốc 0 bằng ngăn xếp tường minh để tránh đệ quy sâu; mỗi phần tử ngăn xếp chứa (node, parent, bit lật chẵn, bit lật lẻ). Với nút u được lấy ra, XOR initial[u] với bit lật theo tính chẵn lẻ của u; nếu kết quả khác expected[u], tăng đáp án và đảo bit đó. Sau đó đẩy mọi nút kề trừ nút cha cùng với các bit lật đã cập nhật. In đáp án ở cuối."
     ]
   },
   "explanationEn": "## Approach\n\nTraverse from the root. Record the parity of the flips that ancestor operations apply to even-indexed and odd-indexed nodes respectively; if the current node still does not match, an operation must be performed here.\n\n## Proof of Correctness\n\nThe value of node u is affected only by operations on those of its ancestors whose index has the same parity as u. When the traversal reaches u, these effects are already fixed; if u still differs from the target, no descendant can change u unless an operation is performed on u, so this operation is necessary. After performing it, the state of the same-parity descendants is updated recursively, which yields the unique greedy plan.\n\n## Complexity\n\nTime O(N), space O(N)."

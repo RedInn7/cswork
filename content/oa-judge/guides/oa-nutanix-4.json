@@ -13,6 +13,21 @@
       "Every left rotation must happen before the first swap, so any plan splits into two phases: rotate left k times (only k from 0 to n-1 matter), then sort using arbitrary swaps only.",
       "Once k is fixed, the task is sorting a permutation with the fewest arbitrary swaps. Split the permutation into cycles: a cycle of length L needs L-1 swaps, so the total is n minus the number of cycles.",
       "For each k, the value at position j after rotating is arr[(j+k) mod n], and it belongs at position value-1. Count the cycles c of this permutation with a visited array; the cost of this k is k+n-c. Output the minimum over all k, for O(n^2) overall."
+    ],
+    "ja": [
+      "すべての左回転は最初の交換より前に行う必要があるので、どの方針も 2 つの段階に分かれます。左に k 回回転し (意味があるのは k が 0 から n-1 の場合だけ)、そのあとは任意の交換だけでソートします。",
+      "k を固定すると、課題は任意の交換で順列を最小回数でソートすることになります。順列をサイクルに分解すると、長さ L のサイクルには L-1 回の交換が必要なので、合計は n からサイクル数を引いた値です。",
+      "各 k について、回転後の位置 j の値は arr[(j+k) mod n] で、その値は位置 value-1 に置かれるべきです。この順列のサイクル数 c を訪問済み配列で数えると、この k のコストは k+n-c です。すべての k についての最小値を出力します。全体で O(n^2) です。"
+    ],
+    "ko": [
+      "모든 왼쪽 회전은 첫 번째 교환보다 먼저 일어나야 하므로, 어떤 계획이든 두 단계로 나뉩니다. 왼쪽으로 k번 회전하고(0부터 n-1까지의 k만 의미 있음), 그 뒤에는 임의 교환만으로 정렬합니다.",
+      "k가 고정되면 문제는 임의 교환으로 순열을 정렬하는 최소 횟수를 구하는 것입니다. 순열을 사이클로 나누면 길이 L인 사이클은 L-1번의 교환이 필요하므로 총 횟수는 n에서 사이클 수를 뺀 값입니다.",
+      "각 k에 대해 회전 후 위치 j의 값은 arr[(j+k) mod n]이고, 그 값이 가야 할 위치는 value-1입니다. visited 배열로 이 순열의 사이클 수 c를 세면 이 k의 비용은 k+n-c입니다. 모든 k에 대한 최솟값을 출력하며, 전체 시간 복잡도는 O(n^2)입니다."
+    ],
+    "vi": [
+      "Mọi phép xoay trái phải xảy ra trước phép hoán đổi đầu tiên, nên mọi phương án đều chia thành hai giai đoạn: xoay trái k lần (chỉ k từ 0 đến n-1 là có ý nghĩa), rồi sắp xếp chỉ bằng các phép hoán đổi tùy ý.",
+      "Khi k đã cố định, bài toán là sắp xếp một hoán vị bằng ít phép hoán đổi tùy ý nhất. Tách hoán vị thành các chu trình: một chu trình độ dài L cần L-1 phép hoán đổi, nên tổng là n trừ đi số chu trình.",
+      "Với mỗi k, giá trị tại vị trí j sau khi xoay là arr[(j+k) mod n], và nó thuộc về vị trí value-1. Đếm số chu trình c của hoán vị này bằng mảng visited; chi phí của k này là k+n-c. In ra giá trị nhỏ nhất theo mọi k, tổng cộng O(n^2)."
     ]
   },
   "explanationEn": "# Minimum Operations to Convert Array\n\n## Approach\n\nSuppose we rotate left k times, where k can only be 0 to n-1. Then the value at each position of the array points to its target position, forming a permutation. If a permutation of length n has c cycles, it takes at least n-c swaps of two arbitrary elements to sort it. So the total cost for that k is k+n-c; enumerate k and take the minimum.\n\n## Correctness\n\nThe rules require every left rotation to come before the first swap, so every valid plan corresponds to exactly one rotation count k followed only by swaps. With k fixed, each cycle of the permutation can be resolved independently, and a cycle of length L needs at least, and exactly, L-1 swaps, for n-c in total. Enumerating every k and taking the minimum therefore covers all possible plans and only those.\n\n## Complexity\n\nFor each k the permutation cycles are counted in linear time, for O(n^2) time and O(n) extra space in total.\n\n## Site input bounds\n\nThe source lists the constraints as N/A and gives no upper bound on n. To give the O(n^2) judge inputs a clear bound, this site sets 1 <= n <= 3000; this is a runtime constraint of this site, not a reconstruction of the original source.\n\n## Reference implementation\n\n```python\nimport sys\ndef solve(raw):\n data=list(map(int,raw.split())); n=data[0]; arr=data[1:]\n best=n\n for k in range(n):\n  seen=[False]*n; cycles=0\n  for i in range(n):\n   if not seen[i]:\n    cycles+=1; j=i\n    while not seen[j]:\n     seen[j]=True; j=arr[(j+k)%n]-1\n  best=min(best,k+n-cycles)\n return best\nif __name__==\"__main__\": print(solve(sys.stdin.read()))\n```"

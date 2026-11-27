@@ -13,6 +13,21 @@
       "A CIDR block covers a run of addresses whose length is a power of two, starting at an aligned position: the block's start must be a multiple of its length.",
       "Convert the address to an integer and be greedy: from the current start, take the largest block the start's alignment allows, without exceeding the number of addresses still to cover. When the start is 0 the alignment limit is 2^32; the lowest set bit cannot be used there.",
       "Keep the start and count in 64-bit integers (count can equal 2^32). Loop until count is 0: the alignment limit is the lowest set bit of the start (2^32 when the start is 0); the block size is the smaller of that and the largest power of two not exceeding count. Record the start in dotted decimal with prefix length 32 minus log2 of the block size, then advance the start and reduce count by the block size. Print the number of blocks first, then one block per line."
+    ],
+    "ja": [
+      "CIDR ブロックは、2 のべき乗の長さを持つアドレスの連続区間で、アラインされた位置から始まります。つまりブロックの開始位置は、その長さの倍数でなければなりません。",
+      "アドレスを整数に変換して貪欲に進めます。現在の開始位置から、その位置のアライメントが許す最大のブロックを、まだ覆っていないアドレス数を超えない範囲で取ります。開始位置が 0 のときのアライメント上限は 2^32 です。この場合に最下位ビットは使えません。",
+      "開始位置と count は 64 ビット整数で保持します (count は 2^32 に等しくなりえます)。count が 0 になるまでループします。アライメント上限は開始位置の最下位の立っているビットです (開始位置が 0 のときは 2^32)。ブロックサイズは、それと、count を超えない最大の 2 のべき乗のうち小さい方です。開始位置をドット区切り 10 進表記にし、プレフィックス長 32 から (ブロックサイズの log2) を引いた値を付けて記録します。その後、開始位置を進め、count をブロックサイズだけ減らします。最初にブロック数を出力し、続いて 1 行に 1 ブロックずつ出力します。"
+    ],
+    "ko": [
+      "CIDR 블록은 길이가 2의 거듭제곱이고 정렬된 위치에서 시작하는 연속 주소 구간을 덮습니다. 즉 블록의 시작 주소는 블록 길이의 배수여야 합니다.",
+      "주소를 정수로 변환하고 그리디로 진행합니다. 현재 시작 위치에서 정렬이 허용하는 가장 큰 블록을, 아직 덮어야 할 주소 수를 넘지 않는 범위에서 취합니다. 시작 주소가 0이면 정렬 한계는 2^32이며, 이때는 가장 낮은 켜진 비트를 쓸 수 없습니다.",
+      "시작 주소와 count는 64비트 정수로 유지하십시오(count는 2^32일 수 있습니다). count가 0이 될 때까지 반복합니다. 정렬 한계는 시작 주소의 가장 낮은 켜진 비트(시작 주소가 0이면 2^32)이고, 블록 크기는 이 값과 count를 넘지 않는 가장 큰 2의 거듭제곱 중 작은 쪽입니다. 시작 주소를 점으로 구분한 십진수로, 접두사 길이를 32에서 블록 크기의 log2를 뺀 값으로 기록한 뒤, 시작 주소를 앞으로 옮기고 count에서 블록 크기를 뺍니다. 블록 수를 먼저 출력하고 이어서 한 줄에 블록 하나씩 출력합니다."
+    ],
+    "vi": [
+      "Một khối CIDR phủ một dải địa chỉ có độ dài là lũy thừa của hai, bắt đầu tại một vị trí được căn chỉnh: điểm bắt đầu của khối phải là bội của độ dài của nó.",
+      "Chuyển địa chỉ sang số nguyên và tham lam: từ điểm bắt đầu hiện tại, lấy khối lớn nhất mà căn chỉnh của điểm bắt đầu cho phép, không vượt quá số địa chỉ còn phải phủ. Khi điểm bắt đầu là 0 thì giới hạn căn chỉnh là 2^32; không dùng được bit 1 thấp nhất ở đó.",
+      "Giữ điểm bắt đầu và count trong số nguyên 64 bit (count có thể bằng 2^32). Lặp đến khi count bằng 0: giới hạn căn chỉnh là bit 1 thấp nhất của điểm bắt đầu (2^32 khi điểm bắt đầu là 0); kích thước khối là giá trị nhỏ hơn giữa nó và lũy thừa của hai lớn nhất không vượt quá count. Ghi lại điểm bắt đầu ở dạng thập phân có dấu chấm với độ dài prefix bằng 32 trừ log2 của kích thước khối, rồi dịch điểm bắt đầu lên và giảm count đi kích thước khối. In số khối trước, sau đó mỗi khối một dòng."
     ]
   },
   "explanationEn": "## Approach\n\nConvert the address to a 64-bit integer. At each step, take from the current start the largest aligned power-of-two block that also does not exceed the remaining length. For start 0 the alignment limit is 2^32; lowbit(0)=0 must not be used.\n\n## Correctness\n\nCIDR ranges are nodes of a binary prefix tree, so any two of them are either disjoint or nested. The maximal complete subtrees inside the target range form a unique disjoint decomposition; no valid cover may cross the boundaries of these subtrees, since it would then include addresses outside the target, and each maximal subtree needs at least one block. The greedy step always takes the largest block allowed at the current leftmost address, which extracts exactly these maximal subtrees in order, so it meets this lower bound.\n\n## Complexity\n\nAt most 64 blocks, time O(32), output space O(32); 64 bits are used to hold 2^32."

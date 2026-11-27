@@ -13,6 +13,21 @@
       "A non-negative integer power of 2 is always positive, so rule out 0 and every negative number first. Among the remaining positive numbers, a power of 2 has exactly one 1 bit in binary.",
       "For a positive n with a single 1 bit, n - 1 turns that bit into 0 and every bit to its right into 1, so n and n - 1 share no 1 bits and their bitwise AND is 0; conversely, if the AND is 0, n can only have one 1 bit.",
       "Read n (a 64-bit integer is the safe choice). Output 1 if n > 0 and (n & (n - 1)) = 0, otherwise output 0. Note that 1 = 2^0 satisfies the condition."
+    ],
+    "ja": [
+      "2 の非負整数乗は必ず正なので、まず 0 とすべての負数を除外します。残りの正の数では、2 のべき乗は 2 進表現で 1 のビットがちょうど 1 つです。",
+      "1 のビットが 1 つだけの正の n では、n - 1 はそのビットを 0 にし、右側のすべてのビットを 1 にします。したがって n と n - 1 には共通する 1 のビットがなく、ビット単位の AND は 0 になります。逆に、AND が 0 なら n の 1 のビットは 1 つしかありえません。",
+      "n を読み込みます（64 ビット整数が安全です）。n > 0 かつ (n & (n - 1)) = 0 なら 1、そうでなければ 0 を出力します。1 = 2^0 もこの条件を満たすことに注意してください。"
+    ],
+    "ko": [
+      "2의 음이 아닌 정수 거듭제곱은 항상 양수이므로, 먼저 0과 모든 음수를 제외합니다. 남은 양수 중 2의 거듭제곱은 이진 표현에서 1인 비트가 정확히 하나입니다.",
+      "1인 비트가 하나뿐인 양수 n에서 n - 1은 그 비트를 0으로 만들고 오른쪽의 모든 비트를 1로 만들므로, n과 n - 1은 공통으로 1인 비트가 없어 비트 AND가 0입니다. 반대로 AND가 0이면 n은 1인 비트를 하나만 가질 수 있습니다.",
+      "n을 읽습니다(64비트 정수를 쓰는 것이 안전합니다). n > 0이고 (n & (n - 1)) = 0이면 1을, 아니면 0을 출력합니다. 1 = 2^0도 이 조건을 만족함에 유의하십시오."
+    ],
+    "vi": [
+      "Lũy thừa không âm của 2 luôn dương, nên hãy loại 0 và mọi số âm trước. Trong các số dương còn lại, lũy thừa của 2 có đúng một bit 1 trong biểu diễn nhị phân.",
+      "Với n dương chỉ có một bit 1, n - 1 biến bit đó thành 0 và mọi bit bên phải nó thành 1, nên n và n - 1 không có bit 1 chung và phép AND bit của chúng bằng 0; ngược lại, nếu AND bằng 0 thì n chỉ có thể có một bit 1.",
+      "Đọc n (số nguyên 64 bit là lựa chọn an toàn). In 1 nếu n > 0 và (n & (n - 1)) = 0, ngược lại in 0. Lưu ý 1 = 2^0 thỏa mãn điều kiện."
     ]
   },
   "explanationEn": "## Approach\n\nFirst rule out non-positive numbers. For a positive n, if n is a power of 2, its binary form has a single 1 bit; n−1 turns that bit into 0 and every bit to its right into 1, so n&(n−1)=0. Conversely, when this equation holds, n can have only one set bit.\n\n## Proof of Correctness\n\nn>0 and n&(n−1)=0 holds if and only if the binary form of n contains exactly one 1 bit, which is exactly equivalent to n=2^k (k≥0).\n\n## Complexity\n\nTime O(1), space O(1).\n\n## Source Notes\n\nThe problem statement is compiled from the fixed OAMaster snapshot; the standard input/output protocol is added by this site, and it is not claimed that the original site provided that protocol."

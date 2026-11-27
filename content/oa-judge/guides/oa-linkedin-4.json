@@ -13,6 +13,21 @@
       "The * stands for exactly one arbitrary character, so the pattern has a fixed length; the asterisk splits it into a prefix, one free character, and a suffix whose relative positions in the text are fixed too.",
       "Mark every occurrence of the prefix and of the suffix in the text with KMP; start i matches the whole pattern exactly when the prefix occurs at i, the suffix occurs at i+k+1 (k is the asterisk's index), and enough text remains.",
       "Without an asterisk, run KMP once and report the first occurrence (an empty pattern matches at 0); with one, build the two occurrence tables, treating an empty part as occurring everywhere, try starts i in increasing order while i plus the pattern length fits in the text, and print the first i where both parts match, or −1."
+    ],
+    "ja": [
+      "* は任意の 1 文字ちょうどを表すので、パターンの長さは固定です。アスタリスクによってパターンは、接頭部分、自由な 1 文字、接尾部分に分かれ、テキスト中でのそれらの相対位置も固定です。",
+      "KMP でテキスト中の接頭部分と接尾部分の全ての出現に印を付けます。開始位置 i でパターン全体が一致するのは、i に接頭部分があり、i+k+1 に接尾部分があり（k はアスタリスクの添字）、十分なテキストが残っている場合に限ります。",
+      "アスタリスクがなければ KMP を 1 回実行して最初の出現を返します（空のパターンは 0 で一致）。ある場合は 2 つの出現表を作ります（空の部分はどこでも出現するものとして扱います）。i にパターン長を足してもテキストに収まる範囲で開始位置 i を昇順に試し、両方の部分が一致する最初の i を出力します。なければ −1 を出力します。"
+    ],
+    "ko": [
+      "*는 임의의 문자 정확히 하나를 뜻하므로 패턴의 길이는 고정입니다. 별표를 기준으로 패턴은 접두 부분, 자유 문자 하나, 접미 부분으로 나뉘며, 텍스트에서 이들의 상대 위치도 고정됩니다.",
+      "텍스트에서 접두 부분과 접미 부분이 나타나는 모든 위치를 KMP로 표시하세요. 시작점 i가 전체 패턴과 일치하려면 접두 부분이 i에서 나타나고, 접미 부분이 i+k+1에서 나타나며(k는 별표의 인덱스), 남은 텍스트가 충분해야 합니다.",
+      "별표가 없으면 KMP를 한 번 실행해 첫 등장 위치를 출력합니다(빈 패턴은 0에서 일치). 별표가 있으면 두 부분의 등장 표를 만들되 빈 부분은 모든 위치에서 나타나는 것으로 취급합니다. i에 패턴 길이를 더한 값이 텍스트 길이 안에 들어오는 동안 i를 증가시키며 시도하고, 두 부분이 모두 일치하는 첫 i를 출력합니다. 없으면 −1입니다."
+    ],
+    "vi": [
+      "Dấu * đại diện cho đúng một ký tự bất kỳ, nên mẫu có độ dài cố định; dấu sao tách mẫu thành một tiền tố, một ký tự tự do và một hậu tố, mà vị trí tương đối của chúng trong văn bản cũng cố định.",
+      "Đánh dấu mọi lần xuất hiện của tiền tố và của hậu tố trong văn bản bằng KMP; vị trí bắt đầu i khớp toàn bộ mẫu khi và chỉ khi tiền tố xuất hiện tại i, hậu tố xuất hiện tại i+k+1 (k là chỉ số của dấu sao), và phần văn bản còn lại đủ dài.",
+      "Nếu không có dấu sao, chạy KMP một lần và báo lần xuất hiện đầu tiên (mẫu rỗng khớp tại 0); nếu có một dấu sao, dựng hai bảng xuất hiện, coi phần rỗng là xuất hiện ở mọi nơi, thử các vị trí bắt đầu i theo thứ tự tăng dần khi i cộng độ dài mẫu còn vừa trong văn bản, và in i đầu tiên mà cả hai phần đều khớp, hoặc −1."
     ]
   },
   "explanationEn": "## Approach\n\nSplit the pattern at the asterisk into two parts, mark the occurrences of each part with KMP, then check both parts at each starting point; with no asterisk, run KMP only once.\n\n## Proof of correctness\n\nKMP marks all and only the actual matching starting points. With an asterisk, the positions occupied by the first part, one arbitrary character, and the second part are fixed and do not overlap; the whole pattern matches if and only if both parts match and the total length fits. Checking starting points in increasing order, the first success is the earliest.\n\n## Complexity\n\nO(|s|+|p|) time and O(|s|+|p|) space."

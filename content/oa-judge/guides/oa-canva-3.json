@@ -13,6 +13,21 @@
       "A valid substring is a block of 0s and a block of 1s (in either order) of equal length, so it always straddles exactly one boundary where adjacent characters differ.",
       "View the string as runs of identical characters. If two adjacent runs have lengths a and b, exactly min(a, b) valid substrings are centered on their boundary.",
       "Scan the string while keeping the previous run length prev and the current run length run: when the character changes, add min(prev, run) to the answer and set prev = run, run = 1; otherwise increase run. After the scan add min(prev, run) once more. Use a 64-bit answer."
+    ],
+    "ja": [
+      "有効な部分文字列は、等しい長さの 0 のブロックと 1 のブロック (どちらの順でも) なので、隣り合う文字が異なる境界をちょうど 1 つまたぎます。",
+      "文字列を、同じ文字のランの並びと見ます。隣り合う 2 つのランの長さが a と b なら、その境界を中心とする有効な部分文字列はちょうど min(a, b) 個あります。",
+      "文字列を走査しながら、直前のランの長さ prev と現在のランの長さ run を保持します。文字が変わったら答えに min(prev, run) を加えて prev = run、run = 1 とし、そうでなければ run を増やします。走査のあと、もう一度 min(prev, run) を加えます。答えには 64 ビットを使います。"
+    ],
+    "ko": [
+      "유효한 부분 문자열은 길이가 같은 0 블록 하나와 1 블록 하나(어느 순서든)이므로, 인접한 문자가 달라지는 경계를 정확히 하나 가로지릅니다.",
+      "문자열을 같은 문자가 이어지는 런으로 봅니다. 인접한 두 런의 길이가 a와 b이면, 그 경계를 중심으로 하는 유효한 부분 문자열은 정확히 min(a, b)개입니다.",
+      "이전 런의 길이 prev와 현재 런의 길이 run을 유지하며 문자열을 훑습니다. 문자가 바뀌면 답에 min(prev, run)을 더하고 prev = run, run = 1로 두며, 아니면 run을 늘립니다. 훑기가 끝난 뒤 min(prev, run)을 한 번 더 더합니다. 답에는 64비트를 사용합니다."
+    ],
+    "vi": [
+      "Một xâu con hợp lệ là một khối các số 0 và một khối các số 1 (theo thứ tự nào cũng được) có độ dài bằng nhau, nên nó luôn bắc ngang qua đúng một ranh giới nơi hai ký tự liền kề khác nhau.",
+      "Coi xâu như các đoạn gồm các ký tự giống nhau. Nếu hai đoạn liền kề có độ dài a và b, thì có đúng min(a, b) xâu con hợp lệ có tâm tại ranh giới của chúng.",
+      "Quét xâu trong khi giữ độ dài đoạn trước prev và độ dài đoạn hiện tại run: khi ký tự đổi, cộng min(prev, run) vào đáp án và đặt prev = run, run = 1; ngược lại tăng run. Sau khi quét, cộng thêm min(prev, run) một lần nữa. Dùng đáp án 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nSplit the string into runs of identical characters; each pair of adjacent runs contributes the smaller of the two run lengths.\n\n## Proof of Correctness\n\nAny valid substring must span exactly one pair of adjacent runs with different characters; the number of possible positions across that boundary is the smaller of the two run lengths. Different pairs of adjacent runs cannot represent the same substring, so the sum is the answer.\n\n## Complexity\n\nTime O(n), extra space O(1)."

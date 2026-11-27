@@ -13,6 +13,21 @@
       "Each final element corresponds to a contiguous segment of the original array; all elements are positive integers, so a longer segment has a larger product, and a segment can be merged into one number exactly when its whole product is ≤ k (a single element can always stay alone).",
       "Greedy from left to right: if the current segment's product times the next number is still ≤ k, absorb it, otherwise start a new segment; always making the current segment as long as possible never forces more segments later.",
       "Start with one segment and product a[0]; for each following x, if product*x ≤ k set product *= x, otherwise add a segment and set product = x. k reaches 10¹⁸ and x 10⁹, so the multiplication can overflow 64 bits; test product ≤ k / x (integer division) instead."
+    ],
+    "ja": [
+      "最終的な各要素は、元の配列の連続した区間に対応します。すべての要素が正の整数なので、区間が長いほど積は大きくなります。区間全体の積が ≤ k のときに限り、その区間を1つの数に統合できます(要素1つだけなら常に単独で残せます)。",
+      "左から右へ貪欲に進みます。現在の区間の積に次の数を掛けてもまだ ≤ k なら取り込み、そうでなければ新しい区間を始めます。現在の区間をできるだけ長くしておけば、後で区間が余計に必要になることはありません。",
+      "区間1つ、積 a[0] から始めます。以降の各 x について、product*x ≤ k なら product *= x とし、そうでなければ区間を1つ増やして product = x とします。k は 10¹⁸、x は 10⁹ に達するので、掛け算が64ビットをオーバーフローしえます。代わりに product ≤ k / x(整数除算)で判定してください。"
+    ],
+    "ko": [
+      "최종 배열의 각 원소는 원래 배열의 연속한 구간 하나에 대응합니다. 모든 원소가 양의 정수이므로 구간이 길수록 곱이 커지며, 구간 전체의 곱이 ≤ k일 때에 한해 하나의 수로 병합할 수 있습니다(원소 하나는 항상 혼자 남을 수 있습니다).",
+      "왼쪽에서 오른쪽으로 탐욕적으로 처리합니다. 현재 구간의 곱에 다음 수를 곱해도 ≤ k이면 흡수하고, 그렇지 않으면 새 구간을 시작합니다. 현재 구간을 항상 가능한 한 길게 만들어도 이후에 구간이 더 필요해지지 않습니다.",
+      "구간 하나와 곱 a[0]로 시작합니다. 이후 각 x에 대해 product*x ≤ k이면 product *= x로 하고, 그렇지 않으면 구간을 하나 늘리고 product = x로 둡니다. k는 10¹⁸까지, x는 10⁹까지 가능하므로 곱셈이 64비트를 넘칠 수 있습니다. 대신 product ≤ k / x(정수 나눗셈)로 검사하십시오."
+    ],
+    "vi": [
+      "Mỗi phần tử cuối cùng tương ứng với một đoạn liên tiếp của mảng gốc; mọi phần tử đều là số nguyên dương, nên đoạn dài hơn có tích lớn hơn, và một đoạn gộp được thành một số khi và chỉ khi toàn bộ tích của nó ≤ k (một phần tử đơn lẻ luôn có thể đứng riêng).",
+      "Tham lam từ trái sang phải: nếu tích của đoạn hiện tại nhân với số tiếp theo vẫn ≤ k thì hấp thụ nó, nếu không thì bắt đầu đoạn mới; luôn làm đoạn hiện tại dài nhất có thể thì về sau không bao giờ phải dùng thêm đoạn.",
+      "Bắt đầu với một đoạn và tích a[0]; với mỗi x tiếp theo, nếu product*x ≤ k thì đặt product *= x, nếu không thì thêm một đoạn và đặt product = x. k lên tới 10¹⁸ và x lên tới 10⁹, nên phép nhân có thể tràn 64 bit; hãy kiểm tra product ≤ k / x (chia nguyên) thay thế."
     ]
   },
   "explanationEn": "## Approach\n\nGreedily extend the current segment from left to right: as long as the segment's product times the next number is still ≤ k, absorb it; otherwise end the current segment and start a new one at the next number. Positive integers guarantee the product never decreases as the segment grows.\n\n## Correctness\n\nEach final element corresponds to a contiguous segment of the original array. A one-element segment needs no operation and can always be kept; a segment of length at least 2 is feasible only when its total product is ≤ k, and since products of positive integers never decrease, all merges of adjacent pieces inside it also satisfy the limit. From the current position, greedy takes the longest feasible segment; the first segment of any feasible plan cannot end beyond the greedy boundary. Replacing an optimal plan's first segment with the longer greedy segment does not increase the minimum number of segments for the remaining suffix; by induction on the suffix, greedy uses the fewest segments.\n\n## Complexity\n\nTime O(n), space O(1) (excluding the input)."

@@ -13,6 +13,21 @@
       "All elements are positive integers, so for a fixed right end the valid left ends form a suffix: the further right the left end, the smaller the product.",
       "Use a sliding window that keeps the longest window ending at the current right end with product at most k; after adding the right element, keep removing elements from the left while the product exceeds k.",
       "Keep product, left and a counter; multiply product by a[right] for each new element; while left <= right and product > k, divide by a[left] and advance left; then add right - left + 1 to the counter. The answer can reach about 1.25 * 10^11, so use a 64-bit integer."
+    ],
+    "ja": [
+      "すべての要素が正の整数なので、右端を固定すると、有効な左端は接尾辞をなします。左端が右にあるほど、積は小さくなります。",
+      "現在の右端で終わる、積が k 以下の最長のウィンドウを保つスライディングウィンドウを使います。右の要素を加えたあと、積が k を超える間、左から要素を取り除き続けます。",
+      "product、left、カウンタを保持します。新しい要素ごとに product に a[right] を掛けます。left <= right かつ product > k の間は、a[left] で割って left を進めます。そのあと、right - left + 1 をカウンタに加えます。答えは約 1.25 * 10^11 に達しうるので、64 ビット整数を使います。"
+    ],
+    "ko": [
+      "모든 원소가 양의 정수이므로, 오른쪽 끝을 고정하면 유효한 왼쪽 끝들은 접미사를 이룹니다. 왼쪽 끝이 오른쪽에 있을수록 곱은 작아집니다.",
+      "곱이 k 이하이면서 현재 오른쪽 끝에서 끝나는 가장 긴 윈도우를 유지하는 슬라이딩 윈도우를 사용합니다. 오른쪽 원소를 추가한 뒤, 곱이 k를 넘는 동안 왼쪽에서 원소를 계속 제거합니다.",
+      "product, left, 카운터를 유지합니다. 새 원소마다 product에 a[right]를 곱하고, left <= right이고 product > k인 동안 product를 a[left]로 나누고 left를 전진시킵니다. 그다음 right - left + 1을 카운터에 더합니다. 답은 약 1.25 * 10^11까지 커질 수 있으므로 64비트 정수를 사용하십시오."
+    ],
+    "vi": [
+      "Mọi phần tử đều là số nguyên dương, nên với một đầu phải cố định, các đầu trái hợp lệ tạo thành một hậu tố: đầu trái càng lệch phải thì tích càng nhỏ.",
+      "Dùng cửa sổ trượt giữ cửa sổ dài nhất kết thúc tại đầu phải hiện tại có tích không vượt quá k; sau khi thêm phần tử bên phải, liên tục loại phần tử bên trái chừng nào tích còn vượt quá k.",
+      "Giữ product, left và một bộ đếm; nhân product với a[right] cho mỗi phần tử mới; khi left <= right và product > k, chia product cho a[left] và tăng left; sau đó cộng right - left + 1 vào bộ đếm. Đáp án có thể lên tới khoảng 1.25 * 10^11, nên dùng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nUse a sliding window over positive numbers: after adding the right end, shrink the left end until the product is <= k, then add the current window length.\n\n## Proof of correctness\n\nAll elements are at least 1, so for a fixed right end the valid starting points form a suffix. Shrinking stops at the earliest valid start, so the window length is exactly the number of valid subarrays ending at that right end, and summing counts each subarray exactly once.\n\n## Complexity\n\nO(n) time and O(1) space besides the input; the answer can reach 125000250000, so use 64-bit integers."

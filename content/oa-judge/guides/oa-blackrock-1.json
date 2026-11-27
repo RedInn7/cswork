@@ -13,6 +13,21 @@
       "City names do not affect the answer; you only need the distance from each item. Names may contain spaces, so the safe way is to split on semicolons and take the part after the last comma of each item.",
       "Driving along a straight line, the stations are passed in increasing order of distance. Treat the start as coordinate 0; each segment length is the difference between adjacent sorted coordinates.",
       "Split on semicolons, skip blank items, parse all distances and sort them ascending. Output the smallest distance first, then each difference between adjacent distances, joined by a comma and a space; stations at the same position give 0."
+    ],
+    "ja": [
+      "都市名は答えに影響しません。各項目の距離だけが必要です。名前に空白が含まれることがあるので、安全な方法は、セミコロンで分割し、各項目の最後のカンマより後ろの部分を取ることです。",
+      "直線に沿って運転すると、スタンドは距離の増加する順に通過されます。出発地点を座標 0 として扱うと、各区間の長さは、ソートされた隣り合う座標の差になります。",
+      "セミコロンで分割して空白だけの項目を飛ばし、すべての距離を解析して昇順にソートします。最小の距離を最初に、続いて隣り合う距離の差を、カンマと空白で連結して出力します。同じ位置にあるスタンドは 0 になります。"
+    ],
+    "ko": [
+      "도시 이름은 답에 영향을 주지 않으며 각 항목의 거리만 필요합니다. 이름에 공백이 있을 수 있으므로, 세미콜론으로 나눈 뒤 각 항목의 마지막 쉼표 뒤의 부분을 취하는 것이 안전합니다.",
+      "직선을 따라 운전하면 주유소는 거리가 커지는 순서로 지나게 됩니다. 출발점을 좌표 0으로 보면, 각 구간의 길이는 정렬된 인접 좌표의 차이입니다.",
+      "세미콜론으로 나누고 빈 항목은 건너뛰며, 모든 거리를 파싱해 오름차순으로 정렬합니다. 가장 작은 거리를 먼저 출력하고, 이어서 인접한 거리의 차이를 쉼표와 공백으로 연결해 출력합니다. 같은 위치의 주유소는 0이 됩니다."
+    ],
+    "vi": [
+      "Tên thành phố không ảnh hưởng đến đáp án; bạn chỉ cần khoảng cách của mỗi mục. Tên có thể chứa khoảng trắng, nên cách an toàn là tách theo dấu chấm phẩy và lấy phần sau dấu phẩy cuối cùng của mỗi mục.",
+      "Lái xe dọc theo một đường thẳng, các trạm được đi qua theo thứ tự khoảng cách tăng dần. Coi điểm xuất phát là tọa độ 0; độ dài mỗi đoạn là hiệu của các tọa độ liền kề đã sắp xếp.",
+      "Tách theo dấu chấm phẩy, bỏ qua các mục trống, phân tích mọi khoảng cách và sắp xếp tăng dần. In khoảng cách nhỏ nhất trước, rồi mỗi hiệu giữa các khoảng cách liền kề, nối bằng dấu phẩy và một dấu cách; các trạm ở cùng vị trí cho 0."
     ]
   },
   "explanationEn": "## Approach\n\nSort the gas station distances in ascending order. The first segment is the distance from the start to the nearest station, and each subsequent segment equals the difference between adjacent distances.\n\n## Correctness\n\nThe one-dimensional route extends in the chosen direction, so sorting by distance from the start gives the order along the route. Treating the start as coordinate 0, all adjacent segments are exactly the differences between adjacent sorted coordinates, so the algorithm outputs the unique correct segment lengths; repeated distances correspond to length 0.\n\n## Complexity\n\nSorting takes O(n log n), space O(n)."

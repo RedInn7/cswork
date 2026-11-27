@@ -13,6 +13,21 @@
       "Competition ranking depends only on how many players score higher: a score's rank is the number of strictly higher scores plus one, and equal scores share a rank.",
       "Sort the scores in descending order and scan them to assign ranks: a score equal to the previous one keeps the previous rank, and a different score gets rank equal to its index plus one.",
       "After sorting in descending order, scan from index 0 with rank starting at 1; whenever a score differs from the previous one, set the rank to i+1. Count each player whose rank is at most k and whose score is greater than 0. A player with score 0 is never counted, even with a good enough rank."
+    ],
+    "ja": [
+      "競技順位は、そのプレイヤーより高いスコアの人数だけで決まります。スコアの順位は、真に高いスコアの人数に 1 を足した値で、同じスコアは順位を共有します。",
+      "スコアを降順にソートして走査しながら順位を割り当てます。直前と同じスコアなら直前の順位を引き継ぎ、異なるスコアなら順位はインデックスに 1 を足した値になります。",
+      "降順にソートしたあと、インデックス 0 から順位を 1 として走査します。直前のスコアと異なるたびに、順位を i+1 に設定します。順位が k 以下で、スコアが 0 より大きい各プレイヤーを数えます。スコアが 0 のプレイヤーは、順位が十分高くても数えません。"
+    ],
+    "ko": [
+      "경쟁 순위는 자신보다 높은 점수를 가진 플레이어가 몇 명인지에만 달려 있습니다. 어떤 점수의 순위는 엄격하게 더 높은 점수의 개수에 1을 더한 값이고, 같은 점수는 순위를 공유합니다.",
+      "점수를 내림차순으로 정렬하고 훑으면서 순위를 부여합니다. 이전과 같은 점수는 이전 순위를 유지하고, 다른 점수는 인덱스에 1을 더한 값을 순위로 받습니다.",
+      "내림차순으로 정렬한 뒤 인덱스 0부터 순위를 1로 시작하여 훑습니다. 점수가 이전과 다를 때마다 순위를 i+1로 설정합니다. 순위가 k 이하이고 점수가 0보다 큰 플레이어를 셉니다. 점수가 0인 플레이어는 순위가 충분히 높아도 절대 세지 않습니다."
+    ],
+    "vi": [
+      "Xếp hạng thi đấu chỉ phụ thuộc vào số người chơi có điểm cao hơn: hạng của một điểm bằng số điểm cao hơn nghiêm ngặt cộng một, và các điểm bằng nhau chung một hạng.",
+      "Sắp xếp điểm theo thứ tự giảm dần và quét để gán hạng: điểm bằng điểm liền trước giữ hạng trước đó, còn điểm khác có hạng bằng chỉ số của nó cộng một.",
+      "Sau khi sắp xếp giảm dần, quét từ chỉ số 0 với hạng bắt đầu bằng 1; mỗi khi một điểm khác điểm liền trước, đặt hạng bằng i+1. Đếm mỗi người chơi có hạng không vượt quá k và điểm lớn hơn 0. Người chơi có điểm 0 không bao giờ được đếm, dù hạng đủ tốt."
     ]
   },
   "explanationEn": "## Approach\n\nSort the scores in descending order; an equal score keeps the previous rank, and a different score gets rank index plus one.\n\n## Proof of correctness\n\nThe position in descending order is exactly the definition of competition ranking. Only players whose rank is at most k and whose score is non-zero are counted, which matches the problem's eligibility conditions one by one.\n\n## Complexity\n\nTime O(n log n), space O(n)."

@@ -13,6 +13,21 @@
       "Do not worry about the order of upgrades and moves; fix the final strength k first: it needs k - 1 upgrades, each coordinate needs at least ceil(coordinate / k) moves, and this bound is reachable (take one move on the way up when the strength equals the remainder).",
       "So the answer is the minimum over k of f(k) = k - 1 + ceil(a/k) + ceil(b/k). f behaves roughly like k + S/k with S = a + b, so the best k is near sqrt(S), but rounding shifts the optimum, so trying one point is not enough.",
       "Take r = isqrt(S) and the upper bound B = min(f(r), f(r+1)); every k at least as good satisfies k^2 - (B+1)k + S <= 0, so with q = isqrt((B+1)^2 - 4S) evaluate f(k) for every k in [(B+1-q)/2 - 1, (B+1+q)/2 + 1] and keep the minimum, using 64-bit integers throughout."
+    ],
+    "ja": [
+      "強化と移動の順序は気にしなくて構いません。まず最終的な強さ k を固定します。強化は k - 1 回必要で、各座標には少なくとも ceil(座標 / k) 回の移動が必要で、この下界は達成可能です（強さが剰余に等しいときに、上がる途中で 1 回移動します）。",
+      "したがって答えは、k についての f(k) = k - 1 + ceil(a/k) + ceil(b/k) の最小値です。f は S = a + b として、おおよそ k + S/k のように振る舞うので、最適な k は sqrt(S) の付近ですが、端数処理によって最適値がずれるので、1 点を試すだけでは足りません。",
+      "r = isqrt(S) とし、上界 B = min(f(r), f(r+1)) を取ります。同じかそれ以上に良い k はすべて k^2 - (B+1)k + S <= 0 を満たすので、q = isqrt((B+1)^2 - 4S) として、[(B+1-q)/2 - 1, (B+1+q)/2 + 1] のすべての k について f(k) を評価し、最小値を保持します。全体を通して 64 ビット整数を使います。"
+    ],
+    "ko": [
+      "강화와 이동의 순서는 신경 쓰지 말고 최종 힘 k를 먼저 고정하세요. 강화는 k - 1번 필요하고, 각 좌표는 최소 ceil(좌표 / k)번 이동해야 하며, 이 하한은 달성 가능합니다(힘이 나머지와 같을 때 올라가는 중간에 한 번 이동하면 됩니다).",
+      "따라서 답은 k에 대한 f(k) = k - 1 + ceil(a/k) + ceil(b/k)의 최솟값입니다. f는 S = a + b일 때 대략 k + S/k처럼 움직이므로 최적의 k는 sqrt(S) 근처이지만, 올림 때문에 최적점이 이동하므로 한 점만 시도해서는 부족합니다.",
+      "r = isqrt(S)로 두고 상계 B = min(f(r), f(r+1))을 구합니다. 이만큼 좋은 모든 k는 k^2 - (B+1)k + S <= 0을 만족하므로, q = isqrt((B+1)^2 - 4S)로 두고 [(B+1-q)/2 - 1, (B+1+q)/2 + 1]의 모든 k에 대해 f(k)를 계산하여 최솟값을 취하세요. 전 과정에서 64비트 정수를 사용합니다."
+    ],
+    "vi": [
+      "Đừng lo về thứ tự nâng cấp và di chuyển; hãy cố định sức mạnh cuối cùng k trước: cần k - 1 lần nâng cấp, mỗi tọa độ cần ít nhất ceil(tọa độ / k) lần di chuyển, và cận này đạt được (thực hiện một lần di chuyển trên đường đi lên khi sức mạnh bằng phần dư).",
+      "Vậy đáp án là giá trị nhỏ nhất trên mọi k của f(k) = k - 1 + ceil(a/k) + ceil(b/k). f hoạt động xấp xỉ như k + S/k với S = a + b, nên k tốt nhất gần sqrt(S), nhưng việc làm tròn làm lệch điểm tối ưu, nên thử một điểm là không đủ.",
+      "Lấy r = isqrt(S) và cận trên B = min(f(r), f(r+1)); mọi k tốt ít nhất bằng nó đều thỏa k^2 - (B+1)k + S <= 0, nên với q = isqrt((B+1)^2 - 4S) hãy tính f(k) cho mọi k trong [(B+1-q)/2 - 1, (B+1+q)/2 + 1] và giữ giá trị nhỏ nhất, dùng số nguyên 64 bit xuyên suốt."
     ]
   },
   "explanationEn": "## Approach\n\nFor a fixed final strength k, the minimum number of operations is k-1+ceil(a/k)+ceil(b/k). First find an upper bound near sqrt(a+b), then use a quadratic inequality to narrow down the range of integers k that could do better.\n\n## Proof of correctness\n\nA final strength k requires k-1 upgrades, and each coordinate needs at least ceil(coordinate/k) moves. On the way up, take one move when the strength passes each coordinate's remainder modulo k, then take the quotient number of moves at strength k; this attains the lower bound. Let S=a+b and let B be a value already found to be achievable; any k no worse than B satisfies k-1+S/k<=B, i.e., k^2-(B+1)k+S<=0. The integer square root together with outward-extended endpoints includes all feasible candidates, and taking the minimum over them one by one misses nothing.\n\n## Complexity\n\nO((a+b)^(1/4)) integer computations and O(1) extra space per test case; input and output O(t)."

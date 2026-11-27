@@ -13,6 +13,21 @@
       "In base 4 every digit must be 0 or 1, so fancy numbers correspond one to one to binary strings. A positive fancy number with k digits must start with 1 and the other k−1 digits are free, giving 2^(k−1) of them.",
       "Convert n to base 4 with L digits. All fancy numbers with fewer than L digits are below n, so add them directly; for those with exactly L digits, compare digit by digit from the top, as in a digit DP.",
       "If the top digit is ≥2, every fancy number of length L is below n, so add 2^(L−1). Otherwise the top digit is 1; from the second digit on, add (how many of 0 and 1 are smaller than n's digit there) × 2^(remaining digits), and if that digit is not 0 or 1 nothing later can stay equal, so stop. The count is strictly below n, so n itself is never counted."
+    ],
+    "ja": [
+      "4 進数の各桁が 0 または 1 でなければならないので、fancy な数は 2 進数の文字列と 1 対 1 に対応します。k 桁の fancy な正の数は先頭が 1 で、残りの k−1 桁は自由なので、全部で 2^(k−1) 個あります。",
+      "n を 4 進数にすると L 桁になるとします。L 桁未満の fancy な数はすべて n より小さいので、そのまま足します。ちょうど L 桁のものは、桁 DP と同じように上の桁から 1 桁ずつ比較して数えます。",
+      "最上位の桁が ≥2 なら、長さ L の fancy な数はすべて n 未満なので 2^(L−1) を足します。そうでなければ最上位の桁は 1 です。2 桁目以降では、その位置で n の桁より小さい 0 と 1 の個数 × 2^(残りの桁数) を足します。その桁が 0 でも 1 でもない場合、以降で n と等しいままの数は存在しないので打ち切ります。数えるのは n 未満だけなので、n 自身は数えません。"
+    ],
+    "ko": [
+      "4진법에서 모든 자리가 0 또는 1이어야 하므로 fancy 수는 이진 문자열과 일대일로 대응합니다. k자리 양의 fancy 수는 1로 시작해야 하고 나머지 k−1개 자리는 자유로우므로 2^(k−1)개입니다.",
+      "n을 4진법으로 변환했을 때 L자리라고 합시다. L자리보다 짧은 fancy 수는 모두 n보다 작으므로 바로 더합니다. 정확히 L자리인 수는 digit DP처럼 최상위 자리부터 한 자리씩 비교합니다.",
+      "최상위 자리가 ≥2이면 길이 L인 fancy 수는 모두 n보다 작으므로 2^(L−1)을 더합니다. 그렇지 않으면 최상위 자리는 1입니다. 두 번째 자리부터는 해당 자리에서 n의 숫자보다 작은 (0과 1 중의 개수) × 2^(남은 자리 수)를 더하고, 그 자리의 숫자가 0 또는 1이 아니면 이후로는 n과 같게 유지될 수 없으므로 중단합니다. 개수는 n 미만이므로 n 자신은 절대 세지 않습니다."
+    ],
+    "vi": [
+      "Trong cơ số 4, mọi chữ số đều phải là 0 hoặc 1, nên các số fancy tương ứng một-một với các xâu nhị phân. Một số fancy dương có k chữ số phải bắt đầu bằng 1 và k−1 chữ số còn lại tự do, cho 2^(k−1) số.",
+      "Chuyển n sang cơ số 4 được L chữ số. Mọi số fancy có ít hơn L chữ số đều nhỏ hơn n nên cộng thẳng vào; với các số có đúng L chữ số, so sánh từng chữ số từ trên xuống, giống như digit DP.",
+      "Nếu chữ số đầu ≥2 thì mọi số fancy độ dài L đều nhỏ hơn n, cộng 2^(L−1). Ngược lại chữ số đầu là 1; từ chữ số thứ hai trở đi, cộng (số lượng giá trị trong {0, 1} nhỏ hơn chữ số của n tại vị trí đó) × 2^(số chữ số còn lại), và nếu chữ số đó không phải 0 hoặc 1 thì không còn số nào có thể tiếp tục bằng n, dừng lại. Kết quả đếm là nhỏ hơn hẳn n nên n không bao giờ được tính."
     ]
   },
   "explanationEn": "## Idea\n\nConvert n to base 4. First count all valid positive numbers with fewer digits, then go from the highest to the lowest digit counting the combinations where the current digit takes a smaller valid value; the first digit can only be 1.\n\n## Proof of correctness\n\nThere are 2^(k-1) positive fancy numbers with k digits, for every shorter length k. With the same length fixed, the first digit can only be 1; at each digit, first add the valid choices smaller than n's current digit times the number of suffix combinations; if the current digit is not 0/1, a later prefix can no longer be equal, so the process can stop. Hence every valid number smaller than n is counted exactly once.\n\n## Complexity\n\nO(log n) time, O(log n) space.\n\n## Source note\n\nThis site separately prepared the standard input/output protocol; it does not claim the original site provides it."

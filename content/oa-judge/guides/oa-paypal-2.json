@@ -13,6 +13,21 @@
       "Each record belongs to exactly one (username, date) group; the real work is deciding whether a record counts at all: the username format, whether the time lies in 00:00:00..23:59:59, and whether the date is a real Gregorian date.",
       "Validate each record and skip invalid ones; for valid ones, count by the key (username, date) in a hash map or ordered map. Finally output the groups sorted by username, then by date, as plain string comparison.",
       "The username must be user followed by a decimal number without leading zeros (0 itself is allowed). Check the time as HH:MM:SS with digits and colons at fixed positions, then hour < 24, minute < 60, second < 60. Check the date as YYYY-MM-DD with year 2000..3000, month 1..12 and a day not exceeding that month's length (29 for February in a leap year). Print the number of groups, then one line \"username date count\" per group; with no valid record, print just 0."
+    ],
+    "ja": [
+      "各記録はちょうど 1 つの (ユーザー名, 日付) グループに属します。実際の作業は、その記録を数えるかどうかを判定することです。ユーザー名の形式、時刻が 00:00:00..23:59:59 の範囲にあるか、日付が実在するグレゴリオ暦の日付かを確認します。",
+      "各記録を検証して、無効なものは飛ばします。有効なものについては、キー (ユーザー名, 日付) でハッシュマップまたは順序付きマップに数えます。最後にグループを、ユーザー名、次に日付の、単純な文字列比較でソートして出力します。",
+      "ユーザー名は user に、先頭に 0 のない 10 進数が続く形でなければなりません（0 そのものは許可されます）。時刻は HH:MM:SS の形で、固定位置に数字とコロンがあるかを確認し、時 < 24、分 < 60、秒 < 60 を確認します。日付は YYYY-MM-DD の形で、年は 2000..3000、月は 1..12、日はその月の日数を超えないこと（うるう年の 2 月は 29）を確認します。グループの個数を出力し、続いてグループごとに「ユーザー名 日付 回数」の行を出力します。有効な記録がなければ 0 だけを出力します。"
+    ],
+    "ko": [
+      "각 기록은 정확히 하나의 (사용자 이름, 날짜) 그룹에 속합니다. 실제 작업은 기록이 집계 대상인지 판정하는 것입니다. 사용자 이름 형식, 시간이 00:00:00..23:59:59 범위 안에 있는지, 날짜가 실제 그레고리력 날짜인지를 확인합니다.",
+      "각 기록을 검증해 유효하지 않은 것은 건너뜁니다. 유효한 기록은 해시 맵이나 순서 있는 맵에서 키 (사용자 이름, 날짜)로 집계합니다. 마지막으로 그룹을 사용자 이름, 그다음 날짜의 단순 문자열 비교 순으로 정렬해 출력합니다.",
+      "사용자 이름은 user 뒤에 앞자리 0이 없는 십진수가 오는 형태여야 합니다(0 자체는 허용). 시간은 숫자와 콜론이 고정된 위치에 있는 HH:MM:SS 형식인지 확인한 뒤 시 < 24, 분 < 60, 초 < 60을 확인합니다. 날짜는 연도 2000..3000, 월 1..12, 그리고 그 달의 일수(윤년의 2월은 29)를 넘지 않는 일을 가진 YYYY-MM-DD 형식인지 확인합니다. 그룹의 수를 출력하고, 이어서 그룹마다 \"사용자이름 날짜 횟수\" 한 줄을 출력합니다. 유효한 기록이 없으면 0만 출력합니다."
+    ],
+    "vi": [
+      "Mỗi bản ghi thuộc đúng một nhóm (tên người dùng, ngày); phần việc thực sự là quyết định một bản ghi có được tính hay không: định dạng tên người dùng, thời gian có nằm trong 00:00:00..23:59:59 không, và ngày có phải ngày Gregorian thật không.",
+      "Kiểm tra từng bản ghi và bỏ qua các bản ghi không hợp lệ; với các bản ghi hợp lệ, đếm theo khóa (tên người dùng, ngày) trong một hash map hoặc map có thứ tự. Cuối cùng xuất các nhóm sắp xếp theo tên người dùng, rồi theo ngày, bằng so sánh xâu thông thường.",
+      "Tên người dùng phải là user theo sau là một số thập phân không có số 0 ở đầu (bản thân 0 được phép). Kiểm tra thời gian dạng HH:MM:SS với chữ số và dấu hai chấm ở các vị trí cố định, rồi giờ < 24, phút < 60, giây < 60. Kiểm tra ngày dạng YYYY-MM-DD với năm 2000..3000, tháng 1..12 và ngày không vượt quá số ngày của tháng đó (29 cho tháng Hai năm nhuận). In số nhóm, rồi mỗi nhóm một dòng \"username date count\"; nếu không có bản ghi hợp lệ, chỉ in 0."
     ]
   },
   "explanationEn": "## Approach\n\nValidate the username, the fixed-format time and the Gregorian date line by line. Records with an invalid time/date are skipped. Accumulate counts with (username, date) as the key, and finally sort by both strings in lexicographic order. This site's I/O first prints the number of groups, then one line per group with the username, the date and the count.\n\n## Correctness\n\nEvery valid log adds exactly one to its unique (user, date) key; invalid dates or times take no part in the count, matching the filtering rule. The dictionary count therefore equals the number of login records in that group. Sorting all keys by username and then date gives exactly the required order; the number of groups and the fields of each group correspond one to one.\n\nThe explanation of source example 1 writes user1's 2 logins on that day as 3, and user2's 2 logins as 1; the explanation of example 2 writes user2's 2 logins as 3. The actual outputs of both examples agree with the original logs, so this site keeps the outputs and records the typos in the explanations.\n\n## Complexity\n\nFor n logs, hash aggregation takes O(n), sorting the g groups takes O(g log g), and the space is O(g)."

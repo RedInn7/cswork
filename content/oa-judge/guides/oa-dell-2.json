@@ -13,6 +13,21 @@
       "A valid substring switches between 0 and 1 exactly once, so it crosses exactly one boundary between two adjacent runs of equal characters.",
       "Split the string into runs of equal characters. Taking j characters on each side of a boundary gives a valid substring for every j from 1 to the shorter of the two runs, so each boundary contributes min(left run length, right run length).",
       "Scan left to right, keeping the previous run length and the current run length. When the character changes, add min(previous, current) to the answer, then set previous = current and current = 1. After the scan, add the min for the last pair as well. An empty string gives 0."
+    ],
+    "ja": [
+      "有効な部分文字列は 0 と 1 の間でちょうど 1 回だけ切り替わるので、同じ文字のランの隣り合う 2 つの境界をちょうど 1 つまたぎます。",
+      "文字列を同じ文字のランに分割します。境界の両側から j 文字ずつ取ると、j が 1 から 2 つのランのうち短いほうの長さまでのそれぞれで、有効な部分文字列になります。したがって各境界は min(左のランの長さ, 右のランの長さ) だけ寄与します。",
+      "左から右へ走査し、直前のランの長さと現在のランの長さを保持します。文字が変わったら min(previous, current) を答えに加え、previous = current、current = 1 とします。走査が終わったら、最後のペアについても min を加えます。空文字列の答えは 0 です。"
+    ],
+    "ko": [
+      "유효한 부분 문자열은 0과 1이 정확히 한 번만 바뀌므로, 같은 문자가 이어지는 인접한 두 구간 사이의 경계를 정확히 하나 가로지릅니다.",
+      "문자열을 같은 문자의 구간으로 나눕니다. 경계 양쪽에서 각각 j개의 문자를 취하면 j가 1부터 두 구간 중 짧은 길이까지일 때마다 유효한 부분 문자열이 되므로, 각 경계는 min(왼쪽 구간 길이, 오른쪽 구간 길이)만큼 기여합니다.",
+      "왼쪽에서 오른쪽으로 스캔하며 이전 구간의 길이와 현재 구간의 길이를 유지합니다. 문자가 바뀌면 정답에 min(previous, current)를 더하고 previous = current, current = 1로 설정합니다. 스캔이 끝난 뒤 마지막 쌍의 min도 더합니다. 빈 문자열의 답은 0입니다."
+    ],
+    "vi": [
+      "Một xâu con hợp lệ chuyển giữa 0 và 1 đúng một lần, nên nó vắt qua đúng một ranh giới giữa hai đoạn liền kề gồm các ký tự giống nhau.",
+      "Tách xâu thành các đoạn gồm ký tự giống nhau. Lấy j ký tự ở mỗi bên của một ranh giới sẽ cho một xâu con hợp lệ với mọi j từ 1 đến độ dài đoạn ngắn hơn, nên mỗi ranh giới đóng góp min(độ dài đoạn trái, độ dài đoạn phải).",
+      "Duyệt từ trái sang phải, giữ độ dài đoạn trước và độ dài đoạn hiện tại. Khi ký tự đổi, cộng min(previous, current) vào đáp án, rồi đặt previous = current và current = 1. Sau khi duyệt xong, cộng thêm min cho cặp cuối cùng. Xâu rỗng cho kết quả 0."
     ]
   },
   "explanationEn": "## Approach\n\nSplit the string into runs of equal characters; each pair of adjacent runs contributes the smaller of their lengths. Sum this over all adjacent pairs.\n\n## Proof of correctness\n\nA valid substring has only one character change, so it crosses exactly one boundary between a pair of adjacent runs. If it takes j characters on each side, the feasible values of j are exactly 1..min(the two run lengths), and different boundaries never count the same substring. The sum is therefore complete and counts nothing twice.\n\n## Complexity\n\nO(n) time and O(1) auxiliary space."

@@ -13,6 +13,21 @@
       "The path between two nodes of a tree is unique and the transfer time is the number of edges on it, so the task is the diameter of the tree.",
       "The classic method uses two traversals: from any node, find the farthest node u, which is always an endpoint of some diameter; traverse again from u, and the largest distance found is the diameter.",
       "All edges have weight 1, so BFS gives the distances; use an iterative queue rather than recursive DFS so a 200000-node chain cannot overflow the stack. Store the tree as adjacency lists, run the first BFS from node 1 to find the farthest node, then the second BFS from that node and take the largest distance. With g_nodes = 1 there are no edges and the answer is 0. Time O(n)."
+    ],
+    "ja": [
+      "木の 2 つのノード間の経路は一意で、転送時間はその上の辺の数なので、この問題は木の直径を求める問題です。",
+      "古典的な方法は 2 回の走査を使います。任意のノードから最も遠いノード u を求めると、それは必ずある直径の端点です。u からもう一度走査し、見つかった最大の距離が直径です。",
+      "すべての辺の重みが 1 なので、BFS で距離が求まります。200000 ノードの鎖でもスタックがあふれないよう、再帰の DFS ではなく反復のキューを使います。木を隣接リストで保持し、ノード 1 から最初の BFS を行って最も遠いノードを求め、そのノードから 2 回目の BFS を行って最大の距離を取ります。g_nodes = 1 のときは辺がなく、答えは 0 です。時間は O(n) です。"
+    ],
+    "ko": [
+      "트리의 두 노드 사이 경로는 유일하고 전송 시간은 그 경로의 간선 수이므로, 이 문제는 트리의 지름을 구하는 것입니다.",
+      "고전적인 방법은 두 번의 순회를 쓰는 것입니다. 임의의 노드에서 가장 먼 노드 u를 찾으면 u는 항상 어떤 지름의 끝점이며, u에서 다시 순회하여 찾은 가장 큰 거리가 지름입니다.",
+      "모든 간선의 가중치가 1이므로 BFS로 거리를 구할 수 있습니다. 노드가 200000개인 체인에서 스택이 넘치지 않도록 재귀 DFS 대신 반복형 큐를 사용하세요. 트리를 인접 리스트로 저장하고, 노드 1에서 첫 번째 BFS로 가장 먼 노드를 찾은 뒤 그 노드에서 두 번째 BFS를 하여 가장 큰 거리를 구합니다. g_nodes = 1이면 간선이 없으므로 답은 0입니다. 시간 O(n)."
+    ],
+    "vi": [
+      "Đường đi giữa hai nút của cây là duy nhất và thời gian truyền là số cạnh trên đó, nên bài toán là tìm đường kính của cây.",
+      "Phương pháp kinh điển dùng hai lần duyệt: từ một nút bất kỳ, tìm nút xa nhất u, luôn là đầu mút của một đường kính nào đó; duyệt lại từ u, và khoảng cách lớn nhất tìm được là đường kính.",
+      "Mọi cạnh có trọng số 1, nên BFS cho các khoảng cách; dùng hàng đợi lặp thay vì DFS đệ quy để một chuỗi 200000 nút không gây tràn ngăn xếp. Lưu cây dưới dạng danh sách kề, chạy BFS đầu tiên từ nút 1 để tìm nút xa nhất, rồi BFS thứ hai từ nút đó và lấy khoảng cách lớn nhất. Với g_nodes = 1 không có cạnh nào và đáp án là 0. Thời gian O(n)."
     ]
   },
   "explanationEn": "## Approach\n\nThe answer is the diameter of the tree. Traverse from any server and find the server u farthest from it; then traverse from u, and the largest distance found is the diameter of the tree. Every edge weight here is 1, so BFS is enough. An iterative queue is used to avoid recursion stack overflow on long chains. This site's maximum of 200000 nodes is a resource limit; the original problem gives no such bound.\n\n## Correctness\n\nThe path between any two nodes of a tree is unique. Starting from any node, the farthest node must be an endpoint of some diameter of the tree; therefore, when traversing from that endpoint u, the largest reachable distance is exactly the largest distance between any pair of nodes in the tree. The two BFS runs compute this distance, so the returned value is the maximum transfer time between any two servers.\n\n## Complexity\n\nEach traversal visits every node and edge at most once. The two BFS runs take O(n) time in total, and the adjacency lists, queue and distance array take O(n) space."

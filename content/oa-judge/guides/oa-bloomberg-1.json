@@ -13,6 +13,21 @@
       "A run of k consecutive positive integers adds up to k times its middle value; split by the parity of k, every way of writing num belongs to one odd divisor of num.",
       "Apart from the odd divisor 1 (num on its own), each odd divisor gives exactly one way with at least two terms, so the answer is the number of odd divisors of num minus 1.",
       "Divide every factor 2 out of num; trial-divide the odd part by 3, 5, 7, ... up to its square root, multiplying in (e + 1) for each prime with exponent e; multiply by 2 if a factor above 1 is left; print the product minus 1."
+    ],
+    "ja": [
+      "連続する k 個の正の整数の和は、k に中央の値を掛けたものです。k の偶奇で場合分けすると、num の表し方はすべて num の奇数の約数のどれか 1 つに属します。",
+      "奇数の約数 1 (num 単独) を除けば、各奇数の約数は、項が 2 つ以上の表し方をちょうど 1 通り与えます。したがって答えは、num の奇数の約数の個数から 1 を引いたものです。",
+      "num からすべての因数 2 を割り切って取り除きます。残った奇数部分を 3, 5, 7, ... で、その平方根まで試し割りし、指数 e の素数ごとに (e + 1) を掛け合わせます。1 より大きい因数が残ったら 2 を掛けます。積から 1 を引いたものを出力します。"
+    ],
+    "ko": [
+      "연속된 양의 정수 k개의 합은 가운데 값의 k배입니다. k의 홀짝으로 나누면, num을 나타내는 모든 방법은 num의 홀수 약수 하나에 대응됩니다.",
+      "홀수 약수 1(num 하나만 쓰는 경우)을 제외하면, 각 홀수 약수는 두 항 이상인 방법을 정확히 하나씩 줍니다. 따라서 답은 num의 홀수 약수의 개수에서 1을 뺀 값입니다.",
+      "num에서 2의 인수를 모두 나누어 없앱니다. 남은 홀수 부분을 제곱근까지 3, 5, 7, ...로 시행 나눗셈하면서, 지수가 e인 소수마다 (e + 1)을 곱합니다. 1보다 큰 인수가 남으면 2를 곱하고, 곱에서 1을 뺀 값을 출력합니다."
+    ],
+    "vi": [
+      "Một dãy k số nguyên dương liên tiếp có tổng bằng k lần giá trị ở giữa nó; chia theo tính chẵn lẻ của k, mỗi cách viết num thuộc về một ước lẻ của num.",
+      "Ngoài ước lẻ 1 (num đứng một mình), mỗi ước lẻ cho đúng một cách có ít nhất hai số hạng, nên đáp án là số ước lẻ của num trừ 1.",
+      "Chia hết mọi thừa số 2 khỏi num; chia thử phần lẻ cho 3, 5, 7, ... tới căn bậc hai của nó, nhân vào (e + 1) cho mỗi số nguyên tố có số mũ e; nhân thêm 2 nếu còn lại một thừa số lớn hơn 1; in ra tích trừ 1."
     ]
   },
   "explanationEn": "## Approach\n\nDivide every factor 2 out of num, factor the odd part that remains, and subtract 1 from its number of positive divisors.\n\n## Why it works\n\nA run of odd length d is centred on num/d, where d is an odd divisor of num. If its first term is positive, that is one way of writing num. Otherwise the same odd divisor gives a run of even length 2num/d starting at (d+1)/2 - num/d, which is then positive: the two candidate first terms are integers adding up to 1, so exactly one of them is positive. Conversely, any run of consecutive positive integers gives back its d uniquely, from its length when that is odd and from the odd factor that goes with its length when it is even, so this is a bijection. The odd divisor 1 stands for num on its own, a single term, so it is subtracted.\n\n## Complexity\n\nTrial division takes O(sqrt(num)) time and O(1) extra space."

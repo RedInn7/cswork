@@ -13,6 +13,21 @@
       "Quotes do not constrain one another and each project needs exactly one quote, so the choice for each project is completely independent.",
       "For every project keep only the cheapest quote it receives; if even one project has no quote at all, the projects cannot all be completed.",
       "Keep an array of length p with the current minimum quote of each project (initially none); read the quotes one by one and update the minimum of the matching project; at the end print -1 if any project is still empty, otherwise print the sum of all minimums using 64-bit integers."
+    ],
+    "ja": [
+      "見積り同士は互いに制約せず、各プロジェクトに必要な見積りはちょうど 1 つなので、各プロジェクトの選択は完全に独立です。",
+      "各プロジェクトについて、受け取った見積りのうち最も安いものだけを残します。見積りが 1 つもないプロジェクトが 1 つでもあれば、すべてのプロジェクトを完了することはできません。",
+      "長さ p の配列に、各プロジェクトの現在の最小見積りを保持します (初期値は「なし」)。見積りを 1 つずつ読み、該当プロジェクトの最小値を更新します。最後に、空のままのプロジェクトがあれば -1 を出力し、なければすべての最小値の合計を 64 ビット整数で出力します。"
+    ],
+    "ko": [
+      "견적들은 서로 제약을 주지 않고 각 프로젝트는 견적을 정확히 하나만 필요로 하므로, 프로젝트별 선택은 완전히 독립적입니다.",
+      "각 프로젝트에 대해 받은 견적 중 가장 저렴한 것만 남깁니다. 견적이 하나도 없는 프로젝트가 하나라도 있으면 모든 프로젝트를 완료할 수 없습니다.",
+      "길이 p의 배열에 각 프로젝트의 현재 최소 견적을 담고(처음에는 없음), 견적을 하나씩 읽으며 해당 프로젝트의 최솟값을 갱신합니다. 마지막에 비어 있는 프로젝트가 있으면 -1을, 없으면 모든 최솟값의 합을 64비트 정수로 출력합니다."
+    ],
+    "vi": [
+      "Các báo giá không ràng buộc lẫn nhau và mỗi dự án cần đúng một báo giá, nên lựa chọn cho từng dự án hoàn toàn độc lập.",
+      "Với mỗi dự án chỉ giữ báo giá rẻ nhất mà nó nhận được; nếu dù chỉ một dự án không có báo giá nào thì không thể hoàn thành tất cả dự án.",
+      "Giữ một mảng độ dài p chứa báo giá nhỏ nhất hiện tại của mỗi dự án (ban đầu là chưa có); đọc lần lượt từng báo giá và cập nhật giá trị nhỏ nhất của dự án tương ứng; cuối cùng in -1 nếu còn dự án nào trống, ngược lại in tổng của tất cả các giá trị nhỏ nhất bằng số nguyên 64 bit."
     ]
   },
   "explanationEn": "## Approach\n\nKeep the minimum quote for each project, then at the end check that every project is covered and add them up.\n\n## Proof of correctness\n\nEach quote completes only its own project, so for any plan the cost on each project is at least that project's minimum quote, and the total is at least the sum of the minimum quotes. The minimum quotes are independent and can all be chosen at the same time, so this lower bound is achievable; a project without any quote cannot be completed.\n\n## Complexity\n\nO(n+p) time, O(p) space."

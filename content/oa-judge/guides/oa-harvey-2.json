@@ -13,6 +13,21 @@
       "References between cells form a directed graph. Since the graph had no cycle before, a SET creates one only if the new definition can lead back to the cell being assigned.",
       "On SET, store the new expression tentatively and DFS from that cell; reaching a node on the current recursion path means a cycle, so restore the old value (or remove the cell) and print ERROR, otherwise print OK. GET sums recursively and returns ERROR on an unset cell.",
       "Split an expression on + and trim whitespace; an all-digit term is a literal, anything else is a label. For GET use a per-query memo to avoid recomputation, plus the same on-path set as a cycle guard. All computable results fit in 64 bits. Each command prints OK, ERROR or an integer."
+    ],
+    "ja": [
+      "セル間の参照は有向グラフをなします。それまでグラフに循環がなかったので、SET が循環を作るのは、新しい定義から代入されるセルに戻れる場合だけです。",
+      "SET では新しい式を仮に保存し、そのセルから DFS します。現在の再帰のパス上のノードに到達したら循環なので、古い値に戻し (またはセルを削除し) て ERROR を出力し、そうでなければ OK を出力します。GET は再帰的に合計し、未設定のセルで ERROR を返します。",
+      "式は + で分割して空白を取り除きます。すべて数字の項はリテラルで、それ以外はラベルです。GET では、再計算を避けるためにクエリごとのメモと、循環の防止として同じくパス上の集合を使います。計算できる結果はすべて 64 ビットに収まります。各コマンドは OK、ERROR、整数のいずれかを出力します。"
+    ],
+    "ko": [
+      "셀 간의 참조는 방향 그래프를 이룹니다. 이전에는 그래프에 순환이 없었으므로, SET이 순환을 만드는 것은 새 정의가 배정되는 셀로 되돌아올 수 있을 때뿐입니다.",
+      "SET에서는 새 수식을 잠정적으로 저장하고 그 셀에서 DFS를 합니다. 현재 재귀 경로 위의 노드에 도달하면 순환이므로, 이전 값을 복원하고(또는 셀을 제거하고) ERROR를 출력하며, 그렇지 않으면 OK를 출력합니다. GET은 재귀적으로 합산하고 설정되지 않은 셀에서는 ERROR를 반환합니다.",
+      "수식을 +로 나누고 공백을 제거합니다. 모두 숫자인 항은 리터럴이고 그 외는 레이블입니다. GET에서는 재계산을 피하기 위해 질의마다 메모를 사용하고, 순환 방지를 위해 같은 경로 위 집합을 씁니다. 계산 가능한 모든 결과는 64비트에 들어갑니다. 각 명령은 OK, ERROR 또는 정수를 출력합니다."
+    ],
+    "vi": [
+      "Các tham chiếu giữa các ô tạo thành một đồ thị có hướng. Vì trước đó đồ thị không có chu trình, một lệnh SET chỉ tạo ra chu trình khi định nghĩa mới có thể dẫn ngược về ô đang được gán.",
+      "Với SET, lưu tạm biểu thức mới và chạy DFS từ ô đó; chạm tới một nút nằm trên đường đệ quy hiện tại nghĩa là có chu trình, nên khôi phục giá trị cũ (hoặc xóa ô) và in ERROR, nếu không thì in OK. GET cộng đệ quy và trả về ERROR trên ô chưa được đặt.",
+      "Tách biểu thức theo + và cắt khoảng trắng; một số hạng toàn chữ số là hằng số, còn lại là nhãn. Với GET, dùng một memo cho mỗi truy vấn để tránh tính lại, cùng với chính tập các nút trên đường đi làm chốt chặn chu trình. Mọi kết quả tính được đều vừa trong 64 bit. Mỗi lệnh in ra OK, ERROR hoặc một số nguyên."
     ]
   },
   "explanationEn": "## Idea\n\nOn SET, store the new value tentatively and run a DFS along the dependency graph to check whether it can return to the assigned cell; if there is a cycle, restore the old value, otherwise commit. GET sums recursively according to the current definitions and caches intermediate results only within this read.\n\n## Proof of correctness\n\nThe dependency graph of addition formulas contains a cycle if and only if some recursive visit reaches a node on the current path. After the tentative SET, a DFS starting from that label is enough to detect a newly created cycle; restoring the old definition guarantees that a rejected operation leaves the state unchanged. GET recurses with the same cycle detection, so undefined references also return ERROR.\n\n## Complexity\n\nLet V be the number of cells and E the total number of references; each command takes O(V+E), with O(V+E) space."

@@ -13,6 +13,21 @@
       "Remaining energy is 100 minus the sum of the cells on the path, so maximizing the energy means minimizing the path sum. Each step goes to the next row and changes the column by at most 1.",
       "This is a classic row-by-row DP: dp[c] is the smallest path sum reaching column c of the current row. Column c of the next row can only be reached from columns c-1, c and c+1 of the previous row (within bounds).",
       "Initialize dp with the first row. For rows 2 to 4, set the new dp[c] = a[r][c] + min of the old dp[k] for k from max(0, c-1) to min(3, c+1). Print 100 - min(dp); the result may be negative."
+    ],
+    "ja": [
+      "残りのエネルギーは 100 から経路上のセルの合計を引いたものなので、エネルギーを最大化することは経路の合計を最小化することです。各ステップは次の行へ進み、列は最大で 1 しか変わりません。",
+      "これは古典的な行ごとの DP です。dp[c] を、現在の行の列 c に到達する最小の経路和とします。次の行の列 c には、前の行の列 c-1、c、c+1 からしか到達できません (範囲内に限る)。",
+      "dp を最初の行で初期化します。2 行目から 4 行目について、新しい dp[c] = a[r][c] + (k が max(0, c-1) から min(3, c+1) までのときの古い dp[k] の最小値) とします。100 - min(dp) を出力します。結果は負になることがあります。"
+    ],
+    "ko": [
+      "남은 에너지는 100에서 경로상 칸들의 합을 뺀 값이므로, 에너지를 최대화하는 것은 경로의 합을 최소화하는 것과 같습니다. 각 단계에서 다음 행으로 가며 열은 최대 1만큼 변합니다.",
+      "행 단위 DP의 고전적인 문제입니다. dp[c]를 현재 행의 열 c에 도달하는 최소 경로 합이라고 합시다. 다음 행의 열 c는 이전 행의 열 c-1, c, c+1에서만(범위 안에서) 도달할 수 있습니다.",
+      "dp를 첫 번째 행으로 초기화합니다. 2행부터 4행까지, 새 dp[c] = a[r][c] + (k가 max(0, c-1)부터 min(3, c+1)까지일 때 이전 dp[k]의 최솟값)로 둡니다. 100 - min(dp)를 출력하며, 결과는 음수일 수 있습니다."
+    ],
+    "vi": [
+      "Năng lượng còn lại bằng 100 trừ tổng các ô trên đường đi, nên tối đa hóa năng lượng nghĩa là tối thiểu hóa tổng đường đi. Mỗi bước đi xuống hàng tiếp theo và đổi cột nhiều nhất 1.",
+      "Đây là bài quy hoạch động kinh điển theo từng hàng: dp[c] là tổng đường đi nhỏ nhất đến cột c của hàng hiện tại. Cột c của hàng tiếp theo chỉ có thể đến từ các cột c-1, c và c+1 của hàng trước (trong phạm vi hợp lệ).",
+      "Khởi tạo dp bằng hàng đầu tiên. Với các hàng từ 2 đến 4, đặt dp[c] mới = a[r][c] + min của dp[k] cũ với k từ max(0, c-1) đến min(3, c+1). In 100 - min(dp); kết quả có thể âm."
     ]
   },
   "explanationEn": "## Approach\n\nRemaining energy is 100 minus the sum of the cells on the path, so maximizing what is left means finding the **minimum path sum** from the first row to the last.\n\nLet `dp[r][c]` be the smallest sum over paths that end at row `r`, column `c`. The first row is `dp[0][c] = mat[0][c]`. Every later cell can only be entered from columns `c-1`, `c` or `c+1` of the row above (skip the ones outside the grid):\n\n`dp[r][c] = mat[r][c] + min(dp[r-1][c-1], dp[r-1][c], dp[r-1][c+1])`\n\nThe answer is `100 - min(dp[3][*])`. The code keeps only the previous row's 4 values and rolls them forward.\n\n## Proof of correctness\n\nInduct on the row. Row 0 is trivially right. Assume `dp[r-1][k]` is the minimum sum to reach `(r-1, k)`. Any path into `(r, c)` comes from some `(r-1, k)` with `|k - c| <= 1`; its sum is its prefix sum plus `mat[r][c]`, and the prefix is at least `dp[r-1][k]`, so the path is at least the value of the recurrence. Conversely, extending the best prefix into `(r, c)` attains that value. So `dp[r][c]` is correct. The path may end in any column of the last row, so the minimum over that row is optimal, and 100 minus it is the maximum remaining energy. It can be negative; print it as is.\n\n## Complexity\n\nThe matrix is a fixed 4x4, so there are 4*4*3 comparisons: O(1) time and space. On a general R x C grid this is O(R*C) time and O(C) space.\n\n## Pitfalls\n\n- Columns 0 and 3 have only two possible predecessors; do not index out of range.\n- The result may be negative; do not clamp it to 0."

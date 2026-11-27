@@ -13,6 +13,21 @@
       "Feasibility is monotone in the threshold: if edges of weight <= w are enough to reach N from 1 within K edges, any larger threshold works too, and the answer is always the weight of some edge.",
       "Binary search over the sorted, de-duplicated edge weights; to test a threshold w, keep only edges of weight <= w, run BFS for the fewest edges from 1 to N, and check whether that is at most K.",
       "Build an adjacency list and sort and de-duplicate all weights; binary search an index range [lo, hi]: for mid, run BFS from node 1 over edges of weight <= ws[mid], not expanding nodes already at depth K; if N is reached with distance <= K set hi=mid, else lo=mid+1; print ws[lo]. Total time O((N+M) log M)."
+    ],
+    "ja": [
+      "閾値に対して実行可能性は単調です。重みが <= w の辺だけで 1 から N まで K 本以内で到達できるなら、それより大きい閾値でも到達できます。また、答えは必ずどれかの辺の重みになります。",
+      "ソートして重複を除いた辺の重みに対して二分探索します。閾値 w を判定するには、重みが <= w の辺だけを残し、BFS で 1 から N までの最小辺数を求め、それが K 以下かどうかを確認します。",
+      "隣接リストを作り、全ての重みをソートして重複を除きます。添字の範囲 [lo, hi] で二分探索します。mid ごとに、重み <= ws[mid] の辺だけを使ってノード 1 から BFS し、深さがすでに K のノードは展開しません。N に距離 <= K で到達できれば hi=mid、そうでなければ lo=mid+1 とし、最後に ws[lo] を出力します。全体の時間計算量は O((N+M) log M) です。"
+    ],
+    "ko": [
+      "실현 가능성은 임계값에 대해 단조적입니다. 가중치가 <= w인 간선만으로 K개 이하의 간선으로 1에서 N에 도달할 수 있다면, 더 큰 임계값에서도 가능합니다. 또한 답은 항상 어떤 간선의 가중치입니다.",
+      "정렬하고 중복을 제거한 간선 가중치 목록에서 이분 탐색을 하세요. 임계값 w를 검사하려면 가중치가 <= w인 간선만 남기고, BFS로 1에서 N까지의 최소 간선 수를 구해 K 이하인지 확인합니다.",
+      "인접 리스트를 만들고 모든 가중치를 정렬 및 중복 제거해 ws로 둡니다. 인덱스 범위 [lo, hi]에서 이분 탐색하며, mid마다 가중치가 <= ws[mid]인 간선만으로 노드 1에서 BFS를 수행합니다. 깊이가 이미 K인 노드는 확장하지 않습니다. N에 거리 <= K로 도달하면 hi=mid, 아니면 lo=mid+1로 하고 ws[lo]를 출력합니다. 총 시간은 O((N+M) log M)입니다."
+    ],
+    "vi": [
+      "Tính khả thi đơn điệu theo ngưỡng: nếu các cạnh có trọng số <= w đủ để đi từ 1 đến N trong K cạnh, thì mọi ngưỡng lớn hơn cũng được, và đáp án luôn là trọng số của một cạnh nào đó.",
+      "Tìm kiếm nhị phân trên các trọng số đã sắp xếp và loại trùng; để kiểm tra ngưỡng w, chỉ giữ các cạnh có trọng số <= w, chạy BFS tìm số cạnh ít nhất từ 1 đến N, và kiểm tra xem nó có không vượt quá K hay không.",
+      "Xây danh sách kề, sắp xếp và loại trùng mọi trọng số; tìm kiếm nhị phân trên khoảng chỉ số [lo, hi]: với mid, chạy BFS từ đỉnh 1 qua các cạnh trọng số <= ws[mid], không mở rộng các đỉnh đã ở độ sâu K; nếu đến được N với khoảng cách <= K thì đặt hi=mid, ngược lại lo=mid+1; in ws[lo]. Tổng thời gian O((N+M) log M)."
     ]
   },
   "explanationEn": "## Problem\n\nAn undirected weighted graph has nodes 1..N. Among all paths from 1 to N that use at most K edges, make the largest edge weight on the path as small as possible, and output that minimum maximum edge weight. The data guarantees that at least one path with at most K edges exists.\n\n## Approach\n\nThe answer is monotone: if you can go from 1 to N within K steps using only edges of weight ≤w, then any larger threshold also works. So binary search the threshold w over the sorted, de-duplicated edge weights; each time keep only the edges of weight ≤w, use BFS to find the minimum number of edges from 1 to N, and check whether it is ≤K.\n\n## Correctness\n\nIf some path has at most K edges and maximum edge weight w*, then under threshold w* the BFS shortest edge count is ≤K; conversely, the shortest path found by BFS under threshold w uses only edges ≤w, so its maximum edge weight is ≤w. Therefore the minimum feasible threshold equals the answer, and the answer is always the weight of some edge.\n\n## Complexity\n\nO((N+M) log M).\n\n## Independent verification\n\nThe oracle uses a min-max DP layered by edge count: f[k][v] is the smallest possible maximum edge weight for reaching v in exactly k steps, relaxed layer by layer up to layer K, without binary search or BFS. Smaller data additionally enumerates every path with at most K edges (repeated nodes allowed) and directly takes the minimum maximum edge weight. All edge subsets on 3 nodes (weights 1..2) with K=1..2 are enumerated exhaustively, and the reference program is actually run on each one. The wrong solutions cover ignoring K, requiring strictly fewer than K edges, treating the graph as directed, and using DFS depth instead of the minimum number of edges."

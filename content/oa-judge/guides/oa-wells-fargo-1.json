@@ -13,6 +13,21 @@
       "With distinct elements, restoring the array is the same as the position permutation returning to the identity; look at the permutation as disjoint cycles.",
       "A cycle of length L returns to its start exactly after a multiple of L operations, so the smallest positive number of operations restoring everything is the least common multiple of all cycle lengths.",
       "Walk each cycle along p with a visited array and record its length; the LCM can be huge, so do not multiply it directly in 64 bits: factor each length, keep the highest power of each prime, and multiply those powers modulo 1,000,000,007."
+    ],
+    "ja": [
+      "要素がすべて異なるとき、配列が元に戻ることは、位置の順列が恒等置換に戻ることと同じです。順列を互いに素なサイクルとして見てください。",
+      "長さ L のサイクルは、操作回数がちょうど L の倍数のときに元に戻ります。したがって、すべてを元に戻す正の操作回数の最小値は、すべてのサイクル長の最小公倍数です。",
+      "visited 配列を使って p に沿って各サイクルをたどり、その長さを記録します。最小公倍数は巨大になりうるので、64ビットで直接掛けてはいけません。各長さを素因数分解し、各素数の最大のべきを保持して、それらを 1,000,000,007 で割った余りの下で掛け合わせてください。"
+    ],
+    "ko": [
+      "원소가 모두 다르면 배열이 복원된다는 것은 위치 순열이 항등 순열로 돌아온다는 것과 같습니다. 순열을 서로소인 사이클로 나누어 보십시오.",
+      "길이가 L인 사이클은 연산 횟수가 L의 배수일 때 정확히 시작 상태로 돌아오므로, 모든 것을 복원하는 가장 작은 양의 연산 횟수는 모든 사이클 길이의 최소공배수입니다.",
+      "방문 배열을 두고 p를 따라 각 사이클을 순회하며 길이를 기록합니다. 최소공배수는 매우 커질 수 있으므로 64비트에서 곧바로 곱하지 마십시오. 각 길이를 소인수분해하여 소수별로 가장 높은 거듭제곱만 남기고, 그 거듭제곱들을 1,000,000,007로 나눈 나머지로 곱합니다."
+    ],
+    "vi": [
+      "Với các phần tử phân biệt, khôi phục mảng tương đương với việc hoán vị vị trí trở về hoán vị đơn vị; hãy nhìn hoán vị như các chu trình rời nhau.",
+      "Một chu trình độ dài L trở về điểm xuất phát đúng sau một bội số của L phép thực hiện, nên số phép dương nhỏ nhất khôi phục mọi thứ là bội chung nhỏ nhất của mọi độ dài chu trình.",
+      "Đi dọc mỗi chu trình theo p với một mảng visited và ghi lại độ dài của nó; BCNN có thể rất lớn, nên đừng nhân trực tiếp trong 64 bit: hãy phân tích mỗi độ dài thành thừa số nguyên tố, giữ lũy thừa cao nhất của mỗi số nguyên tố, rồi nhân các lũy thừa đó theo modulo 1,000,000,007."
     ]
   },
   "explanationEn": "## Approach\n\nDecompose the permutation into disjoint cycles. A cycle of length L needs a multiple of L operations to return to its original state, and the overall period is the least common multiple of the cycle lengths.\n\n## Correctness\n\nBecause the array's elements are distinct, the array is restored after the operations if and only if the position permutation returns to the identity. A permutation cycle of length L first returns to its start after exactly L operations, so the moment everything is restored must be, and only needs to be, a common multiple of all cycle lengths; the smallest positive such moment is their least common multiple.\n\n## Complexity\n\nTime O(n log n + the cost of big-integer arithmetic), space O(n)."

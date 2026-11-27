@@ -13,6 +13,21 @@
       "The number of mutual friends of x and y is the number of two-step paths from y through a friend z to x; everyone has at most 15 friends, so there are at most 15×15 such paths.",
       "For each y, enumerate and count all two-step neighbors, skipping y itself and y's friends; the highest count wins, ties going to the smallest number. If there is no two-step candidate at all, every eligible candidate has 0 mutual friends.",
       "For each y, first mark y and its friends as not selectable; walk every friend x of every friend f of y and add to x's count; if anything was counted pick (largest count, smallest number) and reset the counts afterwards; otherwise take the first unmarked number starting from 0, or −1 if there is none. Print the results in user order separated by spaces."
+    ],
+    "ja": [
+      "x と y の共通の友達の数は、y から友達 z を経由して x に至る2ステップのパスの数に等しいです。誰でも友達は最大15人なので、そのようなパスは高々 15×15 本です。",
+      "各 y について、すべての2ステップ先の隣接ユーザーを列挙して数え、y 自身と y の友達は飛ばします。最大のカウントを持つ人が勝ち、同数なら番号が最小の人が勝ちます。2ステップ先の候補がまったくない場合は、対象となる候補はすべて共通の友達が 0 人です。",
+      "各 y について、まず y と y の友達を選択不可としてマークします。y の各友達 f のすべての友達 x を調べ、x のカウントに加算します。何かが数えられたなら (最大のカウント, 最小の番号) の人を選び、その後カウントをリセットします。そうでなければ、0 から始めてマークされていない最初の番号を取り、なければ −1 とします。結果をユーザーの順に空白区切りで出力します。"
+    ],
+    "ko": [
+      "x와 y의 공통 친구 수는 y에서 친구 z를 거쳐 x에 이르는 2단계 경로의 수와 같습니다. 모든 사람의 친구가 최대 15명이므로 이런 경로는 최대 15×15개입니다.",
+      "각 y에 대해 모든 2단계 이웃을 열거하며 횟수를 세되 y 자신과 y의 친구는 건너뜁니다. 횟수가 가장 큰 쪽이 이기고 동점이면 번호가 가장 작은 쪽입니다. 2단계 후보가 전혀 없으면 해당하는 모든 후보의 공통 친구가 0명입니다.",
+      "각 y에 대해 먼저 y와 y의 친구를 선택할 수 없음으로 표시합니다. y의 모든 친구 f의 모든 친구 x를 훑으며 x의 횟수를 더합니다. 센 것이 있으면 (가장 큰 횟수, 가장 작은 번호)를 고르고 이후 횟수를 초기화합니다. 없으면 0부터 시작해 표시되지 않은 첫 번째 번호를 취하고, 없으면 −1입니다. 결과를 사용자 순서대로 공백으로 구분해 출력합니다."
+    ],
+    "vi": [
+      "Số bạn chung của x và y là số đường đi hai bước từ y qua một người bạn z đến x; mỗi người có tối đa 15 bạn, nên có nhiều nhất 15×15 đường đi như vậy.",
+      "Với mỗi y, liệt kê và đếm mọi hàng xóm cách hai bước, bỏ qua chính y và các bạn của y; số đếm cao nhất thắng, nếu hòa thì chọn số nhỏ nhất. Nếu không có ứng viên cách hai bước nào, mọi ứng viên hợp lệ đều có 0 bạn chung.",
+      "Với mỗi y, trước hết đánh dấu y và các bạn của nó là không chọn được; duyệt mọi bạn x của mọi bạn f của y và cộng vào số đếm của x; nếu có gì được đếm thì chọn (số đếm lớn nhất, số nhỏ nhất) rồi đặt lại các số đếm; nếu không thì lấy số đầu tiên chưa bị đánh dấu bắt đầu từ 0, hoặc −1 nếu không có. In kết quả theo thứ tự người dùng, cách nhau bởi dấu cách."
     ]
   },
   "explanationEn": "## Approach\n\nIt suffices to count how often each two-step neighbor appears. If there is no two-step candidate, every non-friend candidate has 0 mutual friends, so take the smallest available number.\n\n## Proof of correctness\n\nEvery mutual friend z corresponds to a path y-z-x, so x's accumulated count is exactly the number of mutual friends; traversing all two-step neighbors covers every candidate with a positive score. When no candidate has a count, the maximum is 0 and all eligible users tie, and the statement requires the smallest number.\n\n## Complexity\n\nEach user checks at most 15×15 two-step paths, so time is O(n·15²+m) and space O(n+m).\n\n## Source and additions\n\nhttps://oamaster.com/docs/companies/weride#4-friend-recommendation-system-max-common-friends; the original problem's ordering rule and the limit of at most 15 friends per person are explicit; this site adds no duplicate edges and the input/output protocol."

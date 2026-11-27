@@ -13,6 +13,21 @@
       "The number of divisors is the product of (exponent + 1) over the prime factors; it equals 3 only for a single prime with exponent 2, so these numbers are exactly the squares of primes.",
       "p^2 <= x is equivalent to p <= floor(sqrt(x)), so the task becomes counting primes up to floor(sqrt(x)); x is at most 2.5 * 10^13, so the square root is at most 5 * 10^6 and can be sieved directly.",
       "Take the integer square root L of the largest query, sieve the primes in 2..L, then for each query compute the exact integer square root (a floating-point root corrected up or down) and binary search the prime list for how many primes do not exceed it, printing one answer per line."
+    ],
+    "ja": [
+      "約数の個数は、素因数ごとの (指数 + 1) の積です。これが 3 になるのは、指数 2 の素数が 1 つだけのときに限るので、このような数はまさに素数の平方です。",
+      "p^2 <= x は p <= floor(sqrt(x)) と同値なので、問題は floor(sqrt(x)) 以下の素数を数えることになります。x は高々 2.5 * 10^13 なので、平方根は高々 5 * 10^6 で、直接篩にかけられます。",
+      "最大のクエリの整数の平方根 L を取り、2..L の素数を篩で求めます。各クエリでは正確な整数の平方根(浮動小数点の平方根を上下に補正したもの)を計算し、素数のリストを二分探索してそれ以下の素数の個数を求め、1 つのクエリにつき 1 つの答えを出力します。"
+    ],
+    "ko": [
+      "약수의 개수는 소인수들의 (지수 + 1)의 곱이며, 이것이 3이 되는 경우는 지수가 2인 소수 하나뿐이므로 이런 수는 정확히 소수의 제곱입니다.",
+      "p^2 <= x는 p <= floor(sqrt(x))와 동치이므로, 문제는 floor(sqrt(x)) 이하의 소수의 개수를 세는 것이 됩니다. x는 최대 2.5 * 10^13이므로 제곱근은 최대 5 * 10^6이고 직접 체로 구할 수 있습니다.",
+      "가장 큰 질의의 정수 제곱근 L을 구하고 2..L의 소수를 체로 구한 뒤, 각 질의에서 정확한 정수 제곱근(부동소수점 제곱근을 위아래로 보정한 값)을 계산하고 소수 목록에서 이분 탐색으로 그 값을 넘지 않는 소수의 개수를 구해 한 줄에 하나씩 출력하세요."
+    ],
+    "vi": [
+      "Số ước bằng tích của (số mũ + 1) trên các thừa số nguyên tố; nó bằng 3 chỉ khi có một số nguyên tố duy nhất với số mũ 2, nên các số này chính xác là bình phương của các số nguyên tố.",
+      "p^2 <= x tương đương với p <= floor(sqrt(x)), nên bài toán trở thành đếm các số nguyên tố đến floor(sqrt(x)); x tối đa 2.5 * 10^13, nên căn bậc hai tối đa 5 * 10^6 và có thể sàng trực tiếp.",
+      "Lấy căn bậc hai nguyên L của truy vấn lớn nhất, sàng các số nguyên tố trong 2..L, rồi với mỗi truy vấn tính căn bậc hai nguyên chính xác (căn dấu phẩy động được hiệu chỉnh lên hoặc xuống) và tìm kiếm nhị phân trong danh sách số nguyên tố xem có bao nhiêu số không vượt quá nó, in một đáp án mỗi dòng."
     ]
   },
   "explanationEn": "## Approach\n\nA number with exactly 3 divisors is equivalent to the square of a prime. Sieve primes up to the largest square root; for each query, count the primes using the integer square root and binary search.\n\n## Proof of correctness\n\nIf the prime factorization of n consists of a single prime factor with exponent 2, its number of divisors is 3; therefore, and only therefore, it is the square of a prime. Sieve all primes not exceeding sqrt(max x), and prefix counts give the answer for each x.\n\n## Complexity\n\nLet M=max(x); time O(sqrt(M) log log M + q), space O(sqrt(M)).\n\n## Source notes\n\nThis site separately compiled the standard input/output protocol; it does not claim that the original site provided this protocol."

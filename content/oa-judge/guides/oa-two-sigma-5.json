@@ -13,6 +13,21 @@
       "After sorting the points by x, each query falls on exactly one segment: interpolate inside it, extend the first segment to the left, and extend the last segment to the right. The difficulty is precision: extrapolated values can be huge, and floating point cannot guarantee an absolute error of 10^-6.",
       "Every input has at most 6 decimal places, so multiplying by 10^6 turns it into an exact integer. Binary search for the segment, compute the rational interpolation result exactly with integers (128-bit or big integers where needed), and round to 6 decimals with integer division.",
       "Parse every coordinate as an integer scaled by 10^6 and sort the points by x. For a query x, binary search the last point with x not greater than the query and clamp the segment index into 0..n-2. Take the numerator ya * (xb - xa) + (yb - ya) * (x - xa) and the denominator xb - xa; divide the absolute value of the numerator with remainder, round half up, and print the integer part and 6 decimals, without a minus sign when the result is 0."
+    ],
+    "ja": [
+      "点を x で整列すると、各クエリはちょうど1本の線分に対応します。線分の内側では補間し、左側では最初の線分を、右側では最後の線分を延長します。難しいのは精度です。外挿した値は非常に大きくなりえて、浮動小数点では絶対誤差 10^-6 を保証できません。",
+      "入力はどれも小数部が高々 6 桁なので、10^6 倍すれば正確な整数になります。二分探索で線分を求め、有理数の補間結果を整数(必要に応じて128ビットまたは多倍長整数)で厳密に計算し、整数除算で小数第6位に丸めます。",
+      "すべての座標を 10^6 倍した整数として解釈し、点を x で整列します。クエリ x に対しては、x 以下の最後の点を二分探索で求め、線分の添字を 0..n-2 に収めます。分子 ya * (xb - xa) + (yb - ya) * (x - xa) と分母 xb - xa を取り、分子の絶対値を余り付きで割って四捨五入(0.5 は切り上げ)し、整数部と小数 6 桁を出力します。結果が 0 のときは負符号を付けません。"
+    ],
+    "ko": [
+      "점들을 x 기준으로 정렬하면 각 질의는 정확히 하나의 선분에 대응합니다. 안쪽이면 그 선분 위에서 보간하고, 왼쪽이면 첫 선분을, 오른쪽이면 마지막 선분을 연장합니다. 어려운 점은 정밀도입니다. 외삽한 값은 매우 클 수 있고 부동소수점으로는 절대 오차 10^-6을 보장할 수 없습니다.",
+      "모든 입력은 소수점 아래 최대 6자리이므로 10^6을 곱하면 정확한 정수가 됩니다. 이분 탐색으로 선분을 찾고, 보간 결과는 정수만으로 유리수 형태로 정확히 계산하며(필요하면 128비트 또는 큰 정수 사용), 정수 나눗셈으로 소수 6자리까지 반올림합니다.",
+      "모든 좌표를 10^6배한 정수로 파싱하고 점을 x 기준으로 정렬합니다. 질의 x에 대해 x보다 크지 않은 마지막 점을 이분 탐색으로 찾고 선분 인덱스를 0..n-2로 제한합니다. 분자는 ya * (xb - xa) + (yb - ya) * (x - xa), 분모는 xb - xa로 둡니다. 분자의 절댓값을 분모로 나눠 몫과 나머지를 구하고, 나머지로 반올림(0.5 이상 올림)하여 정수부와 소수 6자리를 출력하되, 결과가 0이면 마이너스 부호를 붙이지 않습니다."
+    ],
+    "vi": [
+      "Sau khi sắp xếp các điểm theo x, mỗi truy vấn rơi vào đúng một đoạn: nội suy bên trong đoạn đó, kéo dài đoạn đầu tiên sang trái, và kéo dài đoạn cuối cùng sang phải. Khó khăn nằm ở độ chính xác: giá trị ngoại suy có thể rất lớn, và số thực dấu phẩy động không đảm bảo được sai số tuyệt đối 10^-6.",
+      "Mọi đầu vào có tối đa 6 chữ số thập phân, nên nhân với 10^6 sẽ biến chúng thành số nguyên chính xác. Tìm kiếm nhị phân đoạn, tính chính xác kết quả nội suy hữu tỉ bằng số nguyên (128 bit hoặc số nguyên lớn khi cần), rồi làm tròn đến 6 chữ số thập phân bằng phép chia nguyên.",
+      "Phân tích mỗi tọa độ thành số nguyên nhân với 10^6 và sắp xếp các điểm theo x. Với truy vấn x, tìm kiếm nhị phân điểm cuối cùng có x không lớn hơn truy vấn và kẹp chỉ số đoạn vào khoảng 0..n-2. Lấy tử số ya * (xb - xa) + (yb - ya) * (x - xa) và mẫu số xb - xa; chia có dư giá trị tuyệt đối của tử số, làm tròn nửa lên, rồi in phần nguyên và 6 chữ số thập phân, không có dấu trừ khi kết quả bằng 0."
     ]
   },
   "explanationEn": "## Approach\n\nMultiply the input by 10^6 to convert it exactly to integers, sort by x, binary search the segment for each query, and compute the exact rational number. Round the result to 6 decimal places with integer division, without going through double.\n\n## Proof of correctness\n\nEvery query of the polyline corresponds to a unique adjacent segment, and queries outside are handled by the first and last segments, so the binary search selects the right segment. The integer scaling and rational expression are exactly equivalent to ya+(yb−ya)(x−xa)/(xb−xa), with no rounding error. The final rounding to the 10^-6 grid has an error of at most 0.5×10^-6, which meets the acceptance criterion. Precision is kept even when extrapolation approaches 4×10^18.\n\n## Complexity\n\nO((n+q)log n) time and O(n+q) space; the exact integers have a bounded number of digits within the fixed resource limits."
